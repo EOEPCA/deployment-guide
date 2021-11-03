@@ -11,11 +11,11 @@ onExit() {
 }
 trap onExit EXIT
 
-# # minikube
-# ./install-minikube.sh
+# minikube
+./install-minikube.sh
 
-# # kubernetes cluster
-# ./setup-cluster.sh
+# kubernetes cluster
+./setup-cluster.sh
 
 # Certificate manager
 ./certificate-manager.sh
