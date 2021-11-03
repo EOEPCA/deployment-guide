@@ -1,0 +1,22 @@
+workflowExecutor:
+  inputs:
+    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.123.nip.io
+    STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
+    STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
+    STAGEOUT_AWS_REGION: us-east-1
+    STAGEOUT_OUTPUT: s3://eoepca
+  processingStorageClass: standard
+persistence:
+  storageClass: standard
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: ades-open.192.168.49.123.nip.io
+      paths: ["/"]
+  tls:
+    - hosts:
+        - ades-open.192.168.49.123.nip.io
+      secretName: ades-open-tls

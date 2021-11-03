@@ -1,0 +1,18 @@
+auth:
+  rootUser: eoepca
+  rootPassword: changeme
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: minio-console.192.168.49.123.nip.io
+
+apiIngress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: minio.192.168.49.123.nip.io
+
+persistence:
+  storageClass: standard
+
+defaultBuckets: "eoepca"

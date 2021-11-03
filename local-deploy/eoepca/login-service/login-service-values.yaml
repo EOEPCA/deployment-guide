@@ -1,0 +1,44 @@
+volumeClaim:
+  name: eoepca-userman-pvc
+  create: false
+config:
+  domain: auth.192.168.49.123.nip.io
+  volumeClaim:
+    name: eoepca-userman-pvc
+opendj:
+  # This can be useful to workaround helm 'failed to upgrade' errors due to
+  # immutable fields in the 'um-login-service-persistence-init-ss' job
+  # persistence:
+  #   enabled: false
+  volumeClaim:
+    name: eoepca-userman-pvc
+oxauth:
+  volumeClaim:
+    name: eoepca-userman-pvc
+oxtrust:
+  volumeClaim:
+    name: eoepca-userman-pvc
+global:
+  domain: auth.192.168.49.123.nip.io
+  nginxIp: 192.168.49.123
+nginx:
+  ingress:
+    # annotations:
+    #   cert-manager.io/cluster-issuer: letsencrypt-staging
+    # hosts:
+    #   - auth.192.168.49.123.nip.io
+    # tls:
+    #   - hosts:
+    #       - auth.192.168.49.123.nip.io
+    #     secretName: login-service-tls
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    path: /
+    hosts:
+      - auth.192.168.49.123.nip.io
+    tls: 
+    - secretName: tls-certificate
+      hosts:
+        - auth.192.168.49.123.nip.io
