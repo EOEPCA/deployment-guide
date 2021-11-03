@@ -1,0 +1,72 @@
+site_name: EOEPCA Deployment Guide
+site_url: https://deployment-guide.docs.eoepca.org
+repo_url: https://github.com/EOEPCA/deployment-guide
+edit_uri: ""
+
+nav:
+  - Deployment Guide:
+    - Introduction: index.md
+    - Cluster:
+      - Kubernetes Cluster: kubernetes.md
+      - Helm Repositories: helm-repositories.md
+      - Cluster Prerequisites: cluster-prerequisites.md
+    - EOEPCA:
+      - Persistence: persistence.md
+      - Login Service: login-service.md
+      - Resource Protection: resource-protection.md
+
+theme:
+  # name: mkdocs
+  # name: readthedocs
+  name: material # https://squidfunk.github.io/mkdocs-material/creating-your-site/
+  # locale: en
+  # custom_dir: my_theme_customizations/
+  # static_templates:
+  #   - sitemap.html
+  # include_sidebar: false
+
+  # highlightjs: true
+  # hljs_languages:
+  #   - yaml
+  navigation_depth: 3
+
+  # For `material` theme...
+  logo: img/favicon.ico
+  favicon: img/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    # - navigation.expand
+    - toc.integrate
+    - navigation.top
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: ⚓︎
+      toc_depth: 3
+  - smarty
+  - sane_lists
+
+# docs_dir: docs
+# site_dir: site
+# extra_css:
+#     - css/extra.css
+#     - css/second_extra.css
+# extra_javascript: []
+# extra_templates: []
+# extra: {}
+# use_directory_urls: true
+# strict: false
+# dev_addr: 127.0.0.1:8000
+# plugins:
+#   - search:
+#     separator: '[\s\-\.]+'
+#     min_search_length: 3
+#     lang: en
+#     prebuild_index: False
+#     indexing: full
+#   - your_other_plugin

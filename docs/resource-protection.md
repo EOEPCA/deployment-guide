@@ -1,0 +1,181 @@
+# Resource Protection
+
+EOEPCA defines _Building Blocks_ within a micro-service architecture. The services are subject to protection within an _Identity and Access Management (IAM)_ approach that includes:
+
+* Login Service (Authorization Server)
+* Policy Decision Point (PDP)
+* Policy Enforcement Point (PEP)
+
+Building Blocks that act as a _Resource Server_ are individually protected by a Policy Enforcement Point (PEP). The PEP enforces the authorization decision in collaboration with the Login Service and Policy Decision Point (PDP).
+
+The PEP expects to interface to a client (user agent, e.g. browser) using [_User Managed Access (UMA)_](https://docs.kantarainitiative.org/uma/wg/rec-oauth-uma-grant-2.0.html) flows. It is not typical for a client to support _UMA flows_, and so the PEP can be deployed with a companion _UMA User Agent_ component that interfaces between the client and the PEP, and performs the UMA Flow on behalf of the client.
+
+**The _Resource Guard_ is a 'convenience' component that deploys the PEP & UMA User Agent as a cooperating pair.**
+
+The Resource Guard 'inserts itself' into the request path of the target Resource Server using the `auth_request` facility offered by Nginx. Thus, the Resource Guard deploys with an Ingress specification that:
+
+* Configures the `auth_request` module to defer access authorization to the `uma-user-agent` service
+* Configures the ingress rules (host/path) for the target Resource Server
+
+## Helm Chart
+
+The _Resource Guard_ is deployed via the `resource-guard` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts).
+
+The chart is configured via values that are fully documented in the [README for the `resource-guard` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme).
+
+It is expected to deploy multiple instances of the Resource Guard chart, one for each Resource Server to be protected.
+
+```bash
+helm install --values myservice-guard-values.yaml myservice-guard eoepca/resource-guard
+```
+
+## Values
+
+The helm chart is deployed with values that are passed through to the subcharts for the `pep-engine` and `uma-user-agent`. Typical values to be specified include:
+
+* Host/domain details for the Login Service and PDP, e.g. `auth.192.168.49.123.nip.io`
+* IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. `192.168.49.123`
+* Name of Persistent Volume Claim for `pep-engine` persistence, e.g. `myservice-pep-pvc`<br>
+* TLS Certificate Provider, e.g. `letsencrypt-production`
+* Optional specification of default resources with which to initialise the policy database for the component
+* Ingress rules definition for reverse-proxy to the target Resource Server
+* Name of `Secret` that contains the client credentials used by the `uma-user-agent` to interface with the Login Service.<br>
+  _See [section Client Secret](#client-secret) below_
+
+Example `myservice-guard-values.yaml`...
+```yaml
+#---------------------------------------------------------------------------
+# Global values
+#---------------------------------------------------------------------------
+global:
+  context: myservice
+  pep: myservice-pep
+  domain: 192.168.49.123.nip.io
+  nginxIp: 192.168.49.123
+  certManager:
+    clusterIssuer: letsencrypt-production
+#---------------------------------------------------------------------------
+# PEP values
+#---------------------------------------------------------------------------
+pep-engine:
+  configMap:
+    workingMode: PARTIAL
+    asHostname: auth
+    pdpHostname: auth
+  customDefaultResources:
+  - name: "Eric's space"
+    description: "Protected Access for eric to his space in myservice"
+    resource_uri: "/ericspace"
+    scopes: []
+    default_owner: "d3688daa-385d-45b0-8e04-2062e3e2cd86"
+  nginxIntegration:
+    enabled: false
+  volumeClaim:
+    name: myservice-pep-pvc
+    create: false
+#---------------------------------------------------------------------------
+# UMA User Agent values
+#---------------------------------------------------------------------------
+uma-user-agent:
+  fullnameOverride: myservice-agent
+  nginxIntegration:
+    enabled: true
+    hosts:
+      - host: myservice
+        paths:
+          - path: /(.*)
+            service:
+              name: myservice
+              port: 80
+          - path: /(doc.*)
+            service:
+              name: myservice-docs
+              port: 80
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+  client:
+    credentialsSecretName: "myservice-agent"
+  logging:
+    level: "debug"
+  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
+#---------------------------------------------------------------------------
+# END values
+#---------------------------------------------------------------------------
+```
+
+## Client Credentials
+
+The `uma-user-agent` requires _Client Credentials_ for its interactions with the `login-service`. The `uma-user-agent` expects to read these credentials from the file `client.yaml`, in the form...
+
+```
+client-id: <my-client-id>
+client-secret: <my-secret>
+```
+
+### Client Registration
+
+To obtain the _Client Credentials_ required by the `uma-user-agent` it is necessary to register a client with the `login-service`, or use the credentials for an existing client.
+
+A [helper script](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/register-client) is provided to register a basic client and obtain the required credentials. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+
+```bash
+git clone git@github.com:EOEPCA/deployment-guide
+cd deployment-guide
+```
+
+The `register-client` helper script requires some command-line arguments...
+
+```
+Usage:
+  register_client <authorization-server-hostname> <client-name>
+```
+
+For example...
+
+```bash
+./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient
+
+INFO: Preparing docker image... [done]
+
+Client successfully registered.
+Make a note of the credentials:
+  client_id = a98ba66e-e876-46e1-8619-5e130a38d1a4
+  client_secret = 73914cfc-c7dd-4b54-8807-ce17c3645558
+```
+
+**NOTE that the `register-client` helper relies upon [`docker`](https://docs.docker.com/engine/) to build and run the script.**
+
+### Client Secret
+
+The `client.yaml` configuration file is made available via a Kubernetes Secret...
+
+```bash
+kubectl -n myservice-ns create secret generic myservice-agent \
+  --from-file=client.yaml \
+  --dry-run=client -o yaml \
+  > myservice-agent-secret.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myservice-agent
+  namespace: myservice-ns
+data:
+  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
+```
+
+The `resource-guard` deployment is configured with the name of the `Secret` through the helm chart value `client.credentialsSecretName`.
+
+## Additional Information
+
+Additional information regarding the _Resource Guard_ can be found at:
+
+* [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard)
+* [README](https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme)
+* GitHub Repository:
+    * [pep-engine](https://github.com/EOEPCA/um-pep-engine)
+    * [uma-user-agent](https://github.com/EOEPCA/uma-user-agent)

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+
+trap onExit EXIT
+
+docker run --name mkdocs-publish --rm -it -v ${PWD}:/docs -v ${HOME}/.ssh:/root/.ssh squidfunk/mkdocs-material gh-deploy -d site-publish
+
+sudo rm -rf site-publish

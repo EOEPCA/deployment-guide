@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+
+trap onExit EXIT
+
+# Check docker is installed
+if ! hash docker >/dev/null 2>&1; then
+  echo "ERROR: docker is required" 1>&2
+  exit 1
+fi
+
+# Create the container image
+echo -n "INFO: Preparing docker image... "
+docker build -t register-client register-client-src >/dev/null
+docker system prune -f >/dev/null
+echo "[done]"
+
+# Run using docker container
+docker run --rm register-client $@
