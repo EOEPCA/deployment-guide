@@ -22,5 +22,20 @@ docker build -t register-client register-client-src >/dev/null
 docker system prune -f >/dev/null
 echo "[done]"
 
+# Use minikube network if active
+docker_network=
+# minikube installed?
+if hash minikube >/dev/null 2>&1; then
+  # minikube running?
+  if minikube status >/dev/null 2>&1; then
+    # get current profile which doubles as the network name
+    current_profile="$(minikube profile 2>/dev/null | cut -d\  -f2-)"
+    if test $?; then
+      docker_network="--network ${current_profile}"
+      echo "Using minikube network: ${current_profile}"
+    fi
+  fi
+fi
+
 # Run using docker container
-docker run --rm register-client $@
+docker run --rm ${docker_network} register-client $@

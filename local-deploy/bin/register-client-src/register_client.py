@@ -3,12 +3,16 @@
 from eoepca_scim import EOEPCA_Scim, ENDPOINT_AUTH_CLIENT_POST
 import sys
 import os
+import requests
+from urllib3.exceptions import InsecureRequestWarning
 
 def main():
   if len(sys.argv) < 3:
     print("ERROR: not enough args")
     usage()
     exit(1)
+
+  requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
   auth_server = sys.argv[1]
   client_name = sys.argv[2]
