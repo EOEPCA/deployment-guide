@@ -29,3 +29,7 @@ echo -e "\nDeploy dummy-service..."
 # login-service
 echo -e "\nDeploy login-service..."
 ./login-service/login-service.sh upgrade -i
+
+# ades
+echo -e "\nDeploy ades..."
+./ades/ades.sh upgrade -i
