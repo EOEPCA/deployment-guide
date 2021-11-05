@@ -5,11 +5,11 @@ ingress:
     ingress.kubernetes.io/ssl-redirect: "false"
     # cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
-    - host: dummy.192.168.49.123.nip.io
+    - host: dummy-service-open.192.168.49.123.nip.io
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - dummy.192.168.49.123.nip.io
+        - dummy-service-open.192.168.49.123.nip.io
       secretName: dummy-service-tls

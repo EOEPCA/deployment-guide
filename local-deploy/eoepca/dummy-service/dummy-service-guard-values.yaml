@@ -1,0 +1,66 @@
+---
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+# Global values
+global:
+  context: dummy-service
+  pep: dummy-service-pep
+  domain: 192.168.49.123.nip.io
+  nginxIp: 192.168.49.123
+  # certManager:
+  #   clusterIssuer: letsencrypt
+#---------------------------------------------------------------------------
+# PEP values
+#---------------------------------------------------------------------------
+pep-engine:
+  configMap:
+    asHostname: auth
+    pdpHostname: auth
+  customDefaultResources:
+    - name: "Eric's space"
+      description: "Protected Access for eric to his space in the dummy service"
+      resource_uri: "/ericspace"
+      scopes: []
+      default_owner: "ecef6f99-b4bc-4957-b3c0-f212ca4a26ee"
+    - name: "Bob's space"
+      description: "Protected Access for bob to his space in the dummy service"
+      resource_uri: "/bobspace"
+      scopes: []
+      default_owner: "25de92f6-399d-4bd9-a112-212e65b63e0e"
+  nginxIntegration:
+    enabled: false
+    # hostname: dummy-service-auth
+  # image:
+  #   pullPolicy: Always
+  volumeClaim:
+    name: dummy-service-pep-pvc
+    create: true
+#---------------------------------------------------------------------------
+# UMA User Agent values
+#---------------------------------------------------------------------------
+uma-user-agent:
+  fullnameOverride: dummy-service-agent
+  # image:
+  #   tag: mytest
+  #   pullPolicy: Always
+  nginxIntegration:
+    enabled: true
+    hosts:
+      - host: dummy-service
+        paths:
+          - path: /(.*)
+            service:
+              name: dummy-service
+              port: 80
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+          nginx.ingress.kubernetes.io/enable-cors: "true"
+          nginx.ingress.kubernetes.io/rewrite-target: /$1
+  client:
+    credentialsSecretName: ""
+  logging:
+    level: "debug"
+  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
+#---------------------------------------------------------------------------
+# END values
+#---------------------------------------------------------------------------
