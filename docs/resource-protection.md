@@ -129,7 +129,7 @@ The `register-client` helper script requires some command-line arguments...
 
 ```
 Usage:
-  register_client <authorization-server-hostname> <client-name>
+  register_client <authorization-server-hostname> <client-name> [<output-file>]
 ```
 
 For example...
@@ -138,12 +138,17 @@ For example...
 ./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient
 
 INFO: Preparing docker image... [done]
-
 Client successfully registered.
 Make a note of the credentials:
-  client_id = a98ba66e-e876-46e1-8619-5e130a38d1a4
-  client_secret = 73914cfc-c7dd-4b54-8807-ce17c3645558
+client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
+client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
 ```
+
+The script can optionally write the client credentials to an output file - in the expected configuration file format...
+```bash
+./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient client.yaml
+```
+...writes the client credentials to the file `client.yaml`.
 
 **NOTE that the `register-client` helper relies upon [`docker`](https://docs.docker.com/engine/) to build and run the script.**
 
