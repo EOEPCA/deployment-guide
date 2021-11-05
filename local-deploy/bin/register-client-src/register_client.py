@@ -8,7 +8,7 @@ from urllib3.exceptions import InsecureRequestWarning
 
 def main():
   if len(sys.argv) < 3:
-    print("ERROR: not enough args")
+    print("ERROR: not enough args", file=sys.stderr)
     usage()
     exit(1)
 
@@ -27,18 +27,17 @@ def main():
     scopes = ['openid',  'email', 'user_name ','uma_protection', 'permission', 'is_operator'],
     token_endpoint_auth_method = ENDPOINT_AUTH_CLIENT_POST)
 
-  print('''
-Client successfully registered.
-Make a note of the credentials:
-  client_id = {}
-  client_secret = {}
-'''.format(client["client_id"], client["client_secret"]))
+  print('''Client successfully registered.
+Make a note of the credentials...'''.format(client["client_id"], client["client_secret"]), file=sys.stderr)
+
+  print('''client-id: {}
+client-secret: {}'''.format(client["client_id"], client["client_secret"]))
 
 def usage():
   print('''
 Usage:
   {} <authorization-server-hostname> <client-name>
-'''.format(os.path.basename(sys.argv[0])))
+'''.format(os.path.basename(sys.argv[0])), file=sys.stderr)
 
 if __name__ == "__main__":
   main()

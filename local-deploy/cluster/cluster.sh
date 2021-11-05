@@ -15,7 +15,7 @@ trap onExit EXIT
 ./install-minikube.sh
 
 # kubernetes cluster
-./setup-cluster.sh
+./setup-cluster.sh "${CLUSTER_NAME}"
 
 # Certificate manager
 ./certificate-manager.sh

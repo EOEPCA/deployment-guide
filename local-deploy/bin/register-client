@@ -38,4 +38,5 @@ if hash minikube >/dev/null 2>&1; then
 fi
 
 # Run using docker container
-docker run --rm ${docker_network} register-client $@
+output_file="${3:-/dev/null}"
+docker run --rm ${docker_network} register-client "$1" "$2" | tee "${output_file}"
