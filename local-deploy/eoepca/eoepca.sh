@@ -30,6 +30,10 @@ echo -e "\nDeploy dummy-service..."
 echo -e "\nDeploy login-service..."
 ./login-service/login-service.sh upgrade -i
 
+# pdp
+echo -e "\nDeploy pdp..."
+./pdp/pdp.sh upgrade -i
+
 # ades
 echo -e "\nDeploy ades..."
 ./ades/ades.sh upgrade -i
