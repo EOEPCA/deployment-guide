@@ -7,8 +7,8 @@ global:
   pep: ades-pep
   domain: 192.168.49.123.nip.io
   nginxIp: 192.168.49.123
-  # certManager:
-  #   clusterIssuer: letsencrypt-staging
+  certManager:
+    clusterIssuer: letsencrypt-staging
 #---------------------------------------------------------------------------
 # PEP values
 #---------------------------------------------------------------------------
@@ -43,3 +43,4 @@ uma-user-agent:
     level: "info"
   unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
   openAccess: false
+  insecureTlsSkipVerify: true
