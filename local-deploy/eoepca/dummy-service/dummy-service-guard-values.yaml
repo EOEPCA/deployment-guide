@@ -16,17 +16,17 @@ pep-engine:
   configMap:
     asHostname: auth
     pdpHostname: auth
-  # customDefaultResources:
-  #   - name: "Eric's space"
-  #     description: "Protected Access for eric to his space in the dummy service"
-  #     resource_uri: "/ericspace"
-  #     scopes: []
-  #     default_owner: "ecef6f99-b4bc-4957-b3c0-f212ca4a26ee"
-  #   - name: "Bob's space"
-  #     description: "Protected Access for bob to his space in the dummy service"
-  #     resource_uri: "/bobspace"
-  #     scopes: []
-  #     default_owner: "25de92f6-399d-4bd9-a112-212e65b63e0e"
+  customDefaultResources:
+    - name: "Eric's space"
+      description: "Protected Access for eric to his space in the dummy service"
+      resource_uri: "/ericspace"
+      scopes: []
+      default_owner: "a9812efe-fc0c-49d3-8115-0f36883a84b9"
+    - name: "Bob's space"
+      description: "Protected Access for bob to his space in the dummy service"
+      resource_uri: "/bobspace"
+      scopes: []
+      default_owner: "4ccae3a1-3fad-4ffe-bfa7-cce851143780"
   nginxIntegration:
     enabled: false
     # hostname: dummy-service-auth

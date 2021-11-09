@@ -15,6 +15,10 @@ if [ ! -f client.yaml ]; then
   ../bin/register-client auth.192.168.49.123.nip.io "Resource Guard" client.yaml
 fi
 
+# dummy service
+echo -e "\nProtect dummy-service..."
+./dummy-service/dummy-service-guard.sh upgrade -i
+
 # ades
 echo -e "\nProtect ades..."
 ./ades/ades-guard.sh upgrade -i

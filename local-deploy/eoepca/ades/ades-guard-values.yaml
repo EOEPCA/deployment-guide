@@ -16,6 +16,17 @@ pep-engine:
   configMap:
     asHostname: auth
     pdpHostname: auth
+  customDefaultResources:
+    - name: "Eric's space"
+      description: "Protected Access for eric to his space in the ADES"
+      resource_uri: "/eric"
+      scopes: []
+      default_owner: "a9812efe-fc0c-49d3-8115-0f36883a84b9"
+    - name: "Bob's space"
+      description: "Protected Access for bob to his space in the ADES"
+      resource_uri: "/bob"
+      scopes: []
+      default_owner: "4ccae3a1-3fad-4ffe-bfa7-cce851143780"
   volumeClaim:
     name: eoepca-proc-pvc
     create: false
