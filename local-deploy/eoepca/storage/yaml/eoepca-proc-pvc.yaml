@@ -1,7 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: proc
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: eoepca-proc-pvc
+  namespace: proc
 spec:
   accessModes:
     - ReadWriteMany

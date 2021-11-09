@@ -57,7 +57,7 @@ As described in [section Resource Protection](./resource-protection.md), the `re
 helm install --values ades-guard-values.yaml ades-guard eoepca/resource-guard
 ```
 
-The `resource-guard` must be configured with the values applicable to the ADES for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Engine_...
+The `resource-guard` must be configured with the values applicable to the ADES for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_...
 
 **Example `ades-guard-values.yaml`...**
 
@@ -138,6 +138,11 @@ metadata:
   namespace: proc
 data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
+```
+
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.123.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+```bash
+./local-deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" client.yaml
 ```
 
 ## Additional Information

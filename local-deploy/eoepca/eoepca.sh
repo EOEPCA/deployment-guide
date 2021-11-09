@@ -30,9 +30,6 @@ echo -e "\nDeploy dummy-service..."
 echo -e "\nDeploy login-service..."
 ./login-service/login-service.sh upgrade -i
 
-# Register client
-../bin/register-client auth.192.168.49.123.nip.io "Resource Guard" client.yaml
-
 # ades
 echo -e "\nDeploy ades..."
 ./ades/ades.sh upgrade -i

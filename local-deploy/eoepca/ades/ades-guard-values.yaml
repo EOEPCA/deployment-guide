@@ -1,0 +1,45 @@
+---
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+# Global values
+global:
+  context: ades
+  pep: ades-pep
+  domain: 192.168.49.123.nip.io
+  nginxIp: 192.168.49.123
+  # certManager:
+  #   clusterIssuer: letsencrypt-staging
+#---------------------------------------------------------------------------
+# PEP values
+#---------------------------------------------------------------------------
+pep-engine:
+  configMap:
+    asHostname: auth
+    pdpHostname: auth
+  volumeClaim:
+    name: eoepca-proc-pvc
+    create: false
+#---------------------------------------------------------------------------
+# UMA User Agent values
+#---------------------------------------------------------------------------
+uma-user-agent:
+  fullnameOverride: ades-agent
+  nginxIntegration:
+    enabled: true
+    hosts:
+      - host: ades
+        paths:
+          - path: /(.*)
+            service:
+              name: ades
+              port: 80
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+  client:
+    credentialsSecretName: "proc-client"
+  logging:
+    level: "info"
+  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
+  openAccess: false
