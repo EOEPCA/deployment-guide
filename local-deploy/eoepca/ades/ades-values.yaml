@@ -1,3 +1,7 @@
+image:
+  # pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.9.8"
 workflowExecutor:
   inputs:
     STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.123.nip.io
