@@ -70,8 +70,8 @@ global:
   pep: ades-pep
   domain: 192.168.49.123.nip.io
   nginxIp: 192.168.49.123
-  # certManager:
-  #   clusterIssuer: letsencrypt-staging
+  certManager:
+    clusterIssuer: letsencrypt-staging
 #---------------------------------------------------------------------------
 # PEP values
 #---------------------------------------------------------------------------
@@ -79,6 +79,17 @@ pep-engine:
   configMap:
     asHostname: auth
     pdpHostname: auth
+  # customDefaultResources:
+  #   - name: "Eric's space"
+  #     description: "Protected Access for eric to his space in the ADES"
+  #     resource_uri: "/eric"
+  #     scopes: []
+  #     default_owner: "a9812efe-fc0c-49d3-8115-0f36883a84b9"
+  #   - name: "Bob's space"
+  #     description: "Protected Access for bob to his space in the ADES"
+  #     resource_uri: "/bob"
+  #     scopes: []
+  #     default_owner: "4ccae3a1-3fad-4ffe-bfa7-cce851143780"
   volumeClaim:
     name: eoepca-proc-pvc
     create: false
@@ -106,9 +117,15 @@ uma-user-agent:
     level: "info"
   unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
   openAccess: false
+  insecureTlsSkipVerify: true
 ```
 
-**_NOTE that the `letsencrypt` Cluster Issuer can only be used if the deployment is accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment, then this is unlikely to be the case, and so should be omitted._**
+**NOTES:**
+
+* TLS is enabled by the specification of `certManager.clusterIssuer`
+* The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment, then this is unlikely to be the case. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
+* `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
+* `customDefaultResources` can be specified to apply initial protection to the endpoint
 
 ### Client Secret
 
