@@ -11,9 +11,7 @@ trap onExit EXIT
 
 # Cert Manager
 echo -e "\nDeploy the cert manager..."
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-helm upgrade -i cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace \
-  --set installCRDs=true >/dev/null
+helm upgrade --install cert-manager cert-manager \
+  --repo https://charts.jetstack.io \
+  --namespace cert-manager --create-namespace \
+  --set installCRDs=true

@@ -9,6 +9,8 @@ onExit() {
 }
 trap onExit EXIT
 
+public_ip="${1:-192.168.49.123}"
+
 values() {
   cat - <<EOF
 configInline:
@@ -16,10 +18,11 @@ configInline:
     - name: default
       protocol: layer2
       addresses:
-        - 192.168.49.123/32
+        - ${public_ip}/32
 EOF
 }
 
-values | helm upgrade -i metallb metallb/metallb -f - \
+echo -e "\nDeploy the metallb Load Balancer with public_ip=${public_ip}..."
+values | helm upgrade --install metallb metallb -f - \
   --repo https://metallb.github.io/metallb \
   --namespace metallb-system --create-namespace

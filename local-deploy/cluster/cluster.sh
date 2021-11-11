@@ -11,20 +11,28 @@ onExit() {
 }
 trap onExit EXIT
 
-# minikube
-./install-minikube.sh
+minikube_ip="$(minikube ip)"
+base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
+public_ip="${base_ip}.123"
+domain="${public_ip}.nip.io"
 
-# kubernetes cluster
-./setup-cluster.sh "${CLUSTER_NAME}"
+# minikube
+./minikube.sh "${CLUSTER_NAME}"
+
+# metallb (Load Balancer)
+./metallb.sh "${public_ip}"
+
+# ingress-nginx
+./ingress-nginx.sh
 
 # Certificate manager
 ./certificate-manager.sh
 
 # Cluster Issuer
-./letsencrypt/letsencrypt.sh
+./letsencrypt.sh
 
 # Sealed Secrets
 ./sealed-secrets.sh "${CLUSTER_NAME}"
 
 # Minio
-./minio/minio.sh
+./minio.sh "${domain}"

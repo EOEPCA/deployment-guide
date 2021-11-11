@@ -1,3 +1,48 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+domain="${1:-192.168.49.123.nip.io}"
+
+values() {
+  cat - <<EOF
+auth:
+  rootUser: eoepca
+  rootPassword: changeme
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: minio-console.${domain}
+
+apiIngress:
+  enabled: true
+  ingressClassName: nginx
+  hostname: minio.${domain}
+
+persistence:
+  storageClass: standard
+
+defaultBuckets: "eoepca"
+EOF
+}
+
+# Minio
+echo -e "\nDeploy minio..."
+values | helm upgrade --install minio minio -f - \
+  --repo https://charts.bitnami.com/bitnami \
+  --namespace minio --create-namespace \
+  --wait
+
+# s3cfg
+cat - <<EOF > s3cfg
 [default]
 access_key = eoepca
 access_token = 
@@ -33,8 +78,8 @@ gpg_decrypt = %(gpg_command)s -d --verbose --no-use-agent --batch --yes --passph
 gpg_encrypt = %(gpg_command)s -c --verbose --no-use-agent --batch --yes --passphrase-fd %(passphrase_fd)s -o %(output_file)s %(input_file)s
 gpg_passphrase = 
 guess_mime_type = True
-host_base = minio.192.168.49.123.nip.io
-host_bucket = minio.192.168.49.123.nip.io
+host_base = minio.${domain}
+host_bucket = minio.${domain}
 human_readable_sizes = False
 invalidate_default_index_on_cf = False
 invalidate_default_index_root_on_cf = True
@@ -85,3 +130,4 @@ verbosity = WARNING
 website_endpoint = http://%(bucket)s.s3-website-%(location)s.amazonaws.com/
 website_error = 
 website_index = index.html
+EOF
