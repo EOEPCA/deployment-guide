@@ -22,4 +22,4 @@ if [ -f ../client.yaml ]; then
   echo "  [done]"
 fi
 
-helm -n proc ${ACTION} --create-namespace --version 0.0.54 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
+helm -n "${NAMESPACE}" ${ACTION} --create-namespace --version 0.0.54 --values ades-guard-values.yaml ades-guard eoepca/resource-guard

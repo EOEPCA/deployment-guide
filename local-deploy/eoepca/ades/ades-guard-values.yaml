@@ -21,12 +21,12 @@ pep-engine:
       description: "Protected Access for eric to his space in the ADES"
       resource_uri: "/eric"
       scopes: []
-      default_owner: "a9812efe-fc0c-49d3-8115-0f36883a84b9"
+      default_owner: "c14974be-b32f-44f3-97be-b216676bb40e"
     - name: "Bob's space"
       description: "Protected Access for bob to his space in the ADES"
       resource_uri: "/bob"
       scopes: []
-      default_owner: "4ccae3a1-3fad-4ffe-bfa7-cce851143780"
+      default_owner: "44f601ba-3fad-4d22-b2ae-ce8fafcdd763"
   volumeClaim:
     name: eoepca-proc-pvc
     create: false
