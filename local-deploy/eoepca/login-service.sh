@@ -1,8 +1,24 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+public_ip="${1:-192.168.49.123}"
+domain="${2:-${public_ip}.nip.io}"
+
+values() {
+  cat - <<EOF
 volumeClaim:
   name: eoepca-userman-pvc
   create: false
 config:
-  domain: auth.192.168.49.123.nip.io
+  domain: auth.${domain}
   volumeClaim:
     name: eoepca-userman-pvc
 opendj:
@@ -19,17 +35,17 @@ oxtrust:
   volumeClaim:
     name: eoepca-userman-pvc
 global:
-  domain: auth.192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: auth.${domain}
+  nginxIp: ${public_ip}
 nginx:
   ingress:
     # annotations:
     #   cert-manager.io/cluster-issuer: letsencrypt-staging
     # hosts:
-    #   - auth.192.168.49.123.nip.io
+    #   - auth.${domain}
     # tls:
     #   - hosts:
-    #       - auth.192.168.49.123.nip.io
+    #       - auth.${domain}
     #     secretName: login-service-tls
     enabled: true
     annotations: {}
@@ -37,8 +53,15 @@ nginx:
       # kubernetes.io/tls-acme: "true"
     path: /
     hosts:
-      - auth.192.168.49.123.nip.io
+      - auth.${domain}
     tls: 
     - secretName: tls-certificate
       hosts:
-        - auth.192.168.49.123.nip.io
+        - auth.${domain}
+EOF
+}
+
+values | helm upgrade --install um-login-service login-service -f - \
+  --repo https://eoepca.github.io/helm-charts \
+  --namespace default --create-namespace \
+  --version 0.9.45

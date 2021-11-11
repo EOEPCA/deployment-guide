@@ -4,17 +4,20 @@ ORIG_DIR="$(pwd)"
 cd "$(dirname "$0")"
 BIN_DIR="$(pwd)"
 
-CLUSTER_NAME="${1:-mykube}"
-
 onExit() {
   cd "${ORIG_DIR}"
 }
 trap onExit EXIT
 
+CLUSTER_NAME="${1:-mykube}"
+
 minikube_ip="$(minikube ip)"
 base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
-public_ip="${base_ip}.123"
-domain="${public_ip}.nip.io"
+default_public_ip="${base_ip}.123"
+default_domain="${public_ip}.nip.io"
+
+public_ip="${2:-${default_public_ip}}"
+domain="${3:-${default_domain}}"
 
 # minikube
 ./minikube.sh "${CLUSTER_NAME}"

@@ -4,36 +4,37 @@ ORIG_DIR="$(pwd)"
 cd "$(dirname "$0")"
 BIN_DIR="$(pwd)"
 
-CLUSTER_NAME="${1:-eoepca}"
-
 onExit() {
   cd "${ORIG_DIR}"
 }
 trap onExit EXIT
 
-# Create the cluster
-../cluster/cluster.sh "${CLUSTER_NAME}"
+CLUSTER_NAME="${1:-eoepca}"
 
-# EOEPCA helm chart repository
-echo -e "\neoepca helm repo..."
-helm repo add eoepca https://eoepca.github.io/helm-charts
+minikube_ip="$(minikube ip)"
+base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
+public_ip="${base_ip}.123"
+domain="${public_ip}.nip.io"
+
+# Create the cluster
+../cluster/cluster.sh "${CLUSTER_NAME}" "${public_ip}" "${domain}"
 
 # storage
 echo -e "\nstorage..."
-./storage/storage.sh
+./storage.sh "${domain}"
 
 # dummy-service
 echo -e "\nDeploy dummy-service..."
-./dummy-service/dummy-service.sh upgrade -i
+./dummy-service.sh "${domain}"
 
 # login-service
 echo -e "\nDeploy login-service..."
-./login-service/login-service.sh upgrade -i
+./login-service.sh "${public_ip}" "${domain}"
 
 # pdp
 echo -e "\nDeploy pdp..."
-./pdp/pdp.sh upgrade -i
+./pdp/pdp.sh "${public_ip}" "${domain}"
 
 # ades
 echo -e "\nDeploy ades..."
-./ades/ades.sh upgrade -i
+./ades/ades.sh "${domain}"
