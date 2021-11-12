@@ -9,7 +9,11 @@ onExit() {
 }
 trap onExit EXIT
 
-domain="${1:-192.168.49.123.nip.io}"
+source ../cluster/functions
+configureAction "$1"
+initIpDefaults
+
+domain="${2:-${default_domain}}"
 
 values() {
   cat - <<EOF
@@ -31,8 +35,11 @@ ingress:
 EOF
 }
 
-# dummy-service
-values | helm upgrade --install dummy-service dummy -f - \
-  --repo https://eoepca.github.io/helm-charts \
-  --namespace test --create-namespace \
-  --version 0.9.2
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  helm --namespace test uninstall dummy-service
+else
+  values | helm ${ACTION_HELM} dummy-service dummy -f - \
+    --repo https://eoepca.github.io/helm-charts \
+    --namespace test --create-namespace \
+    --version 0.9.2
+fi

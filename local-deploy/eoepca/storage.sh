@@ -9,7 +9,8 @@ onExit() {
 }
 trap onExit EXIT
 
-ACTION="${@:-apply}"
+source ../cluster/functions
+configureAction "$1"
 
 values() {
   cat - <<EOF
@@ -51,9 +52,15 @@ spec:
       storage: 5Gi
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: um
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: eoepca-userman-pvc
+  namespace: um
 spec:
   accessModes:
     - ReadWriteMany
@@ -64,4 +71,4 @@ spec:
 EOF
 }
 
-values | kubectl ${ACTION} -f -
+values | kubectl ${ACTION_KUBECTL} -f -

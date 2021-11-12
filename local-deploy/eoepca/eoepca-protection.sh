@@ -9,16 +9,30 @@ onExit() {
 }
 trap onExit EXIT
 
+source ../cluster/functions
+configureAction "$1"
+initIpDefaults
+
+public_ip="${2:-${default_public_ip}}"
+domain="${3:-${default_domain}}"
+
 # Register client
-if [ ! -f client.yaml ]; then
-  echo "Registering client with Login Service..."
-  ../bin/register-client auth.192.168.49.123.nip.io "Resource Guard" client.yaml
+if [ "$ACTION" = "apply" ]; then
+  if [ ! -f client.yaml ]; then
+    echo "Registering client with Login Service..."
+    ../bin/register-client "auth.${domain}" "Resource Guard" client.yaml
+  fi
+elif [ "$ACTION" = "delete" ]; then
+  if [ -f client.yaml ]; then
+    echo "Removing credentials for previously registered client..."
+    rm -f client.yaml
+  fi
 fi
 
 # dummy service
 echo -e "\nProtect dummy-service..."
-./dummy-service/dummy-service-guard.sh upgrade -i
+./dummy-service-guard.sh apply "${public_ip}" "${domain}"
 
 # ades
 echo -e "\nProtect ades..."
-./ades/ades-guard.sh upgrade -i
+./ades/ades-guard.sh apply "${public_ip}" "${domain}"

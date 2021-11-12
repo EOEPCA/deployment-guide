@@ -9,33 +9,31 @@ onExit() {
 }
 trap onExit EXIT
 
-# deduce defaults from minikube ip
-minikube_ip="$(minikube ip)"
-base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
-default_public_ip="${base_ip}.123"
-default_domain="${public_ip}.nip.io"
+source functions
+initIpDefaults
 
-cluster_name="${1:-mykube}"
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+ACTION="${1:-apply}"
+cluster_name="${2:-mykube}"
+public_ip="${3:-${default_public_ip}}"
+domain="${4:-${default_domain}}"
 
 # minikube
 ./minikube.sh "${cluster_name}"
 
 # metallb (Load Balancer)
-./metallb.sh "${public_ip}"
+./metallb.sh "${ACTION}" "${public_ip}"
 
 # ingress-nginx
-./ingress-nginx.sh
+./ingress-nginx.sh "${ACTION}"
 
 # Certificate manager
-./certificate-manager.sh
+./certificate-manager.sh "${ACTION}"
 
 # Cluster Issuer
-./letsencrypt.sh
+./letsencrypt.sh "${ACTION}"
 
 # Sealed Secrets
-./sealed-secrets.sh "${cluster_name}"
+./sealed-secrets.sh "${ACTION}" "${cluster_name}"
 
 # Minio
-./minio.sh "${domain}"
+./minio.sh "${ACTION}" "${domain}"

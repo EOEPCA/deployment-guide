@@ -1,0 +1,26 @@
+
+# ACTION to perform
+configureAction() {
+  ACTION="${1:-template}"
+  if [ "${ACTION}" = "template" ]; then
+    ACTION_KUBECTL="apply --dry-run=client -o yaml"
+    ACTION_HELM="template"
+  elif [ "${ACTION}" = "apply" ]; then
+    ACTION_KUBECTL="apply"
+    ACTION_HELM="upgrade -i"
+  elif [ "${ACTION}" = "delete" ]; then
+    ACTION_KUBECTL="delete"
+    ACTION_HELM="uninstall"
+  else
+    echo "ERROR: bad action: ${ACTION}"
+    exit 1
+  fi
+}
+
+# deduce defaults from minikube ip
+initIpDefaults() {
+  minikube_ip="$(minikube ip)"
+  base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
+  default_public_ip="${base_ip}.123"
+  default_domain="${default_public_ip}.nip.io"
+}

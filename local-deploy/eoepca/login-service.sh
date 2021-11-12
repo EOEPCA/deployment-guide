@@ -9,11 +9,18 @@ onExit() {
 }
 trap onExit EXIT
 
-public_ip="${1:-192.168.49.123}"
-domain="${2:-${public_ip}.nip.io}"
+source ../cluster/functions
+configureAction "$1"
+initIpDefaults
+
+public_ip="${2:-${default_public_ip}}"
+domain="${3:-${default_domain}.nip.io}"
+NAMESPACE="um"
 
 values() {
   cat - <<EOF
+global:
+  namespace: ${NAMESPACE}
 volumeClaim:
   name: eoepca-userman-pvc
   create: false
@@ -39,29 +46,26 @@ global:
   nginxIp: ${public_ip}
 nginx:
   ingress:
-    # annotations:
-    #   cert-manager.io/cluster-issuer: letsencrypt-staging
-    # hosts:
-    #   - auth.${domain}
-    # tls:
-    #   - hosts:
-    #       - auth.${domain}
-    #     secretName: login-service-tls
     enabled: true
-    annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: "true"
+      cert-manager.io/cluster-issuer: letsencrypt-staging
     path: /
     hosts:
       - auth.${domain}
     tls: 
-    - secretName: tls-certificate
+    - secretName: login-service-tls
       hosts:
         - auth.${domain}
 EOF
 }
 
-values | helm upgrade --install um-login-service login-service -f - \
-  --repo https://eoepca.github.io/helm-charts \
-  --namespace default --create-namespace \
-  --version 0.9.45
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  helm --namespace "${NAMESPACE}" uninstall um-login-service
+else
+  values | helm ${ACTION_HELM} um-login-service login-service -f - \
+    --repo https://eoepca.github.io/helm-charts \
+    --namespace "${NAMESPACE}" --create-namespace \
+    --version 0.9.45
+fi

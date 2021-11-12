@@ -9,7 +9,11 @@ onExit() {
 }
 trap onExit EXIT
 
-domain="${1:-192.168.49.123.nip.io}"
+source ../cluster/functions
+configureAction "$1"
+initIpDefaults
+
+domain="${2:-${default_domain}}"
 
 values() {
   cat - <<EOF
@@ -42,7 +46,11 @@ ingress:
 EOF
 }
 
-values | helm upgrade --install ades ades -f - \
-  --repo https://eoepca.github.io/helm-charts \
-  --namespace proc --create-namespace \
-  --version 0.9.10
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  helm --namespace proc uninstall ades
+else
+  values | helm ${ACTION_HELM} ades ades -f - \
+    --repo https://eoepca.github.io/helm-charts \
+    --namespace proc --create-namespace \
+    --version 0.9.10
+fi

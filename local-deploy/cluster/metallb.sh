@@ -9,7 +9,11 @@ onExit() {
 }
 trap onExit EXIT
 
-public_ip="${1:-192.168.49.123}"
+source functions
+configureAction "$1"
+initIpDefaults
+
+public_ip="${2:-${default_public_ip}}"
 
 values() {
   cat - <<EOF
@@ -22,7 +26,12 @@ configInline:
 EOF
 }
 
-echo -e "\nDeploy the metallb Load Balancer with public_ip=${public_ip}..."
-values | helm upgrade --install metallb metallb -f - \
-  --repo https://metallb.github.io/metallb \
-  --namespace metallb-system --create-namespace
+echo -e "\nMetallb Load Balancer..."
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  helm --namespace metallb-system uninstall metallb
+else
+  echo "  public_ip=${public_ip}"
+  values | helm ${ACTION_HELM} metallb metallb -f - \
+    --repo https://metallb.github.io/metallb \
+    --namespace metallb-system --create-namespace
+fi

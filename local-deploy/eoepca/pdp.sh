@@ -9,8 +9,12 @@ onExit() {
 }
 trap onExit EXIT
 
-public_ip="${1:-192.168.49.123}"
-domain="${2:-${public_ip}.nip.io}"
+source ../cluster/functions
+configureAction "$1"
+initIpDefaults
+
+public_ip="${2:-${default_public_ip}}"
+domain="${3:-${default_domain}}"
 
 values() {
   cat - <<EOF
@@ -25,7 +29,11 @@ volumeClaim:
 EOF
 }
 
-values | helm upgrade --install pdp pdp-engine -f - \
-  --repo https://eoepca.github.io/helm-charts \
-  --namespace default --create-namespace \
-  --version 0.9.5
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  helm --namespace um uninstall pdp
+else
+  values | helm ${ACTION_HELM} pdp pdp-engine -f - \
+    --repo https://eoepca.github.io/helm-charts \
+    --namespace um --create-namespace \
+    --version 0.9.5
+fi

@@ -9,7 +9,8 @@ onExit() {
 }
 trap onExit EXIT
 
-ACTION="${@:-apply}"
+source functions
+configureAction "$1"
 
 values() {
   cat - <<EOF
@@ -55,5 +56,5 @@ spec:
 EOF
 }
 
-echo -e "\nCreate letsencrypt cluster issuer..."
-values | kubectl ${ACTION} -f -
+echo -e "\nLetsencrypt cluster issuer..."
+values | kubectl ${ACTION_KUBECTL} -f -

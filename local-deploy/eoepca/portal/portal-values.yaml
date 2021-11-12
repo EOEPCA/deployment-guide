@@ -1,5 +1,0 @@
-domain: 192.168.49.123.nip.io
-configmap:
-  user_prefix: eoepca-user
-image:
-  tag: 2021.10.18.09.18

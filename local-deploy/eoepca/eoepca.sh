@@ -9,35 +9,37 @@ onExit() {
 }
 trap onExit EXIT
 
-# deduce defaults from minikube ip
-minikube_ip="$(minikube ip)"
-base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
-default_public_ip="${base_ip}.123"
-default_domain="${public_ip}.nip.io"
+source ../cluster/functions
+initIpDefaults
 
-cluster_name="${1:-eoepca}"
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+ACTION="${1:-apply}"
+cluster_name="${2:-eoepca}"
+public_ip="${3:-${default_public_ip}}"
+domain="${4:-${default_domain}}"
 
 # Create the cluster
-../cluster/cluster.sh "${cluster_name}" "${public_ip}" "${domain}"
+../cluster/cluster.sh "${ACTION}" "${cluster_name}" "${public_ip}" "${domain}"
 
 # storage
 echo -e "\nstorage..."
-./storage.sh "${domain}"
+./storage.sh apply
 
-# dummy-service
-echo -e "\nDeploy dummy-service..."
-./dummy-service.sh "${domain}"
+# # dummy-service
+# echo -e "\nDeploy dummy-service..."
+# ./dummy-service.sh apply "${domain}"
 
-# login-service
-echo -e "\nDeploy login-service..."
-./login-service.sh "${public_ip}" "${domain}"
+# # login-service
+# echo -e "\nDeploy login-service..."
+# ./login-service.sh apply "${public_ip}" "${domain}"
 
-# pdp
-echo -e "\nDeploy pdp..."
-./pdp/pdp.sh "${public_ip}" "${domain}"
+# # pdp
+# echo -e "\nDeploy pdp..."
+# ./pdp.sh apply "${public_ip}" "${domain}"
 
-# ades
-echo -e "\nDeploy ades..."
-./ades/ades.sh "${domain}"
+# # ades
+# echo -e "\nDeploy ades..."
+# ./ades.sh apply "${domain}"
+
+# # portal
+# echo -e "\nDeploy portal..."
+# ./portal.sh apply "${domain}"
