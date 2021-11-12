@@ -9,15 +9,18 @@ onExit() {
 }
 trap onExit EXIT
 
-CLUSTER_NAME="${1:-eoepca}"
-
+# deduce defaults from minikube ip
 minikube_ip="$(minikube ip)"
 base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
-public_ip="${base_ip}.123"
-domain="${public_ip}.nip.io"
+default_public_ip="${base_ip}.123"
+default_domain="${public_ip}.nip.io"
+
+cluster_name="${1:-eoepca}"
+public_ip="${2:-${default_public_ip}}"
+domain="${3:-${default_domain}}"
 
 # Create the cluster
-../cluster/cluster.sh "${CLUSTER_NAME}" "${public_ip}" "${domain}"
+../cluster/cluster.sh "${cluster_name}" "${public_ip}" "${domain}"
 
 # storage
 echo -e "\nstorage..."

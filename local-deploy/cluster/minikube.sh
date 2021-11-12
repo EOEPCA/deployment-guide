@@ -4,7 +4,7 @@ ORIG_DIR="$(pwd)"
 cd "$(dirname "$0")"
 BIN_DIR="$(pwd)"
 
-CLUSTER_NAME="${1:-mykube}"
+cluster_name="${1:-mykube}"
 
 onExit() {
   cd "${ORIG_DIR}"
@@ -30,7 +30,7 @@ minikube update-check
 # create cluster
 #-------------------------------------------------------------------------------
 echo "Create minikube cluster..."
-# minikube -p "${CLUSTER_NAME}" start --cpus max --memory max --kubernetes-version v1.21.5
-minikube -p "${CLUSTER_NAME}" start --cpus max --memory 12g --kubernetes-version v1.21.5
-minikube profile "${CLUSTER_NAME}"
+# minikube -p "${cluster_name}" start --cpus max --memory max --kubernetes-version v1.21.5
+minikube -p "${cluster_name}" start --cpus max --memory 12g --kubernetes-version v1.21.5
+minikube profile "${cluster_name}"
 echo "  [done]"
