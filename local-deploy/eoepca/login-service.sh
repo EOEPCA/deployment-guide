@@ -15,7 +15,7 @@ initIpDefaults
 
 public_ip="${2:-${default_public_ip}}"
 domain="${3:-${default_domain}.nip.io}"
-NAMESPACE="um"
+NAMESPACE="default"
 
 values() {
   cat - <<EOF

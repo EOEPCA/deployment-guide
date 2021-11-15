@@ -10,15 +10,17 @@ onExit() {
 trap onExit EXIT
 
 source functions
-initIpDefaults
 
 ACTION="${1:-apply}"
 cluster_name="${2:-mykube}"
-public_ip="${3:-${default_public_ip}}"
-domain="${4:-${default_domain}}"
 
 # minikube
 ./minikube.sh "${cluster_name}"
+
+# deduce ip address from minikube
+initIpDefaults
+public_ip="${3:-${default_public_ip}}"
+domain="${4:-${default_domain}}"
 
 # metallb (Load Balancer)
 ./metallb.sh "${ACTION}" "${public_ip}"

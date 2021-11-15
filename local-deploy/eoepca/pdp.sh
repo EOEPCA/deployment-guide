@@ -35,5 +35,5 @@ else
   values | helm ${ACTION_HELM} pdp pdp-engine -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace um --create-namespace \
-    --version 0.9.5
+    --version 0.9.9
 fi

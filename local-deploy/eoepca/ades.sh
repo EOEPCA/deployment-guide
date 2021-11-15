@@ -17,10 +17,9 @@ domain="${2:-${default_domain}}"
 
 values() {
   cat - <<EOF
-image:
-  # pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.9.8"
+# image:
+#   pullPolicy: Always
+#   tag: "0.9.8"
 workflowExecutor:
   inputs:
     STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
@@ -52,5 +51,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 0.9.10
+    --version 0.9.11
 fi

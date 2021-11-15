@@ -13,8 +13,10 @@ source ../cluster/functions
 configureAction "$1"
 initIpDefaults
 
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+eric_id="${2:-c14974be-b32f-44f3-97be-b216676bb40e}"
+bob_id="${3:-44f601ba-3fad-4d22-b2ae-ce8fafcdd763}"
+public_ip="${4:-${default_public_ip}}"
+domain="${5:-${default_domain}}"
 NAMESPACE="proc"
 SECRET_NAME="proc-client"
 
@@ -51,12 +53,12 @@ pep-engine:
       description: "Protected Access for eric to his space in the ADES"
       resource_uri: "/eric"
       scopes: []
-      default_owner: "c14974be-b32f-44f3-97be-b216676bb40e"
+      default_owner: "${eric_id}"
     - name: "Bob's space"
       description: "Protected Access for bob to his space in the ADES"
       resource_uri: "/bob"
       scopes: []
-      default_owner: "44f601ba-3fad-4d22-b2ae-ce8fafcdd763"
+      default_owner: "${bob_id}"
   volumeClaim:
     name: eoepca-proc-pvc
     create: false

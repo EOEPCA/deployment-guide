@@ -13,8 +13,10 @@ source ../cluster/functions
 configureAction "$1"
 initIpDefaults
 
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+eric_id="${2:-c14974be-b32f-44f3-97be-b216676bb40e}"
+bob_id="${3:-44f601ba-3fad-4d22-b2ae-ce8fafcdd763}"
+public_ip="${4:-${default_public_ip}}"
+domain="${5:-${default_domain}}"
 
 # Register client
 if [ "$ACTION" = "apply" ]; then
@@ -31,8 +33,8 @@ fi
 
 # dummy service
 echo -e "\nProtect dummy-service..."
-./dummy-service-guard.sh apply "${public_ip}" "${domain}"
+./dummy-service-guard.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
 
 # ades
 echo -e "\nProtect ades..."
-./ades/ades-guard.sh apply "${public_ip}" "${domain}"
+./ades/ades-guard.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
