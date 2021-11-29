@@ -19,7 +19,7 @@ At minimum, values for the following attributes should be specified:
 * Details of the _S3 Object Store_ for stage-out of processing results
 * Dynamic provisioning _StorageClass_ of `ReadWriteMany` storage
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the ADES will **not** be protected by the `resource-guard` component - ref. [Resource Protection](./resource-protection.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the ADES will **not** be protected by the `resource-guard` component - ref. [Resource Protection](../resource-protection). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
 
 **Example `ades-values.yaml`...**
 
@@ -51,7 +51,7 @@ ingress:
 
 ## Protection
 
-As described in [section Resource Protection](./resource-protection.md), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions...
+As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
 
 ```bash
 helm install --values ades-guard-values.yaml ades-guard eoepca/resource-guard
@@ -168,8 +168,8 @@ This section includes some sample requests to test the deployed ADES.
 
 NOTES:
 
-1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](./resource-protection)), in which case a User ID Token must be provided with the request - typically in the HTTP header `X-User-Id`.<br>
-   See section [User ID Token](./resource-protection/#user-id-token) for more details.
+1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a User ID Token must be provided with the request - typically in the HTTP header `X-User-Id`.<br>
+   See section [User ID Token](../resource-protection/#user-id-token) for more details.
 2. The samples assume a user `eric`
 
 ### List Processes
