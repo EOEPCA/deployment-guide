@@ -175,6 +175,26 @@ data:
 
 The `resource-guard` deployment is configured with the name of the `Secret` through the helm chart value `client.credentialsSecretName`.
 
+## User ID Token
+
+As described in the [README for the Resource Guard](https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme), it is necessary for a request to a protected resource to provide the User ID Token in the request header.
+
+In the simple case of a user with username/password held within the Login Service, the User ID Token can be obtained as follows:
+
+```
+curl --location --request POST 'https://auth.192.168.49.123.nip.io/oxauth/restv1/token' \
+--header 'Cache-Control: no-cache' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'scope=openid user_name is_operator' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'username=<username>' \
+--data-urlencode 'password=<password>' \
+--data-urlencode 'client_id=<client-id>' \
+--data-urlencode 'client_secret=<client-password>'
+```
+
+The User ID Token is included in the `id_token` field of the json response.
+
 ## Additional Information
 
 Additional information regarding the _Resource Guard_ can be found at:

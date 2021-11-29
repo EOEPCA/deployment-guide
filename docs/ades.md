@@ -162,6 +162,151 @@ The client credentials are obtained by registration of a client at the login ser
 ./local-deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" client.yaml
 ```
 
+## ADES Usage Samples
+
+This section includes some sample requests to test the deployed ADES.
+
+NOTES:
+
+1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](./resource-protection)), in which case a User ID Token must be provided with the request - typically in the HTTP header `X-User-Id`.<br>
+   See section [User ID Token](./resource-protection/#user-id-token) for more details.
+2. The samples assume a user `eric`
+
+### List Processes
+
+List available processes.
+
+```
+curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/processes' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json'
+```
+
+### Deploy Process
+
+Deploy the sample application `snuggs`.
+
+```
+curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/processes' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "inputs": [
+        {
+            "id": "applicationPackage",
+            "input": {
+                "format": {
+                    "mimeType": "application/cwl"
+                },
+                "value": {
+                    "href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl"
+                }
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "format": {
+                "mimeType": "string",
+                "schema": "string",
+                "encoding": "string"
+            },
+            "id": "deployResult",
+            "transmissionMode": "value"
+        }
+    ],
+    "mode": "auto",
+    "response": "raw"
+}'
+```
+
+### Get Process Details
+
+Get details for a deployed process.
+
+```
+curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json'
+```
+
+### Execute Process
+
+Execute a process with supplied parameterisation.
+
+```
+curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "inputs": [
+        {
+            "id": "input_reference",
+            "input": {
+                "dataType": {
+                    "name": "application/json"
+                },
+                "value": "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A"
+            }
+        },
+        {
+            "id": "s_expression",
+            "input": {
+                "dataType": {
+                    "name": "string"
+                },
+                "value": "ndvi:(/ (- B05 B03) (+ B05 B03))"
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "format": {
+                "mimeType": "string",
+                "schema": "string",
+                "encoding": "string"
+            },
+            "id": "wf_outputs",
+            "transmissionMode": "value"
+        }
+    ],
+    "mode": "auto",
+    "response": "raw"
+}'
+```
+
+### Job Status
+
+Once a processes execution has been initiated then its progress can monitored via a job-specific URL that is returned in the HTTP response headers of the execute request.
+
+```
+curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json'
+```
+
+### Job Result
+
+Once the job execution has completed, then the results can be obtained.
+
+```
+curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json'
+```
+
+### Undeploy Process
+
+A process can be deleted (undeployed).
+
+```
+curl --location --request DELETE 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+--header 'X-User-Id: <user-id-token>' \
+--header 'Accept: application/json'
+```
+
 ## Additional Information
 
 Additional information regarding the _Login Service_ can be found at:
