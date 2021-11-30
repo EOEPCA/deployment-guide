@@ -14,7 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}.nip.io}"
+domain="${3:-${default_domain}}"
 NAMESPACE="default"
 
 values() {
@@ -48,8 +48,8 @@ nginx:
   ingress:
     enabled: true
     annotations:
-    #   kubernetes.io/ingress.class: nginx
-    #   kubernetes.io/tls-acme: "true"
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
       cert-manager.io/cluster-issuer: letsencrypt-staging
     path: /
     hosts:
