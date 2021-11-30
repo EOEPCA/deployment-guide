@@ -42,6 +42,10 @@ echo -e "\nDeploy pdp..."
 echo -e "\nDeploy ades..."
 ./ades.sh apply "${domain}"
 
+# ades
+echo -e "\nDeploy resource-catalogue..."
+./resource-catalogue.sh apply "${domain}"
+
 # # portal
 # echo -e "\nDeploy portal..."
 # ./portal.sh apply "${domain}"
