@@ -46,7 +46,6 @@ ingress:
     - hosts:
         - ades.192.168.49.123.nip.io
       secretName: ades-tls
-
 ```
 
 ## Protection
