@@ -16,7 +16,8 @@ values() {
   cat - <<EOF
 controller:
   config:
-    ssl-redirect: false
+    # ssl-redirect: false
+    ssl-redirect: true
 EOF
 }
 
