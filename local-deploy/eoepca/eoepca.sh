@@ -10,8 +10,8 @@ onExit() {
 trap onExit EXIT
 
 source ../cluster/functions
-
 ACTION="${1:-apply}"
+configureAction "$ACTION"
 cluster_name="${2:-eoepca}"
 
 # Create the cluster
@@ -24,28 +24,28 @@ domain="${4:-${default_domain}}"
 
 # storage
 echo -e "\nstorage..."
-./storage.sh apply
+./storage.sh "${ACTION}"
 
 # dummy-service
 echo -e "\nDeploy dummy-service..."
-./dummy-service.sh apply "${domain}"
+./dummy-service.sh "${ACTION}" "${domain}"
 
 # login-service
 echo -e "\nDeploy login-service..."
-./login-service.sh apply "${public_ip}" "${domain}"
+./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
 
 # pdp
 echo -e "\nDeploy pdp..."
-./pdp.sh apply "${public_ip}" "${domain}"
+./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
 
 # ades
 echo -e "\nDeploy ades..."
-./ades.sh apply "${domain}"
+./ades.sh "${ACTION}" "${domain}"
 
-# ades
+# resource catalogue
 echo -e "\nDeploy resource-catalogue..."
-./resource-catalogue.sh apply "${domain}"
+./resource-catalogue.sh "${ACTION}" "${domain}"
 
 # # portal
 # echo -e "\nDeploy portal..."
-# ./portal.sh apply "${domain}"
+# ./portal.sh "${ACTION}" "${domain}"

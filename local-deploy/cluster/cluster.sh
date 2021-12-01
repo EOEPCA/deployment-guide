@@ -10,8 +10,8 @@ onExit() {
 trap onExit EXIT
 
 source functions
-
 ACTION="${1:-apply}"
+configureAction "$ACTION"
 cluster_name="${2:-mykube}"
 
 # minikube

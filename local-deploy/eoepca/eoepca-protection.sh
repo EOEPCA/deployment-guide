@@ -10,11 +10,12 @@ onExit() {
 trap onExit EXIT
 
 source ../cluster/functions
-configureAction "$1"
+ACTION="${1:-apply}"
+configureAction "$ACTION"
 initIpDefaults
 
-eric_id="${2:-c14974be-b32f-44f3-97be-b216676bb40e}"
-bob_id="${3:-44f601ba-3fad-4d22-b2ae-ce8fafcdd763}"
+eric_id="${2:-b8c8c62a-892c-4953-b44d-10a12eb762d8}"
+bob_id="${3:-57e3e426-581e-4a01-b2b8-f731a928f2db}"
 public_ip="${4:-${default_public_ip}}"
 domain="${5:-${default_domain}}"
 
@@ -33,8 +34,12 @@ fi
 
 # dummy service
 echo -e "\nProtect dummy-service..."
-./dummy-service-guard.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+./dummy-service-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
 
 # ades
 echo -e "\nProtect ades..."
-./ades/ades-guard.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+./ades-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+
+# resource catalogue
+echo -e "\nProtect resource-catalogue..."
+./resource-catalogue-guard.sh "$ACTION" "${public_ip}" "${domain}"
