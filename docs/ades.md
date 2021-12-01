@@ -122,7 +122,7 @@ uma-user-agent:
 **NOTES:**
 
 * TLS is enabled by the specification of `certManager.clusterIssuer`
-* The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment, then this is unlikely to be the case. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
+* The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
 * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
 * `customDefaultResources` can be specified to apply initial protection to the endpoint
 
@@ -308,7 +308,7 @@ curl --location --request DELETE 'https://ades.192.168.49.123.nip.io/eric/wps3/p
 
 ## Additional Information
 
-Additional information regarding the _Login Service_ can be found at:
+Additional information regarding the _ADES_ can be found at:
 
 * [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/ades)
 * [Wiki](https://github.com/EOEPCA/proc-ades/wiki)
