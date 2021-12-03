@@ -20,9 +20,10 @@ values() {
 domain: ${domain}
 authHost: auth
 configmap:
+  oidc_verify_ssl: "false"
   user_prefix: eoepca-user
-image:
-  tag: ractest
+# image:
+#   tag: latest
 EOF
 }
 
@@ -32,7 +33,7 @@ else
   values | helm ${ACTION_HELM} django-portal django-portal -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace demo --create-namespace \
-    --version 0.1.11
+    --version 0.9.0
 fi
 
 # TODO - do this properly
