@@ -15,11 +15,12 @@ initIpDefaults
 
 public_ip="${2:-${default_public_ip}}"
 domain="${3:-${default_domain}}"
+NAMESPACE="default"
 
 values() {
   cat - <<EOF
-image:
-  tag: task464_1
+# image:
+#   tag: task464_1
 global:
   nginxIp: ${public_ip}
   domain: auth.${domain}
@@ -30,10 +31,10 @@ EOF
 }
 
 if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace um uninstall pdp
+  helm --namespace "${NAMESPACE}" uninstall pdp
 else
   values | helm ${ACTION_HELM} pdp pdp-engine -f - \
     --repo https://eoepca.github.io/helm-charts \
-    --namespace um --create-namespace \
-    --version 0.9.9
+    --namespace "${NAMESPACE}" --create-namespace \
+    --version 0.9.10
 fi
