@@ -46,6 +46,6 @@ echo -e "\nDeploy ades..."
 echo -e "\nDeploy resource-catalogue..."
 ./resource-catalogue.sh "${ACTION}" "${domain}"
 
-# # portal
-# echo -e "\nDeploy portal..."
-# ./portal.sh "${ACTION}" "${domain}"
+# portal
+echo -e "\nDeploy portal..."
+./portal.sh "${ACTION}" "${domain}"
