@@ -16,6 +16,7 @@ nav:
       - Policy Decision Point: pdp.md
       - Resource Protection: resource-protection.md
       - Application Deployment & Execution: ades.md
+      - Resource Catalogue: resource-catalogue.md
 
 theme:
   # name: mkdocs
