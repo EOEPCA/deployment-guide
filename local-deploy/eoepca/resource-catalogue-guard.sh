@@ -66,7 +66,7 @@ uma-user-agent:
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       nginx.ingress.kubernetes.io/enable-cors: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
+      nginx.ingress.kubernetes.io/rewrite-target: /\$1
   client:
     credentialsSecretName: "resman-client"
   logging:
