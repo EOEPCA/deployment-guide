@@ -17,6 +17,7 @@ nav:
       - Resource Protection: resource-protection.md
       - Application Deployment & Execution: ades.md
       - Resource Catalogue: resource-catalogue.md
+      - Data Access: data-access.md
 
 theme:
   # name: mkdocs
