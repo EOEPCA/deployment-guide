@@ -32,7 +32,7 @@ theme:
   # highlightjs: true
   # hljs_languages:
   #   - yaml
-  navigation_depth: 3
+  navigation_depth: 4
 
   # For `material` theme...
   logo: img/favicon.ico
@@ -51,7 +51,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: ⚓︎
-      toc_depth: 3
+      toc_depth: 4
   - smarty
   - sane_lists
 

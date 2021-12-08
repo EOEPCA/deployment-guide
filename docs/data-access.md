@@ -373,11 +373,16 @@ global:
           validity: false
 ```
 
-## Persistent Volume Claims
+## Storage
+
+Specification of PVCs and access to object storage.
+
+### Persistent Volume Claims
 
 The PVCs specified in the helm chart values must be created.
 
-**PVC for database...**
+#### PVC for Database
+
 ```yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -396,7 +401,8 @@ spec:
       storage: 100Gi
 ```
 
-**PVC for redis...**
+#### PVC for Redis
+
 ```yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -414,6 +420,51 @@ spec:
     requests:
       storage: 1Gi
 ```
+
+### Object Storage
+
+The helm chart values expect specification of object storage details for:
+
+* `data`: to access the EO data of the underlying infrastructure
+* `cache`: a dedicated object storage bucket is used to support the cache function of the data access services
+
+#### Platform EO Data
+
+Specifies the details for the infrastructure object storage that provides direct access to the EO product files.
+
+For example, the CREODIAS metadata catalogue provides references to product files in their `eodata` object storage - the access details for which are configured in the data access services:
+
+```
+global:
+  storage:
+    data:
+      data:
+        type: S3
+        endpoint_url: http://data.cloudferro.com
+        access_key_id: access
+        secret_access_key: access
+        region_name: RegionOne
+        validate_bucket_name: false
+```
+
+#### Data Access Cache
+
+The Data Access services maintain a cache, which relies on the usage of a dedicate object storage bucket for data persistence. This bucket must be created (manual step) and its access details configured in the data access services. Example based upon CREODIAS:
+
+```
+global:
+  storage:
+    cache:
+      type: S3
+      endpoint_url: "https://cf2.cloudferro.com:8080/cache-bucket"
+      host: "cf2.cloudferro.com:8080"
+      access_key_id: xxx
+      secret_access_key: xxx
+      region: RegionOne
+      bucket: cache-bucket
+```
+
+...where `xxx` must be replaced with the bucket credentials.
 
 ## Protection
 
