@@ -434,7 +434,7 @@ Specifies the details for the infrastructure object storage that provides direct
 
 For example, the CREODIAS metadata catalogue provides references to product files in their `eodata` object storage - the access details for which are configured in the data access services:
 
-```
+```yaml
 global:
   storage:
     data:
@@ -451,7 +451,7 @@ global:
 
 The Data Access services maintain a cache, which relies on the usage of a dedicate object storage bucket for data persistence. This bucket must be created (manual step) and its access details configured in the data access services. Example based upon CREODIAS:
 
-```
+```yaml
 global:
   storage:
     cache:
@@ -586,7 +586,7 @@ The client credentials are obtained by registration of a client at the login ser
 
 ## Data Access Usage
 
-TBD - how to populate with data/metadata
+The Data Access and Resource Catalogue services are initially populated via the values specified in the instantiation of the helm release. See section [Data-layer Configuration](#data-layer-configuration).
 
 ## Additional Information
 

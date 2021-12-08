@@ -150,7 +150,7 @@ The client credentials are obtained by registration of a client at the login ser
 
 ## Resource Catalogue Usage
 
-TBD - how to populate with metadata
+The Resource Catalogue is initially populated during the initialisation of the Data Access service. See section [Data-layer Configuration](data-access.md#data-layer-configuration).
 
 ## Additional Information
 
