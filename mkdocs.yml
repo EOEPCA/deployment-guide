@@ -7,6 +7,7 @@ nav:
   - Deployment Guide:
     - Introduction: index.md
     - Cluster:
+      - Prerequisite Tooling: prerequisite-tooling.md
       - Kubernetes Cluster: kubernetes.md
       - Helm Repositories: helm-repositories.md
       - Cluster Prerequisites: cluster-prerequisites.md
