@@ -20,7 +20,13 @@ configureAction() {
 # deduce defaults from minikube ip
 initIpDefaults() {
   minikube_ip="$(minikube ip)"
-  base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
-  default_public_ip="${base_ip}.123"
+
+  if [ "${USE_METALLB}" = true ]; then
+    base_ip="$(echo -n $minikube_ip | cut -d. -f-3)"
+    default_public_ip="${base_ip}.123"
+  else
+    default_public_ip="${minikube_ip}"
+  fi
+
   default_domain="${default_public_ip}.nip.io"
 }

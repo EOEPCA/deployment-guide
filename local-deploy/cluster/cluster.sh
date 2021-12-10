@@ -23,7 +23,9 @@ public_ip="${3:-${default_public_ip}}"
 domain="${4:-${default_domain}}"
 
 # metallb (Load Balancer)
-./metallb.sh "${ACTION}" "${public_ip}"
+if [ "${USE_METALLB}" = "true" ]; then
+  ./metallb.sh "${ACTION}" "${public_ip}"
+fi
 
 # ingress-nginx
 ./ingress-nginx.sh "${ACTION}"

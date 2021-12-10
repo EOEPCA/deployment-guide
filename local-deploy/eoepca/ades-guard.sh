@@ -40,7 +40,7 @@ global:
   domain: ${domain}
   nginxIp: ${public_ip}
   certManager:
-    clusterIssuer: letsencrypt-staging
+    clusterIssuer: ${TLS_CLUSTER_ISSUER}
 #---------------------------------------------------------------------------
 # PEP values
 #---------------------------------------------------------------------------

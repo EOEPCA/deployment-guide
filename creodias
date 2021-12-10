@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+./local-deploy/eoepca/eoepca.sh apply eoepca 185.52.193.38 kube.system.eoepca.org

@@ -31,7 +31,7 @@ global:
     #   kubernetes.io/tls-acme: "true"
     #   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     #   nginx.ingress.kubernetes.io/enable-cors: "true"
-    #   cert-manager.io/cluster-issuer: letsencrypt-staging
+    #   cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
     # hosts:
     #   - host: data-access.${domain}
     # tls:

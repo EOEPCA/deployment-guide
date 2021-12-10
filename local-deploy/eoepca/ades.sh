@@ -35,6 +35,8 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
   hosts:
     - host: ades-open.${domain}
       paths: ["/"]

@@ -49,8 +49,9 @@ nginx:
     enabled: true
     annotations:
       # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-      # cert-manager.io/cluster-issuer: letsencrypt-staging
+      # ingress.kubernetes.io/ssl-redirect: "false"
+      # nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      # cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
     path: /
     hosts:
       - auth.${domain}

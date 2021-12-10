@@ -9,6 +9,21 @@ onExit() {
 }
 trap onExit EXIT
 
+# Minikube options
+export USE_MINIKUBE_NONE_DRIVER="${USE_MINIKUBE_NONE_DRIVER:-true}"
+export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.21.5}"
+export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
+
+# Ingress options
+export USE_METALLB="${USE_METALLB:-false}"
+export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-false}"
+export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-false}"
+
+# TLS options
+export USE_TLS="${USE_TLS:-true}"
+export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
+if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
+
 source ../cluster/functions
 ACTION="${1:-apply}"
 configureAction "$ACTION"

@@ -23,7 +23,7 @@ ingress:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
   hosts:
     - host: dummy-service-open.${domain}
       paths:

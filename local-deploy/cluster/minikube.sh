@@ -30,7 +30,10 @@ minikube update-check
 # create cluster
 #-------------------------------------------------------------------------------
 echo "Create minikube cluster..."
-# minikube -p "${cluster_name}" start --cpus max --memory max --kubernetes-version v1.21.5
-minikube -p "${cluster_name}" start --cpus max --memory 12g --kubernetes-version v1.21.5
-minikube profile "${cluster_name}"
+if [ "${USE_MINIKUBE_NONE_DRIVER}" = "false" ]; then
+  minikube -p "${cluster_name}" start --cpus max --memory "${MINIKUBE_MEMORY_AMOUNT}" --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}"
+  minikube profile "${cluster_name}"
+else
+  minikube start --driver none --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}"
+fi
 echo "  [done]"

@@ -52,7 +52,7 @@ fi
 # s3cfg
 if [ "${ACTION}" = "apply" ]; then
   cat - <<EOF > s3cfg
-  [default]
+[default]
   access_key = eoepca
   access_token = 
   add_encoding_exts = 
