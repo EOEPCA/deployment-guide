@@ -17,6 +17,8 @@ helm install --values login-service-values.yaml um-login-service eoepca/login-se
 At minimum, values for the following attributes should be specified:
 
 * Public hostname of the Authorization Server, e.g. `auth.192.168.49.123.nip.io`
+* Initial password for the admin user<br>
+  _Note that the password must meet the complexity: at least 6 characters and include one uppercase letter, one lowercase letter, one digit, and one special character_
 * IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. `192.168.49.123`
 * Name of Persistent Volume Claim for `login-service` persistence, e.g. `eoepca-userman-pvc`<br>
   _The boolen value `volumeClaim.create` can be used for the PVC to be created by the helm release. This creates a volume of type `host-path` and, hence, is only useful for single-node development usage._
@@ -29,6 +31,8 @@ volumeClaim:
   create: false
 config:
   domain: auth.192.168.49.123.nip.io
+  adminPass: Chang3me!
+  ldapPass: Chang3me!
   volumeClaim:
     name: eoepca-userman-pvc
 opendj:

@@ -24,6 +24,14 @@ export USE_TLS="${USE_TLS:-true}"
 export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
 if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
 
+# Default Credentials
+export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-changeme}"
+export MINIO_ROOT_USER="${MINIO_ROOT_USER:-eoepca}"
+export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
+
+# Data
+export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
+
 source ../cluster/functions
 ACTION="${1:-apply}"
 configureAction "$ACTION"
@@ -49,6 +57,8 @@ echo -e "\nDeploy dummy-service..."
 echo -e "\nDeploy login-service..."
 ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
 
+exit
+
 # pdp
 echo -e "\nDeploy pdp..."
 ./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
@@ -60,6 +70,10 @@ echo -e "\nDeploy ades..."
 # resource catalogue
 echo -e "\nDeploy resource-catalogue..."
 ./resource-catalogue.sh "${ACTION}" "${domain}"
+
+# data access
+echo -e "\nDeploy data-access..."
+./data-access.sh "${ACTION}" "${domain}"
 
 # portal
 echo -e "\nDeploy portal..."

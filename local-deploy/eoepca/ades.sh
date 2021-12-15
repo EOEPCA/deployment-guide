@@ -23,8 +23,8 @@ values() {
 workflowExecutor:
   inputs:
     STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
-    STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
-    STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
+    STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+    STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     STAGEOUT_AWS_REGION: us-east-1
     STAGEOUT_OUTPUT: s3://eoepca
   processingStorageClass: standard

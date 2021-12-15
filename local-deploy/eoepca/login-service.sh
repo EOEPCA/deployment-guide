@@ -26,6 +26,8 @@ volumeClaim:
   create: false
 config:
   domain: auth.${domain}
+  adminPass: ${LOGIN_SERVICE_ADMIN_PASSWORD}
+  ldapPass: ${LOGIN_SERVICE_ADMIN_PASSWORD}
   volumeClaim:
     name: eoepca-userman-pvc
 opendj:

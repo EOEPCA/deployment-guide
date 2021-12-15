@@ -18,8 +18,8 @@ domain="${2:-${default_domain}}"
 values() {
   cat - <<EOF
 auth:
-  rootUser: eoepca
-  rootPassword: changeme
+  rootUser: ${MINIO_ROOT_USER}
+  rootPassword: ${MINIO_ROOT_PASSWORD}
 
 ingress:
   enabled: true
@@ -34,7 +34,7 @@ apiIngress:
 persistence:
   storageClass: standard
 
-defaultBuckets: "eoepca"
+defaultBuckets: "eoepca, cache-bucket"
 EOF
 }
 

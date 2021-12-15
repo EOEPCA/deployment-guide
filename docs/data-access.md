@@ -586,7 +586,14 @@ The client credentials are obtained by registration of a client at the login ser
 
 ## Data Access Usage
 
-The Data Access and Resource Catalogue services are initially populated via the values specified in the instantiation of the helm release. See section [Data-layer Configuration](#data-layer-configuration).
+### Harvesting
+
+The Data Access and Resource Catalogue services are configured to properly interpret harvested data via the values specified in the instantiation of the helm release. See section [Data-layer Configuration](#data-layer-configuration).
+
+The harvesting of data can be triggered (post deployment) by connecting to the `rm/harvester` service and executing the command...
+```
+python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+```
 
 ## Additional Information
 
