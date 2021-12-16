@@ -59,6 +59,14 @@ nginx:
         secretName: login-service-tls
 ```
 
+## Login Service Usage
+
+Once the deployment has been completed successfully, the Login Service is accessed at the endpoint `https://auth.<domain>/`, configured by your domain - e.g. [https://auth.192.168.49.123.nip.io/](https://auth.192.168.49.123.nip.io/).
+
+Login as the `admin` user with the credentials configured in the helm values - ref. `adminPass` / `ldapPass`.
+
+Typical first actions to undertake through the Gluu web interface include creation of users and clients.
+
 ## Additional Information
 
 Additional information regarding the _Login Service_ can be found at:
