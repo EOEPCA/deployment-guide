@@ -14,11 +14,13 @@ nav:
     - EOEPCA:
       - Persistence: persistence.md
       - Login Service: login-service.md
+      - User Profile: user-profile.md
       - Policy Decision Point: pdp.md
       - Resource Protection: resource-protection.md
       - Application Deployment & Execution: ades.md
       - Resource Catalogue: resource-catalogue.md
       - Data Access: data-access.md
+      - Workspace: workspace.md
 
 theme:
   # name: mkdocs
