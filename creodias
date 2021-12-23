@@ -34,5 +34,5 @@ export MINIO_ROOT_PASSWORD=changeme
 # Data
 export CREODIAS_DATA_SPECIFICATION=true
 
-./local-deploy/eoepca/eoepca.sh apply eoepca 185.52.193.38 kube.system.eoepca.org
+./local-deploy/eoepca/eoepca.sh apply eoepca 185.52.193.246 kube.guide.eoepca.org
 # ./local-deploy/eoepca/data-access.sh apply kube.system.eoepca.org

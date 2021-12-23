@@ -24,7 +24,7 @@ main() {
     values | helm ${ACTION_HELM} data-access vs -f - \
       --repo https://charts-public.hub.eox.at/ \
       --namespace rm --create-namespace \
-      --version 2.0.1
+      --version 2.0.3
 fi
 }
 
@@ -81,18 +81,24 @@ $(dataSpecification)
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: "0.9.10"
+    tag: 1.0.0
 
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: "0.9.10"
+    tag: 1.0.0
   config:
     backends:
       - path: registrar_pycsw.backend.PycswBackend
         kwargs:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
           ows_url: https://data-access.${domain}/ows
+
+$(harvesterSpecification)
+
+client:
+  image:
+    tag: release-2.0.2
 
 database:
   persistence:
@@ -106,7 +112,7 @@ redis:
   master:
     persistence:
       enabled: true
-      storageClass: managed-nfs-storage
+      storageClass: standard
   cluster:
     enabled: false
 
@@ -399,6 +405,51 @@ creodiasData() {
       masks:
         clouds:
           validity: false
+EOF
+}
+
+harvesterSpecification() {
+  if [ CREODIAS_DATA_SPECIFICATION = "true" ]; then
+    creodiasHarvester
+  else
+    cat - <<EOF
+harvester: {}
+EOF
+  fi
+}
+
+creodiasHarvester() {
+  cat - <<EOF
+harvester:
+  image:
+    repository: eoepca/rm-harvester
+    tag: 1.0.0
+  config:
+    redis:
+      host: data-access-redis-master
+      port: 6379
+    harvesters:
+      - name: Creodias-Opensearch
+        resource:
+          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          type: OpenSearch
+          format_config:
+            type: 'application/json'
+            property_mapping:
+              start_datetime: 'startDate'
+              end_datetime: 'completionDate'
+              productIdentifier: 'productIdentifier'
+          query:
+            time:
+              property: sensed
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+        filter: {}
+        postprocess:
+          type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+        queue: register_queue
 EOF
 }
 

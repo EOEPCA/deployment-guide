@@ -17,7 +17,7 @@ helm install --values data-access-values.yaml --repo https://charts-public.hub.e
 
 ## Values
 
-The Data Access supports many values to configure the service.
+The Data Access supports many values to configure the service. These are documented in full in the [View Server - Operator Guide Configuration page](https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables).
 
 ### Core Configuration
 
@@ -35,6 +35,7 @@ Typically, values for the following attributes may be specified to override the 
 ```yaml
 global:
   ingress:
+    enabled: true
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
@@ -42,10 +43,10 @@ global:
       nginx.ingress.kubernetes.io/enable-cors: "true"
       cert-manager.io/cluster-issuer: letsencrypt
     hosts:
-      - host: data-access.develop.eoepca.org
+      - host: data-access.192.168.49.123.nip.io
     tls:
       - hosts:
-          - data-access.develop.eoepca.org
+          - data-access.192.168.49.123.nip.io
         secretName: data-access-tls
   storage:
     data:
@@ -58,12 +59,17 @@ global:
         validate_bucket_name: false
     cache:
       type: S3
-      endpoint_url: "https://cf2.cloudferro.com:8080/cache-bucket"
-      host: "cf2.cloudferro.com:8080"
+      endpoint_url: "http://minio.192.168.49.123.nip.io"
+      host: "minio.192.168.49.123.nip.io"
       access_key_id: xxx
       secret_access_key: xxx
-      region: RegionOne
+      region: us-east-1
       bucket: cache-bucket
+  metadata:
+    title: EOEPCA Data Access Service developed by EOX
+    abstract: EOEPCA Data Access Service developed by EOX
+    header: "EOEPCA Data Access View Server (VS) Client powered by <a href=\"//eox.at\"><img src=\"//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\" alt=\"EOX\" style=\"height:25px;margin-left:10px\"/></a>"
+    url: https://data-access.192.168.49.123.nip.io/ows
   layers:
     # see section 'Data-layer Configuration'
   collections:
@@ -78,6 +84,11 @@ registrar:
   image:
     repository: eoepca/rm-data-access-core
     tag: "0.9.10"
+harvester:
+  # see section 'Harvester Configuration'
+client:
+  image:
+    tag: release-2.0.2
 database:
   persistence:
     enabled: true
@@ -92,6 +103,10 @@ redis:
       storageClass: standard
   cluster:
     enabled: false
+ingestor:
+  replicaCount: 0
+preprocessor:
+  replicaCount: 0
 ```
 
 ### Data-layer Configuration
@@ -372,6 +387,86 @@ global:
         clouds:
           validity: false
 ```
+
+### Harvester
+
+The Data Access service includes a Harvester component. The following subsections describe its configuration and usage.
+
+#### Harvester Helm Configuration
+
+The Harvester can be configured through the helm chart values...
+
+```yaml
+harvester:
+  image:
+    repository: eoepca/rm-harvester
+    tag: 1.0.0
+  config:
+    redis:
+      host: data-access-redis-master
+      port: 6379
+    harvesters:
+      - name: Creodias-Opensearch
+        resource:
+          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          type: OpenSearch
+          format_config:
+            type: 'application/json'
+            property_mapping:
+              start_datetime: 'startDate'
+              end_datetime: 'completionDate'
+              productIdentifier: 'productIdentifier'
+          query:
+            time:
+              property: sensed
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+        filter: {}
+        postprocess:
+          type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+        queue: register_queue
+```
+
+The `harvester.config.harvesters` list defines a set of pre-defined harvesters which can be invoked in a later stage. The name property must be unique for each harvester and must be unique among all harvesters in the list. Each harvester is associated with a `resource`, an optional `filter` or `postprocess` function, and a `queue`.
+
+The `resource` defines where each item is harvested from. This can be a file system, a search service, catalog file or something similar. The example above defines a connection to an OpenSearch service on CREODIAS, with associated default query parameters and a format configuration.
+
+The `filter` allows to filter elements within the harvester, when the resource does not provide a specific filter. This filter can be supplied using CQL2-JSON.
+
+The `postprocess` can adjust the harvested results. In this example the harvested items are not complete, and additional metadata must be retrieved from an object storage.
+
+The `queue` defines where harvested items will be pushed into. Usually this is a registration queue, where the registrar will pick up and start registration according to its configuration.
+
+#### Starting the Harvester
+
+The harvester can either do one-off harvests via the CLI or listen on a redis queue to run consecutive harvests whenever a harvesting request is received on that queue.
+
+##### One-off harvests via the CLI
+
+In order to start a harvest from the CLI, the operator first needs to connect to the kubernetes pod of the harvester. Within that pod, the harvest can be executed like this...
+```bash
+python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+```
+
+This will invoke the Creodias-Opensearch harvester with default arguments. When some values are to be overridden, the --values switch can be used to pass override values. These values must be a JSON string. The following example adjusts the begin and end times of the query parameters...
+```bash
+python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch --values '{"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}'
+```
+
+##### Harvests via the harvest daemon
+
+The harvester pod runs a service listening on a redis queue. When a message is read from the queue, it will be read as a JSON string, expecting an object with at least a `name` property. Optionally, it can also have a `values` property, working in the same way as with CLI `--values`.
+
+To send a harvesting request via the redis queue, it is necessary to connect to the redis pod and execute the redis-cli there. Then the following command can be used to achieve the same result as above with CLI harvesting...
+```bash
+redis-cli LPUSH '{"name": "Creodias-Opensearch", "values": {"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}}'
+```
+
+#### Results of the harvesting
+
+The harvester produces a continous stream of STAC Items which are sent down via the configured queue. It is possible that the harvested metadata is not sufficient to create a fully functional STAC Item. In this case the postprocess must transform this intermediate item to a valid STAC Item. In our example, the postprocessor looks up the Sentinel-2 product file referenced by the product identifier which is then accessed on the object storage. From the stored metadata files, the STAC Items to be sent is created.
 
 ## Storage
 

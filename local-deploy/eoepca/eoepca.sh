@@ -57,8 +57,6 @@ echo -e "\nDeploy dummy-service..."
 echo -e "\nDeploy login-service..."
 ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
 
-exit
-
 # pdp
 echo -e "\nDeploy pdp..."
 ./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
@@ -75,6 +73,6 @@ echo -e "\nDeploy resource-catalogue..."
 echo -e "\nDeploy data-access..."
 ./data-access.sh "${ACTION}" "${domain}"
 
-# portal
-echo -e "\nDeploy portal..."
-./portal.sh "${ACTION}" "${domain}"
+# # portal
+# echo -e "\nDeploy portal..."
+# ./portal.sh "${ACTION}" "${domain}"
