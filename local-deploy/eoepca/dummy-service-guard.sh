@@ -106,5 +106,5 @@ else
   values | helm ${ACTION_HELM} dummy-service-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 0.0.54
+    --version 1.0.0
 fi

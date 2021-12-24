@@ -53,5 +53,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 0.9.11
+    --version 1.0.0
 fi

@@ -33,7 +33,7 @@ else
   values | helm ${ACTION_HELM} django-portal django-portal -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace demo --create-namespace \
-    --version 0.9.0
+    --version 1.0.0
 fi
 
 # TODO - do this properly

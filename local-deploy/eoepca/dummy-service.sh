@@ -42,5 +42,5 @@ else
   values | helm ${ACTION_HELM} dummy-service dummy -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace test --create-namespace \
-    --version 0.9.2
+    --version 1.0.0
 fi
