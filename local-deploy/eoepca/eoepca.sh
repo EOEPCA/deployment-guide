@@ -61,6 +61,10 @@ echo -e "\nDeploy login-service..."
 echo -e "\nDeploy pdp..."
 ./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
 
+# user-profile
+echo -e "\nDeploy user-profile..."
+./user-profile.sh "${ACTION}" "${public_ip}" "${domain}"
+
 # ades
 echo -e "\nDeploy ades..."
 ./ades.sh "${ACTION}" "${domain}"
