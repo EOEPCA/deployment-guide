@@ -43,3 +43,11 @@ echo -e "\nProtect ades..."
 # resource catalogue
 echo -e "\nProtect resource-catalogue..."
 ./resource-catalogue-guard.sh "$ACTION" "${public_ip}" "${domain}"
+
+# data access
+echo -e "\nProtect data-access..."
+./data-access-guard.sh "$ACTION" "${public_ip}" "${domain}"
+
+# workspace api
+echo -e "\nProtect workspace-api..."
+./workspace-api-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
