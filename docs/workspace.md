@@ -176,4 +176,10 @@ Additional information regarding the _Workspace API_ can be found at:
 
 ## Bucket Operator
 
-TBD
+The Workspace API creates workspaces for individual users. In doing so, dedicated object storage buckets are created associated to each user workspace - for self-contained storage of user owned resources (data, processing applications, etc.).
+
+The bucket creation relies upon the object storage services of the underlying cloud infrastructure. We have created a `Bucket` abstraction as a Kubernetes `Custom Resource Definition`. This is served by a `Bucket Operator` service that deploys into the Kubernetes cluster to satisfy requests for resources of type `Bucket`.
+
+We provide a `Bucket Operator` implementation that currently supports the creation of buckets in OpenStack object storage - currently tested only on the CREODIAS (Cloudferro).
+
+For v1.0, we do not have a helm chart for the Bucket Operator, which must be installed to the Kubernetes cluster directly using yaml. For example yaml files see our [Bucket Operator deployment in our demo cluster](https://github.com/EOEPCA/eoepca/tree/v1.0/system/clusters/creodias/resource-management/bucket-operator) - which can be adapted for your deployment.
