@@ -88,7 +88,7 @@ uma-user-agent:
   logging:
     level: "info"
   unauthorizedResponse: 'Bearer realm="https://auth.${domain}/oxauth/auth/passport/passportlogin.htm"'
-  openAccess: false
+  openAccess: true  # access for any authenticated user
   insecureTlsSkipVerify: true
 EOF
 }
