@@ -4,7 +4,7 @@ The Deployment Guide describes how each building-block comprising the EOEPCA Ref
 
 The deployment is organised into the following sections:
 
-* Kubernetes cluster
-* Storage
-* Login Service
-* etc.
+* **Cluster**<br>
+  Establish the Kubernetes cluster and other prerequisites for the deployment of the EOEPCA system.
+* **EOEPCA**<br>
+  Deployment of the EOEPCA components.
