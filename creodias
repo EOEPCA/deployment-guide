@@ -9,31 +9,10 @@ onExit() {
 }
 trap onExit EXIT
 
-# Minikube options
-# Use the 'none' drive to faciltate use of a public IP for external traffic ingress
-# and use of letsencrypt tls
-export USE_MINIKUBE_NONE_DRIVER=true
-export MINIKUBE_MEMORY_AMOUNT=12g
+source ./creodias-options
 
-# Ingress options
-# Use minikubes built-in ingress addon
-export USE_METALLB=false
-export USE_INGRESS_NGINX_HELM=false
-export USE_INGRESS_NGINX_LOADBALANCER=false
+cluster_name="eoepca"
 
-# TLS options
-# With a public IP we can use telsencrypt for tls
-export USE_TLS=true
-export TLS_CLUSTER_ISSUER=letsencrypt-staging
-
-# Default Credentials
-export LOGIN_SERVICE_ADMIN_PASSWORD=Chang3me!
-export MINIO_ROOT_USER=eoepca
-export MINIO_ROOT_PASSWORD=changeme
-
-# Data
-export CREODIAS_DATA_SPECIFICATION=true
-
-./local-deploy/eoepca/eoepca.sh apply eoepca 185.52.193.246 kube.guide.eoepca.org
-# ./local-deploy/eoepca/data-access.sh apply kube.guide.eoepca.org
-# ./local-deploy/eoepca/user-profile.sh apply 185.52.193.246 kube.guide.eoepca.org
+./local-deploy/eoepca/eoepca.sh apply "${cluster_name}" "${public_ip}" "${domain}"
+# ./local-deploy/eoepca/data-access.sh apply "${domain}"
+# ./local-deploy/eoepca/user-profile.sh apply "${public_ip}" "${domain}"

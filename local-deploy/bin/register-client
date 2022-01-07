@@ -78,7 +78,7 @@ deduceDockerNetwork() {
 # Run using docker container
 runClient() {
   pushd "${ORIG_DIR}" >/dev/null
-  docker run --rm ${docker_network} register-client ${auth_server} ${client_name} ${redirect_uri} ${logout_uri}
+  docker run --rm ${docker_network} register-client ${auth_server} "${client_name}" ${redirect_uri} ${logout_uri}
   popd >/dev/null
 }
 

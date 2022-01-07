@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+source ./creodias-options
+
+eric_id="6051275c-c670-475c-8340-c7934701a30f"
+bob_id="53e74cfa-99a2-4acb-8286-0ff54e9f309e"
+
+./local-deploy/eoepca/eoepca-protection.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
