@@ -129,7 +129,7 @@ The `register-client` helper script requires some command-line arguments...
 
 ```
 Usage:
-  register_client <authorization-server-hostname> <client-name> [<output-file>]
+  register_client <authorization-server-hostname> <client-name> [<redirect-uri> [<logout-uri>]]
 ```
 
 For example...
@@ -144,9 +144,14 @@ client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
 client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
 ```
 
-The script can optionally write the client credentials to an output file - in the expected configuration file format...
+Or to register OIDC redirect URLs...
 ```bash
-./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient client.yaml
+./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient https://portal.192.168.49.123.nip.io/oidc/callback/ https://portal.192.168.49.123.nip.io/logout
+```
+
+The script writes the 'client credentials' to stdout - in the expected YAML configuration file format - which can be redirected to file...
+```bash
+./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient | tee client.yaml
 ```
 ...writes the client credentials to the file `client.yaml`.
 

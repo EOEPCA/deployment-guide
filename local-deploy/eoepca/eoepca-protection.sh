@@ -23,7 +23,7 @@ domain="${5:-${default_domain}}"
 if [ "$ACTION" = "apply" ]; then
   if [ ! -f client.yaml ]; then
     echo "Registering client with Login Service..."
-    ../bin/register-client "auth.${domain}" "Resource Guard" client.yaml
+    ../bin/register-client "auth.${domain}" "Eoepca Client" "https://portal.${domain}/oidc/callback/" "https://portal.${domain}/logout" | tee client.yaml
   fi
 elif [ "$ACTION" = "delete" ]; then
   if [ -f client.yaml ]; then

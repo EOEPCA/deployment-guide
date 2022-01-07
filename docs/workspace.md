@@ -157,7 +157,7 @@ data:
 
 The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.123.nip.io](https://auth.192.168.49.123.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./local-deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" client.yaml
+./local-deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ### Workspace API Usage
