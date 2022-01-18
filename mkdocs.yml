@@ -21,6 +21,8 @@ nav:
       - Resource Catalogue: resource-catalogue.md
       - Data Access: data-access.md
       - Workspace: workspace.md
+    - Example Deployment:
+      - Helper Scripts: helper-scripts.md
 
 theme:
   # name: mkdocs
