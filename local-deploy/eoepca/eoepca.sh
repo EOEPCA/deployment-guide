@@ -80,7 +80,3 @@ echo -e "\nDeploy data-access..."
 # workspace api
 echo -e "\nDeploy workspace-api..."
 ./workspace-api.sh "${ACTION}" "${domain}"
-
-# # portal
-# echo -e "\nDeploy portal..."
-# ./portal.sh "${ACTION}" "${domain}"

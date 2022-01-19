@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+main() {
+  processCmdline $@
+  checkDocker
+  createContainerImage
+  runClient
+}
+
+# Process command-line args
+processCmdline() {
+  :  # nothing to do
+}
+
+# Check docker is installed
+checkDocker() {
+  if ! hash docker >/dev/null 2>&1; then
+    printMsg "ERROR: docker is required" 1>&2
+    exit 1
+  fi
+}
+
+# Create the container image
+createContainerImage() {
+  printMsg -n "INFO: Preparing docker image... "
+  docker build -t register-client register-client-src >/dev/null
+  docker system prune -f >/dev/null
+  printMsg "[done]"
+}
+
+# Run using docker container
+runClient() {
+  pushd "${ORIG_DIR}" >/dev/null
+  docker run --rm ${docker_network} --entrypoint=python3 register-client -c 'import secrets; print(secrets.token_urlsafe())'
+  popd >/dev/null
+}
+
+# usage summary
+usage() {
+  cat - <<EOF 1>&2
+Usage:
+  $(basename $0)
+EOF
+}
+
+# Write all output to stderr - keeping stdout 'clean' for the client details
+printMsg() {
+  echo $@ 1>&2
+}
+
+main $@
