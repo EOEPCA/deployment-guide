@@ -17,7 +17,7 @@ eric_id="${2:-b8c8c62a-892c-4953-b44d-10a12eb762d8}"
 bob_id="${3:-57e3e426-581e-4a01-b2b8-f731a928f2db}"
 public_ip="${4:-${default_public_ip}}"
 domain="${5:-${default_domain}}"
-NAMESPACE="test"
+NAMESPACE="default"
 SECRET_NAME="test-client"
 
 if [ -f client.yaml ]; then
@@ -65,8 +65,8 @@ pep-engine:
   # image:
   #   pullPolicy: Always
   volumeClaim:
-    name: dummy-service-pep-pvc
-    create: true
+    name: eoepca-userman-pvc
+    create: false
 #---------------------------------------------------------------------------
 # UMA User Agent values
 #---------------------------------------------------------------------------
@@ -89,7 +89,7 @@ uma-user-agent:
       nginx.ingress.kubernetes.io/enable-cors: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /\$1
   client:
-    credentialsSecretName: "test-client"
+    credentialsSecretName: "${SECRET_NAME}"
   logging:
     level: "debug"
   unauthorizedResponse: 'Bearer realm="https://auth.${domain}/oxauth/auth/passport/passportlogin.htm"'

@@ -14,6 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
+NAMESPACE="default"
 
 values() {
   cat - <<EOF
@@ -37,10 +38,10 @@ EOF
 }
 
 if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace test uninstall dummy-service
+  helm --namespace "${NAMESPACE}" uninstall dummy-service
 else
   values | helm ${ACTION_HELM} dummy-service dummy -f - \
     --repo https://eoepca.github.io/helm-charts \
-    --namespace test --create-namespace \
+    --namespace "${NAMESPACE}" --create-namespace \
     --version 1.0.0
 fi
