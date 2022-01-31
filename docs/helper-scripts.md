@@ -8,9 +8,132 @@ git clone https://github.com/EOEPCA/deployment-guide \
 && ls local-deploy
 ```
 
-The script `local-deploy/eoepca/eoepca.sh` acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, The script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
+The script `local-deploy/eoepca/eoepca.sh` acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
 
-Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the CREODIAS infrastructure.
+Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the CREODIAS infrastructure and data offering.
 
-**COMING SOON...**<br>
-Full description of how to make a local deployment using the helper scripts.
+The following subsections lead through the steps for a full local deployment. Whilst minikube is assumed, minimal adaptions are required to make the deployment to your existing Kubernetes cluster.
+
+The deployment follows these broad steps:
+
+* **Configuration**<br>
+  Tailoring of deployment options.
+* **Deployment**<br>
+  Creation of cluster and deployment of eoepca services.
+* **Protection**<br>
+  Application of protection for authorized access to services.
+
+The Protection step is split from Deployment as there are some manual steps to be performed before the Protection can be applied.
+
+## Configuration
+
+The script `local-deploy/eoepca/eoepca.sh` is configured by some environment variables and command-line arguments.
+
+### Environment Variables
+
+Variable | Description | Default
+-------- | ----------- | -------
+**USE_MINIKUBE_NONE_DRIVER** | Force use of the minikube 'none' driver.<br>The 'none' driver has been found to be useful to more easily expose the kubernetes cluster for external access, e.g. via `ingress-controller`. This, in turn, facilitates the use of letsencrypt to establish TLS certificates. | `true`
+**MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.18. | `v1.21.5`
+**MINIKUBE_MEMORY_AMOUNT** | Amount of memory to allocate to the docker containers used by minikube to implement the cluster. | `12g`
+**USE_METALLB** | Enable use of minikube's built-in load-balancer.<br>The load-balancer can be used to facilitate exposing services publicly. However, the same can be achieved using minikube's built-in ingress-controller. Therefore, this option is suppressed by default. | `false`
+**USE_INGRESS_NGINX_HELM** | Install the ingress-nginx controller using the published helm chart, rather than relying upon the version that is built-in to minikube. By default we prefer the version that is built in to minikube.  | `false`
+**USE_INGRESS_NGINX_LOADBALANCER** | Patch the built-in minikube nginx-ingress-controller to offer a service of type `LoadBalancer`, rather than the default `NodePort`. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default `NodePort` configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only application for `USE_INGRESS_NGINX_HELM=false` (i.e. when using the minikube built-in ) | `false`
+**USE_TLS** | Indicates whether TLS will be configured for service `Ingress` rules. If not, then the ingress-controller is configured to disable `ssl-redirect`, and `TLS_CLUSTER_ISSUER=notls` is set. | `true`
+**TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>_Out-of-the-box ClusterIssuer instances are configured in the file `local-deploy/cluster/letsencrypt.sh`._ | `letsencrypt-staging`
+**LOGIN_SERVICE_ADMIN_PASSWORD** | Initial password for the `admin` user in the login-service. | `changeme`
+**MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
+**MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
+**CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud._ | `false`
+
+### Openstack Configuration
+
+There are some additional environment variables that configure the `BucketOperator` with details of the infrastructure Openstack layer.
+
+NOTE that this is only applicable for an Openstack deployment and has only been tested on the CREODIAS.
+
+Variable | Description | Default
+-------- | ----------- | -------
+**OS_DOMAINNAME** | Openstack domain of the admin account in the cloud provider. | `cloud_XXXXX`
+**OS_USERNAME** | Openstack username of the admin account in the cloud provider. | `user@cloud.com`
+**OS_PASSWORD** | Openstack password of the admin account in the cloud provider. | `none`
+**OS_MEMBERROLEID** | ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration), e.g. `7fe2ff9ee5384b1894a90838d3e92bab`. | `none`
+**OS_SERVICEPROJECTID** | ID of a project containing the user identity requiring write access to the created user buckets, e.g. `573916ef342a4bf1aea807d0c6058c1e`. | `none`
+**USER_EMAIL_PATTERN** | Email associated to the created user within the created user project.<br>_Note: <name> is templated and will be replaced._ | `eoepca-<name>@platform.com`
+
+### Command-line Arguments
+
+The eoepca.sh script is further configured via command-line arguments...
+
+```
+Usage: eoepca.sh <action> <cluster-name> <public-ip> <domain>
+```
+
+Argument | Description | Default
+-------- | ----------- | -------
+**action** | Action to perform: `apply` \| `delete` \| `template`.<br>`apply` makes the deployment<br>`delete` removes the deployment<br>`template` outputs generated kubernetes yaml to stdout | `apply`
+**cluster-name** | The name of the minikube 'profile' for the created minikube cluster.<br>Note that this option is ignored if `USE_MINIKUBE_NONE_DRIVER=true` as the 'none' driver does not support multiple profiles. | `eoepca`
+**public-ip** | The public IP address through which the deployment is exposed via the ingress-controller.<br>By default, the value is deduced from the assigned cluster minikube IP address - ref. command `minikube ip`. | `<minikube-ip>`
+**domain** | The DNS domain name through which the deployment is accessed. Forms the stem for all service hostnames in the ingress rules - i.e. `<service-name>.<domain>`.<br>By default, the value is deduced from the assigned cluster minikube IP address, using `nip.io` to establish a DNS lookup - i.e. `<minikube ip>.nip.io`. | `<minikube ip>.nip.io`
+
+## Deployment
+
+The deployment is initiated by setting the appropriate [environment variables](#environment-variables) and invoking the `eoepca.sh` script with suitable [command-line arguments](#command-line-arguments). You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the `eoepca.sh` script.
+
+An example of this approach can be found in the script `creodias` that is supported by script `creodias-options` - used for deployment within a CREODIAS cloud. See section [Custom CREODIAS](#custom-creodias) below for more details.
+
+**_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
+
+Initiate the deployment...
+```
+./local-deploy/eoepca/eoepca.sh apply "<cluster-name>" "<public-ip>" "<domain>"
+```
+
+The deployment takes 10+ minutes - depending on the resources of your host/cluster. The progress can be monitored...
+```
+kubectl get pods -A
+```
+
+The deployment is ready once all pods are either `Running` or `Completed`. This can be further confirmed by accessing the login-service web interface at `https://auth.<domain>/` and logging in as user `admin` using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
+
+## Protection
+
+The protection of resource server endpoints is applied with the script `local-deploy/eoepca/eoepca-protection.sh`. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script `eoepca.sh`).
+
+The script `eoepca-protection.sh` introduces two users `eric` and `bob` to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).
+
+Thus, the users must first be created in the login-service and their unique IDs passed to the protection script.
+
+```
+Usage: eoepca-protection.sh <action> <eric-id> <bob-id> <public-ip> <domain>
+```
+
+### Test Users
+
+#### Create Users
+
+Login to the login-service web interface (`https://auth.<domain>/`) as user admin using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
+
+Select `Users -> Add person` to add users `eric` and `bob` (dummy details can be used). Note the `Inum` (unique user ID) for each user for use with the `eoepca-protection.sh` script.
+
+#### Create User Workspaces
+
+TBD
+
+### Apply Protection
+
+Apply the protection...<br>
+_Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main [deployment](#deployment)._
+
+```
+./local-deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
+```
+
+
+## Custom CREODIAS
+
+TBD
+
+## Clean-up
+
+TBD
