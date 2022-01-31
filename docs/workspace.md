@@ -183,3 +183,10 @@ The bucket creation relies upon the object storage services of the underlying cl
 We provide a `Bucket Operator` implementation that currently supports the creation of buckets in OpenStack object storage - currently tested only on the CREODIAS (Cloudferro).
 
 For v1.0, we do not have a helm chart for the Bucket Operator, which must be installed to the Kubernetes cluster directly using yaml. For example yaml files see our [Bucket Operator deployment in our demo cluster](https://github.com/EOEPCA/eoepca/tree/v1.0/system/clusters/creodias/resource-management/bucket-operator) - which can be adapted for your deployment.
+
+See the [README for the Bucket Operator](https://github.com/EOEPCA/rm-bucket-operator#readme), which describes the configuration required for integration with your OpenStack account.
+
+For a worked example see our [Helper Scripts](../helper-scripts) - in particular:
+
+* [Openstack Configuration](http://localhost:8000/helper-scripts/#openstack-configuration)
+* [Deployment Script](https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/local-deploy/eoepca/bucket-operator.sh)

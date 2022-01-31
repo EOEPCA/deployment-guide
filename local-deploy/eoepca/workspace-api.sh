@@ -27,7 +27,7 @@ ingress:
   #   - hosts:
   #       - workspace-api.${domain}
   #     secretName: workspace-api-tls
-prefixForName: "demo-user"
+prefixForName: "guide-user"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
 workspaceDomain: ${domain}

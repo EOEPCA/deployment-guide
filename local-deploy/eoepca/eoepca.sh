@@ -32,6 +32,20 @@ export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
 # Data
 export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
 
+# OpenStack details for Bucket Operator
+#
+# EOEPCA operations user with administrative privileges
+export OS_DOMAINNAME="${OS_DOMAINNAME:-cloud_XXXXX}"
+export OS_USERNAME="${OS_USERNAME:-user@cloud.com}"  # e.g. email address
+export OS_PASSWORD="${OS_PASSWORD:-none}"
+#
+# ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration)
+export OS_MEMBERROLEID="${OS_MEMBERROLEID:-none}"
+#
+# ID of a project containing the user identity requiring write access to the created user buckets
+export OS_SERVICEPROJECTID="${OS_SERVICEPROJECTID:-none}"
+export USER_EMAIL_PATTERN="${USER_EMAIL_PATTERN:-eoepca+<name>@platform.com}"
+
 source ../cluster/functions
 ACTION="${1:-apply}"
 configureAction "$ACTION"
@@ -80,3 +94,7 @@ echo -e "\nDeploy data-access..."
 # workspace api
 echo -e "\nDeploy workspace-api..."
 ./workspace-api.sh "${ACTION}" "${domain}"
+
+# bucket operator
+echo -e "\nDeploy bucket-operator..."
+./bucket-operator.sh "${ACTION}" "${domain}"

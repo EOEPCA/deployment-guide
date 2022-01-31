@@ -14,6 +14,3 @@ source ./creodias-options
 cluster_name="eoepca"
 
 ./local-deploy/eoepca/eoepca.sh apply "${cluster_name}" "${public_ip}" "${domain}"
-# ./local-deploy/eoepca/data-access.sh apply "${domain}"
-# ./local-deploy/eoepca/user-profile.sh apply "${public_ip}" "${domain}"
-# ./local-deploy/eoepca/portal.sh apply "${domain}"
