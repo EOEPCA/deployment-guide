@@ -43,9 +43,16 @@ prefixForName: "demo-user"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
 workspaceDomain: 192.168.49.123.nip.io
+harborUrl: "https://harbor.192.168.49.123.nip.io"
+harborUsername: "admin"
+harborPassword: "changeme"
 umaClientSecretName: "resman-client"
 umaClientSecretNamespace: "rm"
 ```
+
+**NOTES:**
+
+* The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the `harborXXX` values above.<br>See section [Container Registry](../container-registry/).
 
 ### Protection
 

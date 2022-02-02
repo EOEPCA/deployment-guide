@@ -31,6 +31,9 @@ prefixForName: "guide-user"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
 workspaceDomain: ${domain}
+harborUrl: "https://harbor.${domain}"
+harborUsername: "admin"
+harborPassword: "${HARBOR_ADMIN_PASSWORD}"
 umaClientSecretName: "resman-client"
 umaClientSecretNamespace: "rm"
 EOF

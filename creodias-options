@@ -1,4 +1,8 @@
 
+# Hosting specific options
+public_ip="185.52.193.246"
+domain="kube.guide.eoepca.org"
+
 # Minikube options
 # Use the 'none' drive to faciltate use of a public IP for external traffic ingress
 # and use of letsencrypt tls
@@ -20,13 +24,10 @@ export TLS_CLUSTER_ISSUER=letsencrypt-staging
 export LOGIN_SERVICE_ADMIN_PASSWORD=Chang3me!
 export MINIO_ROOT_USER=eoepca
 export MINIO_ROOT_PASSWORD=changeme
+export HARBOR_ADMIN_PASSWORD=changeme
 
 # Data
 export CREODIAS_DATA_SPECIFICATION=true
-
-# Hosting specific options
-public_ip="185.52.193.246"
-domain="kube.guide.eoepca.org"
 
 # OpenStack details for Bucket Operator
 #

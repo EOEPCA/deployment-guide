@@ -21,6 +21,8 @@ nav:
       - Resource Catalogue: resource-catalogue.md
       - Data Access: data-access.md
       - Workspace: workspace.md
+      - Container Registry: container-registry.md
+      - Processor Development Environment: pde.md
     - Example Deployment:
       - Helper Scripts: helper-scripts.md
 

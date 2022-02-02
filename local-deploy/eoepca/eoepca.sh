@@ -28,6 +28,7 @@ if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
 export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-changeme}"
 export MINIO_ROOT_USER="${MINIO_ROOT_USER:-eoepca}"
 export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
+export HARBOR_ADMIN_PASSWORD="${HARBOR_ADMIN_PASSWORD:-changeme}"
 
 # Data
 export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
@@ -98,3 +99,7 @@ echo -e "\nDeploy workspace-api..."
 # bucket operator
 echo -e "\nDeploy bucket-operator..."
 ./bucket-operator.sh "${ACTION}" "${domain}"
+
+# harbor artefact registry
+echo -e "\nDeploy harbor..."
+./harbor.sh "${ACTION}" "${domain}"

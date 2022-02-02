@@ -44,6 +44,7 @@ Variable | Description | Default
 **LOGIN_SERVICE_ADMIN_PASSWORD** | Initial password for the `admin` user in the login-service. | `changeme`
 **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
 **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
+**HARBOR_ADMIN_PASSWORD** | Password for the 'admin' user for the Harbor artefact registry service. | `changeme`
 **CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud._ | `false`
 
 ### Openstack Configuration
@@ -59,7 +60,7 @@ Variable | Description | Default
 **OS_PASSWORD** | Openstack password of the admin account in the cloud provider. | `none`
 **OS_MEMBERROLEID** | ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration), e.g. `7fe2ff9ee5384b1894a90838d3e92bab`. | `none`
 **OS_SERVICEPROJECTID** | ID of a project containing the user identity requiring write access to the created user buckets, e.g. `573916ef342a4bf1aea807d0c6058c1e`. | `none`
-**USER_EMAIL_PATTERN** | Email associated to the created user within the created user project.<br>_Note: <name> is templated and will be replaced._ | `eoepca-<name>@platform.com`
+**USER_EMAIL_PATTERN** | Email associated to the created user within the created user project.<br>_Note: `<name>` is templated and will be replaced._ | `eoepca-<name>@platform.com`
 
 ### Command-line Arguments
 
@@ -112,13 +113,9 @@ Usage: eoepca-protection.sh <action> <eric-id> <bob-id> <public-ip> <domain>
 
 #### Create Users
 
-Login to the login-service web interface (`https://auth.<domain>/`) as user admin using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
+Access the login-service web interface (`https://auth.<domain>/`) as user admin using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
 
 Select `Users -> Add person` to add users `eric` and `bob` (dummy details can be used). Note the `Inum` (unique user ID) for each user for use with the `eoepca-protection.sh` script.
-
-#### Create User Workspaces
-
-TBD
 
 ### Apply Protection
 
@@ -129,6 +126,9 @@ _Ensure that the script is executed with the environment variables and command-l
 ./local-deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
 ```
 
+## Create User Workspaces
+
+The protection steps created the test users eric and bob. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../workspace/).
 
 ## Custom CREODIAS
 

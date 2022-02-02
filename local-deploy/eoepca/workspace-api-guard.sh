@@ -51,12 +51,12 @@ pep-engine:
   customDefaultResources:
     - name: "Eric's workspace"
       description: "Protected Access for eric to his user workspace"
-      resource_uri: "/workspaces/demo-user-eric"
+      resource_uri: "/workspaces/guide-user-eric"
       scopes: []
       default_owner: "${eric_id}"
     - name: "Bob's workspace"
       description: "Protected Access for bob to his user workspace"
-      resource_uri: "/workspaces/demo-user-bob"
+      resource_uri: "/workspaces/guide-user-bob"
       scopes: []
       default_owner: "${bob_id}"
   volumeClaim:
