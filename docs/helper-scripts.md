@@ -128,7 +128,86 @@ _Ensure that the script is executed with the environment variables and command-l
 
 ## Create User Workspaces
 
-The protection steps created the test users eric and bob. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../workspace/).
+The protection steps created the test users `eric` and `bob`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../workspace/).
+
+### Using Workspace Swagger UI
+
+The Workspace API provides a Swagger UI that facilitates interaction with the API - at the URL `https://workspace-api.<domain>/docs#`. Access to The Workspace API is protected, such that the necessary access tokens must be supplied in requests, which is most easily achieved by logging in via the 'portal'.
+
+The portal is accessed at `https://portal.<domain>/`. It is a rudimentary web service that facilitates establishing the appropriate tokens in the user's browser context. Login to the portal as the `admin` user, using the configured credentials.
+
+Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs#`. Workspaces are created using `POST  /workspaces  Create Workspace`. Expand the node and select `Try it out`. Complete the request body, such as...
+```
+{
+  "preferred_name": "eric",
+  "default_owner": "d95b0c2b-ea74-4b3f-9c6a-85198dec974d"
+}
+```
+...where the `default_owner` is the user ID (Inum) for the user - thus protecting the created workspace for the identified user.
+
+### Using `curl`
+
+The same can be achieved with a straight http request, for example using `curl`...
+
+```
+curl -X 'POST' \
+  'https://workspace-api.192.168.49.123.nip.io/workspaces' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -H 'X-User-Id: <admin-id-token>' \
+  -d '{
+  "preferred_name": "<workspace-name>",
+  "default_owner": "<user-inum>"
+}'
+```
+
+Values must be provided for:
+
+* `admin-id-token` - User ID token for the admin user
+* `workspace-name` - name of the workspace, typically the username
+* `user-inum` - the ID of the user for which the created workspace will be protected
+
+The ID token for the `admin` user can be obtained with a call to the token endpoint of the Login Service - supplying the credentials for the `admin` user and the pre-registered client...
+
+```
+curl -L -X POST 'https://auth.<domain>/oxauth/restv1/token' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'scope=openid user_name is_operator' \
+  --data-urlencode 'grant_type=password' \
+  --data-urlencode 'username=admin' \
+  --data-urlencode 'password=<admin-password>' \
+  --data-urlencode 'client_id=<client-id>' \
+  --data-urlencode 'client_secret=<client-secret>'
+```
+
+A json response is returned, in which the field `id_token` provides the user ID token for the `admin` user.
+
+### Using `create-workspace` helper script
+
+As an aide there is a [helper script](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/create-workspace) `create-workspace`. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+
+```bash
+git clone git@github.com:EOEPCA/deployment-guide
+cd deployment-guide
+```
+
+The `create-workspace` helper script requires some command-line arguments...
+
+```
+Usage:
+  create-workspace <domain> <user> <user-inum> [<client-id> <client-secret>]
+```
+
+For example...
+
+```bash
+./local-deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+```
+
+The script prompts for the password of the `admin` user.
+
+By default `<client-id>` and `<client-secret>` are read from the `client.yaml` file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.
 
 ## Custom CREODIAS
 

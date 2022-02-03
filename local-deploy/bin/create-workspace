@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+CLIENT_YAML="../eoepca/client.yaml"
+
+main() {
+  processCmdline $@
+  getAdminIdToken
+  createWorkspace
+}
+
+# Process command-line args
+# create-workspace <domain> <user> <user-inum> [<client-id> <client-secret>]
+processCmdline() {
+  # client credentials from file
+  getClientCredentials
+  # mandatory args
+  if test $# -ge 3; then
+    domain="$1"
+    username="$2"
+    user_inum="$3"
+  else
+    printMsg "ERROR: not enough args"
+    usage
+    exit 1
+  fi
+  # client_id
+  if test $# -ge 4; then
+    client_id="$4"
+    client_secret=
+  fi
+  # client_secret
+  if test $# -ge 5; then
+    client_secret="$5"
+  fi
+  # check client credentials
+  if test -z "${client_id}" -o -z "${client_secret}"; then
+    printMsg "ERROR: missing client credentials"
+    exit
+  fi
+}
+
+getClientCredentials() {
+  if [ -f "${CLIENT_YAML}" ]; then
+    client_id="$(cat ${CLIENT_YAML} | grep client-id | cut -d\  -f2)"
+    client_secret=$(cat ${CLIENT_YAML} | grep client-secret | cut -d\  -f2)
+  fi
+}
+
+getAdminIdToken() {
+  echo -n "admin password> "
+  read -s password
+  echo
+  admin_id_token=$(curl -s -L -k -X POST "https://auth.${domain}/oxauth/restv1/token" \
+    -H "Cache-Control: no-cache" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    --data-urlencode "scope=openid user_name is_operator" \
+    --data-urlencode "grant_type=password" \
+    --data-urlencode "username=admin" \
+    --data-urlencode "password=${password}" \
+    --data-urlencode "client_id=${client_id}" \
+    --data-urlencode "client_secret=${client_secret}" \
+    | jq -r '.id_token')
+  if test "${admin_id_token}" = "null"; then
+    printMsg "ERROR: ID token is null"
+    exit
+  fi
+}
+
+createWorkspace() {
+  curl -s -L -k -X POST \
+  "https://workspace-api.${domain}/workspaces" \
+  -H "accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "X-User-Id: ${admin_id_token}" \
+  -d "{
+  \"preferred_name\": \"${username}\",
+  \"default_owner\": \"${user_inum}\"
+}"
+  echo
+}
+
+# usage summary
+usage() {
+  cat - <<EOF 1>&2
+Usage:
+  $(basename $0) <domain> <user> <user-inum> [<client-id> <client-secret>]
+EOF
+}
+
+# Write all output to stderr - keeping stdout 'clean' for the client details
+printMsg() {
+  echo $@ 1>&2
+}
+
+main $@
