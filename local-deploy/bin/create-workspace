@@ -12,9 +12,17 @@ trap onExit EXIT
 CLIENT_YAML="../eoepca/client.yaml"
 
 main() {
+  checkPrerequisites
   processCmdline $@
   getAdminIdToken
   createWorkspace
+}
+
+checkPrerequisites() {
+  if ! hash jq 2>/dev/null; then
+    printMsg "ERROR: missing required command 'jq' - must be installed"
+    exit
+  fi
 }
 
 # Process command-line args
