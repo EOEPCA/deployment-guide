@@ -135,7 +135,7 @@ EOF
 }
 
 dataSpecification() {
-  if [ CREODIAS_DATA_SPECIFICATION = "true" ]; then
+  if [ "${CREODIAS_DATA_SPECIFICATION}" = "true" ]; then
     creodiasData
   else
     cat - <<EOF
@@ -419,7 +419,7 @@ EOF
 }
 
 harvesterSpecification() {
-  if [ CREODIAS_DATA_SPECIFICATION = "true" ]; then
+  if [ "${CREODIAS_DATA_SPECIFICATION}" = "true" ]; then
     creodiasHarvester
   else
     cat - <<EOF
