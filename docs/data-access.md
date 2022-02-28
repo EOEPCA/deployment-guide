@@ -80,6 +80,8 @@ renderer:
   image:
     repository: eoepca/rm-data-access-core
     tag: "0.9.10"
+  ingress:
+    enabled: false
 registrar:
   image:
     repository: eoepca/rm-data-access-core
@@ -89,6 +91,8 @@ harvester:
 client:
   image:
     tag: release-2.0.2
+  ingress:
+    enabled: false
 database:
   persistence:
     enabled: true
@@ -105,8 +109,13 @@ redis:
     enabled: false
 ingestor:
   replicaCount: 0
+  ingress:
+    enabled: false
 preprocessor:
   replicaCount: 0
+cache:
+  ingress:
+    enabled: false
 ```
 
 ### Data-layer Configuration
@@ -606,23 +615,23 @@ uma-user-agent:
         paths:
           - path: /(ows.*)
             service:
-              name: data-access-vs-renderer
+              name: data-access-renderer
               port: 80
           - path: /(opensearch.*)
             service:
-              name: data-access-vs-renderer
+              name: data-access-renderer
               port: 80
           - path: /(admin.*)
             service:
-              name: data-access-vs-renderer
+              name: data-access-renderer
               port: 80
           - path: /cache/(.*)
             service:
-              name: data-access-vs-cache
+              name: data-access-cache
               port: 80
           - path: /(.*)
             service:
-              name: data-access-vs-client
+              name: data-access-client
               port: 80
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
