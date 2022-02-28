@@ -82,6 +82,8 @@ renderer:
   image:
     repository: eoepca/rm-data-access-core
     tag: 1.0.0
+  ingress:
+    enabled: false
 
 registrar:
   image:
@@ -99,6 +101,8 @@ $(harvesterSpecification)
 client:
   image:
     tag: release-2.0.2
+  ingress:
+    enabled: false
 
 database:
   persistence:
@@ -118,9 +122,15 @@ redis:
 
 ingestor:
   replicaCount: 0
+  ingress:
+    enabled: false
 
 preprocessor:
   replicaCount: 0
+
+cache:
+  ingress:
+    enabled: false
 EOF
 }
 
