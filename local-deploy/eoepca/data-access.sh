@@ -63,12 +63,11 @@ global:
         validate_bucket_name: false
     cache:
       type: S3
-      endpoint_url: "http://minio.${domain}"
+      endpoint_url: "http://minio.${domain}/cache-bucket"
       host: "minio.${domain}"
       access_key_id: ${MINIO_ROOT_USER}
       secret_access_key: ${MINIO_ROOT_PASSWORD}
       region: us-east-1
-      bucket: cache-bucket
 
   metadata:
     title: EOEPCA Data Access Service developed by EOX
@@ -91,7 +90,7 @@ registrar:
     tag: 1.0.0
   config:
     backends:
-      - path: registrar_pycsw.backend.PycswBackend
+      - path: registrar_pycsw.backend.PycswItemBackend
         kwargs:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
           ows_url: https://data-access.${domain}/ows
@@ -103,6 +102,16 @@ client:
     tag: release-2.0.2
   ingress:
     enabled: false
+
+config:
+  objectStorage:
+    cache:
+      access_key_id: ${MINIO_ROOT_USER}
+      bucket: cache-bucket
+      endpoint_minio.${domain}
+      region: us-east-1
+      secret_access_key: ${MINIO_ROOT_PASSWORD}
+      type: S3
 
 database:
   persistence:
@@ -261,6 +270,8 @@ creodiasData() {
     - name: S2MSI1C
       filter:
         s2:product_type: S2MSI1C
+      collections:
+        - S2L1C
       metadata_assets: []
       coverages:
         S2L1C_B01:
@@ -341,6 +352,8 @@ creodiasData() {
     - name: S2MSI2A
       filter:
         s2:product_type: S2MSI2A
+      collections:
+        - S2L2A
       metadata_assets: []
       coverages:
         S2L2A_B01:
