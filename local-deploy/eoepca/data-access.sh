@@ -63,11 +63,13 @@ global:
         validate_bucket_name: false
     cache:
       type: S3
+      bucket: cache-bucket
       endpoint_url: "http://minio.${domain}/cache-bucket"
       host: "minio.${domain}"
       access_key_id: ${MINIO_ROOT_USER}
       secret_access_key: ${MINIO_ROOT_PASSWORD}
       region: us-east-1
+      region_name: us-east-1
 
   metadata:
     title: EOEPCA Data Access Service developed by EOX
@@ -108,7 +110,7 @@ config:
     cache:
       access_key_id: ${MINIO_ROOT_USER}
       bucket: cache-bucket
-      endpoint_minio.${domain}
+      endpoint_url: minio.${domain}
       region: us-east-1
       secret_access_key: ${MINIO_ROOT_PASSWORD}
       type: S3
