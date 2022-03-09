@@ -1,4 +1,4 @@
-# Helper Scripts
+# Scripted Example Deployment
 
 As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory `deployment-guide/local-deploy` of the source repository for this guide...
 
@@ -38,14 +38,14 @@ Variable | Description | Default
 **MINIKUBE_MEMORY_AMOUNT** | Amount of memory to allocate to the docker containers used by minikube to implement the cluster. | `12g`
 **USE_METALLB** | Enable use of minikube's built-in load-balancer.<br>The load-balancer can be used to facilitate exposing services publicly. However, the same can be achieved using minikube's built-in ingress-controller. Therefore, this option is suppressed by default. | `false`
 **USE_INGRESS_NGINX_HELM** | Install the ingress-nginx controller using the published helm chart, rather than relying upon the version that is built-in to minikube. By default we prefer the version that is built in to minikube.  | `false`
-**USE_INGRESS_NGINX_LOADBALANCER** | Patch the built-in minikube nginx-ingress-controller to offer a service of type `LoadBalancer`, rather than the default `NodePort`. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default `NodePort` configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only application for `USE_INGRESS_NGINX_HELM=false` (i.e. when using the minikube built-in ) | `false`
-**USE_TLS** | Indicates whether TLS will be configured for service `Ingress` rules. If not, then the ingress-controller is configured to disable `ssl-redirect`, and `TLS_CLUSTER_ISSUER=notls` is set. | `true`
-**TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>_Out-of-the-box ClusterIssuer instances are configured in the file `local-deploy/cluster/letsencrypt.sh`._ | `letsencrypt-staging`
+**USE_INGRESS_NGINX_LOADBALANCER** | Patch the built-in minikube nginx-ingress-controller to offer a service of type `LoadBalancer`, rather than the default `NodePort`. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default `NodePort` configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only applicable for `USE_INGRESS_NGINX_HELM=false` (i.e. when using the minikube built-in ) | `false`
+**USE_TLS** | Indicates whether TLS will be configured for service `Ingress` rules.<br>If not (i.e. `USE_TLS=false`), then the ingress-controller is configured to disable `ssl-redirect`, and `TLS_CLUSTER_ISSUER=notls` is set. | `true`
+**TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box _ClusterIssuer_ instances are configured in the file `local-deploy/cluster/letsencrypt.sh`. | `letsencrypt-staging`
 **LOGIN_SERVICE_ADMIN_PASSWORD** | Initial password for the `admin` user in the login-service. | `changeme`
 **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
 **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
 **HARBOR_ADMIN_PASSWORD** | Password for the 'admin' user for the Harbor artefact registry service. | `changeme`
-**CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud._ | `false`
+**CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud, with access to the `eodata` network._ | `false`
 
 ### Openstack Configuration
 
@@ -81,7 +81,7 @@ Argument | Description | Default
 
 The deployment is initiated by setting the appropriate [environment variables](#environment-variables) and invoking the `eoepca.sh` script with suitable [command-line arguments](#command-line-arguments). You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the `eoepca.sh` script.
 
-An example of this approach can be found in the script `creodias` that is supported by script `creodias-options` - used for deployment within a CREODIAS cloud. See section [Custom CREODIAS](#custom-creodias) below for more details.
+An example of this approach can be found in the script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias) that is supported by script [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias-options) - used for deployment within a CREODIAS cloud. See section [Custom CREODIAS](#custom-creodias) below for more details.
 
 **_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
@@ -103,15 +103,13 @@ The protection of resource server endpoints is applied with the script `local-de
 
 The script `eoepca-protection.sh` introduces two users `eric` and `bob` to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).
 
-Thus, the users must first be created in the login-service and their unique IDs passed to the protection script.
+Thus, the users must [first be created](#create-test-users) in the login-service and their unique IDs passed to the protection script.
 
 ```
 Usage: eoepca-protection.sh <action> <eric-id> <bob-id> <public-ip> <domain>
 ```
 
-### Test Users
-
-#### Create Users
+### Create Test Users
 
 Access the login-service web interface (`https://auth.<domain>/`) as user admin using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
 
@@ -136,14 +134,14 @@ The Workspace API provides a Swagger UI that facilitates interaction with the AP
 
 The portal is accessed at `https://portal.<domain>/`. It is a rudimentary web service that facilitates establishing the appropriate tokens in the user's browser context. Login to the portal as the `admin` user, using the configured credentials.
 
-Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs#`. Workspaces are created using `POST  /workspaces  Create Workspace`. Expand the node and select `Try it out`. Complete the request body, such as...
+Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs`. Workspaces are created using `POST  /workspaces` **(Create Workspace)**. Expand the node and select `Try it out`. Complete the request body, such as...
 ```
 {
   "preferred_name": "eric",
   "default_owner": "d95b0c2b-ea74-4b3f-9c6a-85198dec974d"
 }
 ```
-...where the `default_owner` is the user ID (Inum) for the user - thus protecting the created workspace for the identified user.
+...where the `default_owner` is the user ID (`Inum`) for the user - thus protecting the created workspace for the identified user.
 
 ### Using `curl`
 
@@ -185,7 +183,7 @@ A json response is returned, in which the field `id_token` provides the user ID 
 
 ### Using `create-workspace` helper script
 
-As an aide there is a [helper script](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/create-workspace) `create-workspace`. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
 git clone git@github.com:EOEPCA/deployment-guide
@@ -210,6 +208,8 @@ The script prompts for the password of the `admin` user.
 By default `<client-id>` and `<client-secret>` are read from the `client.yaml` file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.
 
 ## Custom CREODIAS
+
+Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](http://localhost:8000/scripted-example-deployment/#environment-variables) that are captured in the file `creodias-options`.
 
 TBD
 
