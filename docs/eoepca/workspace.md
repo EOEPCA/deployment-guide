@@ -170,7 +170,7 @@ The client credentials are obtained by registration of a client at the login ser
 ### Workspace API Usage
 
 The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192.168.49.123.nip.io/.<br>
-See the [Swagger Docs](https://workspace-api.192.168.49.123.nip.io/docs#).
+See the [Swagger Docs](https://workspace-api.192.168.49.123.nip.io/docs).
 
 ### Additional Information
 
@@ -193,7 +193,7 @@ For v1.0, we do not have a helm chart for the Bucket Operator, which must be ins
 
 See the [README for the Bucket Operator](https://github.com/EOEPCA/rm-bucket-operator#readme), which describes the configuration required for integration with your OpenStack account.
 
-For a worked example see our [Helper Scripts](../helper-scripts) - in particular:
+For a worked example see our [Scripted Example Deployment](../../examples/scripted-example-deployment) - in particular:
 
-* [Openstack Configuration](http://localhost:8000/helper-scripts/#openstack-configuration)
-* [Deployment Script](https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/local-deploy/eoepca/bucket-operator.sh)
+* [Openstack Configuration](../../examples/scripted-example-deployment/#openstack-configuration)
+* [Deployment Script](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/eoepca/bucket-operator.sh)

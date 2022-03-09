@@ -209,7 +209,7 @@ By default `<client-id>` and `<client-secret>` are read from the `client.yaml` f
 
 ## Custom CREODIAS
 
-Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](http://localhost:8000/scripted-example-deployment/#environment-variables) that are captured in the file `creodias-options`.
+Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file `creodias-options`.
 
 TBD
 

@@ -7,24 +7,24 @@ nav:
   - Deployment Guide:
     - Introduction: index.md
     - Cluster:
-      - Prerequisite Tooling: prerequisite-tooling.md
-      - Kubernetes Cluster: kubernetes.md
-      - Helm Repositories: helm-repositories.md
-      - Cluster Prerequisites: cluster-prerequisites.md
+      - Prerequisite Tooling: cluster/prerequisite-tooling.md
+      - Kubernetes Cluster: cluster/kubernetes.md
+      - Helm Repositories: cluster/helm-repositories.md
+      - Cluster Prerequisites: cluster/cluster-prerequisites.md
     - EOEPCA:
-      - Persistence: persistence.md
-      - Login Service: login-service.md
-      - User Profile: user-profile.md
-      - Policy Decision Point: pdp.md
-      - Resource Protection: resource-protection.md
-      - Application Deployment & Execution: ades.md
-      - Resource Catalogue: resource-catalogue.md
-      - Data Access: data-access.md
-      - Workspace: workspace.md
-      - Container Registry: container-registry.md
-      - Processor Development Environment: pde.md
+      - Persistence: eoepca/persistence.md
+      - Login Service: eoepca/login-service.md
+      - User Profile: eoepca/user-profile.md
+      - Policy Decision Point: eoepca/pdp.md
+      - Resource Protection: eoepca/resource-protection.md
+      - Application Deployment & Execution: eoepca/ades.md
+      - Resource Catalogue: eoepca/resource-catalogue.md
+      - Data Access: eoepca/data-access.md
+      - Workspace: eoepca/workspace.md
+      - Container Registry: eoepca/container-registry.md
+      - Processor Development Environment: eoepca/pde.md
     - Examples:
-      - Scripted Deployment: scripted-example-deployment.md
+      - Scripted Deployment: examples/scripted-example-deployment.md
 
 theme:
   # name: mkdocs

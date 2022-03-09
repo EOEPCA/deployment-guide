@@ -151,7 +151,7 @@ The client credentials are obtained by registration of a client at the login ser
 ## Resource Catalogue Usage
 
 The Resource Catalogue is initially populated during the initialisation of the Data Access service.<br>
-See section [Data-layer Configuration](data-access.md#data-layer-configuration).
+See section [Data-layer Configuration](../data-access/#data-layer-configuration).
 
 The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192.168.49.123.nip.io/](https://resource-catalogue.192.168.49.123.nip.io/).
 
