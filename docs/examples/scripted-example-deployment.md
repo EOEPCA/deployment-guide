@@ -238,25 +238,17 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
 
 1. **Minikube cluster**<br>
   Delete the minikube cluster...<br>
-  ```bash
-  minikube delete
-  ```<br>
+  `minikube delete`<br>
   If necessary specify the cluster (profile)...<br>
-  ```bash
-  minikube -p <profile> delete
-  ```<br>
+  `minikube -p <profile> delete`<br>
 
-1. **Persistent Data**<br>
+2. **Persistent Data**<br>
   In the case that the minikube `none` driver is used, the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed. In this case, the minikube `standard` _StorageClass_ is fulfilled by the `hostpath` provisioner, whose persistence is removed as follows...<br>
-  ```bash
-  sudo rm -rf /tmp/hostpath-provisioner
-  ```
+  `sudo rm -rf /tmp/hostpath-provisioner`
 
 1. **Client Credentials**<br>
   During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file `client.yaml`. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments...<br>
-  ```bash
-  rm -rf ./local-deploy/eoepca/client.yaml
-  ```
+  `rm -rf ./local-deploy/eoepca/client.yaml`
 
 There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
 ```bash
