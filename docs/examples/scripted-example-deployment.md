@@ -2,7 +2,7 @@
 
 As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory `deployment-guide/local-deploy` of the source repository for this guide...
 
-```
+```bash
 git clone https://github.com/EOEPCA/deployment-guide \
 && cd deployment-guide \
 && ls local-deploy
@@ -86,12 +86,12 @@ An example of this approach can be found in the script [`creodias`](https://gith
 **_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
 Initiate the deployment...
-```
+```bash
 ./local-deploy/eoepca/eoepca.sh apply "<cluster-name>" "<public-ip>" "<domain>"
 ```
 
 The deployment takes 10+ minutes - depending on the resources of your host/cluster. The progress can be monitored...
-```
+```bash
 kubectl get pods -A
 ```
 
@@ -120,7 +120,7 @@ Select `Users -> Add person` to add users `eric` and `bob` (dummy details can be
 Apply the protection...<br>
 _Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main [deployment](#deployment)._
 
-```
+```bash
 ./local-deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
 ```
 
@@ -135,7 +135,7 @@ The Workspace API provides a Swagger UI that facilitates interaction with the AP
 The portal is accessed at `https://portal.<domain>/`. It is a rudimentary web service that facilitates establishing the appropriate tokens in the user's browser context. Login to the portal as the `admin` user, using the configured credentials.
 
 Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs`. Workspaces are created using `POST  /workspaces` **(Create Workspace)**. Expand the node and select `Try it out`. Complete the request body, such as...
-```
+```json
 {
   "preferred_name": "eric",
   "default_owner": "d95b0c2b-ea74-4b3f-9c6a-85198dec974d"
@@ -147,7 +147,7 @@ Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs`. Worksp
 
 The same can be achieved with a straight http request, for example using `curl`...
 
-```
+```bash
 curl -X 'POST' \
   'https://workspace-api.192.168.49.123.nip.io/workspaces' \
   -H 'accept: application/json' \
@@ -167,7 +167,7 @@ Values must be provided for:
 
 The ID token for the `admin` user can be obtained with a call to the token endpoint of the Login Service - supplying the credentials for the `admin` user and the pre-registered client...
 
-```
+```bash
 curl -L -X POST 'https://auth.<domain>/oxauth/restv1/token' \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
@@ -219,14 +219,14 @@ With reference to the file `creodias-options`, particular attention is drawn to 
 * OpenStack details: see section [Openstack Configuration](#openstack-configuration)
 
 Once the file `creodias-options` has been well populated for your environment, then the deployment is initiated with...
-```
+```bash
 ./local-deploy/creodias/creodias
 ```
 ...noting that this step is a customised version of that described in section [Deployment](#deployment).
 
 Similarly the script `creodias-protection` is a customised version of that described in section [Apply Protection](#apply-protection). Once the main deployment has completed, then the [test users can be created](#create-test-users), their IDs (`Inum`) set in script `creodias-protection`, and the resource protection can then be applied...
 
-```
+```bash
 ./local-deploy/creodias/creodias-protection
 ```
 
@@ -238,24 +238,27 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
 
 1. **Minikube cluster**<br>
   Delete the minikube cluster...<br>
-  ```
+  ```bash
   minikube delete
   ```<br>
   If necessary specify the cluster (profile)...<br>
-  ```
+  ```bash
   minikube -p <profile> delete
   ```<br>
 
 1. **Persistent Data**<br>
   In the case that the minikube `none` driver is used, the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed. In this case, the minikube `standard` _StorageClass_ is fulfilled by the `hostpath` provisioner, whose persistence is removed as follows...<br>
-  ```
+  ```bash
   sudo rm -rf /tmp/hostpath-provisioner
   ```
 
 1. **Client Credentials**<br>
   During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file `client.yaml`. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments...<br>
-  ```
+  ```bash
   rm -rf ./local-deploy/eoepca/client.yaml
   ```
 
 There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
+```bash
+./local-deploy/cluster/clean
+```
