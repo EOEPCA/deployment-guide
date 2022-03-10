@@ -81,7 +81,7 @@ Argument | Description | Default
 
 The deployment is initiated by setting the appropriate [environment variables](#environment-variables) and invoking the `eoepca.sh` script with suitable [command-line arguments](#command-line-arguments). You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the `eoepca.sh` script.
 
-An example of this approach can be found in the script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias) that is supported by script [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias-options) - used for deployment within a CREODIAS cloud. See section [Custom CREODIAS](#custom-creodias) below for more details.
+An example of this approach can be found in the script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias) that is supported by script [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options) - used for deployment within a CREODIAS cloud. See section [Custom CREODIAS](#custom-creodias) below for more details.
 
 **_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
@@ -209,7 +209,7 @@ By default `<client-id>` and `<client-secret>` are read from the `client.yaml` f
 
 ## Custom CREODIAS
 
-Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias-options).
+Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options).
 
 With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
 
@@ -220,14 +220,14 @@ With reference to the file `creodias-options`, particular attention is drawn to 
 
 Once the file `creodias-options` has been well populated for your environment, then the deployment is initiated with...
 ```
-./creodias 
+./local-deploy/creodias/creodias
 ```
 ...noting that this step is a customised version of that described in section [Deployment](#deployment).
 
 Similarly the script `creodias-protection` is a customised version of that described in section [Apply Protection](#apply-protection). Once the main deployment has completed, then the [test users can be created](#create-test-users), their IDs (`Inum`) set in script `creodias-protection`, and the resource protection can then be applied...
 
 ```
-./creodias-protection
+./local-deploy/creodias/creodias-protection
 ```
 
 These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.

@@ -13,4 +13,4 @@ source ./creodias-options
 
 cluster_name="eoepca"
 
-./local-deploy/eoepca/eoepca.sh apply "${cluster_name}" "${public_ip}" "${domain}"
+../eoepca/eoepca.sh apply "${cluster_name}" "${public_ip}" "${domain}"
