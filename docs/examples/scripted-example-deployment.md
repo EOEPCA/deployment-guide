@@ -209,10 +209,53 @@ By default `<client-id>` and `<client-secret>` are read from the `client.yaml` f
 
 ## Custom CREODIAS
 
-Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file `creodias-options`.
+Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/creodias-options).
 
-TBD
+With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
+
+* `public_ip` - The public IP address through which the deployment is exposed via the ingress-controller
+* `domain` - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules
+* Passwords: `LOGIN_SERVICE_ADMIN_PASSWORD`, `MINIO_ROOT_PASSWORD`, `HARBOR_ADMIN_PASSWORD`
+* OpenStack details: see section [Openstack Configuration](#openstack-configuration)
+
+Once the file `creodias-options` has been well populated for your environment, then the deployment is initiated with...
+```
+./creodias 
+```
+...noting that this step is a customised version of that described in section [Deployment](#deployment).
+
+Similarly the script `creodias-protection` is a customised version of that described in section [Apply Protection](#apply-protection). Once the main deployment has completed, then the [test users can be created](#create-test-users), their IDs (`Inum`) set in script `creodias-protection`, and the resource protection can then be applied...
+
+```
+./creodias-protection
+```
+
+These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.
 
 ## Clean-up
 
-TBD
+Before initiating a fresh deployment, if a prior deployment has been attempted, then it is necessary to remove any persistent artefacts of the prior deployment. This includes...
+
+1. **Minikube cluster**<br>
+  Delete the minikube cluster...<br>
+  ```
+  minikube delete
+  ```<br>
+  If necessary specify the cluster (profile)...<br>
+  ```
+  minikube -p <profile> delete
+  ```<br>
+
+1. **Persistent Data**<br>
+  In the case that the minikube `none` driver is used, the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed. In this case, the minikube `standard` _StorageClass_ is fulfilled by the `hostpath` provisioner, whose persistence is removed as follows...<br>
+  ```
+  sudo rm -rf /tmp/hostpath-provisioner
+  ```
+
+1. **Client Credentials**<br>
+  During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file `client.yaml`. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments...<br>
+  ```
+  rm -rf ./local-deploy/eoepca/client.yaml
+  ```
+
+There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
