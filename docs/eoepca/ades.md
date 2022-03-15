@@ -50,7 +50,7 @@ ingress:
 
 ## Workspace Integration
 
-The ADES has the facility to integrate with the EOEPCA Workspace component for registration of staged-out processing results. This is disabled by default (`useResourceManager: false`).
+The ADES has the facility to integrate with the EOEPCA [Workspace component](../workspace/) for registration of staged-out processing results. This is disabled by default (`useResourceManager: false`).
 
 When enabled, the ADES will register the staged-out products with the user's Workspace, such that they are indexed and available via the user's Resource Catalogue and Data Access services.
 
@@ -65,6 +65,8 @@ workflowExecutor:
   platformDomain: "https://auth.192.168.49.123.nip.io"
   ...
 ```
+
+The value `resourceManagerWorkspacePrefix` must be consistent with that [configured for the Workspace API deployment](../workspace/#values), (ref. value `prefixForName`).
 
 ## Protection
 
