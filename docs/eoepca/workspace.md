@@ -39,7 +39,7 @@ ingress:
     - hosts:
         - workspace-api.192.168.49.123.nip.io
       secretName: workspace-api-tls
-prefixForName: "demo-user"
+prefixForName: "guide-user"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
 workspaceDomain: 192.168.49.123.nip.io
@@ -87,12 +87,12 @@ pep-engine:
   # customDefaultResources:
   # - name: "Eric's workspace"
   #   description: "Protected Access for eric to his user workspace"
-  #   resource_uri: "/workspaces/demo-user-eric"
+  #   resource_uri: "/workspaces/guide-user-eric"
   #   scopes: []
   #   default_owner: "d3688daa-385d-45b0-8e04-2062e3e2cd86"
   # - name: "Bob's workspace"
   #   description: "Protected Access for bob to his user workspace"
-  #   resource_uri: "/workspaces/demo-user-bob"
+  #   resource_uri: "/workspaces/guide-user-bob"
   #   scopes: []
   #   default_owner: "f12c2592-0332-49f4-a4fb-7063b3c2a889"
   volumeClaim:

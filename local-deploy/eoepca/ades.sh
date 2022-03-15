@@ -27,6 +27,12 @@ workflowExecutor:
     STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     STAGEOUT_AWS_REGION: us-east-1
     STAGEOUT_OUTPUT: s3://eoepca
+  # Workspace integration
+  useResourceManager: "true"
+  resourceManagerWorkspacePrefix: "guide-user"
+  resourceManagerEndpoint: "https://workspace-api.${domain}"
+  platformDomain: "https://auth.${domain}"
+  # Kubernetes storage
   processingStorageClass: standard
 persistence:
   storageClass: standard

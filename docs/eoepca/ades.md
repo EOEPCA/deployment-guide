@@ -48,6 +48,24 @@ ingress:
       secretName: ades-tls
 ```
 
+## Workspace Integration
+
+The ADES has the facility to integrate with the EOEPCA Workspace component for registration of staged-out processing results. This is disabled by default (`useResourceManager: false`).
+
+When enabled, the ADES will register the staged-out products with the user's Workspace, such that they are indexed and available via the user's Resource Catalogue and Data Access services.
+
+**Example `ades-values.yaml` (snippet)...**
+
+```yaml
+workflowExecutor:
+  ...
+  useResourceManager: "true"
+  resourceManagerWorkspacePrefix: "guide-user"
+  resourceManagerEndpoint: "https://workspace-api.192.168.49.123.nip.io"
+  platformDomain: "https://auth.192.168.49.123.nip.io"
+  ...
+```
+
 ## Protection
 
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
