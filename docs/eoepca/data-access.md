@@ -120,11 +120,11 @@ cache:
 
 ### Data-layer Configuration
 
-Configuration of the service data-layer. See below for a populated sample based upon a CREODIAS infrastructure data provision. The sample helps to illustrate the values by way of a worked example, in which the following are defined:
+Configuration of the service data-layer - as described in the [View Server Operator Guide](https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables). See below for a populated sample based upon a CREODIAS infrastructure data provision. The sample helps to illustrate the values by way of a worked example, in which the following are defined:
 
-* layers
-* collections
-* product types
+* `layers` - [Layers](https://vs.pages.eox.at/documentation/operator/main/configuration.html#layers-layers)
+* `collections` - [Data Collections](https://vs.pages.eox.at/documentation/operator/main/configuration.html#data-collections-collections)
+* `productTypes` - [Product Types](https://vs.pages.eox.at/documentation/operator/main/configuration.html#product-types-producttypes)
 
 ```yaml
 global:
