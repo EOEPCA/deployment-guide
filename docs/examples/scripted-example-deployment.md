@@ -232,6 +232,15 @@ Similarly the script `creodias-protection` is a customised version of that descr
 
 These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.
 
+### Harvest CREODIAS Data
+
+The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option `CREODIAS_DATA_SPECIFICATION=true` - see [Environment Variables](#environment-variables). The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file `/config.yaml` of the `data-access-harvester` deployment.
+
+As described in the [Data Access section](../../eoepca/data-access/#starting-the-harvester), harvesting according to this configuration can be triggered with...
+```
+kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+```
+
 ## Clean-up
 
 Before initiating a fresh deployment, if a prior deployment has been attempted, then it is necessary to remove any persistent artefacts of the prior deployment. This includes...
