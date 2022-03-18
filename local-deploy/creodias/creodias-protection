@@ -14,4 +14,4 @@ source ./creodias-options
 eric_id="58df789a-dc69-47fd-b281-0fbad8da07ea"
 bob_id="ff6827ab-0266-4c8c-8edf-6c59862c605b"
 
-./local-deploy/eoepca/eoepca-protection.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+../eoepca/eoepca-protection.sh apply "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
