@@ -47,10 +47,10 @@ global:
     #   cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
     # hosts:
     #   - host: data-access.${domain}
-    # tls:
-    #   - hosts:
-    #       - data-access.${domain}
-    #     secretName: data-access-tls
+    tls:
+      - hosts:
+          - data-access.${domain}
+        # secretName: data-access-tls
 
   storage:
     data:
