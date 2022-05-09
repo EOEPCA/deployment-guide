@@ -75,7 +75,7 @@ uma-user-agent:
           - path: /(.*)
             service:
               name: workspace-api
-              port: http
+              port: 8080
     annotations:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       nginx.ingress.kubernetes.io/enable-cors: "true"
@@ -96,5 +96,5 @@ else
   values | helm ${ACTION_HELM} workspace-api-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.0
+    --version 1.0.5
 fi

@@ -40,6 +40,7 @@ ingress:
         - workspace-api.192.168.49.123.nip.io
       secretName: workspace-api-tls
 prefixForName: "guide-user"
+helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
 workspaceDomain: 192.168.49.123.nip.io

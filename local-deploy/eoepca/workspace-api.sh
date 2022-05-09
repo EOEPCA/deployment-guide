@@ -28,6 +28,7 @@ ingress:
   #       - workspace-api.${domain}
   #     secretName: workspace-api-tls
 prefixForName: "guide-user"
+helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
 workspaceDomain: ${domain}
@@ -45,5 +46,5 @@ else
   values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace rm --create-namespace \
-    --version 1.0.0
+    --version 1.0.10
 fi
