@@ -43,5 +43,5 @@ else
   values | helm ${ACTION_HELM} resource-catalogue rm-resource-catalogue -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace rm --create-namespace \
-    --version 1.0.5
+    --version 1.1.0
 fi
