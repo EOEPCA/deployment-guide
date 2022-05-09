@@ -19,7 +19,7 @@ values() {
   cat - <<EOF
 # image:
 #   pullPolicy: Always
-#   tag: "0.9.8"
+#   tag: "1.1.2"
 workflowExecutor:
   inputs:
     STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
@@ -34,6 +34,14 @@ workflowExecutor:
   platformDomain: "https://auth.${domain}"
   # Kubernetes storage
   processingStorageClass: standard
+  # Size of the Kubernetes Tmp Volumes
+  processingVolumeTmpSize: "6Gi"
+  # Size of the Kubernetes Output Volumes
+  processingVolumeOutputSize: "6Gi"
+  # Max ram to use for a job
+  processingMaxRam: "8Gi"
+  # Max number of CPU cores to use concurrently for a job
+  processingMaxCores: "4"
 persistence:
   storageClass: standard
 ingress:
@@ -45,7 +53,9 @@ ingress:
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
   hosts:
     - host: ades-open.${domain}
-      paths: ["/"]
+      paths: 
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - hosts:
         - ades-open.${domain}
@@ -59,5 +69,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 1.0.0
+    --version 1.1.10
 fi

@@ -32,6 +32,10 @@ workflowExecutor:
     STAGEOUT_AWS_REGION: us-east-1
     STAGEOUT_OUTPUT: s3://eoepca
   processingStorageClass: standard
+  processingVolumeTmpSize: "6Gi"
+  processingVolumeOutputSize: "6Gi"
+  processingMaxRam: "8Gi"
+  processingMaxCores: "4"
 persistence:
   storageClass: standard
 ingress:
