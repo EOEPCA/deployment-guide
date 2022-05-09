@@ -37,7 +37,7 @@ else
   values | helm ${ACTION_HELM} django-portal django-portal -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.0
+    --version 1.0.4
   
   # secret
   if [ -f client.yaml ]; then
