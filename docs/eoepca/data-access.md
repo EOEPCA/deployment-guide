@@ -79,13 +79,13 @@ global:
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: "0.9.10"
+    tag: "1.0.2"
   ingress:
     enabled: false
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: "0.9.10"
+    tag: "1.0.2"
 harvester:
   # see section 'Harvester Configuration'
 client:

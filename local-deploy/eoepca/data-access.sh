@@ -82,14 +82,14 @@ $(dataSpecification)
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.0.0
+    tag: 1.0.2
   ingress:
     enabled: false
 
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.0.0
+    tag: 1.0.2
   config:
     backends:
       - path: registrar_pycsw.backend.PycswItemBackend
