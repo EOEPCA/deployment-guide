@@ -17,8 +17,8 @@ domain="${2:-${default_domain}}"
 NAMESPACE="rm"
 
 main() {
-  openstackSecret
   helmChart
+  openstackSecret
 }
 
 # Secret for openstack access
