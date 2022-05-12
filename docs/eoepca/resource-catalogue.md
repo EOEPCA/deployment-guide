@@ -23,6 +23,7 @@ Typically, values for the following attributes may be specified:
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
   _Note that this is only required in the case that the Resource Catalogue will **not** be protected by the `resource-guard` component - ref. [Resource Protection](../resource-protection). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
 * Metadata describing the Catalogue instance
+* Tuning configuration for PostgreSQL - see values `db.config.XXX`.
 
 **Example `resource-catalogue-values.yaml`...**
 
@@ -37,6 +38,17 @@ ingress:
   tls_secret_name: resource-catalogue-tls
 db:
   volume_storage_type: standard
+  # config:
+  #   enabled: true
+  #   shared_buffers: 2GB
+  #   effective_cache_size: 6GB
+  #   maintenance_work_mem: 512MB
+  #   checkpoint_completion_target: 0.9
+  #   wal_buffers: 16MB
+  #   default_statistics_target: 100
+  #   random_page_cost: 4
+  #   work_mem: 4MB
+  #   cpu_tuple_cost: 0.4
 pycsw:
   # image:
   #   pullPolicy: Always
