@@ -84,6 +84,10 @@ echo -e "\nDeploy user-profile..."
 echo -e "\nDeploy ades..."
 ./ades.sh "${ACTION}" "${domain}"
 
+# PDE
+echo -e "\nDeploy PDE..."
+./pde.sh "${ACTION}" "${domain}"
+
 # resource catalogue
 echo -e "\nDeploy resource-catalogue..."
 ./resource-catalogue.sh "${ACTION}" "${domain}"
