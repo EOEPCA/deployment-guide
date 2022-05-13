@@ -19,7 +19,10 @@ bob_id="${3:-57e3e426-581e-4a01-b2b8-f731a928f2db}"
 public_ip="${4:-${default_public_ip}}"
 domain="${5:-${default_domain}}"
 
-# Register client
+#-------------------------------------------------------------------------------
+# Regsiter a client with the login service
+#-------------------------------------------------------------------------------
+
 if [ "$ACTION" = "apply" ]; then
   if [ ! -f client.yaml ]; then
     echo "Registering client with Login Service..."
@@ -31,6 +34,22 @@ elif [ "$ACTION" = "delete" ]; then
     rm -f client.yaml
   fi
 fi
+
+#-------------------------------------------------------------------------------
+# Components that need the client credentials before deployment
+#-------------------------------------------------------------------------------
+
+# portal
+echo -e "\nDeploy portal..."
+./portal.sh "${ACTION}" "${domain}"
+
+# PDE
+echo -e "\nDeploy PDE..."
+./pde.sh "${ACTION}" "${domain}"
+
+#-------------------------------------------------------------------------------
+# Protection
+#-------------------------------------------------------------------------------
 
 # dummy service
 echo -e "\nProtect dummy-service..."
@@ -51,7 +70,3 @@ echo -e "\nProtect data-access..."
 # workspace api
 echo -e "\nProtect workspace-api..."
 ./workspace-api-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
-
-# portal
-echo -e "\nDeploy portal..."
-./portal.sh "${ACTION}" "${domain}"
