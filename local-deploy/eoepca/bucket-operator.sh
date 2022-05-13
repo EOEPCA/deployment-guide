@@ -26,7 +26,7 @@ openstackSecret() {
   kubectl -n rm create secret generic openstack \
     --from-literal=username="${OS_USERNAME}" \
     --from-literal=password="${OS_PASSWORD}" \
-    --from-literal=domain="${OS_DOMAINNAME}" \
+    --from-literal=domainname="${OS_DOMAINNAME}" \
     --dry-run=client -oyaml | kubectl ${ACTION_KUBECTL} -f -
 }
 
