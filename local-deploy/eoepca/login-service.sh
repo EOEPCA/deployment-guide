@@ -70,5 +70,5 @@ else
   values | helm ${ACTION_HELM} um-login-service login-service -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.1.3
+    --version 1.1.5
 fi
