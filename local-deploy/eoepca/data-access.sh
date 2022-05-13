@@ -25,7 +25,7 @@ main() {
       --repo https://charts-public.hub.eox.at/ \
       --namespace rm --create-namespace \
       --version 2.0.3
-fi
+  fi
 }
 
 values() {
