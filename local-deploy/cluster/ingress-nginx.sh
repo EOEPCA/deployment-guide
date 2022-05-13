@@ -68,7 +68,7 @@ ingress_admission_ready_check() {
   while [ $status -ne 0 ]
   do
     kubectl apply -f - <<EOF 2>/dev/null
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: readycheck
@@ -77,9 +77,12 @@ spec:
   - http:
       paths:
       - path: /
+        pathType: ImplementationSpecific
         backend:
-          serviceName: readycheck
-          servicePort: 80
+          service:
+            name: readycheck
+            port:
+              number: 80
 EOF
     status=$(( $? ))
     if [ $status -eq 0 ]; then break; fi

@@ -11,7 +11,7 @@ trap onExit EXIT
 
 # Minikube options
 export USE_MINIKUBE_NONE_DRIVER="${USE_MINIKUBE_NONE_DRIVER:-true}"
-export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.21.5}"
+export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.22.5}"
 export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
 
 # Ingress options
@@ -83,10 +83,6 @@ echo -e "\nDeploy user-profile..."
 # ades
 echo -e "\nDeploy ades..."
 ./ades.sh "${ACTION}" "${domain}"
-
-# PDE
-echo -e "\nDeploy PDE..."
-./pde.sh "${ACTION}" "${domain}"
 
 # resource catalogue
 echo -e "\nDeploy resource-catalogue..."

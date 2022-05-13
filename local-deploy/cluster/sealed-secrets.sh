@@ -21,5 +21,5 @@ else
   helm ${ACTION_HELM} "${cluster_name}"-sealed-secrets sealed-secrets \
     --repo https://bitnami-labs.github.io/sealed-secrets \
     --namespace infra --create-namespace \
-    --version 1.13.2
+    --version 2.1.8
 fi
