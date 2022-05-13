@@ -69,7 +69,7 @@ helmChart() {
     values | helm ${ACTION_HELM} pde jupyterhub -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.1.11
+      --version 1.1.12
   fi
 }
 
