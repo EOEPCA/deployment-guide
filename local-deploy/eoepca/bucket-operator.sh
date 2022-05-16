@@ -34,6 +34,16 @@ openstackSecret() {
 values() {
   cat - <<EOF
 domain: ${domain}
+data:
+  OS_MEMBERROLEID: "${OS_MEMBERROLEID}"
+  OS_SERVICEPROJECTID: "${OS_SERVICEPROJECTID}"
+  USER_EMAIL_PATTERN: "${USER_EMAIL_PATTERN}"
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
 EOF
 }
 
@@ -45,7 +55,7 @@ helmChart() {
     values | helm ${ACTION_HELM} bucket-operator rm-bucket-operator -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 0.9.6
+      --version 0.9.9
   fi
 }
 
