@@ -14,6 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
+NAMESPACE="rm"
 
 values() {
   cat - <<EOF
@@ -21,13 +22,17 @@ fullnameOverride: workspace-api
 ingress:
   enabled: false
   # hosts:
-  #   - host: workspace-api.${domain}
+  #   - host: workspace-api-open.${domain}
   #     paths: ["/"]
   # tls:
   #   - hosts:
-  #       - workspace-api.${domain}
+  #       - workspace-api-open.${domain}
   #     secretName: workspace-api-tls
 prefixForName: "guide-user"
+workspaceSecretName: "bucket"
+namespaceForBucketResource: ${NAMESPACE}
+gitRepoResourceForHelmChartName: "eoepca"
+gitRepoResourceForHelmChartNamespace: "common"
 helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
@@ -36,7 +41,7 @@ harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
 harborPassword: "${HARBOR_ADMIN_PASSWORD}"
 umaClientSecretName: "resman-client"
-umaClientSecretNamespace: "rm"
+umaClientSecretNamespace: ${NAMESPACE}
 EOF
 }
 
@@ -45,6 +50,6 @@ if [ "${ACTION_HELM}" = "uninstall" ]; then
 else
   values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
     --repo https://eoepca.github.io/helm-charts \
-    --namespace rm --create-namespace \
-    --version 1.0.10
+    --namespace "${NAMESPACE}" --create-namespace \
+    --version 1.1.2
 fi

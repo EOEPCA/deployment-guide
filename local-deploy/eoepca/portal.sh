@@ -27,6 +27,10 @@ configmap:
   user_prefix: eoepca-user
 # image:
 #   tag: latest
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
 EOF
 }
 
@@ -37,7 +41,7 @@ else
   values | helm ${ACTION_HELM} django-portal django-portal -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.4
+    --version 1.0.7
   
   # secret
   if [ -f client.yaml ]; then
