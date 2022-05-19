@@ -16,6 +16,17 @@ initIpDefaults
 domain="${2:-${default_domain}}"
 NAMESPACE="rm"
 
+main() {
+  flux
+  helmChart
+}
+
+# Flux - a pre-requisite for the Workspace API
+flux() {
+  kubectl ${ACTION_KUBECTL} -f ./flux.yaml
+}
+
+# Values for helm chart
 values() {
   cat - <<EOF
 fullnameOverride: workspace-api
@@ -45,11 +56,16 @@ umaClientSecretNamespace: ${NAMESPACE}
 EOF
 }
 
-if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace rm uninstall workspace-api
-else
-  values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
-    --repo https://eoepca.github.io/helm-charts \
-    --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.1.2
-fi
+# Helm Chart
+helmChart() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace rm uninstall workspace-api
+  else
+    values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.1.2
+  fi
+}
+
+main "$@"
