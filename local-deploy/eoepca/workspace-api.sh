@@ -18,12 +18,32 @@ NAMESPACE="rm"
 
 main() {
   flux
+  eoepcaHelmRepo
   helmChart
 }
 
 # Flux - a pre-requisite for the Workspace API
 flux() {
   kubectl ${ACTION_KUBECTL} -f ./flux.yaml
+}
+
+eoepcaHelmRepo() {
+  cat - <<EOF | kubectl ${ACTION_KUBECTL} -f -
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${NAMESPACE}
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: eoepca
+  namespace: ${NAMESPACE}
+spec:
+  interval: 2m
+  url: https://eoepca.github.io/helm-charts/
+EOF
 }
 
 # Values for helm chart
@@ -43,7 +63,7 @@ prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
 gitRepoResourceForHelmChartName: "eoepca"
-gitRepoResourceForHelmChartNamespace: "common"
+gitRepoResourceForHelmChartNamespace: "${NAMESPACE}"
 helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
