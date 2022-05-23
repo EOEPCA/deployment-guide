@@ -94,7 +94,7 @@ echo -e "\nDeploy data-access..."
 
 # workspace api
 echo -e "\nDeploy workspace-api..."
-./workspace-api.sh "${ACTION}" "${domain}"
+./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
 
 # bucket operator
 echo -e "\nDeploy bucket-operator..."

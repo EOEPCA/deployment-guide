@@ -13,7 +13,8 @@ source ../cluster/functions
 configureAction "$1"
 initIpDefaults
 
-domain="${2:-${default_domain}}"
+public_ip="${2:-${default_public_ip}}"
+domain="${3:-${default_domain}}"
 NAMESPACE="rm"
 
 main() {
@@ -71,10 +72,13 @@ workspaceDomain: ${domain}
 harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
 harborPassword: "${HARBOR_ADMIN_PASSWORD}"
-# umaClientSecretName: "resman-client"
+umaClientSecretName: "resman-client"
 # For now this value seems hardcoded in the workspace-api, so we must use it consistently here
-umaClientSecretName: "rm-uma-user-agent"
+# umaClientSecretName: "rm-uma-user-agent"
 umaClientSecretNamespace: ${NAMESPACE}
+authServerIp: ${public_ip}
+authServerHostname: "auth"
+clusterIssuer: ${TLS_CLUSTER_ISSUER}
 EOF
 }
 
@@ -86,7 +90,7 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.1.2
+      --version 1.1.3
   fi
 }
 
