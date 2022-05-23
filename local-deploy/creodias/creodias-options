@@ -1,7 +1,7 @@
 
 # Hosting specific options
 public_ip="185.52.193.246"
-domain="kube.guide.eoepca.org"
+domain="eoxp.guide.eoepca.org"
 
 # Minikube options
 # Use the 'none' drive to faciltate use of a public IP for external traffic ingress
@@ -18,7 +18,7 @@ export USE_INGRESS_NGINX_LOADBALANCER=false
 # TLS options
 # With a public IP we can use telsencrypt for tls
 export USE_TLS=true
-export TLS_CLUSTER_ISSUER=letsencrypt-staging
+export TLS_CLUSTER_ISSUER=letsencrypt-production
 
 # Default Credentials
 export LOGIN_SERVICE_ADMIN_PASSWORD=Chang3me!
