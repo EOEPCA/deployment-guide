@@ -117,7 +117,7 @@ The `sealed-secret-controller` is deployed to the cluster using the helm chart..
 ```bash
 helm repo add bitnami-sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 helm repo update
-helm install --version 1.13.2 --create-namespace --namespace infra \
+helm install --version 2.1.8 --create-namespace --namespace infra \
   eoepca-sealed-secrets bitnami-sealed-secrets/sealed-secrets
 ```
 

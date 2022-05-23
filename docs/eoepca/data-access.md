@@ -41,7 +41,7 @@ global:
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       nginx.ingress.kubernetes.io/enable-cors: "true"
-      cert-manager.io/cluster-issuer: letsencrypt
+      cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
       - host: data-access.192.168.49.123.nip.io
     tls:

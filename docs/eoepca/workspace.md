@@ -6,6 +6,10 @@ The _Workspace_ provides protected user resource management that includes dedica
 
 The _Workspace API_ provides a REST service through which user workspaces can be created, interrogated, managed and deleted.
 
+### Prerequisite - Flux
+
+TBD
+
 ### Helm Chart
 
 The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts).
@@ -33,13 +37,17 @@ fullnameOverride: workspace-api
 ingress:
   enabled: true
   hosts:
-    - host: workspace-api.192.168.49.123.nip.io
+    - host: workspace-api-open.192.168.49.123.nip.io
       paths: ["/"]
   tls:
     - hosts:
-        - workspace-api.192.168.49.123.nip.io
-      secretName: workspace-api-tls
+        - workspace-api-open.192.168.49.123.nip.io
+      secretName: workspace-api-open-tls
 prefixForName: "guide-user"
+workspaceSecretName: "bucket"
+namespaceForBucketResource: "rm"
+gitRepoResourceForHelmChartName: "eoepca"
+gitRepoResourceForHelmChartNamespace: "rm"
 helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
@@ -190,7 +198,48 @@ The bucket creation relies upon the object storage services of the underlying cl
 
 We provide a `Bucket Operator` implementation that currently supports the creation of buckets in OpenStack object storage - currently tested only on the CREODIAS (Cloudferro).
 
-For v1.0, we do not have a helm chart for the Bucket Operator, which must be installed to the Kubernetes cluster directly using yaml. For example yaml files see our [Bucket Operator deployment in our demo cluster](https://github.com/EOEPCA/eoepca/tree/v1.0/system/clusters/creodias/resource-management/bucket-operator) - which can be adapted for your deployment.
+The _Bucket Operator_ is deployed via the `rm-bucket-operator` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts).
+
+The chart is configured via values that are fully documented in the [README for the `um-bucket-operator` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-bucket-operator#readme).
+
+```bash
+helm install --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
+```
+
+### Values
+
+At minimum, values for the following attributes should be specified:
+
+* The fully-qualified public URL for the service
+* OpenStack access details
+* Cluster Issuer for TLS
+
+Example `bucket-operator-values.yaml`...
+```yaml
+domain: 192.168.49.123.nip.io
+data:
+  OS_MEMBERROLEID: "9ee2ff9ee4384b1894a90878d3e92bab"
+  OS_SERVICEPROJECTID: "d21467d0a0414252a79e29d38f03ff98"
+  USER_EMAIL_PATTERN: "eoepca+<name>@192.168.49.123.nip.io"
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+```
+
+### OpenStack Secret
+
+The `Bucket Operator` requires privileged access to the OpenStack API, for which credentials are required. These are provided via a Kubernetes secret named `openstack` created in the namespace of the Bucket Operator.<br>
+For example...
+
+```
+kubectl -n rm create secret generic openstack \
+  --from-literal=username="${OS_USERNAME}" \
+  --from-literal=password="${OS_PASSWORD}" \
+  --from-literal=domainname="${OS_DOMAINNAME}"
+```
 
 See the [README for the Bucket Operator](https://github.com/EOEPCA/rm-bucket-operator#readme), which describes the configuration required for integration with your OpenStack account.
 

@@ -34,7 +34,7 @@ The script `local-deploy/eoepca/eoepca.sh` is configured by some environment var
 Variable | Description | Default
 -------- | ----------- | -------
 **USE_MINIKUBE_NONE_DRIVER** | Force use of the minikube 'none' driver.<br>The 'none' driver has been found to be useful to more easily expose the kubernetes cluster for external access, e.g. via `ingress-controller`. This, in turn, facilitates the use of letsencrypt to establish TLS certificates. | `true`
-**MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.18. | `v1.21.5`
+**MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5. | `v1.22.5`
 **MINIKUBE_MEMORY_AMOUNT** | Amount of memory to allocate to the docker containers used by minikube to implement the cluster. | `12g`
 **USE_METALLB** | Enable use of minikube's built-in load-balancer.<br>The load-balancer can be used to facilitate exposing services publicly. However, the same can be achieved using minikube's built-in ingress-controller. Therefore, this option is suppressed by default. | `false`
 **USE_INGRESS_NGINX_HELM** | Install the ingress-nginx controller using the published helm chart, rather than relying upon the version that is built-in to minikube. By default we prefer the version that is built in to minikube.  | `false`
