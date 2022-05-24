@@ -34,5 +34,5 @@ else
   values | helm ${ACTION_HELM} um-user-profile user-profile -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.1.2
+    --version 1.1.3
 fi
