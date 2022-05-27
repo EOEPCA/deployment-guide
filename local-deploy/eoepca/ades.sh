@@ -22,11 +22,14 @@ values() {
 #   tag: "1.1.2"
 workflowExecutor:
   inputs:
-    STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
-    STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
-    STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
-    STAGEOUT_AWS_REGION: us-east-1
-    STAGEOUT_OUTPUT: s3://eoepca
+    STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
+    STAGEIN_AWS_ACCESS_KEY_ID: test
+    STAGEIN_AWS_SECRET_ACCESS_KEY: test
+    # STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
+    # STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+    # STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+    # STAGEOUT_AWS_REGION: us-east-1
+    # STAGEOUT_OUTPUT: s3://eoepca
   # Workspace integration
   useResourceManager: "true"
   resourceManagerWorkspacePrefix: "guide-user"
@@ -42,6 +45,9 @@ workflowExecutor:
   processingMaxRam: "8Gi"
   # Max number of CPU cores to use concurrently for a job
   processingMaxCores: "4"
+wps:
+  pepBaseUrl: "http://ades-pep:5576"
+  usePep: "true"
 persistence:
   storageClass: standard
 ingress:
