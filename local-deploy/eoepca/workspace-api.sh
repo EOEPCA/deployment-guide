@@ -79,6 +79,7 @@ umaClientSecretNamespace: ${NAMESPACE}
 authServerIp: ${public_ip}
 authServerHostname: "auth"
 clusterIssuer: ${TLS_CLUSTER_ISSUER}
+resourceCatalogVolumeStorageType: standard
 EOF
 }
 
@@ -90,7 +91,7 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.1.4
+      --version 1.1.5
   fi
 }
 
