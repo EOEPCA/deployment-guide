@@ -19,8 +19,6 @@ public_ip="${4:-${default_public_ip}}"
 domain="${5:-${default_domain}}"
 NAMESPACE="rm"
 SECRET_NAME="resman-client"
-# For now this value seems hardcoded in the workspace-api, so we must use it consistently here
-# SECRET_NAME="rm-uma-user-agent"
 
 if [ -f client.yaml ]; then
   echo "Creating secret ${SECRET_NAME} in namespace ${NAMESPACE}..."

@@ -73,8 +73,6 @@ harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
 harborPassword: "${HARBOR_ADMIN_PASSWORD}"
 umaClientSecretName: "resman-client"
-# For now this value seems hardcoded in the workspace-api, so we must use it consistently here
-# umaClientSecretName: "rm-uma-user-agent"
 umaClientSecretNamespace: ${NAMESPACE}
 authServerIp: ${public_ip}
 authServerHostname: "auth"
