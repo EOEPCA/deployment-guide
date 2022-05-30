@@ -8,7 +8,30 @@ The _Workspace API_ provides a REST service through which user workspaces can be
 
 ### Prerequisite - Flux
 
-TBD
+Workspaces are created by instantiating the [`rm-user-workspace` helm chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-user-workspace) for each user/group. The Workspace API uses [Flux CD](https://fluxcd.io/) as a helper to manage these subordinate helm charts - via flux resources of type `HelmRelease`. Thus, it is necessary to deploy within the cluster the aspects of flux that support this helm chart management - namely the flux `helm-controller`, `source-controller` and the Kubernetes _Custom Resource Definitions (CRD)_ for `HelmRelease` and `HelmRepository`..
+
+#### Flux Deployment
+
+The flux controllers and CRDs are deployed to the cluster from yaml via kubectl...
+
+```
+kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/local-deploy/eoepca/flux.yaml
+```
+
+#### EOEPCA Helm Chart Repository
+
+The flux helm-controller requires configuration which provides the details of the EOEPCA Helm Chart Repository from where the `rm-user-workspace` chart is obtained. For flux, this is configured via a Kubernetes resource of type `HelmRepository` - which is configured within the cluster by applying the following yaml to the cluster (ref. `kubectl apply -f <yaml-file>`)...
+
+```yaml
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: eoepca
+  namespace: rm
+spec:
+  interval: 2m
+  url: https://eoepca.github.io/helm-charts/
+```
 
 ### Helm Chart
 
