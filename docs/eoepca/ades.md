@@ -26,6 +26,13 @@ At minimum, values for the following attributes should be specified:
 ```yaml
 workflowExecutor:
   inputs:
+    # Stage-in from CREODIAS eodata
+    # (only works within CREODIAS - i.e. on a Cloudferro VM)
+    STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
+    STAGEIN_AWS_ACCESS_KEY_ID: test
+    STAGEIN_AWS_SECRET_ACCESS_KEY: test
+    # Stage-out to minio S3
+    # (use this if the ADES is not configured to stage-out to the Workspace)
     STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.123.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
@@ -36,6 +43,9 @@ workflowExecutor:
   processingVolumeOutputSize: "6Gi"
   processingMaxRam: "8Gi"
   processingMaxCores: "4"
+wps:
+  pepBaseUrl: "http://ades-pep:5576"
+  usePep: "true"
 persistence:
   storageClass: standard
 ingress:
@@ -94,7 +104,7 @@ global:
   domain: 192.168.49.123.nip.io
   nginxIp: 192.168.49.123
   certManager:
-    clusterIssuer: letsencrypt-staging
+    clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
 # PEP values
 #---------------------------------------------------------------------------

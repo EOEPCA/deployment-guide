@@ -80,6 +80,10 @@ harborUsername: "admin"
 harborPassword: "changeme"
 umaClientSecretName: "resman-client"
 umaClientSecretNamespace: "rm"
+authServerIp: 192.168.49.123
+authServerHostname: "auth"
+clusterIssuer: letsencrypt-production
+resourceCatalogVolumeStorageType: standard
 ```
 
 **NOTES:**
@@ -108,7 +112,7 @@ global:
   domain: 192.168.49.123.nip.io
   nginxIp: 192.168.49.123
   certManager:
-    clusterIssuer: letsencrypt-staging
+    clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
 # PEP values
 #---------------------------------------------------------------------------

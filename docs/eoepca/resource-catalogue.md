@@ -80,7 +80,7 @@ global:
   domain: 192.168.49.123.nip.io
   nginxIp: 192.168.49.123
   certManager:
-    clusterIssuer: letsencrypt-staging
+    clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
 # PEP values
 #---------------------------------------------------------------------------
