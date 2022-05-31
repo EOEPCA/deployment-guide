@@ -24,7 +24,7 @@ main() {
     values | helm ${ACTION_HELM} data-access vs -f - \
       --repo https://charts-public.hub.eox.at/ \
       --namespace rm --create-namespace \
-      --version 2.0.3
+      --version 2.1.4
   fi
 }
 
@@ -82,14 +82,14 @@ $(dataSpecification)
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.0.2
+    tag: 1.1.1
   ingress:
     enabled: false
 
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.0.2
+    tag: 1.1.1
   config:
     backends:
       - path: registrar_pycsw.backend.PycswItemBackend
@@ -101,7 +101,7 @@ $(harvesterSpecification)
 
 client:
   image:
-    tag: release-2.0.2
+    tag: release-2.0.18
   ingress:
     enabled: false
 
@@ -448,7 +448,7 @@ creodiasHarvester() {
 harvester:
   image:
     repository: eoepca/rm-harvester
-    tag: 1.0.0
+    tag: 1.1.0
   config:
     redis:
       host: data-access-redis-master
@@ -473,7 +473,7 @@ harvester:
             bbox: 14.9,47.7,16.4,48.7
         filter: {}
         postprocess:
-          type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
         queue: register_queue
 EOF
 }

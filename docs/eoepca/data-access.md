@@ -434,7 +434,7 @@ harvester:
             bbox: 14.9,47.7,16.4,48.7
         filter: {}
         postprocess:
-          type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
         queue: register_queue
 ```
 
