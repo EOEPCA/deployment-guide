@@ -28,6 +28,7 @@ theme:
   name: material # https://squidfunk.github.io/mkdocs-material/creating-your-site/
   # locale: en
   # custom_dir: my_theme_customizations/
+  custom_dir: overrides
   # static_templates:
   #   - sitemap.html
   # include_sidebar: false
@@ -57,6 +58,10 @@ markdown_extensions:
       toc_depth: 4
   - smarty
   - sane_lists
+
+extra:
+  version:
+    provider: mike
 
 # docs_dir: docs
 # site_dir: site
