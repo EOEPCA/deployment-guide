@@ -1,0 +1,1565 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/v1.1/eoepca/data-access/">
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
+    
+    
+      
+        <title>Data Access - EOEPCA Deployment Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-access" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          
+        </aside>
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="EOEPCA Deployment Guide" class="md-header__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+      
+  <img src="../../img/favicon.ico" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            EOEPCA Deployment Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Access
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link md-tabs__link--active">
+        Deployment Guide
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="EOEPCA Deployment Guide" class="md-nav__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+      
+  <img src="../../img/favicon.ico" alt="logo">
+
+    </a>
+    EOEPCA Deployment Guide
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Deployment Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_2">
+          Cluster
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/prerequisite-tooling/" class="md-nav__link">
+        Prerequisite Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/kubernetes/" class="md-nav__link">
+        Kubernetes Cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/helm-repositories/" class="md-nav__link">
+        Helm Repositories
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/cluster-prerequisites/" class="md-nav__link">
+        Cluster Prerequisites
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          EOEPCA
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="EOEPCA" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          EOEPCA
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../persistence/" class="md-nav__link">
+        Persistence
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../login-service/" class="md-nav__link">
+        Login Service
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-profile/" class="md-nav__link">
+        User Profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pdp/" class="md-nav__link">
+        Policy Decision Point
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-protection/" class="md-nav__link">
+        Resource Protection
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ades/" class="md-nav__link">
+        Application Deployment & Execution
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-catalogue/" class="md-nav__link">
+        Resource Catalogue
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Data Access
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Data Access
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#helm-chart" class="md-nav__link">
+    Helm Chart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#values" class="md-nav__link">
+    Values
+  </a>
+  
+    <nav class="md-nav" aria-label="Values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-configuration" class="md-nav__link">
+    Core Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-layer-configuration" class="md-nav__link">
+    Data-layer Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harvester" class="md-nav__link">
+    Harvester
+  </a>
+  
+    <nav class="md-nav" aria-label="Harvester">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harvester-helm-configuration" class="md-nav__link">
+    Harvester Helm Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starting-the-harvester" class="md-nav__link">
+    Starting the Harvester
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#results-of-the-harvesting" class="md-nav__link">
+    Results of the harvesting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storage" class="md-nav__link">
+    Storage
+  </a>
+  
+    <nav class="md-nav" aria-label="Storage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#persistent-volume-claims" class="md-nav__link">
+    Persistent Volume Claims
+  </a>
+  
+    <nav class="md-nav" aria-label="Persistent Volume Claims">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pvc-for-database" class="md-nav__link">
+    PVC for Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pvc-for-redis" class="md-nav__link">
+    PVC for Redis
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-storage" class="md-nav__link">
+    Object Storage
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Storage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#platform-eo-data" class="md-nav__link">
+    Platform EO Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-access-cache" class="md-nav__link">
+    Data Access Cache
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protection" class="md-nav__link">
+    Protection
+  </a>
+  
+    <nav class="md-nav" aria-label="Protection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#client-secret" class="md-nav__link">
+    Client Secret
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-access-usage" class="md-nav__link">
+    Data Access Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Access Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harvesting" class="md-nav__link">
+    Harvesting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    Additional Information
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspace/" class="md-nav__link">
+        Workspace
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../container-registry/" class="md-nav__link">
+        Container Registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pde/" class="md-nav__link">
+        Processor Development Environment
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Examples" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/scripted-example-deployment/" class="md-nav__link">
+        Scripted Deployment
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">⚓︎</a></h1>
+<p>The <em>Data Access</em> provides standards-based services for access to platform hosted data - including OGC WMS/WMTS for visualisation, and OGC WCS for data retrieval. This component also includes <em>Harvester</em> and <em>Registrar</em> services to discover/watch the existing data holding of the infrastructure data layer and populate/maintain the <em>data access</em> and <em>resource catalogue</em> services accordingly.</p>
+<h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
+<p>The <em>Data Access</em> is deployed via the <code>vs</code> (View Server) helm chart from the <a href="https://charts-public.hub.eox.at/">EOX Helm Chart Repository</a>.</p>
+<p>The chart is configured via values that are supplied with the instantiation of the helm release. The documentation for the View Server can be found here:</p>
+<ul>
+<li>User Guide: <a href="https://vs.pages.eox.at/documentation/user/main/">https://vs.pages.eox.at/documentation/user/main/</a></li>
+<li>Operator Guide: <a href="https://vs.pages.eox.at/documentation/operator/main/">https://vs.pages.eox.at/documentation/operator/main/</a></li>
+</ul>
+<pre><code class="language-bash">helm install --values data-access-values.yaml --repo https://charts-public.hub.eox.at/ data-access vs
+</code></pre>
+<h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
+<p>The Data Access supports many values to configure the service. These are documented in full in the <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables">View Server - Operator Guide Configuration page</a>.</p>
+<h3 id="core-configuration">Core Configuration<a class="headerlink" href="#core-configuration" title="Permanent link">⚓︎</a></h3>
+<p>Typically, values for the following attributes may be specified to override the chart defaults:</p>
+<ul>
+<li>The fully-qualified public URL for the service, ref. (<code>global.ingress.hosts.host[0]</code>)</li>
+<li>Metadata describing the service instance</li>
+<li>Dynamic provisioning <em>StorageClass</em> for persistence</li>
+<li>Persistent Volume Claims for <code>database</code> and <code>redis</code> components</li>
+<li>Object storage details for <code>data</code> and <code>cache</code></li>
+<li>Container images for <code>renderer</code> and <code>registrar</code></li>
+<li>(optional) Specification of Ingress for reverse-proxy access to the service<br>
+  <em>Note that this is only required in the case that the Data Access will <strong>not</strong> be protected by the <code>resource-guard</code> component - ref. <a href="../resource-protection">Resource Protection</a>. Otherwise the ingress will be handled by the <code>resource-guard</code> - use <code>ingress.enabled: false</code>.</em></li>
+</ul>
+<pre><code class="language-yaml">global:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: &quot;true&quot;
+      nginx.ingress.kubernetes.io/proxy-read-timeout: &quot;600&quot;
+      nginx.ingress.kubernetes.io/enable-cors: &quot;true&quot;
+      cert-manager.io/cluster-issuer: letsencrypt-production
+    hosts:
+      - host: data-access.192.168.49.123.nip.io
+    tls:
+      - hosts:
+          - data-access.192.168.49.123.nip.io
+        secretName: data-access-tls
+  storage:
+    data:
+      data:
+        type: S3
+        endpoint_url: http://data.cloudferro.com
+        access_key_id: access
+        secret_access_key: access
+        region_name: RegionOne
+        validate_bucket_name: false
+    cache:
+      type: S3
+      endpoint_url: &quot;http://minio.192.168.49.123.nip.io&quot;
+      host: &quot;minio.192.168.49.123.nip.io&quot;
+      access_key_id: xxx
+      secret_access_key: xxx
+      region: us-east-1
+      bucket: cache-bucket
+  metadata:
+    title: EOEPCA Data Access Service developed by EOX
+    abstract: EOEPCA Data Access Service developed by EOX
+    header: &quot;EOEPCA Data Access View Server (VS) Client powered by &lt;a href=\&quot;//eox.at\&quot;&gt;&lt;img src=\&quot;//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\&quot; alt=\&quot;EOX\&quot; style=\&quot;height:25px;margin-left:10px\&quot;/&gt;&lt;/a&gt;&quot;
+    url: https://data-access.192.168.49.123.nip.io/ows
+  layers:
+    # see section 'Data-layer Configuration'
+  collections:
+    # see section 'Data-layer Configuration'
+  productTypes:
+    # see section 'Data-layer Configuration'
+renderer:
+  image:
+    repository: eoepca/rm-data-access-core
+    tag: &quot;1.0.2&quot;
+  ingress:
+    enabled: false
+registrar:
+  image:
+    repository: eoepca/rm-data-access-core
+    tag: &quot;1.0.2&quot;
+harvester:
+  # see section 'Harvester Configuration'
+client:
+  image:
+    tag: release-2.0.2
+  ingress:
+    enabled: false
+database:
+  persistence:
+    enabled: true
+    existingClaim: data-access-db
+redis:
+  usePassword: false
+  persistence:
+    existingClaim: data-access-redis
+  master:
+    persistence:
+      enabled: true
+      storageClass: standard
+  cluster:
+    enabled: false
+ingestor:
+  replicaCount: 0
+  ingress:
+    enabled: false
+preprocessor:
+  replicaCount: 0
+cache:
+  ingress:
+    enabled: false
+</code></pre>
+<h3 id="data-layer-configuration">Data-layer Configuration<a class="headerlink" href="#data-layer-configuration" title="Permanent link">⚓︎</a></h3>
+<p>Configuration of the service data-layer - as described in the <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables">View Server Operator Guide</a>. See below for a populated sample based upon a CREODIAS infrastructure data provision. The sample helps to illustrate the values by way of a worked example, in which the following are defined:</p>
+<ul>
+<li><code>layers</code> - <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#layers-layers">Layers</a></li>
+<li><code>collections</code> - <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#data-collections-collections">Data Collections</a></li>
+<li><code>productTypes</code> - <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#product-types-producttypes">Product Types</a></li>
+</ul>
+<pre><code class="language-yaml">global:
+  layers:
+    - id: S2L1C
+      title: Sentinel-2 Level 1C True Color
+      abstract: Sentinel-2 Level 2A True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__TRUE_COLOR
+      title: Sentinel-2 Level 1C True Color
+      abstract: Sentinel-2 Level 2A True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__masked_clouds
+      title: Sentinel-2 Level 1C True Color with cloud masks
+      abstract: Sentinel-2 Level 1C True Color with cloud masks
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__FALSE_COLOR
+      title: Sentinel-2 Level 1C False Color
+      abstract: Sentinel-2 Level 1C False Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__NDVI
+      title: Sentinel-2 Level 21CNDVI
+      abstract: Sentinel-2 Level 1C NDVI
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L2A
+      title: Sentinel-2 Level 2A True Color
+      abstract: Sentinel-2 Level 2A True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__TRUE_COLOR
+      title: Sentinel-2 Level 2A True Color
+      abstract: Sentinel-2 Level 2A True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__masked_clouds
+      title: Sentinel-2 Level 2A True Color with cloud masks
+      abstract: Sentinel-2 Level 2A True Color with cloud masks
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__FALSE_COLOR
+      title: Sentinel-2 Level 2A False Color
+      abstract: Sentinel-2 Level 2A False Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__NDVI
+      title: Sentinel-2 Level 2A NDVI
+      abstract: Sentinel-2 Level 2A NDVI
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+  collections:
+    S2L1C:
+      product_types:
+        - S2MSI1C
+      coverage_types:
+        - S2L1C_B01
+        - S2L1C_B02
+        - S2L1C_B03
+        - S2L1C_B04
+        - S2L1C_B05
+        - S2L1C_B06
+        - S2L1C_B07
+        - S2L1C_B08
+        - S2L1C_B8A
+        - S2L1C_B09
+        - S2L1C_B10
+        - S2L1C_B11
+        - S2L1C_B12
+    S2L2A:
+      product_types:
+        - S2MSI2A
+      product_levels:
+        - Level-2A
+      coverage_types:
+        - S2L2A_B01
+        - S2L2A_B02
+        - S2L2A_B03
+        - S2L2A_B04
+        - S2L2A_B05
+        - S2L2A_B06
+        - S2L2A_B07
+        - S2L2A_B08
+        - S2L2A_B8A
+        - S2L2A_B09
+        - S2L2A_B11
+        - S2L2A_B12
+  productTypes:
+    - name: S2MSI1C
+      filter:
+        s2:product_type: S2MSI1C
+      metadata_assets: []
+      coverages:
+        S2L1C_B01:
+          assets:
+            - B01
+        S2L1C_B02:
+          assets:
+            - B02
+        S2L1C_B03:
+          assets:
+            - B03
+        S2L1C_B04:
+          assets:
+            - B04
+        S2L1C_B05:
+          assets:
+            - B05
+        S2L1C_B06:
+          assets:
+            - B06
+        S2L1C_B07:
+          assets:
+            - B07
+        S2L1C_B08:
+          assets:
+            - B08
+        S2L1C_B8A:
+          assets:
+            - B8A
+        S2L1C_B09:
+          assets:
+            - B09
+        S2L1C_B10:
+          assets:
+            - B10
+        S2L1C_B11:
+          assets:
+            - B11
+        S2L1C_B12:
+          assets:
+            - B12
+      defaultBrowse: TRUE_COLOR
+      browses:
+        TRUE_COLOR:
+          asset: visual
+          red:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B02
+            range: [0, 4000]
+            nodata: 0
+        FALSE_COLOR:
+          red:
+            expression: B08
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+        NDVI:
+          grey:
+            expression: (B08-B04)/(B08+B04)
+            range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
+    - name: S2MSI2A
+      filter:
+        s2:product_type: S2MSI2A
+      metadata_assets: []
+      coverages:
+        S2L2A_B01:
+          assets:
+            - B01
+        S2L2A_B02:
+          assets:
+            - B02
+        S2L2A_B03:
+          assets:
+            - B03
+        S2L2A_B04:
+          assets:
+            - B04
+        S2L2A_B05:
+          assets:
+            - B05
+        S2L2A_B06:
+          assets:
+            - B06
+        S2L2A_B07:
+          assets:
+            - B07
+        S2L2A_B08:
+          assets:
+            - B08
+        S2L2A_B8A:
+          assets:
+            - B8A
+        S2L2A_B09:
+          assets:
+            - B09
+        S2L2A_B11:
+          assets:
+            - B11
+        S2L2A_B12:
+          assets:
+            - B12
+      default_browse_locator: TCI_10m
+      browses:
+        TRUE_COLOR:
+          asset: visual-10m
+          red:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B02
+            range: [0, 4000]
+            nodata: 0
+        FALSE_COLOR:
+          red:
+            expression: B08
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+        NDVI:
+          grey:
+            expression: (B08-B04)/(B08+B04)
+            range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
+</code></pre>
+<h3 id="harvester">Harvester<a class="headerlink" href="#harvester" title="Permanent link">⚓︎</a></h3>
+<p>The Data Access service includes a Harvester component. The following subsections describe its configuration and usage.</p>
+<h4 id="harvester-helm-configuration">Harvester Helm Configuration<a class="headerlink" href="#harvester-helm-configuration" title="Permanent link">⚓︎</a></h4>
+<p>The Harvester can be configured through the helm chart values&hellip;</p>
+<pre><code class="language-yaml">harvester:
+  image:
+    repository: eoepca/rm-harvester
+    tag: 1.0.0
+  config:
+    redis:
+      host: data-access-redis-master
+      port: 6379
+    harvesters:
+      - name: Creodias-Opensearch
+        resource:
+          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          type: OpenSearch
+          format_config:
+            type: 'application/json'
+            property_mapping:
+              start_datetime: 'startDate'
+              end_datetime: 'completionDate'
+              productIdentifier: 'productIdentifier'
+          query:
+            time:
+              property: sensed
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+        filter: {}
+        postprocess:
+          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+        queue: register_queue
+</code></pre>
+<p>The <code>harvester.config.harvesters</code> list defines a set of pre-defined harvesters which can be invoked in a later stage. The name property must be unique for each harvester and must be unique among all harvesters in the list. Each harvester is associated with a <code>resource</code>, an optional <code>filter</code> or <code>postprocess</code> function, and a <code>queue</code>.</p>
+<p>The <code>resource</code> defines where each item is harvested from. This can be a file system, a search service, catalog file or something similar. The example above defines a connection to an OpenSearch service on CREODIAS, with associated default query parameters and a format configuration.</p>
+<p>The <code>filter</code> allows to filter elements within the harvester, when the resource does not provide a specific filter. This filter can be supplied using CQL2-JSON.</p>
+<p>The <code>postprocess</code> can adjust the harvested results. In this example the harvested items are not complete, and additional metadata must be retrieved from an object storage.</p>
+<p>The <code>queue</code> defines where harvested items will be pushed into. Usually this is a registration queue, where the registrar will pick up and start registration according to its configuration.</p>
+<h4 id="starting-the-harvester">Starting the Harvester<a class="headerlink" href="#starting-the-harvester" title="Permanent link">⚓︎</a></h4>
+<p>The harvester can either do one-off harvests via the CLI or listen on a redis queue to run consecutive harvests whenever a harvesting request is received on that queue.</p>
+<h5 id="one-off-harvests-via-the-cli">One-off harvests via the CLI<a class="headerlink" href="#one-off-harvests-via-the-cli" title="Permanent link">⚓︎</a></h5>
+<p>In order to start a harvest from the CLI, the operator first needs to connect to the kubernetes pod of the harvester. Within that pod, the harvest can be executed like this&hellip;</p>
+<pre><code class="language-bash">python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+</code></pre>
+<p>This will invoke the Creodias-Opensearch harvester with default arguments. When some values are to be overridden, the &ndash;values switch can be used to pass override values. These values must be a JSON string. The following example adjusts the begin and end times of the query parameters&hellip;</p>
+<pre><code class="language-bash">python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch --values '{&quot;resource&quot;: {&quot;query&quot;: {&quot;time&quot;: {&quot;begin&quot;: &quot;2020-09-10T00:00:00Z&quot;, &quot;end&quot;: &quot;2020-09-11T00:00:00Z&quot;}}}}'
+</code></pre>
+<h5 id="harvests-via-the-harvest-daemon">Harvests via the harvest daemon<a class="headerlink" href="#harvests-via-the-harvest-daemon" title="Permanent link">⚓︎</a></h5>
+<p>The harvester pod runs a service listening on a redis queue. When a message is read from the queue, it will be read as a JSON string, expecting an object with at least a <code>name</code> property. Optionally, it can also have a <code>values</code> property, working in the same way as with CLI <code>--values</code>.</p>
+<p>To send a harvesting request via the redis queue, it is necessary to connect to the redis pod and execute the redis-cli there. Then the following command can be used to achieve the same result as above with CLI harvesting&hellip;</p>
+<pre><code class="language-bash">redis-cli LPUSH '{&quot;name&quot;: &quot;Creodias-Opensearch&quot;, &quot;values&quot;: {&quot;resource&quot;: {&quot;query&quot;: {&quot;time&quot;: {&quot;begin&quot;: &quot;2020-09-10T00:00:00Z&quot;, &quot;end&quot;: &quot;2020-09-11T00:00:00Z&quot;}}}}}'
+</code></pre>
+<h4 id="results-of-the-harvesting">Results of the harvesting<a class="headerlink" href="#results-of-the-harvesting" title="Permanent link">⚓︎</a></h4>
+<p>The harvester produces a continous stream of STAC Items which are sent down via the configured queue. It is possible that the harvested metadata is not sufficient to create a fully functional STAC Item. In this case the postprocess must transform this intermediate item to a valid STAC Item. In our example, the postprocessor looks up the Sentinel-2 product file referenced by the product identifier which is then accessed on the object storage. From the stored metadata files, the STAC Items to be sent is created.</p>
+<h2 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">⚓︎</a></h2>
+<p>Specification of PVCs and access to object storage.</p>
+<h3 id="persistent-volume-claims">Persistent Volume Claims<a class="headerlink" href="#persistent-volume-claims" title="Permanent link">⚓︎</a></h3>
+<p>The PVCs specified in the helm chart values must be created.</p>
+<h4 id="pvc-for-database">PVC for Database<a class="headerlink" href="#pvc-for-database" title="Permanent link">⚓︎</a></h4>
+<pre><code class="language-yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data-access-db
+  namespace: rm
+  labels:
+    k8s-app: data-access
+    name: data-access
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+</code></pre>
+<h4 id="pvc-for-redis">PVC for Redis<a class="headerlink" href="#pvc-for-redis" title="Permanent link">⚓︎</a></h4>
+<pre><code class="language-yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data-access-redis
+  namespace: rm
+  labels:
+    k8s-app: data-access
+    name: data-access
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+</code></pre>
+<h3 id="object-storage">Object Storage<a class="headerlink" href="#object-storage" title="Permanent link">⚓︎</a></h3>
+<p>The helm chart values expect specification of object storage details for:</p>
+<ul>
+<li><code>data</code>: to access the EO data of the underlying infrastructure</li>
+<li><code>cache</code>: a dedicated object storage bucket is used to support the cache function of the data access services</li>
+</ul>
+<h4 id="platform-eo-data">Platform EO Data<a class="headerlink" href="#platform-eo-data" title="Permanent link">⚓︎</a></h4>
+<p>Specifies the details for the infrastructure object storage that provides direct access to the EO product files.</p>
+<p>For example, the CREODIAS metadata catalogue provides references to product files in their <code>eodata</code> object storage - the access details for which are configured in the data access services:</p>
+<pre><code class="language-yaml">global:
+  storage:
+    data:
+      data:
+        type: S3
+        endpoint_url: http://data.cloudferro.com
+        access_key_id: access
+        secret_access_key: access
+        region_name: RegionOne
+        validate_bucket_name: false
+</code></pre>
+<h4 id="data-access-cache">Data Access Cache<a class="headerlink" href="#data-access-cache" title="Permanent link">⚓︎</a></h4>
+<p>The Data Access services maintain a cache, which relies on the usage of a dedicate object storage bucket for data persistence. This bucket must be created (manual step) and its access details configured in the data access services. Example based upon CREODIAS:</p>
+<pre><code class="language-yaml">global:
+  storage:
+    cache:
+      type: S3
+      endpoint_url: &quot;https://cf2.cloudferro.com:8080/cache-bucket&quot;
+      host: &quot;cf2.cloudferro.com:8080&quot;
+      access_key_id: xxx
+      secret_access_key: xxx
+      region: RegionOne
+      bucket: cache-bucket
+</code></pre>
+<p>&hellip;where <code>xxx</code> must be replaced with the bucket credentials.</p>
+<h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
+<p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Data Access service to provide access authorization decisions.</p>
+<pre><code class="language-bash">helm install --values data-access-guard-values.yaml data-access-guard eoepca/resource-guard
+</code></pre>
+<p>The <code>resource-guard</code> must be configured with the values applicable to the Data Access for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
+<p><strong>Example <code>data-access-guard-values.yaml</code>&hellip;</strong></p>
+<pre><code class="language-yaml">#---------------------------------------------------------------------------
+# Global values
+#---------------------------------------------------------------------------
+global:
+  context: data-access
+  pep: data-access-pep
+  domain: 192.168.49.123.nip.io
+  nginxIp: 192.168.49.123
+  certManager:
+    clusterIssuer: letsencrypt-production
+#---------------------------------------------------------------------------
+# PEP values
+#---------------------------------------------------------------------------
+pep-engine:
+  configMap:
+    asHostname: auth
+    pdpHostname: auth
+  volumeClaim:
+    name: eoepca-resman-pvc
+    create: false
+#---------------------------------------------------------------------------
+# UMA User Agent values
+#---------------------------------------------------------------------------
+uma-user-agent:
+  fullnameOverride: data-access-agent
+  nginxIntegration:
+    enabled: true
+    hosts:
+      - host: data-access
+        paths:
+          - path: /(ows.*)
+            service:
+              name: data-access-renderer
+              port: 80
+          - path: /(opensearch.*)
+            service:
+              name: data-access-renderer
+              port: 80
+          - path: /(admin.*)
+            service:
+              name: data-access-renderer
+              port: 80
+          - path: /cache/(.*)
+            service:
+              name: data-access-cache
+              port: 80
+          - path: /(.*)
+            service:
+              name: data-access-client
+              port: 80
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: &quot;600&quot;
+      nginx.ingress.kubernetes.io/enable-cors: &quot;true&quot;
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+  client:
+    credentialsSecretName: &quot;resman-client&quot;
+  logging:
+    level: &quot;info&quot;
+  unauthorizedResponse: 'Bearer realm=&quot;https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm&quot;'
+  openAccess: false
+  insecureTlsSkipVerify: true
+</code></pre>
+<p><strong>NOTES:</strong></p>
+<ul>
+<li>TLS is enabled by the specification of <code>certManager.clusterIssuer</code></li>
+<li>The <code>letsencrypt</code> Cluster Issuer relies upon the deployment being accessible from the public internet via the <code>global.domain</code> DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller</li>
+<li><code>insecureTlsSkipVerify</code> may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service <em>Authorization Server</em> will fail validation in the <em>Resource Guard</em>.</li>
+<li><code>customDefaultResources</code> can be specified to apply initial protection to the endpoint</li>
+</ul>
+<h3 id="client-secret">Client Secret<a class="headerlink" href="#client-secret" title="Permanent link">⚓︎</a></h3>
+<p>The Resource Guard requires confidential client credentials to be configured through the file <code>client.yaml</code>, delivered via a kubernetes secret..</p>
+<p><strong>Example <code>client.yaml</code>&hellip;</strong></p>
+<pre><code class="language-yaml">client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
+client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
+</code></pre>
+<p><strong>Example <code>Secret</code>&hellip;</strong></p>
+<pre><code class="language-bash">kubectl -n rm create secret generic resman-client \
+  --from-file=client.yaml \
+  --dry-run=client -o yaml \
+  &gt; resman-client-secret.yaml
+</code></pre>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: resman-client
+  namespace: rm
+data:
+  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
+</code></pre>
+<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.123.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
+<pre><code class="language-bash">./local-deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
+</code></pre>
+<h2 id="data-access-usage">Data Access Usage<a class="headerlink" href="#data-access-usage" title="Permanent link">⚓︎</a></h2>
+<h3 id="harvesting">Harvesting<a class="headerlink" href="#harvesting" title="Permanent link">⚓︎</a></h3>
+<p>The Data Access and Resource Catalogue services are configured to properly interpret harvested data via the values specified in the instantiation of the helm release. See section <a href="#data-layer-configuration">Data-layer Configuration</a>.</p>
+<p>The harvesting of data can be triggered (post deployment) by connecting to the <code>rm/harvester</code> service and executing the command&hellip;</p>
+<pre><code>python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+</code></pre>
+<h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
+<p>Additional information regarding the <em>Data Access</em> can be found at:</p>
+<ul>
+<li><a href="https://charts-public.hub.eox.at/charts/vs-x.y.z.tgz">Helm Chart</a></li>
+<li><em>Documentation:</em><ul>
+<li><a href="https://vs.pages.eox.at/documentation/user/main/">User Guide</a></li>
+<li><a href="https://vs.pages.eox.at/documentation/operator/main/">Operator Guide</a></li>
+</ul>
+</li>
+<li><a href="TBD">Git Repository</a></li>
+</ul>
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../resource-catalogue/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Resource Catalogue" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Resource Catalogue
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../workspace/" class="md-footer__link md-footer__link--next" aria-label="Next: Workspace" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Workspace
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>
+      
+    
+  </body>
+</html>
