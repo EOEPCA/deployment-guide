@@ -9,6 +9,9 @@ onExit() {
 }
 trap onExit EXIT
 
+VERSION="${1:-current}"
+ALIAS="${2}"
+
 # publish
 docker run --name mkdocs-deploy --rm -it \
   -v ${PWD}:/docs \
@@ -19,7 +22,7 @@ docker run --name mkdocs-deploy --rm -it \
   -e GIT_COMMITTER_EMAIL="$(git config --get user.email)" \
   --entrypoint=mike \
   eoepca/mkdocs-material \
-  deploy --push --update-aliases current latest
+  deploy --push --update-aliases "${VERSION}" ${ALIAS}
 
 # clean-up
 sudo rm -rf site
