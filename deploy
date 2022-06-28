@@ -20,8 +20,8 @@ trap onExit EXIT
 #   deploy v1.0
 
 exec docker run --name mkdocs-deploy --rm -it \
-  -u $(id -u):$(id -g) \
   -v ${PWD}:/docs \
+  -v ${HOME}/.ssh:/root/.ssh \
   -e GIT_COMMITTER_NAME="$(git config --get user.name)" \
   -e GIT_COMMITTER_EMAIL="$(git config --get user.email)" \
   --entrypoint=sh \
