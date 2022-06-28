@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+
+trap onExit EXIT
+
+# exec docker run --name mkdocs-deploy --rm -it \
+#   -u $(id -u):$(id -g) \
+#   -v ${PWD}:/docs \
+#   -e GIT_COMMITTER_NAME="$(git config --get user.name)" \
+#   -e GIT_COMMITTER_EMAIL="$(git config --get user.email)" \
+#   --entrypoint=mike \
+#   eoepca/mkdocs-material \
+#   deploy v1.0
+
+exec docker run --name mkdocs-deploy --rm -it \
+  -u $(id -u):$(id -g) \
+  -v ${PWD}:/docs \
+  -e GIT_COMMITTER_NAME="$(git config --get user.name)" \
+  -e GIT_COMMITTER_EMAIL="$(git config --get user.email)" \
+  --entrypoint=sh \
+  eoepca/mkdocs-material
