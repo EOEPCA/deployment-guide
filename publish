@@ -12,17 +12,25 @@ trap onExit EXIT
 VERSION="${1:-current}"
 ALIAS="${2}"
 
+# Commands to execute in the container
+command() {
+  cat - <<EOF
+git config --global --add safe.directory /docs
+git config --global user.name "$(git config --get user.name)"
+git config --global user.email "$(git config --get user.email)"
+mike deploy --push --update-aliases "${VERSION}" ${ALIAS}
+EOF
+}
+
 # publish
-docker run --name mkdocs-deploy --rm -it \
+command | docker run --name mkdocs-deploy --rm -i \
   -v ${PWD}:/docs \
   -v ${HOME}/.ssh:/root/.ssh \
   -v ${SSH_AUTH_SOCK}:/ssh-agent \
   -e SSH_AUTH_SOCK=/ssh-agent \
-  -e GIT_COMMITTER_NAME="$(git config --get user.name)" \
-  -e GIT_COMMITTER_EMAIL="$(git config --get user.email)" \
-  --entrypoint=mike \
+  --entrypoint="sh" \
   eoepca/mkdocs-material \
-  deploy --push --update-aliases "${VERSION}" ${ALIAS}
+  -
 
 # clean-up
 sudo rm -rf site
