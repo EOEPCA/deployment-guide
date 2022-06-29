@@ -5,8 +5,8 @@ on:
       - main
     paths:
       - mkdocs.yml
-      - docs/
-      - overrides/
+      - "docs/**"
+      - "overrides/**"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
