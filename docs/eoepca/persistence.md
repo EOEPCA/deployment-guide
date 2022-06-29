@@ -100,3 +100,7 @@ Candidate clustered storage solutions include:
 ## Local Cluster Storage
 
 For the purposes of the EOEPCA deployment, the default Storage Class included with the local Kubernetes distribution can be used for all storage concerns - e.g. `standard` for `minikube` which provides the `ReadWriteMany` persistence that is required by the ADES.
+
+# zzz
+
+zzz
