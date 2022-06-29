@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - mkdocs.yml
+      - docs/
+      - overrides/
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
