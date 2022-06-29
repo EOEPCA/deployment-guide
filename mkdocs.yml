@@ -3,6 +3,7 @@ site_url: https://deployment-guide.docs.eoepca.org
 repo_url: https://github.com/EOEPCA/deployment-guide
 edit_uri: ""
 
+# Site navigation
 nav:
   - Deployment Guide:
     - Introduction: index.md
