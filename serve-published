@@ -7,7 +7,10 @@ BIN_DIR="$(pwd)"
 onExit() {
   cd "${ORIG_DIR}"
 }
-
 trap onExit EXIT
 
-exec docker run --name mkdocs-serve-published --rm -it -p 9000:9000 -v ${PWD}:/docs --entrypoint=mike eoepca/mkdocs-material serve --dev-addr 0.0.0.0:9000
+exec docker run --name mkdocs-serve-published --rm -it \
+  -p 9000:9000 \
+  -v ${PWD}:/docs \
+  --entrypoint=mike eoepca/mkdocs-material \
+  serve --dev-addr 0.0.0.0:9000
