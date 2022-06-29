@@ -30,8 +30,27 @@ This is achieved by the steps:
 2. Follow the GitHub steps to verify ownership of the domain `deployment-guide.docs.eoepca.org`
 3. Maintain the file `docs/CNAME` with the domain name
 
-## Helper Script - `publish` (DEPRECATED)
+## Helper Script - `publish`
 
-This script was used before the use of the GitHub Action to manually publish the document 'on-demand'.
+This script is used to invoke publishing of the docs under a given version - by default the version `current`.
 
-It is no longer needed for this purpose - but is retained in case it proves useful.
+**Examples**
+
+Publish to `current` version, and update the `latest` alias to point to this...
+
+```bash
+./publish current latest
+```
+
+Publish to `v1.x` version...
+
+```bash
+./publish v1.x
+```
+
+## Other Helper Scripts
+
+* `mike`<br>
+  _Run `mike` via docker_
+* `serve-published`<br>
+  _Serve the published site - i.e. the `gh-pages` branch_
