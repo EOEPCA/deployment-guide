@@ -961,7 +961,7 @@ See the <a href="https://workspace-api.192.168.49.123.nip.io/docs">Swagger Docs<
 <p>We provide a <code>Bucket Operator</code> implementation that currently supports the creation of buckets in OpenStack object storage - currently tested only on the CREODIAS (Cloudferro).</p>
 <p>The <em>Bucket Operator</em> is deployed via the <code>rm-bucket-operator</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-bucket-operator#readme">README for the <code>um-bucket-operator</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
+<pre><code class="language-bash">helm install --version 0.9.9 --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
 </code></pre>
 <h3 id="values_1">Values<a class="headerlink" href="#values_1" title="Permanent link">⚓︎</a></h3>
 <p>At minimum, values for the following attributes should be specified:</p>
