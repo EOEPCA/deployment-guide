@@ -230,7 +230,7 @@ The _Bucket Operator_ is deployed via the `rm-bucket-operator` helm chart from t
 The chart is configured via values that are fully documented in the [README for the `um-bucket-operator` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-bucket-operator#readme).
 
 ```bash
-helm install --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
+helm install --version 0.9.9 --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
 ```
 
 ### Values
