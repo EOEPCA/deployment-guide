@@ -864,7 +864,7 @@
 <li>User Guide: <a href="https://vs.pages.eox.at/documentation/user/main/">https://vs.pages.eox.at/documentation/user/main/</a></li>
 <li>Operator Guide: <a href="https://vs.pages.eox.at/documentation/operator/main/">https://vs.pages.eox.at/documentation/operator/main/</a></li>
 </ul>
-<pre><code class="language-bash">helm install --values data-access-values.yaml --repo https://charts-public.hub.eox.at/ data-access vs
+<pre><code class="language-bash">helm install --version 2.1.4 --values data-access-values.yaml --repo https://charts-public.hub.eox.at/ data-access vs
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The Data Access supports many values to configure the service. These are documented in full in the <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables">View Server - Operator Guide Configuration page</a>.</p>
@@ -926,18 +926,18 @@
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: &quot;1.0.2&quot;
+    tag: &quot;1.1.1&quot;
   ingress:
     enabled: false
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: &quot;1.0.2&quot;
+    tag: &quot;1.1.1&quot;
 harvester:
   # see section 'Harvester Configuration'
 client:
   image:
-    tag: release-2.0.2
+    tag: release-2.0.18
   ingress:
     enabled: false
 database:
@@ -1247,7 +1247,7 @@ cache:
 <pre><code class="language-yaml">harvester:
   image:
     repository: eoepca/rm-harvester
-    tag: 1.0.0
+    tag: 1.1.0
   config:
     redis:
       host: data-access-redis-master
