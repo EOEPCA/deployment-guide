@@ -9,7 +9,7 @@ The _Resource Catalogue_ is deployed via the `rm-resource-catalogue` helm chart 
 The chart is configured via values that are fully documented in the [README for the `rm-resource-catalogue` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#readme).
 
 ```bash
-helm install --values resource-catalogue-values.yaml ades eoepca/rm-resource-catalogue
+helm install --version 1.1.0 --values resource-catalogue-values.yaml ades eoepca/rm-resource-catalogue
 ```
 
 ## Values

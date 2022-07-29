@@ -9,7 +9,7 @@ The _ADES_ is deployed via the `ades` helm chart from the [EOEPCA Helm Chart Rep
 The chart is configured via values that are fully documented in the [README for the `ades` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme).
 
 ```bash
-helm install --values ades-values.yaml ades eoepca/ades
+helm install --version 1.1.10 --values ades-values.yaml ades eoepca/ades
 ```
 
 ## Values

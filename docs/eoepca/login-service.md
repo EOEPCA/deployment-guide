@@ -9,7 +9,7 @@ The _Login Service_ is deployed via the `login-service` helm chart from the [EOE
 The chart is configured via values that are fully documented in the [README for the `login-service` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/login-service#readme).
 
 ```bash
-helm install --values login-service-values.yaml um-login-service eoepca/login-service
+helm install --version 1.1.5 --values login-service-values.yaml um-login-service eoepca/login-service
 ```
 
 ## Values

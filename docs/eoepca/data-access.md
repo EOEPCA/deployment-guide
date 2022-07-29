@@ -12,7 +12,7 @@ The chart is configured via values that are supplied with the instantiation of t
 * Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
 
 ```bash
-helm install --values data-access-values.yaml --repo https://charts-public.hub.eox.at/ data-access vs
+helm install --version 2.1.4 --values data-access-values.yaml --repo https://charts-public.hub.eox.at/ data-access vs
 ```
 
 ## Values
@@ -79,18 +79,18 @@ global:
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: "1.0.2"
+    tag: "1.1.1"
   ingress:
     enabled: false
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: "1.0.2"
+    tag: "1.1.1"
 harvester:
   # see section 'Harvester Configuration'
 client:
   image:
-    tag: release-2.0.2
+    tag: release-2.0.18
   ingress:
     enabled: false
 database:
@@ -409,7 +409,7 @@ The Harvester can be configured through the helm chart values...
 harvester:
   image:
     repository: eoepca/rm-harvester
-    tag: 1.0.0
+    tag: 1.1.0
   config:
     redis:
       host: data-access-redis-master
