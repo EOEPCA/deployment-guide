@@ -706,7 +706,7 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>Login Service</em> is deployed via the <code>login-service</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/login-service#readme">README for the <code>login-service</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --values login-service-values.yaml um-login-service eoepca/login-service
+<pre><code class="language-bash">helm install --version 1.1.5 --values login-service-values.yaml um-login-service eoepca/login-service
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>At minimum, values for the following attributes should be specified:</p>

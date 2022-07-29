@@ -747,7 +747,7 @@
 <p>The <em>Resource Guard</em> is deployed via the <code>resource-guard</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme">README for the <code>resource-guard</code> chart</a>.</p>
 <p>It is expected to deploy multiple instances of the Resource Guard chart, one for each Resource Server to be protected.</p>
-<pre><code class="language-bash">helm install --values myservice-guard-values.yaml myservice-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.0.6 --values myservice-guard-values.yaml myservice-guard eoepca/resource-guard
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The helm chart is deployed with values that are passed through to the subcharts for the <code>pep-engine</code> and <code>uma-user-agent</code>. Typical values to be specified include:</p>
