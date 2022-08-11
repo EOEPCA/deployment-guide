@@ -14,6 +14,7 @@ export MINIKUBE_MEMORY_AMOUNT=12g
 export USE_METALLB=false
 export USE_INGRESS_NGINX_HELM=false
 export USE_INGRESS_NGINX_LOADBALANCER=false
+export OPEN_INGRESS=false
 
 # TLS options
 # With a public IP we can use telsencrypt for tls

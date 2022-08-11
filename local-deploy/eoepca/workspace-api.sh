@@ -17,6 +17,12 @@ public_ip="${2:-${default_public_ip}}"
 domain="${3:-${default_domain}}"
 NAMESPACE="rm"
 
+if [ "${OPEN_INGRESS}" = "true" ]; then
+  name="workspace-api-open"
+else
+  name="workspace-api"
+fi
+
 main() {
   flux
   eoepcaHelmRepo
@@ -52,14 +58,14 @@ values() {
   cat - <<EOF
 fullnameOverride: workspace-api
 ingress:
-  enabled: false
-  # hosts:
-  #   - host: workspace-api-open.${domain}
-  #     paths: ["/"]
-  # tls:
-  #   - hosts:
-  #       - workspace-api-open.${domain}
-  #     secretName: workspace-api-tls
+  enabled: ${OPEN_INGRESS}
+  hosts:
+    - host: ${name}.${domain}
+      paths: ["/"]
+  tls:
+    - hosts:
+        - ${name}.${domain}
+      secretName: ${name}-tls
 prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}

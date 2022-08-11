@@ -15,6 +15,12 @@ initIpDefaults
 
 domain="${2:-${default_domain}}"
 
+if [ "${OPEN_INGRESS}" = "true" ]; then
+  name="data-access-open"
+else
+  name="data-access"
+fi
+
 main() {
   databasePVC | kubectl ${ACTION_KUBECTL} -f -
   redisPVC | kubectl ${ACTION_KUBECTL} -f -
@@ -24,7 +30,7 @@ main() {
     values | helm ${ACTION_HELM} data-access vs -f - \
       --repo https://charts-public.hub.eox.at/ \
       --namespace rm --create-namespace \
-      --version 2.1.4
+      --version 2.1.14
   fi
 }
 
@@ -37,20 +43,22 @@ global:
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
 
+  # The data-access relies on the value `ingress.tls.hosts[0]` to specify the service
+  # hostname. So this must be supplied even if the ingress is disabled.
   ingress:
-    enabled: false
-    # annotations:
-    #   kubernetes.io/ingress.class: nginx
-    #   kubernetes.io/tls-acme: "true"
-    #   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    #   nginx.ingress.kubernetes.io/enable-cors: "true"
-    #   cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
-    # hosts:
-    #   - host: data-access.${domain}
+    enabled: "${OPEN_INGRESS}"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "${USE_TLS}"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    hosts:
+      - host: ${name}.${domain}
     tls:
       - hosts:
-          - data-access.${domain}
-        # secretName: data-access-tls
+          - ${name}.${domain}
+        secretName: ${name}-tls
 
   storage:
     data:
@@ -75,16 +83,28 @@ global:
     title: EOEPCA Data Access Service developed by EOX
     abstract: EOEPCA Data Access Service developed by EOX
     header: "EOEPCA Data Access View Server (VS) Client powered by <a href=\"//eox.at\"><img src=\"//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\" alt=\"EOX\" style=\"height:25px;margin-left:10px\"/></a>"
-    url: https://data-access.${domain}/ows
+    url: https://${name}.${domain}/ows
 
 $(dataSpecification)
 
 renderer:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.1.1
+    tag: 1.2-dev1
   ingress:
-    enabled: false
+    enabled: "${OPEN_INGRESS}"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "${USE_TLS}"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    hosts:
+      - host: ${name}.${domain}
+    tls:
+      - hosts:
+          - ${name}.${domain}
+        secretName: ${name}-tls
 
 registrar:
   image:
@@ -95,7 +115,7 @@ registrar:
       - path: registrar_pycsw.backend.PycswItemBackend
         kwargs:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-          ows_url: https://data-access.${domain}/ows
+          ows_url: https://${name}.${domain}/ows
 
 $(harvesterSpecification)
 
@@ -103,7 +123,19 @@ client:
   image:
     tag: release-2.0.18
   ingress:
-    enabled: false
+    enabled: "${OPEN_INGRESS}"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "${USE_TLS}"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    hosts:
+      - host: ${name}.${domain}
+    tls:
+      - hosts:
+          - ${name}.${domain}
+        secretName: ${name}-tls
 
 config:
   objectStorage:
@@ -134,14 +166,38 @@ redis:
 ingestor:
   replicaCount: 0
   ingress:
-    enabled: false
+    enabled: "${OPEN_INGRESS}"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "${USE_TLS}"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    hosts:
+      - host: ${name}.${domain}
+    tls:
+      - hosts:
+          - ${name}.${domain}
+        secretName: ${name}-tls
 
 preprocessor:
   replicaCount: 0
 
 cache:
   ingress:
-    enabled: false
+    enabled: "${OPEN_INGRESS}"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "${USE_TLS}"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    hosts:
+      - host: ${name}.${domain}
+    tls:
+      - hosts:
+          - ${name}.${domain}
+        secretName: ${name}-tls
 EOF
 }
 

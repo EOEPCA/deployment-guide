@@ -30,11 +30,12 @@ fi
 # ingress-nginx
 ./ingress-nginx.sh "${ACTION}"
 
-# Certificate manager
-./certificate-manager.sh "${ACTION}"
-
-# Cluster Issuer
-./letsencrypt.sh "${ACTION}"
+if [ "${USE_TLS}" = "true" ]; then
+  # Certificate manager
+  ./certificate-manager.sh "${ACTION}"
+  # Cluster Issuer
+  ./letsencrypt.sh "${ACTION}"
+fi
 
 # Sealed Secrets
 ./sealed-secrets.sh "${ACTION}" "${cluster_name}"

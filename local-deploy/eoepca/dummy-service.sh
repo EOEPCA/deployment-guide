@@ -16,24 +16,30 @@ initIpDefaults
 domain="${2:-${default_domain}}"
 NAMESPACE="default"
 
+if [ "${OPEN_INGRESS}" = "true" ]; then
+  name="dummy-service-open"
+else
+  name="dummy-service"
+fi
+
 values() {
   cat - <<EOF
 ingress:
-  enabled: true
+  enabled: ${OPEN_INGRESS}
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
   hosts:
-    - host: dummy-service-open.${domain}
+    - host: ${name}.${domain}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - dummy-service-open.${domain}
-      secretName: dummy-service-tls
+        - ${name}.${domain}
+      secretName: ${name}-tls
 EOF
 }
 

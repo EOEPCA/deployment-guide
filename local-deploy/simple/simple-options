@@ -1,0 +1,13 @@
+
+# Minikube options
+# Use the 'none' drive to faciltate use of a public IP for external traffic ingress
+# and use of letsencrypt tls
+export USE_MINIKUBE_NONE_DRIVER=false
+export MINIKUBE_MEMORY_AMOUNT=8g
+
+# Ingress
+export OPEN_INGRESS=true
+
+# TLS options
+# With a public IP we can use telsencrypt for tls
+export USE_TLS=false

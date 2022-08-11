@@ -15,16 +15,22 @@ initIpDefaults
 
 domain="${2:-${default_domain}}"
 
+if [ "${OPEN_INGRESS}" = "true" ]; then
+  name="resource-catalogue-open"
+else
+  name="resource-catalogue"
+fi
+
 values() {
   cat - <<EOF
 global:
   namespace: rm
 ingress:
-  enabled: false
-  # name: resource-catalogue-open
-  # host: resource-catalogue-open.${domain}
-  # tls_host: resource-catalogue-open.${domain}
-  # tls_secret_name: resource-catalogue-open-tls
+  enabled: ${OPEN_INGRESS}
+  name: ${name}
+  host: ${name}.${domain}
+  tls_host: ${name}.${domain}
+  tls_secret_name: ${name}-tls
 db:
   volume_storage_type: standard
 pycsw:
@@ -33,7 +39,7 @@ pycsw:
   #   tag: "eoepca-0.9.0"
   config:
     server:
-      url: https://resource-catalogue.${domain}/
+      url: https://${name}.${domain}/
 EOF
 }
 

@@ -17,8 +17,12 @@ domain="${2:-${default_domain}}"
 NAMESPACE="rm"
 
 main() {
-  helmChart
-  openstackSecret
+  if [ "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then
+    helmChart
+    openstackSecret
+  else
+    echo "SKIPPING bucket operator deployment - openstack credentials have not been configured"
+  fi
 }
 
 # Secret for openstack access

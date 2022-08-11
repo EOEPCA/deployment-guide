@@ -15,6 +15,14 @@ initIpDefaults
 
 domain="${2:-${default_domain}}"
 
+if [ "${OPEN_INGRESS}" = "true" ]; then
+  name="ades-open"
+  workspaceApiName="workspace-api-open"
+else
+  name="ades"
+  workspaceApiName="workspace-api"
+fi
+
 values() {
   cat - <<EOF
 # image:
@@ -33,7 +41,7 @@ workflowExecutor:
   # Workspace integration
   useResourceManager: "true"
   resourceManagerWorkspacePrefix: "guide-user"
-  resourceManagerEndpoint: "https://workspace-api.${domain}"
+  resourceManagerEndpoint: "https://${workspaceApiName}.${domain}"
   platformDomain: "https://auth.${domain}"
   # Kubernetes storage
   processingStorageClass: standard
@@ -51,21 +59,21 @@ wps:
 persistence:
   storageClass: standard
 ingress:
-  enabled: true
+  enabled: ${OPEN_INGRESS}
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
   hosts:
-    - host: ades-open.${domain}
+    - host: ${name}.${domain}
       paths: 
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - ades-open.${domain}
-      secretName: ades-open-tls
+        - ${name}.${domain}
+      secretName: ${name}-tls
 EOF
 }
 
