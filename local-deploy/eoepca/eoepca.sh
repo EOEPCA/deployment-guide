@@ -31,6 +31,9 @@ export MINIO_ROOT_USER="${MINIO_ROOT_USER:-eoepca}"
 export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
 export HARBOR_ADMIN_PASSWORD="${HARBOR_ADMIN_PASSWORD:-changeme}"
 
+# ADES
+export STAGEOUT_TARGET="${STAGEOUT_TARGET:-workspace}"
+
 # Data
 export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
 
@@ -98,8 +101,12 @@ echo -e "\nDeploy workspace-api..."
 ./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
 
 # bucket operator
-echo -e "\nDeploy bucket-operator..."
-./bucket-operator.sh "${ACTION}" "${domain}"
+if [ "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then
+  echo -e "\nDeploy bucket-operator..."
+  ./bucket-operator.sh "${ACTION}" "${domain}"
+else
+  echo "SKIPPING bucket operator deployment - openstack credentials have not been configured"
+fi
 
 # harbor artefact registry
 echo -e "\nDeploy harbor..."

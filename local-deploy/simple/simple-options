@@ -11,3 +11,6 @@ export OPEN_INGRESS=true
 # TLS options
 # With a public IP we can use telsencrypt for tls
 export USE_TLS=false
+
+# ADES
+export STAGEOUT_TARGET="${STAGEOUT_TARGET:-minio}"

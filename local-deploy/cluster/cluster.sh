@@ -41,4 +41,8 @@ fi
 ./sealed-secrets.sh "${ACTION}" "${cluster_name}"
 
 # Minio
-./minio.sh "${ACTION}" "${domain}"
+if [ "${STAGEOUT_TARGET}" = "minio" ]; then
+  ./minio.sh "${ACTION}" "${domain}"
+else
+  echo "SKIPPING minio deployment - not required for ADES stage-out"
+fi

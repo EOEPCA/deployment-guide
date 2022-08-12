@@ -27,6 +27,9 @@ export MINIO_ROOT_USER=eoepca
 export MINIO_ROOT_PASSWORD=changeme
 export HARBOR_ADMIN_PASSWORD=changeme
 
+# ADES
+export STAGEOUT_TARGET=workspace
+
 # Data
 export CREODIAS_DATA_SPECIFICATION=true
 

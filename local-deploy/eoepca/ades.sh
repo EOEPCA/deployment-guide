@@ -33,13 +33,9 @@ workflowExecutor:
     STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
     STAGEIN_AWS_ACCESS_KEY_ID: test
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
-    # STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
-    # STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
-    # STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
-    # STAGEOUT_AWS_REGION: us-east-1
-    # STAGEOUT_OUTPUT: s3://eoepca
+$(stageOut)
   # Workspace integration
-  useResourceManager: "true"
+  useResourceManager: $(if [ "${STAGEOUT_TARGET}" = "workspace" ]; then echo -n "true"; else echo -n "false"; fi)
   resourceManagerWorkspacePrefix: "guide-user"
   resourceManagerEndpoint: "https://${workspaceApiName}.${domain}"
   platformDomain: "https://auth.${domain}"
@@ -75,6 +71,19 @@ ingress:
         - ${name}.${domain}
       secretName: ${name}-tls
 EOF
+}
+
+# Destination service for stage-out
+stageOut() {
+  if [ "${STAGEOUT_TARGET}" = "minio" ]; then
+    cat - <<EOF
+    STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
+    STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+    STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+    STAGEOUT_AWS_REGION: us-east-1
+    STAGEOUT_OUTPUT: s3://eoepca
+EOF
+  fi
 }
 
 if [ "${ACTION_HELM}" = "uninstall" ]; then
