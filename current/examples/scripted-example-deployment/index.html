@@ -760,6 +760,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#simple-deployment" class="md-nav__link">
+    Simple Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clean-up" class="md-nav__link">
     Clean-up
   </a>
@@ -981,7 +988,21 @@
 </table>
 <h2 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Permanent link">⚓︎</a></h2>
 <p>The deployment is initiated by setting the appropriate <a href="#environment-variables">environment variables</a> and invoking the <code>eoepca.sh</code> script with suitable <a href="#command-line-arguments">command-line arguments</a>. You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the <code>eoepca.sh</code> script.</p>
-<p>An example of this approach can be found in the script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias"><code>creodias</code></a> that is supported by script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options"><code>creodias-options</code></a> - used for deployment within a CREODIAS cloud. See section <a href="#custom-creodias">Custom CREODIAS</a> below for more details.</p>
+<p>We provide a couple of example wrapper scripts:</p>
+<ul>
+<li><a href="#custom-creodias"><strong>CREODIAS</strong></a><br>
+  <em>An example deployment within a CREODIAS cloud.</em><ul>
+<li>script: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias"><code>local-deploy/creodias/creodias</code></a></li>
+<li>environemnt: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options"><code>local-deploy/creodias/creodias-options</code></a></li>
+</ul>
+</li>
+<li><a href="#simple-deployment"><strong>Simple</strong></a><br>
+  <em>A basic local deployment.</em><ul>
+<li>script: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple"><code>local-deploy/csimple/simple</code></a></li>
+<li>environemnt: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple-options"><code>local-deploy/simple/simple-options</code></a></li>
+</ul>
+</li>
+</ul>
 <p><strong><em>NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the <a href="#clean-up">Clean-up</a> section below. This is particularly important in the case that the minikube &lsquo;none&rsquo; driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed.</em></strong></p>
 <p>Initiate the deployment&hellip;</p>
 <pre><code class="language-bash">./local-deploy/eoepca/eoepca.sh apply &quot;&lt;cluster-name&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
@@ -1082,6 +1103,20 @@ cd deployment-guide
 <p>As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
 <pre><code>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
 </code></pre>
+<h2 id="simple-deployment">Simple Deployment<a class="headerlink" href="#simple-deployment" title="Permanent link">⚓︎</a></h2>
+<p>A deployment wrapper script has been prepared for a &lsquo;simple&rsquo; deployment - designed to get a core local deployment of the primary servies.</p>
+<p>The script <code>local-deploy/simple/simple</code> achieves this by appropriate <a href="#environment-variables">configuration of the environment variables</a>, before launching the <a href="#command-line-arguments">eoepca.sh deployment script</a>.</p>
+<p>The simple deployment applies the following configuration:</p>
+<ul>
+<li>Assumption that the local deployment will not be accessible via a public IP, and hence:<ul>
+<li>Use of minikube driver <code>none</code> (<code>USE_MINIKUBE_NONE_DRIVER</code>) is suppressed, since the <code>none</code> driver is most useful to expose a public service</li>
+<li>Suppression of use of TLS for service ingress (<code>USE_TLS</code>), since the lack of public IP access prevents the ability of <code>letsencrpt</code> to provide signed certtificates</li>
+</ul>
+</li>
+<li>Configuration of &lsquo;open&rsquo; interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services</li>
+<li>Configuration of ADES stage-out to a local instance of <code>minio</code>, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option</li>
+<li></li>
+</ul>
 <h2 id="clean-up">Clean-up<a class="headerlink" href="#clean-up" title="Permanent link">⚓︎</a></h2>
 <p>Before initiating a fresh deployment, if a prior deployment has been attempted, then it is necessary to remove any persistent artefacts of the prior deployment. This includes&hellip;</p>
 <ol>
