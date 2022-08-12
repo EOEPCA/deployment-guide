@@ -81,7 +81,16 @@ Argument | Description | Default
 
 The deployment is initiated by setting the appropriate [environment variables](#environment-variables) and invoking the `eoepca.sh` script with suitable [command-line arguments](#command-line-arguments). You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the `eoepca.sh` script.
 
-An example of this approach can be found in the script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias) that is supported by script [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options) - used for deployment within a CREODIAS cloud. See section [Custom CREODIAS](#custom-creodias) below for more details.
+We provide a couple of example wrapper scripts:
+
+* [**CREODIAS**](#custom-creodias)<br>
+  *An example deployment within a CREODIAS cloud.*
+    * script: [`local-deploy/creodias/creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias)
+    * environemnt: [`local-deploy/creodias/creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options)
+* [**Simple**](#simple-deployment)<br>
+  *A basic local deployment.*
+    * script: [`local-deploy/csimple/simple`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple)
+    * environemnt: [`local-deploy/simple/simple-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple-options)
 
 **_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
@@ -241,6 +250,20 @@ As described in the [Data Access section](../../eoepca/data-access/#starting-the
 kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
 ```
 
+## Simple Deployment
+
+A deployment wrapper script has been prepared for a 'simple' deployment - designed to get a core local deployment of the primary servies.
+
+The script `local-deploy/simple/simple` achieves this by appropriate [configuration of the environment variables](#environment-variables), before launching the [eoepca.sh deployment script](#command-line-arguments).
+
+The simple deployment applies the following configuration:
+
+* Assumption that the local deployment will not be accessible via a public IP, and hence:
+    * Use of minikube driver `none` (`USE_MINIKUBE_NONE_DRIVER`) is suppressed, since the `none` driver is most useful to expose a public service
+    * Suppression of use of TLS for service ingress (`USE_TLS`), since the lack of public IP access prevents the ability of `letsencrpt` to provide signed certtificates
+* Configuration of 'open' interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services
+* Configuration of ADES stage-out to a local instance of `minio`, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option
+* 
 ## Clean-up
 
 Before initiating a fresh deployment, if a prior deployment has been attempted, then it is necessary to remove any persistent artefacts of the prior deployment. This includes...
