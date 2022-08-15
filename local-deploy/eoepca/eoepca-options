@@ -1,0 +1,47 @@
+
+# Minikube options
+# Use the 'none' drive to faciltate use of a public IP for external traffic ingress
+# and use of letsencrypt tls
+export USE_MINIKUBE_NONE_DRIVER="${USE_MINIKUBE_NONE_DRIVER:-true}"
+export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.22.5}"
+export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
+
+# Ingress options
+export USE_METALLB="${USE_METALLB:-false}"
+export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-false}"
+export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-false}"
+export OPEN_INGRESS="${OPEN_INGRESS:-false}"
+
+# TLS options
+export USE_TLS="${USE_TLS:-true}"
+export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
+if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
+
+# Default Credentials
+export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-Chang3me!}"
+export MINIO_ROOT_USER="${MINIO_ROOT_USER:-eoepca}"
+export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
+export HARBOR_ADMIN_PASSWORD="${HARBOR_ADMIN_PASSWORD:-changeme}"
+
+# ADES
+export STAGEOUT_TARGET="${STAGEOUT_TARGET:-workspace}"
+
+# Workspace
+export INSTALL_FLUX="${INSTALL_FLUX:-false}"
+
+# Data
+export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
+
+# OpenStack details for Bucket Operator
+#
+# EOEPCA operations user with administrative privileges
+export OS_DOMAINNAME="${OS_DOMAINNAME:-cloud_XXXXX}"
+export OS_USERNAME="${OS_USERNAME:-user@cloud.com}"  # e.g. email address
+export OS_PASSWORD="${OS_PASSWORD:-none}"
+#
+# ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration)
+export OS_MEMBERROLEID="${OS_MEMBERROLEID:-none}"
+#
+# ID of a project containing the user identity requiring write access to the created user buckets
+export OS_SERVICEPROJECTID="${OS_SERVICEPROJECTID:-none}"
+export USER_EMAIL_PATTERN="${USER_EMAIL_PATTERN:-eoepca+<name>@platform.com}"

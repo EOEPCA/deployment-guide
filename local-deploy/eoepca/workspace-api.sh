@@ -19,38 +19,17 @@ NAMESPACE="rm"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="workspace-api-open"
+  nameResourceCatalogue="resource-catalogue-open"
+  nameDataAccess="data-access-open"
 else
   name="workspace-api"
+  nameResourceCatalogue="resource-catalogue"
+  nameDataAccess="data-access-open"
 fi
 
 main() {
-  flux
-  eoepcaHelmRepo
   helmChart
-}
-
-# Flux - a pre-requisite for the Workspace API
-flux() {
-  kubectl ${ACTION_KUBECTL} -f ./flux.yaml
-}
-
-eoepcaHelmRepo() {
-  cat - <<EOF | kubectl ${ACTION_KUBECTL} -f -
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ${NAMESPACE}
----
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: eoepca
-  namespace: ${NAMESPACE}
-spec:
-  interval: 2m
-  url: https://eoepca.github.io/helm-charts/
-EOF
+  workspaceTemplates
 }
 
 # Values for helm chart
@@ -66,24 +45,19 @@ ingress:
     - hosts:
         - ${name}.${domain}
       secretName: ${name}-tls
+fluxHelmOperator:
+  enabled: ${INSTALL_FLUX}
 prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
-gitRepoResourceForHelmChartName: "eoepca"
-gitRepoResourceForHelmChartNamespace: "${NAMESPACE}"
-helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
-workspaceDomain: ${domain}
 harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
 harborPassword: "${HARBOR_ADMIN_PASSWORD}"
 umaClientSecretName: "resman-client"
 umaClientSecretNamespace: ${NAMESPACE}
-authServerIp: ${public_ip}
-authServerHostname: "auth"
-clusterIssuer: ${TLS_CLUSTER_ISSUER}
-resourceCatalogVolumeStorageType: standard
+workspaceChartsConfigMap: "workspace-charts"
 EOF
 }
 
@@ -95,8 +69,31 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.1.5
+      --version 1.1.9
   fi
+}
+
+workspaceTemplates() {
+  cleanUp
+  substituteVariables
+  applyKustomization
+  cleanUp
+}
+
+cleanUp() {
+  rm -rf workspace-templates-tmp
+}
+
+substituteVariables() {
+  mkdir workspace-templates-tmp
+  export NAMESPACE public_ip domain nameResourceCatalogue nameDataAccess
+  for template in workspace-templates/*.yaml; do
+    envsubst <$template >workspace-templates-tmp/$(basename $template)
+  done
+}
+
+applyKustomization() {
+  kubectl ${ACTION_KUBECTL} -k workspace-templates-tmp
 }
 
 main "$@"

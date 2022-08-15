@@ -36,7 +36,6 @@ values() {
 #---------------------------------------------------------------------------
 global:
   context: workspace-api
-  pep: workspace-api-pep
   domain: ${domain}
   nginxIp: ${public_ip}
   certManager:
@@ -66,7 +65,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: workspace-api-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -96,5 +94,5 @@ else
   values | helm ${ACTION_HELM} workspace-api-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.6
+    --version 1.0.7
 fi

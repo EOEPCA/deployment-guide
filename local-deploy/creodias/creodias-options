@@ -3,46 +3,12 @@
 public_ip="185.52.193.246"
 domain="eoxp.guide.eoepca.org"
 
-# Minikube options
-# Use the 'none' drive to faciltate use of a public IP for external traffic ingress
-# and use of letsencrypt tls
-export USE_MINIKUBE_NONE_DRIVER=true
-export MINIKUBE_MEMORY_AMOUNT=12g
-
-# Ingress options
-# Use minikubes built-in ingress addon
-export USE_METALLB=false
-export USE_INGRESS_NGINX_HELM=false
-export USE_INGRESS_NGINX_LOADBALANCER=false
-export OPEN_INGRESS=false
-
 # TLS options
-# With a public IP we can use telsencrypt for tls
-export USE_TLS=true
+# With a public IP we can use letsencrypt for tls
 export TLS_CLUSTER_ISSUER=letsencrypt-production
-
-# Default Credentials
-export LOGIN_SERVICE_ADMIN_PASSWORD=Chang3me!
-export MINIO_ROOT_USER=eoepca
-export MINIO_ROOT_PASSWORD=changeme
-export HARBOR_ADMIN_PASSWORD=changeme
-
-# ADES
-export STAGEOUT_TARGET=workspace
 
 # Data
 export CREODIAS_DATA_SPECIFICATION=true
 
-# OpenStack details for Bucket Operator
-#
-# EOEPCA operations user with administrative privileges
-export OS_DOMAINNAME="cloud_XXXXX"
-export OS_USERNAME="user@cloud.com"  # e.g. email address
-export OS_PASSWORD="none"
-#
-# ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration)
-export OS_MEMBERROLEID="none"
-#
-# ID of a project containing the user identity requiring write access to the created user buckets
-export OS_SERVICEPROJECTID="none"
-export USER_EMAIL_PATTERN="eoepca+<name>@platform.com"
+source ../eoepca/eoepca-options
+

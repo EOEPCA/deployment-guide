@@ -88,6 +88,7 @@ global:
 $(dataSpecification)
 
 renderer:
+  replicaCount: 2
   image:
     repository: eoepca/rm-data-access-core
     tag: 1.2-dev1
@@ -105,11 +106,18 @@ renderer:
       - hosts:
           - ${name}.${domain}
         secretName: ${name}-tls
+  # resources:
+  #   limits:
+  #     cpu: 1.5
+  #     memory: 6Gi
+  #   requests:
+  #     cpu: 1.5
+  #     memory: 6Gi
 
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.1.1
+    tag: 1.1.2
   config:
     backends:
       - path: registrar_pycsw.backend.PycswItemBackend
@@ -121,7 +129,7 @@ $(harvesterSpecification)
 
 client:
   image:
-    tag: release-2.0.18
+    tag: release-2.0.21
   ingress:
     enabled: "${OPEN_INGRESS}"
     annotations:
@@ -136,6 +144,20 @@ client:
       - hosts:
           - ${name}.${domain}
         secretName: ${name}-tls
+  config:
+    eoxserverDownloadEnabled: true
+    timeDomain:
+      - "2002-01-01T00:00:00Z"
+      - "customClientDateFuture1"
+    displayTimeDomain:
+      - "customClientDatePast1"
+      - "customClientDateFuture1"
+    selectedTimeDomain:
+      - "customClientDatePast2"
+      - "today"
+    customClientDaysPast1: 90
+    customClientDaysPast2: 1
+    customClientDaysFuture1: 7
 
 config:
   objectStorage:

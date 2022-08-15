@@ -6,33 +6,6 @@ The _Workspace_ provides protected user resource management that includes dedica
 
 The _Workspace API_ provides a REST service through which user workspaces can be created, interrogated, managed and deleted.
 
-### Prerequisite - Flux
-
-Workspaces are created by instantiating the [`rm-user-workspace` helm chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-user-workspace) for each user/group. The Workspace API uses [Flux CD](https://fluxcd.io/) as a helper to manage these subordinate helm charts - via flux resources of type `HelmRelease`. Thus, it is necessary to deploy within the cluster the aspects of flux that support this helm chart management - namely the flux `helm-controller`, `source-controller` and the Kubernetes _Custom Resource Definitions (CRD)_ for `HelmRelease` and `HelmRepository`..
-
-#### Flux Deployment
-
-The flux controllers and CRDs are deployed to the cluster from yaml via kubectl...
-
-```
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/local-deploy/eoepca/flux.yaml
-```
-
-#### EOEPCA Helm Chart Repository
-
-The flux helm-controller requires configuration which provides the details of the EOEPCA Helm Chart Repository from where the `rm-user-workspace` chart is obtained. For flux, this is configured via a Kubernetes resource of type `HelmRepository` - which is configured within the cluster by applying the following yaml to the cluster (ref. `kubectl apply -f <yaml-file>`)...
-
-```yaml
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: eoepca
-  namespace: rm
-spec:
-  interval: 2m
-  url: https://eoepca.github.io/helm-charts/
-```
-
 ### Helm Chart
 
 The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts).
@@ -40,7 +13,7 @@ The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [
 The chart is configured via values that are fully documented in the [README for the `um-workspace-api` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme).
 
 ```bash
-helm install --version 1.1.5 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
+helm install --version 1.1.9 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
 ```
 
 ### Values
@@ -53,6 +26,8 @@ At minimum, values for the following attributes should be specified:
 * Prefix for user projects in OpenStack
 * Details for underlying S3 object storage service
 * Identification of secret that provides the client credentials for resource protection
+* Whether flux components should be installed - otherwise they must already be present - [Flux Dependency](#flux-dependency)
+* Name of the ConfigMap for user workspace templates - See [User Workspace Templates](#user-workspace-templates)
 
 Example `workspace-api-values.yaml`...
 ```yaml
@@ -66,29 +41,131 @@ ingress:
     - hosts:
         - workspace-api-open.192.168.49.123.nip.io
       secretName: workspace-api-open-tls
+fluxHelmOperator:
+  enabled: true
 prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: "rm"
-gitRepoResourceForHelmChartName: "eoepca"
-gitRepoResourceForHelmChartNamespace: "rm"
-helmChartStorageClassName: "standard"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
-workspaceDomain: 192.168.49.123.nip.io
 harborUrl: "https://harbor.192.168.49.123.nip.io"
 harborUsername: "admin"
 harborPassword: "changeme"
 umaClientSecretName: "resman-client"
 umaClientSecretNamespace: "rm"
-authServerIp: 192.168.49.123
-authServerHostname: "auth"
-clusterIssuer: letsencrypt-production
-resourceCatalogVolumeStorageType: standard
+workspaceChartsConfigMap: "workspace-charts"
 ```
 
 **NOTES:**
 
 * The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the `harborXXX` values above.<br>See section [Container Registry](../container-registry/).
+
+### Flux Dependency
+
+Workspaces are created by instantiating the [`rm-user-workspace` helm chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-user-workspace) for each user/group. The Workspace API uses [Flux CD](https://fluxcd.io/) as a helper to manage these subordinate helm charts - via flux resources of type `HelmRelease`. Thus, it is necessary to deploy within the cluster the aspects of flux that support this helm chart management - namely the flux `helm-controller`, `source-controller` and the Kubernetes _Custom Resource Definitions (CRD)_ for `HelmRelease` and `HelmRepository`.
+
+In case you are not already using flux within your clsuter, then the Workspace API helm chart can be configured to deploy the required flux components...
+```
+fluxHelmOperator:
+  enabled: true  # true = install flux for me, false = I already have flux
+```
+
+### User Workspace Templates
+
+The Workspace API instantiates for each user a set of services, including a Resource Catalogue and Data Access services. These user services are instantiated via helm using templates:
+
+* **Resource Catalogue**: `template-hr-rm-resource-catalogue.yaml`
+* **Data Access**: `template-hr-vs.yaml`
+* **Protection**: `template-hr-resource-guard.yaml`
+
+Each of these templates is expressed as a flux `HelmRelease` object that describes the helm chart and values required to deploy the service.
+
+#### Templates ConfigMap
+
+The templates are provided to the Workspace API as a `ConfigMap` in the namespace of the Workspace API deployment...
+
+_(for full examples see zzz)_
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workspace-charts
+data:
+  template-hr-rm-resource-catalogue.yaml: |
+    apiVersion: helm.toolkit.fluxcd.io/v2beta1
+    kind: HelmRelease
+    metadata:
+      name: rm-resource-catalogue
+    spec:
+      chart:
+        spec:
+          chart: rm-resource-catalogue
+          version: 1.1.0
+          sourceRef:
+            kind: HelmRepository
+            name: eoepca
+            namespace: common
+      values:
+        ...
+  template-hr-vs.yaml: |
+    apiVersion: helm.toolkit.fluxcd.io/v2beta1
+    kind: HelmRelease
+    metadata:
+      name: workspace
+    spec:
+      interval: 60m
+      chart:
+        spec:
+          chart: vs
+          version: 2.1.6
+          sourceRef:
+            kind: HelmRepository
+            name: eox-charts
+            namespace: rm
+      values:
+        ...
+  template-hr-resource-guard.yaml: |
+    apiVersion: helm.toolkit.fluxcd.io/v2beta1
+    kind: HelmRelease
+    metadata:
+      name: resource-guard
+    spec:
+      chart:
+        spec:
+          chart: resource-guard
+          version: 1.0.7
+          sourceRef:
+            kind: HelmRepository
+            name: eoepca
+            namespace: common
+      values:
+        ...
+```
+
+#### HelmRepositories for Templates
+
+As can be seen above, the HelmRelease templates rely upon objects of type HelmRepository that define the hosting helm chart repositories. Thus, in support of the workspace templates, appropriate HelmRepository object must be provisioned within the cluster. For example, in support of the above examples...
+
+```yaml
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: eoepca
+  namespace: common
+spec:
+  interval: 2m
+  url: https://eoepca.github.io/helm-charts/
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: eox-charts
+  namespace: rm
+spec:
+  interval: 5m
+  url: https://charts-public.hub.eox.at/
+```
 
 ### Protection
 

@@ -263,7 +263,7 @@ The simple deployment applies the following configuration:
     * Suppression of use of TLS for service ingress (`USE_TLS`), since the lack of public IP access prevents the ability of `letsencrpt` to provide signed certtificates
 * Configuration of 'open' interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services
 * Configuration of ADES stage-out to a local instance of `minio`, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option
-* 
+
 ## Clean-up
 
 Before initiating a fresh deployment, if a prior deployment has been attempted, then it is necessary to remove any persistent artefacts of the prior deployment. This includes...

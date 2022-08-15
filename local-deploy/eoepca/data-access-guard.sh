@@ -34,7 +34,6 @@ values() {
 #---------------------------------------------------------------------------
 global:
   context: data-access
-  pep: data-access-pep
   domain: ${domain}
   nginxIp: ${public_ip}
   certManager:
@@ -53,7 +52,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: data-access-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -99,5 +97,5 @@ else
   values | helm ${ACTION_HELM} data-access-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.6
+    --version 1.0.7
 fi
