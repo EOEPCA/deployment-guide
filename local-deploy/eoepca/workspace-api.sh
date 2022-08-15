@@ -30,6 +30,7 @@ fi
 main() {
   helmChart
   workspaceTemplates
+  helmRepositories
 }
 
 # Values for helm chart
@@ -94,6 +95,29 @@ substituteVariables() {
 
 applyKustomization() {
   kubectl ${ACTION_KUBECTL} -k workspace-templates-tmp
+}
+
+helmRepositories() {
+  cat - <<EOF | kubectl ${ACTION_KUBECTL} -f -
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: eoepca
+  namespace: ${NAMESPACE}
+spec:
+  interval: 2m
+  url: https://eoepca.github.io/helm-charts/
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: eox-charts
+  namespace: ${NAMESPACE}
+spec:
+  interval: 2m
+  url: https://charts-public.hub.eox.at/
+EOF
 }
 
 main "$@"
