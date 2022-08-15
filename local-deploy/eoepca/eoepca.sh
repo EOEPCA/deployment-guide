@@ -61,12 +61,14 @@ echo -e "\nDeploy workspace-api..."
 ./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
 
 # bucket operator
-if [ "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then
-  echo -e "\nDeploy bucket-operator..."
-  ./bucket-operator.sh "${ACTION}" "${domain}"
-else
-  echo "SKIPPING bucket operator deployment - openstack credentials have not been configured"
-fi
+echo -e "\nDeploy bucket-operator..."
+./bucket-operator.sh "${ACTION}" "${domain}"
+# if [ "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then
+#   echo -e "\nDeploy bucket-operator..."
+#   ./bucket-operator.sh "${ACTION}" "${domain}"
+# else
+#   echo "SKIPPING bucket operator deployment - openstack credentials have not been configured"
+# fi
 
 # harbor artefact registry
 echo -e "\nDeploy harbor..."
