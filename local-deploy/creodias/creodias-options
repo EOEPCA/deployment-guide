@@ -11,4 +11,3 @@ export TLS_CLUSTER_ISSUER=letsencrypt-production
 export CREODIAS_DATA_SPECIFICATION=true
 
 source ../eoepca/eoepca-options
-

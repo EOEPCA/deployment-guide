@@ -15,7 +15,4 @@ export USE_TLS=false
 # ADES
 export STAGEOUT_TARGET="${STAGEOUT_TARGET:-minio}"
 
-# Workspace
-export INSTALL_FLUX=true
-
 source ../eoepca/eoepca-options
