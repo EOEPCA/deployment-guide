@@ -874,7 +874,7 @@ data:
           sourceRef:
             kind: HelmRepository
             name: eoepca
-            namespace: common
+            namespace: rm
       values:
         ...
   template-hr-vs.yaml: |
@@ -907,7 +907,7 @@ data:
           sourceRef:
             kind: HelmRepository
             name: eoepca
-            namespace: common
+            namespace: rm
       values:
         ...
 </code></pre>
@@ -917,7 +917,7 @@ data:
 kind: HelmRepository
 metadata:
   name: eoepca
-  namespace: common
+  namespace: rm
 spec:
   interval: 2m
   url: https://eoepca.github.io/helm-charts/
