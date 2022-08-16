@@ -84,7 +84,7 @@ Each of these templates is expressed as a flux `HelmRelease` object that describ
 
 The templates are provided to the Workspace API as a `ConfigMap` in the namespace of the Workspace API deployment...
 
-_(for full examples see zzz)_
+_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates))_
 
 ```yaml
 apiVersion: v1
@@ -166,6 +166,15 @@ spec:
   interval: 5m
   url: https://charts-public.hub.eox.at/
 ```
+
+#### Helm Template Parameters
+
+The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.com/p/jinja/) when applying the HelmReleases for a user workspace. The current parameters are currently supported:
+
+* **`workspace_name`**<br>
+  The name of the workspace - `{{ workspace_name }}` used to ensure unique naming of cluster resources, such as service ingress
+* **`default_owner`**<br>
+  The `uuid` of the owner of the workspace - `{{ default_owner }}` used to initialise the workspace protection
 
 ### Protection
 
