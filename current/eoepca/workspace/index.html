@@ -611,6 +611,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#helm-template-parameters" class="md-nav__link">
+    Helm Template Parameters
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -855,7 +862,7 @@ workspaceChartsConfigMap: &quot;workspace-charts&quot;
 <p>Each of these templates is expressed as a flux <code>HelmRelease</code> object that describes the helm chart and values required to deploy the service.</p>
 <h4 id="templates-configmap">Templates ConfigMap<a class="headerlink" href="#templates-configmap" title="Permanent link">⚓︎</a></h4>
 <p>The templates are provided to the Workspace API as a <code>ConfigMap</code> in the namespace of the Workspace API deployment&hellip;</p>
-<p><em>(for full examples see zzz)</em></p>
+<p><em>(for full examples see <a href="https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates">https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates</a>)</em></p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -931,6 +938,14 @@ spec:
   interval: 5m
   url: https://charts-public.hub.eox.at/
 </code></pre>
+<h4 id="helm-template-parameters">Helm Template Parameters<a class="headerlink" href="#helm-template-parameters" title="Permanent link">⚓︎</a></h4>
+<p>The Workspace API uses the <a href="https://palletsprojects.com/p/jinja/"><code>jinja2</code> templating engine</a> when applying the HelmReleases for a user workspace. The current parameters are currently supported:</p>
+<ul>
+<li><strong><code>workspace_name</code></strong><br>
+  The name of the workspace - <code>{{ workspace_name }}</code> used to ensure unique naming of cluster resources, such as service ingress</li>
+<li><strong><code>default_owner</code></strong><br>
+  The <code>uuid</code> of the owner of the workspace - <code>{{ default_owner }}</code> used to initialise the workspace protection</li>
+</ul>
 <h3 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h3>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Workspace API service to provide access authorization decisions</p>
 <pre><code class="language-bash">helm install --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
