@@ -119,7 +119,7 @@ spec:
       persistence:
         enabled: true
         existingClaim: "" # we want the claim to be generated
-        storageClass: managed-nfs-storage
+        storageClass: standard
         size: "100Gi"
 
     redis:
@@ -128,7 +128,7 @@ spec:
         existingClaim: ""
       master:
         persistence:
-          storageClass: managed-nfs-storage
+          storageClass: standard
           size: "1Gi"
           existingClaim: ""
 
