@@ -23,7 +23,7 @@ spec:
 
       # the tls host is still needed to provide the hostname for the view server client
       ingress:
-        enabled: "${OPEN_INGRESS}"
+        enabled: ${OPEN_INGRESS}
         annotations:
           kubernetes.io/ingress.class: nginx
           kubernetes.io/tls-acme: "${USE_TLS}"

@@ -43,10 +43,10 @@ global:
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
 
-  # The data-access relies on the value `ingress.tls.hosts[0]` to specify the service
+  # The data-access relies on the value 'ingress.tls.hosts[0]' to specify the service
   # hostname. So this must be supplied even if the ingress is disabled.
   ingress:
-    enabled: "${OPEN_INGRESS}"
+    enabled: ${OPEN_INGRESS}
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "${USE_TLS}"
@@ -93,7 +93,7 @@ renderer:
     repository: eoepca/rm-data-access-core
     tag: 1.2-dev1
   ingress:
-    enabled: "${OPEN_INGRESS}"
+    enabled: ${OPEN_INGRESS}
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "${USE_TLS}"
@@ -131,7 +131,7 @@ client:
   image:
     tag: release-2.0.21
   ingress:
-    enabled: "${OPEN_INGRESS}"
+    enabled: ${OPEN_INGRESS}
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "${USE_TLS}"
@@ -188,7 +188,7 @@ redis:
 ingestor:
   replicaCount: 0
   ingress:
-    enabled: "${OPEN_INGRESS}"
+    enabled: ${OPEN_INGRESS}
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "${USE_TLS}"
@@ -207,7 +207,7 @@ preprocessor:
 
 cache:
   ingress:
-    enabled: "${OPEN_INGRESS}"
+    enabled: ${OPEN_INGRESS}
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "${USE_TLS}"
