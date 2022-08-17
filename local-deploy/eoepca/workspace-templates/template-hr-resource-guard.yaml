@@ -72,7 +72,7 @@ spec:
           nginx.ingress.kubernetes.io/enable-cors: "true"
           nginx.ingress.kubernetes.io/rewrite-target: "/$1"
       client:
-        credentialsSecretName: rm-uma-user-agent
+        credentialsSecretName: "${UMA_CLIENT_SECRET}"
       logging:
         level: info
       unauthorizedResponse: 'Bearer realm="https://auth.${domain}/oxauth/auth/passport/passportlogin.htm"'

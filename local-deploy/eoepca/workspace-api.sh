@@ -16,6 +16,7 @@ initIpDefaults
 public_ip="${2:-${default_public_ip}}"
 domain="${3:-${default_domain}}"
 NAMESPACE="rm"
+UMA_CLIENT_SECRET="resman-client"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="workspace-api-open"
@@ -56,7 +57,7 @@ s3Region: "RegionOne"
 harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
 harborPassword: "${HARBOR_ADMIN_PASSWORD}"
-umaClientSecretName: "resman-client"
+umaClientSecretName: "${UMA_CLIENT_SECRET}"
 umaClientSecretNamespace: ${NAMESPACE}
 workspaceChartsConfigMap: "workspace-charts"
 EOF
@@ -70,7 +71,7 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.1.10
+      --version 1.1.11
   fi
 }
 
@@ -87,7 +88,7 @@ cleanUp() {
 
 substituteVariables() {
   mkdir workspace-templates-tmp
-  export NAMESPACE public_ip domain nameResourceCatalogue nameDataAccess
+  export NAMESPACE UMA_CLIENT_SECRET public_ip domain nameResourceCatalogue nameDataAccess
   for template in workspace-templates/*.yaml; do
     envsubst <$template >workspace-templates-tmp/$(basename $template)
   done

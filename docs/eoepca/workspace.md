@@ -13,7 +13,7 @@ The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [
 The chart is configured via values that are fully documented in the [README for the `um-workspace-api` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme).
 
 ```bash
-helm install --version 1.1.9 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
+helm install --version 1.1.11 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
 ```
 
 ### Values
