@@ -26,7 +26,7 @@ The chart is configured via values that are fully documented in the [README for 
 It is expected to deploy multiple instances of the Resource Guard chart, one for each Resource Server to be protected.
 
 ```bash
-helm install --version 1.0.6 --values myservice-guard-values.yaml myservice-guard eoepca/resource-guard
+helm install --version 1.0.7 --values myservice-guard-values.yaml myservice-guard eoepca/resource-guard
 ```
 
 ## Values
@@ -49,7 +49,6 @@ Example `myservice-guard-values.yaml`...
 #---------------------------------------------------------------------------
 global:
   context: myservice
-  pep: myservice-pep
   domain: 192.168.49.123.nip.io
   nginxIp: 192.168.49.123
   certManager:
@@ -77,7 +76,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: myservice-agent
   nginxIntegration:
     enabled: true
     hosts:
