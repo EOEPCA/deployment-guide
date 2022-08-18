@@ -70,7 +70,7 @@ spec:
       config:
         # ???: is `redis` needed?
         # redis:
-        #   host: workspace-redis-master
+        #   host: vs-redis-master
         #   port: 6379
         harvesters:
           # ???: this is different to the system `data-access` which
