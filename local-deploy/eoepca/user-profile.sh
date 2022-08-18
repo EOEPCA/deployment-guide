@@ -29,9 +29,9 @@ EOF
 }
 
 if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace "${NAMESPACE}" uninstall um-user-profile
+  helm --namespace "${NAMESPACE}" uninstall user-profile
 else
-  values | helm ${ACTION_HELM} um-user-profile user-profile -f - \
+  values | helm ${ACTION_HELM} user-profile user-profile -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
     --version 1.1.3

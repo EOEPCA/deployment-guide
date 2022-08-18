@@ -32,7 +32,7 @@ config:
     name: eoepca-userman-pvc
 opendj:
   # This can be useful to workaround helm 'failed to upgrade' errors due to
-  # immutable fields in the 'um-login-service-persistence-init-ss' job
+  # immutable fields in the 'login-service-persistence-init-ss' job
   # persistence:
   #   enabled: false
   volumeClaim:
@@ -65,9 +65,9 @@ EOF
 }
 
 if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace "${NAMESPACE}" uninstall um-login-service
+  helm --namespace "${NAMESPACE}" uninstall login-service
 else
-  values | helm ${ACTION_HELM} um-login-service login-service -f - \
+  values | helm ${ACTION_HELM} login-service login-service -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
     --version 1.1.5
