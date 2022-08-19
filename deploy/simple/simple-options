@@ -13,6 +13,6 @@ export OPEN_INGRESS=true
 export USE_TLS=false
 
 # ADES
-export STAGEOUT_TARGET="${STAGEOUT_TARGET:-minio}"
+export STAGEOUT_TARGET=minio
 
 source ../eoepca/eoepca-options
