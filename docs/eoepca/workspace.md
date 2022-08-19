@@ -84,7 +84,7 @@ Each of these templates is expressed as a flux `HelmRelease` object that describ
 
 The templates are provided to the Workspace API as a `ConfigMap` in the namespace of the Workspace API deployment...
 
-_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates))_
+_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates))_
 
 ```yaml
 apiVersion: v1
@@ -286,7 +286,7 @@ data:
 
 The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.123.nip.io](https://auth.192.168.49.123.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./local-deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ### Workspace API Usage
@@ -359,4 +359,4 @@ See the [README for the Bucket Operator](https://github.com/EOEPCA/rm-bucket-ope
 For a worked example see our [Scripted Example Deployment](../../examples/scripted-example-deployment) - in particular:
 
 * [Openstack Configuration](../../examples/scripted-example-deployment/#openstack-configuration)
-* [Deployment Script](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/eoepca/bucket-operator.sh)
+* [Deployment Script](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/bucket-operator.sh)

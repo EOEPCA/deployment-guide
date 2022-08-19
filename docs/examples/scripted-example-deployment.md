@@ -1,14 +1,14 @@
 # Scripted Example Deployment
 
-As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory `deployment-guide/local-deploy` of the source repository for this guide...
+As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory `deployment-guide/deploy` of the source repository for this guide...
 
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide \
 && cd deployment-guide \
-&& ls local-deploy
+&& ls deploy
 ```
 
-The script `local-deploy/eoepca/eoepca.sh` acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
+The script `deploy/eoepca/eoepca.sh` acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
 
 Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the CREODIAS infrastructure and data offering.
 
@@ -27,7 +27,7 @@ The Protection step is split from Deployment as there are some manual steps to b
 
 ## Configuration
 
-The script `local-deploy/eoepca/eoepca.sh` is configured by some environment variables and command-line arguments.
+The script `deploy/eoepca/eoepca.sh` is configured by some environment variables and command-line arguments.
 
 ### Environment Variables
 
@@ -40,7 +40,7 @@ Variable | Description | Default
 **USE_INGRESS_NGINX_HELM** | Install the ingress-nginx controller using the published helm chart, rather than relying upon the version that is built-in to minikube. By default we prefer the version that is built in to minikube.  | `false`
 **USE_INGRESS_NGINX_LOADBALANCER** | Patch the built-in minikube nginx-ingress-controller to offer a service of type `LoadBalancer`, rather than the default `NodePort`. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default `NodePort` configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only applicable for `USE_INGRESS_NGINX_HELM=false` (i.e. when using the minikube built-in ) | `false`
 **USE_TLS** | Indicates whether TLS will be configured for service `Ingress` rules.<br>If not (i.e. `USE_TLS=false`), then the ingress-controller is configured to disable `ssl-redirect`, and `TLS_CLUSTER_ISSUER=notls` is set. | `true`
-**TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box _ClusterIssuer_ instances are configured in the file `local-deploy/cluster/letsencrypt.sh`. | `letsencrypt-staging`
+**TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box _ClusterIssuer_ instances are configured in the file `deploy/cluster/letsencrypt.sh`. | `letsencrypt-staging`
 **LOGIN_SERVICE_ADMIN_PASSWORD** | Initial password for the `admin` user in the login-service. | `changeme`
 **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
 **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
@@ -85,18 +85,18 @@ We provide a couple of example wrapper scripts:
 
 * [**CREODIAS**](#custom-creodias)<br>
   *An example deployment within a CREODIAS cloud.*
-    * script: [`local-deploy/creodias/creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias)
-    * environemnt: [`local-deploy/creodias/creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options)
+    * script: [`deploy/creodias/creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias)
+    * environemnt: [`deploy/creodias/creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options)
 * [**Simple**](#simple-deployment)<br>
   *A basic local deployment.*
-    * script: [`local-deploy/csimple/simple`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple)
-    * environemnt: [`local-deploy/simple/simple-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple-options)
+    * script: [`deploy/csimple/simple`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple)
+    * environemnt: [`deploy/simple/simple-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-options)
 
 **_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
 Initiate the deployment...
 ```bash
-./local-deploy/eoepca/eoepca.sh apply "<cluster-name>" "<public-ip>" "<domain>"
+./deploy/eoepca/eoepca.sh apply "<cluster-name>" "<public-ip>" "<domain>"
 ```
 
 The deployment takes 10+ minutes - depending on the resources of your host/cluster. The progress can be monitored...
@@ -108,7 +108,7 @@ The deployment is ready once all pods are either `Running` or `Completed`. This 
 
 ## Protection
 
-The protection of resource server endpoints is applied with the script `local-deploy/eoepca/eoepca-protection.sh`. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script `eoepca.sh`).
+The protection of resource server endpoints is applied with the script `deploy/eoepca/eoepca-protection.sh`. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script `eoepca.sh`).
 
 The script `eoepca-protection.sh` introduces two users `eric` and `bob` to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).
 
@@ -130,7 +130,7 @@ Apply the protection...<br>
 _Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main [deployment](#deployment)._
 
 ```bash
-./local-deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
+./deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
 ```
 
 ## Create User Workspaces
@@ -192,7 +192,7 @@ A json response is returned, in which the field `id_token` provides the user ID 
 
 ### Using `create-workspace` helper script
 
-As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
 git clone git@github.com:EOEPCA/deployment-guide
@@ -209,7 +209,7 @@ Usage:
 For example...
 
 ```bash
-./local-deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+./deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
 ```
 
 The script prompts for the password of the `admin` user.
@@ -218,7 +218,7 @@ By default `<client-id>` and `<client-secret>` are read from the `client.yaml` f
 
 ## Custom CREODIAS
 
-Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options).
+Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options).
 
 With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
 
@@ -229,14 +229,14 @@ With reference to the file `creodias-options`, particular attention is drawn to 
 
 Once the file `creodias-options` has been well populated for your environment, then the deployment is initiated with...
 ```bash
-./local-deploy/creodias/creodias
+./deploy/creodias/creodias
 ```
 ...noting that this step is a customised version of that described in section [Deployment](#deployment).
 
 Similarly the script `creodias-protection` is a customised version of that described in section [Apply Protection](#apply-protection). Once the main deployment has completed, then the [test users can be created](#create-test-users), their IDs (`Inum`) set in script `creodias-protection`, and the resource protection can then be applied...
 
 ```bash
-./local-deploy/creodias/creodias-protection
+./deploy/creodias/creodias-protection
 ```
 
 These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.
@@ -254,7 +254,7 @@ kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harve
 
 A deployment wrapper script has been prepared for a 'simple' deployment - designed to get a core local deployment of the primary servies.
 
-The script `local-deploy/simple/simple` achieves this by appropriate [configuration of the environment variables](#environment-variables), before launching the [eoepca.sh deployment script](#command-line-arguments).
+The script `deploy/simple/simple` achieves this by appropriate [configuration of the environment variables](#environment-variables), before launching the [eoepca.sh deployment script](#command-line-arguments).
 
 The simple deployment applies the following configuration:
 
@@ -280,9 +280,9 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
 
 1. **Client Credentials**<br>
   During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file `client.yaml`. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments...<br>
-  `rm -rf ./local-deploy/eoepca/client.yaml`
+  `rm -rf ./deploy/eoepca/client.yaml`
 
-There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
+There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
 ```bash
-./local-deploy/cluster/clean
+./deploy/cluster/clean
 ```

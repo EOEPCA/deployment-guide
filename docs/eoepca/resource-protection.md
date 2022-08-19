@@ -116,7 +116,7 @@ client-secret: <my-secret>
 
 To obtain the _Client Credentials_ required by the `uma-user-agent` it is necessary to register a client with the `login-service`, or use the credentials for an existing client.
 
-A [helper script](https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/register-client) is provided to register a basic client and obtain the required credentials. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+A [helper script](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/register-client) is provided to register a basic client and obtain the required credentials. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
 git clone git@github.com:EOEPCA/deployment-guide
@@ -133,7 +133,7 @@ Usage:
 For example...
 
 ```bash
-./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient
+./deploy/bin/register-client auth.192.168.49.123.nip.io myclient
 
 INFO: Preparing docker image... [done]
 Client successfully registered.
@@ -144,12 +144,12 @@ client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
 
 Or to register OIDC redirect URLs...
 ```bash
-./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient https://portal.192.168.49.123.nip.io/oidc/callback/ https://portal.192.168.49.123.nip.io/logout
+./deploy/bin/register-client auth.192.168.49.123.nip.io myclient https://portal.192.168.49.123.nip.io/oidc/callback/ https://portal.192.168.49.123.nip.io/logout
 ```
 
 The script writes the 'client credentials' to stdout - in the expected YAML configuration file format - which can be redirected to file...
 ```bash
-./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient | tee client.yaml
+./deploy/bin/register-client auth.192.168.49.123.nip.io myclient | tee client.yaml
 ```
 ...writes the client credentials to the file `client.yaml`.
 
