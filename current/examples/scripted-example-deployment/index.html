@@ -810,12 +810,12 @@
 
 
 <h1 id="scripted-example-deployment">Scripted Example Deployment<a class="headerlink" href="#scripted-example-deployment" title="Permanent link">⚓︎</a></h1>
-<p>As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory <code>deployment-guide/local-deploy</code> of the source repository for this guide&hellip;</p>
+<p>As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory <code>deployment-guide/deploy</code> of the source repository for this guide&hellip;</p>
 <pre><code class="language-bash">git clone https://github.com/EOEPCA/deployment-guide \
 &amp;&amp; cd deployment-guide \
-&amp;&amp; ls local-deploy
+&amp;&amp; ls deploy
 </code></pre>
-<p>The script <code>local-deploy/eoepca/eoepca.sh</code> acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.</p>
+<p>The script <code>deploy/eoepca/eoepca.sh</code> acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.</p>
 <p>Based upon our development experiences on CREODIAS, there is a wrapper script <code>creodias</code> with particular customisations suited to the CREODIAS infrastructure and data offering.</p>
 <p>The following subsections lead through the steps for a full local deployment. Whilst minikube is assumed, minimal adaptions are required to make the deployment to your existing Kubernetes cluster.</p>
 <p>The deployment follows these broad steps:</p>
@@ -829,7 +829,7 @@
 </ul>
 <p>The Protection step is split from Deployment as there are some manual steps to be performed before the Protection can be applied.</p>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">⚓︎</a></h2>
-<p>The script <code>local-deploy/eoepca/eoepca.sh</code> is configured by some environment variables and command-line arguments.</p>
+<p>The script <code>deploy/eoepca/eoepca.sh</code> is configured by some environment variables and command-line arguments.</p>
 <h3 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">⚓︎</a></h3>
 <table>
 <thead>
@@ -877,7 +877,7 @@
 </tr>
 <tr>
 <td><strong>TLS_CLUSTER_ISSUER</strong></td>
-<td>The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box <em>ClusterIssuer</em> instances are configured in the file <code>local-deploy/cluster/letsencrypt.sh</code>.</td>
+<td>The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box <em>ClusterIssuer</em> instances are configured in the file <code>deploy/cluster/letsencrypt.sh</code>.</td>
 <td><code>letsencrypt-staging</code></td>
 </tr>
 <tr>
@@ -992,27 +992,27 @@
 <ul>
 <li><a href="#custom-creodias"><strong>CREODIAS</strong></a><br>
   <em>An example deployment within a CREODIAS cloud.</em><ul>
-<li>script: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias"><code>local-deploy/creodias/creodias</code></a></li>
-<li>environemnt: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options"><code>local-deploy/creodias/creodias-options</code></a></li>
+<li>script: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias"><code>deploy/creodias/creodias</code></a></li>
+<li>environemnt: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options"><code>deploy/creodias/creodias-options</code></a></li>
 </ul>
 </li>
 <li><a href="#simple-deployment"><strong>Simple</strong></a><br>
   <em>A basic local deployment.</em><ul>
-<li>script: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple"><code>local-deploy/csimple/simple</code></a></li>
-<li>environemnt: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/simple/simple-options"><code>local-deploy/simple/simple-options</code></a></li>
+<li>script: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple"><code>deploy/csimple/simple</code></a></li>
+<li>environemnt: <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-options"><code>deploy/simple/simple-options</code></a></li>
 </ul>
 </li>
 </ul>
 <p><strong><em>NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the <a href="#clean-up">Clean-up</a> section below. This is particularly important in the case that the minikube &lsquo;none&rsquo; driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed.</em></strong></p>
 <p>Initiate the deployment&hellip;</p>
-<pre><code class="language-bash">./local-deploy/eoepca/eoepca.sh apply &quot;&lt;cluster-name&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
+<pre><code class="language-bash">./deploy/eoepca/eoepca.sh apply &quot;&lt;cluster-name&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
 </code></pre>
 <p>The deployment takes 10+ minutes - depending on the resources of your host/cluster. The progress can be monitored&hellip;</p>
 <pre><code class="language-bash">kubectl get pods -A
 </code></pre>
 <p>The deployment is ready once all pods are either <code>Running</code> or <code>Completed</code>. This can be further confirmed by accessing the login-service web interface at <code>https://auth.&lt;domain&gt;/</code> and logging in as user <code>admin</code> using the credentials configured via <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
-<p>The protection of resource server endpoints is applied with the script <code>local-deploy/eoepca/eoepca-protection.sh</code>. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script <code>eoepca.sh</code>).</p>
+<p>The protection of resource server endpoints is applied with the script <code>deploy/eoepca/eoepca-protection.sh</code>. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script <code>eoepca.sh</code>).</p>
 <p>The script <code>eoepca-protection.sh</code> introduces two users <code>eric</code> and <code>bob</code> to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).</p>
 <p>Thus, the users must <a href="#create-test-users">first be created</a> in the login-service and their unique IDs passed to the protection script.</p>
 <pre><code>Usage: eoepca-protection.sh &lt;action&gt; &lt;eric-id&gt; &lt;bob-id&gt; &lt;public-ip&gt; &lt;domain&gt;
@@ -1023,7 +1023,7 @@
 <h3 id="apply-protection">Apply Protection<a class="headerlink" href="#apply-protection" title="Permanent link">⚓︎</a></h3>
 <p>Apply the protection&hellip;<br>
 <em>Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main <a href="#deployment">deployment</a>.</em></p>
-<pre><code class="language-bash">./local-deploy/eoepca/eoepca-protection.sh apply &quot;&lt;eric-id&gt;&quot; &quot;&lt;bob-id&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
+<pre><code class="language-bash">./deploy/eoepca/eoepca-protection.sh apply &quot;&lt;eric-id&gt;&quot; &quot;&lt;bob-id&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
 </code></pre>
 <h2 id="create-user-workspaces">Create User Workspaces<a class="headerlink" href="#create-user-workspaces" title="Permanent link">⚓︎</a></h2>
 <p>The protection steps created the test users <code>eric</code> and <code>bob</code>. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see <a href="../workspace/">Workspace</a>.</p>
@@ -1068,7 +1068,7 @@
 </code></pre>
 <p>A json response is returned, in which the field <code>id_token</code> provides the user ID token for the <code>admin</code> user.</p>
 <h3 id="using-create-workspace-helper-script">Using <code>create-workspace</code> helper script<a class="headerlink" href="#using-create-workspace-helper-script" title="Permanent link">⚓︎</a></h3>
-<p>As an aide there is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/create-workspace"><code>create-workspace</code></a>. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
+<p>As an aide there is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/create-workspace"><code>create-workspace</code></a>. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
 <pre><code class="language-bash">git clone git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 </code></pre>
@@ -1077,12 +1077,12 @@ cd deployment-guide
   create-workspace &lt;domain&gt; &lt;user&gt; &lt;user-inum&gt; [&lt;client-id&gt; &lt;client-secret&gt;]
 </code></pre>
 <p>For example&hellip;</p>
-<pre><code class="language-bash">./local-deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+<pre><code class="language-bash">./deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
 </code></pre>
 <p>The script prompts for the password of the <code>admin</code> user.</p>
 <p>By default <code>&lt;client-id&gt;</code> and <code>&lt;client-secret&gt;</code> are read from the <code>client.yaml</code> file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.</p>
 <h2 id="custom-creodias">Custom CREODIAS<a class="headerlink" href="#custom-creodias" title="Permanent link">⚓︎</a></h2>
-<p>Based upon our development experiences on CREODIAS, there is a wrapper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias"><code>creodias</code></a> with particular customisations suited to the <a href="https://creodias.eu/">CREODIAS</a> infrastructure and data offering. The customisations are expressed through <a href="#environment-variables">environment variables (as detailed above)</a> that are captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/creodias/creodias-options"><code>creodias-options</code></a>.</p>
+<p>Based upon our development experiences on CREODIAS, there is a wrapper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias"><code>creodias</code></a> with particular customisations suited to the <a href="https://creodias.eu/">CREODIAS</a> infrastructure and data offering. The customisations are expressed through <a href="#environment-variables">environment variables (as detailed above)</a> that are captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options"><code>creodias-options</code></a>.</p>
 <p>With reference to the file <code>creodias-options</code>, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment&hellip;</p>
 <ul>
 <li><code>public_ip</code> - The public IP address through which the deployment is exposed via the ingress-controller</li>
@@ -1091,11 +1091,11 @@ cd deployment-guide
 <li>OpenStack details: see section <a href="#openstack-configuration">Openstack Configuration</a></li>
 </ul>
 <p>Once the file <code>creodias-options</code> has been well populated for your environment, then the deployment is initiated with&hellip;</p>
-<pre><code class="language-bash">./local-deploy/creodias/creodias
+<pre><code class="language-bash">./deploy/creodias/creodias
 </code></pre>
 <p>&hellip;noting that this step is a customised version of that described in section <a href="#deployment">Deployment</a>.</p>
 <p>Similarly the script <code>creodias-protection</code> is a customised version of that described in section <a href="#apply-protection">Apply Protection</a>. Once the main deployment has completed, then the <a href="#create-test-users">test users can be created</a>, their IDs (<code>Inum</code>) set in script <code>creodias-protection</code>, and the resource protection can then be applied&hellip;</p>
-<pre><code class="language-bash">./local-deploy/creodias/creodias-protection
+<pre><code class="language-bash">./deploy/creodias/creodias-protection
 </code></pre>
 <p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
 <h3 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h3>
@@ -1105,7 +1105,7 @@ cd deployment-guide
 </code></pre>
 <h2 id="simple-deployment">Simple Deployment<a class="headerlink" href="#simple-deployment" title="Permanent link">⚓︎</a></h2>
 <p>A deployment wrapper script has been prepared for a &lsquo;simple&rsquo; deployment - designed to get a core local deployment of the primary servies.</p>
-<p>The script <code>local-deploy/simple/simple</code> achieves this by appropriate <a href="#environment-variables">configuration of the environment variables</a>, before launching the <a href="#command-line-arguments">eoepca.sh deployment script</a>.</p>
+<p>The script <code>deploy/simple/simple</code> achieves this by appropriate <a href="#environment-variables">configuration of the environment variables</a>, before launching the <a href="#command-line-arguments">eoepca.sh deployment script</a>.</p>
 <p>The simple deployment applies the following configuration:</p>
 <ul>
 <li>Assumption that the local deployment will not be accessible via a public IP, and hence:<ul>
@@ -1134,11 +1134,11 @@ cd deployment-guide
 <li>
 <p><strong>Client Credentials</strong><br>
   During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file <code>client.yaml</code>. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments&hellip;<br>
-  <code>rm -rf ./local-deploy/eoepca/client.yaml</code></p>
+  <code>rm -rf ./deploy/eoepca/client.yaml</code></p>
 </li>
 </ol>
-<p>There is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/cluster/clean"><code>clean</code></a> that can be used for steps 2 and 3 above, (the script does not delete the cluster).</p>
-<pre><code class="language-bash">./local-deploy/cluster/clean
+<p>There is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/cluster/clean"><code>clean</code></a> that can be used for steps 2 and 3 above, (the script does not delete the cluster).</p>
+<pre><code class="language-bash">./deploy/cluster/clean
 </code></pre>
 
               

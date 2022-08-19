@@ -862,7 +862,7 @@ workspaceChartsConfigMap: &quot;workspace-charts&quot;
 <p>Each of these templates is expressed as a flux <code>HelmRelease</code> object that describes the helm chart and values required to deploy the service.</p>
 <h4 id="templates-configmap">Templates ConfigMap<a class="headerlink" href="#templates-configmap" title="Permanent link">⚓︎</a></h4>
 <p>The templates are provided to the Workspace API as a <code>ConfigMap</code> in the namespace of the Workspace API deployment&hellip;</p>
-<p><em>(for full examples see <a href="https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates">https://github.com/EOEPCA/deployment-guide/tree/main/local-deploy/eoepca/workspace-templates</a>)</em></p>
+<p><em>(for full examples see <a href="https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates">https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates</a>)</em></p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -1037,7 +1037,7 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 </code></pre>
 <p>The client credentials are obtained by registration of a client at the login service web interface - e.g. <a href="https://auth.192.168.49.123.nip.io">https://auth.192.168.49.123.nip.io</a>. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
-<pre><code class="language-bash">./local-deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
 </code></pre>
 <h3 id="workspace-api-usage">Workspace API Usage<a class="headerlink" href="#workspace-api-usage" title="Permanent link">⚓︎</a></h3>
 <p>The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192.168.49.123.nip.io/.<br>
@@ -1089,7 +1089,7 @@ For example&hellip;</p>
 <p>For a worked example see our <a href="../../examples/scripted-example-deployment">Scripted Example Deployment</a> - in particular:</p>
 <ul>
 <li><a href="../../examples/scripted-example-deployment/#openstack-configuration">Openstack Configuration</a></li>
-<li><a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/eoepca/bucket-operator.sh">Deployment Script</a></li>
+<li><a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/bucket-operator.sh">Deployment Script</a></li>
 </ul>
 
               

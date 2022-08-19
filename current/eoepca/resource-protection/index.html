@@ -827,7 +827,7 @@ client-secret: &lt;my-secret&gt;
 </code></pre>
 <h3 id="client-registration">Client Registration<a class="headerlink" href="#client-registration" title="Permanent link">⚓︎</a></h3>
 <p>To obtain the <em>Client Credentials</em> required by the <code>uma-user-agent</code> it is necessary to register a client with the <code>login-service</code>, or use the credentials for an existing client.</p>
-<p>A <a href="https://github.com/EOEPCA/deployment-guide/blob/main/local-deploy/bin/register-client">helper script</a> is provided to register a basic client and obtain the required credentials. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
+<p>A <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/register-client">helper script</a> is provided to register a basic client and obtain the required credentials. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
 <pre><code class="language-bash">git clone git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 </code></pre>
@@ -836,7 +836,7 @@ cd deployment-guide
   register_client &lt;authorization-server-hostname&gt; &lt;client-name&gt; [&lt;redirect-uri&gt; [&lt;logout-uri&gt;]]
 </code></pre>
 <p>For example&hellip;</p>
-<pre><code class="language-bash">./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io myclient
 
 INFO: Preparing docker image... [done]
 Client successfully registered.
@@ -845,10 +845,10 @@ client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
 client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
 </code></pre>
 <p>Or to register OIDC redirect URLs&hellip;</p>
-<pre><code class="language-bash">./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient https://portal.192.168.49.123.nip.io/oidc/callback/ https://portal.192.168.49.123.nip.io/logout
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io myclient https://portal.192.168.49.123.nip.io/oidc/callback/ https://portal.192.168.49.123.nip.io/logout
 </code></pre>
 <p>The script writes the &lsquo;client credentials&rsquo; to stdout - in the expected YAML configuration file format - which can be redirected to file&hellip;</p>
-<pre><code class="language-bash">./local-deploy/bin/register-client auth.192.168.49.123.nip.io myclient | tee client.yaml
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io myclient | tee client.yaml
 </code></pre>
 <p>&hellip;writes the client credentials to the file <code>client.yaml</code>.</p>
 <p><strong>NOTE that the <code>register-client</code> helper relies upon <a href="https://docs.docker.com/engine/"><code>docker</code></a> to build and run the script.</strong></p>
