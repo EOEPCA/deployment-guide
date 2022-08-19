@@ -40,33 +40,48 @@ fi
 #-------------------------------------------------------------------------------
 
 # portal
-echo -e "\nDeploy portal..."
-./portal.sh "${ACTION}" "${domain}"
+if [ "${REQUIRE_PORTAL}" = "true" ]; then
+  echo -e "\nDeploy portal..."
+  ./portal.sh "${ACTION}" "${domain}"
+fi
 
 # PDE
-echo -e "\nDeploy PDE..."
-./pde.sh "${ACTION}" "${domain}"
+REQUIRE_PDE
+if [ "${REQUIRE_PDE}" = "true" ]; then
+  echo -e "\nDeploy PDE..."
+  ./pde.sh "${ACTION}" "${domain}"
+fi
 
 #-------------------------------------------------------------------------------
 # Protection
 #-------------------------------------------------------------------------------
 
 # dummy service
-echo -e "\nProtect dummy-service..."
-./dummy-service-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_DUMMY_SERVICE_PROTECTION}" = "true" ]; then
+  echo -e "\nProtect dummy-service..."
+  ./dummy-service-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+fi
 
 # ades
-echo -e "\nProtect ades..."
-./ades-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_ADES_PROTECTION}" = "true" ]; then
+  echo -e "\nProtect ades..."
+  ./ades-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+fi
 
 # resource catalogue
-echo -e "\nProtect resource-catalogue..."
-./resource-catalogue-guard.sh "$ACTION" "${public_ip}" "${domain}"
+if [ "${REQUIRE_RESOURCE_CATALOGUE_PROTECTION}" = "true" ]; then
+  echo -e "\nProtect resource-catalogue..."
+  ./resource-catalogue-guard.sh "$ACTION" "${public_ip}" "${domain}"
+fi
 
 # data access
-echo -e "\nProtect data-access..."
-./data-access-guard.sh "$ACTION" "${public_ip}" "${domain}"
+if [ "${REQUIRE_DATA_ACCESS_PROTECTION}" = "true" ]; then
+  echo -e "\nProtect data-access..."
+  ./data-access-guard.sh "$ACTION" "${public_ip}" "${domain}"
+fi
 
 # workspace api
-echo -e "\nProtect workspace-api..."
-./workspace-api-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_WORKSPACE_API_PROTECTION}" = "true" ]; then
+  echo -e "\nProtect workspace-api..."
+  ./workspace-api-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+fi

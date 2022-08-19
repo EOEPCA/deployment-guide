@@ -25,51 +25,67 @@ public_ip="${3:-${default_public_ip}}"
 domain="${4:-${default_domain}}"
 
 # storage
-echo -e "\nstorage..."
-./storage.sh "${ACTION}"
+if [ "${REQUIRE_STORAGE}" = "true" ]; then
+  echo -e "\nstorage..."
+  ./storage.sh "${ACTION}"
+fi
 
 # dummy-service
-echo -e "\nDeploy dummy-service..."
-./dummy-service.sh "${ACTION}" "${domain}"
+if [ "${REQUIRE_DUMMY_SERVICE}" = "true" ]; then
+  echo -e "\nDeploy dummy-service..."
+  ./dummy-service.sh "${ACTION}" "${domain}"
+fi
 
 # login-service
-echo -e "\nDeploy login-service..."
-./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_LOGIN_SERVICE}" = "true" ]; then
+  echo -e "\nDeploy login-service..."
+  ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
+fi
 
 # pdp
-echo -e "\nDeploy pdp..."
-./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_PDP}" = "true" ]; then
+  echo -e "\nDeploy pdp..."
+  ./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
+fi
 
 # user-profile
-echo -e "\nDeploy user-profile..."
-./user-profile.sh "${ACTION}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_USER_PROFILE}" = "true" ]; then
+  echo -e "\nDeploy user-profile..."
+  ./user-profile.sh "${ACTION}" "${public_ip}" "${domain}"
+fi
 
 # ades
-echo -e "\nDeploy ades..."
-./ades.sh "${ACTION}" "${domain}"
+if [ "${REQUIRE_ADES}" = "true" ]; then
+  echo -e "\nDeploy ades..."
+  ./ades.sh "${ACTION}" "${domain}"
+fi
 
 # resource catalogue
-echo -e "\nDeploy resource-catalogue..."
-./resource-catalogue.sh "${ACTION}" "${domain}"
+if [ "${REQUIRE_RESOURCE_CATALOGUE}" = "true" ]; then
+  echo -e "\nDeploy resource-catalogue..."
+  ./resource-catalogue.sh "${ACTION}" "${domain}"
+fi
 
 # data access
-echo -e "\nDeploy data-access..."
-./data-access.sh "${ACTION}" "${domain}"
+if [ "${REQUIRE_DATA_ACCESS}" = "true" ]; then
+  echo -e "\nDeploy data-access..."
+  ./data-access.sh "${ACTION}" "${domain}"
+fi
 
 # workspace api
-echo -e "\nDeploy workspace-api..."
-./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
+if [ "${REQUIRE_WORKSPACE_API}" = "true" ]; then
+  echo -e "\nDeploy workspace-api..."
+  ./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
+fi
 
 # bucket operator
-echo -e "\nDeploy bucket-operator..."
-./bucket-operator.sh "${ACTION}" "${domain}"
-# if [ "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then
-#   echo -e "\nDeploy bucket-operator..."
-#   ./bucket-operator.sh "${ACTION}" "${domain}"
-# else
-#   echo "SKIPPING bucket operator deployment - openstack credentials have not been configured"
-# fi
+if [ "${REQUIRE_BUCKET_OPERATOR}" = "true" ]; then
+  echo -e "\nDeploy bucket-operator..."
+  ./bucket-operator.sh "${ACTION}" "${domain}"
+fi
 
 # harbor artefact registry
-echo -e "\nDeploy harbor..."
-./harbor.sh "${ACTION}" "${domain}"
+if [ "${REQUIRE_HARBOR}" = "true" ]; then
+  echo -e "\nDeploy harbor..."
+  ./harbor.sh "${ACTION}" "${domain}"
+fi

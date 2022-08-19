@@ -15,7 +15,9 @@ configureAction "$ACTION"
 cluster_name="${2:-mykube}"
 
 # minikube
-./minikube.sh "${cluster_name}"
+if [ "${REQUIRE_MINIKUBE}" = "true" ]; then
+  ./minikube.sh "${cluster_name}"
+fi
 
 # deduce ip address from minikube
 initIpDefaults
@@ -28,21 +30,27 @@ if [ "${USE_METALLB}" = "true" ]; then
 fi
 
 # ingress-nginx
-./ingress-nginx.sh "${ACTION}"
+if [ "${REQUIRE_INGRESS_NGINX}" = "true" ]; then
+  ./ingress-nginx.sh "${ACTION}"
+fi
 
 if [ "${USE_TLS}" = "true" ]; then
   # Certificate manager
-  ./certificate-manager.sh "${ACTION}"
+  if [ "${REQUIRE_CERT_MANAGER}" = "true" ]; then
+    ./certificate-manager.sh "${ACTION}"
+  fi
   # Cluster Issuer
-  ./letsencrypt.sh "${ACTION}"
+  if [ "${REQUIRE_LETSENCRYPT}" = "true" ]; then
+    ./letsencrypt.sh "${ACTION}"
+  fi
 fi
 
 # Sealed Secrets
-./sealed-secrets.sh "${ACTION}" "${cluster_name}"
+if [ "${REQUIRE_SEALED_SECRETS}" = "true" ]; then
+  ./sealed-secrets.sh "${ACTION}" "${cluster_name}"
+fi
 
 # Minio
-if [ "${STAGEOUT_TARGET}" = "minio" ]; then
+if [ "${REQUIRE_MINIO}" = "true" ]; then
   ./minio.sh "${ACTION}" "${domain}"
-else
-  echo "SKIPPING minio deployment - not required for ADES stage-out"
 fi
