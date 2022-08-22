@@ -1,0 +1,35 @@
+{
+  "inputs": [
+    {
+      "id": "input_reference",
+      "input": {
+        "dataType": {
+          "name": "application/json"
+        },
+        "value": "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A"
+      }
+    },
+    {
+      "id": "s_expression",
+      "input": {
+        "dataType": {
+          "name": "string"
+        },
+        "value": "ndvi:(/ (- B05 B03) (+ B05 B03))"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "format": {
+        "mimeType": "string",
+        "schema": "string",
+        "encoding": "string"
+      },
+      "id": "wf_outputs",
+      "transmissionMode": "value"
+    }
+  ],
+  "mode": "auto",
+  "response": "raw"
+}

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+source ./processing-options
+
+eric_id="c3717ea8-7ebc-4e28-af73-05c14da5ca88"
+bob_id="301da522-f937-471f-87bb-e2c4df82e115"
+
+../eoepca/eoepca-protection.sh apply "${eric_id}" "${bob_id}"

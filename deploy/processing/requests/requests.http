@@ -1,0 +1,56 @@
+
+@hostname = ades-open
+@domain = platform-22-08-19-14.guide.eoepca.org
+@host = {{hostname}}.{{domain}}
+@user = eric
+
+###
+
+# @name listProcesses
+GET https://{{host}}/{{user}}/wps3/processes HTTP/1.1
+Accept: application/json
+
+###
+
+# @name deployProcess
+POST https://{{host}}/{{user}}/wps3/processes HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+< ./body/snuggs-deploy.json
+
+###
+@deployStatus = {{deployProcess.response.headers.Location}}
+
+# @name getDeployStatus
+GET https://{{host}}{{deployStatus}} HTTP/1.1
+Accept: application/json
+
+###
+
+# @name getProcessDetails
+GET https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+Accept: application/json
+
+###
+
+# @name executeProcess
+POST https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0/jobs HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+< ./body/snuggs-execute.json
+
+###
+@executeStatus = {{executeProcess.response.headers.Location}}
+
+# @name getExecuteStatus
+GET https://{{host}}{{executeStatus}} HTTP/1.1
+Accept: application/json
+
+###
+@executeStatus = {{executeProcess.response.headers.Location}}
+
+# @name getProcessingResults
+GET https://{{host}}{{executeStatus}}/result HTTP/1.1
+Accept: application/json

@@ -51,7 +51,7 @@ $(stageOut)
   processingMaxCores: "4"
 wps:
   pepBaseUrl: "http://ades-pep:5576"
-  usePep: "true"
+  usePep: "$(if [ "${OPEN_INGRESS}" = "true" ]; then echo false; else echo true; fi)"
 persistence:
   storageClass: standard
 ingress:

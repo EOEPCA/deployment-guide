@@ -9,7 +9,7 @@ onExit() {
 }
 trap onExit EXIT
 
-source ./simple-options
+source ./processing-options
 
 cluster_name="eoepca"
 
