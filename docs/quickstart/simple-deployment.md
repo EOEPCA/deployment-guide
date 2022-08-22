@@ -11,3 +11,21 @@ The simple deployment applies the following configuration:
     * Suppression of use of TLS for service ingress (`USE_TLS`), since the lack of public IP access prevents the ability of `letsencrpt` to provide signed certtificates
 * Configuration of 'open' interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services
 * Configuration of ADES stage-out to a local instance of `minio`, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option
+
+## Initiate Deployment
+
+Deployment is initiated by invoking the script...
+
+```
+./deploy/simple/simple
+```
+
+See section [Deployment](scripted-deployment.md#deployment) for more details regarding the outcome of the scripted deployment.
+
+## Protection
+
+See section [Protection](scripted-deployment.md#protection) for more details regarding the protection of the deployed services - which, for the simple deployment, is performed via the script [`deploy/simple/simple-protection`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-protection)...
+
+```
+./deploy/simple/simple-protection
+```
