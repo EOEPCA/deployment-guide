@@ -1,6 +1,6 @@
-# Scripted Example Deployment
+# Scripted Deployment
 
-As a companion to the Deployment Guide descriptions, we have developed a set of scripts to provide a demonstration of an example deployment, in the subdirectory `deployment-guide/deploy` of the source repository for this guide...
+The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory [`deployment-guide/deploy`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) of the source repository for this guide...
 
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide \
@@ -8,9 +8,7 @@ git clone https://github.com/EOEPCA/deployment-guide \
 && ls deploy
 ```
 
-The script `deploy/eoepca/eoepca.sh` acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
-
-Based upon our development experiences on CREODIAS, there is a wrapper script `creodias` with particular customisations suited to the CREODIAS infrastructure and data offering.
+The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
 
 The following subsections lead through the steps for a full local deployment. Whilst minikube is assumed, minimal adaptions are required to make the deployment to your existing Kubernetes cluster.
 
@@ -27,7 +25,7 @@ The Protection step is split from Deployment as there are some manual steps to b
 
 ## Configuration
 
-The script `deploy/eoepca/eoepca.sh` is configured by some environment variables and command-line arguments.
+The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) is configured by some environment variables and command-line arguments.
 
 ### Environment Variables
 
@@ -72,9 +70,9 @@ Variable | Description | Default
 
 The eoepca.sh script is further configured via command-line arguments...
 
-```
+**```
 Usage: eoepca.sh <action> <cluster-name> <public-ip> <domain>
-```
+```**
 
 Argument | Description | Default
 -------- | ----------- | -------
@@ -83,20 +81,20 @@ Argument | Description | Default
 **public-ip** | The public IP address through which the deployment is exposed via the ingress-controller.<br>By default, the value is deduced from the assigned cluster minikube IP address - ref. command `minikube ip`. | `<minikube-ip>`
 **domain** | The DNS domain name through which the deployment is accessed. Forms the stem for all service hostnames in the ingress rules - i.e. `<service-name>.<domain>`.<br>By default, the value is deduced from the assigned cluster minikube IP address, using `nip.io` to establish a DNS lookup - i.e. `<minikube ip>.nip.io`. | `<minikube ip>.nip.io`
 
+### Private Deployment
+
+In the case that a 'private' deployment is required - i.e. with no public IP - then the following configuration selections should be made:
+
+* `public_ip` - leave blank to fall-back to minikube ip default
+* `domain` - leave blank to fall-back to minikube ip default
+* `USE_MINIKUBE_NONE_DRIVER=false` - the `none` driver is mostly useful only with a public IP
+* `USE_TLS=false` - difficult to configure letsencrypt without a public IP
+
 ## Deployment
 
 The deployment is initiated by setting the appropriate [environment variables](#environment-variables) and invoking the `eoepca.sh` script with suitable [command-line arguments](#command-line-arguments). You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the `eoepca.sh` script.
 
-We provide a couple of example wrapper scripts:
-
-* [**CREODIAS**](#custom-creodias)<br>
-  *An example deployment within a CREODIAS cloud.*
-    * script: [`deploy/creodias/creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias)
-    * environemnt: [`deploy/creodias/creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options)
-* [**Simple**](#simple-deployment)<br>
-  *A basic local deployment.*
-    * script: [`deploy/csimple/simple`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple)
-    * environemnt: [`deploy/simple/simple-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-options)
+Customised examples are provided for Simple, CREODIAS and Processing deployments.
 
 **_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
@@ -221,54 +219,6 @@ For example...
 The script prompts for the password of the `admin` user.
 
 By default `<client-id>` and `<client-secret>` are read from the `client.yaml` file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.
-
-## Custom CREODIAS
-
-Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables (as detailed above)](#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options).
-
-With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
-
-* `public_ip` - The public IP address through which the deployment is exposed via the ingress-controller
-* `domain` - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules
-* Passwords: `LOGIN_SERVICE_ADMIN_PASSWORD`, `MINIO_ROOT_PASSWORD`, `HARBOR_ADMIN_PASSWORD`
-* OpenStack details: see section [Openstack Configuration](#openstack-configuration)
-
-Once the file `creodias-options` has been well populated for your environment, then the deployment is initiated with...
-```bash
-./deploy/creodias/creodias
-```
-...noting that this step is a customised version of that described in section [Deployment](#deployment).
-
-Similarly the script `creodias-protection` is a customised version of that described in section [Apply Protection](#apply-protection). Once the main deployment has completed, then the [test users can be created](#create-test-users), their IDs (`Inum`) set in script `creodias-protection`, and the resource protection can then be applied...
-
-```bash
-./deploy/creodias/creodias-protection
-```
-
-These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.
-
-### Harvest CREODIAS Data
-
-The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option `CREODIAS_DATA_SPECIFICATION=true` - see [Environment Variables](#environment-variables). The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file `/config.yaml` of the `data-access-harvester` deployment.
-
-As described in the [Data Access section](../../eoepca/data-access/#starting-the-harvester), harvesting according to this configuration can be triggered with...
-```
-kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
-```
-
-## Simple Deployment
-
-A deployment wrapper script has been prepared for a 'simple' deployment - designed to get a core local deployment of the primary servies.
-
-The script `deploy/simple/simple` achieves this by appropriate [configuration of the environment variables](#environment-variables), before launching the [eoepca.sh deployment script](#command-line-arguments).
-
-The simple deployment applies the following configuration:
-
-* Assumption that the local deployment will not be accessible via a public IP, and hence:
-    * Use of minikube driver `none` (`USE_MINIKUBE_NONE_DRIVER`) is suppressed, since the `none` driver is most useful to expose a public service
-    * Suppression of use of TLS for service ingress (`USE_TLS`), since the lack of public IP access prevents the ability of `letsencrpt` to provide signed certtificates
-* Configuration of 'open' interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services
-* Configuration of ADES stage-out to a local instance of `minio`, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option
 
 ## Clean-up
 

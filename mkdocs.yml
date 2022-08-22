@@ -7,6 +7,12 @@ edit_uri: ""
 nav:
   - Deployment Guide:
     - Introduction: index.md
+    - Quick Start:
+      - Quick Start: quickstart/quickstart.md
+      - Scripted Deployment: quickstart/scripted-deployment.md
+      - Simple Deployment: quickstart/simple-deployment.md
+      - Processing Deployment: quickstart/processing-deployment.md
+      - CREODIAS Deployment: quickstart/creodias-deployment.md
     - Cluster:
       - Prerequisite Tooling: cluster/prerequisite-tooling.md
       - Kubernetes Cluster: cluster/kubernetes.md
@@ -24,8 +30,6 @@ nav:
       - Workspace: eoepca/workspace.md
       - Container Registry: eoepca/container-registry.md
       - Processor Development Environment: eoepca/pde.md
-    - Examples:
-      - Scripted Deployment: examples/scripted-example-deployment.md
 
 theme:
   # name: mkdocs
