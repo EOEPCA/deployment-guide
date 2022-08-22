@@ -841,6 +841,21 @@
 </thead>
 <tbody>
 <tr>
+<td><strong>REQUIRE_&lt;cluster-component></strong></td>
+<td>A set of variables that can be used to control which <strong>CLUSTER</strong> components are deployed by the script, as follows (with defaults):<br><code>REQUIRE_MINIKUBE=true</code><br><code>REQUIRE_INGRESS_NGINX=true</code><br><code>REQUIRE_CERT_MANAGER=true</code><br><code>REQUIRE_LETSENCRYPT=true</code><br><code>REQUIRE_SEALED_SECRETS=false</code><br><code>REQUIRE_MINIO=false</code></td>
+<td>see description</td>
+</tr>
+<tr>
+<td><strong>REQUIRE_&lt;eoepca-component></strong></td>
+<td>A set of variables that can be used to control which <strong>EOEPCA</strong> components are deployed by the script, as follows (with defaults):<br><code>REQUIRE_STORAGE=true</code><br><code>REQUIRE_DUMMY_SERVICE=false</code><br><code>REQUIRE_LOGIN_SERVICE=true</code><br><code>REQUIRE_PDP=true</code><br><code>REQUIRE_USER_PROFILE=true</code><br><code>REQUIRE_ADES=true</code><br><code>REQUIRE_RESOURCE_CATALOGUE=true</code><br><code>REQUIRE_DATA_ACCESS=true</code><br><code>REQUIRE_WORKSPACE_API=true</code><br><code>REQUIRE_BUCKET_OPERATOR=true</code><br><code>REQUIRE_HARBOR=true</code><br><code>REQUIRE_PORTAL=true</code><br><code>REQUIRE_PDE=true</code></td>
+<td>see description</td>
+</tr>
+<tr>
+<td><strong>REQUIRE_&lt;protection-component></strong></td>
+<td>A set of variables that can be used to control which <strong>PROTECTION</strong> components are deployed by the script, as follows (with defaults):<br><code>REQUIRE_DUMMY_SERVICE_PROTECTION=false</code><br><code>REQUIRE_ADES_PROTECTION=true</code><br><code>REQUIRE_RESOURCE_CATALOGUE_PROTECTION=true</code><br><code>REQUIRE_DATA_ACCESS_PROTECTION=true</code><br><code>REQUIRE_WORKSPACE_API_PROTECTION=true</code></td>
+<td>see description</td>
+</tr>
+<tr>
 <td><strong>USE_MINIKUBE_NONE_DRIVER</strong></td>
 <td>Force use of the minikube &lsquo;none&rsquo; driver.<br>The &lsquo;none&rsquo; driver has been found to be useful to more easily expose the kubernetes cluster for external access, e.g. via <code>ingress-controller</code>. This, in turn, facilitates the use of letsencrypt to establish TLS certificates.</td>
 <td><code>true</code></td>
@@ -868,6 +883,11 @@
 <tr>
 <td><strong>USE_INGRESS_NGINX_LOADBALANCER</strong></td>
 <td>Patch the built-in minikube nginx-ingress-controller to offer a service of type <code>LoadBalancer</code>, rather than the default <code>NodePort</code>. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default <code>NodePort</code> configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only applicable for <code>USE_INGRESS_NGINX_HELM=false</code> (i.e. when using the minikube built-in )</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><strong>OPEN_INGRESS</strong></td>
+<td>Create &lsquo;open&rsquo; ingress endpoints that are not subject to authorization protection. For a secure system the open endpoints should be disabled (<code>false</code>) and access to resource should be protected via <a href="../../eoepca/resource-protection/">ingress that apply protection</a></td>
 <td><code>false</code></td>
 </tr>
 <tr>
@@ -899,6 +919,16 @@
 <td><strong>HARBOR_ADMIN_PASSWORD</strong></td>
 <td>Password for the &lsquo;admin&rsquo; user for the Harbor artefact registry service.</td>
 <td><code>changeme</code></td>
+</tr>
+<tr>
+<td><strong>STAGEOUT_TARGET</strong></td>
+<td>Configures the ADES with the destination to which it should push processing results:<br><code>workspace</code> - via the Workspace API<br><code>minio</code> - to minio S3 object storage</td>
+<td><code>workspace</code></td>
+</tr>
+<tr>
+<td><strong>INSTALL_FLUX</strong></td>
+<td>The Workspace API relies upon <a href="https://fluxcd.io/">Flux CI/CD</a>, and has the capability to install the required flux components to the cluster. If your deployment already has flux installed then set this value <code>false</code> to suppress the Workspace API flux install</td>
+<td><code>true</code></td>
 </tr>
 <tr>
 <td><strong>CREODIAS_DATA_SPECIFICATION</strong></td>
