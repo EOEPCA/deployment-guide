@@ -172,5 +172,5 @@ The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<
 Additional information regarding the _Resource Catalogue_ can be found at:
 
 * [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue)
-* [Docs](TBD)
+* [pycsw Documentation](https://docs.pycsw.org/en/latest/)
 * [GitHub Repository](https://github.com/EOEPCA/rm-resource-catalogue)
