@@ -216,7 +216,7 @@ s3cmd -c mys3cfg ls
 
 For example, using our sample deployment, the following can be used to interface with the MinIO service deployed in minikube...
 ```bash
-s3cmd -c deploy/cluster/minio/s3cfg ls
+s3cmd -c deploy/cluster/s3cfg ls
 ```
 
 ### References
