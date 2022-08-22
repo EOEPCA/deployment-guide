@@ -81,7 +81,27 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://deployment-guide.docs.eoepca.org/current/examples/scripted-example-deployment/</loc>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/creodias-deployment/</loc>
+         <lastmod>2022-08-22</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/processing-deployment/</loc>
+         <lastmod>2022-08-22</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/quickstart/</loc>
+         <lastmod>2022-08-22</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/scripted-deployment/</loc>
+         <lastmod>2022-08-22</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/simple-deployment/</loc>
          <lastmod>2022-08-22</lastmod>
          <changefreq>daily</changefreq>
     </url>

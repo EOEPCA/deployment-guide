@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/cluster/helm-repositories/">
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/quickstart/creodias-deployment/">
       
       <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
     
     
       
-        <title>Helm Repositories - EOEPCA Deployment Guide</title>
+        <title>CREODIAS Deployment - EOEPCA Deployment Guide</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#helm-repositories" class="md-skip">
+        <a href="#creodias-deployment" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Helm Repositories
+              CREODIAS Deployment
             
           </span>
         </div>
@@ -292,14 +292,16 @@
               
   
   
+    
+  
   
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" checked>
       
       
       
@@ -322,7 +324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/quickstart/" class="md-nav__link">
+      <a href="../quickstart/" class="md-nav__link">
         Quick Start
       </a>
     </li>
@@ -336,7 +338,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/scripted-deployment/" class="md-nav__link">
+      <a href="../scripted-deployment/" class="md-nav__link">
         Scripted Deployment
       </a>
     </li>
@@ -350,7 +352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/simple-deployment/" class="md-nav__link">
+      <a href="../simple-deployment/" class="md-nav__link">
         Simple Deployment
       </a>
     </li>
@@ -364,87 +366,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/processing-deployment/" class="md-nav__link">
+      <a href="../processing-deployment/" class="md-nav__link">
         Processing Deployment
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../quickstart/creodias-deployment/" class="md-nav__link">
-        CREODIAS Deployment
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-    
-  
-  
-    
-      
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1_3">
-          Cluster
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
-        <label class="md-nav__title" for="__nav_1_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cluster
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../prerequisite-tooling/" class="md-nav__link">
-        Prerequisite Tooling
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubernetes/" class="md-nav__link">
-        Kubernetes Cluster
       </a>
     </li>
   
@@ -467,12 +390,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Helm Repositories
+          CREODIAS Deployment
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Helm Repositories
+        CREODIAS Deployment
       </a>
       
         
@@ -491,42 +414,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#eoepca-helm-charts" class="md-nav__link">
-    EOEPCA Helm Charts
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#third-party-helm-charts" class="md-nav__link">
-    Third-party Helm Charts
-  </a>
-  
-    <nav class="md-nav" aria-label="Third-party Helm Charts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#cert-manager" class="md-nav__link">
-    Cert Manager
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nginx-ingress-controller" class="md-nav__link">
-    Nginx Ingress Controller
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#repo-update" class="md-nav__link">
-    Repo Update
+  <a href="#harvest-creodias-data" class="md-nav__link">
+    Harvest CREODIAS Data
   </a>
   
 </li>
@@ -540,13 +429,90 @@
 
             
           
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          Cluster
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
             
               
   
   
   
     <li class="md-nav__item">
-      <a href="../cluster-prerequisites/" class="md-nav__link">
+      <a href="../../cluster/prerequisite-tooling/" class="md-nav__link">
+        Prerequisite Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/kubernetes/" class="md-nav__link">
+        Kubernetes Cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/helm-repositories/" class="md-nav__link">
+        Helm Repositories
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/cluster-prerequisites/" class="md-nav__link">
         Cluster Prerequisites
       </a>
     </li>
@@ -770,23 +736,28 @@
                 
 
 
-<h1 id="helm-repositories">Helm Repositories<a class="headerlink" href="#helm-repositories" title="Permanent link">⚓︎</a></h1>
-<h2 id="eoepca-helm-charts">EOEPCA Helm Charts<a class="headerlink" href="#eoepca-helm-charts" title="Permanent link">⚓︎</a></h2>
-<p>The EOEPCA building-blocks are engineered as containers for deployment to a Kubernetes cluster. Each building block defines a <em>Helm Chart</em> to facilitate its deployment.</p>
-<p>The EOEPCA Helm Chart Repository is configured with <code>helm</code> as follows&hellip;</p>
-<pre><code class="language-bash">helm repo add eoepca https://eoepca.github.io/helm-charts/
+<h1 id="creodias-deployment">CREODIAS Deployment<a class="headerlink" href="#creodias-deployment" title="Permanent link">⚓︎</a></h1>
+<p>Based upon our development experiences on CREODIAS, there is a wrapper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias"><code>creodias</code></a> with particular customisations suited to the <a href="https://creodias.eu/">CREODIAS</a> infrastructure and data offering.</p>
+<p>The customisations are expressed through <a href="../scripted-deployment/#environment-variables">environment variables</a> that are captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options"><code>creodias-options</code></a>.</p>
+<p>With reference to the file <code>creodias-options</code>, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment&hellip;</p>
+<ul>
+<li><code>public_ip</code> - The public IP address through which the deployment is exposed via the ingress-controller</li>
+<li><code>domain</code> - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules</li>
+<li>Passwords: <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>, <code>MINIO_ROOT_PASSWORD</code>, <code>HARBOR_ADMIN_PASSWORD</code></li>
+<li>OpenStack details: see section <a href="#openstack-configuration">Openstack Configuration</a></li>
+</ul>
+<p>Once the file <code>creodias-options</code> has been well populated for your environment, then the deployment is initiated with&hellip;</p>
+<pre><code class="language-bash">./deploy/creodias/creodias
 </code></pre>
-<h2 id="third-party-helm-charts">Third-party Helm Charts<a class="headerlink" href="#third-party-helm-charts" title="Permanent link">⚓︎</a></h2>
-<p>In addition to the EOEPCA Helm Chart Repository, the following repositories are also relied upon, and should be configured&hellip;</p>
-<h3 id="cert-manager">Cert Manager<a class="headerlink" href="#cert-manager" title="Permanent link">⚓︎</a></h3>
-<pre><code class="language-bash">helm repo add jetstack https://charts.jetstack.io
+<p>&hellip;noting that this step is a customised version of that described in section <a href="../scripted-deployment/#deployment">Deployment</a>.</p>
+<p>Similarly the script <code>creodias-protection</code> is a customised version of that described in section <a href="#apply-protection">Apply Protection</a>. Once the main deployment has completed, then the <a href="#create-test-users">test users can be created</a>, their IDs (<code>Inum</code>) set in script <code>creodias-protection</code>, and the resource protection can then be applied&hellip;</p>
+<pre><code class="language-bash">./deploy/creodias/creodias-protection
 </code></pre>
-<h3 id="nginx-ingress-controller">Nginx Ingress Controller<a class="headerlink" href="#nginx-ingress-controller" title="Permanent link">⚓︎</a></h3>
-<pre><code class="language-bash">helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-</code></pre>
-<h2 id="repo-update">Repo Update<a class="headerlink" href="#repo-update" title="Permanent link">⚓︎</a></h2>
-<p>Refresh the local repo cache, after <code>helm repo add</code>&hellip;</p>
-<pre><code class="language-bash">helm repo update
+<p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
+<h2 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h2>
+<p>The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option <code>CREODIAS_DATA_SPECIFICATION=true</code> - see <a href="../scripted-deployment/#environment-variables">Environment Variables</a>. The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file <code>/config.yaml</code> of the <code>data-access-harvester</code> deployment.</p>
+<p>As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
+<pre><code>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
 </code></pre>
 
               
@@ -808,7 +779,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../kubernetes/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Kubernetes Cluster" rel="prev">
+        <a href="../processing-deployment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Processing Deployment" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -817,20 +788,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Kubernetes Cluster
+              Processing Deployment
             </div>
           </div>
         </a>
       
       
         
-        <a href="../cluster-prerequisites/" class="md-footer__link md-footer__link--next" aria-label="Next: Cluster Prerequisites" rel="next">
+        <a href="../../cluster/prerequisite-tooling/" class="md-footer__link md-footer__link--next" aria-label="Next: Prerequisite Tooling" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Cluster Prerequisites
+              Prerequisite Tooling
             </div>
           </div>
           <div class="md-footer__button md-icon">
