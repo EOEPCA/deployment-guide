@@ -25,11 +25,15 @@ ingress:
   enabled: true
   ingressClassName: nginx
   hostname: minio-console.${domain}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 apiIngress:
   enabled: true
   ingressClassName: nginx
   hostname: minio.${domain}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 persistence:
   storageClass: standard
