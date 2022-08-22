@@ -361,9 +361,47 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Simple Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Simple Deployment
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initiate-deployment" class="md-nav__link">
+    Initiate Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protection" class="md-nav__link">
+    Protection
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -718,6 +756,15 @@
 <li>Configuration of &lsquo;open&rsquo; interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services</li>
 <li>Configuration of ADES stage-out to a local instance of <code>minio</code>, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option</li>
 </ul>
+<h2 id="initiate-deployment">Initiate Deployment<a class="headerlink" href="#initiate-deployment" title="Permanent link">⚓︎</a></h2>
+<p>Deployment is initiated by invoking the script&hellip;</p>
+<pre><code>./deploy/simple/simple
+</code></pre>
+<p>See section <a href="../scripted-deployment/#deployment">Deployment</a> for more details regarding the outcome of the scripted deployment.</p>
+<h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
+<p>See section <a href="../scripted-deployment/#protection">Protection</a> for more details regarding the protection of the deployed services - which, for the simple deployment, is performed via the script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-protection"><code>deploy/simple/simple-protection</code></a>&hellip;</p>
+<pre><code>./deploy/simple/simple-protection
+</code></pre>
 
               
             </article>
