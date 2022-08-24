@@ -638,6 +638,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#stage-in-stage-out-configuration" class="md-nav__link">
+    Stage-in / Stage-out Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#workspace-integration" class="md-nav__link">
     Workspace Integration
   </a>
@@ -892,6 +899,21 @@ ingress:
         - ades.192.168.49.123.nip.io
       secretName: ades-tls
 </code></pre>
+<h2 id="stage-in-stage-out-configuration">Stage-in / Stage-out Configuration<a class="headerlink" href="#stage-in-stage-out-configuration" title="Permanent link">⚓︎</a></h2>
+<p>The ADES hosts applications that are deployed and invoked in accordance with the <a href="https://docs.ogc.org/bp/20-089r1.html">OGC Best Practise for Application Package</a>. Thus, the ADES provides a conformant environment within which the application is integrated for execution. A key part of the ADES&rsquo;s role in this is to faciltate the provision of input data to the application (stage-in), and the handling of the results output at the conclusion of application execution (stage-out).</p>
+<p>The ADES helm chart configures (by default) the ADES with implementations of the stage-in and stage-out functions that use the <a href="https://github.com/Terradue/Stars">Spatio Temporal Asset Router Services</a> utility.</p>
+<p>The ADES provides hooks for system integrators to override these defaults to implement their own stage-in and stage-out behaviour - for example, to integrate with their platform&rsquo;s own catalogue and data offering. The stage-in and stage-out are specified as <a href="https://www.commonwl.org/">CWL</a> via the helm values&hellip;</p>
+<pre><code class="language-yaml">workflowExecutor:
+  stagein:
+    cwl: |
+      cwlVersion: v1.0
+      ...
+  stageout:
+    cwl: |
+      cwlVersion: v1.0
+      ...
+</code></pre>
+<p>For a detailed description see <a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration in the ADES wiki</a>.</p>
 <h2 id="workspace-integration">Workspace Integration<a class="headerlink" href="#workspace-integration" title="Permanent link">⚓︎</a></h2>
 <p>The ADES has the facility to integrate with the EOEPCA <a href="../workspace/">Workspace component</a> for registration of staged-out processing results. This is disabled by default (<code>useResourceManager: false</code>).</p>
 <p>When enabled, the ADES will register the staged-out products with the user&rsquo;s Workspace, such that they are indexed and available via the user&rsquo;s Resource Catalogue and Data Access services.</p>
@@ -1119,6 +1141,7 @@ data:
 <li><a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/ades">Helm Chart</a></li>
 <li><a href="https://github.com/EOEPCA/proc-ades/wiki">Wiki</a></li>
 <li><a href="https://github.com/EOEPCA/proc-ades">GitHub Repository</a></li>
+<li><a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration</a>.</li>
 </ul>
 
               
