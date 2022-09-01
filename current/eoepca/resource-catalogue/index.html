@@ -676,6 +676,19 @@
     Resource Catalogue Usage
   </a>
   
+    <nav class="md-nav" aria-label="Resource Catalogue Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#loading-records" class="md-nav__link">
+    Loading Records
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -911,6 +924,24 @@ data:
 <p>The Resource Catalogue is initially populated during the initialisation of the Data Access service.<br>
 See section <a href="../data-access/#data-layer-configuration">Data-layer Configuration</a>.</p>
 <p>The Resource Catalogue is accessed at the endpoint <code>https://resource-catalogue.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://resource-catalogue.192.168.49.123.nip.io/">https://resource-catalogue.192.168.49.123.nip.io/</a>.</p>
+<h3 id="loading-records">Loading Records<a class="headerlink" href="#loading-records" title="Permanent link">⚓︎</a></h3>
+<p>As described in the <a href="https://docs.pycsw.org/en/2.6.1/administration.html#loading-records">pycsw documentation</a>, ISO XML records can be loaded into the resource-catalogue using the <code>pycsw-admin.py</code> admin utility&hellip;</p>
+<pre><code class="language-bash">pycsw-admin.py load_records -c /path/to/cfg -p /path/to/records
+</code></pre>
+<p>The <code>/path/to/records</code> can either be a single metadata file, or a directory containing multiple metadata files.</p>
+<p>This is most easily achieved via connection to the pycsw pod, which includes the <code>pycsw-admin.py</code> utility and the pycsw configuration file at <code>/etc/pycsw/pycsw.cfg</code>&hellip;</p>
+<pre><code class="language-bash">kubectl -n rm cp &quot;&lt;metadata-file-or-directory&gt;&quot; &quot;&lt;pycsw-pod-name&gt;&quot;:/tmp/metadata
+kubectl -n rm exec -i &quot;&lt;pycsw-pod-name&gt;&quot; -- pycsw-admin.py load-records -c /etc/pycsw/pycsw.cfg -p /tmp/metadata
+</code></pre>
+<p>The name of the pycsw pod can be obtained using <code>kubectl</code>&hellip;</p>
+<pre><code class="language-bash">kubectl -n rm get pod --selector='io.kompose.service=pycsw' --output=jsonpath={.items[0].metadata.name}
+</code></pre>
+<p>To facilitate the loading of records via the pycsw pod, a helper script <a href="https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/load-records"><code>load-records</code></a> has been provided in the <a href="https://github.com/EOEPCA/deployment-guide">git repository that hosts this document</a>&hellip;</p>
+<pre><code class="language-bash">git clone git@github.com:EOEPCA/deployment-guide
+cd deployment-guide
+./load-records &quot;&lt;metadata-file-or-directory&gt;&quot;
+</code></pre>
+<p>The helper script identifies the pycsw pod, copies the metadata files to the pod, and runs <code>pycsw-admin.py load-records</code> within the pod to load the records.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Resource Catalogue</em> can be found at:</p>
 <ul>
