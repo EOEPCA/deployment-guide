@@ -9,7 +9,7 @@ export MINIKUBE_MEMORY_AMOUNT=12g
 export OPEN_INGRESS=true
 
 # TLS options
-# With a public IP we can use telsencrypt for tls
+# With a public IP we can use letsencrypt for tls
 export USE_TLS=false
 
 # ADES

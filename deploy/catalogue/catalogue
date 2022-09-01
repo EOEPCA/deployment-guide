@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+source ./catalogue-options
+
+cluster_name="eoepca"
+
+../eoepca/eoepca.sh apply ${cluster_name} ${public_ip} ${domain}
