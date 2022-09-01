@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+
+trap onExit EXIT
+
+metadata_source="${1}"
+if [ -z "${metadata_source}" ]; then
+  echo "ERROR: must supply metadata source (file or directory)"
+  exit 1
+fi
+
+# Deduce name of the pycsw pod
+pod_name="$(kubectl -n rm get pod --selector='io.kompose.service=pycsw' --output=jsonpath={.items[0].metadata.name})"
+echo "Using pycsw pod: ${pod_name}"
+
+# Load
+kubectl -n rm exec -i "${pod_name}" -- rm -rf /tmp/metadata
+kubectl -n rm cp "${metadata_source}" "${pod_name}":/tmp/metadata
+kubectl -n rm exec -i "${pod_name}" -- pycsw-admin.py load-records -c /etc/pycsw/pycsw.cfg -p /tmp/metadata
+# kubectl -n rm exec -i "${pod_name}" -- ls -lR /tmp/metadata
+
+# Delete
+# kubectl -n rm exec -i "${pod_name}" -- pycsw-admin.py delete-records -c /etc/pycsw/pycsw.cfg
+
+# Export
+# kubectl -n rm exec -i "${pod_name}" -- rm -rf /tmp/metadata-export
+# kubectl -n rm exec -i "${pod_name}" -- mkdir -p /tmp/metadata-export
+# kubectl -n rm exec -i "${pod_name}" -- pycsw-admin.py export-records -c /etc/pycsw/pycsw.cfg -p /tmp/metadata-export
