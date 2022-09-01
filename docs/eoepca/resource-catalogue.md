@@ -167,6 +167,39 @@ See section [Data-layer Configuration](../data-access/#data-layer-configuration)
 
 The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192.168.49.123.nip.io/](https://resource-catalogue.192.168.49.123.nip.io/).
 
+### Loading Records
+
+As described in the [pycsw documentation](https://docs.pycsw.org/en/2.6.1/administration.html#loading-records), ISO XML records can be loaded into the resource-catalogue using the `pycsw-admin.py` admin utility...
+
+```bash
+pycsw-admin.py load_records -c /path/to/cfg -p /path/to/records
+```
+
+The `/path/to/records` can either be a single metadata file, or a directory containing multiple metadata files.
+
+This is most easily achieved via connection to the pycsw pod, which includes the `pycsw-admin.py` utility and the pycsw configuration file at `/etc/pycsw/pycsw.cfg`...
+
+```bash
+kubectl -n rm cp "<metadata-file-or-directory>" "<pycsw-pod-name>":/tmp/metadata
+kubectl -n rm exec -i "<pycsw-pod-name>" -- pycsw-admin.py load-records -c /etc/pycsw/pycsw.cfg -p /tmp/metadata
+```
+
+The name of the pycsw pod can be obtained using `kubectl`...
+
+```bash
+kubectl -n rm get pod --selector='io.kompose.service=pycsw' --output=jsonpath={.items[0].metadata.name}
+```
+
+To facilitate the loading of records via the pycsw pod, a helper script [`load-records`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/load-records) has been provided in the [git repository that hosts this document](https://github.com/EOEPCA/deployment-guide)...
+
+```bash
+git clone git@github.com:EOEPCA/deployment-guide
+cd deployment-guide
+./load-records "<metadata-file-or-directory>"
+```
+
+The helper script identifies the pycsw pod, copies the metadata files to the pod, and runs `pycsw-admin.py load-records` within the pod to load the records.
+
 ## Additional Information
 
 Additional information regarding the _Resource Catalogue_ can be found at:
