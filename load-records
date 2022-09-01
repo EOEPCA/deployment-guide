@@ -23,7 +23,7 @@ echo "Using pycsw pod: ${pod_name}"
 # Load
 kubectl -n rm exec -i "${pod_name}" -- rm -rf /tmp/metadata
 kubectl -n rm cp "${metadata_source}" "${pod_name}":/tmp/metadata
-kubectl -n rm exec -i "${pod_name}" -- pycsw-admin.py load-records -c /etc/pycsw/pycsw.cfg -p /tmp/metadata
+kubectl -n rm exec -i "${pod_name}" -- pycsw-admin.py load-records -c /etc/pycsw/pycsw.cfg -y -r -p /tmp/metadata
 # kubectl -n rm exec -i "${pod_name}" -- ls -lR /tmp/metadata
 
 # Delete
