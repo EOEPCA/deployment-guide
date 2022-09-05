@@ -136,9 +136,21 @@ From the metadata XML file (e.g. `MTD_MSIL1C.xml`) the registrar obtains the _Pr
 
 The registrar uses the `product_type` of each product to determine the collection into which the product should be registered. The product is registered (using `parentidentifier`) into the collection whose `identifier` matches the `product_type`.
 
+The product-to-collection matching is made using the `filter` definition of the `productType`, which appears to act as a 'selector' for the products - noting that the `name` of the product type does not take part in the matching logic (and hence can be any text name)...
+
+```
+  productTypes:
+    - name: S2MSI1C
+      filter:
+        s2:product_type: S2MSI1C
+```
+
+> **QUESTION**<br>
+> It is not clear to what the `s2:` prefix within the `s2:product_type` refers. To be clarified.
+
 ## Data Specification
 
-The data-access helm defines `collections` and `productTypes` with bi-directional relationships established between then.
+The data-access helm defines `collections` and `productTypes` with bi-directional relationships established between then. The relationship must be expressed in both directions.
 
 > **QUESTION**<br>
 > It is not clear how these relate to:
