@@ -64,10 +64,9 @@ From the result returned, the path to each product (`feature`) is obtained from 
 
 The harvester is configured with a Sentinel-2/CREODIAS specific post-processor `harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor` which transforms the product path from `/eodata/...` to `s3://EODATA/...`.
 
-> **QUESTION**<br>
-> If we also wanted to harvest a different dataset, with a different post-processing need, would we instantiate a second harvester instance for this? Or is there another approach?
+The harvester post-processor follows this path to the Sentinel-2 scene and uses stactools (with built-in support for Sentinel-2) to establish a STAC item representing the product. This includes enumeration of `assets` for `inspire-metadata` and `product-metadata` - which are used by the registrar pycsw backend to embelesh the product record metadata.
 
-The harvester outputs a STAC item that includes this path to the Sentinel-2 scene, and is pushed to the registrar via the `register_queue` redis queue.
+The harvester outputs the STAC item for each product, which is pushed to the registrar via the `register_queue` redis queue.
 
 ## Registration
 
@@ -86,40 +85,26 @@ global:
         validate_bucket_name: false
 ```
 
-Using this S3 configuration and the path to the Sentinel scene provided by the harvester in the STAC item, the registrar accesses the 'official' metadata XML. For example...
+Using this S3 configuration, the registrar pycsw backend uses the product metadata linked in the STAC item (ref. assets `inspire-metadata` and `product-metadata`) to embelesh the metadata. For example, `product-metadata` in the file...
 
 ```
 s3://EODATA/Sentinel-2/MSI/L1C/2019/09/10/S2B_MSIL1C_20190910T095029_N0208_R079_T33TXN_20190910T120910.SAFE/MTD_MSIL1C.xml
 ```
 
-> **QUESTION**<br>
-> How does the registrar know to access the file `MTD_MSIL1C.xml`?<br>
-> It is understood that the registrar uses `stactools` library to read the Sentinel-2 scene metadata into STAC items - so maybe `stactools` handles the details of this. Does `stactools` auto-detect that this a Sentinel-2 to do this?<br>
-> -> in which case, does this imply support for Sentinel-2 has been specifically built-in to the registrar container image?
-
 The registrar uses this information to create the ISO XML metadata that is loaded into the resource-catalogue.
 
 ## Collections
 
-The registrar (`eoepca/rm-data-access-core`) container image is pre-loaded with two collections at the path `/registrar_pycsw/registrar_pycsw/resources`:
+The registrar (`eoepca/rm-data-access-core`) container image is pre-loaded with two collections at the path `/registrar_pycsw/registrar_pycsw/resources`, (in the built container the files are at the path `/usr/local/lib/python3.8/dist-packages/registrar_pycsw/resources/`):
 
 * S2MSI1C.yml - identifier: `S2MSI1C`
-* S2MSI2A.yml - identifier: `S2MSI2A`
+* S2MSI2A.yml - identifier: `S2MSI2A`<br>
 
-> **QUESTION**<br>
-> Since these are built-in to the container image - how to define different collections - or remove these if they are not required ?
-
-> **QUESTION**<br>
-> Further testing suggests that these `resources/*.yml` files that are built-in to the container image have no impact. The container image has been modified to:
-> 
-> 1. add an additional `resources/XXX.yml` file
-> 1. delete the contents of the `resources/` directory.
-> 
-> In either case it made no difference to the outcome in which two collections `S2MSI1C` and `S2MSI2A` were created.
+Products are mapped into these collecitons by the registrar using their _Product Type_ - i.e. they are mapped into the collections whose name matches the product type.
 
 ## Products
 
-From the metadata XML file (e.g. `MTD_MSIL1C.xml`) the registrar obtains the _Product Type_ for each product from the field `<PRODUCT_TYPE>`...
+The registrar recognises the product as Sentinel-2 and so reads its metadata XML files to obtain additional information. From the metadata XML file (e.g. `MTD_MSIL1C.xml`) the registrar obtains the _Product Type_ for each product from the field `<PRODUCT_TYPE>`...
 
 ```
 <n1:Level-1C_User_Product>
@@ -134,9 +119,15 @@ From the metadata XML file (e.g. `MTD_MSIL1C.xml`) the registrar obtains the _Pr
 <n1:Level-1C_User_Product>
 ```
 
+## Data Specification
+
+The data-access helm defines `collections` and `productTypes` with bi-directional relationships established between then. The relationship must be expressed in both directions. A `layers` definition is also included to provide WMS layer definitions.
+
+## `productType`
+
 The registrar uses the `product_type` of each product to determine the collection into which the product should be registered. The product is registered (using `parentidentifier`) into the collection whose `identifier` matches the `product_type`.
 
-The product-to-collection matching is made using the `filter` definition of the `productType`, which appears to act as a 'selector' for the products - noting that the `name` of the product type does not take part in the matching logic (and hence can be any text name)...
+The product-to-collection matching is made using the `filter` definition of the `productType`, which acts as a 'selector' for the products - noting that the `name` of the product type does not take part in the matching logic (and hence can be any text name)...
 
 ```
   productTypes:
@@ -145,18 +136,21 @@ The product-to-collection matching is made using the `filter` definition of the 
         s2:product_type: S2MSI1C
 ```
 
-> **QUESTION**<br>
-> It is not clear to what the `s2:` prefix within the `s2:product_type` refers. To be clarified.
+In the above example, the field `s2:product_type` is populated by the `stactools` that prepares the STAC item from the product metadata.
 
-## Data Specification
+### `productType` - `coverages`
 
-The data-access helm defines `collections` and `productTypes` with bi-directional relationships established between then. The relationship must be expressed in both directions.
+`coverages` defines the coverages for the WCS service. Each coverage links to the `assets` that are defined within the product STAC item.
 
-> **QUESTION**<br>
-> It is not clear how these relate to:
-> 
-> * each other
-> * the collections that are auto-registered into the catalogue during start-up of the registrar
-> * the collections defined within the `rm-data-access-core` image (ref. files in `/registrar_pycsw/registrar_pycsw/resources`) - although these seem to be irrelevant anyway (see previous comment)
-> * the `layers` that are also defined - there appears to be no direct cross-referencing to the `layers`
+### `productType` - `browses`
+
+`browses` defines the images that are visualised in the View Server Client. Expressions are used to map the product assets into their visual representation.
+
+## `collections`
+
+Collections are defined by reference to the defined `productTypes` and `coverages`.
+
+## `layers`
+
+Layers are defined via their `id` that relies upon the naming convection `<collection>__<browse>` to define the layer.
 
