@@ -420,6 +420,88 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#data-specification-walkthrough" class="md-nav__link">
+    Data Specification Walkthrough
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Specification Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harvester" class="md-nav__link">
+    Harvester
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    Registration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#product-type" class="md-nav__link">
+    Product Type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-catalogue-collections" class="md-nav__link">
+    Resource Catalogue Collections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-specification" class="md-nav__link">
+    Data Specification
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Specification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#producttype" class="md-nav__link">
+    productType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collections" class="md-nav__link">
+    collections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    layers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration" class="md-nav__link">
+    Example Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -755,9 +837,401 @@
 </code></pre>
 <p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
 <h2 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h2>
-<p>The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option <code>CREODIAS_DATA_SPECIFICATION=true</code> - see <a href="../scripted-deployment/#environment-variables">Environment Variables</a>. The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file <code>/config.yaml</code> of the <code>data-access-harvester</code> deployment.</p>
-<p>As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
+<p>The harvester can be <a href="../../eoepca/data-access/#harvester-helm-configuration">deployed with a default configuration</a> file at <code>/config.yaml</code>. As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
 <pre><code>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+</code></pre>
+<p>See the <a href="#harvester">Harvester</a> section below for an explanation of this harvester configuration.</p>
+<h2 id="data-specification-walkthrough">Data Specification Walkthrough<a class="headerlink" href="#data-specification-walkthrough" title="Permanent link">⚓︎</a></h2>
+<p>The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option <code>CREODIAS_DATA_SPECIFICATION=true</code> - see <a href="../scripted-deployment/#environment-variables">Environment Variables</a>.</p>
+<p>This section provides a walkthrough of this configuration for CREODIAS - to act as an aid to understanding by way of a worked example.</p>
+<h3 id="harvester">Harvester<a class="headerlink" href="#harvester" title="Permanent link">⚓︎</a></h3>
+<p>The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file <code>/config.yaml</code> of the <code>data-access-harvester</code> deployment.</p>
+<p>The harvester is configured as follows&hellip;</p>
+<pre><code>harvester:
+  image:
+    repository: eoepca/rm-harvester
+    tag: 1.1.0
+  config:
+    redis:
+      host: data-access-redis-master
+      port: 6379
+    harvesters:
+      - name: Creodias-Opensearch
+        resource:
+          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          type: OpenSearch
+          format_config:
+            type: 'application/json'
+            property_mapping:
+              start_datetime: 'startDate'
+              end_datetime: 'completionDate'
+              productIdentifier: 'productIdentifier'
+          query:
+            time:
+              property: sensed
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+        filter: {}
+        postprocess:
+          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+        queue: register_queue
+</code></pre>
+<p>Based upon this harvester configuration we expect that the following query is made to discover data - i.e. an OpenSearch query, with json response representation, for a defined spatial and temporal extent&hellip;</p>
+<pre><code>https://finder.creodias.eu/resto/api/collections/Sentinel2/search.json?startDate=2019-09-10T00:00:00Z&amp;completionDate=2019-09-11T00:00:00Z&amp;box=14.9,47.7,16.4,48.7
+</code></pre>
+<p>From the result returned, the path to each product (<code>feature</code>) is obtained from the <code>productIdentifier</code> property, e.g.</p>
+<pre><code>{
+  &quot;type&quot;: &quot;FeatureCollection&quot;,
+  &quot;features&quot;: [
+    {
+      &quot;type&quot;: &quot;Feature&quot;,
+      &quot;properties&quot;: {
+        &quot;productIdentifier&quot;: &quot;/eodata/Sentinel-2/MSI/L1C/2019/09/10/S2B_MSIL1C_20190910T095029_N0208_R079_T33TXN_20190910T120910.SAFE&quot;
+        ...
+      }
+      ...
+    }
+    ...
+  ]
+}
+</code></pre>
+<p>The harvester is configured with a Sentinel-2/CREODIAS specific post-processor <code>harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor</code> which transforms the product path from <code>/eodata/...</code> to <code>s3://EODATA/...</code>.</p>
+<p>The harvester post-processor follows this path to the Sentinel-2 scene and uses stactools (with built-in support for Sentinel-2) to establish a STAC item representing the product. This includes enumeration of <code>assets</code> for <code>inspire-metadata</code> and <code>product-metadata</code> - which are used by the registrar pycsw backend to embelesh the product record metadata.</p>
+<p>The harvester outputs the STAC item for each product, which is pushed to the registrar via the <code>register_queue</code> redis queue.</p>
+<h3 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">⚓︎</a></h3>
+<p>The registrar is configured at deployment to have the access details for the CREODIAS data in S3&hellip;</p>
+<pre><code>global:
+  storage:
+    data:
+      data:
+        type: S3
+        endpoint_url: http://data.cloudferro.com
+        access_key_id: access
+        secret_access_key: access
+        region_name: RegionOne
+        validate_bucket_name: false
+</code></pre>
+<p>Using this S3 configuration, the registrar pycsw backend uses the product metadata linked in the STAC item (ref. assets <code>inspire-metadata</code> and <code>product-metadata</code>) to embelesh the metadata. For example, <code>product-metadata</code> in the file&hellip;</p>
+<pre><code>s3://EODATA/Sentinel-2/MSI/L1C/2019/09/10/S2B_MSIL1C_20190910T095029_N0208_R079_T33TXN_20190910T120910.SAFE/MTD_MSIL1C.xml
+</code></pre>
+<p>The registrar uses this information to create the ISO XML metadata that is loaded into the resource-catalogue.</p>
+<h3 id="product-type">Product Type<a class="headerlink" href="#product-type" title="Permanent link">⚓︎</a></h3>
+<p>The registrar recognises the product as Sentinel-2 and so reads its metadata XML files to obtain additional information. From the metadata XML file (e.g. <code>MTD_MSIL1C.xml</code>) the registrar obtains the <em>Product Type</em> for each product from the field <code>&lt;PRODUCT_TYPE&gt;</code>&hellip;</p>
+<pre><code>&lt;n1:Level-1C_User_Product&gt;
+  &lt;n1:General_Info&gt;
+    &lt;Product_Info&gt;
+      &lt;PRODUCT_TYPE&gt;S2MSI1C&lt;/PRODUCT_TYPE&gt;
+      ...
+    &lt;/Product_Info&gt;
+    ...
+  &lt;/n1:General_Info&gt;
+  ...
+&lt;n1:Level-1C_User_Product&gt;
+</code></pre>
+<h3 id="resource-catalogue-collections">Resource Catalogue Collections<a class="headerlink" href="#resource-catalogue-collections" title="Permanent link">⚓︎</a></h3>
+<p>The registrar (<code>eoepca/rm-data-access-core</code>) container image is pre-loaded with two collections at the path <code>/registrar_pycsw/registrar_pycsw/resources</code>, (in the built container the files are at the path <code>/usr/local/lib/python3.8/dist-packages/registrar_pycsw/resources/</code>):</p>
+<ul>
+<li>S2MSI1C.yml - identifier: <code>S2MSI1C</code></li>
+<li>S2MSI2A.yml - identifier: <code>S2MSI2A</code></li>
+</ul>
+<p>The registrar applies these collections into the resource-catalogue during start-up - to create pre-defined out-of-the-box collections in pycsw.</p>
+<p>During registration, the <code>PycswBackend</code> of the registrar uses the <em>Product Type</em> to map the product into the collection of the same name - using metadata field <code>parentidentifier</code>.</p>
+<h3 id="data-specification">Data Specification<a class="headerlink" href="#data-specification" title="Permanent link">⚓︎</a></h3>
+<p>The data-access service data handling is configured by definition of <code>productTypes</code>, <code>collections</code> and <code>layers</code>&hellip;</p>
+<ul>
+<li><code>productTypes</code> identify the underlying file assets as WCS coverages and their visual representation</li>
+<li><code>collections</code> provide groupings into which products are organised</li>
+<li><code>layers</code> specifies the hoe the product visual representations are exposed through the WMS service</li>
+</ul>
+<h4 id="producttype"><code>productType</code><a class="headerlink" href="#producttype" title="Permanent link">⚓︎</a></h4>
+<p>During registration, products are mapped into a <code>productType</code> via a <code>filter</code> that is applied against the STAC item metadata.</p>
+<p>The registrar uses the <code>product_type</code> of each product to determine the <code>collection</code> into which the product should be registered - noting that the <code>name</code> of the product type does not take part in the matching logic (and hence can be any text name)&hellip;</p>
+<pre><code>  productTypes:
+    - name: S2MSI1C
+      filter:
+        s2:product_type: S2MSI1C
+</code></pre>
+<p>In the above example, the field <code>s2:product_type</code> is populated by the <code>stactools</code> that prepares the STAC item from the product metadata.</p>
+<h5 id="producttype-coverages"><code>productType</code> - <code>coverages</code><a class="headerlink" href="#producttype-coverages" title="Permanent link">⚓︎</a></h5>
+<p><code>coverages</code> defines the coverages for the WCS service. Each coverage links to the <code>assets</code> that are defined within the product STAC item.</p>
+<h5 id="producttype-browses"><code>productType</code> - <code>browses</code><a class="headerlink" href="#producttype-browses" title="Permanent link">⚓︎</a></h5>
+<p><code>browses</code> defines the images that are visualised in the View Server Client. Expressions are used to map the product assets into their visual representation.</p>
+<h4 id="collections"><code>collections</code><a class="headerlink" href="#collections" title="Permanent link">⚓︎</a></h4>
+<p>Collections are defined by reference to the defined <code>productTypes</code> and <code>coverages</code>.</p>
+<h4 id="layers"><code>layers</code><a class="headerlink" href="#layers" title="Permanent link">⚓︎</a></h4>
+<p><code>layers</code> defines the layers that are presented through the WMS service - each layer being linked to the underlying <code>browse</code> that provides the image source. Layers are defined via their <code>id</code> that relies upon the naming convection <code>&lt;collection&gt;__&lt;browse&gt;</code> to identify the browse and so define the layer.</p>
+<h4 id="example-configuration">Example Configuration<a class="headerlink" href="#example-configuration" title="Permanent link">⚓︎</a></h4>
+<p>Example configuration for Sentinel-2 L1C and L2A data.</p>
+<pre><code class="language-yaml">global:
+  layers:
+    - id: S2L1C
+      title: Sentinel-2 Level 1C True Color
+      abstract: Sentinel-2 Level 2A True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__TRUE_COLOR
+      title: Sentinel-2 Level 1C True Color
+      abstract: Sentinel-2 Level 2A True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__masked_clouds
+      title: Sentinel-2 Level 1C True Color with cloud masks
+      abstract: Sentinel-2 Level 1C True Color with cloud masks
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__FALSE_COLOR
+      title: Sentinel-2 Level 1C False Color
+      abstract: Sentinel-2 Level 1C False Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__NDVI
+      title: Sentinel-2 Level 21CNDVI
+      abstract: Sentinel-2 Level 1C NDVI
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L2A
+      title: Sentinel-2 Level 2A True Color
+      abstract: Sentinel-2 Level 2A True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__TRUE_COLOR
+      title: Sentinel-2 Level 2A True Color
+      abstract: Sentinel-2 Level 2A True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__masked_clouds
+      title: Sentinel-2 Level 2A True Color with cloud masks
+      abstract: Sentinel-2 Level 2A True Color with cloud masks
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__FALSE_COLOR
+      title: Sentinel-2 Level 2A False Color
+      abstract: Sentinel-2 Level 2A False Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__NDVI
+      title: Sentinel-2 Level 2A NDVI
+      abstract: Sentinel-2 Level 2A NDVI
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+  collections:
+    S2L1C:
+      product_types:
+        - S2MSI1C
+      coverage_types:
+        - S2L1C_B01
+        - S2L1C_B02
+        - S2L1C_B03
+        - S2L1C_B04
+        - S2L1C_B05
+        - S2L1C_B06
+        - S2L1C_B07
+        - S2L1C_B08
+        - S2L1C_B8A
+        - S2L1C_B09
+        - S2L1C_B10
+        - S2L1C_B11
+        - S2L1C_B12
+    S2L2A:
+      product_types:
+        - S2MSI2A
+      product_levels:
+        - Level-2A
+      coverage_types:
+        - S2L2A_B01
+        - S2L2A_B02
+        - S2L2A_B03
+        - S2L2A_B04
+        - S2L2A_B05
+        - S2L2A_B06
+        - S2L2A_B07
+        - S2L2A_B08
+        - S2L2A_B8A
+        - S2L2A_B09
+        - S2L2A_B11
+        - S2L2A_B12
+  productTypes:
+    - name: S2MSI1C
+      filter:
+        s2:product_type: S2MSI1C
+      metadata_assets: []
+      coverages:
+        S2L1C_B01:
+          assets:
+            - B01
+        S2L1C_B02:
+          assets:
+            - B02
+        S2L1C_B03:
+          assets:
+            - B03
+        S2L1C_B04:
+          assets:
+            - B04
+        S2L1C_B05:
+          assets:
+            - B05
+        S2L1C_B06:
+          assets:
+            - B06
+        S2L1C_B07:
+          assets:
+            - B07
+        S2L1C_B08:
+          assets:
+            - B08
+        S2L1C_B8A:
+          assets:
+            - B8A
+        S2L1C_B09:
+          assets:
+            - B09
+        S2L1C_B10:
+          assets:
+            - B10
+        S2L1C_B11:
+          assets:
+            - B11
+        S2L1C_B12:
+          assets:
+            - B12
+      defaultBrowse: TRUE_COLOR
+      browses:
+        TRUE_COLOR:
+          asset: visual
+          red:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B02
+            range: [0, 4000]
+            nodata: 0
+        FALSE_COLOR:
+          red:
+            expression: B08
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+        NDVI:
+          grey:
+            expression: (B08-B04)/(B08+B04)
+            range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
+    - name: S2MSI2A
+      filter:
+        s2:product_type: S2MSI2A
+      metadata_assets: []
+      coverages:
+        S2L2A_B01:
+          assets:
+            - B01
+        S2L2A_B02:
+          assets:
+            - B02
+        S2L2A_B03:
+          assets:
+            - B03
+        S2L2A_B04:
+          assets:
+            - B04
+        S2L2A_B05:
+          assets:
+            - B05
+        S2L2A_B06:
+          assets:
+            - B06
+        S2L2A_B07:
+          assets:
+            - B07
+        S2L2A_B08:
+          assets:
+            - B08
+        S2L2A_B8A:
+          assets:
+            - B8A
+        S2L2A_B09:
+          assets:
+            - B09
+        S2L2A_B11:
+          assets:
+            - B11
+        S2L2A_B12:
+          assets:
+            - B12
+      default_browse_locator: TCI_10m
+      browses:
+        TRUE_COLOR:
+          asset: visual-10m
+          red:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B02
+            range: [0, 4000]
+            nodata: 0
+        FALSE_COLOR:
+          red:
+            expression: B08
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+        NDVI:
+          grey:
+            expression: (B08-B04)/(B08+B04)
+            range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
 </code></pre>
 
               
