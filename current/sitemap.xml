@@ -86,6 +86,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/data-access-deployment/</loc>
+         <lastmod>2022-09-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/processing-deployment/</loc>
          <lastmod>2022-09-08</lastmod>
          <changefreq>daily</changefreq>

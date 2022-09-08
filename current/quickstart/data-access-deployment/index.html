@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/quickstart/quickstart/">
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/quickstart/data-access-deployment/">
       
       <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
     
     
       
-        <title>Quick Start - EOEPCA Deployment Guide</title>
+        <title>Data Access - EOEPCA Deployment Guide</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#quickstart" class="md-skip">
+        <a href="#data-access-deployment" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Quick Start
+              Data Access
             
           </span>
         </div>
@@ -322,21 +322,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
         Quick Start
       </a>
-      
     </li>
   
 
@@ -388,11 +378,59 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../data-access-deployment/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Data Access
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Data Access
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initiate-deployment" class="md-nav__link">
+    Initiate Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-harvesting" class="md-nav__link">
+    Data Harvesting
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -719,21 +757,31 @@
                 
 
 
-<h1 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">⚓︎</a></h1>
-<p>The deployment of the EOEPCA components and the supporting Kubernetes cluster is described in the sections <a href="../../cluster/prerequisite-tooling/"><strong>Cluster</strong></a> and <a href="../../eoepca/persistence/"><strong>EOEPCA</strong></a>. These sections should be consulted for more detailed information.</p>
-<p><strong>Scripted Deployment</strong></p>
-<p>As a companion to these descriptions, we have developed a set of scripts to provide a demonstration of an example deployment. This is described in the following section <a href="../scripted-deployment/">Scripted Deployment</a>.</p>
-<p><strong>Customised Deployments</strong></p>
-<p>The Scripted Deployment can be quickly exploited through the following customisations for particular use cases:</p>
+<h1 id="data-access-deployment">Data Access Deployment<a class="headerlink" href="#data-access-deployment" title="Permanent link">⚓︎</a></h1>
+<p>A deployment wrapper script has been prepared for a &lsquo;data access&rsquo; deployment - that is focused on the Resource Catalogue and Data Access services.</p>
+<p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/data-access/data-access"><code>deploy/data-access/data-access</code></a> achieves this by appropriate <a href="../scripted-deployment/#environment-variables">configuration of the environment variables</a>, before launching the <a href="../scripted-deployment/#command-line-arguments">eoepca.sh deployment script</a>. The deployment configuration is captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/data-access/data-access-options"><code>deploy/data-access/data-access-options</code></a>.</p>
+<p>The processing deployment applies the following configuration:</p>
 <ul>
-<li><strong><a href="../simple-deployment/">Simple</a></strong><br>
-  <em>Basic local deployment</em></li>
-<li><strong><a href="../processing-deployment/">Processing</a></strong><br>
-  <em>Deployment focused on processing</em></li>
-<li><strong><a href="../creodias-deployment/">CREODIAS</a></strong><br>
-  <em>Deployment with access to CREODIAS EO data</em></li>
+<li>Assumes a public IP (which allows configuration of TLS)<br>
+  <em>In case of no public IP then see section <a href="../scripted-deployment/#private-deployment">Private Deployment</a></em></li>
+<li>TLS via letsencrypt</li>
+<li>Services deployed:<ul>
+<li>Resource Catalogue for data discovery</li>
+<li>Data Access for data visualisation and download</li>
 </ul>
-<p>Each customisation is introduced in their respective following sections.</p>
+</li>
+<li>Includes data specification for CREODIAS Sentinel-2, which can be exploited if running in a CREODIAS VM connected to the <code>eodata</code> network - <a href="../scripted-deployment/#environment-variables">see description of variable <code>CREODIAS_DATA_SPECIFICATION</code></a></li>
+<li>Open ingress are enabled for unauthenticated access to resource-catalogue and data-access services</li>
+<li>Other eoepca services not deployed</li>
+</ul>
+<h2 id="initiate-deployment">Initiate Deployment<a class="headerlink" href="#initiate-deployment" title="Permanent link">⚓︎</a></h2>
+<p>Deployment is initiated by invoking the script&hellip;</p>
+<pre><code>./deploy/data-access/data-access
+</code></pre>
+<p>The Resource Catalogue is accessed at the endpoint <code>resource-catalogue-open.&lt;domain&gt;</code> - e.g. <code>resource-catalogue-open.192.168.49.123.nip.io</code>.</p>
+<p>The Data Access View Server is accessed at the endpoint <code>data-access-open.&lt;domain&gt;</code> - e.g. <code>data-access-open.192.168.49.123.nip.io</code>.</p>
+<h2 id="data-harvesting">Data Harvesting<a class="headerlink" href="#data-harvesting" title="Permanent link">⚓︎</a></h2>
+<p>See section <a href="../creodias-deployment/#harvest-creodias-data">Harvest CREODIAS Data</a> to harvest the default data specification from the CREODIAS data offering.</p>
 
               
             </article>
@@ -754,7 +802,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction" rel="prev">
+        <a href="../processing-deployment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Processing Deployment" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -763,20 +811,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Introduction
+              Processing Deployment
             </div>
           </div>
         </a>
       
       
         
-        <a href="../scripted-deployment/" class="md-footer__link md-footer__link--next" aria-label="Next: Scripted Deployment" rel="next">
+        <a href="../creodias-deployment/" class="md-footer__link md-footer__link--next" aria-label="Next: CREODIAS Deployment" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Scripted Deployment
+              CREODIAS Deployment
             </div>
           </div>
           <div class="md-footer__button md-icon">
