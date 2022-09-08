@@ -31,6 +31,8 @@ ingress:
   host: ${name}.${domain}
   tls_host: ${name}.${domain}
   tls_secret_name: ${name}-tls
+  annotations:
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
 db:
   volume_storage_type: standard
 pycsw:
@@ -49,5 +51,5 @@ else
   values | helm ${ACTION_HELM} resource-catalogue rm-resource-catalogue -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace rm --create-namespace \
-    --version 1.1.0
+    --version 1.1.1
 fi

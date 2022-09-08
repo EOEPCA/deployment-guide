@@ -1,9 +1,11 @@
 
+# Hosting specific options
+public_ip="185.52.193.246"
+domain="eoxp.guide.eoepca.org"
+
 # Disable not needed components
 #
 # Cluster
-export REQUIRE_CERT_MANAGER=false
-export REQUIRE_LETSENCRYPT=false
 export REQUIRE_SEALED_SECRETS=false
 export REQUIRE_MINIO=false
 # EOEPCA
@@ -11,7 +13,6 @@ export REQUIRE_LOGIN_SERVICE=false
 export REQUIRE_PDP=false
 export REQUIRE_USER_PROFILE=false
 export REQUIRE_ADES=false
-export REQUIRE_DATA_ACCESS=false
 export REQUIRE_WORKSPACE_API=false
 export REQUIRE_BUCKET_OPERATOR=false
 export REQUIRE_HARBOR=false
@@ -21,7 +22,7 @@ export REQUIRE_PDE=false
 # Minikube options
 # Use the 'none' drive to faciltate use of a public IP for external traffic ingress
 # and use of letsencrypt tls
-export USE_MINIKUBE_NONE_DRIVER=false
+# export USE_MINIKUBE_NONE_DRIVER=false
 export MINIKUBE_MEMORY_AMOUNT=12g
 
 # Ingress
@@ -29,6 +30,9 @@ export OPEN_INGRESS=true
 
 # TLS options
 # With a public IP we can use letsencrypt for tls
-export USE_TLS=false
+export TLS_CLUSTER_ISSUER=letsencrypt-production
+
+# CREODIAS data
+export CREODIAS_DATA_SPECIFICATION=true
 
 source ../eoepca/eoepca-options

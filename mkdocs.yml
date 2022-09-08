@@ -12,6 +12,7 @@ nav:
       - Scripted Deployment: quickstart/scripted-deployment.md
       - Simple Deployment: quickstart/simple-deployment.md
       - Processing Deployment: quickstart/processing-deployment.md
+      - Data Access: quickstart/data-access-deployment.md
       - CREODIAS Deployment: quickstart/creodias-deployment.md
     - Cluster:
       - Prerequisite Tooling: cluster/prerequisite-tooling.md

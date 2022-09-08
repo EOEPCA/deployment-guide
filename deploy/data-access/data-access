@@ -9,7 +9,7 @@ onExit() {
 }
 trap onExit EXIT
 
-source ./catalogue-options
+source ./data-access-options
 
 cluster_name="eoepca"
 
