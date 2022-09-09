@@ -14,6 +14,8 @@ The Scripted Deployment can be quickly exploited through the following customisa
   _Basic local deployment_
 * **[Processing](processing-deployment.md)**<br>
   _Deployment focused on processing_
+* **[Data Access](data-access-deployment.md)**<br>
+  _Deployment focused on the Resource Catalogue and Data Access services_
 * **[CREODIAS](creodias-deployment.md)**<br>
   _Deployment with access to CREODIAS EO data_
 
