@@ -110,6 +110,41 @@ kubectl get pods -A
 
 The deployment is ready once all pods are either `Running` or `Completed`. This can be further confirmed by accessing the login-service web interface at `https://auth.<domain>/` and logging in as user `admin` using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
 
+## Default Credentials
+
+### Login Service
+
+By default, the Login Service is accessed at the URL `https://auth.<domain>/` with the credentials...
+
+```
+username: admin
+password: Chang3me!
+```
+
+...unless the password is overridden via the variable `LOGIN_SERVICE_ADMIN_PASSWORD`.
+
+### Minio Object Storage
+
+By default, Minio is accessed at the URL `http://minio-console.<domain>/` with the credentials...
+
+```
+username: eoepca
+password: changeme
+```
+
+...unless the username/password are overridden via the variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD`.
+
+### Harbor Container Registry
+
+By default, Harbor is accessed at the URL `https://harbor.<domain>/` with the credentials...
+
+```
+username: admin
+password: changeme
+```
+
+...unless the password is overridden via the variable `HARBOR_ADMIN_PASSWORD`.
+
 ## Protection
 
 The protection of resource server endpoints is applied with the script `deploy/eoepca/eoepca-protection.sh`. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script `eoepca.sh`).
