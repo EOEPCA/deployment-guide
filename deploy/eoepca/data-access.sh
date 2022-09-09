@@ -30,7 +30,7 @@ main() {
     values | helm ${ACTION_HELM} data-access vs -f - \
       --repo https://charts-public.hub.eox.at/ \
       --namespace rm --create-namespace \
-      --version 2.1.14
+      --version 2.2.4
   fi
 }
 
@@ -88,7 +88,7 @@ global:
 $(dataSpecification)
 
 renderer:
-  replicaCount: 2
+  replicaCount: 4
   image:
     repository: eoepca/rm-data-access-core
     tag: 1.2-dev1
@@ -109,27 +109,55 @@ renderer:
   # resources:
   #   limits:
   #     cpu: 1.5
-  #     memory: 6Gi
+  #     memory: 3Gi
   #   requests:
-  #     cpu: 1.5
-  #     memory: 6Gi
+  #     cpu: 0.5
+  #     memory: 1Gi
 
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.1.2
+    pullPolicy: Always
+    tag: latest
   config:
-    backends:
-      - path: registrar_pycsw.backend.PycswItemBackend
+    defaultBackends:
+      - path: registrar_pycsw.backend.ItemBackend
         kwargs:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
           ows_url: https://${name}.${domain}/ows
+    # routes:
+    #   collections:
+    #     path: registrar.route.stac.Collection
+    #     queue: register_collection_queue
+    #     replace: true
+    #     backends:
+    #       - path: registrar_pycsw.backend.CollectionBackend
+    #         kwargs:
+    #           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+
+    #   ades:
+    #     path: registrar.route.json.JSONRoute
+    #     queue: register_ades_queue
+    #     replace: true
+    #     backends:
+    #       - path: registrar_pycsw.backend.ADESBackend
+    #         kwargs:
+    #           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+
+    #   application:
+    #     path: registrar.route.json.JSONRoute
+    #     queue: register_application_queue
+    #     replace: true
+    #     backends:
+    #       - path: registrar_pycsw.backend.CWLBackend
+    #         kwargs:
+    #           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
 
 $(harvesterSpecification)
 
 client:
   image:
-    tag: release-2.0.21
+    tag: release-2.0.28
   ingress:
     enabled: ${OPEN_INGRESS}
     annotations:
@@ -220,6 +248,11 @@ cache:
       - hosts:
           - ${name}.${domain}
         secretName: ${name}-tls
+
+seeder:
+  config:
+    minzoom: 0
+    maxzoom: 6  # restrict to only 6 for testing for now
 EOF
 }
 
@@ -246,6 +279,9 @@ creodiasData() {
         - name: WGS84
           zoom: 13
       parentLayer: S2L1C
+      search:
+        histogramBinCount: 15
+        histogramThreshold: 80
     - id: S2L1C__TRUE_COLOR
       title: Sentinel-2 Level 1C True Color
       abstract: Sentinel-2 Level 2A True Color
@@ -282,6 +318,9 @@ creodiasData() {
         - name: WGS84
           zoom: 13
       parentLayer: S2L2A
+      search:
+        histogramBinCount: 15
+        histogramThreshold: 80
     - id: S2L2A__TRUE_COLOR
       title: Sentinel-2 Level 2A True Color
       abstract: Sentinel-2 Level 2A True Color
@@ -472,7 +511,7 @@ creodiasData() {
         S2L2A_B12:
           assets:
             - B12
-      default_browse_locator: TCI_10m
+      defaultBrowse: TRUE_COLOR
       browses:
         TRUE_COLOR:
           asset: visual-10m

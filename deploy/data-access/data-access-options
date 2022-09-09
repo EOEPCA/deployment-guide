@@ -5,9 +5,6 @@ domain="eoxp.guide.eoepca.org"
 
 # Disable not needed components
 #
-# Cluster
-export REQUIRE_SEALED_SECRETS=false
-export REQUIRE_MINIO=false
 # EOEPCA
 export REQUIRE_LOGIN_SERVICE=false
 export REQUIRE_PDP=false

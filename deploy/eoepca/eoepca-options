@@ -7,7 +7,7 @@ export REQUIRE_INGRESS_NGINX="${REQUIRE_INGRESS_NGINX:-true}"
 export REQUIRE_CERT_MANAGER="${REQUIRE_CERT_MANAGER:-true}"
 export REQUIRE_LETSENCRYPT="${REQUIRE_LETSENCRYPT:-true}"
 export REQUIRE_SEALED_SECRETS="${REQUIRE_SEALED_SECRETS:-false}"
-export REQUIRE_MINIO="${REQUIRE_MINIO:-$(if [ "${STAGEOUT_TARGET}" = "minio" ]; then echo "true"; else echo "false"; fi)}"
+export REQUIRE_MINIO="${REQUIRE_MINIO:-$(if [ "${STAGEOUT_TARGET}" = "minio" ]; then echo "true"; else if [ "${REQUIRE_DATA_ACCESS}" = "false" ]; then echo "false"; else echo "true"; fi; fi)}"
 # EOEPCA
 export REQUIRE_STORAGE="${REQUIRE_STORAGE:-true}"
 export REQUIRE_DUMMY_SERVICE="${REQUIRE_DUMMY_SERVICE:-false}"
