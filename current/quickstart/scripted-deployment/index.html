@@ -420,6 +420,40 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#default-credentials" class="md-nav__link">
+    Default Credentials
+  </a>
+  
+    <nav class="md-nav" aria-label="Default Credentials">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#login-service" class="md-nav__link">
+    Login Service
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minio-object-storage" class="md-nav__link">
+    Minio Object Storage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harbor-container-registry" class="md-nav__link">
+    Harbor Container Registry
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#protection" class="md-nav__link">
     Protection
   </a>
@@ -1083,6 +1117,25 @@
 <pre><code class="language-bash">kubectl get pods -A
 </code></pre>
 <p>The deployment is ready once all pods are either <code>Running</code> or <code>Completed</code>. This can be further confirmed by accessing the login-service web interface at <code>https://auth.&lt;domain&gt;/</code> and logging in as user <code>admin</code> using the credentials configured via <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
+<h2 id="default-credentials">Default Credentials<a class="headerlink" href="#default-credentials" title="Permanent link">⚓︎</a></h2>
+<h3 id="login-service">Login Service<a class="headerlink" href="#login-service" title="Permanent link">⚓︎</a></h3>
+<p>By default, the Login Service is accessed at the URL <code>https://auth.&lt;domain&gt;/</code> with the credentials&hellip;</p>
+<pre><code>username: admin
+password: Chang3me!
+</code></pre>
+<p>&hellip;unless the password is overridden via the variable <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
+<h3 id="minio-object-storage">Minio Object Storage<a class="headerlink" href="#minio-object-storage" title="Permanent link">⚓︎</a></h3>
+<p>By default, Minio is accessed at the URL <code>http://minio-console.&lt;domain&gt;/</code> with the credentials&hellip;</p>
+<pre><code>username: eoepca
+password: changeme
+</code></pre>
+<p>&hellip;unless the username/password are overridden via the variables <code>MINIO_ROOT_USER</code> and <code>MINIO_ROOT_PASSWORD</code>.</p>
+<h3 id="harbor-container-registry">Harbor Container Registry<a class="headerlink" href="#harbor-container-registry" title="Permanent link">⚓︎</a></h3>
+<p>By default, Harbor is accessed at the URL <code>https://harbor.&lt;domain&gt;/</code> with the credentials&hellip;</p>
+<pre><code>username: admin
+password: changeme
+</code></pre>
+<p>&hellip;unless the password is overridden via the variable <code>HARBOR_ADMIN_PASSWORD</code>.</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>The protection of resource server endpoints is applied with the script <code>deploy/eoepca/eoepca-protection.sh</code>. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script <code>eoepca.sh</code>).</p>
 <p>The script <code>eoepca-protection.sh</code> introduces two users <code>eric</code> and <code>bob</code> to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).</p>
