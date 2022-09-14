@@ -65,6 +65,10 @@ uma-user-agent:
             service:
               name: data-access-renderer
               port: 80
+          - path: /(coverages/metadata.*)
+            service:
+              name: data-access-renderer
+              port: 80
           - path: /(admin.*)
             service:
               name: data-access-renderer

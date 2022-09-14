@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+cd "${ORIG_DIR}"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+
+trap onExit EXIT
+
+config_file="${1}"
+if [ -z "${config_file}" ]; then
+  echo "ERROR: must supply harvester config file"
+  exit 1
+fi
+
+tmp_config_file="/tmp/config.yaml"
+filter_name="${2:-"Custom-Config"}"
+
+# Deduce name of the harvester pod
+pod_name="$(kubectl -n rm get pod --selector='app.kubernetes.io/name=harvester' --output=jsonpath={.items[0].metadata.name})"
+echo "Using harvester pod: ${pod_name}"
+
+# Copy config to pod and invoke harvester
+kubectl -n rm exec -i "${pod_name}" -- rm -f "${tmp_config_file}"
+kubectl -n rm cp "$(realpath "${config_file}")" "${pod_name}":"${tmp_config_file}"
+kubectl -n rm exec -i "${pod_name}" -- python3 -m harvester harvest --config-file "${tmp_config_file}" --host data-access-redis-master --port 6379 "${filter_name}"
+kubectl -n rm exec -i "${pod_name}" -- ls -l "${tmp_config_file}"
+kubectl -n rm exec -i "${pod_name}" -- cat "${tmp_config_file}"

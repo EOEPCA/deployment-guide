@@ -1,0 +1,25 @@
+harvesters:
+- filter: {}
+  name: Custom-Config
+  postprocess:
+  - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+  queue: register
+  resource:
+    format_config:
+      property_mapping:
+        end_datetime: completionDate
+        productIdentifier: productIdentifier
+        start_datetime: startDate
+      type: application/json
+    query:
+      bbox: 14.9,47.7,16.4,48.7
+      collection: null
+      time:
+        begin: "2019-09-11T00:00:00Z"
+        end: "2019-09-12T00:00:00Z"
+        property: sensed
+    type: OpenSearch
+    url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+redis:
+  host: data-access-redis-master
+  port: 6379

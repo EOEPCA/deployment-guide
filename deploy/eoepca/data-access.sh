@@ -39,7 +39,7 @@ values() {
 global:
   env:
     REGISTRAR_REPLACE: "true"
-    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2
+    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
 
@@ -91,7 +91,8 @@ renderer:
   replicaCount: 4
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.2-dev1
+    tag: 1.2-dev14
+    pullPolicy: Always
   ingress:
     enabled: ${OPEN_INGRESS}
     annotations:
@@ -106,19 +107,19 @@ renderer:
       - hosts:
           - ${name}.${domain}
         secretName: ${name}-tls
-  # resources:
-  #   limits:
-  #     cpu: 1.5
-  #     memory: 3Gi
-  #   requests:
-  #     cpu: 0.5
-  #     memory: 1Gi
+  resources:
+    limits:
+      cpu: 1.5
+      memory: 3Gi
+    requests:
+      cpu: 0.5
+      memory: 1Gi
 
 registrar:
   image:
     repository: eoepca/rm-data-access-core
+    tag: 1.2-dev14
     pullPolicy: Always
-    tag: latest
   config:
     defaultBackends:
       - path: registrar_pycsw.backend.ItemBackend
@@ -157,7 +158,7 @@ $(harvesterSpecification)
 
 client:
   image:
-    tag: release-2.0.28
+    tag: release-2.0.29
   ingress:
     enabled: ${OPEN_INGRESS}
     annotations:
@@ -565,7 +566,7 @@ creodiasHarvester() {
 harvester:
   image:
     repository: eoepca/rm-harvester
-    tag: 1.1.0
+    tag: 1.2-dev1
   config:
     redis:
       host: data-access-redis-master
@@ -591,7 +592,7 @@ harvester:
         filter: {}
         postprocess:
           - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
-        queue: register_queue
+        queue: register
 EOF
 }
 
