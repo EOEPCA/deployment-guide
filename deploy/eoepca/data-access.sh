@@ -126,6 +126,7 @@ registrar:
         kwargs:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
           ows_url: https://${name}.${domain}/ows
+    defaultSuccessQueue: seed_queue
     # routes:
     #   collections:
     #     path: registrar.route.stac.Collection
