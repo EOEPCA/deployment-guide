@@ -54,3 +54,26 @@ more...
 ```
 
 Eventually (some minutes) then `renderer` pods recover to `Running` state
+
+
+# QUESTIONS
+
+## Question#01 - WCS download URL lists
+
+The View Server allows to download URL lists for a product - ref. `url-list.txt` / `download-files.meta4` - e.g. `https://data-access-open.platform-22-09-15-03.guide.eoepca.org/ows?service=WCS&version=2.0.1&request=GetCoverage&coverageid=S2B_MSIL1C_20190910T095029_N0208_R079_T33UWP_20190910T120910.SAFE_B01`.
+
+How can these be exploited?
+
+* When the URL is used in a browser then the error `Format could not be determined` is returned.
+* Perhaps a content-type must be expressed in the http request - if so, what types?
+
+## Question#02 - Product downloads
+
+The View Server allows to download the product (TIFF, JPEG2000, HDF).
+
+* Is this WCS download?
+* Are these downloads the full product, or a 'visual' representation based upon the current layer selection?
+
+## Question#03 - View Server 3D mode
+
+How is this enabled?
