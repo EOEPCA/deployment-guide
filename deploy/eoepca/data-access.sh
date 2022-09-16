@@ -118,7 +118,8 @@ renderer:
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.2-dev14
+    # tag: 1.2-dev14
+    tag: latest
     pullPolicy: Always
   config:
     defaultBackends:
