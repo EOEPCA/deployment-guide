@@ -842,6 +842,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#registration-of-collections" class="md-nav__link">
+    Registration of Collections
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1294,6 +1301,14 @@ data:
 <p>See directory <code>./deploy/data-access/harvester/</code> that contains some sample harvesting configuration files.<br>
 For example&hellip;</p>
 <pre><code>./deploy/bin/harvest ./deploy/data-access/harvester/config-Sentinel2-2019.09.10.yaml
+</code></pre>
+<h3 id="registration-of-collections">Registration of Collections<a class="headerlink" href="#registration-of-collections" title="Permanent link">⚓︎</a></h3>
+<p>The helper script <code>./deploy/bin/register-collection</code> is provided to faciltate the registration of collections that are specfied in <em>STAC Collection</em> format.</p>
+<pre><code>./deploy/bin/register-collection &lt;path-to-stac-collection-file&gt;
+</code></pre>
+<p>See directory <code>./deploy/data-access/collections/</code> that contains some same STAC Collection files.<br>
+For example&hellip;</p>
+<pre><code>./deploy/bin/register-collection ./deploy/data-access/collections/S2MSI2A.json
 </code></pre>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Data Access</em> can be found at:</p>
