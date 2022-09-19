@@ -128,33 +128,49 @@ registrar:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
           ows_url: https://${name}.${domain}/ows
     defaultSuccessQueue: seed_queue
-    # routes:
-    #   collections:
-    #     path: registrar.route.stac.Collection
-    #     queue: register_collection_queue
-    #     replace: true
-    #     backends:
-    #       - path: registrar_pycsw.backend.CollectionBackend
-    #         kwargs:
-    #           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-
+    routes:
+      collections:
+        backends:
+        - kwargs:
+            repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+          path: registrar_pycsw.backend.CollectionBackend
+        path: registrar.route.stac.CollectionRoute
+        queue: register_collection_queue
+        replace: true
     #   ades:
+    #     backends:
+    #     - kwargs:
+    #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+    #       path: registrar_pycsw.backend.ADESBackend
     #     path: registrar.route.json.JSONRoute
     #     queue: register_ades_queue
     #     replace: true
-    #     backends:
-    #       - path: registrar_pycsw.backend.ADESBackend
-    #         kwargs:
-    #           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-
     #   application:
+    #     backends:
+    #     - kwargs:
+    #         ows_url: https://${name}.${domain}/ows
+    #         public_s3_url: https://cf2.cloudferro.com:8080/{projectid}:{bucket}
+    #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+    #       path: registrar_pycsw.backend.CWLBackend
     #     path: registrar.route.json.JSONRoute
     #     queue: register_application_queue
     #     replace: true
+    #   items:
     #     backends:
-    #       - path: registrar_pycsw.backend.CWLBackend
-    #         kwargs:
-    #           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+    #     - kwargs:
+    #         auto_create_product_types: true
+    #         instance_base_path: /var/www/pvs/dev
+    #         instance_name: pvs_instance
+    #         product_types: []
+    #       path: registrar.backend.eoxserver.ItemBackend
+    #     - kwargs:
+    #         ows_url: https://${name}.${domain}/ows
+    #         public_s3_url: https://cf2.cloudferro.com:8080/{projectid}:{bucket}
+    #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+    #       path: registrar_pycsw.backend.ItemBackend
+    #     path: registrar.route.stac.ItemRoute
+    #     queue: register_item_queue
+    #     replace: true
 
 $(harvesterSpecification)
 

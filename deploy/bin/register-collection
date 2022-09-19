@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+cd "${ORIG_DIR}"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+main() {
+  stac_collection="${1}"
+  if [ -z "${stac_collection}" ]; then
+    echo "ERROR: must supply STAC collection file"
+    exit 1
+  fi
+
+  kubectl -n rm exec -i pod/data-access-redis-master-0 -- \
+    redis-cli LPUSH register_collection_queue "$(cat "${stac_collection}")"
+}
+
+main "$@"
