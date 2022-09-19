@@ -427,13 +427,32 @@ The client credentials are obtained by registration of a client at the login ser
 
 ## Data Access Usage
 
-### Harvesting
+### Default Harvesting
 
-The Data Access and Resource Catalogue services are configured to properly interpret harvested data via the values specified in the instantiation of the helm release. See section [Data-layer Configuration](#data-layer-configuration).
+At deployment time the `harvester` helm values include configuration that populates a default harvester configuration, that is prepared in the file `/config.yaml` in the `harvester` pod.
 
-The harvesting of data can be triggered (post deployment) by connecting to the `rm/harvester` service and executing the command...
+The Data Access and Resource Catalogue services are configured to properly interpret harvested data via these values specified in the instantiation of the helm release. See section [Data-layer Configuration](#data-layer-configuration).
+
+The harvesting of data can be triggered (post deployment), in accordance with this default configuration, by connecting to the `rm/harvester` service and executing the command...
 ```
 python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+```
+
+### Ad-hoc Harvesting
+
+Ad-hoc harvesting can be invoked by provision of a suitable `config.yaml` into the harvester pod, which can then be invoked as shown above for the default harvester configuration established at deploy time.
+
+The helper script `./deploy/bin/harvest` faciltates this...
+
+```
+./deploy/bin/harvest <path-to-config-file>
+```
+
+See directory `./deploy/data-access/harvester/` that contains some sample harvesting configuration files.<br>
+For example...
+
+```
+./deploy/bin/harvest ./deploy/data-access/harvester/config-Sentinel2-2019.09.10.yaml
 ```
 
 ## Additional Information
