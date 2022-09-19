@@ -829,8 +829,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#harvesting" class="md-nav__link">
-    Harvesting
+  <a href="#default-harvesting" class="md-nav__link">
+    Default Harvesting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ad-hoc-harvesting" class="md-nav__link">
+    Ad-hoc Harvesting
   </a>
   
 </li>
@@ -1273,10 +1280,20 @@ data:
 <pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
 </code></pre>
 <h2 id="data-access-usage">Data Access Usage<a class="headerlink" href="#data-access-usage" title="Permanent link">⚓︎</a></h2>
-<h3 id="harvesting">Harvesting<a class="headerlink" href="#harvesting" title="Permanent link">⚓︎</a></h3>
-<p>The Data Access and Resource Catalogue services are configured to properly interpret harvested data via the values specified in the instantiation of the helm release. See section <a href="#data-layer-configuration">Data-layer Configuration</a>.</p>
-<p>The harvesting of data can be triggered (post deployment) by connecting to the <code>rm/harvester</code> service and executing the command&hellip;</p>
+<h3 id="default-harvesting">Default Harvesting<a class="headerlink" href="#default-harvesting" title="Permanent link">⚓︎</a></h3>
+<p>At deployment time the <code>harvester</code> helm values include configuration that populates a default harvester configuration, that is prepared in the file <code>/config.yaml</code> in the <code>harvester</code> pod.</p>
+<p>The Data Access and Resource Catalogue services are configured to properly interpret harvested data via these values specified in the instantiation of the helm release. See section <a href="#data-layer-configuration">Data-layer Configuration</a>.</p>
+<p>The harvesting of data can be triggered (post deployment), in accordance with this default configuration, by connecting to the <code>rm/harvester</code> service and executing the command&hellip;</p>
 <pre><code>python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+</code></pre>
+<h3 id="ad-hoc-harvesting">Ad-hoc Harvesting<a class="headerlink" href="#ad-hoc-harvesting" title="Permanent link">⚓︎</a></h3>
+<p>Ad-hoc harvesting can be invoked by provision of a suitable <code>config.yaml</code> into the harvester pod, which can then be invoked as shown above for the default harvester configuration established at deploy time.</p>
+<p>The helper script <code>./deploy/bin/harvest</code> faciltates this&hellip;</p>
+<pre><code>./deploy/bin/harvest &lt;path-to-config-file&gt;
+</code></pre>
+<p>See directory <code>./deploy/data-access/harvester/</code> that contains some sample harvesting configuration files.<br>
+For example&hellip;</p>
+<pre><code>./deploy/bin/harvest ./deploy/data-access/harvester/config-Sentinel2-2019.09.10.yaml
 </code></pre>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Data Access</em> can be found at:</p>
