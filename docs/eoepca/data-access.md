@@ -455,6 +455,21 @@ For example...
 ./deploy/bin/harvest ./deploy/data-access/harvester/config-Sentinel2-2019.09.10.yaml
 ```
 
+### Registration of Collections
+
+The helper script `./deploy/bin/register-collection` is provided to faciltate the registration of collections that are specfied in _STAC Collection_ format.
+
+```
+./deploy/bin/register-collection <path-to-stac-collection-file>
+```
+
+See directory `./deploy/data-access/collections/` that contains some same STAC Collection files.<br>
+For example...
+
+```
+./deploy/bin/register-collection ./deploy/data-access/collections/S2MSI2A.json
+```
+
 ## Additional Information
 
 Additional information regarding the _Data Access_ can be found at:
