@@ -149,7 +149,7 @@ registrar:
     #     backends:
     #     - kwargs:
     #         ows_url: https://${name}.${domain}/ows
-    #         public_s3_url: https://cf2.cloudferro.com:8080/{projectid}:{bucket}
+    #         public_s3_url: https://s3.waw2-1.cloudferro.com/{projectid}:{bucket}
     #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
     #       path: registrar_pycsw.backend.CWLBackend
     #     path: registrar.route.json.JSONRoute
@@ -165,7 +165,7 @@ registrar:
     #       path: registrar.backend.eoxserver.ItemBackend
     #     - kwargs:
     #         ows_url: https://${name}.${domain}/ows
-    #         public_s3_url: https://cf2.cloudferro.com:8080/{projectid}:{bucket}
+    #         public_s3_url: https://s3.waw2-1.cloudferro.com/{projectid}:{bucket}
     #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
     #       path: registrar_pycsw.backend.ItemBackend
     #     path: registrar.route.stac.ItemRoute

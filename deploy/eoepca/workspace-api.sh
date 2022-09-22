@@ -52,7 +52,7 @@ fluxHelmOperator:
 prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
-s3Endpoint: "https://cf2.cloudferro.com:8080"
+s3Endpoint: "https://s3.waw2-1.cloudferro.com"
 s3Region: "RegionOne"
 harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
