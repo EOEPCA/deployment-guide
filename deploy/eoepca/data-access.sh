@@ -122,55 +122,62 @@ registrar:
     tag: latest
     pullPolicy: Always
   config:
+    #--------------
+    # Default route
+    #--------------
+    disableDefaultRoute: false
+    # Additional backends for the default route
     defaultBackends:
       - path: registrar_pycsw.backend.ItemBackend
         kwargs:
           repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
           ows_url: https://${name}.${domain}/ows
     defaultSuccessQueue: seed_queue
+    #----------------
+    # Specific routes
+    #----------------
     routes:
       collections:
-        backends:
-        - kwargs:
-            repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-          path: registrar_pycsw.backend.CollectionBackend
         path: registrar.route.stac.CollectionRoute
         queue: register_collection_queue
         replace: true
-    #   ades:
-    #     backends:
-    #     - kwargs:
-    #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-    #       path: registrar_pycsw.backend.ADESBackend
-    #     path: registrar.route.json.JSONRoute
-    #     queue: register_ades_queue
-    #     replace: true
-    #   application:
-    #     backends:
-    #     - kwargs:
-    #         ows_url: https://${name}.${domain}/ows
-    #         public_s3_url: https://s3.waw2-1.cloudferro.com/{projectid}:{bucket}
-    #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-    #       path: registrar_pycsw.backend.CWLBackend
-    #     path: registrar.route.json.JSONRoute
-    #     queue: register_application_queue
-    #     replace: true
-    #   items:
-    #     backends:
-    #     - kwargs:
-    #         auto_create_product_types: true
-    #         instance_base_path: /var/www/pvs/dev
-    #         instance_name: pvs_instance
-    #         product_types: []
-    #       path: registrar.backend.eoxserver.ItemBackend
-    #     - kwargs:
-    #         ows_url: https://${name}.${domain}/ows
-    #         public_s3_url: https://s3.waw2-1.cloudferro.com/{projectid}:{bucket}
-    #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-    #       path: registrar_pycsw.backend.ItemBackend
-    #     path: registrar.route.stac.ItemRoute
-    #     queue: register_item_queue
-    #     replace: true
+        backends:
+          - path: registrar_pycsw.backend.CollectionBackend
+            kwargs:
+              repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+      # ades:
+      #   path: registrar.route.json.JSONRoute
+      #   queue: register_ades_queue
+      #   replace: true
+      #   backends:
+      #     - path: registrar_pycsw.backend.ADESBackend
+      #       kwargs:
+      #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+      # application:
+      #   path: registrar.route.json.JSONRoute
+      #   queue: register_application_queue
+      #   replace: true
+      #   backends:
+      #     - path: registrar_pycsw.backend.CWLBackend
+      #       kwargs:
+      #         ows_url: https://${name}.${domain}/ows
+      #         public_s3_url: https://s3.waw2-1.cloudferro.com/{projectid}:{bucket}
+      #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+      # items:
+      #   path: registrar.route.stac.ItemRoute
+      #   queue: register_item_queue
+      #   replace: true
+      #   backends:
+      #     - path: registrar.backend.eoxserver.ItemBackend
+      #       kwargs:
+      #         instance_base_path: /var/www/pvs/dev
+      #         instance_name: pvs_instance
+      #         product_types: []
+      #         auto_create_product_types: true
+      #     - path: registrar_pycsw.backend.ItemBackend
+      #       kwargs:
+      #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+      #         ows_url: https://${name}.${domain}/ows
 
 $(harvesterSpecification)
 
