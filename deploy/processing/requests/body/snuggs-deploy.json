@@ -1,28 +1,6 @@
 {
-  "inputs": [
-    {
-      "id": "applicationPackage",
-      "input": {
-        "format": {
-          "mimeType": "application/cwl"
-        },
-        "value": {
-          "href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl"
-        }
-      }
-    }
-  ],
-  "outputs": [
-    {
-      "format": {
-        "mimeType": "string",
-        "schema": "string",
-        "encoding": "string"
-      },
-      "id": "deployResult",
-      "transmissionMode": "value"
-    }
-  ],
-  "mode": "sync",
-  "response": "raw"
+  "executionUnit": {
+    "href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl",
+    "type": "application/cwl"
+  }
 }

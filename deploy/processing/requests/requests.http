@@ -1,6 +1,6 @@
 
 @hostname = ades-open
-@domain = platform-22-08-19-14.guide.eoepca.org
+@domain = platform-22-09-22-01.guide.eoepca.org
 @host = {{hostname}}.{{domain}}
 @user = eric
 
@@ -35,9 +35,10 @@ Accept: application/json
 ###
 
 # @name executeProcess
-POST https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0/jobs HTTP/1.1
+POST https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
 Accept: application/json
 Content-Type: application/json
+Prefer: respond-async
 
 < ./body/snuggs-execute.json
 
@@ -53,4 +54,10 @@ Accept: application/json
 
 # @name getProcessingResults
 GET https://{{host}}{{executeStatus}}/result HTTP/1.1
+Accept: application/json
+
+###
+
+# @name listJobs
+GET https://{{host}}/{{user}}/wps3/jobs HTTP/1.1
 Accept: application/json
