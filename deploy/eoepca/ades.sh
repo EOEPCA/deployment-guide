@@ -25,9 +25,9 @@ fi
 
 values() {
   cat - <<EOF
-# image:
-#   pullPolicy: Always
-#   tag: "1.1.2"
+image:
+  tag: "dev2.0.0"
+  pullPolicy: Always
 workflowExecutor:
   inputs:
     STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
@@ -92,5 +92,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 1.1.10
+    --version 1.1.22
 fi
