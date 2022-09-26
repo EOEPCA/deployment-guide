@@ -375,6 +375,24 @@ creodiasData() {
         - name: WGS84
           zoom: 13
       parentLayer: S2L2A
+    - id: L8L1TP
+      title: Landsat-8 Level 1TP True Color
+      abstract: Landsat-8 Level 1TP True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: L8L1TP
+      search:
+        histogramBinCount: 15
+        histogramThreshold: 80
+    - id: L8L1TP__TRUE_COLOR
+      title: Landsat-8 Level 1TP True Color
+      abstract: Landsat-8 Level 1TP True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: L8L1TP
   collections:
     S2L1C:
       product_types:
@@ -411,6 +429,19 @@ creodiasData() {
         - S2L2A_B09
         - S2L2A_B11
         - S2L2A_B12
+    L8L1TP:
+      product_types:
+        - L8MSI1TP
+      product_levels:
+        - Level-1TP
+      coverage_types:
+        - L8L1TP_B01
+        - L8L1TP_B02
+        - L8L1TP_B03
+        - L8L1TP_B04
+        - L8L1TP_B05
+        - L8L1TP_B06
+        - L8L1TP_B07
   productTypes:
     - name: S2MSI1C
       filter:
@@ -570,6 +601,53 @@ creodiasData() {
           grey:
             expression: (B08-B04)/(B08+B04)
             range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
+    - name: L8MSI1TP
+      filter:
+        platform: landsat-8
+        landsat:processing_level: L1TP
+      collections:
+        - L8L1TP
+      metadata_assets: []
+      coverages:
+        L8L1TP_B01:
+          assets:
+            - SR_B1
+        L8L1TP_B02:
+          assets:
+            - SR_B2
+        L8L1TP_B03:
+          assets:
+            - SR_B3
+        L8L1TP_B04:
+          assets:
+            - SR_B4
+        L8L1TP_B05:
+          assets:
+            - SR_B5
+        L8L1TP_B06:
+          assets:
+            - SR_B6
+        L8L1TP_B07:
+          assets:
+            - SR_B7
+      defaultBrowse: TRUE_COLOR
+      browses:
+        TRUE_COLOR:
+          red:
+            expression: SR_B4
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: SR_B3
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: SR_B2
+            range: [0, 4000]
+            nodata: 0
       masks:
         clouds:
           validity: false
