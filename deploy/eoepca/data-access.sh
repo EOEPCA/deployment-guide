@@ -39,7 +39,7 @@ values() {
 global:
   env:
     REGISTRAR_REPLACE: "true"
-    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg
+    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
 
@@ -393,6 +393,24 @@ creodiasData() {
         - name: WGS84
           zoom: 13
       parentLayer: L8L1TP
+    - id: L8L1GT
+      title: Landsat-8 Level 1GT True Color
+      abstract: Landsat-8 Level 1GT True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: L8L1GT
+      search:
+        histogramBinCount: 15
+        histogramThreshold: 80
+    - id: L8L1GT__TRUE_COLOR
+      title: Landsat-8 Level 1GT True Color
+      abstract: Landsat-8 Level 1GT True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: L8L1GT
   collections:
     S2L1C:
       product_types:
@@ -442,7 +460,21 @@ creodiasData() {
         - L8L1TP_B05
         - L8L1TP_B06
         - L8L1TP_B07
+    L8L1GT:
+      product_types:
+        - L8MSI1GT
+      product_levels:
+        - Level-1GT
+      coverage_types:
+        - L8L1GT_B01
+        - L8L1GT_B02
+        - L8L1GT_B03
+        - L8L1GT_B04
+        - L8L1GT_B05
+        - L8L1GT_B06
+        - L8L1GT_B07
   coverageTypes:
+    # Landsat-8 L1TP
     - name: "L8L1TP_B01"
       data_type: "Uint16"
       bands:
@@ -490,36 +522,121 @@ creodiasData() {
             - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
               value: 0
           uom: "W/m2/um"
-          wavelength: 0.655
+          wavelength: 0.65
     - name: "L8L1TP_B05"
       data_type: "Uint16"
       bands:
         - identifier: "SR_B5"
-          name: "nir"
+          name: "nir08"
           definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
           description: "SR_B5"
           nil_values:
             - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
               value: 0
           uom: "W/m2/um"
-          wavelength: 0.865
+          wavelength: 0.86
     - name: "L8L1TP_B06"
       data_type: "Uint16"
       bands:
         - identifier: "SR_B6"
-          name: "swir1"
+          name: "swir16"
           definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
           description: "SR_B6"
           nil_values:
             - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
               value: 0
           uom: "W/m2/um"
-          wavelength: 1.61
+          wavelength: 1.6
     - name: "L8L1TP_B07"
       data_type: "Uint16"
       bands:
         - identifier: "SR_B7"
-          name: "swir2"
+          name: "swir22"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B7"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 2.2
+    # Landsat-8 L1GT
+    - name: "L8L1GT_B01"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B1"
+          name: "coastal"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B1"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.44
+    - name: "L8L1GT_B02"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B2"
+          name: "blue"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B2"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.48
+    - name: "L8L1GT_B03"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B3"
+          name: "green"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B3"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.56
+    - name: "L8L1GT_B04"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B4"
+          name: "red"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B4"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.65
+    - name: "L8L1GT_B05"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B5"
+          name: "nir08"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B5"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.86
+    - name: "L8L1GT_B06"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B6"
+          name: "swir16"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B6"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 1.6
+    - name: "L8L1GT_B07"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B7"
+          name: "swir22"
           definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
           description: "SR_B7"
           nil_values:
@@ -716,6 +833,53 @@ creodiasData() {
           assets:
             - SR_B6
         L8L1TP_B07:
+          assets:
+            - SR_B7
+      defaultBrowse: TRUE_COLOR
+      browses:
+        TRUE_COLOR:
+          red:
+            expression: SR_B4
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: SR_B3
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: SR_B2
+            range: [0, 4000]
+            nodata: 0
+      masks:
+        clouds:
+          validity: false
+    - name: L8MSI1GT
+      filter:
+        platform: landsat-8
+        landsat:processing_level: L1GT
+      collections:
+        - L8L1GT
+      metadata_assets: []
+      coverages:
+        L8L1GT_B01:
+          assets:
+            - SR_B1
+        L8L1GT_B02:
+          assets:
+            - SR_B2
+        L8L1GT_B03:
+          assets:
+            - SR_B3
+        L8L1GT_B04:
+          assets:
+            - SR_B4
+        L8L1GT_B05:
+          assets:
+            - SR_B5
+        L8L1GT_B06:
+          assets:
+            - SR_B6
+        L8L1GT_B07:
           assets:
             - SR_B7
       defaultBrowse: TRUE_COLOR
