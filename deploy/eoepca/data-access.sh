@@ -442,6 +442,91 @@ creodiasData() {
         - L8L1TP_B05
         - L8L1TP_B06
         - L8L1TP_B07
+  coverageTypes:
+    - name: "L8L1TP_B01"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B1"
+          name: "coastal"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B1"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.44
+    - name: "L8L1TP_B02"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B2"
+          name: "blue"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B2"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.48
+    - name: "L8L1TP_B03"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B3"
+          name: "green"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B3"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.56
+    - name: "L8L1TP_B04"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B4"
+          name: "red"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B4"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.655
+    - name: "L8L1TP_B05"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B5"
+          name: "nir"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B5"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 0.865
+    - name: "L8L1TP_B06"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B6"
+          name: "swir1"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B6"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 1.61
+    - name: "L8L1TP_B07"
+      data_type: "Uint16"
+      bands:
+        - identifier: "SR_B7"
+          name: "swir2"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "SR_B7"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          uom: "W/m2/um"
+          wavelength: 2.2
   productTypes:
     - name: S2MSI1C
       filter:
