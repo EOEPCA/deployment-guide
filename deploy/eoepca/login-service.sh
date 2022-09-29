@@ -15,11 +15,13 @@ initIpDefaults
 
 public_ip="${2:-${default_public_ip}}"
 domain="${3:-${default_domain}}"
-NAMESPACE="default"
+NAMESPACE="um"
 
 values() {
   cat - <<EOF
 global:
+  domain: auth.${domain}
+  nginxIp: ${public_ip}
   namespace: ${NAMESPACE}
 volumeClaim:
   name: eoepca-userman-pvc
@@ -43,9 +45,6 @@ oxauth:
 oxtrust:
   volumeClaim:
     name: eoepca-userman-pvc
-global:
-  domain: auth.${domain}
-  nginxIp: ${public_ip}
 nginx:
   ingress:
     enabled: true
@@ -70,5 +69,5 @@ else
   values | helm ${ACTION_HELM} login-service login-service -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.1.5
+    --version 1.1.18
 fi

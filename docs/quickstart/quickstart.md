@@ -16,6 +16,8 @@ The Scripted Deployment can be quickly exploited through the following customisa
   _Deployment focused on processing_
 * **[Data Access](data-access-deployment.md)**<br>
   _Deployment focused on the Resource Catalogue and Data Access services_
+* **[User Management](userman-deployment.md)**<br>
+  _Deployment focused on the User Management services_
 * **[CREODIAS](creodias-deployment.md)**<br>
   _Deployment with access to CREODIAS EO data_
 

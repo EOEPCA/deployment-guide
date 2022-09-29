@@ -60,7 +60,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: eoepca-userman-pvc
-  # namespace: um
+  namespace: um
 spec:
   accessModes:
     - ReadWriteMany
