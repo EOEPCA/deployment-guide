@@ -30,7 +30,7 @@ main() {
     values | helm ${ACTION_HELM} data-access vs -f - \
       --repo https://charts-public.hub.eox.at/ \
       --namespace rm --create-namespace \
-      --version 2.2.4
+      --version 2.2.8
   fi
 }
 
@@ -91,7 +91,7 @@ renderer:
   replicaCount: 4
   image:
     repository: eoepca/rm-data-access-core
-    tag: 1.2-dev14
+    tag: 1.2-dev15
     pullPolicy: Always
   ingress:
     enabled: ${OPEN_INGRESS}
@@ -118,8 +118,7 @@ renderer:
 registrar:
   image:
     repository: eoepca/rm-data-access-core
-    # tag: 1.2-dev14
-    tag: latest
+    tag: 1.2-dev15
     pullPolicy: Always
   config:
     #--------------
@@ -918,7 +917,8 @@ creodiasHarvester() {
 harvester:
   image:
     repository: eoepca/rm-harvester
-    tag: 1.2-dev1
+    tag: 1.2-dev2
+    pullPolicy: Always
   config:
     redis:
       host: data-access-redis-master
