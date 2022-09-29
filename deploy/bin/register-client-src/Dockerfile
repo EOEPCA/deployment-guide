@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.9
 RUN python -m pip install -U pip
 WORKDIR /app
 ENV PATH="/app:${PATH}"
