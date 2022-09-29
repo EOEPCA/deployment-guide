@@ -26,7 +26,7 @@ fi
 values() {
   cat - <<EOF
 image:
-  tag: "dev2.0.0"
+  # tag: "dev2.0.0"
   pullPolicy: Always
 workflowExecutor:
   inputs:
@@ -92,5 +92,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 1.1.22
+    --version 1.1.23
 fi
