@@ -840,15 +840,15 @@ creodiasData() {
         TRUE_COLOR:
           red:
             expression: SR_B4
-            range: [0, 4000]
+            range: [5000, 12000]
             nodata: 0
           green:
             expression: SR_B3
-            range: [0, 4000]
+            range: [5000, 12000]
             nodata: 0
           blue:
             expression: SR_B2
-            range: [0, 4000]
+            range: [5000, 12000]
             nodata: 0
       masks:
         clouds:
@@ -887,15 +887,15 @@ creodiasData() {
         TRUE_COLOR:
           red:
             expression: SR_B4
-            range: [0, 4000]
+            range: [5000, 12000]
             nodata: 0
           green:
             expression: SR_B3
-            range: [0, 4000]
+            range: [5000, 12000]
             nodata: 0
           blue:
             expression: SR_B2
-            range: [0, 4000]
+            range: [5000, 12000]
             nodata: 0
       masks:
         clouds:
