@@ -37,8 +37,9 @@ db:
   volume_storage_type: standard
 pycsw:
   # image:
+  #   repository: geopython/pycsw
+  #   tag: "eoepca-staging"
   #   pullPolicy: Always
-  #   tag: "eoepca-0.9.0"
   config:
     server:
       url: https://${name}.${domain}/
@@ -51,5 +52,5 @@ else
   values | helm ${ACTION_HELM} resource-catalogue rm-resource-catalogue -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace rm --create-namespace \
-    --version 1.1.1
+    --version 1.2.0
 fi

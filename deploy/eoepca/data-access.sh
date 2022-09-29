@@ -183,7 +183,7 @@ $(harvesterSpecification)
 
 client:
   image:
-    tag: release-2.0.29
+    tag: release-2.0.33
   ingress:
     enabled: ${OPEN_INGRESS}
     annotations:

@@ -15,7 +15,7 @@ initIpDefaults
 
 public_ip="${2:-${default_public_ip}}"
 domain="${3:-${default_domain}}"
-NAMESPACE="default"
+NAMESPACE="um"
 
 values() {
   cat - <<EOF
