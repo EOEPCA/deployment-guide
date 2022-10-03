@@ -3,17 +3,20 @@
 @domain = platform-22-09-22-01.guide.eoepca.org
 @host = {{hostname}}.{{domain}}
 @user = eric
+@bearerToken = my-token
 
 ###
 
 # @name listProcesses
 GET https://{{host}}/{{user}}/wps3/processes HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 
 ###
 
 # @name deployProcess
 POST https://{{host}}/{{user}}/wps3/processes HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 Content-Type: application/json
 
@@ -24,18 +27,21 @@ Content-Type: application/json
 
 # @name getDeployStatus
 GET https://{{host}}{{deployStatus}} HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 
 ###
 
 # @name getProcessDetails
 GET https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 
 ###
 
 # @name executeProcess
 POST https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 Content-Type: application/json
 Prefer: respond-async
@@ -47,6 +53,7 @@ Prefer: respond-async
 
 # @name getExecuteStatus
 GET https://{{host}}{{executeStatus}} HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 
 ###
@@ -54,10 +61,12 @@ Accept: application/json
 
 # @name getProcessingResults
 GET https://{{host}}{{executeStatus}}/result HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
 
 ###
 
 # @name listJobs
 GET https://{{host}}/{{user}}/wps3/jobs HTTP/1.1
+Authorization: Bearer {{bearerToken}}
 Accept: application/json
