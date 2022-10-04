@@ -36,7 +36,6 @@ values() {
 #---------------------------------------------------------------------------
 global:
   context: dummy-service
-  pep: dummy-service-pep
   domain: ${domain}
   nginxIp: ${public_ip}
   certManager:
@@ -59,11 +58,6 @@ pep-engine:
       resource_uri: "/bobspace"
       scopes: []
       default_owner: "${bob_id}"
-  nginxIntegration:
-    enabled: false
-    # hostname: dummy-service-auth
-  # image:
-  #   pullPolicy: Always
   volumeClaim:
     name: eoepca-userman-pvc
     create: false
@@ -71,10 +65,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: dummy-service-agent
-  # image:
-  #   tag: mytest
-  #   pullPolicy: Always
   nginxIntegration:
     enabled: true
     hosts:
@@ -92,7 +82,7 @@ uma-user-agent:
     credentialsSecretName: "${SECRET_NAME}"
   logging:
     level: "debug"
-  unauthorizedResponse: 'Bearer realm="https://auth.${domain}/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://portal.${domain}/oidc/authenticate/"'
   insecureTlsSkipVerify: true
 #---------------------------------------------------------------------------
 # END values
@@ -106,5 +96,5 @@ else
   values | helm ${ACTION_HELM} dummy-service-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.6
+    --version 1.2.0
 fi
