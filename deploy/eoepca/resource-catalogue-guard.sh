@@ -69,7 +69,7 @@ uma-user-agent:
     credentialsSecretName: "${SECRET_NAME}"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://auth.${domain}/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://portal.${domain}/oidc/authenticate/"'
   openAccess: true  # access for any authenticated user
   insecureTlsSkipVerify: true
 EOF
@@ -81,5 +81,5 @@ else
   values | helm ${ACTION_HELM} resource-catalogue-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.7
+    --version 1.2.0
 fi

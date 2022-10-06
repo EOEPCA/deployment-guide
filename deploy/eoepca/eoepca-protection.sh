@@ -46,7 +46,6 @@ if [ "${REQUIRE_PORTAL}" = "true" ]; then
 fi
 
 # PDE
-REQUIRE_PDE
 if [ "${REQUIRE_PDE}" = "true" ]; then
   echo -e "\nDeploy PDE..."
   ./pde.sh "${ACTION}" "${domain}"
