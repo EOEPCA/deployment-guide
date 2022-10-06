@@ -151,6 +151,7 @@ spec:
         harvesters:
           # Static STAC catalogue in the user's bucket storage
           - name: harvest-bucket-catalog
+            queue: "register_queue"
             resource:
               type: "STACCatalog"
               source:
@@ -162,7 +163,6 @@ spec:
                 region_name: RegionOne
                 validate_bucket_name: False
                 public: False
-                queue: "register_queue"
 
     client:
       image:
