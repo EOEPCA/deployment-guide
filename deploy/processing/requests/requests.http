@@ -1,47 +1,68 @@
 
-@hostname = ades-open
-@domain = platform-22-09-22-01.guide.eoepca.org
-@host = {{hostname}}.{{domain}}
+@domain = demo.eoepca.org
+@ades = ades.{{domain}}
+@login = auth.{{domain}}
 @user = eric
-@bearerToken = my-token
+@pass = defaultPWD
+@clientId = 6195909b-04bc-4d8c-8b92-9cb4e1bdea1f
+@clientSecret = 9a614fe9-b1eb-465d-a0af-85115dcba2e6
+
+@tokenEndpoint = {{openidConfiguration.response.body.token_endpoint}}
+@idToken = {{authenticate.response.body.id_token}}
+@deployStatus = {{deployProcess.response.headers.Location}}
+@executeStatus = {{executeProcess.response.headers.Location}}
+
+###
+
+# @name openidConfiguration
+GET https://{{login}}/.well-known/openid-configuration HTTP/1.1
+Accept: application/json
+
+###
+
+# @name authenticate
+POST {{tokenEndpoint}} HTTP/1.1
+Cache-Control: no-cache
+Content-Type: application/x-www-form-urlencoded
+
+scope=openid user_name is_operator&grant_type=password&username={{user}}&password={{pass}}&client_id={{clientId}}&client_secret={{clientSecret}}
 
 ###
 
 # @name listProcesses
-GET https://{{host}}/{{user}}/wps3/processes HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+GET https://{{ades}}/{{user}}/wps3/processes HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
 
 # @name deployProcess
-POST https://{{host}}/{{user}}/wps3/processes HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+POST https://{{ades}}/{{user}}/wps3/processes HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
 
 < ./body/snuggs-deploy.json
 
 ###
-@deployStatus = {{deployProcess.response.headers.Location}}
 
 # @name getDeployStatus
-GET https://{{host}}{{deployStatus}} HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+GET https://{{ades}}{{deployStatus}} HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
 
 # @name getProcessDetails
-GET https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+GET https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
 
 # @name executeProcess
-POST https://{{host}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+POST https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
 Prefer: respond-async
@@ -49,24 +70,22 @@ Prefer: respond-async
 < ./body/snuggs-execute.json
 
 ###
-@executeStatus = {{executeProcess.response.headers.Location}}
 
 # @name getExecuteStatus
-GET https://{{host}}{{executeStatus}} HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+GET https://{{ades}}{{executeStatus}} HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
-@executeStatus = {{executeProcess.response.headers.Location}}
 
 # @name getProcessingResults
-GET https://{{host}}{{executeStatus}}/result HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+GET https://{{ades}}{{executeStatus}}/result HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
 
 # @name listJobs
-GET https://{{host}}/{{user}}/wps3/jobs HTTP/1.1
-Authorization: Bearer {{bearerToken}}
+GET https://{{ades}}/{{user}}/wps3/jobs HTTP/1.1
+Authorization: Bearer {{idToken}}
 Accept: application/json
