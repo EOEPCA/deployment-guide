@@ -1,96 +1,102 @@
 
-# Required Components
-#
-# Cluster
-export REQUIRE_MINIKUBE="${REQUIRE_MINIKUBE:-true}"
-export REQUIRE_INGRESS_NGINX="${REQUIRE_INGRESS_NGINX:-true}"
-export REQUIRE_CERT_MANAGER="${REQUIRE_CERT_MANAGER:-true}"
-export REQUIRE_LETSENCRYPT="${REQUIRE_LETSENCRYPT:-true}"
-export REQUIRE_SEALED_SECRETS="${REQUIRE_SEALED_SECRETS:-false}"
-export REQUIRE_MINIO="${REQUIRE_MINIO:-$(if [ "${STAGEOUT_TARGET}" = "minio" ]; then echo "true"; else if [ "${REQUIRE_DATA_ACCESS}" = "false" ]; then echo "false"; else echo "true"; fi; fi)}"
-# EOEPCA
-export REQUIRE_STORAGE="${REQUIRE_STORAGE:-true}"
-export REQUIRE_DUMMY_SERVICE="${REQUIRE_DUMMY_SERVICE:-false}"
-export REQUIRE_LOGIN_SERVICE="${REQUIRE_LOGIN_SERVICE:-true}"
-export REQUIRE_PDP="${REQUIRE_PDP:-true}"
-export REQUIRE_USER_PROFILE="${REQUIRE_USER_PROFILE:-true}"
-export REQUIRE_ADES="${REQUIRE_ADES:-true}"
-export REQUIRE_RESOURCE_CATALOGUE="${REQUIRE_RESOURCE_CATALOGUE:-true}"
-export REQUIRE_DATA_ACCESS="${REQUIRE_DATA_ACCESS:-true}"
-export REQUIRE_WORKSPACE_API="${REQUIRE_WORKSPACE_API:-true}"
-export REQUIRE_BUCKET_OPERATOR="${REQUIRE_BUCKET_OPERATOR:-$(if [ "${REQUIRE_WORKSPACE_API}" = "true" -o "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then echo "true"; else echo "false"; fi)}"
-export REQUIRE_HARBOR="${REQUIRE_HARBOR:-${REQUIRE_WORKSPACE_API}}"
-export REQUIRE_PORTAL="${REQUIRE_PORTAL:-true}"
-export REQUIRE_PDE="${REQUIRE_PDE:-true}"
-# EOEPCA protection
-export REQUIRE_DUMMY_SERVICE_PROTECTION="${REQUIRE_DUMMY_SERVICE_PROTECTION:-${REQUIRE_DUMMY_SERVICE}}"
-export REQUIRE_ADES_PROTECTION="${REQUIRE_ADES_PROTECTION:-${REQUIRE_ADES}}"
-export REQUIRE_RESOURCE_CATALOGUE_PROTECTION="${REQUIRE_RESOURCE_CATALOGUE_PROTECTION:-${REQUIRE_RESOURCE_CATALOGUE}}"
-export REQUIRE_DATA_ACCESS_PROTECTION="${REQUIRE_DATA_ACCESS_PROTECTION:-${REQUIRE_DATA_ACCESS}}"
-export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-${REQUIRE_WORKSPACE_API}}"
+# Re-entry guard
+if [ -z "${_EOEPCA_OPTIONS_}" ]; then
+  export _EOEPCA_OPTIONS_="yes"
 
-# Minikube options
-# Use the 'none' drive to faciltate use of a public IP for external traffic ingress
-# and use of letsencrypt tls
-export USE_MINIKUBE_NONE_DRIVER="${USE_MINIKUBE_NONE_DRIVER:-true}"
-export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.22.5}"
-export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
+  # Required Components
+  #
+  # Cluster
+  export REQUIRE_MINIKUBE="${REQUIRE_MINIKUBE:-true}"
+  export REQUIRE_INGRESS_NGINX="${REQUIRE_INGRESS_NGINX:-true}"
+  export REQUIRE_CERT_MANAGER="${REQUIRE_CERT_MANAGER:-true}"
+  export REQUIRE_LETSENCRYPT="${REQUIRE_LETSENCRYPT:-true}"
+  export REQUIRE_SEALED_SECRETS="${REQUIRE_SEALED_SECRETS:-false}"
+  export REQUIRE_MINIO="${REQUIRE_MINIO:-$(if [ "${STAGEOUT_TARGET}" = "minio" ]; then echo "true"; else if [ "${REQUIRE_DATA_ACCESS}" = "false" ]; then echo "false"; else echo "true"; fi; fi)}"
+  # EOEPCA
+  export REQUIRE_STORAGE="${REQUIRE_STORAGE:-true}"
+  export REQUIRE_DUMMY_SERVICE="${REQUIRE_DUMMY_SERVICE:-false}"
+  export REQUIRE_LOGIN_SERVICE="${REQUIRE_LOGIN_SERVICE:-true}"
+  export REQUIRE_PDP="${REQUIRE_PDP:-true}"
+  export REQUIRE_USER_PROFILE="${REQUIRE_USER_PROFILE:-true}"
+  export REQUIRE_ADES="${REQUIRE_ADES:-true}"
+  export REQUIRE_RESOURCE_CATALOGUE="${REQUIRE_RESOURCE_CATALOGUE:-true}"
+  export REQUIRE_DATA_ACCESS="${REQUIRE_DATA_ACCESS:-true}"
+  export REQUIRE_WORKSPACE_API="${REQUIRE_WORKSPACE_API:-true}"
+  export REQUIRE_BUCKET_OPERATOR="${REQUIRE_BUCKET_OPERATOR:-$(if [ "${REQUIRE_WORKSPACE_API}" = "true" -o "${OS_DOMAINNAME}" != "cloud_XXXXX" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_HARBOR="${REQUIRE_HARBOR:-${REQUIRE_WORKSPACE_API}}"
+  export REQUIRE_PORTAL="${REQUIRE_PORTAL:-true}"
+  export REQUIRE_PDE="${REQUIRE_PDE:-true}"
+  # EOEPCA protection
+  export REQUIRE_DUMMY_SERVICE_PROTECTION="${REQUIRE_DUMMY_SERVICE_PROTECTION:-${REQUIRE_DUMMY_SERVICE}}"
+  export REQUIRE_ADES_PROTECTION="${REQUIRE_ADES_PROTECTION:-${REQUIRE_ADES}}"
+  export REQUIRE_RESOURCE_CATALOGUE_PROTECTION="${REQUIRE_RESOURCE_CATALOGUE_PROTECTION:-${REQUIRE_RESOURCE_CATALOGUE}}"
+  export REQUIRE_DATA_ACCESS_PROTECTION="${REQUIRE_DATA_ACCESS_PROTECTION:-${REQUIRE_DATA_ACCESS}}"
+  export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-${REQUIRE_WORKSPACE_API}}"
 
-# Ingress options
-export USE_METALLB="${USE_METALLB:-false}"
-export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-false}"
-export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-false}"
-export OPEN_INGRESS="${OPEN_INGRESS:-false}"
+  # Minikube options
+  # Use the 'none' drive to faciltate use of a public IP for external traffic ingress
+  # and use of letsencrypt tls
+  export USE_MINIKUBE_NONE_DRIVER="${USE_MINIKUBE_NONE_DRIVER:-true}"
+  export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.22.5}"
+  export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
 
-# TLS options
-export USE_TLS="${USE_TLS:-true}"
-export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
-if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
+  # Ingress options
+  export USE_METALLB="${USE_METALLB:-false}"
+  export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-false}"
+  export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-false}"
+  export OPEN_INGRESS="${OPEN_INGRESS:-false}"
 
-# Default Credentials
-export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-Chang3me!}"
-export MINIO_ROOT_USER="${MINIO_ROOT_USER:-eoepca}"
-export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
-export HARBOR_ADMIN_PASSWORD="${HARBOR_ADMIN_PASSWORD:-changeme}"
+  # TLS options
+  export USE_TLS="${USE_TLS:-true}"
+  export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
+  if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
 
-# ADES
-export STAGEOUT_TARGET="${STAGEOUT_TARGET:-workspace}"
+  # Default Credentials
+  export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-Chang3me!}"
+  export MINIO_ROOT_USER="${MINIO_ROOT_USER:-eoepca}"
+  export MINIO_ROOT_PASSWORD="${MINIO_ROOT_PASSWORD:-changeme}"
+  export HARBOR_ADMIN_PASSWORD="${HARBOR_ADMIN_PASSWORD:-changeme}"
 
-# Workspace
-export INSTALL_FLUX="${INSTALL_FLUX:-${REQUIRE_WORKSPACE_API}}"
+  # ADES
+  export STAGEOUT_TARGET="${STAGEOUT_TARGET:-workspace}"
 
-# Data
-export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
+  # Workspace
+  export INSTALL_FLUX="${INSTALL_FLUX:-${REQUIRE_WORKSPACE_API}}"
 
-# OpenStack details for Bucket Operator
-#
-# EOEPCA operations user with administrative privileges
-export OS_DOMAINNAME="${OS_DOMAINNAME:-cloud_XXXXX}"
-export OS_USERNAME="${OS_USERNAME:-user@cloud.com}"  # e.g. email address
-export OS_PASSWORD="${OS_PASSWORD:-none}"
-#
-# ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration)
-export OS_MEMBERROLEID="${OS_MEMBERROLEID:-none}"
-#
-# ID of a project containing the user identity requiring write access to the created user buckets
-export OS_SERVICEPROJECTID="${OS_SERVICEPROJECTID:-none}"
-export USER_EMAIL_PATTERN="${USER_EMAIL_PATTERN:-eoepca+<name>@platform.com}"
+  # Data
+  export CREODIAS_DATA_SPECIFICATION="${CREODIAS_DATA_SPECIFICATION:-false}"
 
-# Sanity checks
-#
-# ADES Stage-out
-if [ "${STAGEOUT_TARGET}" = "minio" -a "${REQUIRE_MINIO}" = "false" ]; then
-  echo "WARNING: stage-out target (STAGEOUT_TARGET) 'minio' has not been selected (REQUIRE_MINIO)"
-fi
-# Workspace API ~ Bucket Operator
-if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${REQUIRE_BUCKET_OPERATOR}" = "false" ]; then
-  echo "WARNING: Workspace API selected (REQUIRE_WORKSPACE_API) without Bucket Operator (REQUIRE_BUCKET_OPERATOR)"
-fi
-# Workspace API ~ Harbor
-if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${REQUIRE_HARBOR}" = "false" ]; then
-  echo "WARNING: Workspace API selected (REQUIRE_WORKSPACE_API) without Harbor (REQUIRE_HARBOR)"
-fi
-# Bucket Operator
-if [ "${REQUIRE_BUCKET_OPERATOR}" = "true" -a "${OS_DOMAINNAME}" = "cloud_XXXXX" ]; then
-  echo "WARNING: Bucket Operator does not appear to have been configured (e.g. OS_DOMAINNAME)"
+  # OpenStack details for Bucket Operator
+  #
+  # EOEPCA operations user with administrative privileges
+  export OS_DOMAINNAME="${OS_DOMAINNAME:-cloud_XXXXX}"
+  export OS_USERNAME="${OS_USERNAME:-user@cloud.com}"  # e.g. email address
+  export OS_PASSWORD="${OS_PASSWORD:-none}"
+  #
+  # ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration)
+  export OS_MEMBERROLEID="${OS_MEMBERROLEID:-none}"
+  #
+  # ID of a project containing the user identity requiring write access to the created user buckets
+  export OS_SERVICEPROJECTID="${OS_SERVICEPROJECTID:-none}"
+  export USER_EMAIL_PATTERN="${USER_EMAIL_PATTERN:-eoepca+<name>@platform.com}"
+
+  # Sanity checks
+  #
+  # ADES Stage-out
+  if [ "${STAGEOUT_TARGET}" = "minio" -a "${REQUIRE_MINIO}" = "false" ]; then
+    echo "WARNING: stage-out target (STAGEOUT_TARGET) 'minio' has not been selected (REQUIRE_MINIO)"
+  fi
+  # Workspace API ~ Bucket Operator
+  if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${REQUIRE_BUCKET_OPERATOR}" = "false" ]; then
+    echo "WARNING: Workspace API selected (REQUIRE_WORKSPACE_API) without Bucket Operator (REQUIRE_BUCKET_OPERATOR)"
+  fi
+  # Workspace API ~ Harbor
+  if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${REQUIRE_HARBOR}" = "false" ]; then
+    echo "WARNING: Workspace API selected (REQUIRE_WORKSPACE_API) without Harbor (REQUIRE_HARBOR)"
+  fi
+  # Bucket Operator
+  if [ "${REQUIRE_BUCKET_OPERATOR}" = "true" -a "${OS_DOMAINNAME}" = "cloud_XXXXX" ]; then
+    echo "WARNING: Bucket Operator does not appear to have been configured (e.g. OS_DOMAINNAME)"
+  fi
+
 fi
