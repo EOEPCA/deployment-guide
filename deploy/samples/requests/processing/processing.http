@@ -1,6 +1,6 @@
 
-@domain = demo.eoepca.org
-@ades = ades.{{domain}}
+@domain = e22100601.guide.eoepca.org
+@ades = ades-open.{{domain}}
 @login = auth.{{domain}}
 @user = eric
 @pass = defaultPWD
@@ -42,7 +42,7 @@ Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
 
-< ./body/snuggs-deploy.json
+< ./snuggs-deploy.json
 
 ###
 
@@ -67,7 +67,7 @@ Accept: application/json
 Content-Type: application/json
 Prefer: respond-async
 
-< ./body/snuggs-execute.json
+< ./snuggs-execute.json
 
 ###
 

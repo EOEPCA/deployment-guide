@@ -448,11 +448,11 @@ The helper script `./deploy/bin/harvest` faciltates this...
 ./deploy/bin/harvest <path-to-config-file>
 ```
 
-See directory `./deploy/data-access/harvester/` that contains some sample harvesting configuration files.<br>
+See directory `./deploy/samples/harvester/` that contains some sample harvesting configuration files.<br>
 For example...
 
 ```
-./deploy/bin/harvest ./deploy/data-access/harvester/config-Sentinel2-2019.09.10.yaml
+./deploy/bin/harvest ./deploy/samples/harvester/config-Sentinel2-2019.09.10.yaml
 ```
 
 ### Registration of Collections
@@ -463,11 +463,11 @@ The helper script `./deploy/bin/register-collection` is provided to faciltate th
 ./deploy/bin/register-collection <path-to-stac-collection-file>
 ```
 
-See directory `./deploy/data-access/collections/` that contains some same STAC Collection files.<br>
+See directory `./deploy/samples/collections/` that contains some same STAC Collection files.<br>
 For example...
 
 ```
-./deploy/bin/register-collection ./deploy/data-access/collections/S2MSI2A.json
+./deploy/bin/register-collection ./deploy/samples/collections/S2MSI2A.json
 ```
 
 ## Additional Information
