@@ -1,0 +1,21 @@
+- name: Custom-Config
+  resource:
+    url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+    type: OpenSearch
+    query:
+      bbox: 22.4,37.8,23.5,38.9  # minLong, minLat, maxLong, maxLat
+      collection: null
+      time:
+        begin: "2020-09-02T00:00:00Z"
+        end: "2020-09-03T00:00:00Z"
+        property: sensed
+    format_config:
+      property_mapping:
+        end_datetime: completionDate
+        productIdentifier: productIdentifier
+        start_datetime: startDate
+      type: application/json
+  postprocess:
+    - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+  queue: register
+  filter: {}
