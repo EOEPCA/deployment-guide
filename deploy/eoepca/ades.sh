@@ -40,7 +40,7 @@ $(stageOut)
   resourceManagerEndpoint: "https://${workspaceApiName}.${domain}"
   platformDomain: "https://auth.${domain}"
   # Kubernetes storage
-  processingStorageClass: standard
+  processingStorageClass: ${ADES_STORAGE}
   # Size of the Kubernetes Tmp Volumes
   processingVolumeTmpSize: "6Gi"
   # Size of the Kubernetes Output Volumes
@@ -53,7 +53,7 @@ wps:
   pepBaseUrl: "http://ades-pep:5576"
   usePep: "$(if [ "${OPEN_INGRESS}" = "true" ]; then echo false; else echo true; fi)"
 persistence:
-  storageClass: standard
+  storageClass: ${ADES_STORAGE}
 ingress:
   enabled: ${OPEN_INGRESS}
   annotations:

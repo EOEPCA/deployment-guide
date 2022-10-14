@@ -16,7 +16,7 @@ spec:
     global:
       namespace: "{{ workspace_name }}"
     db:
-      volume_storage_type: standard
+      volume_storage_type: ${RESOURCE_CATALOGUE_STORAGE}
     ingress:
       enabled: ${OPEN_INGRESS}
       name: ${nameResourceCatalogue}

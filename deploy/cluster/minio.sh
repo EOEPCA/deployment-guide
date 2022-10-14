@@ -36,7 +36,7 @@ apiIngress:
     nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 persistence:
-  storageClass: standard
+  storageClass: ${MINIO_STORAGE}
 
 defaultBuckets: "eoepca, cache-bucket"
 EOF

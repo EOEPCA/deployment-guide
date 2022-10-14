@@ -188,7 +188,7 @@ spec:
       persistence:
         enabled: true
         existingClaim: "" # we want the claim to be generated
-        storageClass: standard
+        storageClass: ${DATA_ACCESS_STORAGE}
         size: "100Gi"
       # postgresqlTcpKeepalivesInterval: "30"
       # postgresqlTcpKeepalivesIdle: "600"
@@ -201,7 +201,7 @@ spec:
         existingClaim: ""
       master:
         persistence:
-          storageClass: standard
+          storageClass: ${DATA_ACCESS_STORAGE}
           size: "1Gi"
           existingClaim: ""
       cluster:

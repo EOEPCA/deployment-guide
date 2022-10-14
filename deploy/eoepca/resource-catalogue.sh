@@ -34,7 +34,7 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
 db:
-  volume_storage_type: standard
+  volume_storage_type: ${RESOURCE_CATALOGUE_STORAGE}
 pycsw:
   # image:
   #   repository: geopython/pycsw

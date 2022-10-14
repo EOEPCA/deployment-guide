@@ -35,14 +35,14 @@ values() {
 hub:
   db:
     pvc:
-      storageClassName: standard
+      storageClassName: ${PDE_STORAGE}
   extraEnv:
     OAUTH_CALLBACK_URL: "https://pde.${domain}/hub/oauth_callback"
     OAUTH2_USERDATA_URL: "https://auth.${domain}/oxauth/restv1/userinfo"
     OAUTH2_TOKEN_URL: "https://auth.${domain}/oxauth/restv1/token"
     OAUTH2_AUTHORIZE_URL: "https://auth.${domain}/oxauth/restv1/authorize"
     OAUTH_LOGOUT_REDIRECT_URL: "https://auth.${domain}/oxauth/restv1/end_session?post_logout_redirect_uri=https://pde.${domain}"
-    STORAGE_CLASS: "standard"
+    STORAGE_CLASS: "${PDE_STORAGE}"
 ingress:
   enabled: true
   annotations:

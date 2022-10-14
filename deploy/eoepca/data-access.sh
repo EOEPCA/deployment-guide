@@ -209,7 +209,7 @@ $(harvesterSpecification)
   redis:
     master:
       persistence:
-        storageClass: standard
+        storageClass: ${DATA_ACCESS_STORAGE}
 
   ingestor:
     ingress:
@@ -920,7 +920,7 @@ metadata:
     k8s-app: data-access
     name: data-access
 spec:
-  storageClassName: standard
+  storageClassName: ${DATA_ACCESS_STORAGE}
   accessModes:
     - ReadWriteMany
   resources:
@@ -940,7 +940,7 @@ metadata:
     k8s-app: data-access
     name: data-access
 spec:
-  storageClassName: standard
+  storageClassName: ${DATA_ACCESS_STORAGE}
   accessModes:
     - ReadWriteMany
   resources:

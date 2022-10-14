@@ -41,17 +41,17 @@ expose:
 persistence:
   persistentVolumeClaim:
     registry:
-      storageClass: standard
+      storageClass: ${HARBOR_STORAGE}
     chartmuseum:
-      storageClass: standard
+      storageClass: ${HARBOR_STORAGE}
     jobservice:
-      storageClass: standard
+      storageClass: ${HARBOR_STORAGE}
     database:
-      storageClass: standard
+      storageClass: ${HARBOR_STORAGE}
     redis:
-      storageClass: standard
+      storageClass: ${HARBOR_STORAGE}
     trivy:
-      storageClass: standard
+      storageClass: ${HARBOR_STORAGE}
 
 externalURL: https://harbor.${domain}
 # initial password for logging in with user "admin"
