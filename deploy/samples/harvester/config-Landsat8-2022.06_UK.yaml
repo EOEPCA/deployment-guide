@@ -6,8 +6,8 @@
       bbox: -0.736084,51.200000,1.164551,52.109879
       collection: null
       time:
-        begin: "2022-08-01T00:00:00Z"
-        end: "2022-09-01T00:00:00Z"
+        begin: "2022-06-01T00:00:00Z"
+        end: "2022-07-01T00:00:00Z"
         property: sensed
     format_config:
       property_mapping:
