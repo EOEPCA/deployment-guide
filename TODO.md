@@ -55,6 +55,12 @@ more...
 
 Eventually (some minutes) then `renderer` pods recover to `Running` state
 
+## **Problem#04** - View Server map not removing de-filtered scenes
+
+Experimenting with the Cloud Cover filter in the View Server - select a value 0-20% and the Search Results updates to filter the matching scenes - but the map view does not remove the cloudy scenes.
+
+Is this what is expected?
+
 
 # QUESTIONS
 
