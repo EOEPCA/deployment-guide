@@ -1,7 +1,7 @@
 
 # Hosting specific options
-public_ip="185.52.193.246"
-domain="eoxp.guide.eoepca.org"
+# public_ip="185.52.193.246"
+# domain="eoxp.guide.eoepca.org"
 
 # TLS options
 # With a public IP we can use letsencrypt for tls

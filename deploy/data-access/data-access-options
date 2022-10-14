@@ -1,7 +1,7 @@
 
 # Hosting specific options
-public_ip="185.52.193.246"
-domain="eoxp.guide.eoepca.org"
+# public_ip="185.52.193.246"
+# domain="eoxp.guide.eoepca.org"
 
 # Disable not needed components
 #

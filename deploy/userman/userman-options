@@ -1,11 +1,7 @@
 
 # Hosting specific options
-public_ip="185.52.193.246"
-domain="platform-22-09-29-01.guide.eoepca.org"
-
-# TLS options
-# With a public IP we can use letsencrypt for tls
-export TLS_CLUSTER_ISSUER=letsencrypt-production
+# public_ip="185.52.193.246"
+# domain="platform-22-09-29-01.guide.eoepca.org"
 
 # Disable not needed components
 export REQUIRE_LOGIN_SERVICE=true
@@ -22,6 +18,10 @@ export REQUIRE_PDE=false
 
 # Use open ingress - no need for IAM authorization
 # export OPEN_INGRESS=true
+
+# TLS options
+# With a public IP we can use letsencrypt for tls
+export TLS_CLUSTER_ISSUER=letsencrypt-production
 
 # ADES stage-out to minio - no need for workspace
 # export STAGEOUT_TARGET=minio
