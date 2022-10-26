@@ -1,11 +1,34 @@
 
-# Hosting specific options
-# public_ip="185.52.193.246"
-# domain="platform-22-08-19-14.guide.eoepca.org"
+# PUBLIC FACING or PRIVATE DEPLOYMENT...
+#
+#   With Public IP and TLS enabled
+#   ------------------------------
+#   * Set `public_ip` to external-facing IP address
+#   * Set `domain` for your DNS configuration
+#   * Set `USE_MINIKUBE_NONE_DRIVER=true` for external traffic ingress
+#   * Set `TLS_CLUSTER_ISSUER` for production
+#   * Set `USE_TLS=true` to enable TLS
+#---
+# public_ip="192.168.49.2"
+# domain="192.168.49.2.nip.io"
+# export USE_MINIKUBE_NONE_DRIVER=true
+# export TLS_CLUSTER_ISSUER=letsencrypt-production
+# export USE_TLS=true
+#---
+#
+#   NO Public IP and TLS disabled
+#   ------------------------------
+#   * Leave `public_ip` blank to fallback to minikube ip default
+#   * Leave `domain` blank to fallback to minikube ip default
+#   * Set `USE_MINIKUBE_NONE_DRIVER=false` - `none` driver not needed for private deployment
+#   * Set `USE_TLS=false` to disable TLS
+#---
+# export USE_MINIKUBE_NONE_DRIVER=false
+# export USE_TLS=false
+#---
 
-# TLS options
-# With a public IP we can use letsencrypt for tls
-export TLS_CLUSTER_ISSUER=letsencrypt-production
+# Tune the amount of memory for your deployment
+export MINIKUBE_MEMORY_AMOUNT=12g
 
 # Disable not needed components
 export REQUIRE_LOGIN_SERVICE=false

@@ -1,5 +1,5 @@
 
-@domain = e22100601.guide.eoepca.org
+@domain = 192.168.49.2.nip.io
 @ades = ades-open.{{domain}}
 @login = auth.{{domain}}
 @user = eric
