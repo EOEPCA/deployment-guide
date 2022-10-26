@@ -14,6 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
+NAMESPACE="rm"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="data-access-open"
@@ -25,11 +26,11 @@ main() {
   databasePVC | kubectl ${ACTION_KUBECTL} -f -
   redisPVC | kubectl ${ACTION_KUBECTL} -f -
   if [ "${ACTION_HELM}" = "uninstall" ]; then
-    helm --namespace rm uninstall data-access
+    helm --namespace ${NAMESPACE} uninstall data-access
   else
     values | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
-      --namespace rm --create-namespace \
+      --namespace ${NAMESPACE} --create-namespace \
       --version 1.2.0
   fi
 }
@@ -915,7 +916,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: data-access-db
-  namespace: rm
+  namespace: ${NAMESPACE}
   labels:
     k8s-app: data-access
     name: data-access
@@ -935,7 +936,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: data-access-redis
-  namespace: rm
+  namespace: ${NAMESPACE}
   labels:
     k8s-app: data-access
     name: data-access

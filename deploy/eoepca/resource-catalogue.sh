@@ -14,6 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
+NAMESPACE="rm"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="resource-catalogue-open"
@@ -24,7 +25,7 @@ fi
 values() {
   cat - <<EOF
 global:
-  namespace: rm
+  namespace: ${NAMESPACE}
 ingress:
   enabled: ${OPEN_INGRESS}
   name: ${name}
@@ -36,10 +37,10 @@ ingress:
 db:
   volume_storage_type: ${RESOURCE_CATALOGUE_STORAGE}
 pycsw:
-  # image:
-  #   repository: geopython/pycsw
-  #   tag: "eoepca-staging"
-  #   pullPolicy: Always
+  image:
+    # repository: geopython/pycsw
+    # tag: "eoepca-1.2.0"
+    pullPolicy: Always
   config:
     server:
       url: https://${name}.${domain}/
@@ -47,10 +48,10 @@ EOF
 }
 
 if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace rm uninstall resource-catalogue
+  helm --namespace ${NAMESPACE} uninstall resource-catalogue
 else
   values | helm ${ACTION_HELM} resource-catalogue rm-resource-catalogue -f - \
     --repo https://eoepca.github.io/helm-charts \
-    --namespace rm --create-namespace \
+    --namespace ${NAMESPACE} --create-namespace \
     --version 1.2.0
 fi

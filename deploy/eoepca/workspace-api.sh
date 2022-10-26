@@ -109,15 +109,6 @@ metadata:
 spec:
   interval: 2m
   url: https://eoepca.github.io/helm-charts/
----
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: eox-charts
-  namespace: ${NAMESPACE}
-spec:
-  interval: 2m
-  url: https://charts-public.hub.eox.at/
 EOF
 }
 

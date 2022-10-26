@@ -24,6 +24,10 @@ spec:
       tls_host: ${nameResourceCatalogue}.{{ workspace_name }}.${domain}
       tls_secret_name: ${nameResourceCatalogue}-{{ workspace_name }}-tls
     pycsw:
+      image:
+        # repository: geopython/pycsw
+        # tag: "eoepca-1.2.0"
+        pullPolicy: Always
       config:
         server:
           url: "https://${nameResourceCatalogue}.{{ workspace_name }}.${domain}"
