@@ -1,5 +1,6 @@
 
 # PUBLIC FACING or PRIVATE DEPLOYMENT...
+# ===================================
 #
 #   With Public IP and TLS enabled
 #   ------------------------------
@@ -21,14 +22,13 @@
 #   * Leave `public_ip` blank to fallback to minikube ip default
 #   * Leave `domain` blank to fallback to minikube ip default
 #   * Set `USE_MINIKUBE_NONE_DRIVER=false` - `none` driver not needed for private deployment
+#   * Tune the amount of memory for minikube (assuming the `docker` driver)
 #   * Set `USE_TLS=false` to disable TLS
 #---
 # export USE_MINIKUBE_NONE_DRIVER=false
+# export MINIKUBE_MEMORY_AMOUNT=12g
 # export USE_TLS=false
 #---
-
-# Tune the amount of memory for your deployment
-export MINIKUBE_MEMORY_AMOUNT=12g
 
 # Disable not needed components
 export REQUIRE_LOGIN_SERVICE=false
