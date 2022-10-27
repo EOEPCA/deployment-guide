@@ -1,5 +1,0 @@
-eoepca-scim==2.8.1
-pycrypto==2.6.1
-pyjwkest==1.4.2
-requests==2.26.0
-WellKnownHandler==0.2.0

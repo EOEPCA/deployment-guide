@@ -12,7 +12,6 @@ trap onExit EXIT
 main() {
   processCmdline $@
   checkDocker
-  createContainerImage
   runClient
 }
 
@@ -29,18 +28,10 @@ checkDocker() {
   fi
 }
 
-# Create the container image
-createContainerImage() {
-  printMsg -n "INFO: Preparing docker image... "
-  docker build -t register-client register-client-src >/dev/null
-  docker system prune -f >/dev/null
-  printMsg "[done]"
-}
-
 # Run using docker container
 runClient() {
   pushd "${ORIG_DIR}" >/dev/null
-  docker run --rm ${docker_network} --entrypoint=python3 register-client -c 'import secrets; print(secrets.token_urlsafe())'
+  docker run --rm ${docker_network} eoepca/client-utils 'token-urlsafe'
   popd >/dev/null
 }
 
