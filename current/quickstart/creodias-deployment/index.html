@@ -854,13 +854,13 @@
 <li><code>public_ip</code> - The public IP address through which the deployment is exposed via the ingress-controller</li>
 <li><code>domain</code> - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules</li>
 <li>Passwords: <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>, <code>MINIO_ROOT_PASSWORD</code>, <code>HARBOR_ADMIN_PASSWORD</code></li>
-<li>OpenStack details: see section <a href="#openstack-configuration">Openstack Configuration</a></li>
+<li>OpenStack details: see section <a href="../scripted-deployment/#openstack-configuration">Openstack Configuration</a></li>
 </ul>
 <p>Once the file <code>creodias-options</code> has been well populated for your environment, then the deployment is initiated with&hellip;</p>
 <pre><code class="language-bash">./deploy/creodias/creodias
 </code></pre>
 <p>&hellip;noting that this step is a customised version of that described in section <a href="../scripted-deployment/#deployment">Deployment</a>.</p>
-<p>Similarly the script <code>creodias-protection</code> is a customised version of that described in section <a href="#apply-protection">Apply Protection</a>. Once the main deployment has completed, then the <a href="#create-test-users">test users can be created</a>, their IDs (<code>Inum</code>) set in script <code>creodias-protection</code>, and the resource protection can then be applied&hellip;</p>
+<p>Similarly the script <code>creodias-protection</code> is a customised version of that described in section <a href="../scripted-deployment/#apply-protection">Apply Protection</a>. Once the main deployment has completed, then the <a href="../scripted-deployment/#create-test-users">test users can be created</a>, their IDs (<code>Inum</code>) set in script <code>creodias-protection</code>, and the resource protection can then be applied&hellip;</p>
 <pre><code class="language-bash">./deploy/creodias/creodias-protection
 </code></pre>
 <p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
