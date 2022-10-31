@@ -42,8 +42,8 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
 
   # Ingress options
   export USE_METALLB="${USE_METALLB:-false}"
-  export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-false}"
-  export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-false}"
+  export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
+  export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
   export OPEN_INGRESS="${OPEN_INGRESS:-false}"
 
   # TLS options
