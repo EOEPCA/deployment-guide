@@ -805,36 +805,53 @@
 <h3 id="pre-defined-persistent-volume-claims">Pre-defined Persistent Volume Claims<a class="headerlink" href="#pre-defined-persistent-volume-claims" title="Permanent link">⚓︎</a></h3>
 <p>The EOEPCA development deployment establishes the following pre-defined Persistent Volume Claims, to provide a simple storage architecture that is organised around the &lsquo;domain areas&rsquo; into which the Reference Implementation is split.</p>
 <ul>
-<li><strong>Resource Managment</strong> (<code>resman</code>)<br>
-  <em>Creates <code>persistentvolume/eoepca-resman-pv</code> and <code>persistentvolumeclaim/eoepca-resman-pvc</code>.</em></li>
-<li><strong>Processing &amp; Chaining</strong> (<code>proc</code>)<br>
-  <em>Creates <code>persistentvolume/eoepca-proc-pv</code> and <code>persistentvolumeclaim/eoepca-proc-pvc</code>.</em></li>
-<li><strong>User Management</strong> (<code>userman</code>)<br>
-  <em>Creates <code>persistentvolume/eoepca-userman-pv</code> and <code>persistentvolumeclaim/eoepca-userman-pvc</code>.</em></li>
+<li><strong>Resource Managment</strong> (<code>resman</code>) - <strong><code>persistentvolumeclaim/eoepca-resman-pvc</code></strong></li>
+<li><strong>Processing &amp; Chaining</strong> (<code>proc</code>) - <strong><code>persistentvolumeclaim/eoepca-proc-pvc</code></strong></li>
+<li><strong>User Management</strong> (<code>userman</code>) - <strong><code>persistentvolumeclaim/eoepca-userman-pvc</code></strong></li>
 </ul>
 <p><em>NOTE that this is offered only as an example thay suits the approach of the development team. Each building-block has configuration through which its persistence (PV/PVC) can be configured according the needs of the deployment.</em></p>
-<p>The &lsquo;domain-area-based&rsquo; approach is acheived through the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/storage"><code>storage</code> helm chart</a>, with the following typical configuration&hellip;</p>
-<pre><code class="language-yaml">host:
-  enabled: false
-
-nfs:
-  enabled: true
-  storageClass: eoepca-nfs
-  server:
-    address: &quot;&lt;your-nfs-ip-address-here&gt;&quot;
-
-domain:
-  resman:
-    enabled: true
-    storageClass: eoepca-nfs
-  proc:
-    enabled: true
-    storageClass: eoepca-nfs
-  userman:
-    enabled: true
-    storageClass: eoepca-nfs
+<p>The following Kubernetes yaml provides an example of provisioning such domain-specific PersistentVolumeClaims within the cluster - in this case using the minikube built-in storage-class <code>standard</code> for dynamic provisioning&hellip;</p>
+<pre><code>---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-proc-pvc
+  namespace: proc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-resman-pvc
+  namespace: rm
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-userman-pvc
+  namespace: um
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi
 </code></pre>
-<p>Once established, these PV/PVCs are then referenced within the deployment configurations of the building-blocks.</p>
+<p>Once established, these <em>PersistentVolumeClaims</em> are then referenced within the deployment configurations of the building-blocks.</p>
 <h3 id="dynamic-readwritemany-storage-provisioning">Dynamic <code>ReadWriteMany</code> Storage Provisioning<a class="headerlink" href="#dynamic-readwritemany-storage-provisioning" title="Permanent link">⚓︎</a></h3>
 <p>In addition to the pre-defined PV/PVCs, the EOEPCA Reference Implementation also defines NFS-based storage classes for dynamic storage provisioning:</p>
 <ul>

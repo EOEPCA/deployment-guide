@@ -836,8 +836,8 @@
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The helm chart is deployed with values that are passed through to the subcharts for the <code>pep-engine</code> and <code>uma-user-agent</code>. Typical values to be specified include:</p>
 <ul>
-<li>Host/domain details for the Login Service and PDP, e.g. <code>auth.192.168.49.123.nip.io</code></li>
-<li>IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. <code>192.168.49.123</code></li>
+<li>Host/domain details for the Login Service and PDP, e.g. <code>auth.192.168.49.2.nip.io</code></li>
+<li>IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. <code>192.168.49.2</code></li>
 <li>Name of Persistent Volume Claim for <code>pep-engine</code> persistence, e.g. <code>myservice-pep-pvc</code><br></li>
 <li>TLS Certificate Provider, e.g. <code>letsencrypt-production</code></li>
 <li>Optional specification of default resources with which to initialise the policy database for the component</li>
@@ -851,8 +851,8 @@
 #---------------------------------------------------------------------------
 global:
   context: myservice
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -899,7 +899,7 @@ uma-user-agent:
     credentialsSecretName: &quot;myservice-agent&quot;
   logging:
     level: &quot;debug&quot;
-  unauthorizedResponse: 'Bearer realm=&quot;https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm&quot;'
+  unauthorizedResponse: 'Bearer realm=&quot;https://auth.192.168.49.2.nip.io/oxauth/auth/passport/passportlogin.htm&quot;'
 #---------------------------------------------------------------------------
 # END values
 #---------------------------------------------------------------------------
@@ -920,7 +920,7 @@ cd deployment-guide
   register_client &lt;authorization-server-hostname&gt; &lt;client-name&gt; [&lt;redirect-uri&gt; [&lt;logout-uri&gt;]]
 </code></pre>
 <p>For example&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io myclient
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io myclient
 
 INFO: Preparing docker image... [done]
 Client successfully registered.
@@ -929,10 +929,10 @@ client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
 client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
 </code></pre>
 <p>Or to register OIDC redirect URLs&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io myclient https://portal.192.168.49.123.nip.io/oidc/callback/ https://portal.192.168.49.123.nip.io/logout
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io myclient https://portal.192.168.49.2.nip.io/oidc/callback/ https://portal.192.168.49.2.nip.io/logout
 </code></pre>
 <p>The script writes the &lsquo;client credentials&rsquo; to stdout - in the expected YAML configuration file format - which can be redirected to file&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io myclient | tee client.yaml
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io myclient | tee client.yaml
 </code></pre>
 <p>&hellip;writes the client credentials to the file <code>client.yaml</code>.</p>
 <p><strong>NOTE that the <code>register-client</code> helper relies upon <a href="https://docs.docker.com/engine/"><code>docker</code></a> to build and run the script.</strong></p>
@@ -955,7 +955,7 @@ data:
 <h2 id="user-id-token">User ID Token<a class="headerlink" href="#user-id-token" title="Permanent link">⚓︎</a></h2>
 <p>As described in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme">README for the Resource Guard</a>, it is necessary for a request to a protected resource to provide the User ID Token in the request header.</p>
 <p>In the simple case of a user with username/password held within the Login Service, the User ID Token can be obtained as follows:</p>
-<pre><code>curl --location --request POST 'https://auth.192.168.49.123.nip.io/oxauth/restv1/token' \
+<pre><code>curl --location --request POST 'https://auth.192.168.49.2.nip.io/oxauth/restv1/token' \
 --header 'Cache-Control: no-cache' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'scope=openid user_name is_operator' \

@@ -823,7 +823,7 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>Resource Catalogue</em> is deployed via the <code>rm-resource-catalogue</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#readme">README for the <code>rm-resource-catalogue</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 1.1.0 --values resource-catalogue-values.yaml resource-catalogue eoepca/rm-resource-catalogue
+<pre><code class="language-bash">helm install --version 1.2.0 --values resource-catalogue-values.yaml resource-catalogue eoepca/rm-resource-catalogue
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The Resource Catalogue supports many values to configure the service - as described in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#values">Values section of the chart README</a>.</p>
@@ -839,12 +839,17 @@
 <p><strong>Example <code>resource-catalogue-values.yaml</code>&hellip;</strong></p>
 <pre><code class="language-yaml">global:
   namespace: rm
+# For protected access disable this ingress, and rely upon the resource-guard
+# for ingress with protection.
 ingress:
+  # Enabled for unprotected 'open' access to the resource-catalogue.
   enabled: true
   name: resource-catalogue
-  host: resource-catalogue.192.168.49.123.nip.io
-  tls_host: resource-catalogue.192.168.49.123.nip.io
+  host: resource-catalogue.192.168.49.2.nip.io
+  tls_host: resource-catalogue.192.168.49.2.nip.io
   tls_secret_name: resource-catalogue-tls
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
 db:
   volume_storage_type: standard
   # config:
@@ -859,16 +864,13 @@ db:
   #   work_mem: 4MB
   #   cpu_tuple_cost: 0.4
 pycsw:
-  # image:
-  #   pullPolicy: Always
-  #   tag: &quot;eoepca-0.9.0&quot;
   config:
     server:
-      url: https://resource-catalogue.192.168.49.123.nip.io/
+      url: https://resource-catalogue.192.168.49.2.nip.io/
 </code></pre>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Resource Catalogue service to provide access authorization decisions</p>
-<pre><code class="language-bash">helm install --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.2.0 --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
 </code></pre>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the Resource Catalogue for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
 <p><strong>Example <code>resource-catalogue-guard-values.yaml</code>&hellip;</strong></p>
@@ -877,9 +879,8 @@ pycsw:
 #---------------------------------------------------------------------------
 global:
   context: resource-catalogue
-  pep: resource-catalogue-pep
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -896,7 +897,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: resource-catalogue-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -914,7 +914,7 @@ uma-user-agent:
     credentialsSecretName: &quot;resman-client&quot;
   logging:
     level: &quot;info&quot;
-  unauthorizedResponse: 'Bearer realm=&quot;https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm&quot;'
+  unauthorizedResponse: 'Bearer realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;'
   openAccess: false
   insecureTlsSkipVerify: true
 </code></pre>
@@ -945,13 +945,13 @@ metadata:
 data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 </code></pre>
-<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. <a href="https://auth.192.168.49.123.nip.io">https://auth.192.168.49.123.nip.io</a>. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
+<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. <a href="https://auth.192.168.49.2.nip.io">https://auth.192.168.49.2.nip.io</a>. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io &quot;Resource Guard&quot; | tee client.yaml
 </code></pre>
 <h2 id="resource-catalogue-usage">Resource Catalogue Usage<a class="headerlink" href="#resource-catalogue-usage" title="Permanent link">⚓︎</a></h2>
 <p>The Resource Catalogue is initially populated during the initialisation of the Data Access service.<br>
 See section <a href="../data-access/#data-layer-configuration">Data-layer Configuration</a>.</p>
-<p>The Resource Catalogue is accessed at the endpoint <code>https://resource-catalogue.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://resource-catalogue.192.168.49.123.nip.io/">https://resource-catalogue.192.168.49.123.nip.io/</a>.</p>
+<p>The Resource Catalogue is accessed at the endpoint <code>https://resource-catalogue.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://resource-catalogue.192.168.49.2.nip.io/">https://resource-catalogue.192.168.49.2.nip.io/</a>.</p>
 <h3 id="loading-records">Loading Records<a class="headerlink" href="#loading-records" title="Permanent link">⚓︎</a></h3>
 <p>As described in the <a href="https://docs.pycsw.org/en/2.6.1/administration.html#loading-records">pycsw documentation</a>, ISO XML records can be loaded into the resource-catalogue using the <code>pycsw-admin.py</code> admin utility&hellip;</p>
 <pre><code class="language-bash">pycsw-admin.py load_records -c /path/to/cfg -p /path/to/records

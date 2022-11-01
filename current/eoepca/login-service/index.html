@@ -790,25 +790,30 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>Login Service</em> is deployed via the <code>login-service</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/login-service#readme">README for the <code>login-service</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 1.1.5 --values login-service-values.yaml login-service eoepca/login-service
+<pre><code class="language-bash">helm install --version 1.1.18 --values login-service-values.yaml login-service eoepca/login-service
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>At minimum, values for the following attributes should be specified:</p>
 <ul>
-<li>Public hostname of the Authorization Server, e.g. <code>auth.192.168.49.123.nip.io</code></li>
+<li>Public hostname of the Authorization Server, e.g. <code>auth.192.168.49.2.nip.io</code></li>
+<li>IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. <code>192.168.49.2</code></li>
+<li>Kubernetes <code>namespace</code> for the login-service components</li>
 <li>Initial password for the admin user<br>
   <em>Note that the password must meet the complexity: at least 6 characters and include one uppercase letter, one lowercase letter, one digit, and one special character</em></li>
-<li>IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. <code>192.168.49.123</code></li>
 <li>Name of Persistent Volume Claim for <code>login-service</code> persistence, e.g. <code>eoepca-userman-pvc</code><br>
   <em>The boolen value <code>volumeClaim.create</code> can be used for the PVC to be created by the helm release. This creates a volume of type <code>host-path</code> and, hence, is only useful for single-node development usage.</em></li>
 <li>TLS Certificate Provider, e.g. <code>letsencrypt-production</code></li>
 </ul>
 <p>Example <code>login-service-values.yaml</code>&hellip;</p>
-<pre><code class="language-yaml">volumeClaim:
+<pre><code class="language-yaml">global:
+  domain: auth.192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
+  namespace: um
+volumeClaim:
   name: eoepca-userman-pvc
   create: false
 config:
-  domain: auth.192.168.49.123.nip.io
+  domain: auth.192.168.49.2.nip.io
   adminPass: Chang3me!
   ldapPass: Chang3me!
   volumeClaim:
@@ -822,22 +827,19 @@ oxauth:
 oxtrust:
   volumeClaim:
     name: eoepca-userman-pvc
-global:
-  domain: auth.192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
 nginx:
   ingress:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - auth.192.168.49.123.nip.io
+      - auth.192.168.49.2.nip.io
     tls:
       - hosts:
-          - auth.192.168.49.123.nip.io
+          - auth.192.168.49.2.nip.io
         secretName: login-service-tls
 </code></pre>
 <h2 id="login-service-usage">Login Service Usage<a class="headerlink" href="#login-service-usage" title="Permanent link">⚓︎</a></h2>
-<p>Once the deployment has been completed successfully, the Login Service is accessed at the endpoint <code>https://auth.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://auth.192.168.49.123.nip.io/">https://auth.192.168.49.123.nip.io/</a>.</p>
+<p>Once the deployment has been completed successfully, the Login Service is accessed at the endpoint <code>https://auth.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://auth.192.168.49.2.nip.io/">https://auth.192.168.49.2.nip.io/</a>.</p>
 <p>Login as the <code>admin</code> user with the credentials configured in the helm values - ref. <code>adminPass</code> / <code>ldapPass</code>.</p>
 <p>Typical first actions to undertake through the Gluu web interface include creation of users and clients.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>

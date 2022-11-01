@@ -819,23 +819,23 @@
     pvc:
       storageClassName: standard
   extraEnv:
-    OAUTH_CALLBACK_URL: &quot;https://pde.192.168.49.123.nip.io/hub/oauth_callback&quot;
-    OAUTH2_USERDATA_URL: &quot;https://auth.192.168.49.123.nip.io/oxauth/restv1/userinfo&quot;
-    OAUTH2_TOKEN_URL: &quot;https://auth.192.168.49.123.nip.io/oxauth/restv1/token&quot;
-    OAUTH2_AUTHORIZE_URL: &quot;https://auth.192.168.49.123.nip.io/oxauth/restv1/authorize&quot;
-    OAUTH_LOGOUT_REDIRECT_URL: &quot;https://auth.192.168.49.123.nip.io/oxauth/restv1/end_session?post_logout_redirect_uri=https://pde.192.168.49.123.nip.io&quot;
+    OAUTH_CALLBACK_URL: &quot;https://pde.192.168.49.2.nip.io/hub/oauth_callback&quot;
+    OAUTH2_USERDATA_URL: &quot;https://auth.192.168.49.2.nip.io/oxauth/restv1/userinfo&quot;
+    OAUTH2_TOKEN_URL: &quot;https://auth.192.168.49.2.nip.io/oxauth/restv1/token&quot;
+    OAUTH2_AUTHORIZE_URL: &quot;https://auth.192.168.49.2.nip.io/oxauth/restv1/authorize&quot;
+    OAUTH_LOGOUT_REDIRECT_URL: &quot;https://auth.192.168.49.2.nip.io/oxauth/restv1/end_session?post_logout_redirect_uri=https://pde.192.168.49.2.nip.io&quot;
     STORAGE_CLASS: &quot;standard&quot;
 ingress:
   enabled: true
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
-    - host: pde.192.168.49.123.nip.io
+    - host: pde.192.168.49.2.nip.io
       paths:
         - path: /
   tls:
     - hosts:
-        - pde.192.168.49.123.nip.io
+        - pde.192.168.49.2.nip.io
       secretName: pde-tls
 </code></pre>
 <h3 id="jupyterhub-secret">JupyterHub Secret<a class="headerlink" href="#jupyterhub-secret" title="Permanent link">⚓︎</a></h3>
@@ -846,7 +846,7 @@ ingress:
   --from-literal=OAUTH_CLIENT_SECRET=&quot;$(cat client.yaml | grep client-secret | cut -d\  -f2)&quot;
 </code></pre>
 <h2 id="pde-usage">PDE Usage<a class="headerlink" href="#pde-usage" title="Permanent link">⚓︎</a></h2>
-<p>The PDE is accessed at the endpoint <code>https://pde.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://pde.192.168.49.123.nip.io/">https://pde.192.168.49.123.nip.io/</a>.</p>
+<p>The PDE is accessed at the endpoint <code>https://pde.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://pde.192.168.49.2.nip.io/">https://pde.192.168.49.2.nip.io/</a>.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Processor Development Environment</em> can be found at:</p>
 <ul>

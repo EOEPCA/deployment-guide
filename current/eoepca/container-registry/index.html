@@ -808,8 +808,8 @@
       nginx.ingress.kubernetes.io/proxy-body-size: &quot;0&quot;
 
     hosts:
-      core: harbor.192.168.49.123.nip.io
-      notary: harbor-notary.192.168.49.123.nip.io
+      core: harbor.192.168.49.2.nip.io
+      notary: harbor-notary.192.168.49.2.nip.io
 
 persistence:
   persistentVolumeClaim:
@@ -826,7 +826,7 @@ persistence:
     trivy:
       storageClass: standard
 
-externalURL: https://harbor.192.168.49.123.nip.io
+externalURL: https://harbor.192.168.49.2.nip.io
 # initial password for logging in with user &quot;admin&quot;
 harborAdminPassword: &quot;changeme&quot;
 
@@ -843,7 +843,7 @@ notary:
 <li>The <code>letsencrypt-production</code> Cluster Issuer relies upon the deployment being accessible from the public internet via the <code>expose.ingress.hosts.core</code> DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller. The Workspace API will not like this.</li>
 </ul>
 <h2 id="container-registry-usage">Container Registry Usage<a class="headerlink" href="#container-registry-usage" title="Permanent link">⚓︎</a></h2>
-<p>After deployemnt Harbor is accessible via its <a href="https://harbor.192.168.49.123.nip.io/">web interface</a> at <code>https://harbor.&lt;domain&gt;/</code><br>e.g. <a href="https://harbor.192.168.49.123.nip.io/">https://harbor.192.168.49.123.nip.io/</a>.</p>
+<p>After deployemnt Harbor is accessible via its <a href="https://harbor.192.168.49.2.nip.io/">web interface</a> at <code>https://harbor.&lt;domain&gt;/</code><br>e.g. <a href="https://harbor.192.168.49.2.nip.io/">https://harbor.192.168.49.2.nip.io/</a>.</p>
 <p>Login as the admin user with the password specified in the helm values.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Container Registry</em> can be found at:</p>

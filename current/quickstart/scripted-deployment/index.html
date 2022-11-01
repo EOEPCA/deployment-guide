@@ -1179,7 +1179,7 @@ password: changeme
 <h3 id="using-curl">Using <code>curl</code><a class="headerlink" href="#using-curl" title="Permanent link">⚓︎</a></h3>
 <p>The same can be achieved with a straight http request, for example using <code>curl</code>&hellip;</p>
 <pre><code class="language-bash">curl -X 'POST' \
-  'https://workspace-api.192.168.49.123.nip.io/workspaces' \
+  'https://workspace-api.192.168.49.2.nip.io/workspaces' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -H 'X-User-Id: &lt;admin-id-token&gt;' \
@@ -1216,7 +1216,7 @@ cd deployment-guide
   create-workspace &lt;domain&gt; &lt;user&gt; &lt;user-inum&gt; [&lt;client-id&gt; &lt;client-secret&gt;]
 </code></pre>
 <p>For example&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+<pre><code class="language-bash">./deploy/bin/create-workspace 192.168.49.2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
 </code></pre>
 <p>The script prompts for the password of the <code>admin</code> user.</p>
 <p>By default <code>&lt;client-id&gt;</code> and <code>&lt;client-secret&gt;</code> are read from the <code>client.yaml</code> file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.</p>

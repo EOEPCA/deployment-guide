@@ -976,16 +976,21 @@ helm upgrade -i minio -f minio-values.yaml bitnami/minio
 ingress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio-console.192.168.49.123.nip.io
+  hostname: minio-console.192.168.49.2.nip.io
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 apiIngress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio.192.168.49.123.nip.io
+  hostname: minio.192.168.49.2.nip.io
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 persistence:
   storageClass: standard
 </code></pre>
+<p><em>Note that the annotation <code>nginx.ingress.kubernetes.io/proxy-body-size</code> was found to be required to allow transfer of large files (such as data products) through the nginx proxy</em></p>
 <h3 id="s3cmd-configuration">s3cmd Configuration<a class="headerlink" href="#s3cmd-configuration" title="Permanent link">⚓︎</a></h3>
 <p>The <code>s3cmd</code> can be configured for access to the MinIO deployment. The <code>--configure</code> option can be used to prepare a suitable configuration file for <code>s3cmd</code>&hellip;</p>
 <pre><code class="language-bash">s3cmd -c mys3cfg --configure
@@ -994,8 +999,8 @@ persistence:
 <pre><code>Access Key: eoepca
 Secret Key: changeme
 Default Region: us-east-1
-S3 Endpoint: minio.192.168.49.123.nip.io
-DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.123.nip.io
+S3 Endpoint: minio.192.168.49.2.nip.io
+DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.2.nip.io
 Encryption password: 
 Path to GPG program: /usr/bin/gpg
 Use HTTPS protocol: False

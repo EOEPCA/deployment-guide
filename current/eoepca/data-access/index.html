@@ -956,13 +956,13 @@
 <h1 id="data-access">Data Access<a class="headerlink" href="#data-access" title="Permanent link">⚓︎</a></h1>
 <p>The <em>Data Access</em> provides standards-based services for access to platform hosted data - including OGC WMS/WMTS for visualisation, and OGC WCS for data retrieval. This component also includes <em>Harvester</em> and <em>Registrar</em> services to discover/watch the existing data holding of the infrastructure data layer and populate/maintain the <em>data access</em> and <em>resource catalogue</em> services accordingly.</p>
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
-<p>The <em>Data Access</em> is deployed via the <code>vs</code> (View Server) helm chart from the <a href="https://charts-public.hub.eox.at/">EOX Helm Chart Repository</a>.</p>
-<p>The chart is configured via values that are supplied with the instantiation of the helm release. The documentation for the View Server can be found here:</p>
+<p>The <em>Data Access</em> is deployed via the <code>data-access</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
+<p>The chart is configured via values that are supplied with the instantiation of the helm release. The EOEPCA <code>data-access</code> chart provides a thin wrapper around the EOX View Server (<code>vs</code>) helm chart. The documentation for the View Server can be found here:</p>
 <ul>
 <li>User Guide: <a href="https://vs.pages.eox.at/documentation/user/main/">https://vs.pages.eox.at/documentation/user/main/</a></li>
 <li>Operator Guide: <a href="https://vs.pages.eox.at/documentation/operator/main/">https://vs.pages.eox.at/documentation/operator/main/</a></li>
 </ul>
-<pre><code class="language-bash">helm install --version 2.1.4 --values data-access-values.yaml --repo https://charts-public.hub.eox.at/ data-access vs
+<pre><code class="language-bash">helm install --version 1.2.0 --values data-access-values.yaml data-access data-access
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The Data Access supports many values to configure the service. These are documented in full in the <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables">View Server - Operator Guide Configuration page</a>.</p>
@@ -979,6 +979,11 @@
   <em>Note that this is only required in the case that the Data Access will <strong>not</strong> be protected by the <code>resource-guard</code> component - ref. <a href="../resource-protection">Resource Protection</a>. Otherwise the ingress will be handled by the <code>resource-guard</code> - use <code>ingress.enabled: false</code>.</em></li>
 </ul>
 <pre><code class="language-yaml">global:
+  env:
+    REGISTRAR_REPLACE: &quot;true&quot;
+    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
+    startup_scripts:
+      - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
   ingress:
     enabled: true
     annotations:
@@ -988,10 +993,10 @@
       nginx.ingress.kubernetes.io/enable-cors: &quot;true&quot;
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - host: data-access.192.168.49.123.nip.io
+      - host: data-access.192.168.49.2.nip.io
     tls:
       - hosts:
-          - data-access.192.168.49.123.nip.io
+          - data-access.192.168.49.2.nip.io
         secretName: data-access-tls
   storage:
     data:
@@ -1004,8 +1009,8 @@
         validate_bucket_name: false
     cache:
       type: S3
-      endpoint_url: &quot;http://minio.192.168.49.123.nip.io&quot;
-      host: &quot;minio.192.168.49.123.nip.io&quot;
+      endpoint_url: &quot;http://minio.192.168.49.2.nip.io&quot;
+      host: &quot;minio.192.168.49.2.nip.io&quot;
       access_key_id: xxx
       secret_access_key: xxx
       region: us-east-1
@@ -1014,53 +1019,41 @@
     title: EOEPCA Data Access Service developed by EOX
     abstract: EOEPCA Data Access Service developed by EOX
     header: &quot;EOEPCA Data Access View Server (VS) Client powered by &lt;a href=\&quot;//eox.at\&quot;&gt;&lt;img src=\&quot;//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\&quot; alt=\&quot;EOX\&quot; style=\&quot;height:25px;margin-left:10px\&quot;/&gt;&lt;/a&gt;&quot;
-    url: https://data-access.192.168.49.123.nip.io/ows
+    url: https://data-access.192.168.49.2.nip.io/ows
   layers:
     # see section 'Data-layer Configuration'
   collections:
     # see section 'Data-layer Configuration'
   productTypes:
     # see section 'Data-layer Configuration'
-renderer:
-  image:
-    repository: eoepca/rm-data-access-core
-    tag: &quot;1.1.1&quot;
-  ingress:
-    enabled: false
-registrar:
-  image:
-    repository: eoepca/rm-data-access-core
-    tag: &quot;1.1.1&quot;
-harvester:
-  # see section 'Harvester Configuration'
-client:
-  image:
-    tag: release-2.0.18
-  ingress:
-    enabled: false
-database:
-  persistence:
-    enabled: true
-    existingClaim: data-access-db
-redis:
-  usePassword: false
-  persistence:
-    existingClaim: data-access-redis
-  master:
-    persistence:
-      enabled: true
-      storageClass: standard
-  cluster:
-    enabled: false
-ingestor:
-  replicaCount: 0
-  ingress:
-    enabled: false
-preprocessor:
-  replicaCount: 0
-cache:
-  ingress:
-    enabled: false
+vs:
+  renderer:
+    replicaCount: 4
+    ingress:
+      enabled: false
+  registrar:
+    replicaCount: 1
+  harvester:
+    # see section 'Harvester Configuration'
+    replicaCount: 1
+  client:
+    replicaCount: 1
+    ingress:
+      enabled: false
+  redis:
+    master:
+      persistence:
+        enabled: true
+        storageClass: standard
+  ingestor:
+    replicaCount: 0
+    ingress:
+      enabled: false
+  preprocessor:
+    replicaCount: 0
+  cache:
+    ingress:
+      enabled: false
 </code></pre>
 <h3 id="data-layer-configuration">Data-layer Configuration<a class="headerlink" href="#data-layer-configuration" title="Permanent link">⚓︎</a></h3>
 <p>Configuration of the service data-layer - as described in the <a href="https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables">View Server Operator Guide</a>. </p>
@@ -1078,36 +1071,35 @@ cache:
 <p>The Data Access service includes a Harvester component. The following subsections describe its configuration and usage.</p>
 <h4 id="harvester-helm-configuration">Harvester Helm Configuration<a class="headerlink" href="#harvester-helm-configuration" title="Permanent link">⚓︎</a></h4>
 <p>The Harvester can be configured through the helm chart values&hellip;</p>
-<pre><code class="language-yaml">harvester:
-  image:
-    repository: eoepca/rm-harvester
-    tag: 1.1.0
-  config:
-    redis:
-      host: data-access-redis-master
-      port: 6379
-    harvesters:
-      - name: Creodias-Opensearch
-        resource:
-          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
-          type: OpenSearch
-          format_config:
-            type: 'application/json'
-            property_mapping:
-              start_datetime: 'startDate'
-              end_datetime: 'completionDate'
-              productIdentifier: 'productIdentifier'
-          query:
-            time:
-              property: sensed
-              begin: 2019-09-10T00:00:00Z
-              end: 2019-09-11T00:00:00Z
-            collection: null
-            bbox: 14.9,47.7,16.4,48.7
-        filter: {}
-        postprocess:
-          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
-        queue: register_queue
+<pre><code class="language-yaml">vs:
+  harvester:
+    replicaCount: 1
+    config:
+      redis:
+        host: data-access-redis-master
+        port: 6379
+      harvesters:
+        - name: Creodias-Opensearch
+          resource:
+            url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+            type: OpenSearch
+            format_config:
+              type: 'application/json'
+              property_mapping:
+                start_datetime: 'startDate'
+                end_datetime: 'completionDate'
+                productIdentifier: 'productIdentifier'
+            query:
+              time:
+                property: sensed
+                begin: 2019-09-10T00:00:00Z
+                end: 2019-09-11T00:00:00Z
+              collection: null
+              bbox: 14.9,47.7,16.4,48.7
+          filter: {}
+          postprocess:
+            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          queue: register
 </code></pre>
 <p>The <code>harvester.config.harvesters</code> list defines a set of pre-defined harvesters which can be invoked in a later stage. The name property must be unique for each harvester and must be unique among all harvesters in the list. Each harvester is associated with a <code>resource</code>, an optional <code>filter</code> or <code>postprocess</code> function, and a <code>queue</code>.</p>
 <p>The <code>resource</code> defines where each item is harvested from. This can be a file system, a search service, catalog file or something similar. The example above defines a connection to an OpenSearch service on CREODIAS, with associated default query parameters and a format configuration.</p>
@@ -1204,7 +1196,7 @@ spec:
 <p>&hellip;where <code>xxx</code> must be replaced with the bucket credentials.</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Data Access service to provide access authorization decisions.</p>
-<pre><code class="language-bash">helm install --values data-access-guard-values.yaml data-access-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.2.0 --values data-access-guard-values.yaml data-access-guard eoepca/resource-guard
 </code></pre>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the Data Access for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
 <p><strong>Example <code>data-access-guard-values.yaml</code>&hellip;</strong></p>
@@ -1213,9 +1205,8 @@ spec:
 #---------------------------------------------------------------------------
 global:
   context: data-access
-  pep: data-access-pep
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -1232,7 +1223,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: data-access-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -1243,6 +1233,10 @@ uma-user-agent:
               name: data-access-renderer
               port: 80
           - path: /(opensearch.*)
+            service:
+              name: data-access-renderer
+              port: 80
+          - path: /(coverages/metadata.*)
             service:
               name: data-access-renderer
               port: 80
@@ -1266,7 +1260,7 @@ uma-user-agent:
     credentialsSecretName: &quot;resman-client&quot;
   logging:
     level: &quot;info&quot;
-  unauthorizedResponse: 'Bearer realm=&quot;https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm&quot;'
+  unauthorizedResponse: 'Bearer realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;'
   openAccess: false
   insecureTlsSkipVerify: true
 </code></pre>
@@ -1297,8 +1291,8 @@ metadata:
 data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 </code></pre>
-<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.123.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
+<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io &quot;Resource Guard&quot; | tee client.yaml
 </code></pre>
 <h2 id="data-access-usage">Data Access Usage<a class="headerlink" href="#data-access-usage" title="Permanent link">⚓︎</a></h2>
 <h3 id="default-harvesting">Default Harvesting<a class="headerlink" href="#default-harvesting" title="Permanent link">⚓︎</a></h3>

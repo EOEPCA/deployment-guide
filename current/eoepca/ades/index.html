@@ -879,7 +879,7 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>ADES</em> is deployed via the <code>ades</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme">README for the <code>ades</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 1.1.10 --values ades-values.yaml ades eoepca/ades
+<pre><code class="language-bash">helm install --version 2.0.0 --values ades-values.yaml ades eoepca/ades
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>At minimum, values for the following attributes should be specified:</p>
@@ -899,7 +899,7 @@
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
     # Stage-out to minio S3
     # (use this if the ADES is not configured to stage-out to the Workspace)
-    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.123.nip.io
+    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.2.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
     STAGEOUT_AWS_REGION: us-east-1
@@ -920,11 +920,13 @@ ingress:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: &quot;false&quot;
   hosts:
-    - host: ades.192.168.49.123.nip.io
-      paths: [&quot;/&quot;]
+    - host: ades.192.168.49.2.nip.io
+      paths: 
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - hosts:
-        - ades.192.168.49.123.nip.io
+        - ades.192.168.49.2.nip.io
       secretName: ades-tls
 </code></pre>
 <h2 id="stage-in-stage-out-configuration">Stage-in / Stage-out Configuration<a class="headerlink" href="#stage-in-stage-out-configuration" title="Permanent link">⚓︎</a></h2>
@@ -950,14 +952,14 @@ ingress:
   ...
   useResourceManager: &quot;true&quot;
   resourceManagerWorkspacePrefix: &quot;guide-user&quot;
-  resourceManagerEndpoint: &quot;https://workspace-api.192.168.49.123.nip.io&quot;
-  platformDomain: &quot;https://auth.192.168.49.123.nip.io&quot;
+  resourceManagerEndpoint: &quot;https://workspace-api.192.168.49.2.nip.io&quot;
+  platformDomain: &quot;https://auth.192.168.49.2.nip.io&quot;
   ...
 </code></pre>
 <p>The value <code>resourceManagerWorkspacePrefix</code> must be consistent with that <a href="../workspace/#values">configured for the Workspace API deployment</a>, (ref. value <code>prefixForName</code>).</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the ADES service to provide access authorization decisions</p>
-<pre><code class="language-bash">helm install --values ades-guard-values.yaml ades-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.2.0 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
 </code></pre>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the ADES for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em>&hellip;</p>
 <p><strong>Example <code>ades-guard-values.yaml</code>&hellip;</strong></p>
@@ -966,9 +968,8 @@ ingress:
 #---------------------------------------------------------------------------
 global:
   context: ades
-  pep: ades-pep
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -996,7 +997,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: ades-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -1014,7 +1014,7 @@ uma-user-agent:
     credentialsSecretName: &quot;proc-client&quot;
   logging:
     level: &quot;info&quot;
-  unauthorizedResponse: 'Bearer realm=&quot;https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm&quot;'
+  unauthorizedResponse: 'Bearer realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;'
   openAccess: false
   insecureTlsSkipVerify: true
 </code></pre>
@@ -1045,8 +1045,8 @@ metadata:
 data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 </code></pre>
-<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.123.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.123.nip.io &quot;Resource Guard&quot; | tee client.yaml
+<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
+<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io &quot;Resource Guard&quot; | tee client.yaml
 </code></pre>
 <h2 id="ades-usage-samples">ADES Usage Samples<a class="headerlink" href="#ades-usage-samples" title="Permanent link">⚓︎</a></h2>
 <p>This section includes some sample requests to test the deployed ADES.</p>
@@ -1058,13 +1058,13 @@ data:
 </ol>
 <h3 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h3>
 <p>List available processes.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/processes' \
+<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
 <h3 id="deploy-process">Deploy Process<a class="headerlink" href="#deploy-process" title="Permanent link">⚓︎</a></h3>
 <p>Deploy the sample application <code>snuggs</code>.</p>
-<pre><code>curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/processes' \
+<pre><code>curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -1099,13 +1099,13 @@ data:
 </code></pre>
 <h3 id="get-process-details">Get Process Details<a class="headerlink" href="#get-process-details" title="Permanent link">⚓︎</a></h3>
 <p>Get details for a deployed process.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
 <h3 id="execute-process">Execute Process<a class="headerlink" href="#execute-process" title="Permanent link">⚓︎</a></h3>
 <p>Execute a process with supplied parameterisation.</p>
-<pre><code>curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
+<pre><code>curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -1147,19 +1147,19 @@ data:
 </code></pre>
 <h3 id="job-status">Job Status<a class="headerlink" href="#job-status" title="Permanent link">⚓︎</a></h3>
 <p>Once a processes execution has been initiated then its progress can monitored via a job-specific URL that is returned in the HTTP response headers of the execute request.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
+<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
 <h3 id="job-result">Job Result<a class="headerlink" href="#job-result" title="Permanent link">⚓︎</a></h3>
 <p>Once the job execution has completed, then the results can be obtained.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
+<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
 <h3 id="undeploy-process">Undeploy Process<a class="headerlink" href="#undeploy-process" title="Permanent link">⚓︎</a></h3>
 <p>A process can be deleted (undeployed).</p>
-<pre><code>curl --location --request DELETE 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+<pre><code>curl --location --request DELETE 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
