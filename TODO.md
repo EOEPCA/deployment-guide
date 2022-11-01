@@ -5,6 +5,8 @@
 
 There seems to be a race-condition during startup - when `resource-catalogue` and `data-access` are deployed from clean all at once. After initial deployment the collections have not been recreated and there are errors in the registrar log. The remedy is to then delete the `registrar` pod - forcing it to be recreated - and then the `initialise-collections` is successful.
 
+This has been raised as a Jira ticket - https://eoepca.atlassian.net/browse/EOEPCA-731
+
 ## **Problem#02** - WMS service
 
 There seems to be a problem with WMS service on the `develop` cluster, but not on the `demo` cluster.
@@ -60,6 +62,8 @@ Eventually (some minutes) then `renderer` pods recover to `Running` state
 Experimenting with the Cloud Cover filter in the View Server - select a value 0-20% and the Search Results updates to filter the matching scenes - but the map view does not remove the cloudy scenes.
 
 Is this what is expected?
+
+This has been raised as Jira ticket - https://eoepca.atlassian.net/browse/EOEPCA-732
 
 
 # QUESTIONS
