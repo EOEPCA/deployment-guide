@@ -156,7 +156,7 @@ vs:
         #     - path: registrar_pycsw.backend.CWLBackend
         #       kwargs:
         #         ows_url: https://${name}.${domain}/ows
-        #         public_s3_url: https://s3.waw2-1.cloudferro.com/{projectid}:{bucket}
+        #         public_s3_url: https://cf2.cloudferro.com:8080/{projectid}:{bucket}
         #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
         # items:
         #   path: registrar.route.stac.ItemRoute

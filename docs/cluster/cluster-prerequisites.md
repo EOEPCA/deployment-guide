@@ -170,16 +170,22 @@ auth:
 ingress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio-console.192.168.49.123.nip.io
+  hostname: minio-console.192.168.49.2.nip.io
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 apiIngress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio.192.168.49.123.nip.io
+  hostname: minio.192.168.49.2.nip.io
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 persistence:
   storageClass: standard
 ```
+
+_Note that the annotation `nginx.ingress.kubernetes.io/proxy-body-size` was found to be required to allow transfer of large files (such as data products) through the nginx proxy_
 
 ### s3cmd Configuration
 
@@ -195,8 +201,8 @@ In response to the prompts, the following configuration selections are applicabl
 Access Key: eoepca
 Secret Key: changeme
 Default Region: us-east-1
-S3 Endpoint: minio.192.168.49.123.nip.io
-DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.123.nip.io
+S3 Endpoint: minio.192.168.49.2.nip.io
+DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.2.nip.io
 Encryption password: 
 Path to GPG program: /usr/bin/gpg
 Use HTTPS protocol: False

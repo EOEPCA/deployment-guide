@@ -9,7 +9,7 @@ The _ADES_ is deployed via the `ades` helm chart from the [EOEPCA Helm Chart Rep
 The chart is configured via values that are fully documented in the [README for the `ades` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme).
 
 ```bash
-helm install --version 1.1.10 --values ades-values.yaml ades eoepca/ades
+helm install --version 2.0.0 --values ades-values.yaml ades eoepca/ades
 ```
 
 ## Values
@@ -33,7 +33,7 @@ workflowExecutor:
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
     # Stage-out to minio S3
     # (use this if the ADES is not configured to stage-out to the Workspace)
-    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.123.nip.io
+    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.2.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
     STAGEOUT_AWS_REGION: us-east-1
@@ -54,11 +54,13 @@ ingress:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: ades.192.168.49.123.nip.io
-      paths: ["/"]
+    - host: ades.192.168.49.2.nip.io
+      paths: 
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - hosts:
-        - ades.192.168.49.123.nip.io
+        - ades.192.168.49.2.nip.io
       secretName: ades-tls
 ```
 
@@ -97,8 +99,8 @@ workflowExecutor:
   ...
   useResourceManager: "true"
   resourceManagerWorkspacePrefix: "guide-user"
-  resourceManagerEndpoint: "https://workspace-api.192.168.49.123.nip.io"
-  platformDomain: "https://auth.192.168.49.123.nip.io"
+  resourceManagerEndpoint: "https://workspace-api.192.168.49.2.nip.io"
+  platformDomain: "https://auth.192.168.49.2.nip.io"
   ...
 ```
 
@@ -109,7 +111,7 @@ The value `resourceManagerWorkspacePrefix` must be consistent with that [configu
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
 
 ```bash
-helm install --values ades-guard-values.yaml ades-guard eoepca/resource-guard
+helm install --version 1.2.0 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the ADES for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_...
@@ -122,9 +124,8 @@ The `resource-guard` must be configured with the values applicable to the ADES f
 #---------------------------------------------------------------------------
 global:
   context: ades
-  pep: ades-pep
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -152,7 +153,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: ades-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -170,7 +170,7 @@ uma-user-agent:
     credentialsSecretName: "proc-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -212,9 +212,9 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.123.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ## ADES Usage Samples
@@ -232,7 +232,7 @@ NOTES:
 List available processes.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/processes' \
+curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -242,7 +242,7 @@ curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/proc
 Deploy the sample application `snuggs`.
 
 ```
-curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/processes' \
+curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -281,7 +281,7 @@ curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/pro
 Get details for a deployed process.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -291,7 +291,7 @@ curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/wps3/proc
 Execute a process with supplied parameterisation.
 
 ```
-curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
+curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -337,7 +337,7 @@ curl --location --request POST 'https://ades.192.168.49.123.nip.io/eric/wps3/pro
 Once a processes execution has been initiated then its progress can monitored via a job-specific URL that is returned in the HTTP response headers of the execute request.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
+curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -347,7 +347,7 @@ curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/
 Once the job execution has completed, then the results can be obtained.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
+curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -357,7 +357,7 @@ curl --location --request GET 'https://ades.192.168.49.123.nip.io/eric/watchjob/
 A process can be deleted (undeployed).
 
 ```
-curl --location --request DELETE 'https://ades.192.168.49.123.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+curl --location --request DELETE 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```

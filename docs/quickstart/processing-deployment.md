@@ -24,7 +24,7 @@ Deployment is initiated by invoking the script...
 ./deploy/processing/processing
 ```
 
-The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-open.192.168.49.123.nip.io`.
+The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-open.192.168.49.2.nip.io`.
 
 ## Example Requests
 
@@ -43,6 +43,6 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
 
 ## Processing Results
 
-In the default configuration, the processing results are pushed to the Minio S3 object storage - at the endpoint `minio-console.<domain>` - e.g. `http://minio-console.192.168.49.123.nip.io` - with default credentials `eoepca:changeme`.
+In the default configuration, the processing results are pushed to the Minio S3 object storage - at the endpoint `minio-console.<domain>` - e.g. `http://minio-console.192.168.49.2.nip.io` - with default credentials `eoepca:changeme`.
 
 The outputs are pushed as a static STAC catalogue to a path that includes the unique job ID.

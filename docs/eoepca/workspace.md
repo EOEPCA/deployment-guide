@@ -35,11 +35,11 @@ fullnameOverride: workspace-api
 ingress:
   enabled: true
   hosts:
-    - host: workspace-api-open.192.168.49.123.nip.io
+    - host: workspace-api-open.192.168.49.2.nip.io
       paths: ["/"]
   tls:
     - hosts:
-        - workspace-api-open.192.168.49.123.nip.io
+        - workspace-api-open.192.168.49.2.nip.io
       secretName: workspace-api-open-tls
 fluxHelmOperator:
   enabled: true
@@ -48,7 +48,7 @@ workspaceSecretName: "bucket"
 namespaceForBucketResource: "rm"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
-harborUrl: "https://harbor.192.168.49.123.nip.io"
+harborUrl: "https://harbor.192.168.49.2.nip.io"
 harborUsername: "admin"
 harborPassword: "changeme"
 umaClientSecretName: "resman-client"
@@ -72,10 +72,12 @@ fluxHelmOperator:
 
 ### User Workspace Templates
 
-The Workspace API instantiates for each user a set of services, including a Resource Catalogue and Data Access services. These user services are instantiated via helm using templates:
+The Workspace API instantiates for each user a set of services, including a Resource Catalogue and Data Access services. These user services are instantiated via helm using templates. The templates are provided to the Workspace API in a `ConfigMap` that is, by default, named `workspace-charts`. Each file in the config-map is expected to be of `kind` `HelmRelease`. During creation of a new workspace, the Worksapce API applies each file to the cluster in the namespace of the newly created namespace.
 
-* **Resource Catalogue**: `template-hr-rm-resource-catalogue.yaml`
-* **Data Access**: `template-hr-vs.yaml`
+The default ConfigMap that is included with this guide contains the following templates:
+
+* **Data Access**: `template-hr-data-access.yaml`
+* **Resource Catalogue**: `template-hr-resource-catalogue.yaml`
 * **Protection**: `template-hr-resource-guard.yaml`
 
 Each of these templates is expressed as a flux `HelmRelease` object that describes the helm chart and values required to deploy the service.
@@ -92,36 +94,37 @@ kind: ConfigMap
 metadata:
   name: workspace-charts
 data:
-  template-hr-rm-resource-catalogue.yaml: |
+  template-hr-resource-catalogue.yaml: |
     apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease
     metadata:
       name: rm-resource-catalogue
     spec:
+      interval: 5m
       chart:
         spec:
           chart: rm-resource-catalogue
-          version: 1.1.0
+          version: 1.2.0
           sourceRef:
             kind: HelmRepository
             name: eoepca
             namespace: rm
       values:
         ...
-  template-hr-vs.yaml: |
+  template-hr-data-access.yaml: |
     apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease
     metadata:
-      name: workspace
+      name: vs
     spec:
-      interval: 60m
+      interval: 5m
       chart:
         spec:
-          chart: vs
-          version: 2.1.6
+          chart: data-access
+          version: 1.2.0
           sourceRef:
             kind: HelmRepository
-            name: eox-charts
+            name: eoepca
             namespace: rm
       values:
         ...
@@ -131,10 +134,11 @@ data:
     metadata:
       name: resource-guard
     spec:
+      interval: 5m
       chart:
         spec:
           chart: resource-guard
-          version: 1.0.7
+          version: 1.2.0
           sourceRef:
             kind: HelmRepository
             name: eoepca
@@ -145,7 +149,7 @@ data:
 
 #### HelmRepositories for Templates
 
-As can be seen above, the HelmRelease templates rely upon objects of type HelmRepository that define the hosting helm chart repositories. Thus, in support of the workspace templates, appropriate HelmRepository object must be provisioned within the cluster. For example, in support of the above examples...
+As can be seen above, the HelmRelease templates rely upon objects of type HelmRepository that define the hosting helm chart repository. Thus, in support of the workspace templates, appropriate HelmRepository objects must be provisioned within the cluster. For example, in support of the above examples that rely upon the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts)...
 
 ```yaml
 apiVersion: source.toolkit.fluxcd.io/v1beta1
@@ -156,15 +160,6 @@ metadata:
 spec:
   interval: 2m
   url: https://eoepca.github.io/helm-charts/
----
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: eox-charts
-  namespace: rm
-spec:
-  interval: 5m
-  url: https://charts-public.hub.eox.at/
 ```
 
 #### Helm Template Parameters
@@ -181,7 +176,7 @@ The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Workspace API service to provide access authorization decisions
 
 ```bash
-helm install --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
+helm install --version 1.2.0 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the Workspace API for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...
@@ -194,9 +189,8 @@ The `resource-guard` must be configured with the values applicable to the Worksp
 #---------------------------------------------------------------------------
 global:
   context: workspace-api
-  pep: workspace-api-pep
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -224,7 +218,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: workspace-api-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -242,7 +235,7 @@ uma-user-agent:
     credentialsSecretName: "resman-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -284,15 +277,15 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.123.nip.io](https://auth.192.168.49.123.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.2.nip.io](https://auth.192.168.49.2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ### Workspace API Usage
 
-The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192.168.49.123.nip.io/.<br>
-See the [Swagger Docs](https://workspace-api.192.168.49.123.nip.io/docs).
+The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192.168.49.2.nip.io/.<br>
+See the [Swagger Docs](https://workspace-api.192.168.49.2.nip.io/docs).
 
 ### Additional Information
 
@@ -329,11 +322,11 @@ At minimum, values for the following attributes should be specified:
 
 Example `bucket-operator-values.yaml`...
 ```yaml
-domain: 192.168.49.123.nip.io
+domain: 192.168.49.2.nip.io
 data:
   OS_MEMBERROLEID: "9ee2ff9ee4384b1894a90878d3e92bab"
   OS_SERVICEPROJECTID: "d21467d0a0414252a79e29d38f03ff98"
-  USER_EMAIL_PATTERN: "eoepca+<name>@192.168.49.123.nip.io"
+  USER_EMAIL_PATTERN: "eoepca+<name>@192.168.49.2.nip.io"
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production

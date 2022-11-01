@@ -10,39 +10,57 @@ For the EOEPCA development deployment, an NFS server has been established to pro
 
 The EOEPCA development deployment establishes the following pre-defined Persistent Volume Claims, to provide a simple storage architecture that is organised around the 'domain areas' into which the Reference Implementation is split.
 
-* **Resource Managment** (`resman`)<br>
-  *Creates `persistentvolume/eoepca-resman-pv` and `persistentvolumeclaim/eoepca-resman-pvc`.*
-* **Processing & Chaining** (`proc`)<br>
-  *Creates `persistentvolume/eoepca-proc-pv` and `persistentvolumeclaim/eoepca-proc-pvc`.*
-* **User Management** (`userman`)<br>
-  *Creates `persistentvolume/eoepca-userman-pv` and `persistentvolumeclaim/eoepca-userman-pvc`.*
+* **Resource Managment** (`resman`) - **`persistentvolumeclaim/eoepca-resman-pvc`**
+* **Processing & Chaining** (`proc`) - **`persistentvolumeclaim/eoepca-proc-pvc`**
+* **User Management** (`userman`) - **`persistentvolumeclaim/eoepca-userman-pvc`**
 
 _NOTE that this is offered only as an example thay suits the approach of the development team. Each building-block has configuration through which its persistence (PV/PVC) can be configured according the needs of the deployment._
 
-The 'domain-area-based' approach is acheived through the [`storage` helm chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/storage), with the following typical configuration...
-```yaml
-host:
-  enabled: false
+The following Kubernetes yaml provides an example of provisioning such domain-specific PersistentVolumeClaims within the cluster - in this case using the minikube built-in storage-class `standard` for dynamic provisioning...
 
-nfs:
-  enabled: true
-  storageClass: eoepca-nfs
-  server:
-    address: "<your-nfs-ip-address-here>"
-
-domain:
-  resman:
-    enabled: true
-    storageClass: eoepca-nfs
-  proc:
-    enabled: true
-    storageClass: eoepca-nfs
-  userman:
-    enabled: true
-    storageClass: eoepca-nfs
+```
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-proc-pvc
+  namespace: proc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-resman-pvc
+  namespace: rm
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-userman-pvc
+  namespace: um
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi
 ```
 
-Once established, these PV/PVCs are then referenced within the deployment configurations of the building-blocks.
+Once established, these _PersistentVolumeClaims_ are then referenced within the deployment configurations of the building-blocks.
 
 ### Dynamic `ReadWriteMany` Storage Provisioning
 

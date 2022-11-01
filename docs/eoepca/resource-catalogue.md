@@ -9,7 +9,7 @@ The _Resource Catalogue_ is deployed via the `rm-resource-catalogue` helm chart 
 The chart is configured via values that are fully documented in the [README for the `rm-resource-catalogue` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#readme).
 
 ```bash
-helm install --version 1.1.0 --values resource-catalogue-values.yaml resource-catalogue eoepca/rm-resource-catalogue
+helm install --version 1.2.0 --values resource-catalogue-values.yaml resource-catalogue eoepca/rm-resource-catalogue
 ```
 
 ## Values
@@ -30,12 +30,17 @@ Typically, values for the following attributes may be specified:
 ```yaml
 global:
   namespace: rm
+# For protected access disable this ingress, and rely upon the resource-guard
+# for ingress with protection.
 ingress:
+  # Enabled for unprotected 'open' access to the resource-catalogue.
   enabled: true
   name: resource-catalogue
-  host: resource-catalogue.192.168.49.123.nip.io
-  tls_host: resource-catalogue.192.168.49.123.nip.io
+  host: resource-catalogue.192.168.49.2.nip.io
+  tls_host: resource-catalogue.192.168.49.2.nip.io
   tls_secret_name: resource-catalogue-tls
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
 db:
   volume_storage_type: standard
   # config:
@@ -50,12 +55,9 @@ db:
   #   work_mem: 4MB
   #   cpu_tuple_cost: 0.4
 pycsw:
-  # image:
-  #   pullPolicy: Always
-  #   tag: "eoepca-0.9.0"
   config:
     server:
-      url: https://resource-catalogue.192.168.49.123.nip.io/
+      url: https://resource-catalogue.192.168.49.2.nip.io/
 ```
 
 ## Protection
@@ -63,7 +65,7 @@ pycsw:
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Resource Catalogue service to provide access authorization decisions
 
 ```bash
-helm install --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
+helm install --version 1.2.0 --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the Resource Catalogue for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...
@@ -76,9 +78,8 @@ The `resource-guard` must be configured with the values applicable to the Resour
 #---------------------------------------------------------------------------
 global:
   context: resource-catalogue
-  pep: resource-catalogue-pep
-  domain: 192.168.49.123.nip.io
-  nginxIp: 192.168.49.123
+  domain: 192.168.49.2.nip.io
+  nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
 #---------------------------------------------------------------------------
@@ -95,7 +96,6 @@ pep-engine:
 # UMA User Agent values
 #---------------------------------------------------------------------------
 uma-user-agent:
-  fullnameOverride: resource-catalogue-agent
   nginxIntegration:
     enabled: true
     hosts:
@@ -113,7 +113,7 @@ uma-user-agent:
     credentialsSecretName: "resman-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.123.nip.io/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -155,9 +155,9 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.123.nip.io](https://auth.192.168.49.123.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.2.nip.io](https://auth.192.168.49.2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.123.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ## Resource Catalogue Usage
@@ -165,7 +165,7 @@ The client credentials are obtained by registration of a client at the login ser
 The Resource Catalogue is initially populated during the initialisation of the Data Access service.<br>
 See section [Data-layer Configuration](../data-access/#data-layer-configuration).
 
-The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192.168.49.123.nip.io/](https://resource-catalogue.192.168.49.123.nip.io/).
+The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192.168.49.2.nip.io/](https://resource-catalogue.192.168.49.2.nip.io/).
 
 ### Loading Records
 

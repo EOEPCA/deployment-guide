@@ -29,23 +29,23 @@ hub:
     pvc:
       storageClassName: standard
   extraEnv:
-    OAUTH_CALLBACK_URL: "https://pde.192.168.49.123.nip.io/hub/oauth_callback"
-    OAUTH2_USERDATA_URL: "https://auth.192.168.49.123.nip.io/oxauth/restv1/userinfo"
-    OAUTH2_TOKEN_URL: "https://auth.192.168.49.123.nip.io/oxauth/restv1/token"
-    OAUTH2_AUTHORIZE_URL: "https://auth.192.168.49.123.nip.io/oxauth/restv1/authorize"
-    OAUTH_LOGOUT_REDIRECT_URL: "https://auth.192.168.49.123.nip.io/oxauth/restv1/end_session?post_logout_redirect_uri=https://pde.192.168.49.123.nip.io"
+    OAUTH_CALLBACK_URL: "https://pde.192.168.49.2.nip.io/hub/oauth_callback"
+    OAUTH2_USERDATA_URL: "https://auth.192.168.49.2.nip.io/oxauth/restv1/userinfo"
+    OAUTH2_TOKEN_URL: "https://auth.192.168.49.2.nip.io/oxauth/restv1/token"
+    OAUTH2_AUTHORIZE_URL: "https://auth.192.168.49.2.nip.io/oxauth/restv1/authorize"
+    OAUTH_LOGOUT_REDIRECT_URL: "https://auth.192.168.49.2.nip.io/oxauth/restv1/end_session?post_logout_redirect_uri=https://pde.192.168.49.2.nip.io"
     STORAGE_CLASS: "standard"
 ingress:
   enabled: true
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
-    - host: pde.192.168.49.123.nip.io
+    - host: pde.192.168.49.2.nip.io
       paths:
         - path: /
   tls:
     - hosts:
-        - pde.192.168.49.123.nip.io
+        - pde.192.168.49.2.nip.io
       secretName: pde-tls
 ```
 
@@ -63,7 +63,7 @@ kubectl -n pde create secret generic jupyterhub-secrets \
 
 ## PDE Usage
 
-The PDE is accessed at the endpoint `https://pde.<domain>/`, configured by your domain - e.g. [https://pde.192.168.49.123.nip.io/](https://pde.192.168.49.123.nip.io/).
+The PDE is accessed at the endpoint `https://pde.<domain>/`, configured by your domain - e.g. [https://pde.192.168.49.2.nip.io/](https://pde.192.168.49.2.nip.io/).
 
 ## Additional Information
 

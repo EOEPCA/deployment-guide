@@ -197,7 +197,7 @@ The same can be achieved with a straight http request, for example using `curl`.
 
 ```bash
 curl -X 'POST' \
-  'https://workspace-api.192.168.49.123.nip.io/workspaces' \
+  'https://workspace-api.192.168.49.2.nip.io/workspaces' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -H 'X-User-Id: <admin-id-token>' \
@@ -248,7 +248,7 @@ Usage:
 For example...
 
 ```bash
-./deploy/bin/create-workspace 192.168.49.123.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+./deploy/bin/create-workspace 192.168.49.2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
 ```
 
 The script prompts for the password of the `admin` user.
