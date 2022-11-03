@@ -12,6 +12,15 @@ onExit() {
 trap onExit EXIT
 
 #-------------------------------------------------------------------------------
+# minikube profile
+#-------------------------------------------------------------------------------
+if [ "${USE_MINIKUBE_NONE_DRIVER}" = "false" ]; then
+  minikube_profile="${cluster_name}"
+else
+  minikube_profile="minikube"
+fi
+
+#-------------------------------------------------------------------------------
 # minikube
 #-------------------------------------------------------------------------------
 echo "Installing minikube..."
@@ -24,16 +33,18 @@ else
   echo "  [skip] already installed"
 fi
 
-minikube update-check
-
 #-------------------------------------------------------------------------------
 # create cluster
 #-------------------------------------------------------------------------------
 echo "Create minikube cluster..."
-if [ "${USE_MINIKUBE_NONE_DRIVER}" = "false" ]; then
-  minikube -p "${cluster_name}" start --cpus max --memory "${MINIKUBE_MEMORY_AMOUNT}" --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}"
-  minikube profile "${cluster_name}"
+if minikube -p "${minikube_profile}" ip >/dev/null 2>&1; then
+  echo "  [skip] already running"
 else
-  minikube start --driver none --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}"
+  if [ "${USE_MINIKUBE_NONE_DRIVER}" = "false" ]; then
+    minikube -p "${minikube_profile}" start --cpus max --memory "${MINIKUBE_MEMORY_AMOUNT}" --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}"
+    minikube profile "${minikube_profile}"
+  else
+    minikube start --driver none --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}"
+  fi
+  echo "  [done]"
 fi
-echo "  [done]"
