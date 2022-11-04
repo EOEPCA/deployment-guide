@@ -13,7 +13,7 @@ CLIENT_YAML="../eoepca/client.yaml"
 
 main() {
   checkPrerequisites
-  processCmdline $@
+  processCmdline "$@"
   getAdminIdToken
   createWorkspace
 }
@@ -106,7 +106,7 @@ EOF
 
 # Write all output to stderr - keeping stdout 'clean' for the client details
 printMsg() {
-  echo $@ 1>&2
+  echo "$@" 1>&2
 }
 
-main $@
+main "$@"

@@ -10,7 +10,7 @@ onExit() {
 trap onExit EXIT
 
 main() {
-  processCmdline $@
+  processCmdline "$@"
   checkDocker
   runClient
 }
@@ -31,7 +31,7 @@ checkDocker() {
 # Run using docker container
 runClient() {
   pushd "${ORIG_DIR}" >/dev/null
-  docker run --rm ${docker_network} eoepca/client-utils 'token-urlsafe'
+  docker run --rm ${docker_network} eoepca/client-utils "token-urlsafe"
   popd >/dev/null
 }
 
@@ -45,7 +45,7 @@ EOF
 
 # Write all output to stderr - keeping stdout 'clean' for the client details
 printMsg() {
-  echo $@ 1>&2
+  echo "$@" 1>&2
 }
 
-main $@
+main "$@"

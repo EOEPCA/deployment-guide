@@ -14,4 +14,4 @@ main() {
   sudo rm -rf /tmp/hostpath-provisioner
 }
 
-main $@
+main "$@"

@@ -10,7 +10,7 @@ onExit() {
 trap onExit EXIT
 
 main() {
-  processCmdline $@
+  processCmdline "$@"
   checkDocker
   deduceDockerNetwork
   runClient
@@ -69,7 +69,7 @@ deduceDockerNetwork() {
 # Run using docker container
 runClient() {
   pushd "${ORIG_DIR}" >/dev/null
-  docker run --rm ${docker_network} eoepca/client-utils 'register-client ${auth_server} "${client_name}" ${redirect_uri} ${logout_uri}'
+  docker run --rm ${docker_network} eoepca/client-utils "register-client ${auth_server} \"${client_name}\" ${redirect_uri} ${logout_uri}"
   popd >/dev/null
 }
 
@@ -83,7 +83,7 @@ EOF
 
 # Write all output to stderr - keeping stdout 'clean' for the client details
 printMsg() {
-  echo $@ 1>&2
+  echo "$@" 1>&2
 }
 
-main $@
+main "$@"
