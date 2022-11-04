@@ -31,7 +31,7 @@ main() {
     values | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
-      --version 1.2.0
+      --version 1.2.1
   fi
 }
 
