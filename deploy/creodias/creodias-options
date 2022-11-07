@@ -1,11 +1,39 @@
 
-# Hosting specific options
-# public_ip="185.52.193.246"
-# domain="eoxp.guide.eoepca.org"
+# PUBLIC FACING or PRIVATE DEPLOYMENT...
+# ===================================
+#
+#   With Public IP and TLS enabled
+#   ------------------------------
+#   * Set `public_ip` to external-facing IP address
+#   * Set `domain` for your DNS configuration
+#   * Set `USE_TLS=true` to enable TLS
+#   * Set `TLS_CLUSTER_ISSUER` for production
+#---
+# public_ip="192.168.49.2"
+# domain="192.168.49.2.nip.io"
+# export USE_TLS=true
+# export TLS_CLUSTER_ISSUER=letsencrypt-production
+#---
+#
+#   NO Public IP and TLS disabled
+#   ------------------------------
+#   * Leave `public_ip` blank to fallback to minikube ip default
+#   * Leave `domain` blank to fallback to minikube ip default
+#   * Set `USE_TLS=false` to disable TLS
+#---
+export USE_TLS=false
+#---
 
-# TLS options
-# With a public IP we can use letsencrypt for tls
-export TLS_CLUSTER_ISSUER=letsencrypt-production
+# Disable not needed components
+# n/a - all components
+
+# Minikube options
+# Tune the resources afforded to minikube (assuming the `docker` driver)
+# export MINIKUBE_CPU_AMOUNT=max
+# export MINIKUBE_MEMORY_AMOUNT=12g
+
+# Ingress
+export OPEN_INGRESS=true  # `open` - no need for IAM authorization
 
 # Data
 export CREODIAS_DATA_SPECIFICATION=true

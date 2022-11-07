@@ -34,11 +34,11 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-${REQUIRE_WORKSPACE_API}}"
 
   # Minikube options
-  # Use the 'none' drive to faciltate use of a public IP for external traffic ingress
-  # and use of letsencrypt tls
-  export USE_MINIKUBE_NONE_DRIVER="${USE_MINIKUBE_NONE_DRIVER:-true}"
   export MINIKUBE_KUBERNETES_VERSION="${MINIKUBE_KUBERNETES_VERSION:-v1.22.5}"
+  export MINIKUBE_CPU_AMOUNT="${MINIKUBE_CPU_AMOUNT:-max}"
   export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
+  # We assume use of a public IP for external traffic ingress and use of letsencrypt tls
+  export MINIKUBE_EXTRA_OPTIONS="--listen-address=0.0.0.0 --ports=:80:80,443:443"
 
   # Ingress options
   export USE_METALLB="${USE_METALLB:-false}"

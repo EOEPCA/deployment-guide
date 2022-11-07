@@ -1,7 +1,28 @@
 
-# Hosting specific options
-# public_ip="185.52.193.246"
-# domain="platform-22-09-29-01.guide.eoepca.org"
+# PUBLIC FACING or PRIVATE DEPLOYMENT...
+# ===================================
+#
+#   With Public IP and TLS enabled
+#   ------------------------------
+#   * Set `public_ip` to external-facing IP address
+#   * Set `domain` for your DNS configuration
+#   * Set `USE_TLS=true` to enable TLS
+#   * Set `TLS_CLUSTER_ISSUER` for production
+#---
+# public_ip="192.168.49.2"
+# domain="192.168.49.2.nip.io"
+# export USE_TLS=true
+# export TLS_CLUSTER_ISSUER=letsencrypt-production
+#---
+#
+#   NO Public IP and TLS disabled
+#   ------------------------------
+#   * Leave `public_ip` blank to fallback to minikube ip default
+#   * Leave `domain` blank to fallback to minikube ip default
+#   * Set `USE_TLS=false` to disable TLS
+#---
+export USE_TLS=false
+#---
 
 # Disable not needed components
 export REQUIRE_LOGIN_SERVICE=true
@@ -16,14 +37,12 @@ export REQUIRE_HARBOR=false
 export REQUIRE_PORTAL=false
 export REQUIRE_PDE=false
 
-# Use open ingress - no need for IAM authorization
-# export OPEN_INGRESS=true
+# Minikube options
+# Tune the resources afforded to minikube (assuming the `docker` driver)
+# export MINIKUBE_CPU_AMOUNT=max
+# export MINIKUBE_MEMORY_AMOUNT=12g
 
-# TLS options
-# With a public IP we can use letsencrypt for tls
-export TLS_CLUSTER_ISSUER=letsencrypt-production
-
-# ADES stage-out to minio - no need for workspace
-# export STAGEOUT_TARGET=minio
+# Ingress
+export OPEN_INGRESS=false  # `protected` - requires IAM authorization
 
 source ../eoepca/eoepca-options
