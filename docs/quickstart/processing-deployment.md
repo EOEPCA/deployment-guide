@@ -28,7 +28,7 @@ The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-o
 
 ## Example Requests
 
-The file [`deploy/samples/requests/processing/processing.http`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/processing.http) has been prepared with sample requests for **_OGC API Processes_** operations:
+The file [`deploy/samples/requests/processing/snuggs/snuggs.http`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs/snuggs.http) has been prepared with sample requests for **_OGC API Processes_** operations:
 
 * List Processes
 * Deploy Process
