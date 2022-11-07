@@ -791,7 +791,7 @@
 <p>The simple deployment applies the following configuration:</p>
 <ul>
 <li>Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
-  <em>To configure an external-facing deployment then see section <a href="../scripted-deployment/#public-deployment">Public Deployment</a></em></li>
+  <em>To configure an external-facing deployment with TLS protection, then see section <a href="../scripted-deployment/#public-deployment">Public Deployment</a></em></li>
 <li>No TLS for service ingress endpoints</li>
 <li>Configuration of &lsquo;open&rsquo; interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services</li>
 <li>Configuration of ADES stage-out to a local instance of <code>minio</code>, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option</li>
