@@ -91,6 +91,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/exploitation-deployment/</loc>
+         <lastmod>2022-11-07</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://deployment-guide.docs.eoepca.org/current/quickstart/processing-deployment/</loc>
          <lastmod>2022-11-07</lastmod>
          <changefreq>daily</changefreq>
