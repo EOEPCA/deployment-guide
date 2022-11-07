@@ -7,7 +7,7 @@ The script [`deploy/data-access/data-access`](https://github.com/EOEPCA/deployme
 The processing deployment applies the following configuration:
 
 * Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
-  _To configure an external-facing deployment then see section [Public Deployment](scripted-deployment.md#public-deployment)_
+  _To configure an external-facing deployment with TLS protection, then see section [Public Deployment](scripted-deployment.md#public-deployment)_
 * No TLS for service ingress endpoints
 * Services deployed:
     * Resource Catalogue for data discovery

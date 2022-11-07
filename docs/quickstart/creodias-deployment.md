@@ -7,7 +7,7 @@ These scripts are examples that can be seen as a starting point, from which they
 The CREODIAS deployment applies the following configuration:
 
 * Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
-  _To configure an external-facing deployment then see section [Public Deployment](scripted-deployment.md#public-deployment)_
+  _To configure an external-facing deployment with TLS protection, then see section [Public Deployment](scripted-deployment.md#public-deployment)_
 * No TLS for service ingress endpoints
 * Protected service endpoints requiring IAM authorization<br>
   _See [Endpoint Protection](#endpoint-protection) below for further information_
