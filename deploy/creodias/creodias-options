@@ -33,7 +33,7 @@ export USE_TLS=false
 # export MINIKUBE_MEMORY_AMOUNT=12g
 
 # Ingress
-export OPEN_INGRESS=true  # `open` - no need for IAM authorization
+export OPEN_INGRESS=false  # `protected` - requires IAM authorization
 
 # Data
 export CREODIAS_DATA_SPECIFICATION=true
