@@ -6,9 +6,9 @@ The script [`deploy/data-access/data-access`](https://github.com/EOEPCA/deployme
 
 The processing deployment applies the following configuration:
 
-* Assumes a public IP (which allows configuration of TLS)<br>
-  _In case of no public IP then see section [Private Deployment](scripted-deployment.md#private-deployment)_
-* TLS via letsencrypt
+* Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
+  _To configure an external-facing deployment then see section [Public Deployment](scripted-deployment.md#public-deployment)_
+* No TLS for service ingress endpoints
 * Services deployed:
     * Resource Catalogue for data discovery
     * Data Access for data visualisation and download

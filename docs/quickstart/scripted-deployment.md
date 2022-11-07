@@ -34,7 +34,6 @@ Variable | Description | Default
 **REQUIRE_<cluster-component\>** | A set of variables that can be used to control which **CLUSTER** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_MINIKUBE=true`<br>`REQUIRE_INGRESS_NGINX=true`<br>`REQUIRE_CERT_MANAGER=true`<br>`REQUIRE_LETSENCRYPT=true`<br>`REQUIRE_SEALED_SECRETS=false`<br>`REQUIRE_MINIO=false` | see description
 **REQUIRE_<eoepca-component\>** | A set of variables that can be used to control which **EOEPCA** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_STORAGE=true`<br>`REQUIRE_DUMMY_SERVICE=false`<br>`REQUIRE_LOGIN_SERVICE=true`<br>`REQUIRE_PDP=true`<br>`REQUIRE_USER_PROFILE=true`<br>`REQUIRE_ADES=true`<br>`REQUIRE_RESOURCE_CATALOGUE=true`<br>`REQUIRE_DATA_ACCESS=true`<br>`REQUIRE_WORKSPACE_API=true`<br>`REQUIRE_BUCKET_OPERATOR=true`<br>`REQUIRE_HARBOR=true`<br>`REQUIRE_PORTAL=true`<br>`REQUIRE_PDE=true` | see description
 **REQUIRE_<protection-component\>** | A set of variables that can be used to control which **PROTECTION** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_DUMMY_SERVICE_PROTECTION=false`<br>`REQUIRE_ADES_PROTECTION=true`<br>`REQUIRE_RESOURCE_CATALOGUE_PROTECTION=true`<br>`REQUIRE_DATA_ACCESS_PROTECTION=true`<br>`REQUIRE_WORKSPACE_API_PROTECTION=true` | see description
-**USE_MINIKUBE_NONE_DRIVER** | Force use of the minikube 'none' driver.<br>The 'none' driver has been found to be useful to more easily expose the kubernetes cluster for external access, e.g. via `ingress-controller`. This, in turn, facilitates the use of letsencrypt to establish TLS certificates. | `true`
 **MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5. | `v1.22.5`
 **MINIKUBE_MEMORY_AMOUNT** | Amount of memory to allocate to the docker containers used by minikube to implement the cluster. | `12g`
 **USE_METALLB** | Enable use of minikube's built-in load-balancer.<br>The load-balancer can be used to facilitate exposing services publicly. However, the same can be achieved using minikube's built-in ingress-controller. Therefore, this option is suppressed by default. | `false`
@@ -77,18 +76,21 @@ Usage: eoepca.sh <action> <cluster-name> <public-ip> <domain>
 Argument | Description | Default
 -------- | ----------- | -------
 **action** | Action to perform: `apply` \| `delete` \| `template`.<br>`apply` makes the deployment<br>`delete` removes the deployment<br>`template` outputs generated kubernetes yaml to stdout | `apply`
-**cluster-name** | The name of the minikube 'profile' for the created minikube cluster.<br>Note that this option is ignored if `USE_MINIKUBE_NONE_DRIVER=true` as the 'none' driver does not support multiple profiles. | `eoepca`
+**cluster-name** | The name of the minikube 'profile' for the created minikube cluster | `eoepca`
 **public-ip** | The public IP address through which the deployment is exposed via the ingress-controller.<br>By default, the value is deduced from the assigned cluster minikube IP address - ref. command `minikube ip`. | `<minikube-ip>`
 **domain** | The DNS domain name through which the deployment is accessed. Forms the stem for all service hostnames in the ingress rules - i.e. `<service-name>.<domain>`.<br>By default, the value is deduced from the assigned cluster minikube IP address, using `nip.io` to establish a DNS lookup - i.e. `<minikube ip>.nip.io`. | `<minikube ip>.nip.io`
 
-### Private Deployment
+### Public Deployment
 
-In the case that a 'private' deployment is required - i.e. with no public IP - then the following configuration selections should be made:
+For simplicity, the out-of-the-box scripts assume a 'private' deployment - with no public IP / DNS and hence no use of TLS for service ingress endpoints.
 
-* `public_ip` - leave blank to fall-back to minikube ip default
-* `domain` - leave blank to fall-back to minikube ip default
-* `USE_MINIKUBE_NONE_DRIVER=false` - the `none` driver is mostly useful only with a public IP
-* `USE_TLS=false` - difficult to configure letsencrypt without a public IP
+In the case that an external-facing public deployment is desired, then the following configuration selections should be made:
+
+* `public_ip` - set to the external-facing public IP of your deployment, e.g. the floating IP of your load-balancer in a cloud deployment
+* `domain` - set to the domain (as per DNS records) for your deployment<br>
+  _Note that the EOEPCA components typically configure their ingress with hostname prefixes applied to this `domain`. Thus, it is necessary that the DNS record for the domain is established as a wildcard record - i.e. `*.<domain>`_
+* `USE_TLS=true` - to enable configuration of TLS endpoints in each component service ingress
+* `TLS_CLUSTER_ISSUER=<issuer>` - should be configured ~ e.g. using the `letsencrypt-production` or `letsencrypt-staging` (testing only) _Cluster Issuer_ that are configured by the scripted deployment
 
 ## Deployment
 
@@ -96,7 +98,7 @@ The deployment is initiated by setting the appropriate [environment variables](#
 
 Customised examples are provided for Simple, CREODIAS and Processing deployments.
 
-**_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube 'none' driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
+**_NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the [Clean-up](#clean-up) section below. This is particularly important in the case that the minikube `none` driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed._**
 
 Initiate the deployment...
 ```bash
@@ -265,7 +267,7 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
   If necessary specify the cluster (profile)...<br>
   `minikube -p <profile> delete`<br>
 
-2. **Persistent Data**<br>
+1. **Persistent Data**<br>
   In the case that the minikube `none` driver is used, the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed. In this case, the minikube `standard` _StorageClass_ is fulfilled by the `hostpath` provisioner, whose persistence is removed as follows...<br>
   `sudo rm -rf /tmp/hostpath-provisioner`
 

@@ -6,9 +6,9 @@ The script [`deploy/simple/simple`](https://github.com/EOEPCA/deployment-guide/b
 
 The simple deployment applies the following configuration:
 
-* Assumption that the local deployment will not be accessible via a public IP, and hence:
-    * Use of minikube driver `none` (`USE_MINIKUBE_NONE_DRIVER`) is suppressed, since the `none` driver is most useful to expose a public service
-    * Suppression of use of TLS for service ingress (`USE_TLS`), since the lack of public IP access prevents the ability of `letsencrpt` to provide signed certtificates
+* Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
+  _To configure an external-facing deployment then see section [Public Deployment](scripted-deployment.md#public-deployment)_
+* No TLS for service ingress endpoints
 * Configuration of 'open' interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services
 * Configuration of ADES stage-out to a local instance of `minio`, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option
 
