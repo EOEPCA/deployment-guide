@@ -442,6 +442,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#endpoint-protection" class="md-nav__link">
+    Endpoint Protection
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#harvest-creodias-data" class="md-nav__link">
     Harvest CREODIAS Data
   </a>
@@ -847,23 +854,34 @@
 
 
 <h1 id="creodias-deployment">CREODIAS Deployment<a class="headerlink" href="#creodias-deployment" title="Permanent link">⚓︎</a></h1>
-<p>Based upon our development experiences on CREODIAS, there is a wrapper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias"><code>creodias</code></a> with particular customisations suited to the <a href="https://creodias.eu/">CREODIAS</a> infrastructure and data offering.</p>
-<p>The customisations are expressed through <a href="../scripted-deployment/#environment-variables">environment variables</a> that are captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options"><code>creodias-options</code></a>.</p>
+<p>Based upon our development experiences on CREODIAS, there is a wrapper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias"><code>creodias</code></a> with particular customisations suited to the <a href="https://creodias.eu/">CREODIAS</a> infrastructure and data offering. The customisations are expressed through <a href="../scripted-deployment/#environment-variables">environment variables</a> that are captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options"><code>creodias-options</code></a>.</p>
+<p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
+<p>The CREODIAS deployment applies the following configuration:</p>
+<ul>
+<li>Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
+  <em>To configure an external-facing deployment then see section <a href="../scripted-deployment/#public-deployment">Public Deployment</a></em></li>
+<li>No TLS for service ingress endpoints</li>
+<li>Protected service endpoints requiring IAM authorization<br>
+  <em>See <a href="#endpoint-protection">Endpoint Protection</a> below for further information</em></li>
+</ul>
 <p>With reference to the file <code>creodias-options</code>, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment&hellip;</p>
 <ul>
-<li><code>public_ip</code> - The public IP address through which the deployment is exposed via the ingress-controller</li>
-<li><code>domain</code> - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules</li>
 <li>Passwords: <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>, <code>MINIO_ROOT_PASSWORD</code>, <code>HARBOR_ADMIN_PASSWORD</code></li>
 <li>OpenStack details: see section <a href="../scripted-deployment/#openstack-configuration">Openstack Configuration</a></li>
+<li>If configuring an external deployment - ref. <a href="../scripted-deployment/#public-deployment">Public Deployment</a>&hellip;<ul>
+<li><code>public_ip</code> - The public IP address through which the deployment is exposed via the ingress-controller</li>
+<li><code>domain</code> - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules</li>
+</ul>
+</li>
 </ul>
 <p>Once the file <code>creodias-options</code> has been well populated for your environment, then the deployment is initiated with&hellip;</p>
 <pre><code class="language-bash">./deploy/creodias/creodias
 </code></pre>
 <p>&hellip;noting that this step is a customised version of that described in section <a href="../scripted-deployment/#deployment">Deployment</a>.</p>
+<h2 id="endpoint-protection">Endpoint Protection<a class="headerlink" href="#endpoint-protection" title="Permanent link">⚓︎</a></h2>
 <p>Similarly the script <code>creodias-protection</code> is a customised version of that described in section <a href="../scripted-deployment/#apply-protection">Apply Protection</a>. Once the main deployment has completed, then the <a href="../scripted-deployment/#create-test-users">test users can be created</a>, their IDs (<code>Inum</code>) set in script <code>creodias-protection</code>, and the resource protection can then be applied&hellip;</p>
 <pre><code class="language-bash">./deploy/creodias/creodias-protection
 </code></pre>
-<p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
 <h2 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h2>
 <p>The harvester can be <a href="../../eoepca/data-access/#harvester-helm-configuration">deployed with a default configuration</a> file at <code>/config.yaml</code>. As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
 <pre><code>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch

@@ -401,8 +401,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#private-deployment" class="md-nav__link">
-    Private Deployment
+  <a href="#public-deployment" class="md-nav__link">
+    Public Deployment
   </a>
   
 </li>
@@ -953,11 +953,6 @@
 <td>see description</td>
 </tr>
 <tr>
-<td><strong>USE_MINIKUBE_NONE_DRIVER</strong></td>
-<td>Force use of the minikube &lsquo;none&rsquo; driver.<br>The &lsquo;none&rsquo; driver has been found to be useful to more easily expose the kubernetes cluster for external access, e.g. via <code>ingress-controller</code>. This, in turn, facilitates the use of letsencrypt to establish TLS certificates.</td>
-<td><code>true</code></td>
-</tr>
-<tr>
 <td><strong>MINIKUBE_KUBERNETES_VERSION</strong></td>
 <td>The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5.</td>
 <td><code>v1.22.5</code></td>
@@ -1097,7 +1092,7 @@
 </tr>
 <tr>
 <td><strong>cluster-name</strong></td>
-<td>The name of the minikube &lsquo;profile&rsquo; for the created minikube cluster.<br>Note that this option is ignored if <code>USE_MINIKUBE_NONE_DRIVER=true</code> as the &lsquo;none&rsquo; driver does not support multiple profiles.</td>
+<td>The name of the minikube &lsquo;profile&rsquo; for the created minikube cluster</td>
 <td><code>eoepca</code></td>
 </tr>
 <tr>
@@ -1112,18 +1107,20 @@
 </tr>
 </tbody>
 </table>
-<h3 id="private-deployment">Private Deployment<a class="headerlink" href="#private-deployment" title="Permanent link">⚓︎</a></h3>
-<p>In the case that a &lsquo;private&rsquo; deployment is required - i.e. with no public IP - then the following configuration selections should be made:</p>
+<h3 id="public-deployment">Public Deployment<a class="headerlink" href="#public-deployment" title="Permanent link">⚓︎</a></h3>
+<p>For simplicity, the out-of-the-box scripts assume a &lsquo;private&rsquo; deployment - with no public IP / DNS and hence no use of TLS for service ingress endpoints.</p>
+<p>In the case that an external-facing public deployment is desired, then the following configuration selections should be made:</p>
 <ul>
-<li><code>public_ip</code> - leave blank to fall-back to minikube ip default</li>
-<li><code>domain</code> - leave blank to fall-back to minikube ip default</li>
-<li><code>USE_MINIKUBE_NONE_DRIVER=false</code> - the <code>none</code> driver is mostly useful only with a public IP</li>
-<li><code>USE_TLS=false</code> - difficult to configure letsencrypt without a public IP</li>
+<li><code>public_ip</code> - set to the external-facing public IP of your deployment, e.g. the floating IP of your load-balancer in a cloud deployment</li>
+<li><code>domain</code> - set to the domain (as per DNS records) for your deployment<br>
+  <em>Note that the EOEPCA components typically configure their ingress with hostname prefixes applied to this <code>domain</code>. Thus, it is necessary that the DNS record for the domain is established as a wildcard record - i.e. <code>*.&lt;domain&gt;</code></em></li>
+<li><code>USE_TLS=true</code> - to enable configuration of TLS endpoints in each component service ingress</li>
+<li><code>TLS_CLUSTER_ISSUER=&lt;issuer&gt;</code> - should be configured ~ e.g. using the <code>letsencrypt-production</code> or <code>letsencrypt-staging</code> (testing only) <em>Cluster Issuer</em> that are configured by the scripted deployment</li>
 </ul>
 <h2 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Permanent link">⚓︎</a></h2>
 <p>The deployment is initiated by setting the appropriate <a href="#environment-variables">environment variables</a> and invoking the <code>eoepca.sh</code> script with suitable <a href="#command-line-arguments">command-line arguments</a>. You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the <code>eoepca.sh</code> script.</p>
 <p>Customised examples are provided for Simple, CREODIAS and Processing deployments.</p>
-<p><strong><em>NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the <a href="#clean-up">Clean-up</a> section below. This is particularly important in the case that the minikube &lsquo;none&rsquo; driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed.</em></strong></p>
+<p><strong><em>NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the <a href="#clean-up">Clean-up</a> section below. This is particularly important in the case that the minikube <code>none</code> driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed.</em></strong></p>
 <p>Initiate the deployment&hellip;</p>
 <pre><code class="language-bash">./deploy/eoepca/eoepca.sh apply &quot;&lt;cluster-name&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
 </code></pre>

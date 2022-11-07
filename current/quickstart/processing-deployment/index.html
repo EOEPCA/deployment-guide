@@ -783,9 +783,9 @@
 <p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/processing/processing"><code>deploy/processing/processing</code></a> achieves this by appropriate <a href="../scripted-deployment/#environment-variables">configuration of the environment variables</a>, before launching the <a href="../scripted-deployment/#command-line-arguments">eoepca.sh deployment script</a>. The deployment configuration is captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/processing/processing-options"><code>deploy/processing/processing-options</code></a>.</p>
 <p>The processing deployment applies the following configuration:</p>
 <ul>
-<li>Assumes a public IP (which allows configuration of TLS)<br>
-  <em>In case of no public IP then see section <a href="../scripted-deployment/#private-deployment">Private Deployment</a></em></li>
-<li>TLS via letsencrypt</li>
+<li>Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
+  <em>To configure an external-facing deployment then see section <a href="../scripted-deployment/#public-deployment">Public Deployment</a></em></li>
+<li>No TLS for service ingress endpoints</li>
 <li>Services deployed:<ul>
 <li>ADES for processing</li>
 <li>Minio for S3 object storage</li>
