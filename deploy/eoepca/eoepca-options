@@ -3,13 +3,18 @@
 if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export _EOEPCA_OPTIONS_="yes"
 
+  # TLS options
+  export USE_TLS="${USE_TLS:-true}"
+  export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
+  if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
+
   # Required Components
   #
   # Cluster
   export REQUIRE_MINIKUBE="${REQUIRE_MINIKUBE:-true}"
   export REQUIRE_INGRESS_NGINX="${REQUIRE_INGRESS_NGINX:-true}"
-  export REQUIRE_CERT_MANAGER="${REQUIRE_CERT_MANAGER:-true}"
-  export REQUIRE_LETSENCRYPT="${REQUIRE_LETSENCRYPT:-true}"
+  export REQUIRE_CERT_MANAGER="${REQUIRE_CERT_MANAGER:-${USE_TLS}}"
+  export REQUIRE_LETSENCRYPT="${REQUIRE_LETSENCRYPT:-${USE_TLS}}"
   export REQUIRE_SEALED_SECRETS="${REQUIRE_SEALED_SECRETS:-false}"
   export REQUIRE_MINIO="${REQUIRE_MINIO:-$(if [ "${STAGEOUT_TARGET}" = "minio" ]; then echo "true"; else if [ "${REQUIRE_DATA_ACCESS}" = "false" ]; then echo "false"; else echo "true"; fi; fi)}"
   # EOEPCA
@@ -45,11 +50,6 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
   export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
   export OPEN_INGRESS="${OPEN_INGRESS:-false}"
-
-  # TLS options
-  export USE_TLS="${USE_TLS:-true}"
-  export TLS_CLUSTER_ISSUER="${TLS_CLUSTER_ISSUER:-letsencrypt-staging}"
-  if [ "${USE_TLS}" = "false" ]; then export TLS_CLUSTER_ISSUER="notls"; fi
 
   # Default Credentials
   export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-Chang3me!}"
