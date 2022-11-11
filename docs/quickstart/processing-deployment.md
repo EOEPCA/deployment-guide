@@ -28,7 +28,7 @@ The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-o
 
 ## Example Requests
 
-The file [`deploy/samples/requests/processing/snuggs/snuggs.http`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs/snuggs.http) has been prepared with sample requests for **_OGC API Processes_** operations:
+The file [`deploy/samples/requests/processing/snuggs.http`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs.http) has been prepared with sample requests for **_OGC API Processes_** operations:
 
 * List Processes
 * Deploy Process
@@ -37,7 +37,7 @@ The file [`deploy/samples/requests/processing/snuggs/snuggs.http`](https://githu
 * Get Job Status
 * Get Job Results
 
-The file `requests.http` describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). Install in vscode with `ext install humao.rest-client`.
+The file `snuggs.http` describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). Install in vscode with `ext install humao.rest-client`.
 
 The variables `@hostname` and `@domain` can be configured at the top of the file.
 

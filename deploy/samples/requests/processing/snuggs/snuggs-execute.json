@@ -1,7 +1,0 @@
-{
-  "inputs": {
-      "input_reference":  "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A",
-      "s_expression": "ndvi:(/ (- B05 B03) (+ B05 B03))"
-  },
-  "response":"raw"
-}

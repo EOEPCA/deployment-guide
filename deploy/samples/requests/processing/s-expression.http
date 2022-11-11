@@ -42,7 +42,12 @@ Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
 
-< ./snuggs-deploy.json
+{
+  "executionUnit": {
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/deploy/samples/requests/processing/s-expression/s-expression.cwl",
+    "type": "application/cwl"
+  }
+}
 
 ###
 
@@ -54,20 +59,27 @@ Accept: application/json
 ###
 
 # @name getProcessDetails
-GET https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+GET https://{{ades}}/{{user}}/wps3/processes/s-expression-0_0_2 HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
 
 # @name executeProcess
-POST https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
+POST https://{{ades}}/{{user}}/wps3/processes/s-expression-0_0_2/execution HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
 Prefer: respond-async
 
-< ./snuggs-execute.json
+{
+  "inputs": {
+      "input_reference":  "https://resource-catalogue-open.{{domain}}/csw/?mode=opensearch&service=CSW&version=3.0.0&request=GetRecords&elementsetname=full&resulttype=results&typenames=csw:Record&recordids=S2B_MSIL2A_20200902T090559_N0214_R050_T34SFH_20200902T113910.SAFE",
+      "cbn": "ndvi",
+      "s_expression": "(/ (- nir red) (+ nir red))"
+  },
+  "response":"raw"
+}
 
 ###
 

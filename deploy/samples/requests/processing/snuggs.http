@@ -1,0 +1,102 @@
+
+@domain = 192.168.49.2.nip.io
+@ades = ades-open.{{domain}}
+@login = auth.{{domain}}
+@user = eric
+@pass = defaultPWD
+@clientId = 6195909b-04bc-4d8c-8b92-9cb4e1bdea1f
+@clientSecret = 9a614fe9-b1eb-465d-a0af-85115dcba2e6
+
+@tokenEndpoint = {{openidConfiguration.response.body.token_endpoint}}
+@idToken = {{authenticate.response.body.id_token}}
+@deployStatus = {{deployProcess.response.headers.Location}}
+@executeStatus = {{executeProcess.response.headers.Location}}
+
+###
+
+# @name openidConfiguration
+GET https://{{login}}/.well-known/openid-configuration HTTP/1.1
+Accept: application/json
+
+###
+
+# @name authenticate
+POST {{tokenEndpoint}} HTTP/1.1
+Cache-Control: no-cache
+Content-Type: application/x-www-form-urlencoded
+
+scope=openid user_name is_operator&grant_type=password&username={{user}}&password={{pass}}&client_id={{clientId}}&client_secret={{clientSecret}}
+
+###
+
+# @name listProcesses
+GET https://{{ades}}/{{user}}/wps3/processes HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name deployProcess
+POST https://{{ades}}/{{user}}/wps3/processes HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "executionUnit": {
+    "href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl",
+    "type": "application/cwl"
+  }
+}
+
+###
+
+# @name getDeployStatus
+GET https://{{ades}}{{deployStatus}} HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name getProcessDetails
+GET https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name executeProcess
+POST https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+Content-Type: application/json
+Prefer: respond-async
+
+{
+  "inputs": {
+      "input_reference":  "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A",
+      "s_expression": "ndvi:(/ (- B05 B03) (+ B05 B03))"
+  },
+  "response":"raw"
+}
+
+###
+
+# @name getExecuteStatus
+GET https://{{ades}}{{executeStatus}} HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name getProcessingResults
+GET https://{{ades}}{{executeStatus}}/result HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name listJobs
+GET https://{{ades}}/{{user}}/wps3/jobs HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
