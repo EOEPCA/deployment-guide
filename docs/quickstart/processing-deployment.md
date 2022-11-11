@@ -26,7 +26,7 @@ Deployment is initiated by invoking the script...
 
 The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-open.192.168.49.2.nip.io`.
 
-## Example Requests
+## Example Requests - `snuggs` application
 
 The file [`deploy/samples/requests/processing/snuggs.http`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs.http) has been prepared with sample requests for **_OGC API Processes_** operations:
 

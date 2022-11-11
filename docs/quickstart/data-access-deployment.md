@@ -4,7 +4,7 @@ A deployment wrapper script has been prepared for a 'data access' deployment - t
 
 The script [`deploy/data-access/data-access`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/data-access/data-access) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/data-access/data-access-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/data-access/data-access-options).
 
-The processing deployment applies the following configuration:
+The data-access deployment applies the following configuration:
 
 * Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
   _To configure an external-facing deployment with TLS protection, then see section [Public Deployment](scripted-deployment.md#public-deployment)_
