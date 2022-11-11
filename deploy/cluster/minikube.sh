@@ -36,6 +36,7 @@ echo "Create minikube cluster..."
 if minikube -p "${minikube_profile}" ip >/dev/null 2>&1; then
   echo "  [skip] already running"
 else
+  ./clean
   minikube -p "${minikube_profile}" start --cpus "${MINIKUBE_CPU_AMOUNT}" --memory "${MINIKUBE_MEMORY_AMOUNT}" --kubernetes-version "${MINIKUBE_KUBERNETES_VERSION}" ${MINIKUBE_EXTRA_OPTIONS}
   minikube profile "${minikube_profile}"
   echo "  [done]"
