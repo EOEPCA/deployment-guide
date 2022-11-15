@@ -333,9 +333,54 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Quick Start
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Quick Start
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scripted-deployment" class="md-nav__link">
+    Scripted Deployment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customised-deployments" class="md-nav__link">
+    Customised Deployments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-example" class="md-nav__link">
+    Quick Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -749,9 +794,12 @@
 
 <h1 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">⚓︎</a></h1>
 <p>The deployment of the EOEPCA components and the supporting Kubernetes cluster is described in the sections <a href="../../cluster/prerequisite-tooling/"><strong>Cluster</strong></a> and <a href="../../eoepca/persistence/"><strong>EOEPCA</strong></a>. These sections should be consulted for more detailed information.</p>
-<p><strong>Scripted Deployment</strong></p>
+<h3 id="scripted-deployment"><strong>Scripted Deployment</strong><a class="headerlink" href="#scripted-deployment" title="Permanent link">⚓︎</a></h3>
 <p>As a companion to these descriptions, we have developed a set of scripts to provide a demonstration of an example deployment. This is described in the following section <a href="../scripted-deployment/">Scripted Deployment</a>.</p>
-<p><strong>Customised Deployments</strong></p>
+<blockquote>
+<p><strong>NOTE that the scripted deployment assumes that installation of the <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> has been performed.</strong></p>
+</blockquote>
+<h3 id="customised-deployments"><strong>Customised Deployments</strong><a class="headerlink" href="#customised-deployments" title="Permanent link">⚓︎</a></h3>
 <p>The Scripted Deployment can be quickly exploited through the following customisations for particular use cases:</p>
 <ul>
 <li><strong><a href="../simple-deployment/">Simple</a></strong><br>
@@ -767,7 +815,77 @@
 <li><strong><a href="../creodias-deployment/">CREODIAS</a></strong><br>
   <em>Deployment with access to CREODIAS EO data</em></li>
 </ul>
-<p>Each customisation is introduced in their respective following sections.</p>
+<p>Each customisation is introduced in their respective sections.</p>
+<h3 id="quick-example"><strong>Quick Example</strong><a class="headerlink" href="#quick-example" title="Permanent link">⚓︎</a></h3>
+<p>Follow these steps to create a simple local deployment in minikube&hellip;</p>
+<ol>
+<li><strong>Prerequisite Tooling</strong><br>
+   Follow the steps in section <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> to install the required tooling.</li>
+<li><strong>Clone the repository</strong><br>
+   <code>git clone https://github.com/EOEPCA/deployment-guide</code></li>
+<li><strong>Initiate the deployment</strong><br>
+   <code>cd deployment-guide</code><br>
+   <code>./deploy/simple/simple</code></li>
+<li><strong>Wait for deployment ready</strong><br><ol>
+<li>List pod status<br>
+    <code>watch kubectl get pod -A</code><br></li>
+<li>Wait until all pods report either <code>Running</code> or <code>Completed</code><br>
+    <em>This may take 10-20 mins depending on the capabilities of your platform.</em></li>
+</ol>
+</li>
+<li><strong>Test the deployment</strong><br>
+   Make the <a href="../processing-deployment/#example-requests-snuggs-application">sample requests</a> to the ADES processing service.</li>
+</ol>
+<p>The sample processing requests offered in <a href="../processing-deployment/#example-requests-snuggs-application">Processing Deployment</a> assume use of the Visual Studio Code (vscode) extension <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client</a>. <strong><em>Alternatively, the following <code>curl</code> commands can be used instead&hellip;</em></strong></p>
+<p><strong>List Processes</strong></p>
+<pre><code>curl -k \
+  --request GET \
+  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
+  --header 'accept: application/json'
+</code></pre>
+<p><strong>Deploy Process</strong></p>
+<pre><code>curl -k \
+  --request POST \
+  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{&quot;executionUnit&quot;: {&quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl&quot;,&quot;type&quot;: &quot;application/cwl&quot;}}'
+</code></pre>
+<p><strong>Get Process Details</strong></p>
+<pre><code>curl -k \
+  --request GET \
+  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
+  --header 'accept: application/json'
+</code></pre>
+<p><strong>Execute Process</strong></p>
+<pre><code>curl -k -v \
+  --request POST \
+  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --header 'prefer: respond-async' \
+  --data '{&quot;inputs&quot;: {&quot;input_reference&quot;:  &quot;https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A&quot;,&quot;s_expression&quot;: &quot;ndvi:(/ (- B05 B03) (+ B05 B03))&quot;},&quot;response&quot;:&quot;raw&quot;}'
+</code></pre>
+<p><strong>Get Job Status</strong></p>
+<p>This request requires the <code>Location</code> header from the response to the execute request. This will be of the form <code>/{user}/wps3/jobs/{job-id}</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e</code>.</p>
+<pre><code>curl -k \
+  --request GET \
+  --url https://ades-open.192.168.49.2.nip.io{location-header} \
+  --header 'accept: application/json'
+</code></pre>
+<p><strong>Get Job Results</strong></p>
+<p>This request uses the same URL as <code>Get Job Status</code>, with the additional URL path <code>/result</code> - i.e. <code>/{user}/wps3/jobs/{job-id}/result</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e/result</code></p>
+<pre><code>curl -k \
+  --request GET \
+  --url https://ades-open.192.168.49.2.nip.io{location-header}/result \
+  --header 'accept: application/json'
+</code></pre>
+<p><strong> List Jobs</strong></p>
+<pre><code>curl -k \
+  --request GET \
+  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/jobs \
+  --header 'accept: application/json'
+</code></pre>
 
               
             </article>
