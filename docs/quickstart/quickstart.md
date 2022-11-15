@@ -50,7 +50,7 @@ The sample processing requests offered in [Processing Deployment](./processing-d
 
 **List Processes**
 
-```
+```bash
 curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
@@ -59,7 +59,7 @@ curl -k \
 
 **Deploy Process**
 
-```
+```bash
 curl -k \
   --request POST \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
@@ -70,7 +70,7 @@ curl -k \
 
 **Get Process Details**
 
-```
+```bash
 curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
@@ -79,7 +79,7 @@ curl -k \
 
 **Execute Process**
 
-```
+```bash
 curl -k -v \
   --request POST \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
@@ -93,7 +93,7 @@ curl -k -v \
 
 This request requires the `Location` header from the response to the execute request. This will be of the form `/{user}/wps3/jobs/{job-id}` - e.g. `/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e`.
 
-```
+```bash
 curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io{location-header} \
@@ -104,16 +104,22 @@ curl -k \
 
 This request uses the same URL as `Get Job Status`, with the additional URL path `/result` - i.e. `/{user}/wps3/jobs/{job-id}/result` - e.g. `/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e/result`
 
-```
+```bash
 curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io{location-header}/result \
   --header 'accept: application/json'
 ```
 
+The response indicates the location of the results, which should be in the `minio` object storage. This can be checked via [browser access](https://minio-console.192.168.49.2.nip.io/) at https://minio-console.192.168.49.2.nip.io/, or using an S3 client such as...
+
+```bash
+s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca
+```
+
 ** List Jobs**
 
-```
+```bash
 curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/jobs \
