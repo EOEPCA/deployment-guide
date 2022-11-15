@@ -37,6 +37,8 @@ The file [`deploy/samples/requests/processing/snuggs.http`](https://github.com/E
 * Get Job Status
 * Get Job Results
 
+> NOTE that the first requests in the file provide optional calls to obtain a user ID token (`openidConfiguration` / `authenticate`) - to be used in the case that protected (not 'open') endpoints are deployed.
+
 The file `snuggs.http` describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). Install in vscode with `ext install humao.rest-client`.
 
 The variables `@hostname` and `@domain` can be configured at the top of the file.

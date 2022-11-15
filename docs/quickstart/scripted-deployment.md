@@ -10,6 +10,8 @@ git clone https://github.com/EOEPCA/deployment-guide \
 
 The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
 
+> **NOTE that the scripted deployment assumes that installation of the [Prerequisite Tooling](../cluster/prerequisite-tooling.md) has been performed.**
+
 The following subsections lead through the steps for a full local deployment. Whilst minikube is assumed, minimal adaptions are required to make the deployment to your existing Kubernetes cluster.
 
 The deployment follows these broad steps:
