@@ -838,13 +838,13 @@
 </ol>
 <p>The sample processing requests offered in <a href="../processing-deployment/#example-requests-snuggs-application">Processing Deployment</a> assume use of the Visual Studio Code (vscode) extension <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client</a>. <strong><em>Alternatively, the following <code>curl</code> commands can be used instead&hellip;</em></strong></p>
 <p><strong>List Processes</strong></p>
-<pre><code>curl -k \
+<pre><code class="language-bash">curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
   --header 'accept: application/json'
 </code></pre>
 <p><strong>Deploy Process</strong></p>
-<pre><code>curl -k \
+<pre><code class="language-bash">curl -k \
   --request POST \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
   --header 'accept: application/json' \
@@ -852,13 +852,13 @@
   --data '{&quot;executionUnit&quot;: {&quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl&quot;,&quot;type&quot;: &quot;application/cwl&quot;}}'
 </code></pre>
 <p><strong>Get Process Details</strong></p>
-<pre><code>curl -k \
+<pre><code class="language-bash">curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
   --header 'accept: application/json'
 </code></pre>
 <p><strong>Execute Process</strong></p>
-<pre><code>curl -k -v \
+<pre><code class="language-bash">curl -k -v \
   --request POST \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
   --header 'accept: application/json' \
@@ -868,20 +868,23 @@
 </code></pre>
 <p><strong>Get Job Status</strong></p>
 <p>This request requires the <code>Location</code> header from the response to the execute request. This will be of the form <code>/{user}/wps3/jobs/{job-id}</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e</code>.</p>
-<pre><code>curl -k \
+<pre><code class="language-bash">curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io{location-header} \
   --header 'accept: application/json'
 </code></pre>
 <p><strong>Get Job Results</strong></p>
 <p>This request uses the same URL as <code>Get Job Status</code>, with the additional URL path <code>/result</code> - i.e. <code>/{user}/wps3/jobs/{job-id}/result</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e/result</code></p>
-<pre><code>curl -k \
+<pre><code class="language-bash">curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io{location-header}/result \
   --header 'accept: application/json'
 </code></pre>
+<p>The response indicates the location of the results, which should be in the <code>minio</code> object storage. This can be checked via <a href="https://minio-console.192.168.49.2.nip.io/">browser access</a> at https://minio-console.192.168.49.2.nip.io/, or using an S3 client such as&hellip;</p>
+<pre><code class="language-bash">s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca
+</code></pre>
 <p><strong> List Jobs</strong></p>
-<pre><code>curl -k \
+<pre><code class="language-bash">curl -k \
   --request GET \
   --url https://ades-open.192.168.49.2.nip.io/eric/wps3/jobs \
   --header 'accept: application/json'
