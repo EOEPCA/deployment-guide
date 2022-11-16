@@ -1,0 +1,1375 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/v1.2/quickstart/creodias-deployment/">
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.3.8">
+    
+    
+      
+        <title>CREODIAS Deployment - EOEPCA Deployment Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#creodias-deployment" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../..">
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          
+        </aside>
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="EOEPCA Deployment Guide" class="md-header__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+      
+  <img src="../../img/favicon.ico" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            EOEPCA Deployment Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CREODIAS Deployment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link md-tabs__link--active">
+        Deployment Guide
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="EOEPCA Deployment Guide" class="md-nav__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+      
+  <img src="../../img/favicon.ico" alt="logo">
+
+    </a>
+    EOEPCA Deployment Guide
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Deployment Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_2">
+          Quick Start
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Quick Start" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Quick Start
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scripted-deployment/" class="md-nav__link">
+        Scripted Deployment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simple-deployment/" class="md-nav__link">
+        Simple Deployment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../processing-deployment/" class="md-nav__link">
+        Processing Deployment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-access-deployment/" class="md-nav__link">
+        Data Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exploitation-deployment/" class="md-nav__link">
+        Exploitation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../userman-deployment/" class="md-nav__link">
+        User Management
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          CREODIAS Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        CREODIAS Deployment
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#endpoint-protection" class="md-nav__link">
+    Endpoint Protection
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#harvest-creodias-data" class="md-nav__link">
+    Harvest CREODIAS Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-specification-walkthrough" class="md-nav__link">
+    Data Specification Walkthrough
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Specification Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harvester" class="md-nav__link">
+    Harvester
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    Registration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#product-type" class="md-nav__link">
+    Product Type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-catalogue-collections" class="md-nav__link">
+    Resource Catalogue Collections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-specification" class="md-nav__link">
+    Data Specification
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Specification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#producttype" class="md-nav__link">
+    productType
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collections" class="md-nav__link">
+    collections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    layers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration" class="md-nav__link">
+    Example Configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_3">
+          Cluster
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/prerequisite-tooling/" class="md-nav__link">
+        Prerequisite Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/kubernetes/" class="md-nav__link">
+        Kubernetes Cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/helm-repositories/" class="md-nav__link">
+        Helm Repositories
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cluster/cluster-prerequisites/" class="md-nav__link">
+        Cluster Prerequisites
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1_4">
+          EOEPCA
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="EOEPCA" data-md-level="2">
+        <label class="md-nav__title" for="__nav_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          EOEPCA
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/persistence/" class="md-nav__link">
+        Persistence
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/login-service/" class="md-nav__link">
+        Login Service
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/user-profile/" class="md-nav__link">
+        User Profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/pdp/" class="md-nav__link">
+        Policy Decision Point
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/resource-protection/" class="md-nav__link">
+        Resource Protection
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/ades/" class="md-nav__link">
+        Application Deployment & Execution
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/resource-catalogue/" class="md-nav__link">
+        Resource Catalogue
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/data-access/" class="md-nav__link">
+        Data Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/workspace/" class="md-nav__link">
+        Workspace
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/container-registry/" class="md-nav__link">
+        Container Registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/pde/" class="md-nav__link">
+        Processor Development Environment
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="creodias-deployment">CREODIAS Deployment<a class="headerlink" href="#creodias-deployment" title="Permanent link">⚓︎</a></h1>
+<p>Based upon our development experiences on CREODIAS, there is a wrapper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias"><code>creodias</code></a> with particular customisations suited to the <a href="https://creodias.eu/">CREODIAS</a> infrastructure and data offering. The customisations are expressed through <a href="../scripted-deployment/#environment-variables">environment variables</a> that are captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options"><code>creodias-options</code></a>.</p>
+<p>These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.</p>
+<p>The CREODIAS deployment applies the following configuration:</p>
+<ul>
+<li>Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
+  <em>To configure an external-facing deployment with TLS protection, then see section <a href="../scripted-deployment/#public-deployment">Public Deployment</a></em></li>
+<li>No TLS for service ingress endpoints</li>
+<li>Protected service endpoints requiring IAM authorization<br>
+  <em>See <a href="#endpoint-protection">Endpoint Protection</a> below for further information</em></li>
+</ul>
+<p>With reference to the file <code>creodias-options</code>, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment&hellip;</p>
+<ul>
+<li>Passwords: <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>, <code>MINIO_ROOT_PASSWORD</code>, <code>HARBOR_ADMIN_PASSWORD</code></li>
+<li>OpenStack details: see section <a href="../scripted-deployment/#openstack-configuration">Openstack Configuration</a></li>
+<li>If configuring an external deployment - ref. <a href="../scripted-deployment/#public-deployment">Public Deployment</a>&hellip;<ul>
+<li><code>public_ip</code> - The public IP address through which the deployment is exposed via the ingress-controller</li>
+<li><code>domain</code> - The DNS domain name through which the deployment is accessed - forming the stem for all service hostnames in the ingress rules</li>
+</ul>
+</li>
+</ul>
+<p>Once the file <code>creodias-options</code> has been well populated for your environment, then the deployment is initiated with&hellip;</p>
+<pre><code class="language-bash">./deploy/creodias/creodias
+</code></pre>
+<p>&hellip;noting that this step is a customised version of that described in section <a href="../scripted-deployment/#deployment">Deployment</a>.</p>
+<h2 id="endpoint-protection">Endpoint Protection<a class="headerlink" href="#endpoint-protection" title="Permanent link">⚓︎</a></h2>
+<p>Similarly the script <code>creodias-protection</code> is a customised version of that described in section <a href="../scripted-deployment/#apply-protection">Apply Protection</a>. Once the main deployment has completed, then the <a href="../scripted-deployment/#create-test-users">test users can be created</a>, their IDs (<code>Inum</code>) set in script <code>creodias-protection</code>, and the resource protection can then be applied&hellip;</p>
+<pre><code class="language-bash">./deploy/creodias/creodias-protection
+</code></pre>
+<h2 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h2>
+<p>The harvester can be <a href="../../eoepca/data-access/#harvester-helm-configuration">deployed with a default configuration</a> file at <code>/config.yaml</code>. As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
+<pre><code>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+</code></pre>
+<p>See the <a href="#harvester">Harvester</a> section below for an explanation of this harvester configuration.</p>
+<h2 id="data-specification-walkthrough">Data Specification Walkthrough<a class="headerlink" href="#data-specification-walkthrough" title="Permanent link">⚓︎</a></h2>
+<p>The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option <code>CREODIAS_DATA_SPECIFICATION=true</code> - see <a href="../scripted-deployment/#environment-variables">Environment Variables</a>.</p>
+<p>This section provides a walkthrough of this configuration for CREODIAS - to act as an aid to understanding by way of a worked example.</p>
+<h3 id="harvester">Harvester<a class="headerlink" href="#harvester" title="Permanent link">⚓︎</a></h3>
+<p>The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file <code>/config.yaml</code> of the <code>data-access-harvester</code> deployment.</p>
+<p>The harvester is configured as follows&hellip;</p>
+<pre><code>harvester:
+  image:
+    repository: eoepca/rm-harvester
+    tag: 1.1.0
+  config:
+    redis:
+      host: data-access-redis-master
+      port: 6379
+    harvesters:
+      - name: Creodias-Opensearch
+        resource:
+          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          type: OpenSearch
+          format_config:
+            type: 'application/json'
+            property_mapping:
+              start_datetime: 'startDate'
+              end_datetime: 'completionDate'
+              productIdentifier: 'productIdentifier'
+          query:
+            time:
+              property: sensed
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+        filter: {}
+        postprocess:
+          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+        queue: register_queue
+</code></pre>
+<p>Based upon this harvester configuration we expect that the following query is made to discover data - i.e. an OpenSearch query, with json response representation, for a defined spatial and temporal extent&hellip;</p>
+<pre><code>https://finder.creodias.eu/resto/api/collections/Sentinel2/search.json?startDate=2019-09-10T00:00:00Z&amp;completionDate=2019-09-11T00:00:00Z&amp;box=14.9,47.7,16.4,48.7
+</code></pre>
+<p>From the result returned, the path to each product (<code>feature</code>) is obtained from the <code>productIdentifier</code> property, e.g.</p>
+<pre><code>{
+  &quot;type&quot;: &quot;FeatureCollection&quot;,
+  &quot;features&quot;: [
+    {
+      &quot;type&quot;: &quot;Feature&quot;,
+      &quot;properties&quot;: {
+        &quot;productIdentifier&quot;: &quot;/eodata/Sentinel-2/MSI/L1C/2019/09/10/S2B_MSIL1C_20190910T095029_N0208_R079_T33TXN_20190910T120910.SAFE&quot;
+        ...
+      }
+      ...
+    }
+    ...
+  ]
+}
+</code></pre>
+<p>The harvester is configured with a Sentinel-2/CREODIAS specific post-processor <code>harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor</code> which transforms the product path from <code>/eodata/...</code> to <code>s3://EODATA/...</code>.</p>
+<p>The harvester post-processor follows this path to the Sentinel-2 scene and uses stactools (with built-in support for Sentinel-2) to establish a STAC item representing the product. This includes enumeration of <code>assets</code> for <code>inspire-metadata</code> and <code>product-metadata</code> - which are used by the registrar pycsw backend to embelesh the product record metadata.</p>
+<p>The harvester outputs the STAC item for each product, which is pushed to the registrar via the <code>register_queue</code> redis queue.</p>
+<h3 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">⚓︎</a></h3>
+<p>The registrar is configured at deployment to have the access details for the CREODIAS data in S3&hellip;</p>
+<pre><code>global:
+  storage:
+    data:
+      data:
+        type: S3
+        endpoint_url: http://data.cloudferro.com
+        access_key_id: access
+        secret_access_key: access
+        region_name: RegionOne
+        validate_bucket_name: false
+</code></pre>
+<p>Using this S3 configuration, the registrar pycsw backend uses the product metadata linked in the STAC item (ref. assets <code>inspire-metadata</code> and <code>product-metadata</code>) to embelesh the metadata. For example, <code>product-metadata</code> in the file&hellip;</p>
+<pre><code>s3://EODATA/Sentinel-2/MSI/L1C/2019/09/10/S2B_MSIL1C_20190910T095029_N0208_R079_T33TXN_20190910T120910.SAFE/MTD_MSIL1C.xml
+</code></pre>
+<p>The registrar uses this information to create the ISO XML metadata that is loaded into the resource-catalogue.</p>
+<h3 id="product-type">Product Type<a class="headerlink" href="#product-type" title="Permanent link">⚓︎</a></h3>
+<p>The registrar recognises the product as Sentinel-2 and so reads its metadata XML files to obtain additional information. From the metadata XML file (e.g. <code>MTD_MSIL1C.xml</code>) the registrar obtains the <em>Product Type</em> for each product from the field <code>&lt;PRODUCT_TYPE&gt;</code>&hellip;</p>
+<pre><code>&lt;n1:Level-1C_User_Product&gt;
+  &lt;n1:General_Info&gt;
+    &lt;Product_Info&gt;
+      &lt;PRODUCT_TYPE&gt;S2MSI1C&lt;/PRODUCT_TYPE&gt;
+      ...
+    &lt;/Product_Info&gt;
+    ...
+  &lt;/n1:General_Info&gt;
+  ...
+&lt;n1:Level-1C_User_Product&gt;
+</code></pre>
+<h3 id="resource-catalogue-collections">Resource Catalogue Collections<a class="headerlink" href="#resource-catalogue-collections" title="Permanent link">⚓︎</a></h3>
+<p>The registrar (<code>eoepca/rm-data-access-core</code>) container image is pre-loaded with two collections at the path <code>/registrar_pycsw/registrar_pycsw/resources</code>, (in the built container the files are at the path <code>/usr/local/lib/python3.8/dist-packages/registrar_pycsw/resources/</code>):</p>
+<ul>
+<li>S2MSI1C.yml - identifier: <code>S2MSI1C</code></li>
+<li>S2MSI2A.yml - identifier: <code>S2MSI2A</code></li>
+</ul>
+<p>The registrar applies these collections into the resource-catalogue during start-up - to create pre-defined out-of-the-box collections in pycsw.</p>
+<p>During registration, the <code>PycswBackend</code> of the registrar uses the <em>Product Type</em> to map the product into the collection of the same name - using metadata field <code>parentidentifier</code>.</p>
+<h3 id="data-specification">Data Specification<a class="headerlink" href="#data-specification" title="Permanent link">⚓︎</a></h3>
+<p>The data-access service data handling is configured by definition of <code>productTypes</code>, <code>collections</code> and <code>layers</code>&hellip;</p>
+<ul>
+<li><code>productTypes</code> identify the underlying file assets as WCS coverages and their visual representation</li>
+<li><code>collections</code> provide groupings into which products are organised</li>
+<li><code>layers</code> specifies the hoe the product visual representations are exposed through the WMS service</li>
+</ul>
+<h4 id="producttype"><code>productType</code><a class="headerlink" href="#producttype" title="Permanent link">⚓︎</a></h4>
+<p>During registration, products are mapped into a <code>productType</code> via a <code>filter</code> that is applied against the STAC item metadata.</p>
+<p>The registrar uses the <code>product_type</code> of each product to determine the <code>collection</code> into which the product should be registered - noting that the <code>name</code> of the product type does not take part in the matching logic (and hence can be any text name)&hellip;</p>
+<pre><code>  productTypes:
+    - name: S2MSI1C
+      filter:
+        s2:product_type: S2MSI1C
+</code></pre>
+<p>In the above example, the field <code>s2:product_type</code> is populated by the <code>stactools</code> that prepares the STAC item from the product metadata.</p>
+<h5 id="producttype-coverages"><code>productType</code> - <code>coverages</code><a class="headerlink" href="#producttype-coverages" title="Permanent link">⚓︎</a></h5>
+<p><code>coverages</code> defines the coverages for the WCS service. Each coverage links to the <code>assets</code> that are defined within the product STAC item.</p>
+<h5 id="producttype-browses"><code>productType</code> - <code>browses</code><a class="headerlink" href="#producttype-browses" title="Permanent link">⚓︎</a></h5>
+<p><code>browses</code> defines the images that are visualised in the View Server Client. Expressions are used to map the product assets into their visual representation.</p>
+<h4 id="collections"><code>collections</code><a class="headerlink" href="#collections" title="Permanent link">⚓︎</a></h4>
+<p>Collections are defined by reference to the defined <code>productTypes</code> and <code>coverages</code>.</p>
+<h4 id="layers"><code>layers</code><a class="headerlink" href="#layers" title="Permanent link">⚓︎</a></h4>
+<p><code>layers</code> defines the layers that are presented through the WMS service - each layer being linked to the underlying <code>browse</code> that provides the image source. Layers are defined via their <code>id</code> that relies upon the naming convection <code>&lt;collection&gt;__&lt;browse&gt;</code> to identify the browse and so define the layer.</p>
+<h4 id="example-configuration">Example Configuration<a class="headerlink" href="#example-configuration" title="Permanent link">⚓︎</a></h4>
+<p>Example configuration for Sentinel-2 L1C and L2A data.</p>
+<pre><code class="language-yaml">global:
+  layers:
+    - id: S2L1C
+      title: Sentinel-2 Level 1C True Color
+      abstract: Sentinel-2 Level 2A True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__TRUE_COLOR
+      title: Sentinel-2 Level 1C True Color
+      abstract: Sentinel-2 Level 2A True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__masked_clouds
+      title: Sentinel-2 Level 1C True Color with cloud masks
+      abstract: Sentinel-2 Level 1C True Color with cloud masks
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__FALSE_COLOR
+      title: Sentinel-2 Level 1C False Color
+      abstract: Sentinel-2 Level 1C False Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L1C__NDVI
+      title: Sentinel-2 Level 21CNDVI
+      abstract: Sentinel-2 Level 1C NDVI
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L1C
+    - id: S2L2A
+      title: Sentinel-2 Level 2A True Color
+      abstract: Sentinel-2 Level 2A True Color
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__TRUE_COLOR
+      title: Sentinel-2 Level 2A True Color
+      abstract: Sentinel-2 Level 2A True Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__masked_clouds
+      title: Sentinel-2 Level 2A True Color with cloud masks
+      abstract: Sentinel-2 Level 2A True Color with cloud masks
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__FALSE_COLOR
+      title: Sentinel-2 Level 2A False Color
+      abstract: Sentinel-2 Level 2A False Color
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+    - id: S2L2A__NDVI
+      title: Sentinel-2 Level 2A NDVI
+      abstract: Sentinel-2 Level 2A NDVI
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S2L2A
+  collections:
+    S2L1C:
+      product_types:
+        - S2MSI1C
+      coverage_types:
+        - S2L1C_B01
+        - S2L1C_B02
+        - S2L1C_B03
+        - S2L1C_B04
+        - S2L1C_B05
+        - S2L1C_B06
+        - S2L1C_B07
+        - S2L1C_B08
+        - S2L1C_B8A
+        - S2L1C_B09
+        - S2L1C_B10
+        - S2L1C_B11
+        - S2L1C_B12
+    S2L2A:
+      product_types:
+        - S2MSI2A
+      product_levels:
+        - Level-2A
+      coverage_types:
+        - S2L2A_B01
+        - S2L2A_B02
+        - S2L2A_B03
+        - S2L2A_B04
+        - S2L2A_B05
+        - S2L2A_B06
+        - S2L2A_B07
+        - S2L2A_B08
+        - S2L2A_B8A
+        - S2L2A_B09
+        - S2L2A_B11
+        - S2L2A_B12
+  productTypes:
+    - name: S2MSI1C
+      filter:
+        s2:product_type: S2MSI1C
+      metadata_assets: []
+      coverages:
+        S2L1C_B01:
+          assets:
+            - B01
+        S2L1C_B02:
+          assets:
+            - B02
+        S2L1C_B03:
+          assets:
+            - B03
+        S2L1C_B04:
+          assets:
+            - B04
+        S2L1C_B05:
+          assets:
+            - B05
+        S2L1C_B06:
+          assets:
+            - B06
+        S2L1C_B07:
+          assets:
+            - B07
+        S2L1C_B08:
+          assets:
+            - B08
+        S2L1C_B8A:
+          assets:
+            - B8A
+        S2L1C_B09:
+          assets:
+            - B09
+        S2L1C_B10:
+          assets:
+            - B10
+        S2L1C_B11:
+          assets:
+            - B11
+        S2L1C_B12:
+          assets:
+            - B12
+      defaultBrowse: TRUE_COLOR
+      browses:
+        TRUE_COLOR:
+          asset: visual
+          red:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B02
+            range: [0, 4000]
+            nodata: 0
+        FALSE_COLOR:
+          red:
+            expression: B08
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+        NDVI:
+          grey:
+            expression: (B08-B04)/(B08+B04)
+            range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
+    - name: S2MSI2A
+      filter:
+        s2:product_type: S2MSI2A
+      metadata_assets: []
+      coverages:
+        S2L2A_B01:
+          assets:
+            - B01
+        S2L2A_B02:
+          assets:
+            - B02
+        S2L2A_B03:
+          assets:
+            - B03
+        S2L2A_B04:
+          assets:
+            - B04
+        S2L2A_B05:
+          assets:
+            - B05
+        S2L2A_B06:
+          assets:
+            - B06
+        S2L2A_B07:
+          assets:
+            - B07
+        S2L2A_B08:
+          assets:
+            - B08
+        S2L2A_B8A:
+          assets:
+            - B8A
+        S2L2A_B09:
+          assets:
+            - B09
+        S2L2A_B11:
+          assets:
+            - B11
+        S2L2A_B12:
+          assets:
+            - B12
+      default_browse_locator: TCI_10m
+      browses:
+        TRUE_COLOR:
+          asset: visual-10m
+          red:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B02
+            range: [0, 4000]
+            nodata: 0
+        FALSE_COLOR:
+          red:
+            expression: B08
+            range: [0, 4000]
+            nodata: 0
+          green:
+            expression: B04
+            range: [0, 4000]
+            nodata: 0
+          blue:
+            expression: B03
+            range: [0, 4000]
+            nodata: 0
+        NDVI:
+          grey:
+            expression: (B08-B04)/(B08+B04)
+            range: [-1, 1]
+      masks:
+        clouds:
+          validity: false
+</code></pre>
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../userman-deployment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: User Management" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              User Management
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../cluster/prerequisite-tooling/" class="md-footer__link md-footer__link--next" aria-label="Next: Prerequisite Tooling" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Prerequisite Tooling
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>
+      
+    
+  </body>
+</html>
