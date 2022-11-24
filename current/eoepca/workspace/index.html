@@ -901,7 +901,7 @@
 <h3 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h3>
 <p>The <em>Workspace API</em> is deployed via the <code>rm-workspace-api</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme">README for the <code>um-workspace-api</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 1.1.11 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
+<pre><code class="language-bash">helm install --version 1.2.0 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
 </code></pre>
 <h3 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h3>
 <p>At minimum, values for the following attributes should be specified:</p>
@@ -994,7 +994,7 @@ data:
       chart:
         spec:
           chart: data-access
-          version: 1.2.0
+          version: 1.2.2
           sourceRef:
             kind: HelmRepository
             name: eoepca
