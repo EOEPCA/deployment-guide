@@ -71,7 +71,7 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.1.11
+      --version 1.2.0
   fi
 }
 
