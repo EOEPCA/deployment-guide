@@ -12,7 +12,7 @@ The chart is configured via values that are supplied with the instantiation of t
 * Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
 
 ```bash
-helm install --version 1.2.1 --values data-access-values.yaml data-access data-access
+helm install --version 1.2.2 --values data-access-values.yaml data-access data-access
 ```
 
 ## Values
