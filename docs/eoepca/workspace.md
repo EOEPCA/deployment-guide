@@ -121,7 +121,7 @@ data:
       chart:
         spec:
           chart: data-access
-          version: 1.2.0
+          version: 1.2.2
           sourceRef:
             kind: HelmRepository
             name: eoepca
