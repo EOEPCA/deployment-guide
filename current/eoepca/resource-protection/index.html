@@ -697,6 +697,26 @@
     User ID Token
   </a>
   
+    <nav class="md-nav" aria-label="User ID Token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obtaining-the-user-id-token" class="md-nav__link">
+    Obtaining the User ID Token
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user-id-token-in-http-requests" class="md-nav__link">
+    User ID Token in HTTP requests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -968,6 +988,7 @@ data:
 <p>The <code>resource-guard</code> deployment is configured with the name of the <code>Secret</code> through the helm chart value <code>client.credentialsSecretName</code>.</p>
 <h2 id="user-id-token">User ID Token<a class="headerlink" href="#user-id-token" title="Permanent link">⚓︎</a></h2>
 <p>As described in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme">README for the Resource Guard</a>, it is necessary for a request to a protected resource to provide the User ID Token in the request header.</p>
+<h3 id="obtaining-the-user-id-token">Obtaining the User ID Token<a class="headerlink" href="#obtaining-the-user-id-token" title="Permanent link">⚓︎</a></h3>
 <p>In the simple case of a user with username/password held within the Login Service, the User ID Token can be obtained as follows:</p>
 <pre><code>curl --location --request POST 'https://auth.192.168.49.2.nip.io/oxauth/restv1/token' \
 --header 'Cache-Control: no-cache' \
@@ -980,6 +1001,17 @@ data:
 --data-urlencode 'client_secret=&lt;client-password&gt;'
 </code></pre>
 <p>The User ID Token is included in the <code>id_token</code> field of the json response.</p>
+<p>Alternatively, OAuth/OIDC flows can be followed to authenticate via external identity providers.</p>
+<h3 id="user-id-token-in-http-requests">User ID Token in HTTP requests<a class="headerlink" href="#user-id-token-in-http-requests" title="Permanent link">⚓︎</a></h3>
+<p>The Resource Guard protection supports presentation of the User ID Token via the following HTTP request headers (in order of priority)&hellip;</p>
+<ul>
+<li><code>Authorization</code> header as a bearer token - in the form: <code>Authorization: Bearer &lt;token&gt;</code></li>
+<li><code>X-User-Id</code> header</li>
+<li><code>Cookie: auth_user_id=&lt;token&gt;</code><br><blockquote>
+<p><em>Note that the name of the cookie is configurable</em></p>
+</blockquote>
+</li>
+</ul>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Resource Guard</em> can be found at:</p>
 <ul>

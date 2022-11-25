@@ -1071,13 +1071,15 @@ data:
 </code></pre>
 <h2 id="ades-usage-samples">ADES Usage Samples<a class="headerlink" href="#ades-usage-samples" title="Permanent link">⚓︎</a></h2>
 <p>This section includes some sample requests to test the deployed ADES.</p>
+<blockquote>
 <p>NOTES:</p>
 <ol>
-<li>It assumed that the ADES is subject to access protection (ref. <a href="../resource-protection">Resource Protection</a>), in which case a User ID Token must be provided with the request - typically in the HTTP header <code>X-User-Id</code>.<br>
-   See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
+<li>It assumed that the ADES is subject to access protection (ref. <a href="../resource-protection">Resource Protection</a>), in which case a <em>User ID Token</em> must be provided with the request - typically in the HTTP header, such as <code>Authorization: Bearer</code> or <code>X-User-Id</code>.<br>
+  See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
 <li>The samples assume a user <code>eric</code></li>
 <li>The <code>snuggs</code> application is used in the example below. <em>See also <a href="#application-package-example">Application Package Example</a>.</em></li>
 </ol>
+</blockquote>
 <h3 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h3>
 <p>List available processes.</p>
 <pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
