@@ -776,6 +776,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#application-package-example" class="md-nav__link">
+    Application Package Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#additional-information" class="md-nav__link">
     Additional Information
   </a>
@@ -1069,6 +1076,7 @@ data:
 <li>It assumed that the ADES is subject to access protection (ref. <a href="../resource-protection">Resource Protection</a>), in which case a User ID Token must be provided with the request - typically in the HTTP header <code>X-User-Id</code>.<br>
    See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
 <li>The samples assume a user <code>eric</code></li>
+<li>The <code>snuggs</code> application is used in the example below. <em>See also <a href="#application-package-example">Application Package Example</a>.</em></li>
 </ol>
 <h3 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h3>
 <p>List available processes.</p>
@@ -1177,13 +1185,18 @@ data:
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
+<h2 id="application-package-example">Application Package Example<a class="headerlink" href="#application-package-example" title="Permanent link">⚓︎</a></h2>
+<p>For a (trivial) example application package see <a href="https://github.com/EOEPCA/convert#readme">Example Application Package</a>, which provides a description and illustration of the basics of creating an application that integrates with the expectations of the ADES stage-in and stage-out.</p>
+<p>See also the <a href="https://cwl-for-eo.github.io/guide/">Guide for CWL in Earth Observation</a>.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>ADES</em> can be found at:</p>
 <ul>
 <li><a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/ades">Helm Chart</a></li>
 <li><a href="https://github.com/EOEPCA/proc-ades/wiki">Wiki</a></li>
 <li><a href="https://github.com/EOEPCA/proc-ades">GitHub Repository</a></li>
-<li><a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration</a>.</li>
+<li><a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration</a></li>
+<li><a href="https://cwl-for-eo.github.io/guide/">Guide for CWL in Earth Observation</a></li>
+<li><a href="https://github.com/EOEPCA/convert#readme">Example Application Package</a></li>
 </ul>
 
               
