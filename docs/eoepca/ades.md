@@ -367,7 +367,15 @@ curl --location --request DELETE 'https://ades.192.168.49.2.nip.io/eric/wps3/pro
 
 For a (trivial) example application package see [Example Application Package](https://github.com/EOEPCA/convert#readme), which provides a description and illustration of the basics of creating an application that integrates with the expectations of the ADES stage-in and stage-out.
 
-See also the [Guide for CWL in Earth Observation](https://cwl-for-eo.github.io/guide/).
+For further reference see...
+
+* **Application Packages**
+    * [OGC Best Practise for Application Package](https://docs.ogc.org/bp/20-089r1.html)
+    * [Example Application Package](https://github.com/EOEPCA/convert#readme)
+* **Common Workflow Language (CWL)**
+    * [Guide for CWL in Earth Observation](https://cwl-for-eo.github.io/guide/)
+    * [CWL Specification](https://www.commonwl.org/v1.2/)
+    * [CWL User Guide](https://www.commonwl.org/user_guide/)
 
 ## Additional Information
 
@@ -377,5 +385,3 @@ Additional information regarding the _ADES_ can be found at:
 * [Wiki](https://github.com/EOEPCA/proc-ades/wiki)
 * [GitHub Repository](https://github.com/EOEPCA/proc-ades)
 * [ADES stage-in/out configuration](https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces)
-* [Guide for CWL in Earth Observation](https://cwl-for-eo.github.io/guide/)
-* [Example Application Package](https://github.com/EOEPCA/convert#readme)
