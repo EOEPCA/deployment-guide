@@ -226,6 +226,7 @@ NOTES:
 1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a User ID Token must be provided with the request - typically in the HTTP header `X-User-Id`.<br>
    See section [User ID Token](../resource-protection/#user-id-token) for more details.
 2. The samples assume a user `eric`
+3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
 
 ### List Processes
 
@@ -362,6 +363,12 @@ curl --location --request DELETE 'https://ades.192.168.49.2.nip.io/eric/wps3/pro
 --header 'Accept: application/json'
 ```
 
+## Application Package Example
+
+For a (trivial) example application package see [Example Application Package](https://github.com/EOEPCA/convert#readme), which provides a description and illustration of the basics of creating an application that integrates with the expectations of the ADES stage-in and stage-out.
+
+See also the [Guide for CWL in Earth Observation](https://cwl-for-eo.github.io/guide/).
+
 ## Additional Information
 
 Additional information regarding the _ADES_ can be found at:
@@ -369,4 +376,6 @@ Additional information regarding the _ADES_ can be found at:
 * [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/ades)
 * [Wiki](https://github.com/EOEPCA/proc-ades/wiki)
 * [GitHub Repository](https://github.com/EOEPCA/proc-ades)
-* [ADES stage-in/out configuration](https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces).
+* [ADES stage-in/out configuration](https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces)
+* [Guide for CWL in Earth Observation](https://cwl-for-eo.github.io/guide/)
+* [Example Application Package](https://github.com/EOEPCA/convert#readme)
