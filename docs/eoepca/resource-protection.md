@@ -182,6 +182,8 @@ The `resource-guard` deployment is configured with the name of the `Secret` thro
 
 As described in the [README for the Resource Guard](https://github.com/EOEPCA/helm-charts/tree/main/charts/resource-guard#readme), it is necessary for a request to a protected resource to provide the User ID Token in the request header.
 
+### Obtaining the User ID Token
+
 In the simple case of a user with username/password held within the Login Service, the User ID Token can be obtained as follows:
 
 ```
@@ -197,6 +199,17 @@ curl --location --request POST 'https://auth.192.168.49.2.nip.io/oxauth/restv1/t
 ```
 
 The User ID Token is included in the `id_token` field of the json response.
+
+Alternatively, OAuth/OIDC flows can be followed to authenticate via external identity providers.
+
+### User ID Token in HTTP requests
+
+The Resource Guard protection supports presentation of the User ID Token via the following HTTP request headers (in order of priority)...
+
+* `Authorization` header as a bearer token - in the form: `Authorization: Bearer <token>`
+* `X-User-Id` header
+* `Cookie: auth_user_id=<token>`<br>
+  > _Note that the name of the cookie is configurable_
 
 ## Additional Information
 

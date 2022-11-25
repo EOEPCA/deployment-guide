@@ -221,12 +221,12 @@ The client credentials are obtained by registration of a client at the login ser
 
 This section includes some sample requests to test the deployed ADES.
 
-NOTES:
-
-1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a User ID Token must be provided with the request - typically in the HTTP header `X-User-Id`.<br>
-   See section [User ID Token](../resource-protection/#user-id-token) for more details.
-2. The samples assume a user `eric`
-3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
+>NOTES:
+>
+>1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
+>   See section [User ID Token](../resource-protection/#user-id-token) for more details.
+>2. The samples assume a user `eric`
+>3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
 
 ### List Processes
 
