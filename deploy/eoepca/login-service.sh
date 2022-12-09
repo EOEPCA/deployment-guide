@@ -57,7 +57,7 @@ nginx:
     hosts:
       - auth.${domain}
     tls: 
-    - secretName: tls-certificate
+    - secretName: login-service-tls
       hosts:
         - auth.${domain}
 EOF
@@ -69,5 +69,5 @@ else
   values | helm ${ACTION_HELM} login-service login-service -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.2.0
+    --version 1.2.1
 fi
