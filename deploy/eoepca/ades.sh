@@ -33,6 +33,7 @@ workflowExecutor:
     STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
     STAGEIN_AWS_ACCESS_KEY_ID: test
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
+    STAGEIN_AWS_REGION: RegionOne
 $(stageOut)
   # Workspace integration
   useResourceManager: $(if [ "${STAGEOUT_TARGET}" = "workspace" ]; then echo -n "true"; else echo -n "false"; fi)
@@ -92,5 +93,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 2.0.3
+    --version 2.0.4
 fi

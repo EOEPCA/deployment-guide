@@ -87,6 +87,7 @@ spec:
       logging:
         level: info
       unauthorizedResponse: 'Bearer realm="https://portal.${domain}/oidc/authenticate/"'
+      openAccess: false
     #---------------------------------------------------------------------------
     # END values
     #---------------------------------------------------------------------------

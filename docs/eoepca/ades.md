@@ -9,7 +9,7 @@ The _ADES_ is deployed via the `ades` helm chart from the [EOEPCA Helm Chart Rep
 The chart is configured via values that are fully documented in the [README for the `ades` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme).
 
 ```bash
-helm install --version 2.0.3 --values ades-values.yaml ades eoepca/ades
+helm install --version 2.0.4 --values ades-values.yaml ades eoepca/ades
 ```
 
 ## Values
@@ -31,6 +31,7 @@ workflowExecutor:
     STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
     STAGEIN_AWS_ACCESS_KEY_ID: test
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
+    STAGEIN_AWS_REGION: RegionOne
     # Stage-out to minio S3
     # (use this if the ADES is not configured to stage-out to the Workspace)
     STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.2.nip.io
