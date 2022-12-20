@@ -1,5 +1,4 @@
 .vscode/
 site/
 deploy/eoepca/client.yaml
-kubeconfig
 deploy/cluster/s3cfg
