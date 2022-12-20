@@ -65,6 +65,13 @@ Accept: application/json
 
 ###
 
+# @name undeployProcess
+DELETE https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
 # @name executeProcess
 POST https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
 Authorization: Bearer {{idToken}}
@@ -74,7 +81,7 @@ Prefer: respond-async
 
 {
   "inputs": {
-      "input_reference":  "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A",
+      "input_reference":  "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2A_38VNM_20221124_0_L2A",
       "s_expression": "ndvi:(/ (- B05 B03) (+ B05 B03))"
   },
   "response":"raw"

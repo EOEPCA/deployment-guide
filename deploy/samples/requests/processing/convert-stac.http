@@ -44,7 +44,7 @@ Content-Type: application/json
 
 {
   "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/demo/main/demoroot/data/s-expression-cwl.cwl",
+    "href": "https://raw.githubusercontent.com/EOEPCA/convert/main/convert-stac-app.cwl",
     "type": "application/cwl"
   }
 }
@@ -59,14 +59,21 @@ Accept: application/json
 ###
 
 # @name getProcessDetails
-GET https://{{ades}}/{{user}}/wps3/processes/s-expression-0_0_2 HTTP/1.1
+GET https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2 HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name deleteProcess
+DELETE https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2 HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 
 ###
 
 # @name executeProcess
-POST https://{{ades}}/{{user}}/wps3/processes/s-expression-0_0_2/execution HTTP/1.1
+POST https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2/execution HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
@@ -74,9 +81,9 @@ Prefer: respond-async
 
 {
   "inputs": {
-      "input_reference":  "https://resource-catalogue-open.{{domain}}/csw/?mode=opensearch&service=CSW&version=3.0.0&request=GetRecords&elementsetname=full&resulttype=results&typenames=csw:Record&recordids=S2B_MSIL2A_20200902T090559_N0214_R050_T34SFH_20200902T113910.SAFE",
-      "cbn": "ndvi",
-      "s_expression": "(/ (- nir red) (+ nir red))"
+      "fn": "resize",
+      "stac":  "https://raw.githubusercontent.com/EOEPCA/convert/main/stac/catalog.json",
+      "size": "50%"
   },
   "response":"raw"
 }
@@ -92,6 +99,13 @@ Accept: application/json
 
 # @name getProcessingResults
 GET https://{{ades}}{{executeStatus}}/result HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###
+
+# @name undeployProcess
+DELETE https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2 HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 
