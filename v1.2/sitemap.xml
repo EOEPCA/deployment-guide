@@ -2,122 +2,122 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/cluster/cluster-prerequisites/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/cluster/helm-repositories/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/cluster/kubernetes/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/cluster/prerequisite-tooling/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/ades/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/container-registry/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/data-access/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/login-service/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/pde/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/pdp/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/persistence/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/resource-catalogue/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/resource-protection/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/user-profile/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/eoepca/workspace/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/creodias-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/data-access-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/exploitation-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/processing-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/quickstart/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/scripted-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/simple-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.2/quickstart/userman-deployment/</loc>
-         <lastmod>2022-11-24</lastmod>
+         <lastmod>2022-12-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

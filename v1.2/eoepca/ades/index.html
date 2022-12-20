@@ -776,6 +776,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#application-package-example" class="md-nav__link">
+    Application Package Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#additional-information" class="md-nav__link">
     Additional Information
   </a>
@@ -893,7 +900,7 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>ADES</em> is deployed via the <code>ades</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme">README for the <code>ades</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 2.0.1 --values ades-values.yaml ades eoepca/ades
+<pre><code class="language-bash">helm install --version 2.0.4 --values ades-values.yaml ades eoepca/ades
 </code></pre>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>At minimum, values for the following attributes should be specified:</p>
@@ -911,6 +918,7 @@
     STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
     STAGEIN_AWS_ACCESS_KEY_ID: test
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
+    STAGEIN_AWS_REGION: RegionOne
     # Stage-out to minio S3
     # (use this if the ADES is not configured to stage-out to the Workspace)
     STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.2.nip.io
@@ -1064,12 +1072,15 @@ data:
 </code></pre>
 <h2 id="ades-usage-samples">ADES Usage Samples<a class="headerlink" href="#ades-usage-samples" title="Permanent link">⚓︎</a></h2>
 <p>This section includes some sample requests to test the deployed ADES.</p>
+<blockquote>
 <p>NOTES:</p>
 <ol>
-<li>It assumed that the ADES is subject to access protection (ref. <a href="../resource-protection">Resource Protection</a>), in which case a User ID Token must be provided with the request - typically in the HTTP header <code>X-User-Id</code>.<br>
-   See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
+<li>It assumed that the ADES is subject to access protection (ref. <a href="../resource-protection">Resource Protection</a>), in which case a <em>User ID Token</em> must be provided with the request - typically in the HTTP header, such as <code>Authorization: Bearer</code> or <code>X-User-Id</code>.<br>
+  See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
 <li>The samples assume a user <code>eric</code></li>
+<li>The <code>snuggs</code> application is used in the example below. <em>See also <a href="#application-package-example">Application Package Example</a>.</em></li>
 </ol>
+</blockquote>
 <h3 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h3>
 <p>List available processes.</p>
 <pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
@@ -1177,13 +1188,29 @@ data:
 --header 'X-User-Id: &lt;user-id-token&gt;' \
 --header 'Accept: application/json'
 </code></pre>
+<h2 id="application-package-example">Application Package Example<a class="headerlink" href="#application-package-example" title="Permanent link">⚓︎</a></h2>
+<p>For a (trivial) example application package see <a href="https://github.com/EOEPCA/convert#readme">Example Application Package</a>, which provides a description and illustration of the basics of creating an application that integrates with the expectations of the ADES stage-in and stage-out.</p>
+<p>For further reference see&hellip;</p>
+<ul>
+<li><strong>Application Packages</strong><ul>
+<li><a href="https://docs.ogc.org/bp/20-089r1.html">OGC Best Practise for Application Package</a></li>
+<li><a href="https://github.com/EOEPCA/convert#readme">Example Application Package</a></li>
+</ul>
+</li>
+<li><strong>Common Workflow Language (CWL)</strong><ul>
+<li><a href="https://cwl-for-eo.github.io/guide/">Guide for CWL in Earth Observation</a></li>
+<li><a href="https://www.commonwl.org/v1.2/">CWL Specification</a></li>
+<li><a href="https://www.commonwl.org/user_guide/">CWL User Guide</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>ADES</em> can be found at:</p>
 <ul>
 <li><a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/ades">Helm Chart</a></li>
 <li><a href="https://github.com/EOEPCA/proc-ades/wiki">Wiki</a></li>
 <li><a href="https://github.com/EOEPCA/proc-ades">GitHub Repository</a></li>
-<li><a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration</a>.</li>
+<li><a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration</a></li>
 </ul>
 
               
