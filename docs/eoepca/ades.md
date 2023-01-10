@@ -137,12 +137,12 @@ pep-engine:
     asHostname: auth
     pdpHostname: auth
   # customDefaultResources:
-  #   - name: "Eric's space"
+  #   - name: "ADES Service for user 'eric'"
   #     description: "Protected Access for eric to his space in the ADES"
   #     resource_uri: "/eric"
   #     scopes: []
   #     default_owner: "a9812efe-fc0c-49d3-8115-0f36883a84b9"
-  #   - name: "Bob's space"
+  #   - name: "ADES Service for user 'bob'"
   #     description: "Protected Access for bob to his space in the ADES"
   #     resource_uri: "/bob"
   #     scopes: []
