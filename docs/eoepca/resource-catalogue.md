@@ -65,7 +65,7 @@ pycsw:
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Resource Catalogue service to provide access authorization decisions
 
 ```bash
-helm install --version 1.2.0 --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
+helm install --version 1.2.1 --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the Resource Catalogue for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...

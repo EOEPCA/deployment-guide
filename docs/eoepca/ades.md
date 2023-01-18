@@ -112,7 +112,7 @@ The value `resourceManagerWorkspacePrefix` must be consistent with that [configu
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
 
 ```bash
-helm install --version 1.2.0 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
+helm install --version 1.2.1 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the ADES for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_...

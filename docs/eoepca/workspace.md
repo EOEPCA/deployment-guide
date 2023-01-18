@@ -138,7 +138,7 @@ data:
       chart:
         spec:
           chart: resource-guard
-          version: 1.2.0
+          version: 1.2.1
           sourceRef:
             kind: HelmRepository
             name: eoepca
@@ -176,7 +176,7 @@ The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Workspace API service to provide access authorization decisions
 
 ```bash
-helm install --version 1.2.0 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
+helm install --version 1.2.1 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the Workspace API for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...
