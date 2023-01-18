@@ -1011,7 +1011,7 @@ data:
       chart:
         spec:
           chart: resource-guard
-          version: 1.2.0
+          version: 1.2.1
           sourceRef:
             kind: HelmRepository
             name: eoepca
@@ -1040,7 +1040,7 @@ spec:
 </ul>
 <h3 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h3>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Workspace API service to provide access authorization decisions</p>
-<pre><code class="language-bash">helm install --version 1.2.0 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.2.1 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
 </code></pre>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the Workspace API for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
 <p><strong>Example <code>workspace-api-guard-values.yaml</code>&hellip;</strong></p>

@@ -981,7 +981,7 @@ ingress:
 <p>The value <code>resourceManagerWorkspacePrefix</code> must be consistent with that <a href="../workspace/#values">configured for the Workspace API deployment</a>, (ref. value <code>prefixForName</code>).</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the ADES service to provide access authorization decisions</p>
-<pre><code class="language-bash">helm install --version 1.2.0 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.2.1 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
 </code></pre>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the ADES for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em>&hellip;</p>
 <p><strong>Example <code>ades-guard-values.yaml</code>&hellip;</strong></p>

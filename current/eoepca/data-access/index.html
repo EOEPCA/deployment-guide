@@ -1211,7 +1211,7 @@ spec:
 <p>&hellip;where <code>xxx</code> must be replaced with the bucket credentials.</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Data Access service to provide access authorization decisions.</p>
-<pre><code class="language-bash">helm install --version 1.2.0 --values data-access-guard-values.yaml data-access-guard eoepca/resource-guard
+<pre><code class="language-bash">helm install --version 1.2.1 --values data-access-guard-values.yaml data-access-guard eoepca/resource-guard
 </code></pre>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the Data Access for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
 <p><strong>Example <code>data-access-guard-values.yaml</code>&hellip;</strong></p>
