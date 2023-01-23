@@ -10,7 +10,7 @@
 #   * Set `TLS_CLUSTER_ISSUER` for production
 #---
 # public_ip="192.168.49.2"
-# domain="192.168.49.2.nip.io"
+# domain="192-168-49-2.nip.io"
 # export USE_TLS=true
 # export TLS_CLUSTER_ISSUER=letsencrypt-production
 #---
