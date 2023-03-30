@@ -72,9 +72,9 @@ There are some additional environment variables that configure the `BucketOperat
 
 The eoepca.sh script is further configured via command-line arguments...
 
-**```
-Usage: eoepca.sh <action> <cluster-name> <public-ip> <domain>
-```**
+```bash
+eoepca.sh <action> <cluster-name> <public-ip> <domain>
+```
 
 ??? example "Arguments"
     Argument | Description | Default

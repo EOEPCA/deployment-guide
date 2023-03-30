@@ -37,8 +37,10 @@ Follow these steps to create a simple local deployment in minikube...
 2. **Clone the repository**<br>
    `git clone https://github.com/EOEPCA/deployment-guide`
 3. **Initiate the deployment**<br>
-   `cd deployment-guide`<br>
-   `./deploy/simple/simple`
+   ```bash
+   cd deployment-guide
+   ./deploy/simple/simple
+   ```
 4. **Wait for deployment ready**<br>
      1. List pod status<br>
         `watch kubectl get pod -A`<br>
