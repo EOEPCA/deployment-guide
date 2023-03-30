@@ -70,6 +70,9 @@ markdown_extensions:
       toc_depth: 4
   - smarty
   - sane_lists
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
 
 extra:
   version:
