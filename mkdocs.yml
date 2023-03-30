@@ -62,6 +62,7 @@ theme:
     # - navigation.expand
     - toc.integrate
     - navigation.top
+    - content.code.copy
 
 markdown_extensions:
   - tables
