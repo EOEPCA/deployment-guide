@@ -178,7 +178,7 @@ _Ensure that the script is executed with the environment variables and command-l
 
 ## Create User Workspaces
 
-The protection steps created the test users `eric` and `bob`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../workspace/).
+The protection steps created the test users `eric` and `bob`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../eoepca/workspace.md).
 
 ### Using Workspace Swagger UI
 
