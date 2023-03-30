@@ -111,11 +111,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
       --header 'accept: application/json'
     ```
 
-    The response indicates the location of the results, which should be in the `minio` object storage. This can be checked via [browser access](https://minio-console.192.168.49.2.nip.io/) at https://minio-console.192.168.49.2.nip.io/, or using an S3 client such as...
-
-    ```bash
-    s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca
-    ```
+    The response indicates the location of the results, which should be in the `minio` object storage. See [Processing Results](#processing-results) 
 
     ** List Jobs**
 
@@ -128,6 +124,12 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
 
 ## Processing Results
 
-In the default configuration, the processing results are pushed to the Minio S3 object storage - at the endpoint `minio-console.<domain>` - e.g. `http://minio-console.192.168.49.2.nip.io` - with default credentials `eoepca:changeme`.
+The outputs are published as a static STAC catalogue to a path that includes the unique job ID.
 
-The outputs are pushed as a static STAC catalogue to a path that includes the unique job ID.
+In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `minio-console.<domain>` e.g. https://minio-console.192.168.49.2.nip.io/, or using an S3 client such as...
+
+```bash
+s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca
+```
+
+For the default credentials to connect to Minio see [Minio Object Storage Default Credentials](./scripted-deployment.md#minio-object-storage). 
