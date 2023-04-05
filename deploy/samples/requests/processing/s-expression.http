@@ -1,5 +1,5 @@
 
-@domain = 192.168.49.2.nip.io
+@domain = 192-168-49-2.nip.io
 @ades = ades-open.{{domain}}
 @login = auth.{{domain}}
 @user = eric
