@@ -34,6 +34,7 @@ fi
 #-------------------------------------------------------------------------------
 echo "Create minikube cluster..."
 if minikube -p "${minikube_profile}" ip >/dev/null 2>&1; then
+  minikube profile "${minikube_profile}"
   echo "  [skip] already running"
 else
   ./clean
