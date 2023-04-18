@@ -65,13 +65,6 @@ Accept: application/json
 
 ###
 
-# @name undeployProcess
-DELETE https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
-Authorization: Bearer {{idToken}}
-Accept: application/json
-
-###
-
 # @name executeProcess
 POST https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0/execution HTTP/1.1
 Authorization: Bearer {{idToken}}
@@ -107,3 +100,12 @@ Accept: application/json
 GET https://{{ades}}/{{user}}/wps3/jobs HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
+
+###
+
+# @name undeployProcess
+DELETE https://{{ades}}/{{user}}/wps3/processes/snuggs-0_3_0 HTTP/1.1
+Authorization: Bearer {{idToken}}
+Accept: application/json
+
+###

@@ -62,6 +62,7 @@ theme:
     # - navigation.expand
     - toc.integrate
     - navigation.top
+    - content.code.copy
 
 markdown_extensions:
   - tables
@@ -70,6 +71,19 @@ markdown_extensions:
       toc_depth: 4
   - smarty
   - sane_lists
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - abbr
+  - attr_list
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
 
 extra:
   version:

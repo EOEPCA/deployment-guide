@@ -17,7 +17,7 @@ helm install --version 1.2.5 --values data-access-values.yaml data-access data-a
 
 ## Values
 
-The Data Access supports many values to configure the service. These are documented in full in the [View Server - Operator Guide Configuration page](https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables).
+The Data Access supports many values to configure the service. These are documented in full in the [View Server - Operator Guide Configuration page](https://vs.pages.eox.at/documentation/operator/main/k8s.html#helm-configuration-reference).
 
 ### Core Configuration
 
