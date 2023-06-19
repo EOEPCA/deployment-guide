@@ -899,10 +899,10 @@
 <h2 id="workspace-api">Workspace API<a class="headerlink" href="#workspace-api" title="Permanent link">⚓︎</a></h2>
 <p>The <em>Workspace API</em> provides a REST service through which user workspaces can be created, interrogated, managed and deleted.</p>
 <h3 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h3>
-<p>The <em>Workspace API</em> is deployed via the <code>rm-workspace-api</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
+<p>The <em>Workspace API</em> is deployed via the <code>rm-workspace-api</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme">README for the <code>um-workspace-api</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 1.2.0 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">1</span>.2.0 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
+</span></code></pre></div>
 <h3 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h3>
 <p>At minimum, values for the following attributes should be specified:</p>
 <ul>
@@ -915,41 +915,41 @@
 <li>Whether flux components should be installed - otherwise they must already be present - <a href="#flux-dependency">Flux Dependency</a></li>
 <li>Name of the ConfigMap for user workspace templates - See <a href="#user-workspace-templates">User Workspace Templates</a></li>
 </ul>
-<p>Example <code>workspace-api-values.yaml</code>&hellip;</p>
-<pre><code class="language-yaml">fullnameOverride: workspace-api
-ingress:
-  enabled: true
-  hosts:
-    - host: workspace-api-open.192.168.49.2.nip.io
-      paths: [&quot;/&quot;]
-  tls:
-    - hosts:
-        - workspace-api-open.192.168.49.2.nip.io
-      secretName: workspace-api-open-tls
-fluxHelmOperator:
-  enabled: true
-prefixForName: &quot;guide-user&quot;
-workspaceSecretName: &quot;bucket&quot;
-namespaceForBucketResource: &quot;rm&quot;
-s3Endpoint: &quot;https://cf2.cloudferro.com:8080&quot;
-s3Region: &quot;RegionOne&quot;
-harborUrl: &quot;https://harbor.192.168.49.2.nip.io&quot;
-harborUsername: &quot;admin&quot;
-harborPassword: &quot;changeme&quot;
-umaClientSecretName: &quot;resman-client&quot;
-umaClientSecretNamespace: &quot;rm&quot;
-workspaceChartsConfigMap: &quot;workspace-charts&quot;
-</code></pre>
+<p>Example <code>workspace-api-values.yaml</code>&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">fullnameOverride</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api</span><span class="w"></span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api-open.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;/&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api-open.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api-open-tls</span><span class="w"></span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nt">fluxHelmOperator</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="nt">prefixForName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;guide-user&quot;</span><span class="w"></span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="nt">workspaceSecretName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bucket&quot;</span><span class="w"></span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nt">namespaceForBucketResource</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rm&quot;</span><span class="w"></span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nt">s3Endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://cf2.cloudferro.com:8080&quot;</span><span class="w"></span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="nt">s3Region</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;RegionOne&quot;</span><span class="w"></span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="nt">harborUrl</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://harbor.192.168.49.2.nip.io&quot;</span><span class="w"></span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="nt">harborUsername</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;admin&quot;</span><span class="w"></span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="nt">harborPassword</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;changeme&quot;</span><span class="w"></span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nt">umaClientSecretName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;resman-client&quot;</span><span class="w"></span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="nt">umaClientSecretNamespace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;rm&quot;</span><span class="w"></span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="nt">workspaceChartsConfigMap</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;workspace-charts&quot;</span><span class="w"></span>
+</span></code></pre></div></p>
 <p><strong>NOTES:</strong></p>
 <ul>
 <li>The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the <code>harborXXX</code> values above.<br>See section <a href="../container-registry/">Container Registry</a>.</li>
 </ul>
 <h3 id="flux-dependency">Flux Dependency<a class="headerlink" href="#flux-dependency" title="Permanent link">⚓︎</a></h3>
 <p>Workspaces are created by instantiating the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-user-workspace"><code>rm-user-workspace</code> helm chart</a> for each user/group. The Workspace API uses <a href="https://fluxcd.io/">Flux CD</a> as a helper to manage these subordinate helm charts - via flux resources of type <code>HelmRelease</code>. Thus, it is necessary to deploy within the cluster the aspects of flux that support this helm chart management - namely the flux <code>helm-controller</code>, <code>source-controller</code> and the Kubernetes <em>Custom Resource Definitions (CRD)</em> for <code>HelmRelease</code> and <code>HelmRepository</code>.</p>
-<p>In case you are not already using flux within your clsuter, then the Workspace API helm chart can be configured to deploy the required flux components&hellip;</p>
-<pre><code>fluxHelmOperator:
-  enabled: true  # true = install flux for me, false = I already have flux
-</code></pre>
+<p>In case you are not already using flux within your clsuter, then the Workspace API helm chart can be configured to deploy the required flux components&hellip;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>fluxHelmOperator:
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  enabled: true  # true = install flux for me, false = I already have flux
+</span></code></pre></div></p>
 <h3 id="user-workspace-templates">User Workspace Templates<a class="headerlink" href="#user-workspace-templates" title="Permanent link">⚓︎</a></h3>
 <p>The Workspace API instantiates for each user a set of services, including a Resource Catalogue and Data Access services. These user services are instantiated via helm using templates. The templates are provided to the Workspace API in a <code>ConfigMap</code> that is, by default, named <code>workspace-charts</code>. Each file in the config-map is expected to be of <code>kind</code> <code>HelmRelease</code>. During creation of a new workspace, the Worksapce API applies each file to the cluster in the namespace of the newly created namespace.</p>
 <p>The default ConfigMap that is included with this guide contains the following templates:</p>
@@ -961,75 +961,75 @@ workspaceChartsConfigMap: &quot;workspace-charts&quot;
 <p>Each of these templates is expressed as a flux <code>HelmRelease</code> object that describes the helm chart and values required to deploy the service.</p>
 <h4 id="templates-configmap">Templates ConfigMap<a class="headerlink" href="#templates-configmap" title="Permanent link">⚓︎</a></h4>
 <p>The templates are provided to the Workspace API as a <code>ConfigMap</code> in the namespace of the Workspace API deployment&hellip;</p>
-<p><em>(for full examples see <a href="https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates">https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates</a>)</em></p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: workspace-charts
-data:
-  template-hr-resource-catalogue.yaml: |
-    apiVersion: helm.toolkit.fluxcd.io/v2beta1
-    kind: HelmRelease
-    metadata:
-      name: rm-resource-catalogue
-    spec:
-      interval: 5m
-      chart:
-        spec:
-          chart: rm-resource-catalogue
-          version: 1.2.0
-          sourceRef:
-            kind: HelmRepository
-            name: eoepca
-            namespace: rm
-      values:
-        ...
-  template-hr-data-access.yaml: |
-    apiVersion: helm.toolkit.fluxcd.io/v2beta1
-    kind: HelmRelease
-    metadata:
-      name: vs
-    spec:
-      interval: 5m
-      chart:
-        spec:
-          chart: data-access
-          version: 1.2.5
-          sourceRef:
-            kind: HelmRepository
-            name: eoepca
-            namespace: rm
-      values:
-        ...
-  template-hr-resource-guard.yaml: |
-    apiVersion: helm.toolkit.fluxcd.io/v2beta1
-    kind: HelmRelease
-    metadata:
-      name: resource-guard
-    spec:
-      interval: 5m
-      chart:
-        spec:
-          chart: resource-guard
-          version: 1.2.1
-          sourceRef:
-            kind: HelmRepository
-            name: eoepca
-            namespace: rm
-      values:
-        ...
-</code></pre>
+<p><em>(for full examples see <a href="https://github.com/EOEPCA/deployment-guide/tree/main/deploy/eoepca/workspace-templates">https://github.com/<abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/deployment-guide/tree/main/deploy/eoepca/workspace-templates</a>)</em></p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span><span class="w"></span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-charts</span><span class="w"></span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nt">data</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">template-hr-resource-catalogue.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="no">apiVersion: helm.toolkit.fluxcd.io/v2beta1</span><span class="w"></span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="no">kind: HelmRelease</span><span class="w"></span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="no">metadata:</span><span class="w"></span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">      </span><span class="no">name: rm-resource-catalogue</span><span class="w"></span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="no">spec:</span><span class="w"></span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">      </span><span class="no">interval: 5m</span><span class="w"></span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">      </span><span class="no">chart:</span><span class="w"></span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="no">spec:</span><span class="w"></span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">          </span><span class="no">chart: rm-resource-catalogue</span><span class="w"></span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">          </span><span class="no">version: 1.2.0</span><span class="w"></span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">          </span><span class="no">sourceRef:</span><span class="w"></span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">            </span><span class="no">kind: HelmRepository</span><span class="w"></span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">            </span><span class="no">name: eoepca</span><span class="w"></span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">            </span><span class="no">namespace: rm</span><span class="w"></span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">      </span><span class="no">values:</span><span class="w"></span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">        </span><span class="no">...</span><span class="w"></span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">  </span><span class="nt">template-hr-data-access.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">    </span><span class="no">apiVersion: helm.toolkit.fluxcd.io/v2beta1</span><span class="w"></span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="no">kind: HelmRelease</span><span class="w"></span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">    </span><span class="no">metadata:</span><span class="w"></span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">      </span><span class="no">name: vs</span><span class="w"></span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span><span class="no">spec:</span><span class="w"></span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">      </span><span class="no">interval: 5m</span><span class="w"></span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">      </span><span class="no">chart:</span><span class="w"></span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">        </span><span class="no">spec:</span><span class="w"></span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">          </span><span class="no">chart: data-access</span><span class="w"></span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">          </span><span class="no">version: 1.2.5</span><span class="w"></span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">          </span><span class="no">sourceRef:</span><span class="w"></span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">            </span><span class="no">kind: HelmRepository</span><span class="w"></span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">            </span><span class="no">name: eoepca</span><span class="w"></span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">            </span><span class="no">namespace: rm</span><span class="w"></span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">      </span><span class="no">values:</span><span class="w"></span>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">        </span><span class="no">...</span><span class="w"></span>
+</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">  </span><span class="nt">template-hr-resource-guard.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">    </span><span class="no">apiVersion: helm.toolkit.fluxcd.io/v2beta1</span><span class="w"></span>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">    </span><span class="no">kind: HelmRelease</span><span class="w"></span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">    </span><span class="no">metadata:</span><span class="w"></span>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">      </span><span class="no">name: resource-guard</span><span class="w"></span>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">    </span><span class="no">spec:</span><span class="w"></span>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">      </span><span class="no">interval: 5m</span><span class="w"></span>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">      </span><span class="no">chart:</span><span class="w"></span>
+</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">        </span><span class="no">spec:</span><span class="w"></span>
+</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">          </span><span class="no">chart: resource-guard</span><span class="w"></span>
+</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">          </span><span class="no">version: 1.2.1</span><span class="w"></span>
+</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="w">          </span><span class="no">sourceRef:</span><span class="w"></span>
+</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="w">            </span><span class="no">kind: HelmRepository</span><span class="w"></span>
+</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">            </span><span class="no">name: eoepca</span><span class="w"></span>
+</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">            </span><span class="no">namespace: rm</span><span class="w"></span>
+</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="w">      </span><span class="no">values:</span><span class="w"></span>
+</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="w">        </span><span class="no">...</span><span class="w"></span>
+</span></code></pre></div>
 <h4 id="helmrepositories-for-templates">HelmRepositories for Templates<a class="headerlink" href="#helmrepositories-for-templates" title="Permanent link">⚓︎</a></h4>
-<p>As can be seen above, the HelmRelease templates rely upon objects of type HelmRepository that define the hosting helm chart repository. Thus, in support of the workspace templates, appropriate HelmRepository objects must be provisioned within the cluster. For example, in support of the above examples that rely upon the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>&hellip;</p>
-<pre><code class="language-yaml">apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: eoepca
-  namespace: rm
-spec:
-  interval: 2m
-  url: https://eoepca.github.io/helm-charts/
-</code></pre>
+<p>As can be seen above, the HelmRelease templates rely upon objects of type HelmRepository that define the hosting helm chart repository. Thus, in support of the workspace templates, appropriate HelmRepository objects must be provisioned within the cluster. For example, in support of the above examples that rely upon the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>&hellip;</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">source.toolkit.fluxcd.io/v1beta1</span><span class="w"></span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HelmRepository</span><span class="w"></span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca</span><span class="w"></span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rm</span><span class="w"></span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2m</span><span class="w"></span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://eoepca.github.io/helm-charts/</span><span class="w"></span>
+</span></code></pre></div>
 <h4 id="helm-template-parameters">Helm Template Parameters<a class="headerlink" href="#helm-template-parameters" title="Permanent link">⚓︎</a></h4>
 <p>The Workspace API uses the <a href="https://palletsprojects.com/p/jinja/"><code>jinja2</code> templating engine</a> when applying the HelmReleases for a user workspace. The current parameters are currently supported:</p>
 <ul>
@@ -1040,65 +1040,65 @@ spec:
 </ul>
 <h3 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h3>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Workspace API service to provide access authorization decisions</p>
-<pre><code class="language-bash">helm install --version 1.2.1 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm install --version <span class="m">1</span>.2.1 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
+</span></code></pre></div>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the Workspace API for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
 <p><strong>Example <code>workspace-api-guard-values.yaml</code>&hellip;</strong></p>
-<pre><code class="language-yaml">#---------------------------------------------------------------------------
-# Global values
-#---------------------------------------------------------------------------
-global:
-  context: workspace-api
-  domain: 192.168.49.2.nip.io
-  nginxIp: 192.168.49.2
-  certManager:
-    clusterIssuer: letsencrypt-production
-#---------------------------------------------------------------------------
-# PEP values
-#---------------------------------------------------------------------------
-pep-engine:
-  configMap:
-    asHostname: auth
-    pdpHostname: auth
-  # customDefaultResources:
-  # - name: &quot;Eric's workspace&quot;
-  #   description: &quot;Protected Access for eric to his user workspace&quot;
-  #   resource_uri: &quot;/workspaces/guide-user-eric&quot;
-  #   scopes: []
-  #   default_owner: &quot;d3688daa-385d-45b0-8e04-2062e3e2cd86&quot;
-  # - name: &quot;Bob's workspace&quot;
-  #   description: &quot;Protected Access for bob to his user workspace&quot;
-  #   resource_uri: &quot;/workspaces/guide-user-bob&quot;
-  #   scopes: []
-  #   default_owner: &quot;f12c2592-0332-49f4-a4fb-7063b3c2a889&quot;
-  volumeClaim:
-    name: eoepca-resman-pvc
-    create: false
-#---------------------------------------------------------------------------
-# UMA User Agent values
-#---------------------------------------------------------------------------
-uma-user-agent:
-  nginxIntegration:
-    enabled: true
-    hosts:
-      - host: workspace-api
-        paths:
-          - path: /(.*)
-            service:
-              name: workspace-api
-              port: http
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-read-timeout: &quot;600&quot;
-      nginx.ingress.kubernetes.io/enable-cors: &quot;true&quot;
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
-  client:
-    credentialsSecretName: &quot;resman-client&quot;
-  logging:
-    level: &quot;info&quot;
-  unauthorizedResponse: 'Bearer realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;'
-  openAccess: false
-  insecureTlsSkipVerify: true
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># Global values</span><span class="w"></span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api</span><span class="w"></span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="nt">nginxIp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2</span><span class="w"></span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="nt">certManager</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="nt">clusterIssuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production</span><span class="w"></span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="c1"># PEP values</span><span class="w"></span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="nt">pep-engine</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="nt">configMap</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="nt">asHostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span><span class="w"></span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="nt">pdpHostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span><span class="w"></span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">  </span><span class="c1"># customDefaultResources:</span><span class="w"></span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">  </span><span class="c1"># - name: &quot;Eric&#39;s workspace&quot;</span><span class="w"></span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">  </span><span class="c1">#   description: &quot;Protected Access for eric to his user workspace&quot;</span><span class="w"></span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="c1">#   resource_uri: &quot;/workspaces/guide-user-eric&quot;</span><span class="w"></span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">  </span><span class="c1">#   scopes: []</span><span class="w"></span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">  </span><span class="c1">#   default_owner: &quot;d3688daa-385d-45b0-8e04-2062e3e2cd86&quot;</span><span class="w"></span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="w">  </span><span class="c1"># - name: &quot;Bob&#39;s workspace&quot;</span><span class="w"></span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">  </span><span class="c1">#   description: &quot;Protected Access for bob to his user workspace&quot;</span><span class="w"></span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">  </span><span class="c1">#   resource_uri: &quot;/workspaces/guide-user-bob&quot;</span><span class="w"></span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="w">  </span><span class="c1">#   scopes: []</span><span class="w"></span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">  </span><span class="c1">#   default_owner: &quot;f12c2592-0332-49f4-a4fb-7063b3c2a889&quot;</span><span class="w"></span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">  </span><span class="nt">volumeClaim</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca-resman-pvc</span><span class="w"></span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="w">    </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="c1"># UMA User Agent values</span><span class="w"></span>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="nt">uma-user-agent</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="w">  </span><span class="nt">nginxIntegration</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-36"><a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-6-37"><a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-38"><a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api</span><span class="w"></span>
+</span><span id="__span-6-39"><a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a><span class="w">        </span><span class="nt">paths</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-40"><a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/(.*)</span><span class="w"></span>
+</span><span id="__span-6-41"><a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a><span class="w">            </span><span class="nt">service</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-42"><a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a><span class="w">              </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-api</span><span class="w"></span>
+</span><span id="__span-6-43"><a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a><span class="w">              </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+</span><span id="__span-6-44"><a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a><span class="w">    </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-45"><a id="__codelineno-6-45" name="__codelineno-6-45" href="#__codelineno-6-45"></a><span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/proxy-read-timeout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;600&quot;</span><span class="w"></span>
+</span><span id="__span-6-46"><a id="__codelineno-6-46" name="__codelineno-6-46" href="#__codelineno-6-46"></a><span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/enable-cors</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+</span><span id="__span-6-47"><a id="__codelineno-6-47" name="__codelineno-6-47" href="#__codelineno-6-47"></a><span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/rewrite-target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/$1</span><span class="w"></span>
+</span><span id="__span-6-48"><a id="__codelineno-6-48" name="__codelineno-6-48" href="#__codelineno-6-48"></a><span class="w">  </span><span class="nt">client</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-49"><a id="__codelineno-6-49" name="__codelineno-6-49" href="#__codelineno-6-49"></a><span class="w">    </span><span class="nt">credentialsSecretName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;resman-client&quot;</span><span class="w"></span>
+</span><span id="__span-6-50"><a id="__codelineno-6-50" name="__codelineno-6-50" href="#__codelineno-6-50"></a><span class="w">  </span><span class="nt">logging</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-6-51"><a id="__codelineno-6-51" name="__codelineno-6-51" href="#__codelineno-6-51"></a><span class="w">    </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;info&quot;</span><span class="w"></span>
+</span><span id="__span-6-52"><a id="__codelineno-6-52" name="__codelineno-6-52" href="#__codelineno-6-52"></a><span class="w">  </span><span class="nt">unauthorizedResponse</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Bearer</span><span class="nv"> </span><span class="s">realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;&#39;</span><span class="w"></span>
+</span><span id="__span-6-53"><a id="__codelineno-6-53" name="__codelineno-6-53" href="#__codelineno-6-53"></a><span class="w">  </span><span class="nt">openAccess</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</span><span id="__span-6-54"><a id="__codelineno-6-54" name="__codelineno-6-54" href="#__codelineno-6-54"></a><span class="w">  </span><span class="nt">insecureTlsSkipVerify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span></code></pre></div>
 <p><strong>NOTES:</strong></p>
 <ul>
 <li>TLS is enabled by the specification of <code>certManager.clusterIssuer</code></li>
@@ -1109,26 +1109,26 @@ uma-user-agent:
 <h3 id="client-secret">Client Secret<a class="headerlink" href="#client-secret" title="Permanent link">⚓︎</a></h3>
 <p>The Resource Guard requires confidential client credentials to be configured through the file <code>client.yaml</code>, delivered via a kubernetes secret..</p>
 <p><strong>Example <code>client.yaml</code>&hellip;</strong></p>
-<pre><code class="language-yaml">client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
-client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">client-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a98ba66e-e876-46e1-8619-5e130a38d1a4</span><span class="w"></span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">client-secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">73914cfc-c7dd-4b54-8807-ce17c3645558</span><span class="w"></span>
+</span></code></pre></div>
 <p><strong>Example <code>Secret</code>&hellip;</strong></p>
-<pre><code class="language-bash">kubectl -n rm create secret generic resman-client \
-  --from-file=client.yaml \
-  --dry-run=client -o yaml \
-  &gt; resman-client-secret.yaml
-</code></pre>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Secret
-metadata:
-  name: resman-client
-  namespace: rm
-data:
-  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
-</code></pre>
-<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. <a href="https://auth.192.168.49.2.nip.io">https://auth.192.168.49.2.nip.io</a>. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io &quot;Resource Guard&quot; | tee client.yaml
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl -n rm create secret generic resman-client <span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  --from-file<span class="o">=</span>client.yaml <span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>  --dry-run<span class="o">=</span>client -o yaml <span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  &gt; resman-client-secret.yaml
+</span></code></pre></div>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Secret</span><span class="w"></span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resman-client</span><span class="w"></span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rm</span><span class="w"></span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nt">data</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nt">client.yaml</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4</span><span class="w"></span>
+</span></code></pre></div>
+<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. <a href="https://auth.192.168.49.2.nip.io">https://auth.192.168.49.2.nip.io</a>. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>./deploy/bin/register-client auth.192.168.49.2.nip.io <span class="s2">&quot;Resource Guard&quot;</span> <span class="p">|</span> tee client.yaml
+</span></code></pre></div></p>
 <h3 id="workspace-api-usage">Workspace API Usage<a class="headerlink" href="#workspace-api-usage" title="Permanent link">⚓︎</a></h3>
 <p>The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192.168.49.2.nip.io/.<br>
 See the <a href="https://workspace-api.192.168.49.2.nip.io/docs">Swagger Docs</a>.</p>
@@ -1143,10 +1143,10 @@ See the <a href="https://workspace-api.192.168.49.2.nip.io/docs">Swagger Docs</a
 <p>The Workspace API creates workspaces for individual users. In doing so, dedicated object storage buckets are created associated to each user workspace - for self-contained storage of user owned resources (data, processing applications, etc.).</p>
 <p>The bucket creation relies upon the object storage services of the underlying cloud infrastructure. We have created a <code>Bucket</code> abstraction as a Kubernetes <code>Custom Resource Definition</code>. This is served by a <code>Bucket Operator</code> service that deploys into the Kubernetes cluster to satisfy requests for resources of type <code>Bucket</code>.</p>
 <p>We provide a <code>Bucket Operator</code> implementation that currently supports the creation of buckets in OpenStack object storage - currently tested only on the CREODIAS (Cloudferro).</p>
-<p>The <em>Bucket Operator</em> is deployed via the <code>rm-bucket-operator</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
+<p>The <em>Bucket Operator</em> is deployed via the <code>rm-bucket-operator</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-bucket-operator#readme">README for the <code>um-bucket-operator</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 0.9.9 --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>helm install --version <span class="m">0</span>.9.9 --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
+</span></code></pre></div>
 <h3 id="values_1">Values<a class="headerlink" href="#values_1" title="Permanent link">⚓︎</a></h3>
 <p>At minimum, values for the following attributes should be specified:</p>
 <ul>
@@ -1154,27 +1154,27 @@ See the <a href="https://workspace-api.192.168.49.2.nip.io/docs">Swagger Docs</a
 <li>OpenStack access details</li>
 <li>Cluster Issuer for TLS</li>
 </ul>
-<p>Example <code>bucket-operator-values.yaml</code>&hellip;</p>
-<pre><code class="language-yaml">domain: 192.168.49.2.nip.io
-data:
-  OS_MEMBERROLEID: &quot;9ee2ff9ee4384b1894a90878d3e92bab&quot;
-  OS_SERVICEPROJECTID: &quot;d21467d0a0414252a79e29d38f03ff98&quot;
-  USER_EMAIL_PATTERN: &quot;eoepca+&lt;name&gt;@192.168.49.2.nip.io&quot;
-ingress:
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/enable-cors: &quot;true&quot;
-    nginx.ingress.kubernetes.io/proxy-read-timeout: &quot;600&quot;
-</code></pre>
+<p>Example <code>bucket-operator-values.yaml</code>&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nt">data</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">OS_MEMBERROLEID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;9ee2ff9ee4384b1894a90878d3e92bab&quot;</span><span class="w"></span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="nt">OS_SERVICEPROJECTID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;d21467d0a0414252a79e29d38f03ff98&quot;</span><span class="w"></span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">USER_EMAIL_PATTERN</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;eoepca+&lt;name&gt;@192.168.49.2.nip.io&quot;</span><span class="w"></span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="nt">cert-manager.io/cluster-issuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production</span><span class="w"></span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">    </span><span class="nt">nginx.ingress.kubernetes.io/enable-cors</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="nt">nginx.ingress.kubernetes.io/proxy-read-timeout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;600&quot;</span><span class="w"></span>
+</span></code></pre></div></p>
 <h3 id="openstack-secret">OpenStack Secret<a class="headerlink" href="#openstack-secret" title="Permanent link">⚓︎</a></h3>
 <p>The <code>Bucket Operator</code> requires privileged access to the OpenStack API, for which credentials are required. These are provided via a Kubernetes secret named <code>openstack</code> created in the namespace of the Bucket Operator.<br>
 For example&hellip;</p>
-<pre><code>kubectl -n rm create secret generic openstack \
-  --from-literal=username=&quot;${OS_USERNAME}&quot; \
-  --from-literal=password=&quot;${OS_PASSWORD}&quot; \
-  --from-literal=domainname=&quot;${OS_DOMAINNAME}&quot;
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl -n rm create secret generic openstack \
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  --from-literal=username=&quot;${OS_USERNAME}&quot; \
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>  --from-literal=password=&quot;${OS_PASSWORD}&quot; \
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  --from-literal=domainname=&quot;${OS_DOMAINNAME}&quot;
+</span></code></pre></div>
 <p>See the <a href="https://github.com/EOEPCA/rm-bucket-operator#readme">README for the Bucket Operator</a>, which describes the configuration required for integration with your OpenStack account.</p>
 <p>For a worked example see our <a href="../../examples/scripted-example-deployment">Scripted Example Deployment</a> - in particular:</p>
 <ul>
@@ -1253,7 +1253,7 @@ For example&hellip;</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

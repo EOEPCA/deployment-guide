@@ -786,21 +786,21 @@
 
 
 <h1 id="kubernetes-cluster">Kubernetes Cluster<a class="headerlink" href="#kubernetes-cluster" title="Permanent link">⚓︎</a></h1>
-<p>The EOEPCA Reference Implementation has been developed with Kubernetes as its deployment target. The system components have been developed, deployed and tested using a cluster at version <code>v1.22.5</code>.</p>
+<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation has been developed with Kubernetes as its deployment target. The system components have been developed, deployed and tested using a cluster at version <code>v1.22.5</code>.</p>
 <h2 id="rancher-kubernetes-engine-rke">Rancher Kubernetes Engine (RKE)<a class="headerlink" href="#rancher-kubernetes-engine-rke" title="Permanent link">⚓︎</a></h2>
 <p>The development, integration and test clusters have been established using <a href="https://rancher.com/products/rke">Rancher Kubernetes Engine (RKE)</a> at version <code>v1.22.5</code>.</p>
-<p>An example of the creation of the EOEPCA Kubernetes clusters can be found on the <a href="https://github.com/EOEPCA/eoepca/tree/develop/kubernetes#readme">GitHub Kubernetes Setup page</a>. <a href="https://creodias.eu/">CREODIAS</a> has been used for the development hosting infrastructure - which provides OpenStack infrastructure that is backed by <a href="https://cloudferro.com/">Cloudferro</a>. An example of the <a href="https://www.terraform.io/">Terraform</a> configurations used to automate the creation of the cloud infrastructure that underpins the RKE deployment can be found on the <a href="https://github.com/EOEPCA/eoepca/tree/develop/creodias#readme">GitHub CREODIAS Setup page</a>.</p>
+<p>An example of the creation of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Kubernetes clusters can be found on the <a href="https://github.com/EOEPCA/eoepca/tree/develop/kubernetes#readme">GitHub Kubernetes Setup page</a>. <a href="https://creodias.eu/">CREODIAS</a> has been used for the development hosting infrastructure - which provides OpenStack infrastructure that is backed by <a href="https://cloudferro.com/">Cloudferro</a>. An example of the <a href="https://www.terraform.io/">Terraform</a> configurations used to automate the creation of the cloud infrastructure that underpins the RKE deployment can be found on the <a href="https://github.com/EOEPCA/eoepca/tree/develop/creodias#readme">GitHub CREODIAS Setup page</a>.</p>
 <h2 id="local-kubernetes">Local Kubernetes<a class="headerlink" href="#local-kubernetes" title="Permanent link">⚓︎</a></h2>
-<p>To make a full deployment of the EOEPCA Reference Implementation requires a multi-node node cluster with suitable resources. For example, the development cluster comprises:</p>
+<p>To make a full deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation requires a multi-node node cluster with suitable resources. For example, the development cluster comprises:</p>
 <ul>
 <li>1 Master node (2 vCPU, 8 GB RAM)</li>
 <li>5 Worker nodes (4 vCPU, 16 GB RAM)</li>
 <li>1 NFS server (2 vCPU, 8 GB RAM)</li>
 </ul>
 <p>Limited local deployment can be made using a suitable local single-node kuberbetes deployment using - for example using <a href="https://minikube.sigs.k8s.io/">minikube</a>&hellip;</p>
-<pre><code>minikube -p eoepca start --cpus max --memory max --kubernetes-version v1.22.5
-minikube profile eoepca
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>minikube -p eoepca start --cpus max --memory max --kubernetes-version v1.22.5
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>minikube profile eoepca
+</span></code></pre></div>
 <p>With such a deployment it is possible to deploy individual building-blocks for local development, or building-blocks in combination - within the constraints of the local host resources.</p>
 
               
@@ -874,7 +874,7 @@ minikube profile eoepca
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

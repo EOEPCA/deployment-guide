@@ -862,111 +862,111 @@
 <h1 id="cluster-prerequisites">Cluster Prerequisites<a class="headerlink" href="#cluster-prerequisites" title="Permanent link">⚓︎</a></h1>
 <p>The following prerequisite components are assumed to be deployed in the cluster.</p>
 <h2 id="nginx-ingress-controller">Nginx Ingress Controller<a class="headerlink" href="#nginx-ingress-controller" title="Permanent link">⚓︎</a></h2>
-<pre><code class="language-bash"># Add the helm repository
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-
-# Install the Nginx Ingress Controller helm chart
-helm upgrade -i ingress-nginx ingress-nginx/ingress-nginx --wait
-</code></pre>
-<p>To target the <em>Nginx Ingress Controller</em> the <code>kubernetes.io/ingress.class: nginx</code> annotation must be applied to the Ingress resource&hellip;</p>
-<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    ...
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Add the helm repository</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>helm repo update
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install the Nginx Ingress Controller helm chart</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>helm upgrade -i ingress-nginx ingress-nginx/ingress-nginx --wait
+</span></code></pre></div>
+<p>To target the <em>Nginx Ingress Controller</em> the <code>kubernetes.io/ingress.class: nginx</code> annotation must be applied to the Ingress resource&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span><span class="w"></span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ingress</span><span class="w"></span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</span></code></pre></div></p>
 <h2 id="cert-manager">Cert Manager<a class="headerlink" href="#cert-manager" title="Permanent link">⚓︎</a></h2>
-<pre><code class="language-bash"># Add the helm repository
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
-# Install the Cert Manager helm chart
-helm upgrade -i cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace \
-  --set installCRDs=true
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Add the helm repository</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>helm repo add jetstack https://charts.jetstack.io
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>helm repo update
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Install the Cert Manager helm chart</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>helm upgrade -i cert-manager jetstack/cert-manager <span class="se">\</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  --namespace cert-manager <span class="se">\</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  --create-namespace <span class="se">\</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>  --set <span class="nv">installCRDs</span><span class="o">=</span><span class="nb">true</span>
+</span></code></pre></div>
 <h2 id="letsencrypt-certificates">Letsencrypt Certificates<a class="headerlink" href="#letsencrypt-certificates" title="Permanent link">⚓︎</a></h2>
 <p>Once the <em>Certificate Manager</em> is deployed, then we can establish <code>ClusterIssuer</code> operators in the cluster to support use of TLS with service <code>Ingress</code> endpoints.</p>
 <p>For <em>Letsencrypt</em> we can define two <code>ClusterIssuer</code> - for <code>production</code> and for <code>staging</code>.</p>
 <p><em>NOTE that these require the cluster to be publicly accessible, in order for the <code>http01</code> acme flow to verify the domain ownership. Local development deployments will typically not have public IP/DNS - in which case the system deployment can proceed, but without TLS support for the service endpoints.</em></p>
 <h3 id="production">Production<a class="headerlink" href="#production" title="Permanent link">⚓︎</a></h3>
-<pre><code class="language-yaml">apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-production
-spec:
-  acme:
-    # You must replace this email address with your own.
-    # Let's Encrypt will use this to contact you about expiring
-    # certificates, and issues related to your account.
-    email: eoepca.systemteam@telespazio.com
-    server: https://acme-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      # Secret resource that will be used to store the account's private key.
-      name: letsencrypt-production-account-key
-    # Add a single challenge solver, HTTP01 using nginx
-    solvers:
-      - http01:
-          ingress:
-            class: nginx
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert-manager.io/v1</span><span class="w"></span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterIssuer</span><span class="w"></span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production</span><span class="w"></span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">acme</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="c1"># You must replace this email address with your own.</span><span class="w"></span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="c1"># Let&#39;s Encrypt will use this to contact you about expiring</span><span class="w"></span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="c1"># certificates, and issues related to your account.</span><span class="w"></span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="nt">email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca.systemteam@telespazio.com</span><span class="w"></span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://acme-v02.api.letsencrypt.org/directory</span><span class="w"></span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="nt">privateKeySecretRef</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">      </span><span class="c1"># Secret resource that will be used to store the account&#39;s private key.</span><span class="w"></span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production-account-key</span><span class="w"></span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="c1"># Add a single challenge solver, HTTP01 using nginx</span><span class="w"></span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="nt">solvers</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">http01</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">          </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">            </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span></code></pre></div>
 <h3 id="staging">Staging<a class="headerlink" href="#staging" title="Permanent link">⚓︎</a></h3>
-<pre><code class="language-yaml">apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-staging
-spec:
-  acme:
-    # You must replace this email address with your own.
-    # Let's Encrypt will use this to contact you about expiring
-    # certificates, and issues related to your account.
-    email: eoepca.systemteam@telespazio.com
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      # Secret resource that will be used to store the account's private key.
-      name: letsencrypt-staging-account-key
-    # Add a single challenge solver, HTTP01 using nginx
-    solvers:
-      - http01:
-          ingress:
-            class: nginx
-</code></pre>
-<p>To exploit the specified ClusterIssuer the <code>cert-manager.io/cluster-issuer</code> annotation must be applied to the Ingress resource. For example&hellip;</p>
-<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    ...
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cert-manager.io/v1</span><span class="w"></span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterIssuer</span><span class="w"></span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-staging</span><span class="w"></span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="nt">acme</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="c1"># You must replace this email address with your own.</span><span class="w"></span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="c1"># Let&#39;s Encrypt will use this to contact you about expiring</span><span class="w"></span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="c1"># certificates, and issues related to your account.</span><span class="w"></span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="nt">email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca.systemteam@telespazio.com</span><span class="w"></span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://acme-staging-v02.api.letsencrypt.org/directory</span><span class="w"></span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="nt">privateKeySecretRef</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">      </span><span class="c1"># Secret resource that will be used to store the account&#39;s private key.</span><span class="w"></span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-staging-account-key</span><span class="w"></span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="c1"># Add a single challenge solver, HTTP01 using nginx</span><span class="w"></span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="nt">solvers</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">http01</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">          </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">            </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span></code></pre></div>
+<p>To exploit the specified ClusterIssuer the <code>cert-manager.io/cluster-issuer</code> annotation must be applied to the Ingress resource. For example&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span><span class="w"></span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ingress</span><span class="w"></span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">cert-manager.io/cluster-issuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production</span><span class="w"></span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</span></code></pre></div></p>
 <h2 id="sealed-secrets">Sealed Secrets<a class="headerlink" href="#sealed-secrets" title="Permanent link">⚓︎</a></h2>
-<p>The EOEPCA development team maintain their deployment configurations in GitHub - for declarative, reproducible cluster deployments.</p>
+<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> development team maintain their deployment configurations in GitHub - for declarative, reproducible cluster deployments.</p>
 <p>Various <code>Secret</code> are relied upon by the system services. Secrets should not be exposed by commit to GitHub.</p>
 <p>Instead <a href="https://github.com/bitnami-labs/sealed-secrets"><code>SealedSecret</code></a> are committed to GitHub, which are encrypted, and can only be decrypted by the <code>sealed-secret-controller</code> that runs within the cluster. The <code>sealed-secret-controller</code> decrypts the <code>SealedSecret</code> to a regular <code>Secret</code> (of the same name) that can then be consumed by the cluster components.</p>
 <p>The <code>sealed-secret-controller</code> is deployed to the cluster using the helm chart&hellip;</p>
-<pre><code class="language-bash">helm repo add bitnami-sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-helm repo update
-helm install --version 2.1.8 --create-namespace --namespace infra \
-  eoepca-sealed-secrets bitnami-sealed-secrets/sealed-secrets
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm repo add bitnami-sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>helm repo update
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>helm install --version <span class="m">2</span>.1.8 --create-namespace --namespace infra <span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  eoepca-sealed-secrets bitnami-sealed-secrets/sealed-secrets
+</span></code></pre></div>
 <p>Once the controller is deployed within the cluster, then the <a href="https://github.com/bitnami-labs/sealed-secrets/releases/tag/v0.15.0"><code>kubeseal</code></a> command can be used to create a <code>SealedSecret</code> from a regular <code>Secret</code>, as follows&hellip;</p>
-<p>Create example Secret&hellip;</p>
-<pre><code class="language-bash">kubectl -n test create secret generic mysecret \
-  --from-literal=password=changeme \
-  --dry-run=client -o yaml \
-  &gt; mysecret.yaml
-</code></pre>
-<p>Create SealedSecret from Secret using kubeseal&hellip;</p>
-<pre><code class="language-bash">kubeseal -o yaml \
-  --controller-name eoepca-sealed-secrets \
-  --controller-namespace infra \
-  &lt; mysecret.yaml \
-  &gt; mysecret-sealed.yaml
-</code></pre>
+<p>Create example Secret&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl -n <span class="nb">test</span> create secret generic mysecret <span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  --from-literal<span class="o">=</span><span class="nv">password</span><span class="o">=</span>changeme <span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  --dry-run<span class="o">=</span>client -o yaml <span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  &gt; mysecret.yaml
+</span></code></pre></div></p>
+<p>Create SealedSecret from Secret using kubeseal&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubeseal -o yaml <span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  --controller-name eoepca-sealed-secrets <span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>  --controller-namespace infra <span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  &lt; mysecret.yaml <span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>  &gt; mysecret-sealed.yaml
+</span></code></pre></div></p>
 <h3 id="references">References<a class="headerlink" href="#references" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><a href="https://github.com/bitnami-labs/sealed-secrets">Sealed Secrets on GitHub</a></li>
@@ -975,62 +975,62 @@ helm install --version 2.1.8 --create-namespace --namespace infra \
 <h2 id="minio-object-storage">MinIO Object Storage<a class="headerlink" href="#minio-object-storage" title="Permanent link">⚓︎</a></h2>
 <p>Various building blocks require access to an S3-compatible object storage service. In particular the ADES processing service expects to stage-out its processing results to S3 object storage. Ideally the cloud provider for your deployment will make available a suitable object storage service.</p>
 <p>As a workaround, in the absence of an existing object storage, it is possible to use <a href="https://min.io/">MinIO</a> to establish an object storage service within the Kubernetes cluster. We use the <a href="https://bitnami.com/stack/minio/helm">minio helm chart provided by bitnami</a>.</p>
-<pre><code class="language-bash"># Add the bitnami helm repository
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-
-# Install the minio helm chart
-helm upgrade -i minio -f minio-values.yaml bitnami/minio
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Add the bitnami helm repository</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>helm repo add bitnami https://charts.bitnami.com/bitnami
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>helm repo update
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># Install the minio helm chart</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>helm upgrade -i minio -f minio-values.yaml bitnami/minio
+</span></code></pre></div>
 <p>The minio deployment is customised via the values file <code>minio-values.yaml</code>, for example&hellip;</p>
-<pre><code class="language-yaml">auth:
-  rootUser: eoepca
-  rootPassword: changeme
-
-ingress:
-  enabled: true
-  ingressClassName: nginx
-  hostname: minio-console.192.168.49.2.nip.io
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
-
-apiIngress:
-  enabled: true
-  ingressClassName: nginx
-  hostname: minio.192.168.49.2.nip.io
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
-
-persistence:
-  storageClass: standard
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">auth</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">rootUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca</span><span class="w"></span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">rootPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">changeme</span><span class="w"></span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="nt">ingressClassName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">minio-console.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="nt">nginx.ingress.kubernetes.io/proxy-body-size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0m</span><span class="w"></span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="nt">apiIngress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">  </span><span class="nt">ingressClassName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">minio.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">    </span><span class="nt">nginx.ingress.kubernetes.io/proxy-body-size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0m</span><span class="w"></span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="nt">persistence</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standard</span><span class="w"></span>
+</span></code></pre></div>
 <p><em>Note that the annotation <code>nginx.ingress.kubernetes.io/proxy-body-size</code> was found to be required to allow transfer of large files (such as data products) through the nginx proxy</em></p>
 <h3 id="s3cmd-configuration">s3cmd Configuration<a class="headerlink" href="#s3cmd-configuration" title="Permanent link">⚓︎</a></h3>
 <p>The <code>s3cmd</code> can be configured for access to the MinIO deployment. The <code>--configure</code> option can be used to prepare a suitable configuration file for <code>s3cmd</code>&hellip;</p>
-<pre><code class="language-bash">s3cmd -c mys3cfg --configure
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>s3cmd -c mys3cfg --configure
+</span></code></pre></div>
 <p>In response to the prompts, the following configuration selections are applicable to the above settings&hellip;</p>
-<pre><code>Access Key: eoepca
-Secret Key: changeme
-Default Region: us-east-1
-S3 Endpoint: minio.192.168.49.2.nip.io
-DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.2.nip.io
-Encryption password: 
-Path to GPG program: /usr/bin/gpg
-Use HTTPS protocol: False
-HTTP Proxy server name: 
-HTTP Proxy server port: 0
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Access Key: eoepca
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Secret Key: changeme
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Default Region: us-east-1
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>S3 Endpoint: minio.192.168.49.2.nip.io
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.2.nip.io
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>Encryption password: 
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>Path to GPG program: /usr/bin/gpg
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>Use HTTPS protocol: False
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>HTTP Proxy server name: 
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>HTTP Proxy server port: 0
+</span></code></pre></div>
 <p>Save the configuration file, and check access to the S3 object store with&hellip;</p>
-<pre><code class="language-bash"># Create a bucket
-s3cmd -c mys3cfg mb s3://eoepca
-
-# List buckets
-s3cmd -c mys3cfg ls
-</code></pre>
-<p>For example, using our sample deployment, the following can be used to interface with the MinIO service deployed in minikube&hellip;</p>
-<pre><code class="language-bash">s3cmd -c deploy/cluster/s3cfg ls
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Create a bucket</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>s3cmd -c mys3cfg mb s3://eoepca
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># List buckets</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>s3cmd -c mys3cfg ls
+</span></code></pre></div>
+<p>For example, using our sample deployment, the following can be used to interface with the MinIO service deployed in minikube&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>s3cmd -c deploy/cluster/s3cfg ls
+</span></code></pre></div></p>
 <h3 id="references_1">References<a class="headerlink" href="#references_1" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><a href="https://bitnami.com/stack/minio/helm">MinIO Helm Chart</a></li>
@@ -1108,7 +1108,7 @@ s3cmd -c mys3cfg ls
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

@@ -923,14 +923,15 @@
 
 <h1 id="scripted-deployment">Scripted Deployment<a class="headerlink" href="#scripted-deployment" title="Permanent link">⚓︎</a></h1>
 <p>The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh"><code>deployment-guide/deploy</code></a> of the source repository for this guide&hellip;</p>
-<pre><code class="language-bash">git clone https://github.com/EOEPCA/deployment-guide \
-&amp;&amp; cd deployment-guide \
-&amp;&amp; ls deploy
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone https://github.com/EOEPCA/deployment-guide <span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="o">&amp;&amp;</span> <span class="nb">cd</span> deployment-guide <span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="o">&amp;&amp;</span> ls deploy
+</span></code></pre></div>
 <p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh"><code>deploy/eoepca/eoepca.sh</code></a> acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.</p>
-<blockquote>
-<p><strong>NOTE that the scripted deployment assumes that installation of the <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> has been performed.</strong></p>
-</blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The scripted deployment assumes that installation of the <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> has been performed.</p>
+</div>
 <p>The following subsections lead through the steps for a full local deployment. Whilst minikube is assumed, minimal adaptions are required to make the deployment to your existing Kubernetes cluster.</p>
 <p>The deployment follows these broad steps:</p>
 <ul>
@@ -945,6 +946,8 @@
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">⚓︎</a></h2>
 <p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh"><code>deploy/eoepca/eoepca.sh</code></a> is configured by some environment variables and command-line arguments.</p>
 <h3 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">⚓︎</a></h3>
+<details class="example">
+<summary>Environment Variables</summary>
 <table>
 <thead>
 <tr>
@@ -961,7 +964,7 @@
 </tr>
 <tr>
 <td><strong>REQUIRE_&lt;eoepca-component></strong></td>
-<td>A set of variables that can be used to control which <strong>EOEPCA</strong> components are deployed by the script, as follows (with defaults):<br><code>REQUIRE_STORAGE=true</code><br><code>REQUIRE_DUMMY_SERVICE=false</code><br><code>REQUIRE_LOGIN_SERVICE=true</code><br><code>REQUIRE_PDP=true</code><br><code>REQUIRE_USER_PROFILE=true</code><br><code>REQUIRE_ADES=true</code><br><code>REQUIRE_RESOURCE_CATALOGUE=true</code><br><code>REQUIRE_DATA_ACCESS=true</code><br><code>REQUIRE_WORKSPACE_API=true</code><br><code>REQUIRE_BUCKET_OPERATOR=true</code><br><code>REQUIRE_HARBOR=true</code><br><code>REQUIRE_PORTAL=true</code><br><code>REQUIRE_PDE=true</code></td>
+<td>A set of variables that can be used to control which <strong><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr></strong> components are deployed by the script, as follows (with defaults):<br><code>REQUIRE_STORAGE=true</code><br><code>REQUIRE_DUMMY_SERVICE=false</code><br><code>REQUIRE_LOGIN_SERVICE=true</code><br><code>REQUIRE_PDP=true</code><br><code>REQUIRE_USER_PROFILE=true</code><br><code>REQUIRE_ADES=true</code><br><code>REQUIRE_RESOURCE_CATALOGUE=true</code><br><code>REQUIRE_DATA_ACCESS=true</code><br><code>REQUIRE_WORKSPACE_API=true</code><br><code>REQUIRE_BUCKET_OPERATOR=true</code><br><code>REQUIRE_HARBOR=true</code><br><code>REQUIRE_PORTAL=true</code><br><code>REQUIRE_PDE=true</code></td>
 <td>see description</td>
 </tr>
 <tr>
@@ -971,7 +974,7 @@
 </tr>
 <tr>
 <td><strong>MINIKUBE_KUBERNETES_VERSION</strong></td>
-<td>The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5.</td>
+<td>The Kubernetes version to be used by minikube<br>Note that the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> development has been conducted primarily using version 1.22.5.</td>
 <td><code>v1.22.5</code></td>
 </tr>
 <tr>
@@ -1046,9 +1049,15 @@
 </tr>
 </tbody>
 </table>
+</details>
 <h3 id="openstack-configuration">Openstack Configuration<a class="headerlink" href="#openstack-configuration" title="Permanent link">⚓︎</a></h3>
 <p>There are some additional environment variables that configure the <code>BucketOperator</code> with details of the infrastructure Openstack layer.</p>
-<p>NOTE that this is only applicable for an Openstack deployment and has only been tested on the CREODIAS.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This is only applicable for an Openstack deployment and has only been tested on the CREODIAS.</p>
+</div>
+<details class="example">
+<summary>Environment Variables</summary>
 <table>
 <thead>
 <tr>
@@ -1090,9 +1099,13 @@
 </tr>
 </tbody>
 </table>
+</details>
 <h3 id="command-line-arguments">Command-line Arguments<a class="headerlink" href="#command-line-arguments" title="Permanent link">⚓︎</a></h3>
 <p>The eoepca.sh script is further configured via command-line arguments&hellip;</p>
-<p><strong><code>Usage: eoepca.sh &lt;action&gt; &lt;cluster-name&gt; &lt;public-ip&gt; &lt;domain&gt;</code></strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>eoepca.sh &lt;action&gt; &lt;cluster-name&gt; &lt;public-ip&gt; &lt;domain&gt;
+</span></code></pre></div>
+<details class="example">
+<summary>Arguments</summary>
 <table>
 <thead>
 <tr>
@@ -1124,13 +1137,14 @@
 </tr>
 </tbody>
 </table>
+</details>
 <h3 id="public-deployment">Public Deployment<a class="headerlink" href="#public-deployment" title="Permanent link">⚓︎</a></h3>
 <p>For simplicity, the out-of-the-box scripts assume a &lsquo;private&rsquo; deployment - with no public IP / DNS and hence no use of TLS for service ingress endpoints.</p>
 <p>In the case that an external-facing public deployment is desired, then the following configuration selections should be made:</p>
 <ul>
 <li><code>public_ip</code> - set to the external-facing public IP of your deployment, e.g. the floating IP of your load-balancer in a cloud deployment</li>
 <li><code>domain</code> - set to the domain (as per DNS records) for your deployment<br>
-  <em>Note that the EOEPCA components typically configure their ingress with hostname prefixes applied to this <code>domain</code>. Thus, it is necessary that the DNS record for the domain is established as a wildcard record - i.e. <code>*.&lt;domain&gt;</code></em></li>
+  <em>Note that the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components typically configure their ingress with hostname prefixes applied to this <code>domain</code>. Thus, it is necessary that the DNS record for the domain is established as a wildcard record - i.e. <code>*.&lt;domain&gt;</code></em></li>
 <li><code>USE_TLS=true</code> - to enable configuration of TLS endpoints in each component service ingress</li>
 <li><code>TLS_CLUSTER_ISSUER=&lt;issuer&gt;</code> - should be configured ~ e.g. using the <code>letsencrypt-production</code> or <code>letsencrypt-staging</code> (testing only) <em>Cluster Issuer</em> that are configured by the scripted deployment</li>
 </ul>
@@ -1138,70 +1152,70 @@
 <p>The deployment is initiated by setting the appropriate <a href="#environment-variables">environment variables</a> and invoking the <code>eoepca.sh</code> script with suitable <a href="#command-line-arguments">command-line arguments</a>. You may find it convenient to do so using a wrapper script that customises the environment varaibles according to your cluster, and then invokes the <code>eoepca.sh</code> script.</p>
 <p>Customised examples are provided for Simple, CREODIAS and Processing deployments.</p>
 <p><strong><em>NOTE that if a prior deployment has been attempted then, before redeploying, a clean-up should be performed as described in the <a href="#clean-up">Clean-up</a> section below. This is particularly important in the case that the minikube <code>none</code> driver is used, as the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed.</em></strong></p>
-<p>Initiate the deployment&hellip;</p>
-<pre><code class="language-bash">./deploy/eoepca/eoepca.sh apply &quot;&lt;cluster-name&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
-</code></pre>
-<p>The deployment takes 10+ minutes - depending on the resources of your host/cluster. The progress can be monitored&hellip;</p>
-<pre><code class="language-bash">kubectl get pods -A
-</code></pre>
+<p>Initiate the deployment&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>./deploy/eoepca/eoepca.sh apply <span class="s2">&quot;&lt;cluster-name&gt;&quot;</span> <span class="s2">&quot;&lt;public-ip&gt;&quot;</span> <span class="s2">&quot;&lt;domain&gt;&quot;</span>
+</span></code></pre></div></p>
+<p>The deployment takes 10+ minutes - depending on the resources of your host/cluster. The progress can be monitored&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get pods -A
+</span></code></pre></div></p>
 <p>The deployment is ready once all pods are either <code>Running</code> or <code>Completed</code>. This can be further confirmed by accessing the login-service web interface at <code>https://auth.&lt;domain&gt;/</code> and logging in as user <code>admin</code> using the credentials configured via <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
 <h2 id="default-credentials">Default Credentials<a class="headerlink" href="#default-credentials" title="Permanent link">⚓︎</a></h2>
 <h3 id="login-service">Login Service<a class="headerlink" href="#login-service" title="Permanent link">⚓︎</a></h3>
 <p>By default, the Login Service is accessed at the URL <code>https://auth.&lt;domain&gt;/</code> with the credentials&hellip;</p>
-<pre><code>username: admin
-password: Chang3me!
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>username: admin
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>password: Chang3me!
+</span></code></pre></div>
 <p>&hellip;unless the password is overridden via the variable <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
 <h3 id="minio-object-storage">Minio Object Storage<a class="headerlink" href="#minio-object-storage" title="Permanent link">⚓︎</a></h3>
 <p>By default, Minio is accessed at the URL <code>http://minio-console.&lt;domain&gt;/</code> with the credentials&hellip;</p>
-<pre><code>username: eoepca
-password: changeme
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>username: eoepca
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>password: changeme
+</span></code></pre></div>
 <p>&hellip;unless the username/password are overridden via the variables <code>MINIO_ROOT_USER</code> and <code>MINIO_ROOT_PASSWORD</code>.</p>
 <h3 id="harbor-container-registry">Harbor Container Registry<a class="headerlink" href="#harbor-container-registry" title="Permanent link">⚓︎</a></h3>
 <p>By default, Harbor is accessed at the URL <code>https://harbor.&lt;domain&gt;/</code> with the credentials&hellip;</p>
-<pre><code>username: admin
-password: changeme
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>username: admin
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>password: changeme
+</span></code></pre></div>
 <p>&hellip;unless the password is overridden via the variable <code>HARBOR_ADMIN_PASSWORD</code>.</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>The protection of resource server endpoints is applied with the script <code>deploy/eoepca/eoepca-protection.sh</code>. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script <code>eoepca.sh</code>).</p>
 <p>The script <code>eoepca-protection.sh</code> introduces two users <code>eric</code> and <code>bob</code> to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).</p>
 <p>Thus, the users must <a href="#create-test-users">first be created</a> in the login-service and their unique IDs passed to the protection script.</p>
-<pre><code>Usage: eoepca-protection.sh &lt;action&gt; &lt;eric-id&gt; &lt;bob-id&gt; &lt;public-ip&gt; &lt;domain&gt;
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Usage: eoepca-protection.sh &lt;action&gt; &lt;eric-id&gt; &lt;bob-id&gt; &lt;public-ip&gt; &lt;domain&gt;
+</span></code></pre></div>
 <h3 id="create-test-users">Create Test Users<a class="headerlink" href="#create-test-users" title="Permanent link">⚓︎</a></h3>
 <p>Access the login-service web interface (<code>https://auth.&lt;domain&gt;/</code>) as user admin using the credentials configured via <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
 <p>Select <code>Users -&gt; Add person</code> to add users <code>eric</code> and <code>bob</code> (dummy details can be used). Note the <code>Inum</code> (unique user ID) for each user for use with the <code>eoepca-protection.sh</code> script.</p>
 <h3 id="apply-protection">Apply Protection<a class="headerlink" href="#apply-protection" title="Permanent link">⚓︎</a></h3>
 <p>Apply the protection&hellip;<br>
 <em>Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main <a href="#deployment">deployment</a>.</em></p>
-<pre><code class="language-bash">./deploy/eoepca/eoepca-protection.sh apply &quot;&lt;eric-id&gt;&quot; &quot;&lt;bob-id&gt;&quot; &quot;&lt;public-ip&gt;&quot; &quot;&lt;domain&gt;&quot;
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./deploy/eoepca/eoepca-protection.sh apply <span class="s2">&quot;&lt;eric-id&gt;&quot;</span> <span class="s2">&quot;&lt;bob-id&gt;&quot;</span> <span class="s2">&quot;&lt;public-ip&gt;&quot;</span> <span class="s2">&quot;&lt;domain&gt;&quot;</span>
+</span></code></pre></div>
 <h2 id="create-user-workspaces">Create User Workspaces<a class="headerlink" href="#create-user-workspaces" title="Permanent link">⚓︎</a></h2>
-<p>The protection steps created the test users <code>eric</code> and <code>bob</code>. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see <a href="../workspace/">Workspace</a>.</p>
+<p>The protection steps created the test users <code>eric</code> and <code>bob</code>. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see <a href="../../eoepca/workspace/">Workspace</a>.</p>
 <h3 id="using-workspace-swagger-ui">Using Workspace Swagger UI<a class="headerlink" href="#using-workspace-swagger-ui" title="Permanent link">⚓︎</a></h3>
 <p>The Workspace API provides a Swagger UI that facilitates interaction with the API - at the URL <code>https://workspace-api.&lt;domain&gt;/docs#</code>. Access to The Workspace API is protected, such that the necessary access tokens must be supplied in requests, which is most easily achieved by logging in via the &lsquo;portal&rsquo;.</p>
 <p>The portal is accessed at <code>https://portal.&lt;domain&gt;/</code>. It is a rudimentary web service that facilitates establishing the appropriate tokens in the user&rsquo;s browser context. Login to the portal as the <code>admin</code> user, using the configured credentials.</p>
-<p>Access the Workspace Swagger UI at <code>https://workspace-api.&lt;domain&gt;/docs</code>. Workspaces are created using <code>POST  /workspaces</code> <strong>(Create Workspace)</strong>. Expand the node and select <code>Try it out</code>. Complete the request body, such as&hellip;</p>
-<pre><code class="language-json">{
-  &quot;preferred_name&quot;: &quot;eric&quot;,
-  &quot;default_owner&quot;: &quot;d95b0c2b-ea74-4b3f-9c6a-85198dec974d&quot;
-}
-</code></pre>
-<p>&hellip;where the <code>default_owner</code> is the user ID (<code>Inum</code>) for the user - thus protecting the created workspace for the identified user.</p>
+<p>Access the Workspace Swagger UI at <code>https://workspace-api.&lt;domain&gt;/docs</code>. Workspaces are created using <code>POST  /workspaces</code> <strong>(Create Workspace)</strong>. Expand the node and select <code>Try it out</code>. Complete the request body, such as&hellip;
+<div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span><span class="w"></span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;preferred_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eric&quot;</span><span class="p">,</span><span class="w"></span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">&quot;default_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d95b0c2b-ea74-4b3f-9c6a-85198dec974d&quot;</span><span class="w"></span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">}</span><span class="w"></span>
+</span></code></pre></div>
+&hellip;where the <code>default_owner</code> is the user ID (<code>Inum</code>) for the user - thus protecting the created workspace for the identified user.</p>
 <h3 id="using-curl">Using <code>curl</code><a class="headerlink" href="#using-curl" title="Permanent link">⚓︎</a></h3>
 <p>The same can be achieved with a straight http request, for example using <code>curl</code>&hellip;</p>
-<pre><code class="language-bash">curl -X 'POST' \
-  'https://workspace-api.192.168.49.2.nip.io/workspaces' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -H 'X-User-Id: &lt;admin-id-token&gt;' \
-  -d '{
-  &quot;preferred_name&quot;: &quot;&lt;workspace-name&gt;&quot;,
-  &quot;default_owner&quot;: &quot;&lt;user-inum&gt;&quot;
-}'
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl -X <span class="s1">&#39;POST&#39;</span> <span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  <span class="s1">&#39;https://workspace-api.192.168.49.2.nip.io/workspaces&#39;</span> <span class="se">\</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  -H <span class="s1">&#39;accept: application/json&#39;</span> <span class="se">\</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  -H <span class="s1">&#39;Content-Type: application/json&#39;</span> <span class="se">\</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>  -H <span class="s1">&#39;X-User-Id: &lt;admin-id-token&gt;&#39;</span> <span class="se">\</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>  -d <span class="s1">&#39;{</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s1">  &quot;preferred_name&quot;: &quot;&lt;workspace-name&gt;&quot;,</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s1">  &quot;default_owner&quot;: &quot;&lt;user-inum&gt;&quot;</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="s1">}&#39;</span>
+</span></code></pre></div>
 <p>Values must be provided for:</p>
 <ul>
 <li><code>admin-id-token</code> - User ID token for the admin user</li>
@@ -1209,29 +1223,29 @@ password: changeme
 <li><code>user-inum</code> - the ID of the user for which the created workspace will be protected</li>
 </ul>
 <p>The ID token for the <code>admin</code> user can be obtained with a call to the token endpoint of the Login Service - supplying the credentials for the <code>admin</code> user and the pre-registered client&hellip;</p>
-<pre><code class="language-bash">curl -L -X POST 'https://auth.&lt;domain&gt;/oxauth/restv1/token' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  --data-urlencode 'scope=openid user_name is_operator' \
-  --data-urlencode 'grant_type=password' \
-  --data-urlencode 'username=admin' \
-  --data-urlencode 'password=&lt;admin-password&gt;' \
-  --data-urlencode 'client_id=&lt;client-id&gt;' \
-  --data-urlencode 'client_secret=&lt;client-secret&gt;'
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl -L -X POST <span class="s1">&#39;https://auth.&lt;domain&gt;/oxauth/restv1/token&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  -H <span class="s1">&#39;Cache-Control: no-cache&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>  -H <span class="s1">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>  --data-urlencode <span class="s1">&#39;scope=openid user_name is_operator&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>  --data-urlencode <span class="s1">&#39;grant_type=password&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>  --data-urlencode <span class="s1">&#39;username=admin&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>  --data-urlencode <span class="s1">&#39;password=&lt;admin-password&gt;&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>  --data-urlencode <span class="s1">&#39;client_id=&lt;client-id&gt;&#39;</span> <span class="se">\</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>  --data-urlencode <span class="s1">&#39;client_secret=&lt;client-secret&gt;&#39;</span>
+</span></code></pre></div>
 <p>A json response is returned, in which the field <code>id_token</code> provides the user ID token for the <code>admin</code> user.</p>
 <h3 id="using-create-workspace-helper-script">Using <code>create-workspace</code> helper script<a class="headerlink" href="#using-create-workspace-helper-script" title="Permanent link">⚓︎</a></h3>
 <p>As an aide there is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/create-workspace"><code>create-workspace</code></a>. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
-<pre><code class="language-bash">git clone git@github.com:EOEPCA/deployment-guide
-cd deployment-guide
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>git clone git@github.com:EOEPCA/deployment-guide
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">cd</span> deployment-guide
+</span></code></pre></div>
 <p>The <code>create-workspace</code> helper script requires some command-line arguments&hellip;</p>
-<pre><code>Usage:
-  create-workspace &lt;domain&gt; &lt;user&gt; &lt;user-inum&gt; [&lt;client-id&gt; &lt;client-secret&gt;]
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Usage:
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  create-workspace &lt;domain&gt; &lt;user&gt; &lt;user-inum&gt; [&lt;client-id&gt; &lt;client-secret&gt;]
+</span></code></pre></div>
 <p>For example&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/create-workspace 192.168.49.2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>./deploy/bin/create-workspace <span class="m">192</span>.168.49.2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+</span></code></pre></div>
 <p>The script prompts for the password of the <code>admin</code> user.</p>
 <p>By default <code>&lt;client-id&gt;</code> and <code>&lt;client-secret&gt;</code> are read from the <code>client.yaml</code> file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.</p>
 <h2 id="clean-up">Clean-up<a class="headerlink" href="#clean-up" title="Permanent link">⚓︎</a></h2>
@@ -1255,9 +1269,9 @@ cd deployment-guide
   <code>rm -rf ./deploy/eoepca/client.yaml</code></p>
 </li>
 </ol>
-<p>There is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/cluster/clean"><code>clean</code></a> that can be used for steps 2 and 3 above, (the script does not delete the cluster).</p>
-<pre><code class="language-bash">./deploy/cluster/clean
-</code></pre>
+<p>There is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/cluster/clean"><code>clean</code></a> that can be used for steps 2 and 3 above, (the script does not delete the cluster).
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>./deploy/cluster/clean
+</span></code></pre></div></p>
 
               
             </article>
@@ -1330,7 +1344,7 @@ cd deployment-guide
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

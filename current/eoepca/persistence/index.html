@@ -813,11 +813,11 @@
 
 
 <h1 id="persistence">Persistence<a class="headerlink" href="#persistence" title="Permanent link">⚓︎</a></h1>
-<p>The EOEPCA building-blocks rely upon Kubernetes <code>Persistent Volumes</code> for their component persistence. Components integrate with the storage provided in the cluster by means of configurable <code>Persistent Volume Claims</code> and/or dynamic <code>Storage Class</code> that are specfied as values at time of deployment. Some components require storage of type  <code>ReadWriteMany</code> - which, for a multi-node cluster, implies a network-based storage solution.</p>
+<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> building-blocks rely upon Kubernetes <code>Persistent Volumes</code> for their component persistence. Components integrate with the storage provided in the cluster by means of configurable <code>Persistent Volume Claims</code> and/or dynamic <code>Storage Class</code> that are specfied as values at time of deployment. Some components require storage of type  <code>ReadWriteMany</code> - which, for a multi-node cluster, implies a network-based storage solution.</p>
 <h2 id="readwritemany-storage">ReadWriteMany Storage<a class="headerlink" href="#readwritemany-storage" title="Permanent link">⚓︎</a></h2>
-<p>For the EOEPCA development deployment, an NFS server has been established to provide the persistence layer for <code>ReadWriteMany</code> storage.</p>
+<p>For the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> development deployment, an NFS server has been established to provide the persistence layer for <code>ReadWriteMany</code> storage.</p>
 <h3 id="pre-defined-persistent-volume-claims">Pre-defined Persistent Volume Claims<a class="headerlink" href="#pre-defined-persistent-volume-claims" title="Permanent link">⚓︎</a></h3>
-<p>The EOEPCA development deployment establishes the following pre-defined Persistent Volume Claims, to provide a simple storage architecture that is organised around the &lsquo;domain areas&rsquo; into which the Reference Implementation is split.</p>
+<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> development deployment establishes the following pre-defined Persistent Volume Claims, to provide a simple storage architecture that is organised around the &lsquo;domain areas&rsquo; into which the Reference Implementation is split.</p>
 <ul>
 <li><strong>Resource Managment</strong> (<code>resman</code>) - <strong><code>persistentvolumeclaim/eoepca-resman-pvc</code></strong></li>
 <li><strong>Processing &amp; Chaining</strong> (<code>proc</code>) - <strong><code>persistentvolumeclaim/eoepca-proc-pvc</code></strong></li>
@@ -825,49 +825,49 @@
 </ul>
 <p><em>NOTE that this is offered only as an example thay suits the approach of the development team. Each building-block has configuration through which its persistence (PV/PVC) can be configured according the needs of the deployment.</em></p>
 <p>The following Kubernetes yaml provides an example of provisioning such domain-specific PersistentVolumeClaims within the cluster - in this case using the minikube built-in storage-class <code>standard</code> for dynamic provisioning&hellip;</p>
-<pre><code>---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: eoepca-proc-pvc
-  namespace: proc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: standard
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: eoepca-resman-pvc
-  namespace: rm
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: standard
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: eoepca-userman-pvc
-  namespace: um
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: standard
-  resources:
-    requests:
-      storage: 5Gi
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>---
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>apiVersion: v1
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>kind: PersistentVolumeClaim
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>metadata:
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  name: eoepca-proc-pvc
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  namespace: proc
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>spec:
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  accessModes:
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    - ReadWriteMany
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  storageClassName: standard
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  resources:
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    requests:
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>      storage: 5Gi
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>---
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>apiVersion: v1
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>kind: PersistentVolumeClaim
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>metadata:
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  name: eoepca-resman-pvc
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  namespace: rm
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>spec:
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>  accessModes:
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    - ReadWriteMany
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>  storageClassName: standard
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>  resources:
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    requests:
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>      storage: 5Gi
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>---
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>apiVersion: v1
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>kind: PersistentVolumeClaim
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>metadata:
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>  name: eoepca-userman-pvc
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>  namespace: um
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>spec:
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>  accessModes:
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    - ReadWriteMany
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>  storageClassName: standard
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>  resources:
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    requests:
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>      storage: 5Gi
+</span></code></pre></div>
 <p>Once established, these <em>PersistentVolumeClaims</em> are then referenced within the deployment configurations of the building-blocks.</p>
 <h3 id="dynamic-readwritemany-storage-provisioning">Dynamic <code>ReadWriteMany</code> Storage Provisioning<a class="headerlink" href="#dynamic-readwritemany-storage-provisioning" title="Permanent link">⚓︎</a></h3>
-<p>In addition to the pre-defined PV/PVCs, the EOEPCA Reference Implementation also defines NFS-based storage classes for dynamic storage provisioning:</p>
+<p>In addition to the pre-defined PV/PVCs, the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation also defines NFS-based storage classes for dynamic storage provisioning:</p>
 <ul>
 <li><code>managed-nfs-storage</code><br>
   <em>With a <code>Reclaim Policy</code> of <code>Delete</code>.</em></li>
@@ -876,29 +876,29 @@ spec:
 </ul>
 <p>The building-blocks simply reference the required <code>Storage Class</code> in their volume specifications, to receive a <code>Persistent Volume Claim</code> that is dynamically provisioned at deployment time.</p>
 <p>This is acheived through the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/nfs-provisioner"><code>nfs-provisioner</code> helm chart</a>, with the following typical configurations&hellip;</p>
-<p>Reclaim Policy <code>Delete</code>&hellip;</p>
-<pre><code class="language-yaml">provisionerName: nfs-storage
-storageClass:
-  name: managed-nfs-storage
-  create: true
-  reclaimPolicy: Delete
-  archiveOnDelete: false
-  allowVolumeExpansion: true
-nfs:
-  server: &quot;&lt;your-nfs-ip-address-here&gt;&quot;
-  path: /data/dynamic  # your NFS server path here
-</code></pre>
-<p>Reclaim Policy <code>Retain</code>&hellip;</p>
-<pre><code class="language-yaml">provisionerName: nfs-storage-retain
-storageClass:
-  name: managed-nfs-storage-retain
-  create: true
-  reclaimPolicy: Retain
-  allowVolumeExpansion: true
-nfs:
-  server: &quot;&lt;your-nfs-ip-address-here&gt;&quot;
-  path: /data/dynamic  # your NFS server path here
-</code></pre>
+<p>Reclaim Policy <code>Delete</code>&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">provisionerName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nfs-storage</span><span class="w"></span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">managed-nfs-storage</span><span class="w"></span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">reclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Delete</span><span class="w"></span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">archiveOnDelete</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">allowVolumeExpansion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nt">nfs</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;your-nfs-ip-address-here&gt;&quot;</span><span class="w"></span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/data/dynamic</span><span class="w">  </span><span class="c1"># your NFS server path here</span><span class="w"></span>
+</span></code></pre></div></p>
+<p>Reclaim Policy <code>Retain</code>&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">provisionerName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nfs-storage-retain</span><span class="w"></span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">managed-nfs-storage-retain</span><span class="w"></span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">reclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Retain</span><span class="w"></span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nt">allowVolumeExpansion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nt">nfs</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;your-nfs-ip-address-here&gt;&quot;</span><span class="w"></span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/data/dynamic</span><span class="w">  </span><span class="c1"># your NFS server path here</span><span class="w"></span>
+</span></code></pre></div></p>
 <h2 id="clustered-storage-solutions">Clustered Storage Solutions<a class="headerlink" href="#clustered-storage-solutions" title="Permanent link">⚓︎</a></h2>
 <p>Clustered storage approaches offer an alternative to NFS. Clustered Storage provides a network-attached storage through a set of commodity hosts whose storage is aggregated to form a distributed file-system. Capacity is scaled by adding additional nodes or adding additional storage to the existing nodes. In the context of a multi-node Kubernetes cluster, then it is typical that the same commodity nodes provide both the cluster members and storage resources, i.e. the clustered storage is spread across the Kubernetes worker nodes.</p>
 <p>Candidate clustered storage solutions include:</p>
@@ -910,7 +910,7 @@ nfs:
 </ul>
 <p><strong><em>All things being equal, Longhorn is recommended as the best approach for Kubernetes clusters.</em></strong></p>
 <h2 id="local-cluster-storage">Local Cluster Storage<a class="headerlink" href="#local-cluster-storage" title="Permanent link">⚓︎</a></h2>
-<p>For the purposes of the EOEPCA deployment, the default Storage Class included with the local Kubernetes distribution can be used for all storage concerns - e.g. <code>standard</code> for <code>minikube</code> which provides the <code>ReadWriteMany</code> persistence that is required by the ADES.</p>
+<p>For the purposes of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> deployment, the default Storage Class included with the local Kubernetes distribution can be used for all storage concerns - e.g. <code>standard</code> for <code>minikube</code> which provides the <code>ReadWriteMany</code> persistence that is required by the ADES.</p>
 
               
             </article>
@@ -983,7 +983,7 @@ nfs:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

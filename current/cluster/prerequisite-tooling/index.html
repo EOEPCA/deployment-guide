@@ -803,34 +803,34 @@
 <p>There are some standard tools referenced in this guide. These are detailed in the following subsections.</p>
 <h2 id="docker">docker<a class="headerlink" href="#docker" title="Permanent link">⚓︎</a></h2>
 <p>Docker faciliates the creation, management and execution of containers. Whilst not strictly necessary to support deployment to an existing/managed Kubernetes cluster, it can nevertheless be useful to have local access to the docker tooling. For example, if minikube is used to follow this guide using a local k8s cluster, then this is best achieved using minikube&rsquo;s docker driver.</p>
-<p>Docker is most easily installed with&hellip;</p>
-<pre><code>curl -fsSL https://get.docker.com | sh
-</code></pre>
-<p>For convenience, add your user to the <code>docker</code> group&hellip;</p>
-<pre><code>sudo usermod -aG docker ${USER}
-</code></pre>
+<p>Docker is most easily installed with&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl -fsSL https://get.docker.com <span class="p">|</span> sh
+</span></code></pre></div></p>
+<p>For convenience, add your user to the <code>docker</code> group&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo usermod -aG docker <span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
+</span></code></pre></div></p>
 <p>Logout/in to refresh your session&rsquo;s group permissions.</p>
 <h2 id="kubectl">kubectl<a class="headerlink" href="#kubectl" title="Permanent link">⚓︎</a></h2>
-<p>Kubectl is the main tool for interaction with a Kubernetes cluster. The latest version can be installed with&hellip;</p>
-<pre><code>mkdir -p $HOME/.local/bin \
-&amp;&amp; curl -fsSLo $HOME/.local/bin/kubectl &quot;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl&quot; \
-&amp;&amp; chmod +x $HOME/.local/bin/kubectl
-</code></pre>
+<p>Kubectl is the main tool for interaction with a Kubernetes cluster. The latest version can be installed with&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir -p <span class="nv">$HOME</span>/.local/bin <span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="o">&amp;&amp;</span> curl -fsSLo <span class="nv">$HOME</span>/.local/bin/kubectl <span class="s2">&quot;https://dl.k8s.io/release/</span><span class="k">$(</span>curl -L -s https://dl.k8s.io/release/stable.txt<span class="k">)</span><span class="s2">/bin/linux/amd64/kubectl&quot;</span> <span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="o">&amp;&amp;</span> chmod +x <span class="nv">$HOME</span>/.local/bin/kubectl
+</span></code></pre></div></p>
 <p>See the <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/">official kubectl installation documentation</a> for more installation options.</p>
 <h2 id="helm">helm<a class="headerlink" href="#helm" title="Permanent link">⚓︎</a></h2>
 <p>Helm is the Kubernetes package manager, in which components are deployed to a Kubernetes cluster via helm charts. The helm charts are instantiated for deployment via &lsquo;values&rsquo; that configure the chart templates.</p>
-<p>The latest helm version can be installed with&hellip;</p>
-<pre><code>export HELM_INSTALL_DIR=&quot;$HOME/.local/bin&quot; \
-&amp;&amp; curl -sfL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-</code></pre>
+<p>The latest helm version can be installed with&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span> <span class="nv">HELM_INSTALL_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.local/bin&quot;</span> <span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="o">&amp;&amp;</span> curl -sfL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 <span class="p">|</span> bash
+</span></code></pre></div></p>
 <p>See the <a href="https://helm.sh/docs/intro/install/">official helm installation documentation</a> for more installation options.</p>
 <h2 id="minikube">minikube<a class="headerlink" href="#minikube" title="Permanent link">⚓︎</a></h2>
 <p>Minikube is a tool that allows to create a local (single-node) Kubernetes cluster for development/testing. It is not designed for production use. In the absence of access to a &lsquo;full&rsquo; Kubernetes cluster, this guide can be followed using minikube.</p>
-<p>The latest version of minikube can be installed with&hellip;</p>
-<pre><code>mkdir -p $HOME/.local/bin \
-&amp;&amp; curl -fsSLo $HOME/.local/bin/minikube &quot;https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64&quot; \
-&amp;&amp; chmod +x $HOME/.local/bin/minikube
-</code></pre>
+<p>The latest version of minikube can be installed with&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mkdir -p <span class="nv">$HOME</span>/.local/bin <span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="o">&amp;&amp;</span> curl -fsSLo <span class="nv">$HOME</span>/.local/bin/minikube <span class="s2">&quot;https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64&quot;</span> <span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="o">&amp;&amp;</span> chmod +x <span class="nv">$HOME</span>/.local/bin/minikube
+</span></code></pre></div></p>
 <p>See the <a href="https://minikube.sigs.k8s.io/docs/start/">official minikube installation documentation</a> for more installation options.</p>
 
               
@@ -904,7 +904,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

@@ -898,10 +898,10 @@
 <h1 id="application-deployment-execution-service-ades">Application Deployment &amp; Execution Service (ADES)<a class="headerlink" href="#application-deployment-execution-service-ades" title="Permanent link">⚓︎</a></h1>
 <p>The <em>ADES</em> provides a platform-hosted execution engine through which users can initiate parameterised processing jobs using applications made available within the platform - supporting the efficient execution of the processing &lsquo;close to the data&rsquo;. Users can deploy specific &lsquo;applications&rsquo; to the ADES, which may be their own applications, or those published by other platform users.</p>
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
-<p>The <em>ADES</em> is deployed via the <code>ades</code> helm chart from the <a href="https://eoepca.github.io/helm-charts">EOEPCA Helm Chart Repository</a>.</p>
+<p>The <em>ADES</em> is deployed via the <code>ades</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme">README for the <code>ades</code> chart</a>.</p>
-<pre><code class="language-bash">helm install --version 2.0.4 --values ades-values.yaml ades eoepca/ades
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">2</span>.0.4 --values ades-values.yaml ades eoepca/ades
+</span></code></pre></div>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>At minimum, values for the following attributes should be specified:</p>
 <ul>
@@ -911,135 +911,135 @@
   <em>Note that this is only required in the case that the ADES will <strong>not</strong> be protected by the <code>resource-guard</code> component - ref. <a href="../resource-protection">Resource Protection</a>. Otherwise the ingress will be handled by the <code>resource-guard</code> - use <code>ingress.enabled: false</code>.</em></li>
 </ul>
 <p><strong>Example <code>ades-values.yaml</code>&hellip;</strong></p>
-<pre><code class="language-yaml">workflowExecutor:
-  inputs:
-    # Stage-in from CREODIAS eodata
-    # (only works within CREODIAS - i.e. on a Cloudferro VM)
-    STAGEIN_AWS_SERVICEURL: http://data.cloudferro.com
-    STAGEIN_AWS_ACCESS_KEY_ID: test
-    STAGEIN_AWS_SECRET_ACCESS_KEY: test
-    STAGEIN_AWS_REGION: RegionOne
-    # Stage-out to minio S3
-    # (use this if the ADES is not configured to stage-out to the Workspace)
-    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.2.nip.io
-    STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
-    STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
-    STAGEOUT_AWS_REGION: us-east-1
-    STAGEOUT_OUTPUT: s3://eoepca
-  processingStorageClass: standard
-  processingVolumeTmpSize: &quot;6Gi&quot;
-  processingVolumeOutputSize: &quot;6Gi&quot;
-  processingMaxRam: &quot;8Gi&quot;
-  processingMaxCores: &quot;4&quot;
-wps:
-  pepBaseUrl: &quot;http://ades-pep:5576&quot;
-  usePep: &quot;true&quot;
-persistence:
-  storageClass: standard
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: &quot;false&quot;
-  hosts:
-    - host: ades.192.168.49.2.nip.io
-      paths: 
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - ades.192.168.49.2.nip.io
-      secretName: ades-tls
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">workflowExecutor</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">inputs</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="c1"># Stage-in from CREODIAS eodata</span><span class="w"></span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="c1"># (only works within CREODIAS - i.e. on a Cloudferro VM)</span><span class="w"></span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">STAGEIN_AWS_SERVICEURL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://data.cloudferro.com</span><span class="w"></span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">STAGEIN_AWS_ACCESS_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span><span class="w"></span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">STAGEIN_AWS_SECRET_ACCESS_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span><span class="w"></span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">STAGEIN_AWS_REGION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RegionOne</span><span class="w"></span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="c1"># Stage-out to minio S3</span><span class="w"></span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="c1"># (use this if the ADES is not configured to stage-out to the Workspace)</span><span class="w"></span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">STAGEOUT_AWS_SERVICEURL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://minio.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">STAGEOUT_AWS_ACCESS_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca</span><span class="w"></span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">STAGEOUT_AWS_SECRET_ACCESS_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">changeme</span><span class="w"></span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nt">STAGEOUT_AWS_REGION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-east-1</span><span class="w"></span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nt">STAGEOUT_OUTPUT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3://eoepca</span><span class="w"></span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="nt">processingStorageClass</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standard</span><span class="w"></span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nt">processingVolumeTmpSize</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6Gi&quot;</span><span class="w"></span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="nt">processingVolumeOutputSize</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6Gi&quot;</span><span class="w"></span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="nt">processingMaxRam</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8Gi&quot;</span><span class="w"></span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="nt">processingMaxCores</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4&quot;</span><span class="w"></span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nt">wps</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">  </span><span class="nt">pepBaseUrl</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://ades-pep:5576&quot;</span><span class="w"></span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="nt">usePep</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="nt">persistence</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">standard</span><span class="w"></span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span><span class="w"></span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">    </span><span class="nt">ingress.kubernetes.io/ssl-redirect</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span><span class="w"></span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ades.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">          </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ImplementationSpecific</span><span class="w"></span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ades.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">      </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ades-tls</span><span class="w"></span>
+</span></code></pre></div>
 <h2 id="stage-in-stage-out-configuration">Stage-in / Stage-out Configuration<a class="headerlink" href="#stage-in-stage-out-configuration" title="Permanent link">⚓︎</a></h2>
 <p>The ADES hosts applications that are deployed and invoked in accordance with the <a href="https://docs.ogc.org/bp/20-089r1.html">OGC Best Practise for Application Package</a>. Thus, the ADES provides a conformant environment within which the application is integrated for execution. A key part of the ADES&rsquo;s role in this is to faciltate the provision of input data to the application (stage-in), and the handling of the results output at the conclusion of application execution (stage-out).</p>
 <p>The ADES helm chart configures (by default) the ADES with implementations of the stage-in and stage-out functions that use the <a href="https://github.com/Terradue/Stars">Spatio Temporal Asset Router Services</a> utility.</p>
 <p>The ADES provides hooks for system integrators to override these defaults to implement their own stage-in and stage-out behaviour - for example, to integrate with their platform&rsquo;s own catalogue and data offering. The stage-in and stage-out are specified as <a href="https://www.commonwl.org/">CWL</a> via the helm values&hellip;</p>
-<pre><code class="language-yaml">workflowExecutor:
-  stagein:
-    cwl: |
-      cwlVersion: v1.0
-      ...
-  stageout:
-    cwl: |
-      cwlVersion: v1.0
-      ...
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">workflowExecutor</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">stagein</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">cwl</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="no">cwlVersion: v1.0</span><span class="w"></span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="no">...</span><span class="w"></span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nt">stageout</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">cwl</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="no">cwlVersion: v1.0</span><span class="w"></span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">      </span><span class="no">...</span><span class="w"></span>
+</span></code></pre></div>
 <p>For a detailed description see <a href="https://github.com/EOEPCA/proc-ades/wiki/Stagein%20Stageout%20Interfaces">ADES stage-in/out configuration in the ADES wiki</a>.</p>
 <h2 id="workspace-integration">Workspace Integration<a class="headerlink" href="#workspace-integration" title="Permanent link">⚓︎</a></h2>
-<p>The ADES has the facility to integrate with the EOEPCA <a href="../workspace/">Workspace component</a> for registration of staged-out processing results. This is disabled by default (<code>useResourceManager: false</code>).</p>
+<p>The ADES has the facility to integrate with the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> <a href="../workspace/">Workspace component</a> for registration of staged-out processing results. This is disabled by default (<code>useResourceManager: false</code>).</p>
 <p>When enabled, the ADES will register the staged-out products with the user&rsquo;s Workspace, such that they are indexed and available via the user&rsquo;s Resource Catalogue and Data Access services.</p>
 <p><strong>Example <code>ades-values.yaml</code> (snippet)&hellip;</strong></p>
-<pre><code class="language-yaml">workflowExecutor:
-  ...
-  useResourceManager: &quot;true&quot;
-  resourceManagerWorkspacePrefix: &quot;guide-user&quot;
-  resourceManagerEndpoint: &quot;https://workspace-api.192.168.49.2.nip.io&quot;
-  platformDomain: &quot;https://auth.192.168.49.2.nip.io&quot;
-  ...
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">workflowExecutor</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">useResourceManager</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">resourceManagerWorkspacePrefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;guide-user&quot;</span><span class="w"></span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">resourceManagerEndpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://workspace-api.192.168.49.2.nip.io&quot;</span><span class="w"></span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">platformDomain</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://auth.192.168.49.2.nip.io&quot;</span><span class="w"></span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+</span></code></pre></div>
 <p>The value <code>resourceManagerWorkspacePrefix</code> must be consistent with that <a href="../workspace/#values">configured for the Workspace API deployment</a>, (ref. value <code>prefixForName</code>).</p>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the ADES service to provide access authorization decisions</p>
-<pre><code class="language-bash">helm install --version 1.2.1 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm install --version <span class="m">1</span>.2.1 --values ades-guard-values.yaml ades-guard eoepca/resource-guard
+</span></code></pre></div>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the ADES for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em>&hellip;</p>
 <p><strong>Example <code>ades-guard-values.yaml</code>&hellip;</strong></p>
-<pre><code class="language-yaml">#---------------------------------------------------------------------------
-# Global values
-#---------------------------------------------------------------------------
-global:
-  context: ades
-  domain: 192.168.49.2.nip.io
-  nginxIp: 192.168.49.2
-  certManager:
-    clusterIssuer: letsencrypt-production
-#---------------------------------------------------------------------------
-# PEP values
-#---------------------------------------------------------------------------
-pep-engine:
-  configMap:
-    asHostname: auth
-    pdpHostname: auth
-  # customDefaultResources:
-  #   - name: &quot;ADES Service for user 'eric'&quot;
-  #     description: &quot;Protected Access for eric to his space in the ADES&quot;
-  #     resource_uri: &quot;/eric&quot;
-  #     scopes: []
-  #     default_owner: &quot;a9812efe-fc0c-49d3-8115-0f36883a84b9&quot;
-  #   - name: &quot;ADES Service for user 'bob'&quot;
-  #     description: &quot;Protected Access for bob to his space in the ADES&quot;
-  #     resource_uri: &quot;/bob&quot;
-  #     scopes: []
-  #     default_owner: &quot;4ccae3a1-3fad-4ffe-bfa7-cce851143780&quot;
-  volumeClaim:
-    name: eoepca-proc-pvc
-    create: false
-#---------------------------------------------------------------------------
-# UMA User Agent values
-#---------------------------------------------------------------------------
-uma-user-agent:
-  nginxIntegration:
-    enabled: true
-    hosts:
-      - host: ades
-        paths:
-          - path: /(.*)
-            service:
-              name: ades
-              port: 80
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-read-timeout: &quot;600&quot;
-      nginx.ingress.kubernetes.io/enable-cors: &quot;true&quot;
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
-  client:
-    credentialsSecretName: &quot;proc-client&quot;
-  logging:
-    level: &quot;info&quot;
-  unauthorizedResponse: 'Bearer realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;'
-  openAccess: false
-  insecureTlsSkipVerify: true
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Global values</span><span class="w"></span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ades</span><span class="w"></span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="nt">nginxIp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2</span><span class="w"></span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="nt">certManager</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">clusterIssuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production</span><span class="w"></span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># PEP values</span><span class="w"></span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nt">pep-engine</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">  </span><span class="nt">configMap</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="nt">asHostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span><span class="w"></span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="nt">pdpHostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth</span><span class="w"></span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">  </span><span class="c1"># customDefaultResources:</span><span class="w"></span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">  </span><span class="c1">#   - name: &quot;ADES Service for user &#39;eric&#39;&quot;</span><span class="w"></span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">  </span><span class="c1">#     description: &quot;Protected Access for eric to his space in the ADES&quot;</span><span class="w"></span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">  </span><span class="c1">#     resource_uri: &quot;/eric&quot;</span><span class="w"></span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">  </span><span class="c1">#     scopes: []</span><span class="w"></span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">  </span><span class="c1">#     default_owner: &quot;a9812efe-fc0c-49d3-8115-0f36883a84b9&quot;</span><span class="w"></span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">  </span><span class="c1">#   - name: &quot;ADES Service for user &#39;bob&#39;&quot;</span><span class="w"></span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">  </span><span class="c1">#     description: &quot;Protected Access for bob to his space in the ADES&quot;</span><span class="w"></span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">  </span><span class="c1">#     resource_uri: &quot;/bob&quot;</span><span class="w"></span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">  </span><span class="c1">#     scopes: []</span><span class="w"></span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">  </span><span class="c1">#     default_owner: &quot;4ccae3a1-3fad-4ffe-bfa7-cce851143780&quot;</span><span class="w"></span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">  </span><span class="nt">volumeClaim</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca-proc-pvc</span><span class="w"></span>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="c1"># UMA User Agent values</span><span class="w"></span>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="c1">#---------------------------------------------------------------------------</span><span class="w"></span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="nt">uma-user-agent</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">  </span><span class="nt">nginxIntegration</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ades</span><span class="w"></span>
+</span><span id="__span-5-39"><a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">        </span><span class="nt">paths</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-40"><a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/(.*)</span><span class="w"></span>
+</span><span id="__span-5-41"><a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">            </span><span class="nt">service</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-42"><a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">              </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ades</span><span class="w"></span>
+</span><span id="__span-5-43"><a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a><span class="w">              </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span><span class="w"></span>
+</span><span id="__span-5-44"><a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">    </span><span class="nt">annotations</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-45"><a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/proxy-read-timeout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;600&quot;</span><span class="w"></span>
+</span><span id="__span-5-46"><a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/enable-cors</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+</span><span id="__span-5-47"><a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a><span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/rewrite-target</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/$1</span><span class="w"></span>
+</span><span id="__span-5-48"><a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a><span class="w">  </span><span class="nt">client</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-49"><a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="w">    </span><span class="nt">credentialsSecretName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;proc-client&quot;</span><span class="w"></span>
+</span><span id="__span-5-50"><a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a><span class="w">  </span><span class="nt">logging</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-5-51"><a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a><span class="w">    </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;info&quot;</span><span class="w"></span>
+</span><span id="__span-5-52"><a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a><span class="w">  </span><span class="nt">unauthorizedResponse</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Bearer</span><span class="nv"> </span><span class="s">realm=&quot;https://portal.192.168.49.2.nip.io/oidc/authenticate/&quot;&#39;</span><span class="w"></span>
+</span><span id="__span-5-53"><a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a><span class="w">  </span><span class="nt">openAccess</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+</span><span id="__span-5-54"><a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a><span class="w">  </span><span class="nt">insecureTlsSkipVerify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</span></code></pre></div>
 <p><strong>NOTES:</strong></p>
 <ul>
 <li>TLS is enabled by the specification of <code>certManager.clusterIssuer</code></li>
@@ -1050,26 +1050,26 @@ uma-user-agent:
 <h3 id="client-secret">Client Secret<a class="headerlink" href="#client-secret" title="Permanent link">⚓︎</a></h3>
 <p>The Resource Guard requires confidential client credentials to be configured through the file <code>client.yaml</code>, delivered via a kubernetes secret..</p>
 <p><strong>Example <code>client.yaml</code>&hellip;</strong></p>
-<pre><code class="language-yaml">client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
-client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
-</code></pre>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">client-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a98ba66e-e876-46e1-8619-5e130a38d1a4</span><span class="w"></span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nt">client-secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">73914cfc-c7dd-4b54-8807-ce17c3645558</span><span class="w"></span>
+</span></code></pre></div>
 <p><strong>Example <code>Secret</code>&hellip;</strong></p>
-<pre><code class="language-bash">kubectl -n proc create secret generic proc-client \
-  --from-file=client.yaml \
-  --dry-run=client -o yaml \
-  &gt; proc-client-secret.yaml
-</code></pre>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Secret
-metadata:
-  name: proc-client
-  namespace: proc
-data:
-  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
-</code></pre>
-<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;</p>
-<pre><code class="language-bash">./deploy/bin/register-client auth.192.168.49.2.nip.io &quot;Resource Guard&quot; | tee client.yaml
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl -n proc create secret generic proc-client <span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  --from-file<span class="o">=</span>client.yaml <span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  --dry-run<span class="o">=</span>client -o yaml <span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  &gt; proc-client-secret.yaml
+</span></code></pre></div>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span><span class="w"></span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Secret</span><span class="w"></span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">proc-client</span><span class="w"></span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">proc</span><span class="w"></span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nt">data</span><span class="p">:</span><span class="w"></span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="nt">client.yaml</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4</span><span class="w"></span>
+</span></code></pre></div>
+<p>The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in <a href="../resource-protection/#client-registration">section Resource Protection</a>&hellip;
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>./deploy/bin/register-client auth.192.168.49.2.nip.io <span class="s2">&quot;Resource Guard&quot;</span> <span class="p">|</span> tee client.yaml
+</span></code></pre></div></p>
 <h2 id="ades-usage-samples">ADES Usage Samples<a class="headerlink" href="#ades-usage-samples" title="Permanent link">⚓︎</a></h2>
 <p>This section includes some sample requests to test the deployed ADES.</p>
 <blockquote>
@@ -1083,111 +1083,111 @@ data:
 </blockquote>
 <h3 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h3>
 <p>List available processes.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl --location --request GET &#39;https://ades.192.168.49.2.nip.io/eric/wps3/processes&#39; \
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>--header &#39;Accept: application/json&#39;
+</span></code></pre></div>
 <h3 id="deploy-process">Deploy Process<a class="headerlink" href="#deploy-process" title="Permanent link">⚓︎</a></h3>
 <p>Deploy the sample application <code>snuggs</code>.</p>
-<pre><code>curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json' \
---header 'Content-Type: application/json' \
---data-raw '{
-    &quot;inputs&quot;: [
-        {
-            &quot;id&quot;: &quot;applicationPackage&quot;,
-            &quot;input&quot;: {
-                &quot;format&quot;: {
-                    &quot;mimeType&quot;: &quot;application/cwl&quot;
-                },
-                &quot;value&quot;: {
-                    &quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl&quot;
-                }
-            }
-        }
-    ],
-    &quot;outputs&quot;: [
-        {
-            &quot;format&quot;: {
-                &quot;mimeType&quot;: &quot;string&quot;,
-                &quot;schema&quot;: &quot;string&quot;,
-                &quot;encoding&quot;: &quot;string&quot;
-            },
-            &quot;id&quot;: &quot;deployResult&quot;,
-            &quot;transmissionMode&quot;: &quot;value&quot;
-        }
-    ],
-    &quot;mode&quot;: &quot;auto&quot;,
-    &quot;response&quot;: &quot;raw&quot;
-}'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl --location --request POST &#39;https://ades.192.168.49.2.nip.io/eric/wps3/processes&#39; \
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>--header &#39;Accept: application/json&#39; \
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>--header &#39;Content-Type: application/json&#39; \
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>--data-raw &#39;{
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    &quot;inputs&quot;: [
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>        {
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>            &quot;id&quot;: &quot;applicationPackage&quot;,
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>            &quot;input&quot;: {
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>                &quot;format&quot;: {
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>                    &quot;mimeType&quot;: &quot;application/cwl&quot;
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>                },
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>                &quot;value&quot;: {
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>                    &quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl&quot;
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>                }
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>            }
+</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>        }
+</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    ],
+</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>    &quot;outputs&quot;: [
+</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>        {
+</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>            &quot;format&quot;: {
+</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>                &quot;mimeType&quot;: &quot;string&quot;,
+</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>                &quot;schema&quot;: &quot;string&quot;,
+</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>                &quot;encoding&quot;: &quot;string&quot;
+</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>            },
+</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>            &quot;id&quot;: &quot;deployResult&quot;,
+</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>            &quot;transmissionMode&quot;: &quot;value&quot;
+</span><span id="__span-11-28"><a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>        }
+</span><span id="__span-11-29"><a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>    ],
+</span><span id="__span-11-30"><a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>    &quot;mode&quot;: &quot;auto&quot;,
+</span><span id="__span-11-31"><a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>    &quot;response&quot;: &quot;raw&quot;
+</span><span id="__span-11-32"><a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>}&#39;
+</span></code></pre></div>
 <h3 id="get-process-details">Get Process Details<a class="headerlink" href="#get-process-details" title="Permanent link">⚓︎</a></h3>
 <p>Get details for a deployed process.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl --location --request GET &#39;https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0&#39; \
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>--header &#39;Accept: application/json&#39;
+</span></code></pre></div>
 <h3 id="execute-process">Execute Process<a class="headerlink" href="#execute-process" title="Permanent link">⚓︎</a></h3>
 <p>Execute a process with supplied parameterisation.</p>
-<pre><code>curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json' \
---header 'Content-Type: application/json' \
---data-raw '{
-    &quot;inputs&quot;: [
-        {
-            &quot;id&quot;: &quot;input_reference&quot;,
-            &quot;input&quot;: {
-                &quot;dataType&quot;: {
-                    &quot;name&quot;: &quot;application/json&quot;
-                },
-                &quot;value&quot;: &quot;https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A&quot;
-            }
-        },
-        {
-            &quot;id&quot;: &quot;s_expression&quot;,
-            &quot;input&quot;: {
-                &quot;dataType&quot;: {
-                    &quot;name&quot;: &quot;string&quot;
-                },
-                &quot;value&quot;: &quot;ndvi:(/ (- B05 B03) (+ B05 B03))&quot;
-            }
-        }
-    ],
-    &quot;outputs&quot;: [
-        {
-            &quot;format&quot;: {
-                &quot;mimeType&quot;: &quot;string&quot;,
-                &quot;schema&quot;: &quot;string&quot;,
-                &quot;encoding&quot;: &quot;string&quot;
-            },
-            &quot;id&quot;: &quot;wf_outputs&quot;,
-            &quot;transmissionMode&quot;: &quot;value&quot;
-        }
-    ],
-    &quot;mode&quot;: &quot;auto&quot;,
-    &quot;response&quot;: &quot;raw&quot;
-}'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl --location --request POST &#39;https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs&#39; \
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>--header &#39;Accept: application/json&#39; \
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>--header &#39;Content-Type: application/json&#39; \
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>--data-raw &#39;{
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    &quot;inputs&quot;: [
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>        {
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>            &quot;id&quot;: &quot;input_reference&quot;,
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>            &quot;input&quot;: {
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>                &quot;dataType&quot;: {
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>                    &quot;name&quot;: &quot;application/json&quot;
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>                },
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>                &quot;value&quot;: &quot;https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A&quot;
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>            }
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>        },
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>        {
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>            &quot;id&quot;: &quot;s_expression&quot;,
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>            &quot;input&quot;: {
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>                &quot;dataType&quot;: {
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>                    &quot;name&quot;: &quot;string&quot;
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>                },
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>                &quot;value&quot;: &quot;ndvi:(/ (- B05 B03) (+ B05 B03))&quot;
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>            }
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>        }
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>    ],
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>    &quot;outputs&quot;: [
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a>        {
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a>            &quot;format&quot;: {
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a>                &quot;mimeType&quot;: &quot;string&quot;,
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a>                &quot;schema&quot;: &quot;string&quot;,
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a>                &quot;encoding&quot;: &quot;string&quot;
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a>            },
+</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>            &quot;id&quot;: &quot;wf_outputs&quot;,
+</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a>            &quot;transmissionMode&quot;: &quot;value&quot;
+</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a>        }
+</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a>    ],
+</span><span id="__span-13-37"><a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a>    &quot;mode&quot;: &quot;auto&quot;,
+</span><span id="__span-13-38"><a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a>    &quot;response&quot;: &quot;raw&quot;
+</span><span id="__span-13-39"><a id="__codelineno-13-39" name="__codelineno-13-39" href="#__codelineno-13-39"></a>}&#39;
+</span></code></pre></div>
 <h3 id="job-status">Job Status<a class="headerlink" href="#job-status" title="Permanent link">⚓︎</a></h3>
 <p>Once a processes execution has been initiated then its progress can monitored via a job-specific URL that is returned in the HTTP response headers of the execute request.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl --location --request GET &#39;https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388&#39; \
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>--header &#39;Accept: application/json&#39;
+</span></code></pre></div>
 <h3 id="job-result">Job Result<a class="headerlink" href="#job-result" title="Permanent link">⚓︎</a></h3>
 <p>Once the job execution has completed, then the results can be obtained.</p>
-<pre><code>curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl --location --request GET &#39;https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result&#39; \
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>--header &#39;Accept: application/json&#39;
+</span></code></pre></div>
 <h3 id="undeploy-process">Undeploy Process<a class="headerlink" href="#undeploy-process" title="Permanent link">⚓︎</a></h3>
 <p>A process can be deleted (undeployed).</p>
-<pre><code>curl --location --request DELETE 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
---header 'X-User-Id: &lt;user-id-token&gt;' \
---header 'Accept: application/json'
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl --location --request DELETE &#39;https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0&#39; \
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>--header &#39;X-User-Id: &lt;user-id-token&gt;&#39; \
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>--header &#39;Accept: application/json&#39;
+</span></code></pre></div>
 <h2 id="application-package-example">Application Package Example<a class="headerlink" href="#application-package-example" title="Permanent link">⚓︎</a></h2>
 <p>For a (trivial) example application package see <a href="https://github.com/EOEPCA/convert#readme">Example Application Package</a>, which provides a description and illustration of the basics of creating an application that integrates with the expectations of the ADES stage-in and stage-out.</p>
 <p>For further reference see&hellip;</p>
@@ -1284,7 +1284,7 @@ data:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>

@@ -811,8 +811,8 @@
 </ul>
 <h2 id="initiate-deployment">Initiate Deployment<a class="headerlink" href="#initiate-deployment" title="Permanent link">⚓︎</a></h2>
 <p>Deployment is initiated by invoking the script&hellip;</p>
-<pre><code>./deploy/processing/processing
-</code></pre>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./deploy/processing/processing
+</span></code></pre></div>
 <p>The ADES service is accessed at the endpoint <code>ades-open.&lt;domain&gt;</code> - e.g. <code>ades-open.192.168.49.2.nip.io</code>.</p>
 <h2 id="example-requests-snuggs-application">Example Requests - <code>snuggs</code> application<a class="headerlink" href="#example-requests-snuggs-application" title="Permanent link">⚓︎</a></h2>
 <p>The file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs.http"><code>deploy/samples/requests/processing/snuggs.http</code></a> has been prepared with sample requests for <strong><em>OGC API Processes</em></strong> operations:</p>
@@ -824,14 +824,73 @@
 <li>Get Job Status</li>
 <li>Get Job Results</li>
 </ul>
-<blockquote>
-<p>NOTE that the first requests in the file provide optional calls to obtain a user ID token (<code>openidConfiguration</code> / <code>authenticate</code>) - to be used in the case that protected (not &lsquo;open&rsquo;) endpoints are deployed.</p>
-</blockquote>
-<p>The file <code>snuggs.http</code> describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client</a>. Install in vscode with <code>ext install humao.rest-client</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The first requests in the file provide optional calls to obtain a user ID token (<code>openidConfiguration</code> / <code>authenticate</code>).
+These are to be used in the case that protected (not &lsquo;open&rsquo;) endpoints are deployed.</p>
+</div>
+<p>The file describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client</a>. Install in vscode with <code>ext install humao.rest-client</code>.</p>
 <p>The variables <code>@hostname</code> and <code>@domain</code> can be configured at the top of the file.</p>
+<details class="example">
+<summary>Requests using CuRL</summary>
+<p>Alternatively, the following <code>curl</code> commands can be used instead&hellip;</p>
+<p><strong>List Processes</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl -k <span class="se">\</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  --request GET <span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes <span class="se">\</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
+</span></code></pre></div>
+<p><strong>Deploy Process</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl -k <span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  --request POST <span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes <span class="se">\</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span> <span class="se">\</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  --header <span class="s1">&#39;content-type: application/json&#39;</span> <span class="se">\</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  --data <span class="s1">&#39;{&quot;executionUnit&quot;: {&quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl&quot;,&quot;type&quot;: &quot;application/cwl&quot;}}&#39;</span>
+</span></code></pre></div>
+<p><strong>Get Process Details</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl -k <span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  --request GET <span class="se">\</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0 <span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
+</span></code></pre></div>
+<p><strong>Execute Process</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl -k -v <span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  --request POST <span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution <span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span> <span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  --header <span class="s1">&#39;content-type: application/json&#39;</span> <span class="se">\</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  --header <span class="s1">&#39;prefer: respond-async&#39;</span> <span class="se">\</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  --data <span class="s1">&#39;{&quot;inputs&quot;: {&quot;input_reference&quot;:  &quot;https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A&quot;,&quot;s_expression&quot;: &quot;ndvi:(/ (- B05 B03) (+ B05 B03))&quot;},&quot;response&quot;:&quot;raw&quot;}&#39;</span>
+</span></code></pre></div>
+<p><strong>Get Job Status</strong></p>
+<p>This request requires the <code>Location</code> header from the response to the execute request. This will be of the form <code>/{user}/wps3/jobs/{job-id}</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl -k <span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  --request GET <span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  --url https://ades-open.192.168.49.2.nip.io<span class="o">{</span>location-header<span class="o">}</span> <span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
+</span></code></pre></div>
+<p><strong>Get Job Results</strong></p>
+<p>This request uses the same URL as <code>Get Job Status</code>, with the additional URL path <code>/result</code> - i.e. <code>/{user}/wps3/jobs/{job-id}/result</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e/result</code></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>curl -k <span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  --request GET <span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  --url https://ades-open.192.168.49.2.nip.io<span class="o">{</span>location-header<span class="o">}</span>/result <span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
+</span></code></pre></div>
+<p>The response indicates the location of the results, which should be in the <code>minio</code> object storage. See <a href="#processing-results">Processing Results</a> </p>
+<p><strong> List Jobs</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>curl -k <span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  --request GET <span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/jobs <span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
+</span></code></pre></div>
+</details>
 <h2 id="processing-results">Processing Results<a class="headerlink" href="#processing-results" title="Permanent link">⚓︎</a></h2>
-<p>In the default configuration, the processing results are pushed to the Minio S3 object storage - at the endpoint <code>minio-console.&lt;domain&gt;</code> - e.g. <code>http://minio-console.192.168.49.2.nip.io</code> - with default credentials <code>eoepca:changeme</code>.</p>
-<p>The outputs are pushed as a static STAC catalogue to a path that includes the unique job ID.</p>
+<p>The outputs are published as a static STAC catalogue to a path that includes the unique job ID.</p>
+<p>In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint <code>minio-console.&lt;domain&gt;</code> e.g. https://minio-console.192.168.49.2.nip.io/, or using an S3 client such as&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca
+</span></code></pre></div>
+<p>For the default credentials to connect to Minio see <a href="../scripted-deployment/#minio-object-storage">Minio Object Storage Default Credentials</a>. </p>
 
               
             </article>
@@ -904,7 +963,7 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.0238f547.min.js"></script>
