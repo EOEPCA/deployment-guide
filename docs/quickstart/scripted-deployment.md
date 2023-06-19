@@ -49,6 +49,8 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
     **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
     **HARBOR_ADMIN_PASSWORD** | Password for the 'admin' user for the Harbor artefact registry service. | `changeme`
+    **PROCESSING_MAX_RAM** | Max RAM allocated to an individual processing job | `8Gi`
+    **PROCESSING_MAX_CORES** | Max number of CPU cores allocated to an individual processing job | `4`
     **STAGEOUT_TARGET** | Configures the ADES with the destination to which it should push processing results:<br>`workspace` - via the Workspace API<br>`minio` - to minio S3 object storage | `workspace`
     **INSTALL_FLUX** | The Workspace API relies upon [Flux CI/CD](https://fluxcd.io/), and has the capability to install the required flux components to the cluster. If your deployment already has flux installed then set this value `false` to suppress the Workspace API flux install | `true`
     **CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud, with access to the `eodata` network._ | `false`

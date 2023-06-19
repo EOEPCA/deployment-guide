@@ -47,9 +47,9 @@ $(stageOut)
   # Size of the Kubernetes Output Volumes
   processingVolumeOutputSize: "6Gi"
   # Max ram to use for a job
-  processingMaxRam: "8Gi"
+  processingMaxRam: "${PROCESSING_MAX_RAM}"
   # Max number of CPU cores to use concurrently for a job
-  processingMaxCores: "4"
+  processingMaxCores: "${PROCESSING_MAX_CORES}"
 wps:
   pepBaseUrl: "http://ades-pep:5576"
   usePep: "$(if [ "${OPEN_INGRESS}" = "true" ]; then echo false; else echo true; fi)"

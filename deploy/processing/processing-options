@@ -45,6 +45,8 @@ export REQUIRE_PDE=false
 export OPEN_INGRESS=true  # `open` - no need for IAM authorization
 
 # ADES
+# export PROCESSING_MAX_RAM=16Gi  # RAM for a processing job
+# export PROCESSING_MAX_CORES=8  # Cores for a processing job
 export STAGEOUT_TARGET=minio  # stage-out to minio - no need for workspace
 
 source ../eoepca/eoepca-options
