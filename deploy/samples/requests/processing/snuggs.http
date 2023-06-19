@@ -44,7 +44,7 @@ Content-Type: application/json
 
 {
   "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl",
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/deploy/samples/requests/processing/snuggs.cwl",
     "type": "application/cwl"
   }
 }
