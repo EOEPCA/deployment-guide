@@ -36,7 +36,11 @@ expose:
 
     hosts:
       core: harbor.${domain}
-      notary: harbor-notary.${domain}
+    tls:
+      enabled: "${USE_TLS}"
+      certSource: secret
+      secret:
+        secretName: "harbor-tls"
 
 persistence:
   persistentVolumeClaim:
