@@ -7,7 +7,7 @@ spec:
   chart:
     spec:
       chart: data-access
-      version: 1.2.5
+      version: 1.3.0-dev2
       sourceRef:
         kind: HelmRepository
         name: eoepca
@@ -41,7 +41,7 @@ spec:
           data:
             # TODO: this values are secret pass them as secret
             type: "S3"
-            endpoint_url: https://cf2.cloudferro.com:8080
+            endpoint_url: https://minio.${domain}
             access_key_id: {{ access_key_id }}
             secret_access_key: {{ secret_access_key }}
             bucket: {{ bucket }}
@@ -76,16 +76,19 @@ spec:
         replicaCount: 1
         ingress:
           enabled: false
-        # resources:
-        #   limits:
-        #     cpu: 1.5
-        #     memory: 3Gi
-        #   requests:
-        #     cpu: 0.5
-        #     memory: 1Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 300Mi
+          limits:
+            memory: 3Gi
 
       registrar:
         replicaCount: 1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
         config:
           disableDefaultRoute: true
           routes:
@@ -104,7 +107,7 @@ spec:
                   kwargs:
                     repository_database_uri: "postgresql://postgres:mypass@resource-catalogue-db/pycsw"
                     ows_url: "https://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
-                    public_s3_url: "https://cf2.cloudferro.com:8080/{{ projectid }}:{{ bucket }}"
+                    public_s3_url: "https://minio.${domain}/{{ bucket }}"
             collections:
               path: registrar.route.stac.CollectionRoute
               queue: register_collection_queue
@@ -132,10 +135,22 @@ spec:
                   kwargs:
                     repository_database_uri: "postgresql://postgres:mypass@resource-catalogue-db/pycsw"
                     ows_url: "https://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
-                    public_s3_url: "https://cf2.cloudferro.com:8080/{{ projectid }}:{{ bucket }}"
+                    public_s3_url: "https://minio.${domain}/{{ bucket }}"
+            catalogue:
+              path: registrar.route.json.JSONRoute
+              queue: register_catalogue_queue
+              replace: true
+              backends:
+                - path: registrar_pycsw.backend.CatalogueBackend
+                  kwargs:
+                    repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
 
       harvester:
         replicaCount: 1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
         config:
           redis:
             host: vs-redis-master
@@ -148,19 +163,19 @@ spec:
                 type: "STACCatalog"
                 source:
                   type: "S3"
-                  bucket: bucket
+                  endpoint_url: https://minio.${domain}
                   access_key_id: {{ access_key_id }}
                   secret_access_key: {{ secret_access_key }}
-                  endpoint_url: https://cf2.cloudferro.com:8080
+                  bucket: {{ bucket }}
                   region_name: RegionOne
-                  validate_bucket_name: False
-                  public: False
+                  validate_bucket_name: false
 
       client:
         replicaCount: 1
         ingress:
           enabled: false
         config:
+          serviceUrl: "//data-access.{{ workspace_name }}.${domain}/"
           eoxserverDownloadEnabled: true
         #   timeDomain:
         #     - "2002-01-01T00:00:00Z"
@@ -189,16 +204,19 @@ spec:
 
       redis:
         replicaCount: 1
-        usePassword: false
         persistence:
           existingClaim: "" # we want the claim to be generated
         master:
           persistence:
+            existingClaim: "" # we want the claim to be generated
             storageClass: ${DATA_ACCESS_STORAGE}
             size: "1Gi"
-            existingClaim: "" # we want the claim to be generated
-        cluster:
-          enabled: false
+
+      scheduler:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
 
       ingestor:
         replicaCount: 0
@@ -214,7 +232,7 @@ spec:
           enabled: false
 
       seeder:
-        replicaCount: 1
+        replicaCount: 0
         config:
           minzoom: 0
           maxzoom: 6  # restrict to only 6 for testing for now

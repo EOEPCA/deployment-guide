@@ -7,7 +7,7 @@ spec:
   chart:
     spec:
       chart: resource-guard
-      version: 1.2.1
+      version: 1.2.5
       sourceRef:
         kind: HelmRepository
         name: eoepca
@@ -88,6 +88,7 @@ spec:
         level: info
       unauthorizedResponse: 'Bearer realm="https://portal.${domain}/oidc/authenticate/"'
       openAccess: false
+      insecureTlsSkipVerify: true
     #---------------------------------------------------------------------------
     # END values
     #---------------------------------------------------------------------------
