@@ -32,12 +32,17 @@ main() {
   helmChart
   workspaceTemplates
   helmRepositories
+  harborPasswordSecret
+  minioBucketApi
 }
 
 # Values for helm chart
 values() {
   cat - <<EOF
 fullnameOverride: workspace-api
+image:
+  tag: "1.3-dev5"
+  pullPolicy: Always
 ingress:
   enabled: ${OPEN_INGRESS}
   hosts:
@@ -52,14 +57,17 @@ fluxHelmOperator:
 prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
-s3Endpoint: "https://cf2.cloudferro.com:8080"
+s3Endpoint: "https://minio.${domain}"
 s3Region: "RegionOne"
 harborUrl: "https://harbor.${domain}"
 harborUsername: "admin"
-harborPassword: "${HARBOR_ADMIN_PASSWORD}"
+harborPasswordSecretName: "harbor"
 umaClientSecretName: "${UMA_CLIENT_SECRET}"
 umaClientSecretNamespace: ${NAMESPACE}
 workspaceChartsConfigMap: "workspace-charts"
+bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
+pepBaseUrl: "http://workspace-api-pep:5576/resources"
+autoProtectionEnabled: $(if [ "${OPEN_INGRESS}" = "true" ]; then echo -n "false"; else echo -n "true"; fi)
 EOF
 }
 
@@ -71,7 +79,7 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.2.0
+      --version 1.3.3
   fi
 }
 
@@ -110,6 +118,38 @@ spec:
   interval: 2m
   url: https://eoepca.github.io/helm-charts/
 EOF
+}
+
+harborPasswordSecret() {
+  echo -e "\nHarbor password secret..."
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    kubectl -n "${NAMESPACE}" delete secret harbor
+  else
+    kubectl -n "${NAMESPACE}" create secret generic harbor \
+      --from-literal=HARBOR_ADMIN_PASSWORD="${HARBOR_ADMIN_PASSWORD}" \
+      --dry-run=client -oyaml \
+      | kubectl apply -f -
+  fi
+}
+
+valuesMinioBucketApi() {
+  cat - <<EOF
+fullnameOverride: minio-bucket-api
+minIOServerEndpoint: https://minio.${domain}
+accessCredentials:
+  secretName: minio-auth
+EOF
+}
+
+minioBucketApi() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace rm uninstall rm-minio-bucket-api
+  else
+    valuesMinioBucketApi | helm ${ACTION_HELM} rm-minio-bucket-api rm-minio-bucket-api -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 0.0.4
+  fi
 }
 
 main "$@"

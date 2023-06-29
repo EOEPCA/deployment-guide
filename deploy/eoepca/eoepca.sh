@@ -78,12 +78,6 @@ if [ "${REQUIRE_WORKSPACE_API}" = "true" ]; then
   ./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
 fi
 
-# bucket operator
-if [ "${REQUIRE_BUCKET_OPERATOR}" = "true" ]; then
-  echo -e "\nDeploy bucket-operator..."
-  ./bucket-operator.sh "${ACTION}" "${domain}"
-fi
-
 # harbor artefact registry
 if [ "${REQUIRE_HARBOR}" = "true" ]; then
   echo -e "\nDeploy harbor..."
