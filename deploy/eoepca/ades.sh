@@ -26,7 +26,7 @@ fi
 values() {
   cat - <<EOF
 image:
-  # tag: "2.0.3"
+  # tag: "2.0.15"
   pullPolicy: Always
 workflowExecutor:
   inputs:
@@ -52,7 +52,7 @@ $(stageOut)
   processingMaxCores: "${PROCESSING_MAX_CORES}"
 wps:
   pepBaseUrl: "http://ades-pep:5576"
-  usePep: "$(if [ "${OPEN_INGRESS}" = "true" ]; then echo false; else echo true; fi)"
+  usePep: "false"
 persistence:
   storageClass: ${ADES_STORAGE}
 ingress:
@@ -71,6 +71,10 @@ ingress:
     - hosts:
         - ${name}.${domain}
       secretName: ${name}-tls
+resources:
+  requests:
+    cpu: 100m
+    memory: 500Mi
 EOF
 }
 
@@ -93,5 +97,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 2.0.4
+    --version 2.0.14
 fi
