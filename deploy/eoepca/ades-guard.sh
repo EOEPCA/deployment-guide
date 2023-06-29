@@ -94,5 +94,5 @@ else
   values | helm ${ACTION_HELM} ades-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.2.1
+    --version 1.2.5
 fi
