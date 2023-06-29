@@ -31,7 +31,7 @@ main() {
     values | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
-      --version 1.2.5
+      --version 1.3.0-dev2
   fi
 }
 
@@ -108,15 +108,19 @@ vs:
             - ${name}.${domain}
           secretName: ${name}-tls
     resources:
+      requests:
+        cpu: 100m
+        memory: 300Mi
       limits:
         cpu: 1.5
         memory: 3Gi
-      requests:
-        cpu: 0.5
-        memory: 1Gi
 
   registrar:
     replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
     config:
       #--------------
       # Default route
@@ -215,35 +219,17 @@ $(harvesterSpecification)
 
   ingestor:
     ingress:
-      enabled: ${OPEN_INGRESS}
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        kubernetes.io/tls-acme: "${USE_TLS}"
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-        nginx.ingress.kubernetes.io/enable-cors: "true"
-        cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
-      hosts:
-        - host: ${name}.${domain}
-      tls:
-        - hosts:
-            - ${name}.${domain}
-          secretName: ${name}-tls
+      enabled: false
 
   cache:
     ingress:
-      enabled: ${OPEN_INGRESS}
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        kubernetes.io/tls-acme: "${USE_TLS}"
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-        nginx.ingress.kubernetes.io/enable-cors: "true"
-        cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
-      hosts:
-        - host: ${name}.${domain}
-      tls:
-        - hosts:
-            - ${name}.${domain}
-          secretName: ${name}-tls
+      enabled: false
+
+  scheduler:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
 EOF
 }
 
@@ -873,7 +859,12 @@ harvesterSpecification() {
     creodiasHarvester
   else
     cat - <<EOF
-  harvester: {}
+  harvester:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
 EOF
   fi
 }
@@ -882,6 +873,10 @@ creodiasHarvester() {
   cat - <<EOF
   harvester:
     replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
     config:
       redis:
         host: data-access-redis-master
