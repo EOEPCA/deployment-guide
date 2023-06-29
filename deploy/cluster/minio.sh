@@ -14,26 +14,47 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
+NAMESPACE="rm"
 
 values() {
   cat - <<EOF
-auth:
-  rootUser: ${MINIO_ROOT_USER}
-  rootPassword: ${MINIO_ROOT_PASSWORD}
+existingSecret: minio-auth
 
 ingress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio-console.${domain}
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
+    cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+  path: /
+  hosts:
+    - minio.${domain}
+  tls:
+    - secretName: minio-tls
+      hosts:
+        - minio.${domain}
 
-apiIngress:
+consoleIngress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio.${domain}
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
+    cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+  path: /
+  hosts:
+    - console.minio.${domain}
+  tls:
+  - secretName: minio-console-tls
+    hosts:
+      - console.minio.${domain}
+
+resources:
+  requests:
+    memory: 1Gi
 
 persistence:
   storageClass: ${MINIO_STORAGE}
@@ -45,12 +66,24 @@ EOF
 # Minio
 echo -e "\nMinio..."
 if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace minio uninstall minio
+  helm --namespace "${NAMESPACE}" uninstall minio
 else
   values | helm ${ACTION_HELM} minio minio -f - \
-    --repo https://charts.bitnami.com/bitnami \
-    --namespace minio --create-namespace \
+    --repo https://charts.min.io/ \
+    --namespace "${NAMESPACE}" --create-namespace \
     --wait
+fi
+
+# Credentials
+echo -e "\nMinio credentials..."
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  kubectl -n "${NAMESPACE}" delete secret minio-auth
+else
+  kubectl -n "${NAMESPACE}" create secret generic minio-auth \
+    --from-literal=rootUser="${MINIO_ROOT_USER}" \
+    --from-literal=rootPassword="${MINIO_ROOT_PASSWORD}" \
+    --dry-run=client -oyaml \
+    | kubectl apply -f -
 fi
 
 # s3cfg
