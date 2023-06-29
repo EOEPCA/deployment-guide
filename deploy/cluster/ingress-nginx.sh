@@ -32,7 +32,7 @@ if [ "${USE_INGRESS_NGINX_HELM}" = "true" ]; then
     values | helm ${ACTION_HELM} ingress-nginx ingress-nginx -f - \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace \
-      --version='<4'
+      --version='<4.5.0' # support for k8s 1.22 dropped in chart 4.5.0
   fi
 # Install with minikube addon
 else
