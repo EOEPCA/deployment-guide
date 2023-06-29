@@ -39,12 +39,29 @@ opendj:
   #   enabled: false
   volumeClaim:
     name: eoepca-userman-pvc
+  resources:
+    requests:
+      cpu: 100m
+      memory: 300Mi
 oxauth:
   volumeClaim:
     name: eoepca-userman-pvc
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1000Mi
 oxtrust:
   volumeClaim:
     name: eoepca-userman-pvc
+  resources: 
+    requests:
+      cpu: 100m
+      memory: 1500Mi
+oxpassport:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
 nginx:
   ingress:
     enabled: true
@@ -69,5 +86,5 @@ else
   values | helm ${ACTION_HELM} login-service login-service -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.2.1
+    --version 1.2.2
 fi
