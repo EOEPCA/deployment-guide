@@ -31,7 +31,7 @@ main() {
     values | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
-      --version 1.3.0-dev2
+      --version 1.3.0-dev4
   fi
 }
 
@@ -41,7 +41,6 @@ global:
   env:
     REGISTRAR_REPLACE: "true"
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
-    AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
 
@@ -138,46 +137,58 @@ vs:
       #----------------
       routes:
         collections:
-          path: registrar.route.stac.CollectionRoute
+          path: registrar.route.stac.Collection
           queue: register_collection_queue
           replace: true
           backends:
             - path: registrar_pycsw.backend.CollectionBackend
               kwargs:
                 repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-        # ades:
-        #   path: registrar.route.json.JSONRoute
-        #   queue: register_ades_queue
-        #   replace: true
-        #   backends:
-        #     - path: registrar_pycsw.backend.ADESBackend
-        #       kwargs:
-        #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-        # application:
-        #   path: registrar.route.json.JSONRoute
-        #   queue: register_application_queue
-        #   replace: true
-        #   backends:
-        #     - path: registrar_pycsw.backend.CWLBackend
-        #       kwargs:
-        #         ows_url: https://${name}.${domain}/ows
-        #         public_s3_url: https://cf2.cloudferro.com:8080/{projectid}:{bucket}
-        #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-        # items:
-        #   path: registrar.route.stac.ItemRoute
-        #   queue: register_item_queue
-        #   replace: true
-        #   backends:
-        #     - path: registrar.backend.eoxserver.ItemBackend
-        #       kwargs:
-        #         instance_base_path: /var/www/pvs/dev
-        #         instance_name: pvs_instance
-        #         product_types: []
-        #         auto_create_product_types: true
-        #     - path: registrar_pycsw.backend.ItemBackend
-        #       kwargs:
-        #         repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-        #         ows_url: https://${name}.${domain}/ows
+
+        ades:
+          path: registrar.route.json.JSONRoute
+          queue: register_ades_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.ADESBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+
+        application:
+          path: registrar.route.json.JSONRoute
+          queue: register_application_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.CWLBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+
+        catalogue:
+          path: registrar.route.json.JSONRoute
+          queue: register_catalogue_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.CatalogueBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+
+        json:
+          path: registrar.route.json.JSONRoute
+          queue: register_json_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.JSONBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+
+        xml:
+          path: registrar.route.json.JSONRoute
+          queue: register_xml_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.XMLBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
 
 $(harvesterSpecification)
 
@@ -424,6 +435,10 @@ creodiasData() {
         - L8L1GT_B05
         - L8L1GT_B06
         - L8L1GT_B07
+    S1IWGRD1C:
+      product_types:
+        - S1IWGRD1C_VVVH
+      coverage_types: []
   coverageTypes:
     # Landsat-8 L1TP
     - name: "L8L1TP_B01"
@@ -595,6 +610,54 @@ creodiasData() {
               value: 0
           uom: "W/m2/um"
           wavelength: 2.2
+    - name: S1IWGRD1C_VV
+      data_type: "Uint16"
+      bands:
+        - identifier: "VV"
+          name: "VV"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "VV"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          # uom: "W/m2/um"
+          wavelength: 5.5465763
+    - name: S1IWGRD1C_VH
+      data_type: "Uint16"
+      bands:
+        - identifier: "VH"
+          name: "VH"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "VH"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          # uom: "W/m2/um"
+          wavelength: 5.5465763
+    - name: S1IWGRD1C_HH
+      data_type: "Uint16"
+      bands:
+        - identifier: "HH"
+          name: "HH"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "HH"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          # uom: "W/m2/um"
+          wavelength: 5.5465763
+    - name: S1IWGRD1C_HV
+      data_type: "Uint16"
+      bands:
+        - identifier: "HV"
+          name: "HV"
+          definition: "http://www.opengis.net/def/property/OGC/0/Radiance"
+          description: "HV"
+          nil_values:
+            - reason: "http://www.opengis.net/def/nil/OGC/0/unknown"
+              value: 0
+          # uom: "W/m2/um"
+          wavelength: 5.5465763
   productTypes:
     - name: S2MSI1C
       filter:
@@ -851,6 +914,40 @@ creodiasData() {
       masks:
         clouds:
           validity: false
+    - name: S1IWGRD1C_VVVH
+      filter:
+        constellation: Sentinel-1
+        sar:instrument_mode: IW
+        sar:product_type: GRD
+        sar:polarizations: ["VV", "VH"]
+      collections:
+        - S1IWGRD1C
+      metadata_assets: []
+      coverages:
+        S1IWGRD1C_VV:
+          assets:
+            - vv
+        S1IWGRD1C_VH:
+          assets:
+            - vh
+      # defaultBrowse: QUICKLOOK
+      defaultBrowse: COMPOSITE
+      browses:
+        # QUICKLOOK:
+        #   asset: thumbnail
+        COMPOSITE:
+          red:
+            expression: VV
+            range: [8, 1200]
+            nodata: 0
+          green:
+            expression: VH
+            range: [5000, 12000]
+            nodata: 0
+          blue:
+            expression: VV/VH
+            range: [5000, 12000]
+            nodata: 0
 EOF
 }
 
@@ -884,7 +981,7 @@ creodiasHarvester() {
       harvesters:
         - name: Creodias-Opensearch
           resource:
-            url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+            url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
             type: OpenSearch
             format_config:
               type: 'application/json'
@@ -902,6 +999,29 @@ creodiasHarvester() {
           filter: {}
           postprocess:
             - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          queue: register
+        - name: Creodias-Opensearch-Sentinel1
+          resource:
+            url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+            type: OpenSearch
+            format_config:
+              type: 'application/json'
+              property_mapping:
+                start_datetime: 'startDate'
+                end_datetime: 'completionDate'
+                productIdentifier: 'productIdentifier'
+            query:
+              time:
+                property: sensed
+                begin: 2019-09-10T00:00:00Z
+                end: 2019-09-11T00:00:00Z
+              collection: null
+              bbox: 14.9,47.7,16.4,48.7
+              extra_params:
+                productType: GRD-COG
+          filter: {}
+          postprocess:
+            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
           queue: register
 EOF
 }
