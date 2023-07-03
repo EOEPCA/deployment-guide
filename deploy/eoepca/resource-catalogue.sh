@@ -39,11 +39,14 @@ db:
 pycsw:
   image:
     # repository: geopython/pycsw
-    # tag: "eoepca-1.2.0"
+    tag: "eoepca-staging"
     pullPolicy: Always
   config:
     server:
       url: https://${name}.${domain}/
+    manager:
+      transactions: "true"
+      allowed_ips: "*"
 EOF
 }
 
