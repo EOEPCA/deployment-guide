@@ -40,9 +40,9 @@ main() {
 values() {
   cat - <<EOF
 fullnameOverride: workspace-api
-image:
-  tag: "1.3-dev5"
-  pullPolicy: Always
+# image:
+#   tag: "1.3-dev5"
+#   pullPolicy: Always
 ingress:
   enabled: ${OPEN_INGRESS}
   hosts:
@@ -79,7 +79,7 @@ helmChart() {
     values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.3.3
+      --version 1.3.5
   fi
 }
 
