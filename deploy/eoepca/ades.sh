@@ -80,9 +80,9 @@ EOF
 
 # Destination service for stage-out
 stageOut() {
+  STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
   if [ "${STAGEOUT_TARGET}" = "minio" ]; then
     cat - <<EOF
-    STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
     STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
     STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     STAGEOUT_AWS_REGION: us-east-1
@@ -97,5 +97,5 @@ else
   values | helm ${ACTION_HELM} ades ades -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace proc --create-namespace \
-    --version 2.0.14
+    --version 2.0.17
 fi
