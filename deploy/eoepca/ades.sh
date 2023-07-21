@@ -80,7 +80,9 @@ EOF
 
 # Destination service for stage-out
 stageOut() {
-  STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
+  cat - <<EOF
+    STAGEOUT_AWS_SERVICEURL: http://minio.${domain}
+EOF
   if [ "${STAGEOUT_TARGET}" = "minio" ]; then
     cat - <<EOF
     STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
