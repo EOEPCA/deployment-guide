@@ -31,5 +31,5 @@ initIpDefaults() {
     fi
   fi
 
-  default_domain="${default_public_ip}.nip.io"
+  default_domain="$(echo ${default_public_ip} | sed 's/\./-/g').nip.io"
 }
