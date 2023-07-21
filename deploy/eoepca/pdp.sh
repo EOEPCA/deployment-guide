@@ -20,7 +20,7 @@ NAMESPACE="um"
 values() {
   cat - <<EOF
 # image:
-#   tag: task464_1
+#   tag: v1.0
 global:
   nginxIp: ${public_ip}
   domain: auth.${domain}
@@ -36,5 +36,5 @@ else
   values | helm ${ACTION_HELM} pdp pdp-engine -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.1.6
+    --version 1.1.12
 fi

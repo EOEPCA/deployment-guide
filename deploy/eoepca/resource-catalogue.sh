@@ -37,10 +37,10 @@ ingress:
 db:
   volume_storage_type: ${RESOURCE_CATALOGUE_STORAGE}
 pycsw:
-  image:
-    # repository: geopython/pycsw
-    tag: "eoepca-staging"
-    pullPolicy: Always
+  # image:
+  #   # repository: geopython/pycsw
+  #   tag: "eoepca-staging"
+  #   pullPolicy: Always
   config:
     server:
       url: https://${name}.${domain}/
@@ -56,5 +56,5 @@ else
   values | helm ${ACTION_HELM} resource-catalogue rm-resource-catalogue -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace ${NAMESPACE} --create-namespace \
-    --version 1.2.2
+    --version 1.3.0
 fi
