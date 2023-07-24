@@ -19,6 +19,7 @@ NAMESPACE="rm"
 values() {
   cat - <<EOF
 existingSecret: minio-auth
+replicas: 2
 
 ingress:
   enabled: true
@@ -59,9 +60,24 @@ resources:
 persistence:
   storageClass: ${MINIO_STORAGE}
 
-defaultBuckets: "eoepca, cache-bucket"
+buckets:
+  - name: eoepca
+  - name: cache-bucket
 EOF
 }
+
+# Credentials - need to exist before minio install
+echo -e "\nMinio credentials..."
+if [ "${ACTION_HELM}" = "uninstall" ]; then
+  kubectl -n "${NAMESPACE}" delete secret minio-auth
+else
+  kubectl create namespace "${NAMESPACE}"
+  kubectl -n "${NAMESPACE}" create secret generic minio-auth \
+    --from-literal=rootUser="${MINIO_ROOT_USER}" \
+    --from-literal=rootPassword="${MINIO_ROOT_PASSWORD}" \
+    --dry-run=client -oyaml \
+    | kubectl apply -f -
+fi
 
 # Minio
 echo -e "\nMinio..."
@@ -72,18 +88,6 @@ else
     --repo https://charts.min.io/ \
     --namespace "${NAMESPACE}" --create-namespace \
     --wait
-fi
-
-# Credentials
-echo -e "\nMinio credentials..."
-if [ "${ACTION_HELM}" = "uninstall" ]; then
-  kubectl -n "${NAMESPACE}" delete secret minio-auth
-else
-  kubectl -n "${NAMESPACE}" create secret generic minio-auth \
-    --from-literal=rootUser="${MINIO_ROOT_USER}" \
-    --from-literal=rootPassword="${MINIO_ROOT_PASSWORD}" \
-    --dry-run=client -oyaml \
-    | kubectl apply -f -
 fi
 
 # s3cfg

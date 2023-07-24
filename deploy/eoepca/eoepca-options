@@ -42,7 +42,7 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export MINIKUBE_CPU_AMOUNT="${MINIKUBE_CPU_AMOUNT:-max}"
   export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
   # We assume use of a public IP for external traffic ingress and use of letsencrypt tls
-  export MINIKUBE_EXTRA_OPTIONS="--listen-address=0.0.0.0 --ports=:80:80,443:443"
+  export MINIKUBE_EXTRA_OPTIONS="--ports=:80:80,443:443"
 
   # Ingress options
   export USE_METALLB="${USE_METALLB:-false}"
