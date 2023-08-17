@@ -45,6 +45,11 @@ fullnameOverride: workspace-api
 #   pullPolicy: Always
 ingress:
   enabled: ${OPEN_INGRESS}
+  annotations:
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
   hosts:
     - host: ${name}.${domain}
       paths: ["/"]
