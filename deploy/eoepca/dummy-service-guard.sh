@@ -17,7 +17,7 @@ eric_id="${2:-b8c8c62a-892c-4953-b44d-10a12eb762d8}"
 bob_id="${3:-57e3e426-581e-4a01-b2b8-f731a928f2db}"
 public_ip="${4:-${default_public_ip}}"
 domain="${5:-${default_domain}}"
-NAMESPACE="default"
+NAMESPACE="um"
 SECRET_NAME="test-client"
 
 if [ -f client.yaml ]; then

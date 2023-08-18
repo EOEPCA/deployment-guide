@@ -14,7 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
-NAMESPACE="default"
+NAMESPACE="um"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="dummy-service-open"
