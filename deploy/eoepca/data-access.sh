@@ -31,7 +31,7 @@ main() {
     values | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
-      --version 1.3.0-rc1
+      --version 1.3.0
   fi
 }
 
@@ -41,6 +41,7 @@ global:
   env:
     REGISTRAR_REPLACE: "true"
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
+    AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
 

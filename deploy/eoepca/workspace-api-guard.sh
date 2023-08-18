@@ -47,17 +47,25 @@ pep-engine:
   configMap:
     asHostname: auth
     pdpHostname: auth
+  defaultResources:
+    - name: "Workspace API Base Path"
+      description: "Protected root path for operators only"
+      resource_uri: "/"
+      scopes: []
+      default_owner: "0000000000000"
   customDefaultResources:
-    - name: "Eric's workspace"
-      description: "Protected Access for eric to his user workspace"
-      resource_uri: "/workspaces/guide-user-eric"
-      scopes: []
-      default_owner: "${eric_id}"
-    - name: "Bob's workspace"
-      description: "Protected Access for bob to his user workspace"
-      resource_uri: "/workspaces/guide-user-bob"
-      scopes: []
-      default_owner: "${bob_id}"
+    - name: "Workspace API Swagger Docs"
+      description: "Public access to workspace API swagger docs"
+      resource_uri: "/docs"
+      scopes:
+        - "public_access"
+      default_owner: "0000000000000"
+    - name: "Workspace API OpenAPI JSON"
+      description: "Public access to workspace API openapi.json file"
+      resource_uri: "/openapi.json"
+      scopes:
+        - "public_access"
+      default_owner: "0000000000000"
   volumeClaim:
     name: eoepca-resman-pvc
     create: false
