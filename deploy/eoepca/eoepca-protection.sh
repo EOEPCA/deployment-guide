@@ -45,10 +45,10 @@ if [ "${REQUIRE_PORTAL}" = "true" ]; then
   ./portal.sh "${ACTION}" "${domain}"
 fi
 
-# PDE
-if [ "${REQUIRE_PDE}" = "true" ]; then
-  echo -e "\nDeploy PDE..."
-  ./pde.sh "${ACTION}" "${domain}"
+# Application Hub
+if [ "${REQUIRE_APPLICATION_HUB}" = "true" ]; then
+  echo -e "\nDeploy Application Hub..."
+  ./application-hub.sh "${ACTION}" "${domain}"
 fi
 
 #-------------------------------------------------------------------------------
