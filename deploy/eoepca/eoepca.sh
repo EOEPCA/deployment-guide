@@ -72,6 +72,12 @@ if [ "${REQUIRE_DATA_ACCESS}" = "true" ]; then
   ./data-access.sh "${ACTION}" "${domain}"
 fi
 
+# registration api
+if [ "${REQUIRE_REGISTRATION_API}" = "true" ]; then
+  echo -e "\nDeploy registration-api..."
+  ./registration-api.sh "${ACTION}" "${domain}"
+fi
+
 # workspace api
 if [ "${REQUIRE_WORKSPACE_API}" = "true" ]; then
   echo -e "\nDeploy workspace-api..."

@@ -79,6 +79,12 @@ if [ "${REQUIRE_DATA_ACCESS_PROTECTION}" = "true" ]; then
   ./data-access-guard.sh "$ACTION" "${public_ip}" "${domain}"
 fi
 
+# registration api
+if [ "${REQUIRE_REGISTRATION_API_PROTECTION}" = "true" ]; then
+  echo -e "\nProtect registration-api..."
+  ./registration-api-guard.sh "$ACTION" "${public_ip}" "${domain}"
+fi
+
 # workspace api
 if [ "${REQUIRE_WORKSPACE_API_PROTECTION}" = "true" ]; then
   echo -e "\nProtect workspace-api..."
