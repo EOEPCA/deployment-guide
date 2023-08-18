@@ -75,6 +75,9 @@ resources:
   requests:
     cpu: 100m
     memory: 500Mi
+  limits:
+    cpu: 2
+    memory: 4Gi
 EOF
 }
 
