@@ -28,10 +28,22 @@ if [ "$ACTION" = "apply" ]; then
     echo "Registering client with Login Service..."
     ../bin/register-client "auth.${domain}" "EoepcaClient" "https://portal.${domain}/oidc/callback/" "https://portal.${domain}" | tee client.yaml
   fi
+  if [ "${REQUIRE_APPLICATION_HUB}" = "true" ]; then
+    if [ ! -f client-apphub.yaml ]; then
+      echo "Registering ApplicationHub client with Login Service..."
+      ../bin/register-client "auth.${domain}" "ApplicationHub" "https://applicationhub.${domain}/hub/oauth_callback" "https://applicationhub.${domain}" | tee client-apphub.yaml
+    fi
+  fi
 elif [ "$ACTION" = "delete" ]; then
   if [ -f client.yaml ]; then
     echo "Removing credentials for previously registered client..."
     rm -f client.yaml
+  fi
+  if [ "${REQUIRE_APPLICATION_HUB}" = "true" ]; then
+    if [ -f client-apphub.yaml ]; then
+      echo "Removing credentials for previously registered ApplicationHub client..."
+      rm -f client-apphub.yaml
+    fi
   fi
 fi
 

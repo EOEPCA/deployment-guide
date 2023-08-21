@@ -11,6 +11,7 @@ trap onExit EXIT
 
 main() {
   rm -f ../eoepca/client.yaml
+  rm -f ../eoepca/client-apphub.yaml
   sudo rm -rf /tmp/hostpath-provisioner
 }
 

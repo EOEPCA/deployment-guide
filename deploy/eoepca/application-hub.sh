@@ -125,8 +125,8 @@ helmChart() {
 secret() {
   kubectl -n "${NAMESPACE}" create secret generic application-hub-secrets \
     --from-literal=JUPYTERHUB_CRYPT_KEY="$(openssl rand -hex 32)" \
-    --from-literal=OAUTH_CLIENT_ID="$(cat client.yaml | grep client-id | cut -d\  -f2)" \
-    --from-literal=OAUTH_CLIENT_SECRET="$(cat client.yaml | grep client-secret | cut -d\  -f2)" \
+    --from-literal=OAUTH_CLIENT_ID="$(cat client-apphub.yaml | grep client-id | cut -d\  -f2)" \
+    --from-literal=OAUTH_CLIENT_SECRET="$(cat client-apphub.yaml | grep client-secret | cut -d\  -f2)" \
     --dry-run=client -oyaml | kubectl ${ACTION_KUBECTL} -f -
 }
 
