@@ -42,7 +42,7 @@ jupyterhub:
     enabled: true
   fullnameOverride: "application-hub"
   hub:
-
+    existingSecret: application-hub-secrets
     extraEnv: 
         JUPYTERHUB_ENV: "dev"
         JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
