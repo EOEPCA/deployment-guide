@@ -107,6 +107,10 @@ jupyterhub:
         cpu_limit": 4
         mem_limit": "8G"
 
+nodeSelector:
+  key: minikube.k8s.io/primary
+  value: \"true\"
+
 EOF
 }
 
@@ -117,7 +121,7 @@ helmChart() {
     values | helm ${ACTION_HELM} application-hub application-hub -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.48
+      --version 2.0.49
   fi
 }
 
