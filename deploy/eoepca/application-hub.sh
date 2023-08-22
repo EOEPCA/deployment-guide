@@ -117,7 +117,7 @@ helmChart() {
     values | helm ${ACTION_HELM} application-hub application-hub -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.47
+      --version 2.0.48
   fi
 }
 
