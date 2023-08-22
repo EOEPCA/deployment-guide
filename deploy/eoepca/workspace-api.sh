@@ -72,7 +72,7 @@ umaClientSecretNamespace: ${NAMESPACE}
 workspaceChartsConfigMap: "workspace-charts"
 bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
 pepBaseUrl: "http://workspace-api-pep:5576/resources"
-autoProtectionEnabled: $(if [ "${OPEN_INGRESS}" = "true" ]; then echo -n "False"; else echo -n "True"; fi)
+autoProtectionEnabled: $(if [ "${OPEN_INGRESS}" = "true" ]; then echo -n \"False\"; else echo -n \"True\"; fi)
 EOF
 }
 
