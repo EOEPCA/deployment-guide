@@ -110,7 +110,7 @@ spec:
                     ows_url: "https://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
                     public_s3_url: "https://minio.${domain}/{{ bucket }}"
             collections:
-              path: registrar.route.stac.Collection
+              path: registrar.route.stac.CollectionRoute
               queue: register_collection_queue
               replace: true
               backends:
