@@ -138,7 +138,7 @@ vs:
       #----------------
       routes:
         collections:
-          path: registrar.route.stac.Collection
+          path: registrar.route.stac.CollectionRoute
           queue: register_collection_queue
           replace: true
           backends:
