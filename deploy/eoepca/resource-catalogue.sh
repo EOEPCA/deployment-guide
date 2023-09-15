@@ -44,9 +44,9 @@ pycsw:
   config:
     server:
       url: https://${name}.${domain}/
-    manager:
-      transactions: "true"
-      allowed_ips: "*"
+    # manager:
+    #   transactions: "true"
+    #   allowed_ips: "*"
 EOF
 }
 
