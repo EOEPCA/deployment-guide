@@ -30,16 +30,18 @@ export REQUIRE_PDP=false
 export REQUIRE_USER_PROFILE=false
 export REQUIRE_RESOURCE_CATALOGUE=false
 export REQUIRE_DATA_ACCESS=false
+export REQUIRE_REGISTRATION_API=false
 export REQUIRE_WORKSPACE_API=false
 export REQUIRE_BUCKET_OPERATOR=false
 export REQUIRE_HARBOR=false
 export REQUIRE_PORTAL=false
-export REQUIRE_PDE=false
+export REQUIRE_APPLICATION_HUB=false
 
 # Minikube options
 # Tune the resources afforded to minikube (assuming the `docker` driver)
 # export MINIKUBE_CPU_AMOUNT=max
 # export MINIKUBE_MEMORY_AMOUNT=12g
+# export MINIKUBE_DISK_AMOUNT=20g
 
 # Ingress
 export OPEN_INGRESS=true  # `open` - no need for IAM authorization

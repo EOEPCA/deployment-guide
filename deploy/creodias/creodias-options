@@ -31,11 +31,15 @@ export USE_TLS=false
 # Tune the resources afforded to minikube (assuming the `docker` driver)
 # export MINIKUBE_CPU_AMOUNT=max
 # export MINIKUBE_MEMORY_AMOUNT=12g
+# export MINIKUBE_DISK_AMOUNT=20g
 
 # Ingress
 export OPEN_INGRESS=false  # `protected` - requires IAM authorization
 
 # Data
 export CREODIAS_DATA_SPECIFICATION=true
+
+# ADES
+# export STAGEOUT_TARGET=minio  # stage-out to minio - no need for workspace
 
 source ../eoepca/eoepca-options
