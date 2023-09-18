@@ -10,8 +10,10 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 
 # Install the Nginx Ingress Controller helm chart
-helm upgrade -i ingress-nginx ingress-nginx/ingress-nginx --wait
+helm upgrade -i --version='<4.5.0' ingress-nginx ingress-nginx/ingress-nginx --wait
 ```
+!!! note
+    For Kubernetes version 1.22 and earlier the version of the Nginx Ingress Controller must be before v4.5.0.
 
 To target the _Nginx Ingress Controller_ the `kubernetes.io/ingress.class: nginx` annotation must be applied to the Ingress resource...
 ```yaml
@@ -149,43 +151,86 @@ kubeseal -o yaml \
 
 Various building blocks require access to an S3-compatible object storage service. In particular the ADES processing service expects to stage-out its processing results to S3 object storage. Ideally the cloud provider for your deployment will make available a suitable object storage service.
 
-As a workaround, in the absence of an existing object storage, it is possible to use [MinIO](https://min.io/) to establish an object storage service within the Kubernetes cluster. We use the [minio helm chart provided by bitnami](https://bitnami.com/stack/minio/helm).
+As a workaround, in the absence of an existing object storage, it is possible to use [MinIO](https://min.io/) to establish an object storage service within the Kubernetes cluster. We use the [minio helm chart provided by the MinIO Project](https://charts.min.io/).
 
 ```bash
-# Add the bitnami helm repository
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-
 # Install the minio helm chart
-helm upgrade -i minio -f minio-values.yaml bitnami/minio
+helm upgrade -i minio -f minio-values.yaml bitnami/minio \
+  --repo https://charts.min.io/ \
+  --namespace rm --create-namespace \
+  --wait
 ```
+
+!!! note
+    The Kubernetes namespace `rm` is used above as an example, and can be changed according to your deployment preference.
 
 The minio deployment is customised via the values file `minio-values.yaml`, for example...
 
 ```yaml
-auth:
-  rootUser: eoepca
-  rootPassword: changeme
+existingSecret: minio-auth
+replicas: 2
 
 ingress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio-console.192-168-49-2.nip.io
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+  path: /
+  hosts:
+    - minio.192-168-49-2.nip.io
+  tls:
+    - secretName: minio-tls
+      hosts:
+        - minio.192-168-49-2.nip.io
 
-apiIngress:
+consoleIngress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio.192-168-49-2.nip.io
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 0m
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+  path: /
+  hosts:
+    - console.minio.192-168-49-2.nip.io
+  tls:
+  - secretName: minio-console-tls
+    hosts:
+      - console.minio.192-168-49-2.nip.io
+
+resources:
+  requests:
+    memory: 1Gi
 
 persistence:
   storageClass: standard
+
+buckets:
+  - name: eoepca
+  - name: cache-bucket
 ```
 
-_Note that the annotation `nginx.ingress.kubernetes.io/proxy-body-size` was found to be required to allow transfer of large files (such as data products) through the nginx proxy_
+!!! note
+    * The example values assuming a TLS configuration using `letsencrypt` certificate provider
+    * The admin credentials are provided by the Kubernetes secret named `minio-auth` - see below
+    * The annotation `nginx.ingress.kubernetes.io/proxy-body-size` was found to be required to allow transfer of large files (such as data products) through the nginx proxy
+
+### Minio Credentials Secret
+
+The Minio admin credentials are provided via a Kubernetes secret that is referenced from the Minio helm chart deployment values. For example...
+
+```
+kubectl -n rm create secret generic minio-auth \
+  --from-literal=rootUser="eoepca" \
+  --from-literal=rootPassword="changeme"
+```
+
+!!! note
+    The secret must be created in the same Kubernetes namespace as the Minio service deployment - e.g. `rm` namespce in the example above.
 
 ### s3cmd Configuration
 
@@ -205,7 +250,7 @@ S3 Endpoint: minio.192-168-49-2.nip.io
 DNS-style bucket+hostname:port template for accessing a bucket: minio.192-168-49-2.nip.io
 Encryption password: 
 Path to GPG program: /usr/bin/gpg
-Use HTTPS protocol: False
+Use HTTPS protocol: True
 HTTP Proxy server name: 
 HTTP Proxy server port: 0
 ```
@@ -227,5 +272,6 @@ s3cmd -c deploy/cluster/s3cfg ls
 
 ### References
 
-* [MinIO Helm Chart](https://bitnami.com/stack/minio/helm)
-* [MinIO Helm Chart on GitHub](https://github.com/bitnami/charts/tree/master/bitnami/minio)
+* [MinIO Website](https://min.io/)
+* [MinIO Helm Chart](https://charts.min.io/)
+* [MinIO on GitHub](https://github.com/minio/minio)
