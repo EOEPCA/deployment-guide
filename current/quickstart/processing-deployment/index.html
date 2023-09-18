@@ -813,7 +813,7 @@
 <p>Deployment is initiated by invoking the script&hellip;</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./deploy/processing/processing
 </span></code></pre></div>
-<p>The ADES service is accessed at the endpoint <code>ades-open.&lt;domain&gt;</code> - e.g. <code>ades-open.192.168.49.2.nip.io</code>.</p>
+<p>The ADES service is accessed at the endpoint <code>ades-open.&lt;domain&gt;</code> - e.g. <code>ades-open.192-168-49-2.nip.io</code>.</p>
 <h2 id="example-requests-snuggs-application">Example Requests - <code>snuggs</code> application<a class="headerlink" href="#example-requests-snuggs-application" title="Permanent link">⚓︎</a></h2>
 <p>The file <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs.http"><code>deploy/samples/requests/processing/snuggs.http</code></a> has been prepared with sample requests for <strong><em>OGC API Processes</em></strong> operations:</p>
 <ul>
@@ -837,13 +837,13 @@ These are to be used in the case that protected (not &lsquo;open&rsquo;) endpoin
 <p><strong>List Processes</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl -k <span class="se">\</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  --request GET <span class="se">\</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes <span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes <span class="se">\</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
 </span></code></pre></div>
 <p><strong>Deploy Process</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl -k <span class="se">\</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  --request POST <span class="se">\</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes <span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes <span class="se">\</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span> <span class="se">\</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  --header <span class="s1">&#39;content-type: application/json&#39;</span> <span class="se">\</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  --data <span class="s1">&#39;{&quot;executionUnit&quot;: {&quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl&quot;,&quot;type&quot;: &quot;application/cwl&quot;}}&#39;</span>
@@ -851,13 +851,13 @@ These are to be used in the case that protected (not &lsquo;open&rsquo;) endpoin
 <p><strong>Get Process Details</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl -k <span class="se">\</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  --request GET <span class="se">\</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0 <span class="se">\</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0 <span class="se">\</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
 </span></code></pre></div>
 <p><strong>Execute Process</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl -k -v <span class="se">\</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  --request POST <span class="se">\</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution <span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution <span class="se">\</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span> <span class="se">\</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  --header <span class="s1">&#39;content-type: application/json&#39;</span> <span class="se">\</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  --header <span class="s1">&#39;prefer: respond-async&#39;</span> <span class="se">\</span>
@@ -867,27 +867,27 @@ These are to be used in the case that protected (not &lsquo;open&rsquo;) endpoin
 <p>This request requires the <code>Location</code> header from the response to the execute request. This will be of the form <code>/{user}/wps3/jobs/{job-id}</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e</code>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl -k <span class="se">\</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  --request GET <span class="se">\</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  --url https://ades-open.192.168.49.2.nip.io<span class="o">{</span>location-header<span class="o">}</span> <span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  --url https://ades-open.192-168-49-2.nip.io<span class="o">{</span>location-header<span class="o">}</span> <span class="se">\</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
 </span></code></pre></div>
 <p><strong>Get Job Results</strong></p>
 <p>This request uses the same URL as <code>Get Job Status</code>, with the additional URL path <code>/result</code> - i.e. <code>/{user}/wps3/jobs/{job-id}/result</code> - e.g. <code>/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e/result</code></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>curl -k <span class="se">\</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  --request GET <span class="se">\</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  --url https://ades-open.192.168.49.2.nip.io<span class="o">{</span>location-header<span class="o">}</span>/result <span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  --url https://ades-open.192-168-49-2.nip.io<span class="o">{</span>location-header<span class="o">}</span>/result <span class="se">\</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
 </span></code></pre></div>
 <p>The response indicates the location of the results, which should be in the <code>minio</code> object storage. See <a href="#processing-results">Processing Results</a> </p>
 <p><strong> List Jobs</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>curl -k <span class="se">\</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  --request GET <span class="se">\</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  --url https://ades-open.192.168.49.2.nip.io/eric/wps3/jobs <span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  --url https://ades-open.192-168-49-2.nip.io/eric/wps3/jobs <span class="se">\</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  --header <span class="s1">&#39;accept: application/json&#39;</span>
 </span></code></pre></div>
 </details>
 <h2 id="processing-results">Processing Results<a class="headerlink" href="#processing-results" title="Permanent link">⚓︎</a></h2>
 <p>The outputs are published as a static STAC catalogue to a path that includes the unique job ID.</p>
-<p>In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint <code>minio-console.&lt;domain&gt;</code> e.g. https://minio-console.192.168.49.2.nip.io/, or using an S3 client such as&hellip;</p>
+<p>In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint <code>console.minio.&lt;domain&gt;</code> e.g. https://console.minio.192-168-49-2.nip.io/, or using an S3 client such as&hellip;</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca
 </span></code></pre></div>
 <p>For the default credentials to connect to Minio see <a href="../scripted-deployment/#minio-object-storage">Minio Object Storage Default Credentials</a>. </p>

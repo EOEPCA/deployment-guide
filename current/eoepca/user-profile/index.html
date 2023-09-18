@@ -809,14 +809,14 @@
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>At minimum, values for the following attributes should be specified:</p>
 <ul>
-<li>Public hostname of the Authorization Server, e.g. <code>auth.192.168.49.2.nip.io</code></li>
+<li>Public hostname of the Authorization Server, e.g. <code>auth.192-168-49-2.nip.io</code></li>
 <li>IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. <code>192.168.49.2</code></li>
 <li>Name of Persistent Volume Claim for <code>user-profile</code> persistence, e.g. <code>eoepca-userman-pvc</code><br>
   <em>The boolen value <code>volumeClaim.create</code> can be used for the PVC to be created by the helm release. This creates a volume of type <code>host-path</code> and, hence, is only useful for single-node development usage.</em></li>
 </ul>
 <p>Example <code>user-profile-values.yaml</code>&hellip;
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth.192.168.49.2.nip.io</span><span class="w"></span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth.192-168-49-2.nip.io</span><span class="w"></span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">nginxIp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2</span><span class="w"></span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nt">volumeClaim</span><span class="p">:</span><span class="w"></span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca-userman-pvc</span><span class="w"></span>

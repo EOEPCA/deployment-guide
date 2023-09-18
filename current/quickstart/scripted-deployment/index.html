@@ -481,6 +481,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#post-deploy-manual-steps" class="md-nav__link">
+    Post-deploy Manual Steps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#create-user-workspaces" class="md-nav__link">
     Create User Workspaces
   </a>
@@ -1177,7 +1184,7 @@
 </span></code></pre></div>
 <p>&hellip;unless the password is overridden via the variable <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
 <h3 id="minio-object-storage">Minio Object Storage<a class="headerlink" href="#minio-object-storage" title="Permanent link">⚓︎</a></h3>
-<p>By default, Minio is accessed at the URL <code>http://minio-console.&lt;domain&gt;/</code> with the credentials&hellip;</p>
+<p>By default, Minio is accessed at the URL <code>http://console.minio.&lt;domain&gt;/</code> with the credentials&hellip;</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>username: eoepca
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>password: changeme
 </span></code></pre></div>
@@ -1202,6 +1209,13 @@
 <em>Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main <a href="#deployment">deployment</a>.</em></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./deploy/eoepca/eoepca-protection.sh apply <span class="s2">&quot;&lt;eric-id&gt;&quot;</span> <span class="s2">&quot;&lt;bob-id&gt;&quot;</span> <span class="s2">&quot;&lt;public-ip&gt;&quot;</span> <span class="s2">&quot;&lt;domain&gt;&quot;</span>
 </span></code></pre></div>
+<h2 id="post-deploy-manual-steps">Post-deploy Manual Steps<a class="headerlink" href="#post-deploy-manual-steps" title="Permanent link">⚓︎</a></h2>
+<p>The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed&hellip;</p>
+<ul>
+<li>Fix the setting <code>UMA Resource Lifetime</code> - change <code>2592000</code> -&gt; <code>2147483647</code> secs</li>
+<li>Fix the setting <code>Authentication method for the Token Endpoint</code>  for the <code>ApplicationHub</code> - <code>client_secret_post</code> -&gt; <code>client_secret_basic</code></li>
+<li>Add groups <code>group-1</code>, <code>group-2</code>, <code>group-3</code> to ApplicationHub, and add users <code>eric</code>, <code>bob</code> to these groups</li>
+</ul>
 <h2 id="create-user-workspaces">Create User Workspaces<a class="headerlink" href="#create-user-workspaces" title="Permanent link">⚓︎</a></h2>
 <p>The protection steps created the test users <code>eric</code> and <code>bob</code>. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see <a href="../../eoepca/workspace/">Workspace</a>.</p>
 <h3 id="using-workspace-swagger-ui">Using Workspace Swagger UI<a class="headerlink" href="#using-workspace-swagger-ui" title="Permanent link">⚓︎</a></h3>
@@ -1217,7 +1231,7 @@
 <h3 id="using-curl">Using <code>curl</code><a class="headerlink" href="#using-curl" title="Permanent link">⚓︎</a></h3>
 <p>The same can be achieved with a straight http request, for example using <code>curl</code>&hellip;</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl -X <span class="s1">&#39;POST&#39;</span> <span class="se">\</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  <span class="s1">&#39;https://workspace-api.192.168.49.2.nip.io/workspaces&#39;</span> <span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  <span class="s1">&#39;https://workspace-api.192-168-49-2.nip.io/workspaces&#39;</span> <span class="se">\</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  -H <span class="s1">&#39;accept: application/json&#39;</span> <span class="se">\</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  -H <span class="s1">&#39;Content-Type: application/json&#39;</span> <span class="se">\</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>  -H <span class="s1">&#39;X-User-Id: &lt;admin-id-token&gt;&#39;</span> <span class="se">\</span>
@@ -1254,7 +1268,7 @@
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  create-workspace &lt;domain&gt; &lt;user&gt; &lt;user-inum&gt; [&lt;client-id&gt; &lt;client-secret&gt;]
 </span></code></pre></div>
 <p>For example&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>./deploy/bin/create-workspace <span class="m">192</span>.168.49.2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>./deploy/bin/create-workspace <span class="m">192</span>-168-49-2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
 </span></code></pre></div>
 <p>The script prompts for the password of the <code>admin</code> user.</p>
 <p>By default <code>&lt;client-id&gt;</code> and <code>&lt;client-secret&gt;</code> are read from the <code>client.yaml</code> file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.</p>
