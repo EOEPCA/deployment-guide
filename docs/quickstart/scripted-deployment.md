@@ -133,7 +133,7 @@ password: Chang3me!
 
 ### Minio Object Storage
 
-By default, Minio is accessed at the URL `http://minio-console.<domain>/` with the credentials...
+By default, Minio is accessed at the URL `http://console.minio.<domain>/` with the credentials...
 
 ```
 username: eoepca
