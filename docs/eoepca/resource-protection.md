@@ -33,7 +33,7 @@ helm install --version 1.0.7 --values myservice-guard-values.yaml myservice-guar
 
 The helm chart is deployed with values that are passed through to the subcharts for the `pep-engine` and `uma-user-agent`. Typical values to be specified include:
 
-* Host/domain details for the Login Service and PDP, e.g. `auth.192.168.49.2.nip.io`
+* Host/domain details for the Login Service and PDP, e.g. `auth.192-168-49-2.nip.io`
 * IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. `192.168.49.2`
 * Name of Persistent Volume Claim for `pep-engine` persistence, e.g. `myservice-pep-pvc`<br>
 * TLS Certificate Provider, e.g. `letsencrypt-production`
@@ -49,7 +49,7 @@ Example `myservice-guard-values.yaml`...
 #---------------------------------------------------------------------------
 global:
   context: myservice
-  domain: 192.168.49.2.nip.io
+  domain: 192-168-49-2.nip.io
   nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
@@ -97,7 +97,7 @@ uma-user-agent:
     credentialsSecretName: "myservice-agent"
   logging:
     level: "debug"
-  unauthorizedResponse: 'Bearer realm="https://auth.192.168.49.2.nip.io/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://auth.192-168-49-2.nip.io/oxauth/auth/passport/passportlogin.htm"'
 #---------------------------------------------------------------------------
 # END values
 #---------------------------------------------------------------------------
@@ -133,7 +133,7 @@ Usage:
 For example...
 
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io myclient
+./deploy/bin/register-client auth.192-168-49-2.nip.io myclient
 
 INFO: Preparing docker image... [done]
 Client successfully registered.
@@ -144,12 +144,12 @@ client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
 
 Or to register OIDC redirect URLs...
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io myclient https://portal.192.168.49.2.nip.io/oidc/callback/ https://portal.192.168.49.2.nip.io/logout
+./deploy/bin/register-client auth.192-168-49-2.nip.io myclient https://portal.192-168-49-2.nip.io/oidc/callback/ https://portal.192-168-49-2.nip.io/logout
 ```
 
 The script writes the 'client credentials' to stdout - in the expected YAML configuration file format - which can be redirected to file...
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io myclient | tee client.yaml
+./deploy/bin/register-client auth.192-168-49-2.nip.io myclient | tee client.yaml
 ```
 ...writes the client credentials to the file `client.yaml`.
 
@@ -187,7 +187,7 @@ As described in the [README for the Resource Guard](https://github.com/EOEPCA/he
 In the simple case of a user with username/password held within the Login Service, the User ID Token can be obtained as follows:
 
 ```
-curl --location --request POST 'https://auth.192.168.49.2.nip.io/oxauth/restv1/token' \
+curl --location --request POST 'https://auth.192-168-49-2.nip.io/oxauth/restv1/token' \
 --header 'Cache-Control: no-cache' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'scope=openid user_name is_operator' \

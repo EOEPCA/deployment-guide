@@ -170,14 +170,14 @@ auth:
 ingress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio-console.192.168.49.2.nip.io
+  hostname: minio-console.192-168-49-2.nip.io
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
 apiIngress:
   enabled: true
   ingressClassName: nginx
-  hostname: minio.192.168.49.2.nip.io
+  hostname: minio.192-168-49-2.nip.io
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 0m
 
@@ -201,8 +201,8 @@ In response to the prompts, the following configuration selections are applicabl
 Access Key: eoepca
 Secret Key: changeme
 Default Region: us-east-1
-S3 Endpoint: minio.192.168.49.2.nip.io
-DNS-style bucket+hostname:port template for accessing a bucket: minio.192.168.49.2.nip.io
+S3 Endpoint: minio.192-168-49-2.nip.io
+DNS-style bucket+hostname:port template for accessing a bucket: minio.192-168-49-2.nip.io
 Encryption password: 
 Path to GPG program: /usr/bin/gpg
 Use HTTPS protocol: False

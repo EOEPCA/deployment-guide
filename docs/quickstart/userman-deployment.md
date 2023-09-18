@@ -23,4 +23,4 @@ Deployment is initiated by invoking the script...
 ./deploy/userman/userman
 ```
 
-The _Login Service_ is accessed at the endpoint `auth.<domain>` - e.g. `auth.192.168.49.2.nip.io`.
+The _Login Service_ is accessed at the endpoint `auth.<domain>` - e.g. `auth.192-168-49-2.nip.io`.

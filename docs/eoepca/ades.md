@@ -34,7 +34,7 @@ workflowExecutor:
     STAGEIN_AWS_REGION: RegionOne
     # Stage-out to minio S3
     # (use this if the ADES is not configured to stage-out to the Workspace)
-    STAGEOUT_AWS_SERVICEURL: http://minio.192.168.49.2.nip.io
+    STAGEOUT_AWS_SERVICEURL: http://minio.192-168-49-2.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
     STAGEOUT_AWS_REGION: us-east-1
@@ -55,13 +55,13 @@ ingress:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: ades.192.168.49.2.nip.io
+    - host: ades.192-168-49-2.nip.io
       paths: 
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - ades.192.168.49.2.nip.io
+        - ades.192-168-49-2.nip.io
       secretName: ades-tls
 ```
 
@@ -100,8 +100,8 @@ workflowExecutor:
   ...
   useResourceManager: "true"
   resourceManagerWorkspacePrefix: "guide-user"
-  resourceManagerEndpoint: "https://workspace-api.192.168.49.2.nip.io"
-  platformDomain: "https://auth.192.168.49.2.nip.io"
+  resourceManagerEndpoint: "https://workspace-api.192-168-49-2.nip.io"
+  platformDomain: "https://auth.192-168-49-2.nip.io"
   ...
 ```
 
@@ -125,7 +125,7 @@ The `resource-guard` must be configured with the values applicable to the ADES f
 #---------------------------------------------------------------------------
 global:
   context: ades
-  domain: 192.168.49.2.nip.io
+  domain: 192-168-49-2.nip.io
   nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
@@ -171,7 +171,7 @@ uma-user-agent:
     credentialsSecretName: "proc-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -213,9 +213,9 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ## ADES Usage Samples
@@ -234,7 +234,7 @@ This section includes some sample requests to test the deployed ADES.
 List available processes.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
+curl --location --request GET 'https://ades.192-168-49-2.nip.io/eric/wps3/processes' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -244,7 +244,7 @@ curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/proces
 Deploy the sample application `snuggs`.
 
 ```
-curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes' \
+curl --location --request POST 'https://ades.192-168-49-2.nip.io/eric/wps3/processes' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -283,7 +283,7 @@ curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/proce
 Get details for a deployed process.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+curl --location --request GET 'https://ades.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -293,7 +293,7 @@ curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/wps3/proces
 Execute a process with supplied parameterisation.
 
 ```
-curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
+curl --location --request POST 'https://ades.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0/jobs' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
@@ -339,7 +339,7 @@ curl --location --request POST 'https://ades.192.168.49.2.nip.io/eric/wps3/proce
 Once a processes execution has been initiated then its progress can monitored via a job-specific URL that is returned in the HTTP response headers of the execute request.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
+curl --location --request GET 'https://ades.192-168-49-2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -349,7 +349,7 @@ curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/pr
 Once the job execution has completed, then the results can be obtained.
 
 ```
-curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
+curl --location --request GET 'https://ades.192-168-49-2.nip.io/eric/watchjob/processes/snuggs-0_3_0/jobs/2e0fabf4-4ed6-11ec-b857-626a98159388/result' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```
@@ -359,7 +359,7 @@ curl --location --request GET 'https://ades.192.168.49.2.nip.io/eric/watchjob/pr
 A process can be deleted (undeployed).
 
 ```
-curl --location --request DELETE 'https://ades.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
+curl --location --request DELETE 'https://ades.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0' \
 --header 'X-User-Id: <user-id-token>' \
 --header 'Accept: application/json'
 ```

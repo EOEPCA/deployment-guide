@@ -31,8 +31,8 @@ expose:
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
 
     hosts:
-      core: harbor.192.168.49.2.nip.io
-      notary: harbor-notary.192.168.49.2.nip.io
+      core: harbor.192-168-49-2.nip.io
+      notary: harbor-notary.192-168-49-2.nip.io
 
 persistence:
   persistentVolumeClaim:
@@ -49,7 +49,7 @@ persistence:
     trivy:
       storageClass: standard
 
-externalURL: https://harbor.192.168.49.2.nip.io
+externalURL: https://harbor.192-168-49-2.nip.io
 # initial password for logging in with user "admin"
 harborAdminPassword: "changeme"
 
@@ -68,7 +68,7 @@ notary:
 
 ## Container Registry Usage
 
-After deployemnt Harbor is accessible via its [web interface](https://harbor.192.168.49.2.nip.io/) at `https://harbor.<domain>/`<br>e.g. [https://harbor.192.168.49.2.nip.io/](https://harbor.192.168.49.2.nip.io/).
+After deployemnt Harbor is accessible via its [web interface](https://harbor.192-168-49-2.nip.io/) at `https://harbor.<domain>/`<br>e.g. [https://harbor.192-168-49-2.nip.io/](https://harbor.192-168-49-2.nip.io/).
 
 Login as the admin user with the password specified in the helm values.
 

@@ -36,8 +36,8 @@ ingress:
   # Enabled for unprotected 'open' access to the resource-catalogue.
   enabled: true
   name: resource-catalogue
-  host: resource-catalogue.192.168.49.2.nip.io
-  tls_host: resource-catalogue.192.168.49.2.nip.io
+  host: resource-catalogue.192-168-49-2.nip.io
+  tls_host: resource-catalogue.192-168-49-2.nip.io
   tls_secret_name: resource-catalogue-tls
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
@@ -57,7 +57,7 @@ db:
 pycsw:
   config:
     server:
-      url: https://resource-catalogue.192.168.49.2.nip.io/
+      url: https://resource-catalogue.192-168-49-2.nip.io/
 ```
 
 ## Protection
@@ -78,7 +78,7 @@ The `resource-guard` must be configured with the values applicable to the Resour
 #---------------------------------------------------------------------------
 global:
   context: resource-catalogue
-  domain: 192.168.49.2.nip.io
+  domain: 192-168-49-2.nip.io
   nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
@@ -113,7 +113,7 @@ uma-user-agent:
     credentialsSecretName: "resman-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -155,9 +155,9 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.2.nip.io](https://auth.192.168.49.2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192-168-49-2.nip.io](https://auth.192-168-49-2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ## Resource Catalogue Usage
@@ -165,7 +165,7 @@ The client credentials are obtained by registration of a client at the login ser
 The Resource Catalogue is initially populated during the initialisation of the Data Access service.<br>
 See section [Data-layer Configuration](../data-access/#data-layer-configuration).
 
-The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192.168.49.2.nip.io/](https://resource-catalogue.192.168.49.2.nip.io/).
+The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192-168-49-2.nip.io/](https://resource-catalogue.192-168-49-2.nip.io/).
 
 ### Loading Records
 

@@ -180,6 +180,14 @@ _Ensure that the script is executed with the environment variables and command-l
 ./deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
 ```
 
+## Post-deploy Manual Steps
+
+The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed...
+
+* Fix the setting `UMA Resource Lifetime` - change `2592000` -> `2147483647` secs
+* Fix the setting `Authentication method for the Token Endpoint`  for the `ApplicationHub` - `client_secret_post` -> `client_secret_basic`
+* Add groups `group-1`, `group-2`, `group-3` to ApplicationHub, and add users `eric`, `bob` to these groups
+
 ## Create User Workspaces
 
 The protection steps created the test users `eric` and `bob`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../eoepca/workspace.md).
@@ -205,7 +213,7 @@ The same can be achieved with a straight http request, for example using `curl`.
 
 ```bash
 curl -X 'POST' \
-  'https://workspace-api.192.168.49.2.nip.io/workspaces' \
+  'https://workspace-api.192-168-49-2.nip.io/workspaces' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -H 'X-User-Id: <admin-id-token>' \
@@ -256,7 +264,7 @@ Usage:
 For example...
 
 ```bash
-./deploy/bin/create-workspace 192.168.49.2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+./deploy/bin/create-workspace 192-168-49-2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
 ```
 
 The script prompts for the password of the `admin` user.

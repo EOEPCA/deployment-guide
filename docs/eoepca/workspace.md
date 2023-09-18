@@ -35,11 +35,11 @@ fullnameOverride: workspace-api
 ingress:
   enabled: true
   hosts:
-    - host: workspace-api-open.192.168.49.2.nip.io
+    - host: workspace-api-open.192-168-49-2.nip.io
       paths: ["/"]
   tls:
     - hosts:
-        - workspace-api-open.192.168.49.2.nip.io
+        - workspace-api-open.192-168-49-2.nip.io
       secretName: workspace-api-open-tls
 fluxHelmOperator:
   enabled: true
@@ -48,7 +48,7 @@ workspaceSecretName: "bucket"
 namespaceForBucketResource: "rm"
 s3Endpoint: "https://cf2.cloudferro.com:8080"
 s3Region: "RegionOne"
-harborUrl: "https://harbor.192.168.49.2.nip.io"
+harborUrl: "https://harbor.192-168-49-2.nip.io"
 harborUsername: "admin"
 harborPassword: "changeme"
 umaClientSecretName: "resman-client"
@@ -189,7 +189,7 @@ The `resource-guard` must be configured with the values applicable to the Worksp
 #---------------------------------------------------------------------------
 global:
   context: workspace-api
-  domain: 192.168.49.2.nip.io
+  domain: 192-168-49-2.nip.io
   nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
@@ -235,7 +235,7 @@ uma-user-agent:
     credentialsSecretName: "resman-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -277,15 +277,15 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192.168.49.2.nip.io](https://auth.192.168.49.2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192-168-49-2.nip.io](https://auth.192-168-49-2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ### Workspace API Usage
 
-The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192.168.49.2.nip.io/.<br>
-See the [Swagger Docs](https://workspace-api.192.168.49.2.nip.io/docs).
+The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192-168-49-2.nip.io/.<br>
+See the [Swagger Docs](https://workspace-api.192-168-49-2.nip.io/docs).
 
 ### Additional Information
 
@@ -322,11 +322,11 @@ At minimum, values for the following attributes should be specified:
 
 Example `bucket-operator-values.yaml`...
 ```yaml
-domain: 192.168.49.2.nip.io
+domain: 192-168-49-2.nip.io
 data:
   OS_MEMBERROLEID: "9ee2ff9ee4384b1894a90878d3e92bab"
   OS_SERVICEPROJECTID: "d21467d0a0414252a79e29d38f03ff98"
-  USER_EMAIL_PATTERN: "eoepca+<name>@192.168.49.2.nip.io"
+  USER_EMAIL_PATTERN: "eoepca+<name>@192-168-49-2.nip.io"
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production

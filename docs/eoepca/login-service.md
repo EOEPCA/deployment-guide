@@ -16,7 +16,7 @@ helm install --version 1.2.1 --values login-service-values.yaml login-service eo
 
 At minimum, values for the following attributes should be specified:
 
-* Public hostname of the Authorization Server, e.g. `auth.192.168.49.2.nip.io`
+* Public hostname of the Authorization Server, e.g. `auth.192-168-49-2.nip.io`
 * IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. `192.168.49.2`
 * Kubernetes `namespace` for the login-service components
 * Initial password for the admin user<br>
@@ -28,14 +28,14 @@ At minimum, values for the following attributes should be specified:
 Example `login-service-values.yaml`...
 ```yaml
 global:
-  domain: auth.192.168.49.2.nip.io
+  domain: auth.192-168-49-2.nip.io
   nginxIp: 192.168.49.2
   namespace: um
 volumeClaim:
   name: eoepca-userman-pvc
   create: false
 config:
-  domain: auth.192.168.49.2.nip.io
+  domain: auth.192-168-49-2.nip.io
   adminPass: Chang3me!
   ldapPass: Chang3me!
   volumeClaim:
@@ -54,16 +54,16 @@ nginx:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - auth.192.168.49.2.nip.io
+      - auth.192-168-49-2.nip.io
     tls:
       - hosts:
-          - auth.192.168.49.2.nip.io
+          - auth.192-168-49-2.nip.io
         secretName: login-service-tls
 ```
 
 ## Login Service Usage
 
-Once the deployment has been completed successfully, the Login Service is accessed at the endpoint `https://auth.<domain>/`, configured by your domain - e.g. [https://auth.192.168.49.2.nip.io/](https://auth.192.168.49.2.nip.io/).
+Once the deployment has been completed successfully, the Login Service is accessed at the endpoint `https://auth.<domain>/`, configured by your domain - e.g. [https://auth.192-168-49-2.nip.io/](https://auth.192-168-49-2.nip.io/).
 
 Login as the `admin` user with the credentials configured in the helm values - ref. `adminPass` / `ldapPass`.
 

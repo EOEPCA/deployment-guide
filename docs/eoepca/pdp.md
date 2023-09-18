@@ -16,7 +16,7 @@ helm install --version 1.1.6 --values pdp-values.yaml pdp eoepca/pdp-engine
 
 At minimum, values for the following attributes should be specified:
 
-* Public hostname of the Authorization Server, e.g. `auth.192.168.49.2.nip.io`
+* Public hostname of the Authorization Server, e.g. `auth.192-168-49-2.nip.io`
 * IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. `192.168.49.2`
 * Name of Persistent Volume Claim for `pdp-engine` persistence, e.g. `eoepca-userman-pvc`<br>
   _The boolen value `volumeClaim.create` can be used for the PVC to be created by the helm release. This creates a volume of type `host-path` and, hence, is only useful for single-node development usage._
@@ -25,7 +25,7 @@ Example `pdp-values.yaml`...
 ```yaml
 global:
   nginxIp: 192.168.49.2
-  domain: auth.192.168.49.2.nip.io
+  domain: auth.192-168-49-2.nip.io
 volumeClaim:
   name: eoepca-userman-pvc
   create: false

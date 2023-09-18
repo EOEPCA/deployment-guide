@@ -24,7 +24,7 @@ Deployment is initiated by invoking the script...
 ./deploy/processing/processing
 ```
 
-The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-open.192.168.49.2.nip.io`.
+The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-open.192-168-49-2.nip.io`.
 
 ## Example Requests - `snuggs` application
 
@@ -53,7 +53,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k \
       --request GET \
-      --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
+      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes \
       --header 'accept: application/json'
     ```
 
@@ -62,7 +62,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k \
       --request POST \
-      --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes \
+      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes \
       --header 'accept: application/json' \
       --header 'content-type: application/json' \
       --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl","type": "application/cwl"}}'
@@ -73,7 +73,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k \
       --request GET \
-      --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
+      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
       --header 'accept: application/json'
     ```
 
@@ -82,7 +82,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k -v \
       --request POST \
-      --url https://ades-open.192.168.49.2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
+      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
       --header 'accept: application/json' \
       --header 'content-type: application/json' \
       --header 'prefer: respond-async' \
@@ -96,7 +96,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k \
       --request GET \
-      --url https://ades-open.192.168.49.2.nip.io{location-header} \
+      --url https://ades-open.192-168-49-2.nip.io{location-header} \
       --header 'accept: application/json'
     ```
 
@@ -107,7 +107,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k \
       --request GET \
-      --url https://ades-open.192.168.49.2.nip.io{location-header}/result \
+      --url https://ades-open.192-168-49-2.nip.io{location-header}/result \
       --header 'accept: application/json'
     ```
 
@@ -118,7 +118,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
     ```bash
     curl -k \
       --request GET \
-      --url https://ades-open.192.168.49.2.nip.io/eric/wps3/jobs \
+      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/jobs \
       --header 'accept: application/json'
     ```
 
@@ -126,7 +126,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
 
 The outputs are published as a static STAC catalogue to a path that includes the unique job ID.
 
-In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `console.minio.<domain>` e.g. https://console.minio.192.168.49.2.nip.io/, or using an S3 client such as...
+In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `console.minio.<domain>` e.g. https://console.minio.192-168-49-2.nip.io/, or using an S3 client such as...
 
 ```bash
 s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca

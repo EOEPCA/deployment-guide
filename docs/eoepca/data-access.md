@@ -49,10 +49,10 @@ global:
       nginx.ingress.kubernetes.io/enable-cors: "true"
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - host: data-access.192.168.49.2.nip.io
+      - host: data-access.192-168-49-2.nip.io
     tls:
       - hosts:
-          - data-access.192.168.49.2.nip.io
+          - data-access.192-168-49-2.nip.io
         secretName: data-access-tls
   storage:
     data:
@@ -65,8 +65,8 @@ global:
         validate_bucket_name: false
     cache:
       type: S3
-      endpoint_url: "http://minio.192.168.49.2.nip.io"
-      host: "minio.192.168.49.2.nip.io"
+      endpoint_url: "http://minio.192-168-49-2.nip.io"
+      host: "minio.192-168-49-2.nip.io"
       access_key_id: xxx
       secret_access_key: xxx
       region: us-east-1
@@ -75,7 +75,7 @@ global:
     title: EOEPCA Data Access Service developed by EOX
     abstract: EOEPCA Data Access Service developed by EOX
     header: "EOEPCA Data Access View Server (VS) Client powered by <a href=\"//eox.at\"><img src=\"//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\" alt=\"EOX\" style=\"height:25px;margin-left:10px\"/></a>"
-    url: https://data-access.192.168.49.2.nip.io/ows
+    url: https://data-access.192-168-49-2.nip.io/ows
   layers:
     # see section 'Data-layer Configuration'
   collections:
@@ -318,7 +318,7 @@ The `resource-guard` must be configured with the values applicable to the Data A
 #---------------------------------------------------------------------------
 global:
   context: data-access
-  domain: 192.168.49.2.nip.io
+  domain: 192-168-49-2.nip.io
   nginxIp: 192.168.49.2
   certManager:
     clusterIssuer: letsencrypt-production
@@ -373,7 +373,7 @@ uma-user-agent:
     credentialsSecretName: "resman-client"
   logging:
     level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192.168.49.2.nip.io/oidc/authenticate/"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
   openAccess: false
   insecureTlsSkipVerify: true
 ```
@@ -415,9 +415,9 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192.168.49.2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
 ```bash
-./deploy/bin/register-client auth.192.168.49.2.nip.io "Resource Guard" | tee client.yaml
+./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
 
 ## Data Access Usage
