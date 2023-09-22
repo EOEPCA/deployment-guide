@@ -57,9 +57,11 @@ The harvester is configured as follows...
 
 ```
 harvester:
-  image:
-    repository: eoepca/rm-harvester
-    tag: 1.1.0
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
   config:
     redis:
       host: data-access-redis-master
@@ -67,7 +69,7 @@ harvester:
     harvesters:
       - name: Creodias-Opensearch
         resource:
-          url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
           type: OpenSearch
           format_config:
             type: 'application/json'
@@ -85,13 +87,36 @@ harvester:
         filter: {}
         postprocess:
           - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
-        queue: register_queue
+        queue: register
+      - name: Creodias-Opensearch-Sentinel1
+        resource:
+          url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+          type: OpenSearch
+          format_config:
+            type: 'application/json'
+            property_mapping:
+              start_datetime: 'startDate'
+              end_datetime: 'completionDate'
+              productIdentifier: 'productIdentifier'
+          query:
+            time:
+              property: sensed
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+            extra_params:
+              productType: GRD-COG
+        filter: {}
+        postprocess:
+          - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
+        queue: register
 ```
 
 Based upon this harvester configuration we expect that the following query is made to discover data - i.e. an OpenSearch query, with json response representation, for a defined spatial and temporal extent...
 
 ```
-https://finder.creodias.eu/resto/api/collections/Sentinel2/search.json?startDate=2019-09-10T00:00:00Z&completionDate=2019-09-11T00:00:00Z&box=14.9,47.7,16.4,48.7
+https://datahub.creodias.eu/resto/api/collections/Sentinel2/search.json?startDate=2019-09-10T00:00:00Z&completionDate=2019-09-11T00:00:00Z&box=14.9,47.7,16.4,48.7
 ```
 
 From the result returned, the path to each product (`feature`) is obtained from the `productIdentifier` property, e.g.
@@ -117,7 +142,10 @@ The harvester is configured with a Sentinel-2/CREODIAS specific post-processor `
 
 The harvester post-processor follows this path to the Sentinel-2 scene and uses stactools (with built-in support for Sentinel-2) to establish a STAC item representing the product. This includes enumeration of `assets` for `inspire-metadata` and `product-metadata` - which are used by the registrar pycsw backend to embelesh the product record metadata.
 
-The harvester outputs the STAC item for each product, which is pushed to the registrar via the `register_queue` redis queue.
+!!! note
+    The above description considers Sentinel-2 data. Similar considerations apply for Sentinel-1 that is also detailed in the above harvester configuration.
+
+The harvester outputs the STAC item for each product, which is pushed to the registrar via the `register` redis queue.
 
 ### Registration
 
