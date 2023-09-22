@@ -12,7 +12,7 @@ The chart is configured via values that are supplied with the instantiation of t
 * Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
 
 ```bash
-helm install --version 1.2.5 --values data-access-values.yaml \
+helm install --version 1.3.1 --values data-access-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   data-access data-access
 ```
@@ -89,11 +89,28 @@ vs:
     replicaCount: 4
     ingress:
       enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 300Mi
+      limits:
+        cpu: 1.5
+        memory: 3Gi
   registrar:
     replicaCount: 1
+    config:
+      # see section 'Registrar Routes Configuration'
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
   harvester:
     # see section 'Harvester Configuration'
     replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
   client:
     replicaCount: 1
     ingress:
@@ -112,6 +129,87 @@ vs:
   cache:
     ingress:
       enabled: false
+  scheduler:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+```
+
+!!! note
+    The `resources:` above have been limited for the benefit of a minikube deployment. For a production deployment the values should be tuned (upwards) according to operational needs.
+
+### Registrar Routes Configuration
+
+The Data Access `registrar` component supports a number of different resource types. For each a dedicated 'backend' is configured to handle the specific registration of the resource type...
+
+```
+vs:
+  registrar:
+    config:
+      #--------------
+      # Default route
+      #--------------
+      disableDefaultRoute: false
+      # Additional backends for the default route
+      defaultBackends:
+        - path: registrar_pycsw.backend.ItemBackend
+          kwargs:
+            repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+            ows_url: https://data-access.192-168-49-2.nip.io/ows
+      defaultSuccessQueue: seed_queue
+      #----------------
+      # Specific routes
+      #----------------
+      routes:
+        collections:
+          path: registrar.route.stac.CollectionRoute
+          queue: register_collection_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.CollectionBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+        ades:
+          path: registrar.route.json.JSONRoute
+          queue: register_ades_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.ADESBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+        application:
+          path: registrar.route.json.JSONRoute
+          queue: register_application_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.CWLBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+        catalogue:
+          path: registrar.route.json.JSONRoute
+          queue: register_catalogue_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.CatalogueBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+        json:
+          path: registrar.route.json.JSONRoute
+          queue: register_json_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.JSONBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
+        xml:
+          path: registrar.route.json.JSONRoute
+          queue: register_xml_queue
+          replace: true
+          backends:
+            - path: registrar_pycsw.backend.XMLBackend
+              kwargs:
+                repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
 ```
 
 ### Data-layer Configuration
@@ -149,7 +247,7 @@ vs:
       harvesters:
         - name: Creodias-Opensearch
           resource:
-            url: https://finder.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+            url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
             type: OpenSearch
             format_config:
               type: 'application/json'
@@ -167,6 +265,29 @@ vs:
           filter: {}
           postprocess:
             - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          queue: register
+        - name: Creodias-Opensearch-Sentinel1
+          resource:
+            url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+            type: OpenSearch
+            format_config:
+              type: 'application/json'
+              property_mapping:
+                start_datetime: 'startDate'
+                end_datetime: 'completionDate'
+                productIdentifier: 'productIdentifier'
+            query:
+              time:
+                property: sensed
+                begin: 2019-09-10T00:00:00Z
+                end: 2019-09-11T00:00:00Z
+              collection: null
+              bbox: 14.9,47.7,16.4,48.7
+              extra_params:
+                productType: GRD-COG
+          filter: {}
+          postprocess:
+            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
           queue: register
 ```
 
