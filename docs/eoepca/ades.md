@@ -9,7 +9,7 @@ The _ADES_ is deployed via the `ades` helm chart from the [EOEPCA Helm Chart Rep
 The chart is configured via values that are fully documented in the [README for the `ades` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/ades#readme).
 
 ```bash
-helm install --version 2.0.4 --values ades-values.yaml \
+helm install --version 2.0.24 --values ades-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   ades ades
 ```
@@ -48,7 +48,7 @@ workflowExecutor:
   processingMaxCores: "4"
 wps:
   pepBaseUrl: "http://ades-pep:5576"
-  usePep: "true"
+  usePep: "false"
 persistence:
   storageClass: standard
 ingress:
@@ -65,7 +65,25 @@ ingress:
     - hosts:
         - ades.192-168-49-2.nip.io
       secretName: ades-tls
+resources:
+  requests:
+    cpu: 100m
+    memory: 500Mi
+  limits:
+    cpu: 2
+    memory: 4Gi
 ```
+
+!!! note
+    The `resources:` above have been limited for the benefit of a minikube deployment. For a production deployment the values should be tuned (upwards) according to operational needs.<br>
+    Additionally, the following ADES values should also be considered...
+    ```
+    workflowExecutor:
+      # Max ram to use for a job
+      processingMaxRam: "16Gi"
+      # Max number of CPU cores to use concurrently for a job
+      processingMaxCores: "8"
+    ```
 
 ## Stage-in / Stage-out Configuration
 
