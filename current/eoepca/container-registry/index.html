@@ -803,7 +803,9 @@
 <p>To support the development (ref. <a href="../pde/">Processor Development Environment</a>) and deployment/execution (ref. <a href="../ades/">ADES</a>) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the <a href="https://goharbor.io/">Harbor artefact repository</a>.</p>
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p><em>Harbor</em> is deployed via the <code>harbor</code> helm chart from the <a href="https://helm.goharbor.io">Harbor Helm Chart Repository</a>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --values harbor-values.yaml harbor harbor --repo https://helm.goharbor.io
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">1</span>.7.3 --values harbor-values.yaml <span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   --repo https://helm.goharbor.io <span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  harbor harbor
 </span></code></pre></div>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The chart is configured via values that are fully documented on the <a href="https://goharbor.io/docs/2.4.0/install-config/harbor-ha-helm/">Harbor website</a>.</p>

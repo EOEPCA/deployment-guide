@@ -817,7 +817,9 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>Processor Development Environment</em> is deployed via the <code>eoepca/jupyterhub</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
 <p>The chart is derived from the public chart <code>jupyterhub/k8s-hub</code> that is available on DockerHub - <a href="https://hub.docker.com/r/jupyterhub/k8s-hub">https://hub.docker.com/r/jupyterhub/k8s-hub</a>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">1</span>.1.12 --values pde-values.yaml pde eoepca/jupyterhub
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">1</span>.1.12 --values pde-values.yaml <span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  --repo https://eoepca.github.io/helm-charts <span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  pde jupyterhub
 </span></code></pre></div>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The <code>jupyterhub/k8s-hub</code> chart supports many values. Typically, values for the following attributes may be specified:</p>

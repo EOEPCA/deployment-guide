@@ -869,12 +869,11 @@
 <h1 id="cluster-prerequisites">Cluster Prerequisites<a class="headerlink" href="#cluster-prerequisites" title="Permanent link">⚓︎</a></h1>
 <p>The following prerequisite components are assumed to be deployed in the cluster.</p>
 <h2 id="nginx-ingress-controller">Nginx Ingress Controller<a class="headerlink" href="#nginx-ingress-controller" title="Permanent link">⚓︎</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Add the helm repository</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>helm repo update
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Install the Nginx Ingress Controller helm chart</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>helm upgrade -i --version<span class="o">=</span><span class="s1">&#39;&lt;4.5.0&#39;</span> ingress-nginx ingress-nginx/ingress-nginx --wait
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Install the Nginx Ingress Controller helm chart</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm upgrade -i --version<span class="o">=</span><span class="s1">&#39;&lt;4.5.0&#39;</span> <span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  --repo https://kubernetes.github.io/ingress-nginx <span class="se">\</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  ingress-nginx ingress-nginx <span class="se">\</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  --wait
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -889,15 +888,11 @@
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
 </span></code></pre></div></p>
 <h2 id="cert-manager">Cert Manager<a class="headerlink" href="#cert-manager" title="Permanent link">⚓︎</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Add the helm repository</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>helm repo add jetstack https://charts.jetstack.io
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>helm repo update
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Install the Cert Manager helm chart</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>helm upgrade -i cert-manager jetstack/cert-manager <span class="se">\</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  --namespace cert-manager <span class="se">\</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  --create-namespace <span class="se">\</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>  --set <span class="nv">installCRDs</span><span class="o">=</span><span class="nb">true</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Install the Cert Manager helm chart</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>helm upgrade -i --namespace cert-manager --create-namespace <span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  --repo https://charts.jetstack.io <span class="se">\</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  --set <span class="nv">installCRDs</span><span class="o">=</span><span class="nb">true</span> <span class="se">\</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  cert-manager cert-manager
 </span></code></pre></div>
 <h2 id="letsencrypt-certificates">Letsencrypt Certificates<a class="headerlink" href="#letsencrypt-certificates" title="Permanent link">⚓︎</a></h2>
 <p>Once the <em>Certificate Manager</em> is deployed, then we can establish <code>ClusterIssuer</code> operators in the cluster to support use of TLS with service <code>Ingress</code> endpoints.</p>
@@ -959,10 +954,9 @@
 <p>Various <code>Secret</code> are relied upon by the system services. Secrets should not be exposed by commit to GitHub.</p>
 <p>Instead <a href="https://github.com/bitnami-labs/sealed-secrets"><code>SealedSecret</code></a> are committed to GitHub, which are encrypted, and can only be decrypted by the <code>sealed-secret-controller</code> that runs within the cluster. The <code>sealed-secret-controller</code> decrypts the <code>SealedSecret</code> to a regular <code>Secret</code> (of the same name) that can then be consumed by the cluster components.</p>
 <p>The <code>sealed-secret-controller</code> is deployed to the cluster using the helm chart&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm repo add bitnami-sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>helm repo update
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>helm install --version <span class="m">2</span>.1.8 --create-namespace --namespace infra <span class="se">\</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  eoepca-sealed-secrets bitnami-sealed-secrets/sealed-secrets
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm install --version <span class="m">2</span>.1.8 --create-namespace --namespace infra <span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  --repo https://bitnami-labs.github.io/sealed-secrets <span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  eoepca-sealed-secrets sealed-secrets
 </span></code></pre></div>
 <p>Once the controller is deployed within the cluster, then the <a href="https://github.com/bitnami-labs/sealed-secrets/releases/tag/v0.15.0"><code>kubeseal</code></a> command can be used to create a <code>SealedSecret</code> from a regular <code>Secret</code>, as follows&hellip;</p>
 <p>Create example Secret&hellip;
@@ -987,9 +981,9 @@
 <p>Various building blocks require access to an S3-compatible object storage service. In particular the ADES processing service expects to stage-out its processing results to S3 object storage. Ideally the cloud provider for your deployment will make available a suitable object storage service.</p>
 <p>As a workaround, in the absence of an existing object storage, it is possible to use <a href="https://min.io/">MinIO</a> to establish an object storage service within the Kubernetes cluster. We use the <a href="https://charts.min.io/">minio helm chart provided by the MinIO Project</a>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Install the minio helm chart</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>helm upgrade -i minio -f minio-values.yaml bitnami/minio <span class="se">\</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>helm upgrade -i -f minio-values.yaml --namespace rm --create-namespace <span class="se">\</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  --repo https://charts.min.io/ <span class="se">\</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  --namespace rm --create-namespace <span class="se">\</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  minio minio <span class="se">\</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>  --wait
 </span></code></pre></div>
 <div class="admonition note">

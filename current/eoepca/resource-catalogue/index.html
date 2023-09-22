@@ -837,7 +837,9 @@
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p>The <em>Resource Catalogue</em> is deployed via the <code>rm-resource-catalogue</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
 <p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#readme">README for the <code>rm-resource-catalogue</code> chart</a>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">1</span>.2.0 --values resource-catalogue-values.yaml resource-catalogue eoepca/rm-resource-catalogue
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm install --version <span class="m">1</span>.2.0 --values resource-catalogue-values.yaml <span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  --repo https://eoepca.github.io/helm-charts <span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  resource-catalogue rm-resource-catalogue
 </span></code></pre></div>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
 <p>The Resource Catalogue supports many values to configure the service - as described in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#values">Values section of the chart README</a>.</p>
@@ -884,7 +886,9 @@
 </span></code></pre></div>
 <h2 id="protection">Protection<a class="headerlink" href="#protection" title="Permanent link">⚓︎</a></h2>
 <p>As described in <a href="../resource-protection">section Resource Protection</a>, the <code>resource-guard</code> component can be inserted into the request path of the Resource Catalogue service to provide access authorization decisions</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm install --version <span class="m">1</span>.2.1 --values resource-catalogue-guard-values.yaml resource-catalogue-guard eoepca/resource-guard
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm install --version <span class="m">1</span>.3.1 --values resource-catalogue-guard-values.yaml <span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  --repo https://eoepca.github.io/helm-charts <span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  resource-catalogue-guard resource-guard
 </span></code></pre></div>
 <p>The <code>resource-guard</code> must be configured with the values applicable to the Resource Catalogue for the <em>Policy Enforcement Point</em> (<code>pep-engine</code>) and the <em>UMA User Agent</em> (<code>uma-user-agent</code>)&hellip;</p>
 <p><strong>Example <code>resource-catalogue-guard-values.yaml</code>&hellip;</strong></p>

@@ -561,6 +561,27 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#minio" class="md-nav__link">
+    Minio
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sealed-secrets-bitnami" class="md-nav__link">
+    Sealed Secrets (Bitnami)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harbor" class="md-nav__link">
+    Harbor
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -813,22 +834,36 @@
 
 
 <h1 id="helm-repositories">Helm Repositories<a class="headerlink" href="#helm-repositories" title="Permanent link">⚓︎</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section identifies some helm chart repositories that can be referenced (for convenience) via <code>helm add</code>.<br>
+Nevertheless, all helm commands included in the guide specifically reference the source helm repository via the <code>--repo</code> argument to the <code>helm install</code> command - and thus it is not specifically necessary to <code>add</code> these repositories in advance.</p>
+</div>
 <h2 id="eoepca-helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Charts<a class="headerlink" href="#eoepca-helm-charts" title="Permanent link">⚓︎</a></h2>
 <p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> building-blocks are engineered as containers for deployment to a Kubernetes cluster. Each building block defines a <em>Helm Chart</em> to facilitate its deployment.</p>
 <p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository is configured with <code>helm</code> as follows&hellip;
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm repo add eoepca https://eoepca.github.io/helm-charts/
 </span></code></pre></div></p>
 <h2 id="third-party-helm-charts">Third-party Helm Charts<a class="headerlink" href="#third-party-helm-charts" title="Permanent link">⚓︎</a></h2>
-<p>In addition to the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository, the following repositories are also relied upon, and should be configured&hellip;</p>
+<p>In addition to the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository, a variety of third party helm repositories are relied upon, as identified below.</p>
 <h3 id="cert-manager">Cert Manager<a class="headerlink" href="#cert-manager" title="Permanent link">⚓︎</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>helm repo add jetstack https://charts.jetstack.io
 </span></code></pre></div>
 <h3 id="nginx-ingress-controller">Nginx Ingress Controller<a class="headerlink" href="#nginx-ingress-controller" title="Permanent link">⚓︎</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 </span></code></pre></div>
+<h3 id="minio">Minio<a class="headerlink" href="#minio" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm repo add minio https://charts.min.io/
+</span></code></pre></div>
+<h3 id="sealed-secrets-bitnami">Sealed Secrets (Bitnami)<a class="headerlink" href="#sealed-secrets-bitnami" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+</span></code></pre></div>
+<h3 id="harbor">Harbor<a class="headerlink" href="#harbor" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm repo add harbor https://helm.goharbor.io
+</span></code></pre></div>
 <h2 id="repo-update">Repo Update<a class="headerlink" href="#repo-update" title="Permanent link">⚓︎</a></h2>
 <p>Refresh the local repo cache, after <code>helm repo add</code>&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm repo update
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm repo update
 </span></code></pre></div>
 
               
