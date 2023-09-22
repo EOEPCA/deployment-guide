@@ -13,7 +13,9 @@ The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [
 The chart is configured via values that are fully documented in the [README for the `um-workspace-api` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme).
 
 ```bash
-helm install --version 1.2.0 --values workspace-api-values.yaml workspace-api eoepca/rm-workspace-api
+helm install --version 1.2.0 --values workspace-api-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  workspace-api rm-workspace-api
 ```
 
 ### Values
@@ -176,7 +178,9 @@ The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Workspace API service to provide access authorization decisions
 
 ```bash
-helm install --version 1.2.1 --values workspace-api-guard-values.yaml workspace-api-guard eoepca/resource-guard
+helm install --version 1.2.1 --values workspace-api-guard-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  workspace-api-guard resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the Workspace API for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...
@@ -309,7 +313,9 @@ The _Bucket Operator_ is deployed via the `rm-bucket-operator` helm chart from t
 The chart is configured via values that are fully documented in the [README for the `um-bucket-operator` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-bucket-operator#readme).
 
 ```bash
-helm install --version 0.9.9 --values bucket-operator-values.yaml bucket-operator eoepca/rm-bucket-operator
+helm install --version 0.9.9 --values bucket-operator-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  bucket-operator rm-bucket-operator
 ```
 
 ### Values

@@ -7,7 +7,9 @@ To support the development (ref. [Processor Development Environment](../pde/)) a
 _Harbor_ is deployed via the `harbor` helm chart from the [Harbor Helm Chart Repository](https://helm.goharbor.io).
 
 ```bash
-helm install --values harbor-values.yaml harbor harbor --repo https://helm.goharbor.io
+helm install --version 1.7.3 --values harbor-values.yaml \
+   --repo https://helm.goharbor.io \
+  harbor harbor
 ```
 
 ## Values

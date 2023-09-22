@@ -9,7 +9,9 @@ The _Processor Development Environment_ is deployed via the `eoepca/jupyterhub` 
 The chart is derived from the public chart `jupyterhub/k8s-hub` that is available on DockerHub - [https://hub.docker.com/r/jupyterhub/k8s-hub](https://hub.docker.com/r/jupyterhub/k8s-hub).
 
 ```bash
-helm install --version 1.1.12 --values pde-values.yaml pde eoepca/jupyterhub
+helm install --version 1.1.12 --values pde-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  pde jupyterhub
 ```
 
 ## Values

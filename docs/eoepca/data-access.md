@@ -12,7 +12,9 @@ The chart is configured via values that are supplied with the instantiation of t
 * Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
 
 ```bash
-helm install --version 1.2.5 --values data-access-values.yaml data-access data-access
+helm install --version 1.2.5 --values data-access-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  data-access data-access
 ```
 
 ## Values
@@ -305,7 +307,9 @@ global:
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Data Access service to provide access authorization decisions.
 
 ```bash
-helm install --version 1.2.1 --values data-access-guard-values.yaml data-access-guard eoepca/resource-guard
+helm install --version 1.2.1 --values data-access-guard-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  data-access-guard resource-guard
 ```
 
 The `resource-guard` must be configured with the values applicable to the Data Access for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...

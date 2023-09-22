@@ -9,7 +9,9 @@ The _PDP_ is deployed via the `pdp-engine` helm chart from the [EOEPCA Helm Char
 The chart is configured via values that are fully documented in the [README for the `pdp-engine` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/pdp-engine#readme).
 
 ```bash
-helm install --version 1.1.6 --values pdp-values.yaml pdp eoepca/pdp-engine
+helm install --version 1.1.6 --values pdp-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  pdp pdp-engine
 ```
 
 ## Values

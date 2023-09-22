@@ -5,12 +5,11 @@ The following prerequisite components are assumed to be deployed in the cluster.
 ## Nginx Ingress Controller
 
 ```bash
-# Add the helm repository
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-
 # Install the Nginx Ingress Controller helm chart
-helm upgrade -i --version='<4.5.0' ingress-nginx ingress-nginx/ingress-nginx --wait
+helm upgrade -i --version='<4.5.0' \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  ingress-nginx ingress-nginx \
+  --wait
 ```
 !!! note
     For Kubernetes version 1.22 and earlier the version of the Nginx Ingress Controller must be before v4.5.0.
@@ -28,15 +27,11 @@ metadata:
 ## Cert Manager
 
 ```bash
-# Add the helm repository
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
 # Install the Cert Manager helm chart
-helm upgrade -i cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace \
-  --set installCRDs=true
+helm upgrade -i --namespace cert-manager --create-namespace \
+  --repo https://charts.jetstack.io \
+  --set installCRDs=true \
+  cert-manager cert-manager
 ```
 
 ## Letsencrypt Certificates
@@ -117,10 +112,9 @@ Instead [`SealedSecret`](https://github.com/bitnami-labs/sealed-secrets) are com
 The `sealed-secret-controller` is deployed to the cluster using the helm chart...
 
 ```bash
-helm repo add bitnami-sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-helm repo update
 helm install --version 2.1.8 --create-namespace --namespace infra \
-  eoepca-sealed-secrets bitnami-sealed-secrets/sealed-secrets
+  --repo https://bitnami-labs.github.io/sealed-secrets \
+  eoepca-sealed-secrets sealed-secrets
 ```
 
 Once the controller is deployed within the cluster, then the [`kubeseal`](https://github.com/bitnami-labs/sealed-secrets/releases/tag/v0.15.0) command can be used to create a `SealedSecret` from a regular `Secret`, as follows...
@@ -155,9 +149,9 @@ As a workaround, in the absence of an existing object storage, it is possible to
 
 ```bash
 # Install the minio helm chart
-helm upgrade -i minio -f minio-values.yaml bitnami/minio \
+helm upgrade -i -f minio-values.yaml --namespace rm --create-namespace \
   --repo https://charts.min.io/ \
-  --namespace rm --create-namespace \
+  minio minio \
   --wait
 ```
 

@@ -26,7 +26,9 @@ The chart is configured via values that are fully documented in the [README for 
 It is expected to deploy multiple instances of the Resource Guard chart, one for each Resource Server to be protected.
 
 ```bash
-helm install --version 1.0.7 --values myservice-guard-values.yaml myservice-guard eoepca/resource-guard
+helm install --version 1.0.7 --values myservice-guard-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  myservice-guard resource-guard
 ```
 
 ## Values

@@ -9,7 +9,9 @@ The _User Profile_ is deployed via the `user-profile` helm chart from the [EOEPC
 The chart is configured via values that are fully documented in the [README for the `user-profile` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/user-profile#readme).
 
 ```bash
-helm install --version 1.1.6 --values user-profile-values.yaml user-profile eoepca/user-profile
+helm install --version 1.1.6 --values user-profile-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  user-profile user-profile
 ```
 
 ## Values
