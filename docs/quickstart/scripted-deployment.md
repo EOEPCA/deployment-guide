@@ -31,14 +31,17 @@ The Protection step is split from Deployment as there are some manual steps to b
 The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) is configured by some environment variables and command-line arguments.
 
 ### Environment Variables
+
 ??? example "Environment Variables"
     Variable | Description | Default
     -------- | ----------- | -------
     **REQUIRE_<cluster-component\>** | A set of variables that can be used to control which **CLUSTER** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_MINIKUBE=true`<br>`REQUIRE_INGRESS_NGINX=true`<br>`REQUIRE_CERT_MANAGER=true`<br>`REQUIRE_LETSENCRYPT=true`<br>`REQUIRE_SEALED_SECRETS=false`<br>`REQUIRE_MINIO=false` | see description
-    **REQUIRE_<eoepca-component\>** | A set of variables that can be used to control which **EOEPCA** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_STORAGE=true`<br>`REQUIRE_DUMMY_SERVICE=false`<br>`REQUIRE_LOGIN_SERVICE=true`<br>`REQUIRE_PDP=true`<br>`REQUIRE_USER_PROFILE=true`<br>`REQUIRE_ADES=true`<br>`REQUIRE_RESOURCE_CATALOGUE=true`<br>`REQUIRE_DATA_ACCESS=true`<br>`REQUIRE_WORKSPACE_API=true`<br>`REQUIRE_BUCKET_OPERATOR=true`<br>`REQUIRE_HARBOR=true`<br>`REQUIRE_PORTAL=true`<br>`REQUIRE_PDE=true` | see description
-    **REQUIRE_<protection-component\>** | A set of variables that can be used to control which **PROTECTION** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_DUMMY_SERVICE_PROTECTION=false`<br>`REQUIRE_ADES_PROTECTION=true`<br>`REQUIRE_RESOURCE_CATALOGUE_PROTECTION=true`<br>`REQUIRE_DATA_ACCESS_PROTECTION=true`<br>`REQUIRE_WORKSPACE_API_PROTECTION=true` | see description
+    **REQUIRE_<eoepca-component\>** | A set of variables that can be used to control which **EOEPCA** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_STORAGE=true`<br>`REQUIRE_DUMMY_SERVICE=false`<br>`REQUIRE_LOGIN_SERVICE=true`<br>`REQUIRE_PDP=true`<br>`REQUIRE_USER_PROFILE=true`<br>`REQUIRE_ADES=true`<br>`REQUIRE_RESOURCE_CATALOGUE=true`<br>`REQUIRE_DATA_ACCESS=true`<br>`REQUIRE_REGISTRATION_API=true`<br>`REQUIRE_WORKSPACE_API=true`<br>`REQUIRE_HARBOR=true`<br>`REQUIRE_PORTAL=true`<br>`REQUIRE_APPLICATION_HUB=true` | see description
+    **REQUIRE_<protection-component\>** | A set of variables that can be used to control which **PROTECTION** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_DUMMY_SERVICE_PROTECTION=false`<br>`REQUIRE_ADES_PROTECTION=true`<br>`REQUIRE_RESOURCE_CATALOGUE_PROTECTION=true`<br>`REQUIRE_DATA_ACCESS_PROTECTION=true`<br>`REGISTRATION_API_PROTECTION=true`<br>`REQUIRE_WORKSPACE_API_PROTECTION=true` | see description
     **MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5. | `v1.22.5`
     **MINIKUBE_MEMORY_AMOUNT** | Amount of memory to allocate to the docker containers used by minikube to implement the cluster. | `12g`
+    **MINIKUBE_DISK_AMOUNT** | Amount of disk space to allocate to the docker containers used by minikube to implement the cluster. | `20g`
+    **MINIKUBE_EXTRA_OPTIONS** | Additional options to pass to `minikube start` command-line | `--ports=80:80,443:443`
     **USE_METALLB** | Enable use of minikube's built-in load-balancer.<br>The load-balancer can be used to facilitate exposing services publicly. However, the same can be achieved using minikube's built-in ingress-controller. Therefore, this option is suppressed by default. | `false`
     **USE_INGRESS_NGINX_HELM** | Install the ingress-nginx controller using the published helm chart, rather than relying upon the version that is built-in to minikube. By default we prefer the version that is built in to minikube.  | `false`
     **USE_INGRESS_NGINX_LOADBALANCER** | Patch the built-in minikube nginx-ingress-controller to offer a service of type `LoadBalancer`, rather than the default `NodePort`. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default `NodePort` configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only applicable for `USE_INGRESS_NGINX_HELM=false` (i.e. when using the minikube built-in ) | `false`
@@ -49,26 +52,13 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
     **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
     **HARBOR_ADMIN_PASSWORD** | Password for the 'admin' user for the Harbor artefact registry service. | `changeme`
+    **DEFAULT_STORAGE** | _Storage Class_ to be used by default for all components requiring dynamic storage provisioning.<br>See variables `<component>_STORAGE` for per-component overrides. | `standard`
+    **<component\>_STORAGE** | A set of variables to control the dynamic provisioning _Storage Class_ for individual components, as follows:<br>MINIO_STORAGE<br>ADES_STORAGE<br>APPLICATION_HUB_STORAGE<br>DATA_ACCESS_STORAGE<br>HARBOR_STORAGE<br>RESOURCE_CATALOGUE_STORAGE | `<DEFAULT_STORAGE>`
     **PROCESSING_MAX_RAM** | Max RAM allocated to an individual processing job | `8Gi`
     **PROCESSING_MAX_CORES** | Max number of CPU cores allocated to an individual processing job | `4`
     **STAGEOUT_TARGET** | Configures the ADES with the destination to which it should push processing results:<br>`workspace` - via the Workspace API<br>`minio` - to minio S3 object storage | `workspace`
     **INSTALL_FLUX** | The Workspace API relies upon [Flux CI/CD](https://fluxcd.io/), and has the capability to install the required flux components to the cluster. If your deployment already has flux installed then set this value `false` to suppress the Workspace API flux install | `true`
     **CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud, with access to the `eodata` network._ | `false`
-
-### Openstack Configuration
-There are some additional environment variables that configure the `BucketOperator` with details of the infrastructure Openstack layer.
-
-!!! attention
-    This is only applicable for an Openstack deployment and has only been tested on the CREODIAS.
-??? example "Environment Variables"
-    Variable | Description | Default
-    -------- | ----------- | -------
-    **OS_DOMAINNAME** | Openstack domain of the admin account in the cloud provider. | `cloud_XXXXX`
-    **OS_USERNAME** | Openstack username of the admin account in the cloud provider. | `user@cloud.com`
-    **OS_PASSWORD** | Openstack password of the admin account in the cloud provider. | `none`
-    **OS_MEMBERROLEID** | ID of a specific role (e.g. the '_member_' role) for operations users (to allow administration), e.g. `7fe2ff9ee5384b1894a90838d3e92bab`. | `none`
-    **OS_SERVICEPROJECTID** | ID of a project containing the user identity requiring write access to the created user buckets, e.g. `573916ef342a4bf1aea807d0c6058c1e`. | `none`
-    **USER_EMAIL_PATTERN** | Email associated to the created user within the created user project.<br>_Note: `<name>` is templated and will be replaced._ | `eoepca-<name>@platform.com`
 
 ### Command-line Arguments
 
@@ -78,7 +68,7 @@ The eoepca.sh script is further configured via command-line arguments...
 eoepca.sh <action> <cluster-name> <public-ip> <domain>
 ```
 
-??? example "Arguments"
+??? example "`eoepca.sh` Command-line Arguments"
     Argument | Description | Default
     -------- | ----------- | -------
     **action** | Action to perform: `apply` \| `delete` \| `template`.<br>`apply` makes the deployment<br>`delete` removes the deployment<br>`template` outputs generated kubernetes yaml to stdout | `apply`
