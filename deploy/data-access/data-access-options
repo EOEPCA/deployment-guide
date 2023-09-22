@@ -32,7 +32,6 @@ export REQUIRE_PDP=false
 export REQUIRE_USER_PROFILE=false
 export REQUIRE_ADES=false
 export REQUIRE_WORKSPACE_API=false
-export REQUIRE_BUCKET_OPERATOR=false
 export REQUIRE_HARBOR=false
 export REQUIRE_PORTAL=false
 export REQUIRE_APPLICATION_HUB=false
