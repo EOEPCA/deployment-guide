@@ -26,7 +26,7 @@ The chart is configured via values that are fully documented in the [README for 
 It is expected to deploy multiple instances of the Resource Guard chart, one for each Resource Server to be protected.
 
 ```bash
-helm install --version 1.0.7 --values myservice-guard-values.yaml \
+helm install --version 1.3.1 --values myservice-guard-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   myservice-guard resource-guard
 ```
@@ -60,7 +60,6 @@ global:
 #---------------------------------------------------------------------------
 pep-engine:
   configMap:
-    workingMode: PARTIAL
     asHostname: auth
     pdpHostname: auth
   customDefaultResources:
@@ -69,8 +68,6 @@ pep-engine:
     resource_uri: "/ericspace"
     scopes: []
     default_owner: "d3688daa-385d-45b0-8e04-2062e3e2cd86"
-  nginxIntegration:
-    enabled: false
   volumeClaim:
     name: myservice-pep-pvc
     create: false
@@ -99,7 +96,7 @@ uma-user-agent:
     credentialsSecretName: "myservice-agent"
   logging:
     level: "debug"
-  unauthorizedResponse: 'Bearer realm="https://auth.192-168-49-2.nip.io/oxauth/auth/passport/passportlogin.htm"'
+  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
 #---------------------------------------------------------------------------
 # END values
 #---------------------------------------------------------------------------

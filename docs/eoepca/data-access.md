@@ -307,7 +307,7 @@ global:
 As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Data Access service to provide access authorization decisions.
 
 ```bash
-helm install --version 1.2.1 --values data-access-guard-values.yaml \
+helm install --version 1.3.1 --values data-access-guard-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   data-access-guard resource-guard
 ```
