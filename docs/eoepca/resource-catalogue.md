@@ -9,7 +9,7 @@ The _Resource Catalogue_ is deployed via the `rm-resource-catalogue` helm chart 
 The chart is configured via values that are fully documented in the [README for the `rm-resource-catalogue` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue#readme).
 
 ```bash
-helm install --version 1.2.0 --values resource-catalogue-values.yaml \
+helm install --version 1.3.1 --values resource-catalogue-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   resource-catalogue rm-resource-catalogue
 ```
@@ -60,7 +60,13 @@ pycsw:
   config:
     server:
       url: https://resource-catalogue.192-168-49-2.nip.io/
+    manager:
+      transactions: "true"
+      allowed_ips: "*"
 ```
+
+!!! note
+    The above example values enable transactions (write-access) to the catalogue from any IP address. This is convenient for testing/demonstration of the capability, but should be disbaled or restricted for operational deployments.
 
 ## Protection
 
