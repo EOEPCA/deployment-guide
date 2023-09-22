@@ -9,7 +9,7 @@ The _Login Service_ is deployed via the `login-service` helm chart from the [EOE
 The chart is configured via values that are fully documented in the [README for the `login-service` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/login-service#readme).
 
 ```bash
-helm install --version 1.2.1 --values login-service-values.yaml \
+helm install --version 1.2.8 --values login-service-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   login-service login-service
 ```
@@ -45,12 +45,29 @@ config:
 opendj:
   volumeClaim:
     name: eoepca-userman-pvc
+  resources:
+    requests:
+      cpu: 100m
+      memory: 300Mi
 oxauth:
   volumeClaim:
     name: eoepca-userman-pvc
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1000Mi
 oxtrust:
   volumeClaim:
     name: eoepca-userman-pvc
+  resources: 
+    requests:
+      cpu: 100m
+      memory: 1500Mi
+oxpassport:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
 nginx:
   ingress:
     annotations:
@@ -62,6 +79,9 @@ nginx:
           - auth.192-168-49-2.nip.io
         secretName: login-service-tls
 ```
+
+!!! note
+    The `resources:` above have been limited for the benefit of a minikube deployment. For a production deployment the values should be tuned (upwards) according to operational needs.
 
 ## Login Service Usage
 
