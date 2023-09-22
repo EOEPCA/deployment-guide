@@ -34,7 +34,11 @@ expose:
 
     hosts:
       core: harbor.192-168-49-2.nip.io
-      notary: harbor-notary.192-168-49-2.nip.io
+    tls:
+      enabled: "true"
+      certSource: secret
+      secret:
+        secretName: "harbor-tls"
 
 persistence:
   persistentVolumeClaim:
