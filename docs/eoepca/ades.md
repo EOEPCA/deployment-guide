@@ -198,12 +198,11 @@ uma-user-agent:
   insecureTlsSkipVerify: true
 ```
 
-**NOTES:**
-
-* TLS is enabled by the specification of `certManager.clusterIssuer`
-* The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
-* `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
-* `customDefaultResources` can be specified to apply initial protection to the endpoint
+!!! note
+    * TLS is enabled by the specification of `certManager.clusterIssuer`
+    * The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
+    * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
+    * `customDefaultResources` can be specified to apply initial protection to the endpoint
 
 ### Client Secret
 
@@ -244,12 +243,11 @@ The client credentials are obtained by registration of a client at the login ser
 
 This section includes some sample requests to test the deployed ADES.
 
->NOTES:
->
->1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
->   See section [User ID Token](../resource-protection/#user-id-token) for more details.
->2. The samples assume a user `eric`
->3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
+!!! note
+    1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
+       See section [User ID Token](../resource-protection/#user-id-token) for more details.
+    2. The samples assume a user `eric`
+    3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
 
 ### List Processes
 

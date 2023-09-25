@@ -67,10 +67,9 @@ notary:
   enabled: false
 ```
 
-**NOTES:**
-
-* We specify use of 'valid' certificates from Letsencrypt 'production'. The Workspace API, which calls the Harbor API, expects valid certificates and will thus fail if presented with TLS certificates that fail validation.
-* The `letsencrypt-production` Cluster Issuer relies upon the deployment being accessible from the public internet via the `expose.ingress.hosts.core` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller. The Workspace API will not like this.
+!!! note
+    * We specify use of 'valid' certificates from Letsencrypt 'production'. The Workspace API, which calls the Harbor API, expects valid certificates and will thus fail if presented with TLS certificates that fail validation.
+    * The `letsencrypt-production` Cluster Issuer relies upon the deployment being accessible from the public internet via the `expose.ingress.hosts.core` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller. The Workspace API will not like this.
 
 ## Container Registry Usage
 

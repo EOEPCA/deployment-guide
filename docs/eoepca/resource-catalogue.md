@@ -128,12 +128,11 @@ uma-user-agent:
   insecureTlsSkipVerify: true
 ```
 
-**NOTES:**
-
-* TLS is enabled by the specification of `certManager.clusterIssuer`
-* The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
-* `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
-* `customDefaultResources` can be specified to apply initial protection to the endpoint
+!!! note
+    * TLS is enabled by the specification of `certManager.clusterIssuer`
+    * The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
+    * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
+    * `customDefaultResources` can be specified to apply initial protection to the endpoint
 
 ### Client Secret
 
