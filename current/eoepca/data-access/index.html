@@ -911,6 +911,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../registration-api/" class="md-nav__link">
+        Registration API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../workspace/" class="md-nav__link">
         Workspace
       </a>
@@ -939,8 +953,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../pde/" class="md-nav__link">
-        Processor Development Environment
+      <a href="../application-hub/" class="md-nav__link">
+        Application Hub
       </a>
     </li>
   
@@ -1408,13 +1422,15 @@
 </span><span id="__span-12-62"><a id="__codelineno-12-62" name="__codelineno-12-62" href="#__codelineno-12-62"></a><span class="w">  </span><span class="nt">openAccess</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
 </span><span id="__span-12-63"><a id="__codelineno-12-63" name="__codelineno-12-63" href="#__codelineno-12-63"></a><span class="w">  </span><span class="nt">insecureTlsSkipVerify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 </span></code></pre></div>
-<p><strong>NOTES:</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
 <li>TLS is enabled by the specification of <code>certManager.clusterIssuer</code></li>
 <li>The <code>letsencrypt</code> Cluster Issuer relies upon the deployment being accessible from the public internet via the <code>global.domain</code> DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller</li>
 <li><code>insecureTlsSkipVerify</code> may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service <em>Authorization Server</em> will fail validation in the <em>Resource Guard</em>.</li>
 <li><code>customDefaultResources</code> can be specified to apply initial protection to the endpoint</li>
 </ul>
+</div>
 <h3 id="client-secret">Client Secret<a class="headerlink" href="#client-secret" title="Permanent link">⚓︎</a></h3>
 <p>The Resource Guard requires confidential client credentials to be configured through the file <code>client.yaml</code>, delivered via a kubernetes secret..</p>
 <p><strong>Example <code>client.yaml</code>&hellip;</strong></p>
@@ -1509,13 +1525,13 @@ For example&hellip;</p>
       
       
         
-        <a href="../workspace/" class="md-footer__link md-footer__link--next" aria-label="Next: Workspace" rel="next">
+        <a href="../registration-api/" class="md-footer__link md-footer__link--next" aria-label="Next: Registration API" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Workspace
+              Registration API
             </div>
           </div>
           <div class="md-footer__button md-icon">

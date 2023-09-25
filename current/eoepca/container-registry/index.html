@@ -674,6 +674,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../registration-api/" class="md-nav__link">
+        Registration API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../workspace/" class="md-nav__link">
         Workspace
       </a>
@@ -764,8 +778,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../pde/" class="md-nav__link">
-        Processor Development Environment
+      <a href="../application-hub/" class="md-nav__link">
+        Application Hub
       </a>
     </li>
   
@@ -857,11 +871,13 @@
 </span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="nt">notary</span><span class="p">:</span><span class="w"></span>
 </span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
 </span></code></pre></div>
-<p><strong>NOTES:</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
 <li>We specify use of &lsquo;valid&rsquo; certificates from Letsencrypt &lsquo;production&rsquo;. The Workspace API, which calls the Harbor API, expects valid certificates and will thus fail if presented with TLS certificates that fail validation.</li>
 <li>The <code>letsencrypt-production</code> Cluster Issuer relies upon the deployment being accessible from the public internet via the <code>expose.ingress.hosts.core</code> DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller. The Workspace API will not like this.</li>
 </ul>
+</div>
 <h2 id="container-registry-usage">Container Registry Usage<a class="headerlink" href="#container-registry-usage" title="Permanent link">⚓︎</a></h2>
 <p>After deployemnt Harbor is accessible via its <a href="https://harbor.192-168-49-2.nip.io/">web interface</a> at <code>https://harbor.&lt;domain&gt;/</code><br>e.g. <a href="https://harbor.192-168-49-2.nip.io/">https://harbor.192-168-49-2.nip.io/</a>.</p>
 <p>Login as the admin user with the password specified in the helm values.</p>
@@ -909,13 +925,13 @@
       
       
         
-        <a href="../pde/" class="md-footer__link md-footer__link--next" aria-label="Next: Processor Development Environment" rel="next">
+        <a href="../application-hub/" class="md-footer__link md-footer__link--next" aria-label="Next: Application Hub" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Processor Development Environment
+              Application Hub
             </div>
           </div>
           <div class="md-footer__button md-icon">

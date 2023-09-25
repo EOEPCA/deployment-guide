@@ -832,6 +832,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../registration-api/" class="md-nav__link">
+        Registration API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../workspace/" class="md-nav__link">
         Workspace
       </a>
@@ -860,8 +874,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../pde/" class="md-nav__link">
-        Processor Development Environment
+      <a href="../application-hub/" class="md-nav__link">
+        Application Hub
       </a>
     </li>
   
@@ -1062,13 +1076,15 @@ Additionally, the following ADES values should also be considered&hellip;
 </span><span id="__span-6-53"><a id="__codelineno-6-53" name="__codelineno-6-53" href="#__codelineno-6-53"></a><span class="w">  </span><span class="nt">openAccess</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
 </span><span id="__span-6-54"><a id="__codelineno-6-54" name="__codelineno-6-54" href="#__codelineno-6-54"></a><span class="w">  </span><span class="nt">insecureTlsSkipVerify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 </span></code></pre></div>
-<p><strong>NOTES:</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
 <li>TLS is enabled by the specification of <code>certManager.clusterIssuer</code></li>
 <li>The <code>letsencrypt</code> Cluster Issuer relies upon the deployment being accessible from the public internet via the <code>global.domain</code> DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller</li>
 <li><code>insecureTlsSkipVerify</code> may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service <em>Authorization Server</em> will fail validation in the <em>Resource Guard</em>.</li>
 <li><code>customDefaultResources</code> can be specified to apply initial protection to the endpoint</li>
 </ul>
+</div>
 <h3 id="client-secret">Client Secret<a class="headerlink" href="#client-secret" title="Permanent link">⚓︎</a></h3>
 <p>The Resource Guard requires confidential client credentials to be configured through the file <code>client.yaml</code>, delivered via a kubernetes secret..</p>
 <p><strong>Example <code>client.yaml</code>&hellip;</strong></p>
@@ -1094,15 +1110,15 @@ Additionally, the following ADES values should also be considered&hellip;
 </span></code></pre></div></p>
 <h2 id="ades-usage-samples">ADES Usage Samples<a class="headerlink" href="#ades-usage-samples" title="Permanent link">⚓︎</a></h2>
 <p>This section includes some sample requests to test the deployed ADES.</p>
-<blockquote>
-<p>NOTES:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ol>
 <li>It assumed that the ADES is subject to access protection (ref. <a href="../resource-protection">Resource Protection</a>), in which case a <em>User ID Token</em> must be provided with the request - typically in the HTTP header, such as <code>Authorization: Bearer</code> or <code>X-User-Id</code>.<br>
-  See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
+   See section <a href="../resource-protection/#user-id-token">User ID Token</a> for more details.</li>
 <li>The samples assume a user <code>eric</code></li>
 <li>The <code>snuggs</code> application is used in the example below. <em>See also <a href="#application-package-example">Application Package Example</a>.</em></li>
 </ol>
-</blockquote>
+</div>
 <h3 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h3>
 <p>List available processes.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl --location --request GET &#39;https://ades.192-168-49-2.nip.io/eric/wps3/processes&#39; \
