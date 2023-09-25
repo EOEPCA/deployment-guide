@@ -31,6 +31,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/eoepca/application-hub/</loc>
+         <lastmod>2023-09-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://deployment-guide.docs.eoepca.org/current/eoepca/container-registry/</loc>
          <lastmod>2023-09-25</lastmod>
          <changefreq>daily</changefreq>
@@ -57,6 +62,11 @@
     </url>
     <url>
          <loc>https://deployment-guide.docs.eoepca.org/current/eoepca/persistence/</loc>
+         <lastmod>2023-09-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://deployment-guide.docs.eoepca.org/current/eoepca/registration-api/</loc>
          <lastmod>2023-09-25</lastmod>
          <changefreq>daily</changefreq>
     </url>
