@@ -13,7 +13,7 @@ The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [
 The chart is configured via values that are fully documented in the [README for the `um-workspace-api` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme).
 
 ```bash
-helm install --version 1.2.0 --values workspace-api-values.yaml \
+helm install --version 1.3.5 --values workspace-api-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   workspace-api rm-workspace-api
 ```
@@ -36,6 +36,11 @@ Example `workspace-api-values.yaml`...
 fullnameOverride: workspace-api
 ingress:
   enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
   hosts:
     - host: workspace-api-open.192-168-49-2.nip.io
       paths: ["/"]
@@ -48,19 +53,36 @@ fluxHelmOperator:
 prefixForName: "guide-user"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: "rm"
-s3Endpoint: "https://cf2.cloudferro.com:8080"
+s3Endpoint: "https://minio.192-168-49-2.nip.io"
 s3Region: "RegionOne"
 harborUrl: "https://harbor.192-168-49-2.nip.io"
 harborUsername: "admin"
-harborPassword: "changeme"
+harborPasswordSecretName: "harbor"
 umaClientSecretName: "resman-client"
 umaClientSecretNamespace: "rm"
 workspaceChartsConfigMap: "workspace-charts"
+bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
+pepBaseUrl: "http://workspace-api-pep:5576/resources"
+autoProtectionEnabled: True
 ```
 
-**NOTES:**
+!!! note
+    * The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the `harborXXX` values above.<br>See section [Container Registry](../container-registry/).
+    * The password for the harbor `admin` user must be created as described in the section [Harbor `admin` Password](#harbor-admin-password).
+    * If the workspace-api is access protected (ref. [section Protection](#protection)), then it is recommended to enable `autoProtectionEnabled` and to specifiy the `pepBaseUrl`.
+    * The workspace-api initiates the creation of a storage 'bucket' for each workspace - the actual bucket creation being abstracted via a webhook - the URL of which is specified in the value `bucketEndpointUrl`.<br>
+      _See section [Bucket Creation Webhook](#bucket-creation-webhook) for details._
 
-* The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the `harborXXX` values above.<br>See section [Container Registry](../container-registry/).
+### Harbor `admin` Password
+
+The password for the harbor `admin` user is provided to the workspace-api via the specified secret - defined as `harbor` above.
+
+This secret must be created - for example as follows...
+
+```
+kubectl -n rm create secret generic harbor \
+  --from-literal=HARBOR_ADMIN_PASSWORD="changeme"
+```
 
 ### Flux Dependency
 
@@ -76,13 +98,21 @@ fluxHelmOperator:
 
 The Workspace API instantiates for each user a set of services, including a Resource Catalogue and Data Access services. These user services are instantiated via helm using templates. The templates are provided to the Workspace API in a `ConfigMap` that is, by default, named `workspace-charts`. Each file in the config-map is expected to be of `kind` `HelmRelease`. During creation of a new workspace, the Worksapce API applies each file to the cluster in the namespace of the newly created namespace.
 
-The default ConfigMap that is included with this guide contains the following templates:
+The default ConfigMap that is included with this guide contains the following templates for instantiation of user-specific components:
 
 * **Data Access**: `template-hr-data-access.yaml`
 * **Resource Catalogue**: `template-hr-resource-catalogue.yaml`
 * **Protection**: `template-hr-resource-guard.yaml`
 
 Each of these templates is expressed as a flux `HelmRelease` object that describes the helm chart and values required to deploy the service.
+
+In addition, ConfigMap templates are included that provide specific details required to access the user-scoped workspace resources, including access to S3 object storage and container registry:
+
+* **S3 client configuration**: `template-cm-aws-config.yaml`
+* **S3 client credentials**: `template-cm-aws-credentials.yaml`
+* **Container registry configuration**: `template-cm-docker-config.yaml`
+
+These ConfigMaps are designed to be mounted as files into the runtime environments of other components for user workspace integration. In particular the Application Hub makes use of this approach to provide a user experience that integrates with the user's workspace resources.
 
 #### Templates ConfigMap
 
@@ -106,7 +136,7 @@ data:
       chart:
         spec:
           chart: rm-resource-catalogue
-          version: 1.2.0
+          version: 1.3.1
           sourceRef:
             kind: HelmRepository
             name: eoepca
@@ -123,7 +153,7 @@ data:
       chart:
         spec:
           chart: data-access
-          version: 1.2.5
+          version: 1.3.1
           sourceRef:
             kind: HelmRepository
             name: eoepca
@@ -147,7 +177,47 @@ data:
             namespace: rm
       values:
         ...
+  template-cm-aws-config.yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: aws-config
+    data:
+      aws-config: |
+        [default]
+        region = {{ s3_region }}
+        s3 =
+          endpoint_url = {{ s3_endpoint_url }}
+        s3api =
+          endpoint_url = {{ s3_endpoint_url }}
+        [plugins]
+        endpoint = awscli_plugin_endpoint
+  template-cm-aws-credentials.yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: aws-credentials
+    data:
+      aws-credentials: |
+        [default]
+        aws_access_key_id = {{ access_key_id }}
+        aws_secret_access_key = {{ secret_access_key }}
+  template-cm-docker-config.yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: docker-config
+    data:
+      docker-config: |
+        {
+          "auths": {
+            "{{ container_registry_host }}": {
+              "auth": "{{ container_registry_credentials }}"
+            }
+        }
 ```
+
+Notice the use of workspace template parameters `{{ param_name }}` that are used at workspace creation time to contextualise the workspace for the owning user. See section [Workspace Template Parameters](#workspace-template-parameters) for more information.
 
 #### HelmRepositories for Templates
 
@@ -164,14 +234,22 @@ spec:
   url: https://eoepca.github.io/helm-charts/
 ```
 
-#### Helm Template Parameters
+#### Workspace Template Parameters
 
-The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.com/p/jinja/) when applying the HelmReleases for a user workspace. The current parameters are currently supported:
+The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.com/p/jinja/) when applying the _resources_ for a user workspace. The current parameters are currently supported:
 
 * **`workspace_name`**<br>
   The name of the workspace - `{{ workspace_name }}` used to ensure unique naming of cluster resources, such as service ingress
 * **`default_owner`**<br>
   The `uuid` of the owner of the workspace - `{{ default_owner }}` used to initialise the workspace protection
+* **_S3 Object Storage details..._**
+    * `{{ s3_endpoint_url }}`
+    * `{{ s3_region }}`
+    * `{{ access_key_id }}`
+    * `{{ secret_access_key }}`
+* **_Container Registry details..._**
+    * `{{ container_registry_host }}`
+    * `{{ container_registry_credentials }}`
 
 ### Protection
 
@@ -307,63 +385,105 @@ Additional information regarding the _Workspace API_ can be found at:
 * [Wiki](https://github.com/EOEPCA/rm-workspace-api/wiki)
 * [GitHub Repository](https://github.com/EOEPCA/rm-workspace-api)
 
+## Bucket Creation Webhook
 
-## Bucket Operator
+With helm chart version `1.3.1` of the `workspace-api` the approach to bucket creation has been re-architected to use a webhook approach.
 
-The Workspace API creates workspaces for individual users. In doing so, dedicated object storage buckets are created associated to each user workspace - for self-contained storage of user owned resources (data, processing applications, etc.).
+### Approach
 
-The bucket creation relies upon the object storage services of the underlying cloud infrastructure. We have created a `Bucket` abstraction as a Kubernetes `Custom Resource Definition`. This is served by a `Bucket Operator` service that deploys into the Kubernetes cluster to satisfy requests for resources of type `Bucket`.
+During workspace creation the `workspace-api` needs to create an object storage bucket for the user. The method by which the bucket is created is a function of the hosting infrastructure object storage layer - i.e. there is no 'common' approach for the `workspace-api` to perform the bucket creation.
 
-We provide a `Bucket Operator` implementation that currently supports the creation of buckets in OpenStack object storage - currently tested only on the CREODIAS (Cloudferro).
+In order to allow this bucket creation step to be customised by the platform integrator, the workspace-api is configured with a webhook endpoint that is invoked to effect the bucket creation on behalf of the workspace-api.
 
-The _Bucket Operator_ is deployed via the `rm-bucket-operator` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts).
-
-The chart is configured via values that are fully documented in the [README for the `um-bucket-operator` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-bucket-operator#readme).
-
-```bash
-helm install --version 0.9.9 --values bucket-operator-values.yaml \
-  --repo https://eoepca.github.io/helm-charts \
-  bucket-operator rm-bucket-operator
+The workspace-api is configured by the following value in its helm chart deployment, e.g...
+```
+bucketEndpointUrl: "http://my-bucket-webhook:8080/bucket"
 ```
 
-### Values
+The webhook service must implement the following REST interface...
+
+method: `POST`<br>
+content-type: `application/json`<br>
+data:
+```
+{
+  bucketName: str
+  secretName: str
+  secretNamespace: str
+}
+```
+
+There are two possible approaches to implement this request, distinguished by the response code...
+
+* `200`<br>
+  The bucket is created and the credentials are included in the response body.<br>
+  In this case only the supplied `bucketName` is relevant to fulfil the request.
+* `201`<br>
+  The bucket will be created (asychronously) and the outcome is provided by the webhook via a Kubernetes secret, as per the `secretName` and `secretNamespace` request parameters
+
+**`200` Response**
+
+In case `200` response, the response body should communicate the credentials with an `application/json` content-type in the form...
+```
+{
+    "bucketname": "...",
+    "access_key": "...",
+    "access_secret": "....",
+    "projectid": "...",
+}
+```
+
+In this case the workspace-api will create the appropriate bucket secret using the returned credentials.
+
+**`201` Response**
+
+In case `201` response, the secret should be created in the form...
+```
+data:
+  bucketname: "..."
+  access: "..."
+  secret: "..."
+  projectid: "..."
+```
+
+In this case the workspace-api will wait for the (asynchronous) creation of the specified secret before continuing with the workspace creation.
+
+**Overall Outcome**
+
+In both cases the ultimate outcome is the creation of the bucket in the back-end object storage, and the creation of a Kubernetes secret that maintains the credentials for access to the bucket. The existence of the bucket secret is prerequisite to the continuation of the user workspace creation.
+
+### Minio Bucket API (Webhook)
+
+The _Minio Bucket API_ provides an implementation of a _Bucket Creation Webhook_ for a Minio S3 Object Storage backend. This is used as the default in this guide - but should be replaced for a production deployment with an appropriate webhook to integrate with the object storage solution of the deployment environment.
+
+#### Helm Chart
+
+The _Minio Bucket API_ is deployed via the `rm-minio-bucket-api` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts) - ref. [Helm Chart for the Minio Bucket API](https://github.com/EOEPCA/helm-charts/blob/main/charts/rm-minio-bucket-api).
+
+```bash
+helm install --version 0.0.4 --values minio-bucket-api-values.yaml \
+  --repo https://eoepca.github.io/helm-charts \
+  rm-minio-bucket-api rm-minio-bucket-api
+```
+
+#### Values
 
 At minimum, values for the following attributes should be specified:
 
-* The fully-qualified public URL for the service
-* OpenStack access details
-* Cluster Issuer for TLS
+* The URL for the Minio endpoint - `minIOServerEndpoint`
+* The credentials for admin access to Minio - via the specified secret `accessCredentials.secretName` (ref. [Minio Credentials Secret](../../cluster/cluster-prerequisites/#minio-credentials-secret))
 
-Example `bucket-operator-values.yaml`...
+Example `minio-bucket-api-values.yaml`...
 ```yaml
-domain: 192-168-49-2.nip.io
-data:
-  OS_MEMBERROLEID: "9ee2ff9ee4384b1894a90878d3e92bab"
-  OS_SERVICEPROJECTID: "d21467d0a0414252a79e29d38f03ff98"
-  USER_EMAIL_PATTERN: "eoepca+<name>@192-168-49-2.nip.io"
-ingress:
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+fullnameOverride: minio-bucket-api
+minIOServerEndpoint: https://minio.192-168-49-2.nip.io
+accessCredentials:
+  secretName: minio-auth
 ```
 
-### OpenStack Secret
+### Additional Information
 
-The `Bucket Operator` requires privileged access to the OpenStack API, for which credentials are required. These are provided via a Kubernetes secret named `openstack` created in the namespace of the Bucket Operator.<br>
-For example...
+Additional information regarding the _Minio Bucket API_ can be found at:
 
-```
-kubectl -n rm create secret generic openstack \
-  --from-literal=username="${OS_USERNAME}" \
-  --from-literal=password="${OS_PASSWORD}" \
-  --from-literal=domainname="${OS_DOMAINNAME}"
-```
-
-See the [README for the Bucket Operator](https://github.com/EOEPCA/rm-bucket-operator#readme), which describes the configuration required for integration with your OpenStack account.
-
-For a worked example see our [Scripted Example Deployment](../../examples/scripted-example-deployment) - in particular:
-
-* [Openstack Configuration](../../examples/scripted-example-deployment/#openstack-configuration)
-* [Deployment Script](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/bucket-operator.sh)
+* [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-minio-bucket-api)
+* [GitHub Repository](https://github.com/EOEPCA/rm-minio-bucket-api)
