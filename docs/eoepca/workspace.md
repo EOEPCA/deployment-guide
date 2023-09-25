@@ -204,17 +204,25 @@ pep-engine:
   configMap:
     asHostname: auth
     pdpHostname: auth
-  # customDefaultResources:
-  # - name: "Eric's workspace"
-  #   description: "Protected Access for eric to his user workspace"
-  #   resource_uri: "/workspaces/guide-user-eric"
-  #   scopes: []
-  #   default_owner: "d3688daa-385d-45b0-8e04-2062e3e2cd86"
-  # - name: "Bob's workspace"
-  #   description: "Protected Access for bob to his user workspace"
-  #   resource_uri: "/workspaces/guide-user-bob"
-  #   scopes: []
-  #   default_owner: "f12c2592-0332-49f4-a4fb-7063b3c2a889"
+  defaultResources:
+    - name: "Workspace API Base Path"
+      description: "Protected root path for operators only"
+      resource_uri: "/"
+      scopes: []
+      default_owner: "0000000000000"
+  customDefaultResources:
+    - name: "Workspace API Swagger Docs"
+      description: "Public access to workspace API swagger docs"
+      resource_uri: "/docs"
+      scopes:
+        - "public_access"
+      default_owner: "0000000000000"
+    - name: "Workspace API OpenAPI JSON"
+      description: "Public access to workspace API openapi.json file"
+      resource_uri: "/openapi.json"
+      scopes:
+        - "public_access"
+      default_owner: "0000000000000"
   volumeClaim:
     name: eoepca-resman-pvc
     create: false
@@ -244,12 +252,12 @@ uma-user-agent:
   insecureTlsSkipVerify: true
 ```
 
-**NOTES:**
-
-* TLS is enabled by the specification of `certManager.clusterIssuer`
-* The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
-* `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
-* `customDefaultResources` can be specified to apply initial protection to the endpoint
+!!! note
+    * TLS is enabled by the specification of `certManager.clusterIssuer`
+    * The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
+    * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
+    * `customDefaultResources` can be specified to apply initial protection to the endpoint.<br>
+      _In the example above we open up access to the OpenAPI (swagger) documentation that does not require protection._
 
 ### Client Secret
 
