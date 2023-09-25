@@ -174,9 +174,9 @@ _Ensure that the script is executed with the environment variables and command-l
 
 The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed...
 
-* Fix the setting `UMA Resource Lifetime` - change `2592000` -> `2147483647` secs
-* Fix the setting `Authentication method for the Token Endpoint`  for the `ApplicationHub` - `client_secret_post` -> `client_secret_basic`
-* Add groups `group-1`, `group-2`, `group-3` to ApplicationHub, and add users `eric`, `bob` to these groups
+* Login Service: [UMA Resource Lifetime](../../eoepca/login-service/#uma-resource-lifetime)
+* Application Hub: [OIDC Client](../../eoepca/application-hub/#oidc-client)
+* Application Hub: [Groups and Users](../../eoepca/application-hub/#groups-and-users)
 
 ## Create User Workspaces
 

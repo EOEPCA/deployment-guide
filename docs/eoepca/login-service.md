@@ -83,6 +83,22 @@ nginx:
 !!! note
     The `resources:` above have been limited for the benefit of a minikube deployment. For a production deployment the values should be tuned (upwards) according to operational needs.
 
+## Post-deployment Manual Steps
+
+The deployment of the Login Service has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed...
+
+### UMA Resource Lifetime
+
+The Login Service maintains a background service that 'cleans' UMA resources that are older than aa certain age - by default 30 days. This lifetime does not fit the approach we are adopting, and so we must update this lifetime value to avoid the unexpected removal of UMA resources that would cause unexpected failures in policy enforcement.
+
+The client that is created by the script `./deploy/bin/register-client` (as per above) needs to be manually adjusted using the Web UI of the Login Service...
+
+* In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the `admin` user
+* Open `OpenID Connection -> Clients` and search for the client created earlier - `Application Hub`
+* Fix the setting `Authentication method for the Token Endpoint`  for the `ApplicationHub` - `client_secret_post` -> `client_secret_basic`
+* Save the update
+
+
 ## Login Service Usage
 
 Once the deployment has been completed successfully, the Login Service is accessed at the endpoint `https://auth.<domain>/`, configured by your domain - e.g. [https://auth.192-168-49-2.nip.io/](https://auth.192-168-49-2.nip.io/).
