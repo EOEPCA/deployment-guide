@@ -30,9 +30,10 @@ nav:
       - Application Deployment & Execution: eoepca/ades.md
       - Resource Catalogue: eoepca/resource-catalogue.md
       - Data Access: eoepca/data-access.md
+      - Registration API: eoepca/registration-api.md
       - Workspace: eoepca/workspace.md
       - Container Registry: eoepca/container-registry.md
-      - Processor Development Environment: eoepca/pde.md
+      - Application Hub: eoepca/application-hub.md
 
 theme:
   # name: mkdocs
