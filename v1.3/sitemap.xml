@@ -51,11 +51,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://deployment-guide.docs.eoepca.org/v1.3/eoepca/pde/</loc>
-         <lastmod>2023-09-25</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://deployment-guide.docs.eoepca.org/v1.3/eoepca/pdp/</loc>
          <lastmod>2023-09-25</lastmod>
          <changefreq>daily</changefreq>
