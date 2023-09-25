@@ -1175,9 +1175,9 @@
 <h2 id="post-deploy-manual-steps">Post-deploy Manual Steps<a class="headerlink" href="#post-deploy-manual-steps" title="Permanent link">⚓︎</a></h2>
 <p>The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed&hellip;</p>
 <ul>
-<li>Fix the setting <code>UMA Resource Lifetime</code> - change <code>2592000</code> -&gt; <code>2147483647</code> secs</li>
-<li>Fix the setting <code>Authentication method for the Token Endpoint</code>  for the <code>ApplicationHub</code> - <code>client_secret_post</code> -&gt; <code>client_secret_basic</code></li>
-<li>Add groups <code>group-1</code>, <code>group-2</code>, <code>group-3</code> to ApplicationHub, and add users <code>eric</code>, <code>bob</code> to these groups</li>
+<li>Login Service: <a href="../../eoepca/login-service/#uma-resource-lifetime">UMA Resource Lifetime</a></li>
+<li>Application Hub: <a href="../../eoepca/application-hub/#oidc-client">OIDC Client</a></li>
+<li>Application Hub: <a href="../../eoepca/application-hub/#groups-and-users">Groups and Users</a></li>
 </ul>
 <h2 id="create-user-workspaces">Create User Workspaces<a class="headerlink" href="#create-user-workspaces" title="Permanent link">⚓︎</a></h2>
 <p>The protection steps created the test users <code>eric</code> and <code>bob</code>. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see <a href="../../eoepca/workspace/">Workspace</a>.</p>
