@@ -912,13 +912,16 @@
 <h2 id="post-deployment-manual-steps">Post-deployment Manual Steps<a class="headerlink" href="#post-deployment-manual-steps" title="Permanent link">⚓︎</a></h2>
 <p>The deployment of the Login Service has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed&hellip;</p>
 <h3 id="uma-resource-lifetime">UMA Resource Lifetime<a class="headerlink" href="#uma-resource-lifetime" title="Permanent link">⚓︎</a></h3>
-<p>The Login Service maintains a background service that &lsquo;cleans&rsquo; UMA resources that are older than aa certain age - by default 30 days. This lifetime does not fit the approach we are adopting, and so we must update this lifetime value to avoid the unexpected removal of UMA resources that would cause unexpected failures in policy enforcement.</p>
-<p>The client that is created by the script <code>./deploy/bin/register-client</code> (as per above) needs to be manually adjusted using the Web UI of the Login Service&hellip;</p>
+<p>The Login Service maintains a background service that &lsquo;cleans&rsquo; UMA resources that are older than aa certain age - by default 30 days (<code>2592000</code> secs). This lifetime does not fit the approach we are adopting, and so we must update this lifetime value to avoid the unexpected removal of UMA resources that would cause unexpected failures in policy enforcement.</p>
 <ul>
 <li>In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the <code>admin</code> user</li>
-<li>Open <code>OpenID Connection -&gt; Clients</code> and search for the client created earlier - <code>Application Hub</code></li>
-<li>Fix the setting <code>Authentication method for the Token Endpoint</code>  for the <code>ApplicationHub</code> - <code>client_secret_post</code> -&gt; <code>client_secret_basic</code></li>
-<li>Save the update</li>
+<li>Open <code>Configuration -&gt; JSON Configuration -&gt; OxAuth Configuration</code></li>
+<li>Search for the setting <code>umaResourceLifetime</code></li>
+<li>Update the values of <code>umaResourceLifetime</code> to <code>2147483647</code></li>
+<li>Select to <code>Save Configuration</code></li>
+<li>Restart the <code>oxauth</code> deployment&hellip;<br>
+  <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl -n um rollout restart deploy/login-service-oxauth
+</span></code></pre></div></li>
 </ul>
 <h2 id="login-service-usage">Login Service Usage<a class="headerlink" href="#login-service-usage" title="Permanent link">⚓︎</a></h2>
 <p>Once the deployment has been completed successfully, the Login Service is accessed at the endpoint <code>https://auth.&lt;domain&gt;/</code>, configured by your domain - e.g. <a href="https://auth.192-168-49-2.nip.io/">https://auth.192-168-49-2.nip.io/</a>.</p>
