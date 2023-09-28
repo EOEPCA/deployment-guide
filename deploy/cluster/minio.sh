@@ -26,7 +26,7 @@ ingress:
   ingressClassName: nginx
   annotations:
     cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
   path: /
@@ -42,7 +42,7 @@ consoleIngress:
   ingressClassName: nginx
   annotations:
     cert-manager.io/cluster-issuer: "${TLS_CLUSTER_ISSUER}"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
   path: /
