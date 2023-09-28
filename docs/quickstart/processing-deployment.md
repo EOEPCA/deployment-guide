@@ -26,9 +26,16 @@ Deployment is initiated by invoking the script...
 
 The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-open.192-168-49-2.nip.io`.
 
-## Example Requests - `snuggs` application
+## Example Requests
 
-The file [`deploy/samples/requests/processing/snuggs.http`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/snuggs.http) has been prepared with sample requests for **_OGC API Processes_** operations:
+Some sample requests have been prepared in the subdirectory [`deploy/samples/requests/processing`](https://github.com/EOEPCA/deployment-guide/tree/main/deploy/samples/requests/processing) - for example...
+
+* [`convert`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/samples/requests/processing/convert-url.http)<br>
+  _Provides a 'hello world' processing example that can be used simply to check that the processing capability has been well deployed_
+* [`snuggs`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/samples/requests/processing/snuggs.http)<br>
+  _Provides a packaged EO exploitation algorithm that perform 'real' work and, as such, is more resource demanding (10GB RAM, 3 CPU) - and so may not be suitable for execution within a local minikube deployment (depending on resource allocations)_
+
+These sample `http` files have been prepared with sample requests for **_OGC API Processes_** operations:
 
 * List Processes
 * Deploy Process
@@ -38,18 +45,17 @@ The file [`deploy/samples/requests/processing/snuggs.http`](https://github.com/E
 * Get Job Results
 
 !!! note
-    The first requests in the file provide optional calls to obtain a user ID token (`openidConfiguration` / `authenticate`).
-    These are to be used in the case that protected (not 'open') endpoints are deployed.
+    * The first requests in the file provide optional calls to obtain a user ID token (`openidConfiguration` / `authenticate`).<br>
+      _These are to be used in the case that protected (not 'open') endpoints are deployed._
+    * The file describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).<br>
+      _Install in vscode with `ext install humao.rest-client`._
+    * The variables `@hostname` and `@domain` can be configured at the top of the file.
+  
+### Alternative `curl` Commands
 
-The file describes the HTTP requests for the ADES OGC API Processes endpoint, and is designed for use with the Visual Studio Code (vscode) extension [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). Install in vscode with `ext install humao.rest-client`.
+Alternatively the following `curl` commands can be used...
 
-The variables `@hostname` and `@domain` can be configured at the top of the file.
-
-??? example "Requests using CuRL"
-    Alternatively, the following `curl` commands can be used instead...
-
-    **List Processes**
-
+??? example "List Processes"
     ```bash
     curl -k \
       --request GET \
@@ -57,40 +63,69 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
       --header 'accept: application/json'
     ```
 
-    **Deploy Process**
+??? example "Deploy & Execute (`convert`)"
 
-    ```bash
-    curl -k \
-      --request POST \
-      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes \
-      --header 'accept: application/json' \
-      --header 'content-type: application/json' \
-      --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/app-snuggs/main/app-package.cwl","type": "application/cwl"}}'
-    ```
+    ??? example "Deploy Process (`convert`)"
+        ```bash
+        curl -k \
+          --request POST \
+          --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes \
+          --header 'accept: application/json' \
+          --header 'content-type: application/json' \
+          --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/convert/main/convert-url-app.cwl","type": "application/cwl"}}'
+        ```
 
-    **Get Process Details**
+    ??? example "Get Process Details (`convert`)"
+        ```bash
+        curl -k \
+          --request GET \
+          --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/convert-url-0_1_2 \
+          --header 'accept: application/json'
+        ```
 
-    ```bash
-    curl -k \
-      --request GET \
-      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
-      --header 'accept: application/json'
-    ```
+    ??? example "Execute Process (`convert`)"
+        ```bash
+        curl -k -v \
+          --request POST \
+          --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/convert-url-0_1_2/execution \
+          --header 'accept: application/json' \
+          --header 'content-type: application/json' \
+          --header 'prefer: respond-async' \
+          --data '{"inputs": {"fn":  "resize","url": "https://eoepca.org/media_portal/images/logo6_med.original.png", "size": "50%"},"response":"raw"}'
+        ```
 
-    **Execute Process**
+??? example "Deploy & Execute (`snuggs`)"
 
-    ```bash
-    curl -k -v \
-      --request POST \
-      --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
-      --header 'accept: application/json' \
-      --header 'content-type: application/json' \
-      --header 'prefer: respond-async' \
-      --data '{"inputs": {"input_reference":  "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A","s_expression": "ndvi:(/ (- B05 B03) (+ B05 B03))"},"response":"raw"}'
-    ```
+    ??? example "Deploy Process (`snuggs`)"
+        ```bash
+        curl -k \
+          --request POST \
+          --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes \
+          --header 'accept: application/json' \
+          --header 'content-type: application/json' \
+          --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/eoepca-v1.3/deploy/samples/requests/processing/snuggs.cwl","type": "application/cwl"}}'
+        ```
 
-    **Get Job Status**
+    ??? example "Get Process Details (`snuggs`)"
+        ```bash
+        curl -k \
+          --request GET \
+          --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0 \
+          --header 'accept: application/json'
+        ```
 
+    ??? example "Execute Process (`snuggs`)"
+        ```bash
+        curl -k -v \
+          --request POST \
+          --url https://ades-open.192-168-49-2.nip.io/eric/wps3/processes/snuggs-0_3_0/execution \
+          --header 'accept: application/json' \
+          --header 'content-type: application/json' \
+          --header 'prefer: respond-async' \
+          --data '{"inputs": {"input_reference":  "https://earth-search.aws.element84.com/v0/collections/sentinel-s2-l2a-cogs/items/S2B_36RTT_20191205_0_L2A","s_expression": "ndvi:(/ (- B05 B03) (+ B05 B03))"},"response":"raw"}'
+        ```
+
+??? example "Get Job Status"
     This request requires the `Location` header from the response to the execute request. This will be of the form `/{user}/wps3/jobs/{job-id}` - e.g. `/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e`.
 
     ```bash
@@ -100,8 +135,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
       --header 'accept: application/json'
     ```
 
-    **Get Job Results**
-
+??? example "Get Job Results"
     This request uses the same URL as `Get Job Status`, with the additional URL path `/result` - i.e. `/{user}/wps3/jobs/{job-id}/result` - e.g. `/eric/wps3/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e/result`
 
     ```bash
@@ -113,8 +147,7 @@ The variables `@hostname` and `@domain` can be configured at the top of the file
 
     The response indicates the location of the results, which should be in the `minio` object storage. See [Processing Results](#processing-results) 
 
-    ** List Jobs**
-
+??? example "List Jobs"
     ```bash
     curl -k \
       --request GET \
