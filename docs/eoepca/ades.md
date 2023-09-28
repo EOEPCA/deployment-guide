@@ -55,7 +55,9 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "false"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
     - host: ades.192-168-49-2.nip.io
       paths: 
