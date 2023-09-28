@@ -1,6 +1,6 @@
 # CREODIAS Deployment
 
-Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables](scripted-deployment.md#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/creodias/creodias-options).
+Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables](scripted-deployment.md#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/creodias/creodias-options).
 
 These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.
 

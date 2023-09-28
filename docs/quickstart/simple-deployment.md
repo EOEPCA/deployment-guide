@@ -2,7 +2,7 @@
 
 A deployment wrapper script has been prepared for a 'simple' deployment - designed to get a core local deployment of the primary servies.
 
-The script [`deploy/simple/simple`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/simple/simple-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-options).
+The script [`deploy/simple/simple`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/simple/simple) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/simple/simple-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/simple/simple-options).
 
 The simple deployment applies the following configuration:
 
@@ -24,7 +24,7 @@ See section [Deployment](scripted-deployment.md#deployment) for more details reg
 
 ## Protection
 
-See section [Protection](scripted-deployment.md#protection) for more details regarding the protection of the deployed services - which, for the simple deployment, is performed via the script [`deploy/simple/simple-protection`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/simple/simple-protection)...
+See section [Protection](scripted-deployment.md#protection) for more details regarding the protection of the deployed services - which, for the simple deployment, is performed via the script [`deploy/simple/simple-protection`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/simple/simple-protection)...
 
 ```
 ./deploy/simple/simple-protection

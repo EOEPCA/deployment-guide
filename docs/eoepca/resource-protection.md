@@ -115,7 +115,7 @@ client-secret: <my-secret>
 
 To obtain the _Client Credentials_ required by the `uma-user-agent` it is necessary to register a client with the `login-service`, or use the credentials for an existing client.
 
-A [helper script](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/register-client) is provided to register a basic client and obtain the required credentials. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+A [helper script](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/bin/register-client) is provided to register a basic client and obtain the required credentials. The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
 git clone git@github.com:EOEPCA/deployment-guide

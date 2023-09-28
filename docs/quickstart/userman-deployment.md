@@ -2,7 +2,7 @@
 
 A deployment wrapper script has been prepared for a 'user management' deployment - that is focused on the _Login Service_, _PDP_ and _User Profile_.
 
-The script [`deploy/userman/userman`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/userman/userman) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/userman/userman-options`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/userman/userman-options).
+The script [`deploy/userman/userman`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/userman/userman) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/userman/userman-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/userman/userman-options).
 
 The user-management deployment applies the following configuration:
 

@@ -1,6 +1,6 @@
 # Scripted Deployment
 
-The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory [`deployment-guide/deploy`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) of the source repository for this guide...
+The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory [`deployment-guide/deploy`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) of the source repository for this guide...
 
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide \
@@ -8,7 +8,7 @@ git clone https://github.com/EOEPCA/deployment-guide \
 && ls deploy
 ```
 
-The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
+The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
 
 !!! note
     The scripted deployment assumes that installation of the [Prerequisite Tooling](../cluster/prerequisite-tooling.md) has been performed.
@@ -28,7 +28,7 @@ The Protection step is split from Deployment as there are some manual steps to b
 
 ## Configuration
 
-The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh) is configured by some environment variables and command-line arguments.
+The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) is configured by some environment variables and command-line arguments.
 
 ### Environment Variables
 
@@ -237,7 +237,7 @@ A json response is returned, in which the field `id_token` provides the user ID 
 
 ### Using `create-workspace` helper script
 
-As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
 git clone git@github.com:EOEPCA/deployment-guide
@@ -279,7 +279,7 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
   During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file `client.yaml`. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments...<br>
   `rm -rf ./deploy/eoepca/client.yaml`
 
-There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/main/deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
+There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
 ```bash
 ./deploy/cluster/clean
 ```
