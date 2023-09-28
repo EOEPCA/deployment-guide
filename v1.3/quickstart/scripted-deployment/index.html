@@ -936,12 +936,12 @@
 
 
 <h1 id="scripted-deployment">Scripted Deployment<a class="headerlink" href="#scripted-deployment" title="Permanent link">⚓︎</a></h1>
-<p>The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh"><code>deployment-guide/deploy</code></a> of the source repository for this guide&hellip;</p>
+<p>The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh"><code>deployment-guide/deploy</code></a> of the source repository for this guide&hellip;</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone https://github.com/EOEPCA/deployment-guide <span class="se">\</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="o">&amp;&amp;</span> <span class="nb">cd</span> deployment-guide <span class="se">\</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="o">&amp;&amp;</span> ls deploy
 </span></code></pre></div>
-<p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh"><code>deploy/eoepca/eoepca.sh</code></a> acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.</p>
+<p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh"><code>deploy/eoepca/eoepca.sh</code></a> acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The scripted deployment assumes that installation of the <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> has been performed.</p>
@@ -958,7 +958,7 @@
 </ul>
 <p>The Protection step is split from Deployment as there are some manual steps to be performed before the Protection can be applied.</p>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">⚓︎</a></h2>
-<p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/eoepca/eoepca.sh"><code>deploy/eoepca/eoepca.sh</code></a> is configured by some environment variables and command-line arguments.</p>
+<p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh"><code>deploy/eoepca/eoepca.sh</code></a> is configured by some environment variables and command-line arguments.</p>
 <h3 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">⚓︎</a></h3>
 <details class="example">
 <summary>Environment Variables</summary>
@@ -1236,7 +1236,7 @@
 </span></code></pre></div>
 <p>A json response is returned, in which the field <code>id_token</code> provides the user ID token for the <code>admin</code> user.</p>
 <h3 id="using-create-workspace-helper-script">Using <code>create-workspace</code> helper script<a class="headerlink" href="#using-create-workspace-helper-script" title="Permanent link">⚓︎</a></h3>
-<p>As an aide there is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/bin/create-workspace"><code>create-workspace</code></a>. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
+<p>As an aide there is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/bin/create-workspace"><code>create-workspace</code></a>. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>git clone git@github.com:EOEPCA/deployment-guide
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">cd</span> deployment-guide
 </span></code></pre></div>
@@ -1270,7 +1270,7 @@
   <code>rm -rf ./deploy/eoepca/client.yaml</code></p>
 </li>
 </ol>
-<p>There is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/main/deploy/cluster/clean"><code>clean</code></a> that can be used for steps 2 and 3 above, (the script does not delete the cluster).
+<p>There is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/cluster/clean"><code>clean</code></a> that can be used for steps 2 and 3 above, (the script does not delete the cluster).
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>./deploy/cluster/clean
 </span></code></pre></div></p>
 
