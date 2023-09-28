@@ -28,7 +28,7 @@ The ADES service is accessed at the endpoint `ades-open.<domain>` - e.g. `ades-o
 
 ## Example Requests
 
-Some sample requests have been prepared in the subdirectory [`deploy/samples/requests/processing`](https://github.com/EOEPCA/deployment-guide/tree/main/deploy/samples/requests/processing) - for example...
+Some sample requests have been prepared in the subdirectory [`deploy/samples/requests/processing`](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/samples/requests/processing) - for example...
 
 * [`convert`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/samples/requests/processing/convert-url.http)<br>
   _Provides a 'hello world' processing example that can be used simply to check that the processing capability has been well deployed_
