@@ -105,6 +105,7 @@ The deployment of the Login Service has been designed, as far as possible, to au
 
 Suggested Steps:
 * Create clients. Clients can be created using the keycloak user interface at identity.keycloak.${environment}.eoepca.org. You need to login as admin.
+  To create a client: Login as admin in the keycloak UI > Clients > Create Client > Set a name > Next > Turn Client Authentication and Authorization On > Add the valid redirect URI's > Save.
 * Create Users. Users > Add User. Then set a password for the user. Credentials > Set Password.
 
 ### OR
@@ -136,6 +137,29 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 * Create a Policy: In client details, select Authorization > Policies > Create Policy > Select Policy Type (e.g.: User) > Select users > Save.
 * Create Authorization Scope: In client details, select Authorization > Scopes > Create authorization scope > Save.
 * Create a Permission: In client details, select Authorization > Permissions > Create Permission > Create Resource Based Permission > Select Resources to protect > Select Policies > Save.
+
+## Gatekeeper
+
+Gatekeeper is a authentication and authorization proxy. The gatekeeper is also deployed along the identity-service, but it has its own configuration file:
+
+```
+discovery-url: http://keycloak:8080/realms/demo
+client-id: gatekeeper
+client-secret: Oj5bPfRNJyerALL60eFyQuZBCNj9woXR
+encryption-key: AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j
+upstream-url: http://spring-boot-oauth2-resource-server:7072
+enable-request-id: true
+enable-refresh-tokens: true
+enable-login-handler: true
+enable-uma: true
+secure-cookie: false
+cookie-access-name: auth_user_id
+enable-logout-redirect: true
+enable-metrics: true
+enable-logging: true
+listen: :3000
+
+```
 
 ## Additional Information
 
