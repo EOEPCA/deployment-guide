@@ -26,6 +26,8 @@ export USE_TLS=false
 
 # Disable not needed components
 # n/a - all components
+export REQUIRE_DUMMY_SERVICE=true
+export REQUIRE_APPLICATION_HUB=false
 
 # Minikube options
 # Tune the resources afforded to minikube (assuming the `docker` driver)
