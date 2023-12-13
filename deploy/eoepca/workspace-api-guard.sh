@@ -102,5 +102,5 @@ else
   values | helm ${ACTION_HELM} workspace-api-guard resource-guard -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.3.1
+    --version 1.3.2
 fi
