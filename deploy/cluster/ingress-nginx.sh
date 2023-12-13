@@ -13,14 +13,21 @@ source functions
 configureAction "$1"
 
 values() {
-  # If no ClusterIssuer then turn off ssl-redirect
-  if [ "${USE_TLS}" = "false" ]; then
   cat - <<EOF
 controller:
   config:
-    ssl-redirect: false
+    ssl-redirect: ${USE_TLS}
+  watchIngressWithoutClass: true
+  ingressClassResource:
+    default: true
+  service:
+    type: NodePort
+    nodePorts:
+      http: 31080
+      https: 31443
+  publishService:
+    enabled: false
 EOF
-  fi
 }
 
 # Install with helm
