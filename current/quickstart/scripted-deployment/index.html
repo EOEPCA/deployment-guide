@@ -415,6 +415,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#post-deployment-manual-steps" class="md-nav__link">
+    Post-deployment Manual Steps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#default-credentials" class="md-nav__link">
     Default Credentials
   </a>
@@ -476,8 +483,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#post-deploy-manual-steps" class="md-nav__link">
-    Post-deploy Manual Steps
+  <a href="#post-protection-manual-steps" class="md-nav__link">
+    Post-protection Manual Steps
   </a>
   
 </li>
@@ -990,6 +997,11 @@
 <td>see description</td>
 </tr>
 <tr>
+<td><strong>MINIKUBE_VERSION</strong></td>
+<td>The Minikube version to be (optionally) installed<br>Note that the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> development has been conducted using the default stated here.</td>
+<td><code>v1.32.0</code></td>
+</tr>
+<tr>
 <td><strong>MINIKUBE_KUBERNETES_VERSION</strong></td>
 <td>The Kubernetes version to be used by minikube<br>Note that the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> development has been conducted primarily using version 1.22.5.</td>
 <td><code>v1.22.5</code></td>
@@ -1156,6 +1168,16 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl get pods -A
 </span></code></pre></div></p>
 <p>The deployment is ready once all pods are either <code>Running</code> or <code>Completed</code>. This can be further confirmed by accessing the login-service web interface at <code>https://auth.&lt;domain&gt;/</code> and logging in as user <code>admin</code> using the credentials configured via <code>LOGIN_SERVICE_ADMIN_PASSWORD</code>.</p>
+<h2 id="post-deployment-manual-steps">Post-deployment Manual Steps<a class="headerlink" href="#post-deployment-manual-steps" title="Permanent link">⚓︎</a></h2>
+<p>The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
+See the building block specific pages&hellip;</p>
+<ul>
+<li><strong>Login Service:</strong> <a href="../../eoepca/login-service/#post-deployment-manual-steps">Post-deployment Manual Steps</a></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See also <a href="#post-protection-manual-steps">Post-protection Manual Steps</a> for additional interventions to be performed later in the process.</p>
+</div>
 <h2 id="default-credentials">Default Credentials<a class="headerlink" href="#default-credentials" title="Permanent link">⚓︎</a></h2>
 <h3 id="login-service">Login Service<a class="headerlink" href="#login-service" title="Permanent link">⚓︎</a></h3>
 <p>By default, the Login Service is accessed at the URL <code>https://auth.&lt;domain&gt;/</code> with the credentials&hellip;</p>
@@ -1189,12 +1211,11 @@
 <em>Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main <a href="#deployment">deployment</a>.</em></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./deploy/eoepca/eoepca-protection.sh apply <span class="s2">&quot;&lt;eric-id&gt;&quot;</span> <span class="s2">&quot;&lt;bob-id&gt;&quot;</span> <span class="s2">&quot;&lt;public-ip&gt;&quot;</span> <span class="s2">&quot;&lt;domain&gt;&quot;</span>
 </span></code></pre></div>
-<h2 id="post-deploy-manual-steps">Post-deploy Manual Steps<a class="headerlink" href="#post-deploy-manual-steps" title="Permanent link">⚓︎</a></h2>
-<p>The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed&hellip;</p>
+<h2 id="post-protection-manual-steps">Post-protection Manual Steps<a class="headerlink" href="#post-protection-manual-steps" title="Permanent link">⚓︎</a></h2>
+<p>The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
+See the building block specific pages&hellip;</p>
 <ul>
-<li>Login Service: <a href="../../eoepca/login-service/#uma-resource-lifetime">UMA Resource Lifetime</a></li>
-<li>Application Hub: <a href="../../eoepca/application-hub/#oidc-client">OIDC Client</a></li>
-<li>Application Hub: <a href="../../eoepca/application-hub/#groups-and-users">Groups and Users</a></li>
+<li><strong>Application Hub:</strong> <a href="../../eoepca/application-hub/#post-deployment-manual-steps">Post-deployment Manual Steps</a></li>
 </ul>
 <h2 id="create-user-workspaces">Create User Workspaces<a class="headerlink" href="#create-user-workspaces" title="Permanent link">⚓︎</a></h2>
 <p>The protection steps created the test users <code>eric</code> and <code>bob</code>. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see <a href="../../eoepca/workspace/">Workspace</a>.</p>

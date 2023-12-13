@@ -976,11 +976,15 @@
 </span></code></pre></div>
 <h2 id="post-deployment-manual-steps">Post-deployment Manual Steps<a class="headerlink" href="#post-deployment-manual-steps" title="Permanent link">⚓︎</a></h2>
 <p>The deployment of the Application Hub has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed&hellip;</p>
+<ul>
+<li><a href="#oidc-client">Configure OIDC Client</a></li>
+<li><a href="#groups-and-users">Configure Groups and Users</a></li>
+</ul>
 <h3 id="oidc-client">OIDC Client<a class="headerlink" href="#oidc-client" title="Permanent link">⚓︎</a></h3>
 <p>The client that is created by the script <code>./deploy/bin/register-client</code> (as per above) needs to be manually adjusted using the Web UI of the Login Service&hellip;</p>
 <ul>
 <li>In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the <code>admin</code> user</li>
-<li>Open <code>OpenID Connection -&gt; Clients</code> and search for the client created earlier - <code>Application Hub</code></li>
+<li>Open <code>OpenID Connect -&gt; Clients</code> and search for the client created earlier - <code>Application Hub</code></li>
 <li>Fix the setting <code>Authentication method for the Token Endpoint</code>  for the <code>ApplicationHub</code> - <code>client_secret_post</code> -&gt; <code>client_secret_basic</code></li>
 <li>Save the update</li>
 </ul>
