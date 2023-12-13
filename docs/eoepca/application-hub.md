@@ -156,12 +156,15 @@ data:
 
 The deployment of the Application Hub has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed...
 
+* [Configure OIDC Client](#oidc-client)
+* [Configure Groups and Users](#groups-and-users)
+
 ### OIDC Client
 
 The client that is created by the script `./deploy/bin/register-client` (as per above) needs to be manually adjusted using the Web UI of the Login Service...
 
 * In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the `admin` user
-* Open `OpenID Connection -> Clients` and search for the client created earlier - `Application Hub`
+* Open `OpenID Connect -> Clients` and search for the client created earlier - `Application Hub`
 * Fix the setting `Authentication method for the Token Endpoint`  for the `ApplicationHub` - `client_secret_post` -> `client_secret_basic`
 * Save the update
 

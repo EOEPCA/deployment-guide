@@ -109,6 +109,16 @@ kubectl get pods -A
 
 The deployment is ready once all pods are either `Running` or `Completed`. This can be further confirmed by accessing the login-service web interface at `https://auth.<domain>/` and logging in as user `admin` using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
 
+## Post-deployment Manual Steps
+
+The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
+See the building block specific pages...
+
+* **Login Service:** [Post-deployment Manual Steps](../../eoepca/login-service/#post-deployment-manual-steps)
+
+!!! note
+    See also [Post-protection Manual Steps](#post-protection-manual-steps) for additional interventions to be performed later in the process.
+
 ## Default Credentials
 
 ### Login Service
@@ -171,13 +181,12 @@ _Ensure that the script is executed with the environment variables and command-l
 ./deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
 ```
 
-## Post-deploy Manual Steps
+## Post-protection Manual Steps
 
-The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed...
+The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
+See the building block specific pages...
 
-* Login Service: [UMA Resource Lifetime](../../eoepca/login-service/#uma-resource-lifetime)
-* Application Hub: [OIDC Client](../../eoepca/application-hub/#oidc-client)
-* Application Hub: [Groups and Users](../../eoepca/application-hub/#groups-and-users)
+* **Application Hub:** [Post-deployment Manual Steps](../../eoepca/application-hub/#post-deployment-manual-steps)
 
 ## Create User Workspaces
 
