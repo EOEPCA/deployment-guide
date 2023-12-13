@@ -44,14 +44,14 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt
         hosts:
-          - host: identity.keycloak.eoepca.org
+          - host: identity.keycloak.192-168-49-2.nip.io
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - secretName: identity-keycloak-tls-certificate
             hosts:
-              - identity.keycloak.eoepca.org
+              - identity.keycloak.192-168-49-2.nip.io
     identity-postgres:
       volumeClaim:
         name: eoepca-userman-pvc
@@ -60,40 +60,40 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt
         hosts:
-          - host: identity.api.eoepca.org
+          - host: identity.api.192-168-49-2.nip.io
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - secretName: identity-api-tls-certificate
             hosts:
-              - identity.api.eoepca.org
+              - identity.api.192-168-49-2.nip.io
     identity-manager:
       ingress:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt
         hosts:
-          - host: identity.manager.eoepca.org
+          - host: identity.manager.192-168-49-2.nip.io
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - secretName: identity-manager-tls-certificate
             hosts:
-              - identity.manager.eoepca.org
+              - identity.manager.192-168-49-2.nip.io
     identity-gateekeper:
       ingress:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt
         hosts:
-          - host: identity.gatekeeper.eoepca.org
+          - host: identity.gatekeeper.192-168-49-2.nip.io
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - secretName: identity-gatekeeper-tls-certificate
             hosts:
-              - identity.gatekeeper.eoepca.org
+              - identity.gatekeeper.192-168-49-2.nip.io
   timeout: 5m0s
   interval: 1m0s
         secretName: login-service-tls
@@ -125,6 +125,10 @@ sh create-client.sh \
 --resource="Alice space" --uris=/alice/* --users=alice
 ```
 
+Where -e is the environment (development, demo or production), -t is the authentication token, --id is the clientId, --name is the client name, --description the client description.
+
+For the resources part: --resource is the name of the resource, --uris is the resource uris and --users is the example of the policy, in this case the listed users will be the ones capable of accessing the resource.
+
 ### OR
 
 Also an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management. The API documentation can be found in: https://identity.api.eoepca.org/docs (needs login)
@@ -141,6 +145,8 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 ## Gatekeeper
 
 Gatekeeper is a authentication and authorization proxy. The gatekeeper is also deployed along the identity-service, but it has its own configuration file:
+
+gatekeeper.yaml
 
 ```
 discovery-url: http://keycloak:8080/realms/demo
