@@ -121,7 +121,7 @@ When enabled, the ADES will register the staged-out products with the user's Wor
 workflowExecutor:
   ...
   useResourceManager: "true"
-  resourceManagerWorkspacePrefix: "guide-user"
+  resourceManagerWorkspacePrefix: "ws"
   resourceManagerEndpoint: "https://workspace-api.192-168-49-2.nip.io"
   platformDomain: "https://auth.192-168-49-2.nip.io"
   ...

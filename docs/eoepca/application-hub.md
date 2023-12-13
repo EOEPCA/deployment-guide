@@ -61,7 +61,7 @@ jupyterhub:
         OAUTH_LOGOUT_REDIRECT_URL: "https://applicationhub.192-168-49-2.nip.io"
         OAUTH2_USERNAME_KEY: "user_name"
         STORAGE_CLASS: "standard"
-        RESOURCE_MANAGER_WORKSPACE_PREFIX: "guide-user"
+        RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
         JUPYTERHUB_CRYPT_KEY:
           valueFrom:

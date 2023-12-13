@@ -53,7 +53,7 @@ jupyterhub:
         OAUTH_LOGOUT_REDIRECT_URL: "https://applicationhub.${domain}"
         OAUTH2_USERNAME_KEY: "user_name"
         STORAGE_CLASS: "${APPLICATION_HUB_STORAGE}"
-        RESOURCE_MANAGER_WORKSPACE_PREFIX: "guide-user"
+        RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
         JUPYTERHUB_CRYPT_KEY:
           valueFrom:

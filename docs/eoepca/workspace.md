@@ -50,7 +50,7 @@ ingress:
       secretName: workspace-api-open-tls
 fluxHelmOperator:
   enabled: true
-prefixForName: "guide-user"
+prefixForName: "ws"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: "rm"
 s3Endpoint: "https://minio.192-168-49-2.nip.io"
