@@ -32,7 +32,7 @@ Typically, values for the following attributes may be specified to override the 
 * Object storage details for `data` and `cache`
 * Container images for `renderer` and `registrar`
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the Data Access will **not** be protected by the `resource-guard` component - ref. [Resource Protection](../resource-protection). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the Data Access will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
 
 ```yaml
 global:
@@ -425,7 +425,7 @@ global:
 
 ## Protection
 
-As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the Data Access service to provide access authorization decisions.
+As described in [section Resource Protection](resource-protection.md), the `resource-guard` component can be inserted into the request path of the Data Access service to provide access authorization decisions.
 
 ```bash
 helm install --version 1.3.1 --values data-access-guard-values.yaml \
@@ -539,7 +539,7 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection.md#client-registration)...
 ```bash
 ./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
@@ -597,4 +597,4 @@ Additional information regarding the _Data Access_ can be found at:
 * _Documentation:_
     * [User Guide](https://vs.pages.eox.at/documentation/user/main/)
     * [Operator Guide](https://vs.pages.eox.at/documentation/operator/main/)
-* [Git Repository](TBD)
+* [Git Repository](https://gitlab.eox.at/vs/vs)

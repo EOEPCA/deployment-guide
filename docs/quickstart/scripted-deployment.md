@@ -114,7 +114,7 @@ The deployment is ready once all pods are either `Running` or `Completed`. This 
 The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
 See the building block specific pages...
 
-* **Login Service:** [Post-deployment Manual Steps](../../eoepca/login-service/#post-deployment-manual-steps)
+* **Login Service:** [Post-deployment Manual Steps](../eoepca/login-service.md#post-deployment-manual-steps)
 
 !!! note
     See also [Post-protection Manual Steps](#post-protection-manual-steps) for additional interventions to be performed later in the process.
@@ -186,7 +186,7 @@ _Ensure that the script is executed with the environment variables and command-l
 The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
 See the building block specific pages...
 
-* **Application Hub:** [Post-deployment Manual Steps](../../eoepca/application-hub/#post-deployment-manual-steps)
+* **Application Hub:** [Post-deployment Manual Steps](../eoepca/application-hub.md#post-deployment-manual-steps)
 
 ## Create User Workspaces
 

@@ -1,6 +1,6 @@
 # Container Registry
 
-To support the development (ref. [Processor Development Environment](../pde/)) and deployment/execution (ref. [ADES](../ades/)) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the [Harbor artefact repository](https://goharbor.io/).
+To support the development (ref. [Application Hub](application-hub.md)) and deployment/execution (ref. [ADES](ades.md)) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the [Harbor artefact repository](https://goharbor.io/).
 
 ## Helm Chart
 
