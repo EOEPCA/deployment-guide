@@ -10,8 +10,15 @@
       
         <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/quickstart/creodias-deployment/">
       
+      
+        <link rel="prev" href="../userman-deployment/">
+      
+      
+        <link rel="next" href="../../cluster/prerequisite-tooling/">
+      
+      
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.2">
     
     
       
@@ -19,15 +26,14 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
-      
-        
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
-        
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
       
       
 
+
     
+    
+      
     
     
       
@@ -49,14 +55,8 @@
   </head>
   
   
-    
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+    <body dir="ltr">
   
-    
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -73,7 +73,7 @@
       
     </div>
     
-      <div data-md-component="outdated" hidden>
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
         
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
@@ -94,7 +94,7 @@
 
   
 
-<header class="md-header md-header--lifted" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="EOEPCA Deployment Guide" class="md-header__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
       
@@ -102,6 +102,7 @@
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
+      
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
@@ -122,8 +123,12 @@
     </div>
     
     
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
     
       <label class="md-header__button md-icon" for="__search">
+        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
@@ -132,12 +137,15 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
+        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -149,7 +157,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -161,7 +169,7 @@
         <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -174,7 +182,7 @@
     
       
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-tabs__inner md-grid">
+  <div class="md-grid">
     <ul class="md-tabs__list">
       
         
@@ -182,16 +190,18 @@
   
     
   
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  Deployment Guide
 
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link md-tabs__link--active">
-        Deployment Guide
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -217,12 +227,11 @@
                   <div class="md-sidebar__inner">
                     
 
-  
-
 
   
 
-<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="EOEPCA Deployment Guide" class="md-nav__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
       
@@ -236,7 +245,7 @@
       <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -248,198 +257,291 @@
     
       
       
-      
-
   
   
     
   
   
+  
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    
+    
+    
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1">
-          Deployment Guide
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Deployment Guide" data-md-level="1">
-        <label class="md-nav__title" for="__nav_1">
-          <span class="md-nav__icon md-icon"></span>
-          Deployment Guide
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
           
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Deployment Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
-        Introduction
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
   
   
     
   
   
+  
     
+    
+    
+    
+    
+      
       
     
     <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_2" type="checkbox" id="__nav_1_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1_2">
-          Quick Start
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Quick Start" data-md-level="2">
-        <label class="md-nav__title" for="__nav_1_2">
-          <span class="md-nav__icon md-icon"></span>
-          Quick Start
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
+        
           
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../quickstart/" class="md-nav__link">
-        Quick Start
+        
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../scripted-deployment/" class="md-nav__link">
-        Scripted Deployment
+        
+  
+  <span class="md-ellipsis">
+    Scripted Deployment
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../simple-deployment/" class="md-nav__link">
-        Simple Deployment
+        
+  
+  <span class="md-ellipsis">
+    Simple Deployment
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../processing-deployment/" class="md-nav__link">
-        Processing Deployment
+        
+  
+  <span class="md-ellipsis">
+    Processing Deployment
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../data-access-deployment/" class="md-nav__link">
-        Data Access
+        
+  
+  <span class="md-ellipsis">
+    Data Access
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../exploitation-deployment/" class="md-nav__link">
-        Exploitation
+        
+  
+  <span class="md-ellipsis">
+    Exploitation
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../userman-deployment/" class="md-nav__link">
-        User Management
+        
+  
+  <span class="md-ellipsis">
+    User Management
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
   
   
     
   
   
+  
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          CREODIAS Deployment
+          
+  
+  <span class="md-ellipsis">
+    CREODIAS Deployment
+  </span>
+  
+
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        CREODIAS Deployment
+        
+  
+  <span class="md-ellipsis">
+    CREODIAS Deployment
+  </span>
+  
+
       </a>
       
         
@@ -459,21 +561,27 @@
       
         <li class="md-nav__item">
   <a href="#endpoint-protection" class="md-nav__link">
-    Endpoint Protection
+    <span class="md-ellipsis">
+      Endpoint Protection
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#harvest-creodias-data" class="md-nav__link">
-    Harvest CREODIAS Data
+    <span class="md-ellipsis">
+      Harvest CREODIAS Data
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#data-specification-walkthrough" class="md-nav__link">
-    Data Specification Walkthrough
+    <span class="md-ellipsis">
+      Data Specification Walkthrough
+    </span>
   </a>
   
     <nav class="md-nav" aria-label="Data Specification Walkthrough">
@@ -481,35 +589,45 @@
         
           <li class="md-nav__item">
   <a href="#harvester" class="md-nav__link">
-    Harvester
+    <span class="md-ellipsis">
+      Harvester
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#registration" class="md-nav__link">
-    Registration
+    <span class="md-ellipsis">
+      Registration
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#product-type" class="md-nav__link">
-    Product Type
+    <span class="md-ellipsis">
+      Product Type
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#resource-catalogue-collections" class="md-nav__link">
-    Resource Catalogue Collections
+    <span class="md-ellipsis">
+      Resource Catalogue Collections
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#data-specification" class="md-nav__link">
-    Data Specification
+    <span class="md-ellipsis">
+      Data Specification
+    </span>
   </a>
   
     <nav class="md-nav" aria-label="Data Specification">
@@ -517,28 +635,36 @@
         
           <li class="md-nav__item">
   <a href="#producttype" class="md-nav__link">
-    productType
+    <span class="md-ellipsis">
+      productType
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#collections" class="md-nav__link">
-    collections
+    <span class="md-ellipsis">
+      collections
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#layers" class="md-nav__link">
-    layers
+    <span class="md-ellipsis">
+      layers
+    </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
   <a href="#example-configuration" class="md-nav__link">
-    Example Configuration
+    <span class="md-ellipsis">
+      Example Configuration
+    </span>
   </a>
   
 </li>
@@ -560,311 +686,628 @@
     </li>
   
 
+              
             
-          
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     
+    
+    
+    
+    
+      
       
     
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_3" type="checkbox" id="__nav_1_3" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1_3">
-          Cluster
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
-        <label class="md-nav__title" for="__nav_1_3">
-          <span class="md-nav__icon md-icon"></span>
-          Cluster
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
+        
           
+          <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Prepare Cluster
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prepare Cluster
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../cluster/prerequisite-tooling/" class="md-nav__link">
-        Prerequisite Tooling
+        
+  
+  <span class="md-ellipsis">
+    Prerequisite Tooling
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../cluster/kubernetes/" class="md-nav__link">
-        Kubernetes Cluster
+        
+  
+  <span class="md-ellipsis">
+    Kubernetes Cluster
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../cluster/helm-repositories/" class="md-nav__link">
-        Helm Repositories
+        
+  
+  <span class="md-ellipsis">
+    Helm Repositories
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../cluster/cluster-prerequisites/" class="md-nav__link">
-        Cluster Prerequisites
+        
+  
+  <span class="md-ellipsis">
+    Cluster Prerequisites
+  </span>
+  
+
       </a>
     </li>
   
 
+              
             
-          
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     
+    
+    
+    
+    
+      
       
     
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1_4" type="checkbox" id="__nav_1_4" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_1_4">
-          EOEPCA
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="EOEPCA" data-md-level="2">
-        <label class="md-nav__title" for="__nav_1_4">
-          <span class="md-nav__icon md-icon"></span>
-          EOEPCA
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+        
           
+          <label class="md-nav__link" for="__nav_1_4" id="__nav_1_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Deploy EOEPCA Components
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            Deploy EOEPCA Components
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/persistence/" class="md-nav__link">
-        Persistence
+        
+  
+  <span class="md-ellipsis">
+    Persistence
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_4_2" id="__nav_1_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Identity & Access Management
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Identity & Access Management
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/iam-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IAM Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_4_2_2" id="__nav_1_4_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Keycloak Solution (NEW)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_4_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Keycloak Solution (NEW)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Keycloak
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_4_2_3" id="__nav_1_4_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Gluu Solution (deprecated)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_4_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Gluu Solution (deprecated)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/login-service/" class="md-nav__link">
-        Login Service
+        
+  
+  <span class="md-ellipsis">
+    Login Service
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../eoepca/user-profile/" class="md-nav__link">
-        User Profile
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/pdp/" class="md-nav__link">
-        Policy Decision Point
+        
+  
+  <span class="md-ellipsis">
+    Policy Decision Point
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/resource-protection/" class="md-nav__link">
-        Resource Protection
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
+  </span>
+  
+
       </a>
     </li>
   
 
+              
             
-          
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
             
               
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/user-profile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User Profile
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/ades/" class="md-nav__link">
-        Application Deployment & Execution
+        
+  
+  <span class="md-ellipsis">
+    Application Deployment & Execution
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/resource-catalogue/" class="md-nav__link">
-        Resource Catalogue
+        
+  
+  <span class="md-ellipsis">
+    Resource Catalogue
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/data-access/" class="md-nav__link">
-        Data Access
+        
+  
+  <span class="md-ellipsis">
+    Data Access
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/registration-api/" class="md-nav__link">
-        Registration API
+        
+  
+  <span class="md-ellipsis">
+    Registration API
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/workspace/" class="md-nav__link">
-        Workspace
+        
+  
+  <span class="md-ellipsis">
+    Workspace
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/container-registry/" class="md-nav__link">
-        Container Registry
+        
+  
+  <span class="md-ellipsis">
+    Container Registry
+  </span>
+  
+
       </a>
     </li>
   
 
-            
-          
+              
             
               
+                
+  
   
   
   
     <li class="md-nav__item">
       <a href="../../eoepca/application-hub/" class="md-nav__link">
-        Application Hub
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
+  </span>
+  
+
       </a>
     </li>
   
 
+              
             
-          
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      
     </li>
   
 
+              
             
-          
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -875,6 +1318,152 @@
                 </div>
               </div>
             
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#endpoint-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Endpoint Protection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#harvest-creodias-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Harvest CREODIAS Data
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-specification-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Specification Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Specification Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#harvester" class="md-nav__link">
+    <span class="md-ellipsis">
+      Harvester
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Registration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#product-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      Product Type
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-catalogue-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource Catalogue Collections
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-specification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Specification
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Specification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#producttype" class="md-nav__link">
+    <span class="md-ellipsis">
+      productType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      collections
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      layers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
             
           
           
@@ -1070,275 +1659,282 @@
 <p><code>layers</code> defines the layers that are presented through the WMS service - each layer being linked to the underlying <code>browse</code> that provides the image source. Layers are defined via their <code>id</code> that relies upon the naming convection <code>&lt;collection&gt;__&lt;browse&gt;</code> to identify the browse and so define the layer.</p>
 <h4 id="example-configuration">Example Configuration<a class="headerlink" href="#example-configuration" title="Permanent link">⚓︎</a></h4>
 <p>Example configuration for Sentinel-2 L1C and L2A data.</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">layers</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span><span class="w"></span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color</span><span class="w"></span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span><span class="w"></span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">      </span><span class="nt">displayColor</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#eb3700&#39;</span><span class="w"></span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span><span class="w"></span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__TRUE_COLOR</span><span class="w"></span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color</span><span class="w"></span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span><span class="w"></span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span><span class="w"></span>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__masked_clouds</span><span class="w"></span>
-</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color with cloud masks</span><span class="w"></span>
-</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color with cloud masks</span><span class="w"></span>
-</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span><span class="w"></span>
-</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__FALSE_COLOR</span><span class="w"></span>
-</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C False Color</span><span class="w"></span>
-</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C False Color</span><span class="w"></span>
-</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span><span class="w"></span>
-</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__NDVI</span><span class="w"></span>
-</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 21CNDVI</span><span class="w"></span>
-</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C NDVI</span><span class="w"></span>
-</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span><span class="w"></span>
-</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span><span class="w"></span>
-</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span><span class="w"></span>
-</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span><span class="w"></span>
-</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="w">      </span><span class="nt">displayColor</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#eb3700&#39;</span><span class="w"></span>
-</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span><span class="w"></span>
-</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__TRUE_COLOR</span><span class="w"></span>
-</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span><span class="w"></span>
-</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span><span class="w"></span>
-</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-51"><a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-52"><a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span><span class="w"></span>
-</span><span id="__span-10-54"><a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__masked_clouds</span><span class="w"></span>
-</span><span id="__span-10-55"><a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color with cloud masks</span><span class="w"></span>
-</span><span id="__span-10-56"><a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color with cloud masks</span><span class="w"></span>
-</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-58"><a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-59"><a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-60"><a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span><span class="w"></span>
-</span><span id="__span-10-61"><a id="__codelineno-10-61" name="__codelineno-10-61" href="#__codelineno-10-61"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__FALSE_COLOR</span><span class="w"></span>
-</span><span id="__span-10-62"><a id="__codelineno-10-62" name="__codelineno-10-62" href="#__codelineno-10-62"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A False Color</span><span class="w"></span>
-</span><span id="__span-10-63"><a id="__codelineno-10-63" name="__codelineno-10-63" href="#__codelineno-10-63"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A False Color</span><span class="w"></span>
-</span><span id="__span-10-64"><a id="__codelineno-10-64" name="__codelineno-10-64" href="#__codelineno-10-64"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-65"><a id="__codelineno-10-65" name="__codelineno-10-65" href="#__codelineno-10-65"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-66"><a id="__codelineno-10-66" name="__codelineno-10-66" href="#__codelineno-10-66"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-67"><a id="__codelineno-10-67" name="__codelineno-10-67" href="#__codelineno-10-67"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span><span class="w"></span>
-</span><span id="__span-10-68"><a id="__codelineno-10-68" name="__codelineno-10-68" href="#__codelineno-10-68"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__NDVI</span><span class="w"></span>
-</span><span id="__span-10-69"><a id="__codelineno-10-69" name="__codelineno-10-69" href="#__codelineno-10-69"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A NDVI</span><span class="w"></span>
-</span><span id="__span-10-70"><a id="__codelineno-10-70" name="__codelineno-10-70" href="#__codelineno-10-70"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A NDVI</span><span class="w"></span>
-</span><span id="__span-10-71"><a id="__codelineno-10-71" name="__codelineno-10-71" href="#__codelineno-10-71"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-72"><a id="__codelineno-10-72" name="__codelineno-10-72" href="#__codelineno-10-72"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span><span class="w"></span>
-</span><span id="__span-10-73"><a id="__codelineno-10-73" name="__codelineno-10-73" href="#__codelineno-10-73"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span><span class="w"></span>
-</span><span id="__span-10-74"><a id="__codelineno-10-74" name="__codelineno-10-74" href="#__codelineno-10-74"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span><span class="w"></span>
-</span><span id="__span-10-75"><a id="__codelineno-10-75" name="__codelineno-10-75" href="#__codelineno-10-75"></a><span class="w">  </span><span class="nt">collections</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-76"><a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a><span class="w">    </span><span class="nt">S2L1C</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-77"><a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="w">      </span><span class="nt">product_types</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-78"><a id="__codelineno-10-78" name="__codelineno-10-78" href="#__codelineno-10-78"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI1C</span><span class="w"></span>
-</span><span id="__span-10-79"><a id="__codelineno-10-79" name="__codelineno-10-79" href="#__codelineno-10-79"></a><span class="w">      </span><span class="nt">coverage_types</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-80"><a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B01</span><span class="w"></span>
-</span><span id="__span-10-81"><a id="__codelineno-10-81" name="__codelineno-10-81" href="#__codelineno-10-81"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B02</span><span class="w"></span>
-</span><span id="__span-10-82"><a id="__codelineno-10-82" name="__codelineno-10-82" href="#__codelineno-10-82"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B03</span><span class="w"></span>
-</span><span id="__span-10-83"><a id="__codelineno-10-83" name="__codelineno-10-83" href="#__codelineno-10-83"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B04</span><span class="w"></span>
-</span><span id="__span-10-84"><a id="__codelineno-10-84" name="__codelineno-10-84" href="#__codelineno-10-84"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B05</span><span class="w"></span>
-</span><span id="__span-10-85"><a id="__codelineno-10-85" name="__codelineno-10-85" href="#__codelineno-10-85"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B06</span><span class="w"></span>
-</span><span id="__span-10-86"><a id="__codelineno-10-86" name="__codelineno-10-86" href="#__codelineno-10-86"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B07</span><span class="w"></span>
-</span><span id="__span-10-87"><a id="__codelineno-10-87" name="__codelineno-10-87" href="#__codelineno-10-87"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B08</span><span class="w"></span>
-</span><span id="__span-10-88"><a id="__codelineno-10-88" name="__codelineno-10-88" href="#__codelineno-10-88"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B8A</span><span class="w"></span>
-</span><span id="__span-10-89"><a id="__codelineno-10-89" name="__codelineno-10-89" href="#__codelineno-10-89"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B09</span><span class="w"></span>
-</span><span id="__span-10-90"><a id="__codelineno-10-90" name="__codelineno-10-90" href="#__codelineno-10-90"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B10</span><span class="w"></span>
-</span><span id="__span-10-91"><a id="__codelineno-10-91" name="__codelineno-10-91" href="#__codelineno-10-91"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B11</span><span class="w"></span>
-</span><span id="__span-10-92"><a id="__codelineno-10-92" name="__codelineno-10-92" href="#__codelineno-10-92"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B12</span><span class="w"></span>
-</span><span id="__span-10-93"><a id="__codelineno-10-93" name="__codelineno-10-93" href="#__codelineno-10-93"></a><span class="w">    </span><span class="nt">S2L2A</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-94"><a id="__codelineno-10-94" name="__codelineno-10-94" href="#__codelineno-10-94"></a><span class="w">      </span><span class="nt">product_types</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-95"><a id="__codelineno-10-95" name="__codelineno-10-95" href="#__codelineno-10-95"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI2A</span><span class="w"></span>
-</span><span id="__span-10-96"><a id="__codelineno-10-96" name="__codelineno-10-96" href="#__codelineno-10-96"></a><span class="w">      </span><span class="nt">product_levels</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-97"><a id="__codelineno-10-97" name="__codelineno-10-97" href="#__codelineno-10-97"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Level-2A</span><span class="w"></span>
-</span><span id="__span-10-98"><a id="__codelineno-10-98" name="__codelineno-10-98" href="#__codelineno-10-98"></a><span class="w">      </span><span class="nt">coverage_types</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-99"><a id="__codelineno-10-99" name="__codelineno-10-99" href="#__codelineno-10-99"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B01</span><span class="w"></span>
-</span><span id="__span-10-100"><a id="__codelineno-10-100" name="__codelineno-10-100" href="#__codelineno-10-100"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B02</span><span class="w"></span>
-</span><span id="__span-10-101"><a id="__codelineno-10-101" name="__codelineno-10-101" href="#__codelineno-10-101"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B03</span><span class="w"></span>
-</span><span id="__span-10-102"><a id="__codelineno-10-102" name="__codelineno-10-102" href="#__codelineno-10-102"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B04</span><span class="w"></span>
-</span><span id="__span-10-103"><a id="__codelineno-10-103" name="__codelineno-10-103" href="#__codelineno-10-103"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B05</span><span class="w"></span>
-</span><span id="__span-10-104"><a id="__codelineno-10-104" name="__codelineno-10-104" href="#__codelineno-10-104"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B06</span><span class="w"></span>
-</span><span id="__span-10-105"><a id="__codelineno-10-105" name="__codelineno-10-105" href="#__codelineno-10-105"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B07</span><span class="w"></span>
-</span><span id="__span-10-106"><a id="__codelineno-10-106" name="__codelineno-10-106" href="#__codelineno-10-106"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B08</span><span class="w"></span>
-</span><span id="__span-10-107"><a id="__codelineno-10-107" name="__codelineno-10-107" href="#__codelineno-10-107"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B8A</span><span class="w"></span>
-</span><span id="__span-10-108"><a id="__codelineno-10-108" name="__codelineno-10-108" href="#__codelineno-10-108"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B09</span><span class="w"></span>
-</span><span id="__span-10-109"><a id="__codelineno-10-109" name="__codelineno-10-109" href="#__codelineno-10-109"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B11</span><span class="w"></span>
-</span><span id="__span-10-110"><a id="__codelineno-10-110" name="__codelineno-10-110" href="#__codelineno-10-110"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B12</span><span class="w"></span>
-</span><span id="__span-10-111"><a id="__codelineno-10-111" name="__codelineno-10-111" href="#__codelineno-10-111"></a><span class="w">  </span><span class="nt">productTypes</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-112"><a id="__codelineno-10-112" name="__codelineno-10-112" href="#__codelineno-10-112"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI1C</span><span class="w"></span>
-</span><span id="__span-10-113"><a id="__codelineno-10-113" name="__codelineno-10-113" href="#__codelineno-10-113"></a><span class="w">      </span><span class="nt">filter</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-114"><a id="__codelineno-10-114" name="__codelineno-10-114" href="#__codelineno-10-114"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">s2:product_type</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI1C</span><span class="w"></span>
-</span><span id="__span-10-115"><a id="__codelineno-10-115" name="__codelineno-10-115" href="#__codelineno-10-115"></a><span class="w">      </span><span class="nt">metadata_assets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"></span>
-</span><span id="__span-10-116"><a id="__codelineno-10-116" name="__codelineno-10-116" href="#__codelineno-10-116"></a><span class="w">      </span><span class="nt">coverages</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-117"><a id="__codelineno-10-117" name="__codelineno-10-117" href="#__codelineno-10-117"></a><span class="w">        </span><span class="nt">S2L1C_B01</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-118"><a id="__codelineno-10-118" name="__codelineno-10-118" href="#__codelineno-10-118"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-119"><a id="__codelineno-10-119" name="__codelineno-10-119" href="#__codelineno-10-119"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B01</span><span class="w"></span>
-</span><span id="__span-10-120"><a id="__codelineno-10-120" name="__codelineno-10-120" href="#__codelineno-10-120"></a><span class="w">        </span><span class="nt">S2L1C_B02</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-121"><a id="__codelineno-10-121" name="__codelineno-10-121" href="#__codelineno-10-121"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-122"><a id="__codelineno-10-122" name="__codelineno-10-122" href="#__codelineno-10-122"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span><span class="w"></span>
-</span><span id="__span-10-123"><a id="__codelineno-10-123" name="__codelineno-10-123" href="#__codelineno-10-123"></a><span class="w">        </span><span class="nt">S2L1C_B03</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-124"><a id="__codelineno-10-124" name="__codelineno-10-124" href="#__codelineno-10-124"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-125"><a id="__codelineno-10-125" name="__codelineno-10-125" href="#__codelineno-10-125"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span><span class="w"></span>
-</span><span id="__span-10-126"><a id="__codelineno-10-126" name="__codelineno-10-126" href="#__codelineno-10-126"></a><span class="w">        </span><span class="nt">S2L1C_B04</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-127"><a id="__codelineno-10-127" name="__codelineno-10-127" href="#__codelineno-10-127"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-128"><a id="__codelineno-10-128" name="__codelineno-10-128" href="#__codelineno-10-128"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span><span class="w"></span>
-</span><span id="__span-10-129"><a id="__codelineno-10-129" name="__codelineno-10-129" href="#__codelineno-10-129"></a><span class="w">        </span><span class="nt">S2L1C_B05</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-130"><a id="__codelineno-10-130" name="__codelineno-10-130" href="#__codelineno-10-130"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-131"><a id="__codelineno-10-131" name="__codelineno-10-131" href="#__codelineno-10-131"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B05</span><span class="w"></span>
-</span><span id="__span-10-132"><a id="__codelineno-10-132" name="__codelineno-10-132" href="#__codelineno-10-132"></a><span class="w">        </span><span class="nt">S2L1C_B06</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-133"><a id="__codelineno-10-133" name="__codelineno-10-133" href="#__codelineno-10-133"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-134"><a id="__codelineno-10-134" name="__codelineno-10-134" href="#__codelineno-10-134"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B06</span><span class="w"></span>
-</span><span id="__span-10-135"><a id="__codelineno-10-135" name="__codelineno-10-135" href="#__codelineno-10-135"></a><span class="w">        </span><span class="nt">S2L1C_B07</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-136"><a id="__codelineno-10-136" name="__codelineno-10-136" href="#__codelineno-10-136"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-137"><a id="__codelineno-10-137" name="__codelineno-10-137" href="#__codelineno-10-137"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B07</span><span class="w"></span>
-</span><span id="__span-10-138"><a id="__codelineno-10-138" name="__codelineno-10-138" href="#__codelineno-10-138"></a><span class="w">        </span><span class="nt">S2L1C_B08</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-139"><a id="__codelineno-10-139" name="__codelineno-10-139" href="#__codelineno-10-139"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-140"><a id="__codelineno-10-140" name="__codelineno-10-140" href="#__codelineno-10-140"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span><span class="w"></span>
-</span><span id="__span-10-141"><a id="__codelineno-10-141" name="__codelineno-10-141" href="#__codelineno-10-141"></a><span class="w">        </span><span class="nt">S2L1C_B8A</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-142"><a id="__codelineno-10-142" name="__codelineno-10-142" href="#__codelineno-10-142"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-143"><a id="__codelineno-10-143" name="__codelineno-10-143" href="#__codelineno-10-143"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B8A</span><span class="w"></span>
-</span><span id="__span-10-144"><a id="__codelineno-10-144" name="__codelineno-10-144" href="#__codelineno-10-144"></a><span class="w">        </span><span class="nt">S2L1C_B09</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-145"><a id="__codelineno-10-145" name="__codelineno-10-145" href="#__codelineno-10-145"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-146"><a id="__codelineno-10-146" name="__codelineno-10-146" href="#__codelineno-10-146"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B09</span><span class="w"></span>
-</span><span id="__span-10-147"><a id="__codelineno-10-147" name="__codelineno-10-147" href="#__codelineno-10-147"></a><span class="w">        </span><span class="nt">S2L1C_B10</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-148"><a id="__codelineno-10-148" name="__codelineno-10-148" href="#__codelineno-10-148"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-149"><a id="__codelineno-10-149" name="__codelineno-10-149" href="#__codelineno-10-149"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B10</span><span class="w"></span>
-</span><span id="__span-10-150"><a id="__codelineno-10-150" name="__codelineno-10-150" href="#__codelineno-10-150"></a><span class="w">        </span><span class="nt">S2L1C_B11</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-151"><a id="__codelineno-10-151" name="__codelineno-10-151" href="#__codelineno-10-151"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-152"><a id="__codelineno-10-152" name="__codelineno-10-152" href="#__codelineno-10-152"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B11</span><span class="w"></span>
-</span><span id="__span-10-153"><a id="__codelineno-10-153" name="__codelineno-10-153" href="#__codelineno-10-153"></a><span class="w">        </span><span class="nt">S2L1C_B12</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-154"><a id="__codelineno-10-154" name="__codelineno-10-154" href="#__codelineno-10-154"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-155"><a id="__codelineno-10-155" name="__codelineno-10-155" href="#__codelineno-10-155"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B12</span><span class="w"></span>
-</span><span id="__span-10-156"><a id="__codelineno-10-156" name="__codelineno-10-156" href="#__codelineno-10-156"></a><span class="w">      </span><span class="nt">defaultBrowse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TRUE_COLOR</span><span class="w"></span>
-</span><span id="__span-10-157"><a id="__codelineno-10-157" name="__codelineno-10-157" href="#__codelineno-10-157"></a><span class="w">      </span><span class="nt">browses</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-158"><a id="__codelineno-10-158" name="__codelineno-10-158" href="#__codelineno-10-158"></a><span class="w">        </span><span class="nt">TRUE_COLOR</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-159"><a id="__codelineno-10-159" name="__codelineno-10-159" href="#__codelineno-10-159"></a><span class="w">          </span><span class="nt">asset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">visual</span><span class="w"></span>
-</span><span id="__span-10-160"><a id="__codelineno-10-160" name="__codelineno-10-160" href="#__codelineno-10-160"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-161"><a id="__codelineno-10-161" name="__codelineno-10-161" href="#__codelineno-10-161"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span><span class="w"></span>
-</span><span id="__span-10-162"><a id="__codelineno-10-162" name="__codelineno-10-162" href="#__codelineno-10-162"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-163"><a id="__codelineno-10-163" name="__codelineno-10-163" href="#__codelineno-10-163"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-164"><a id="__codelineno-10-164" name="__codelineno-10-164" href="#__codelineno-10-164"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-165"><a id="__codelineno-10-165" name="__codelineno-10-165" href="#__codelineno-10-165"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span><span class="w"></span>
-</span><span id="__span-10-166"><a id="__codelineno-10-166" name="__codelineno-10-166" href="#__codelineno-10-166"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-167"><a id="__codelineno-10-167" name="__codelineno-10-167" href="#__codelineno-10-167"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-168"><a id="__codelineno-10-168" name="__codelineno-10-168" href="#__codelineno-10-168"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-169"><a id="__codelineno-10-169" name="__codelineno-10-169" href="#__codelineno-10-169"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span><span class="w"></span>
-</span><span id="__span-10-170"><a id="__codelineno-10-170" name="__codelineno-10-170" href="#__codelineno-10-170"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-171"><a id="__codelineno-10-171" name="__codelineno-10-171" href="#__codelineno-10-171"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-172"><a id="__codelineno-10-172" name="__codelineno-10-172" href="#__codelineno-10-172"></a><span class="w">        </span><span class="nt">FALSE_COLOR</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-173"><a id="__codelineno-10-173" name="__codelineno-10-173" href="#__codelineno-10-173"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-174"><a id="__codelineno-10-174" name="__codelineno-10-174" href="#__codelineno-10-174"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span><span class="w"></span>
-</span><span id="__span-10-175"><a id="__codelineno-10-175" name="__codelineno-10-175" href="#__codelineno-10-175"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-176"><a id="__codelineno-10-176" name="__codelineno-10-176" href="#__codelineno-10-176"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-177"><a id="__codelineno-10-177" name="__codelineno-10-177" href="#__codelineno-10-177"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-178"><a id="__codelineno-10-178" name="__codelineno-10-178" href="#__codelineno-10-178"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span><span class="w"></span>
-</span><span id="__span-10-179"><a id="__codelineno-10-179" name="__codelineno-10-179" href="#__codelineno-10-179"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-180"><a id="__codelineno-10-180" name="__codelineno-10-180" href="#__codelineno-10-180"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-181"><a id="__codelineno-10-181" name="__codelineno-10-181" href="#__codelineno-10-181"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-182"><a id="__codelineno-10-182" name="__codelineno-10-182" href="#__codelineno-10-182"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span><span class="w"></span>
-</span><span id="__span-10-183"><a id="__codelineno-10-183" name="__codelineno-10-183" href="#__codelineno-10-183"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-184"><a id="__codelineno-10-184" name="__codelineno-10-184" href="#__codelineno-10-184"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-185"><a id="__codelineno-10-185" name="__codelineno-10-185" href="#__codelineno-10-185"></a><span class="w">        </span><span class="nt">NDVI</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-186"><a id="__codelineno-10-186" name="__codelineno-10-186" href="#__codelineno-10-186"></a><span class="w">          </span><span class="nt">grey</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-187"><a id="__codelineno-10-187" name="__codelineno-10-187" href="#__codelineno-10-187"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(B08-B04)/(B08+B04)</span><span class="w"></span>
-</span><span id="__span-10-188"><a id="__codelineno-10-188" name="__codelineno-10-188" href="#__codelineno-10-188"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-189"><a id="__codelineno-10-189" name="__codelineno-10-189" href="#__codelineno-10-189"></a><span class="w">      </span><span class="nt">masks</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-190"><a id="__codelineno-10-190" name="__codelineno-10-190" href="#__codelineno-10-190"></a><span class="w">        </span><span class="nt">clouds</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-191"><a id="__codelineno-10-191" name="__codelineno-10-191" href="#__codelineno-10-191"></a><span class="w">          </span><span class="nt">validity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-</span><span id="__span-10-192"><a id="__codelineno-10-192" name="__codelineno-10-192" href="#__codelineno-10-192"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI2A</span><span class="w"></span>
-</span><span id="__span-10-193"><a id="__codelineno-10-193" name="__codelineno-10-193" href="#__codelineno-10-193"></a><span class="w">      </span><span class="nt">filter</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-194"><a id="__codelineno-10-194" name="__codelineno-10-194" href="#__codelineno-10-194"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">s2:product_type</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI2A</span><span class="w"></span>
-</span><span id="__span-10-195"><a id="__codelineno-10-195" name="__codelineno-10-195" href="#__codelineno-10-195"></a><span class="w">      </span><span class="nt">metadata_assets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"></span>
-</span><span id="__span-10-196"><a id="__codelineno-10-196" name="__codelineno-10-196" href="#__codelineno-10-196"></a><span class="w">      </span><span class="nt">coverages</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-197"><a id="__codelineno-10-197" name="__codelineno-10-197" href="#__codelineno-10-197"></a><span class="w">        </span><span class="nt">S2L2A_B01</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-198"><a id="__codelineno-10-198" name="__codelineno-10-198" href="#__codelineno-10-198"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-199"><a id="__codelineno-10-199" name="__codelineno-10-199" href="#__codelineno-10-199"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B01</span><span class="w"></span>
-</span><span id="__span-10-200"><a id="__codelineno-10-200" name="__codelineno-10-200" href="#__codelineno-10-200"></a><span class="w">        </span><span class="nt">S2L2A_B02</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-201"><a id="__codelineno-10-201" name="__codelineno-10-201" href="#__codelineno-10-201"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-202"><a id="__codelineno-10-202" name="__codelineno-10-202" href="#__codelineno-10-202"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span><span class="w"></span>
-</span><span id="__span-10-203"><a id="__codelineno-10-203" name="__codelineno-10-203" href="#__codelineno-10-203"></a><span class="w">        </span><span class="nt">S2L2A_B03</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-204"><a id="__codelineno-10-204" name="__codelineno-10-204" href="#__codelineno-10-204"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-205"><a id="__codelineno-10-205" name="__codelineno-10-205" href="#__codelineno-10-205"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span><span class="w"></span>
-</span><span id="__span-10-206"><a id="__codelineno-10-206" name="__codelineno-10-206" href="#__codelineno-10-206"></a><span class="w">        </span><span class="nt">S2L2A_B04</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-207"><a id="__codelineno-10-207" name="__codelineno-10-207" href="#__codelineno-10-207"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-208"><a id="__codelineno-10-208" name="__codelineno-10-208" href="#__codelineno-10-208"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span><span class="w"></span>
-</span><span id="__span-10-209"><a id="__codelineno-10-209" name="__codelineno-10-209" href="#__codelineno-10-209"></a><span class="w">        </span><span class="nt">S2L2A_B05</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-210"><a id="__codelineno-10-210" name="__codelineno-10-210" href="#__codelineno-10-210"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-211"><a id="__codelineno-10-211" name="__codelineno-10-211" href="#__codelineno-10-211"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B05</span><span class="w"></span>
-</span><span id="__span-10-212"><a id="__codelineno-10-212" name="__codelineno-10-212" href="#__codelineno-10-212"></a><span class="w">        </span><span class="nt">S2L2A_B06</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-213"><a id="__codelineno-10-213" name="__codelineno-10-213" href="#__codelineno-10-213"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-214"><a id="__codelineno-10-214" name="__codelineno-10-214" href="#__codelineno-10-214"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B06</span><span class="w"></span>
-</span><span id="__span-10-215"><a id="__codelineno-10-215" name="__codelineno-10-215" href="#__codelineno-10-215"></a><span class="w">        </span><span class="nt">S2L2A_B07</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-216"><a id="__codelineno-10-216" name="__codelineno-10-216" href="#__codelineno-10-216"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-217"><a id="__codelineno-10-217" name="__codelineno-10-217" href="#__codelineno-10-217"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B07</span><span class="w"></span>
-</span><span id="__span-10-218"><a id="__codelineno-10-218" name="__codelineno-10-218" href="#__codelineno-10-218"></a><span class="w">        </span><span class="nt">S2L2A_B08</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-219"><a id="__codelineno-10-219" name="__codelineno-10-219" href="#__codelineno-10-219"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-220"><a id="__codelineno-10-220" name="__codelineno-10-220" href="#__codelineno-10-220"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span><span class="w"></span>
-</span><span id="__span-10-221"><a id="__codelineno-10-221" name="__codelineno-10-221" href="#__codelineno-10-221"></a><span class="w">        </span><span class="nt">S2L2A_B8A</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-222"><a id="__codelineno-10-222" name="__codelineno-10-222" href="#__codelineno-10-222"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-223"><a id="__codelineno-10-223" name="__codelineno-10-223" href="#__codelineno-10-223"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B8A</span><span class="w"></span>
-</span><span id="__span-10-224"><a id="__codelineno-10-224" name="__codelineno-10-224" href="#__codelineno-10-224"></a><span class="w">        </span><span class="nt">S2L2A_B09</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-225"><a id="__codelineno-10-225" name="__codelineno-10-225" href="#__codelineno-10-225"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-226"><a id="__codelineno-10-226" name="__codelineno-10-226" href="#__codelineno-10-226"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B09</span><span class="w"></span>
-</span><span id="__span-10-227"><a id="__codelineno-10-227" name="__codelineno-10-227" href="#__codelineno-10-227"></a><span class="w">        </span><span class="nt">S2L2A_B11</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-228"><a id="__codelineno-10-228" name="__codelineno-10-228" href="#__codelineno-10-228"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-229"><a id="__codelineno-10-229" name="__codelineno-10-229" href="#__codelineno-10-229"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B11</span><span class="w"></span>
-</span><span id="__span-10-230"><a id="__codelineno-10-230" name="__codelineno-10-230" href="#__codelineno-10-230"></a><span class="w">        </span><span class="nt">S2L2A_B12</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-231"><a id="__codelineno-10-231" name="__codelineno-10-231" href="#__codelineno-10-231"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-232"><a id="__codelineno-10-232" name="__codelineno-10-232" href="#__codelineno-10-232"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B12</span><span class="w"></span>
-</span><span id="__span-10-233"><a id="__codelineno-10-233" name="__codelineno-10-233" href="#__codelineno-10-233"></a><span class="w">      </span><span class="nt">default_browse_locator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TCI_10m</span><span class="w"></span>
-</span><span id="__span-10-234"><a id="__codelineno-10-234" name="__codelineno-10-234" href="#__codelineno-10-234"></a><span class="w">      </span><span class="nt">browses</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-235"><a id="__codelineno-10-235" name="__codelineno-10-235" href="#__codelineno-10-235"></a><span class="w">        </span><span class="nt">TRUE_COLOR</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-236"><a id="__codelineno-10-236" name="__codelineno-10-236" href="#__codelineno-10-236"></a><span class="w">          </span><span class="nt">asset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">visual-10m</span><span class="w"></span>
-</span><span id="__span-10-237"><a id="__codelineno-10-237" name="__codelineno-10-237" href="#__codelineno-10-237"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-238"><a id="__codelineno-10-238" name="__codelineno-10-238" href="#__codelineno-10-238"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span><span class="w"></span>
-</span><span id="__span-10-239"><a id="__codelineno-10-239" name="__codelineno-10-239" href="#__codelineno-10-239"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-240"><a id="__codelineno-10-240" name="__codelineno-10-240" href="#__codelineno-10-240"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-241"><a id="__codelineno-10-241" name="__codelineno-10-241" href="#__codelineno-10-241"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-242"><a id="__codelineno-10-242" name="__codelineno-10-242" href="#__codelineno-10-242"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span><span class="w"></span>
-</span><span id="__span-10-243"><a id="__codelineno-10-243" name="__codelineno-10-243" href="#__codelineno-10-243"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-244"><a id="__codelineno-10-244" name="__codelineno-10-244" href="#__codelineno-10-244"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-245"><a id="__codelineno-10-245" name="__codelineno-10-245" href="#__codelineno-10-245"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-246"><a id="__codelineno-10-246" name="__codelineno-10-246" href="#__codelineno-10-246"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span><span class="w"></span>
-</span><span id="__span-10-247"><a id="__codelineno-10-247" name="__codelineno-10-247" href="#__codelineno-10-247"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-248"><a id="__codelineno-10-248" name="__codelineno-10-248" href="#__codelineno-10-248"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-249"><a id="__codelineno-10-249" name="__codelineno-10-249" href="#__codelineno-10-249"></a><span class="w">        </span><span class="nt">FALSE_COLOR</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-250"><a id="__codelineno-10-250" name="__codelineno-10-250" href="#__codelineno-10-250"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-251"><a id="__codelineno-10-251" name="__codelineno-10-251" href="#__codelineno-10-251"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span><span class="w"></span>
-</span><span id="__span-10-252"><a id="__codelineno-10-252" name="__codelineno-10-252" href="#__codelineno-10-252"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-253"><a id="__codelineno-10-253" name="__codelineno-10-253" href="#__codelineno-10-253"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-254"><a id="__codelineno-10-254" name="__codelineno-10-254" href="#__codelineno-10-254"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-255"><a id="__codelineno-10-255" name="__codelineno-10-255" href="#__codelineno-10-255"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span><span class="w"></span>
-</span><span id="__span-10-256"><a id="__codelineno-10-256" name="__codelineno-10-256" href="#__codelineno-10-256"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-257"><a id="__codelineno-10-257" name="__codelineno-10-257" href="#__codelineno-10-257"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-258"><a id="__codelineno-10-258" name="__codelineno-10-258" href="#__codelineno-10-258"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-259"><a id="__codelineno-10-259" name="__codelineno-10-259" href="#__codelineno-10-259"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span><span class="w"></span>
-</span><span id="__span-10-260"><a id="__codelineno-10-260" name="__codelineno-10-260" href="#__codelineno-10-260"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-261"><a id="__codelineno-10-261" name="__codelineno-10-261" href="#__codelineno-10-261"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-</span><span id="__span-10-262"><a id="__codelineno-10-262" name="__codelineno-10-262" href="#__codelineno-10-262"></a><span class="w">        </span><span class="nt">NDVI</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-263"><a id="__codelineno-10-263" name="__codelineno-10-263" href="#__codelineno-10-263"></a><span class="w">          </span><span class="nt">grey</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-264"><a id="__codelineno-10-264" name="__codelineno-10-264" href="#__codelineno-10-264"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(B08-B04)/(B08+B04)</span><span class="w"></span>
-</span><span id="__span-10-265"><a id="__codelineno-10-265" name="__codelineno-10-265" href="#__codelineno-10-265"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span><span class="w"></span>
-</span><span id="__span-10-266"><a id="__codelineno-10-266" name="__codelineno-10-266" href="#__codelineno-10-266"></a><span class="w">      </span><span class="nt">masks</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-267"><a id="__codelineno-10-267" name="__codelineno-10-267" href="#__codelineno-10-267"></a><span class="w">        </span><span class="nt">clouds</span><span class="p">:</span><span class="w"></span>
-</span><span id="__span-10-268"><a id="__codelineno-10-268" name="__codelineno-10-268" href="#__codelineno-10-268"></a><span class="w">          </span><span class="nt">validity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">global</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">layers</span><span class="p">:</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">      </span><span class="nt">displayColor</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#eb3700&#39;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__TRUE_COLOR</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__masked_clouds</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color with cloud masks</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C True Color with cloud masks</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__FALSE_COLOR</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C False Color</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C False Color</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C__NDVI</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 21CNDVI</span>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 1C NDVI</span>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C</span>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span>
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span>
+</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span>
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="w">      </span><span class="nt">displayColor</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#eb3700&#39;</span>
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span>
+</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__TRUE_COLOR</span>
+</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span>
+</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color</span>
+</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-51"><a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-52"><a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span>
+</span><span id="__span-10-54"><a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__masked_clouds</span>
+</span><span id="__span-10-55"><a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color with cloud masks</span>
+</span><span id="__span-10-56"><a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A True Color with cloud masks</span>
+</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-58"><a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-59"><a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-60"><a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span>
+</span><span id="__span-10-61"><a id="__codelineno-10-61" name="__codelineno-10-61" href="#__codelineno-10-61"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__FALSE_COLOR</span>
+</span><span id="__span-10-62"><a id="__codelineno-10-62" name="__codelineno-10-62" href="#__codelineno-10-62"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A False Color</span>
+</span><span id="__span-10-63"><a id="__codelineno-10-63" name="__codelineno-10-63" href="#__codelineno-10-63"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A False Color</span>
+</span><span id="__span-10-64"><a id="__codelineno-10-64" name="__codelineno-10-64" href="#__codelineno-10-64"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-65"><a id="__codelineno-10-65" name="__codelineno-10-65" href="#__codelineno-10-65"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-66"><a id="__codelineno-10-66" name="__codelineno-10-66" href="#__codelineno-10-66"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-67"><a id="__codelineno-10-67" name="__codelineno-10-67" href="#__codelineno-10-67"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span>
+</span><span id="__span-10-68"><a id="__codelineno-10-68" name="__codelineno-10-68" href="#__codelineno-10-68"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A__NDVI</span>
+</span><span id="__span-10-69"><a id="__codelineno-10-69" name="__codelineno-10-69" href="#__codelineno-10-69"></a><span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A NDVI</span>
+</span><span id="__span-10-70"><a id="__codelineno-10-70" name="__codelineno-10-70" href="#__codelineno-10-70"></a><span class="w">      </span><span class="nt">abstract</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sentinel-2 Level 2A NDVI</span>
+</span><span id="__span-10-71"><a id="__codelineno-10-71" name="__codelineno-10-71" href="#__codelineno-10-71"></a><span class="w">      </span><span class="nt">grids</span><span class="p">:</span>
+</span><span id="__span-10-72"><a id="__codelineno-10-72" name="__codelineno-10-72" href="#__codelineno-10-72"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WGS84</span>
+</span><span id="__span-10-73"><a id="__codelineno-10-73" name="__codelineno-10-73" href="#__codelineno-10-73"></a><span class="w">          </span><span class="nt">zoom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+</span><span id="__span-10-74"><a id="__codelineno-10-74" name="__codelineno-10-74" href="#__codelineno-10-74"></a><span class="w">      </span><span class="nt">parentLayer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A</span>
+</span><span id="__span-10-75"><a id="__codelineno-10-75" name="__codelineno-10-75" href="#__codelineno-10-75"></a><span class="w">  </span><span class="nt">collections</span><span class="p">:</span>
+</span><span id="__span-10-76"><a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a><span class="w">    </span><span class="nt">S2L1C</span><span class="p">:</span>
+</span><span id="__span-10-77"><a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="w">      </span><span class="nt">product_types</span><span class="p">:</span>
+</span><span id="__span-10-78"><a id="__codelineno-10-78" name="__codelineno-10-78" href="#__codelineno-10-78"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI1C</span>
+</span><span id="__span-10-79"><a id="__codelineno-10-79" name="__codelineno-10-79" href="#__codelineno-10-79"></a><span class="w">      </span><span class="nt">coverage_types</span><span class="p">:</span>
+</span><span id="__span-10-80"><a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B01</span>
+</span><span id="__span-10-81"><a id="__codelineno-10-81" name="__codelineno-10-81" href="#__codelineno-10-81"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B02</span>
+</span><span id="__span-10-82"><a id="__codelineno-10-82" name="__codelineno-10-82" href="#__codelineno-10-82"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B03</span>
+</span><span id="__span-10-83"><a id="__codelineno-10-83" name="__codelineno-10-83" href="#__codelineno-10-83"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B04</span>
+</span><span id="__span-10-84"><a id="__codelineno-10-84" name="__codelineno-10-84" href="#__codelineno-10-84"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B05</span>
+</span><span id="__span-10-85"><a id="__codelineno-10-85" name="__codelineno-10-85" href="#__codelineno-10-85"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B06</span>
+</span><span id="__span-10-86"><a id="__codelineno-10-86" name="__codelineno-10-86" href="#__codelineno-10-86"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B07</span>
+</span><span id="__span-10-87"><a id="__codelineno-10-87" name="__codelineno-10-87" href="#__codelineno-10-87"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B08</span>
+</span><span id="__span-10-88"><a id="__codelineno-10-88" name="__codelineno-10-88" href="#__codelineno-10-88"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B8A</span>
+</span><span id="__span-10-89"><a id="__codelineno-10-89" name="__codelineno-10-89" href="#__codelineno-10-89"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B09</span>
+</span><span id="__span-10-90"><a id="__codelineno-10-90" name="__codelineno-10-90" href="#__codelineno-10-90"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B10</span>
+</span><span id="__span-10-91"><a id="__codelineno-10-91" name="__codelineno-10-91" href="#__codelineno-10-91"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B11</span>
+</span><span id="__span-10-92"><a id="__codelineno-10-92" name="__codelineno-10-92" href="#__codelineno-10-92"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L1C_B12</span>
+</span><span id="__span-10-93"><a id="__codelineno-10-93" name="__codelineno-10-93" href="#__codelineno-10-93"></a><span class="w">    </span><span class="nt">S2L2A</span><span class="p">:</span>
+</span><span id="__span-10-94"><a id="__codelineno-10-94" name="__codelineno-10-94" href="#__codelineno-10-94"></a><span class="w">      </span><span class="nt">product_types</span><span class="p">:</span>
+</span><span id="__span-10-95"><a id="__codelineno-10-95" name="__codelineno-10-95" href="#__codelineno-10-95"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI2A</span>
+</span><span id="__span-10-96"><a id="__codelineno-10-96" name="__codelineno-10-96" href="#__codelineno-10-96"></a><span class="w">      </span><span class="nt">product_levels</span><span class="p">:</span>
+</span><span id="__span-10-97"><a id="__codelineno-10-97" name="__codelineno-10-97" href="#__codelineno-10-97"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Level-2A</span>
+</span><span id="__span-10-98"><a id="__codelineno-10-98" name="__codelineno-10-98" href="#__codelineno-10-98"></a><span class="w">      </span><span class="nt">coverage_types</span><span class="p">:</span>
+</span><span id="__span-10-99"><a id="__codelineno-10-99" name="__codelineno-10-99" href="#__codelineno-10-99"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B01</span>
+</span><span id="__span-10-100"><a id="__codelineno-10-100" name="__codelineno-10-100" href="#__codelineno-10-100"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B02</span>
+</span><span id="__span-10-101"><a id="__codelineno-10-101" name="__codelineno-10-101" href="#__codelineno-10-101"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B03</span>
+</span><span id="__span-10-102"><a id="__codelineno-10-102" name="__codelineno-10-102" href="#__codelineno-10-102"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B04</span>
+</span><span id="__span-10-103"><a id="__codelineno-10-103" name="__codelineno-10-103" href="#__codelineno-10-103"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B05</span>
+</span><span id="__span-10-104"><a id="__codelineno-10-104" name="__codelineno-10-104" href="#__codelineno-10-104"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B06</span>
+</span><span id="__span-10-105"><a id="__codelineno-10-105" name="__codelineno-10-105" href="#__codelineno-10-105"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B07</span>
+</span><span id="__span-10-106"><a id="__codelineno-10-106" name="__codelineno-10-106" href="#__codelineno-10-106"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B08</span>
+</span><span id="__span-10-107"><a id="__codelineno-10-107" name="__codelineno-10-107" href="#__codelineno-10-107"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B8A</span>
+</span><span id="__span-10-108"><a id="__codelineno-10-108" name="__codelineno-10-108" href="#__codelineno-10-108"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B09</span>
+</span><span id="__span-10-109"><a id="__codelineno-10-109" name="__codelineno-10-109" href="#__codelineno-10-109"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B11</span>
+</span><span id="__span-10-110"><a id="__codelineno-10-110" name="__codelineno-10-110" href="#__codelineno-10-110"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2L2A_B12</span>
+</span><span id="__span-10-111"><a id="__codelineno-10-111" name="__codelineno-10-111" href="#__codelineno-10-111"></a><span class="w">  </span><span class="nt">productTypes</span><span class="p">:</span>
+</span><span id="__span-10-112"><a id="__codelineno-10-112" name="__codelineno-10-112" href="#__codelineno-10-112"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI1C</span>
+</span><span id="__span-10-113"><a id="__codelineno-10-113" name="__codelineno-10-113" href="#__codelineno-10-113"></a><span class="w">      </span><span class="nt">filter</span><span class="p">:</span>
+</span><span id="__span-10-114"><a id="__codelineno-10-114" name="__codelineno-10-114" href="#__codelineno-10-114"></a><span class="w">        </span><span class="nt">s2:product_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI1C</span>
+</span><span id="__span-10-115"><a id="__codelineno-10-115" name="__codelineno-10-115" href="#__codelineno-10-115"></a><span class="w">      </span><span class="nt">metadata_assets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+</span><span id="__span-10-116"><a id="__codelineno-10-116" name="__codelineno-10-116" href="#__codelineno-10-116"></a><span class="w">      </span><span class="nt">coverages</span><span class="p">:</span>
+</span><span id="__span-10-117"><a id="__codelineno-10-117" name="__codelineno-10-117" href="#__codelineno-10-117"></a><span class="w">        </span><span class="nt">S2L1C_B01</span><span class="p">:</span>
+</span><span id="__span-10-118"><a id="__codelineno-10-118" name="__codelineno-10-118" href="#__codelineno-10-118"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-119"><a id="__codelineno-10-119" name="__codelineno-10-119" href="#__codelineno-10-119"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B01</span>
+</span><span id="__span-10-120"><a id="__codelineno-10-120" name="__codelineno-10-120" href="#__codelineno-10-120"></a><span class="w">        </span><span class="nt">S2L1C_B02</span><span class="p">:</span>
+</span><span id="__span-10-121"><a id="__codelineno-10-121" name="__codelineno-10-121" href="#__codelineno-10-121"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-122"><a id="__codelineno-10-122" name="__codelineno-10-122" href="#__codelineno-10-122"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span>
+</span><span id="__span-10-123"><a id="__codelineno-10-123" name="__codelineno-10-123" href="#__codelineno-10-123"></a><span class="w">        </span><span class="nt">S2L1C_B03</span><span class="p">:</span>
+</span><span id="__span-10-124"><a id="__codelineno-10-124" name="__codelineno-10-124" href="#__codelineno-10-124"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-125"><a id="__codelineno-10-125" name="__codelineno-10-125" href="#__codelineno-10-125"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span>
+</span><span id="__span-10-126"><a id="__codelineno-10-126" name="__codelineno-10-126" href="#__codelineno-10-126"></a><span class="w">        </span><span class="nt">S2L1C_B04</span><span class="p">:</span>
+</span><span id="__span-10-127"><a id="__codelineno-10-127" name="__codelineno-10-127" href="#__codelineno-10-127"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-128"><a id="__codelineno-10-128" name="__codelineno-10-128" href="#__codelineno-10-128"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span>
+</span><span id="__span-10-129"><a id="__codelineno-10-129" name="__codelineno-10-129" href="#__codelineno-10-129"></a><span class="w">        </span><span class="nt">S2L1C_B05</span><span class="p">:</span>
+</span><span id="__span-10-130"><a id="__codelineno-10-130" name="__codelineno-10-130" href="#__codelineno-10-130"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-131"><a id="__codelineno-10-131" name="__codelineno-10-131" href="#__codelineno-10-131"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B05</span>
+</span><span id="__span-10-132"><a id="__codelineno-10-132" name="__codelineno-10-132" href="#__codelineno-10-132"></a><span class="w">        </span><span class="nt">S2L1C_B06</span><span class="p">:</span>
+</span><span id="__span-10-133"><a id="__codelineno-10-133" name="__codelineno-10-133" href="#__codelineno-10-133"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-134"><a id="__codelineno-10-134" name="__codelineno-10-134" href="#__codelineno-10-134"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B06</span>
+</span><span id="__span-10-135"><a id="__codelineno-10-135" name="__codelineno-10-135" href="#__codelineno-10-135"></a><span class="w">        </span><span class="nt">S2L1C_B07</span><span class="p">:</span>
+</span><span id="__span-10-136"><a id="__codelineno-10-136" name="__codelineno-10-136" href="#__codelineno-10-136"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-137"><a id="__codelineno-10-137" name="__codelineno-10-137" href="#__codelineno-10-137"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B07</span>
+</span><span id="__span-10-138"><a id="__codelineno-10-138" name="__codelineno-10-138" href="#__codelineno-10-138"></a><span class="w">        </span><span class="nt">S2L1C_B08</span><span class="p">:</span>
+</span><span id="__span-10-139"><a id="__codelineno-10-139" name="__codelineno-10-139" href="#__codelineno-10-139"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-140"><a id="__codelineno-10-140" name="__codelineno-10-140" href="#__codelineno-10-140"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span>
+</span><span id="__span-10-141"><a id="__codelineno-10-141" name="__codelineno-10-141" href="#__codelineno-10-141"></a><span class="w">        </span><span class="nt">S2L1C_B8A</span><span class="p">:</span>
+</span><span id="__span-10-142"><a id="__codelineno-10-142" name="__codelineno-10-142" href="#__codelineno-10-142"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-143"><a id="__codelineno-10-143" name="__codelineno-10-143" href="#__codelineno-10-143"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B8A</span>
+</span><span id="__span-10-144"><a id="__codelineno-10-144" name="__codelineno-10-144" href="#__codelineno-10-144"></a><span class="w">        </span><span class="nt">S2L1C_B09</span><span class="p">:</span>
+</span><span id="__span-10-145"><a id="__codelineno-10-145" name="__codelineno-10-145" href="#__codelineno-10-145"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-146"><a id="__codelineno-10-146" name="__codelineno-10-146" href="#__codelineno-10-146"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B09</span>
+</span><span id="__span-10-147"><a id="__codelineno-10-147" name="__codelineno-10-147" href="#__codelineno-10-147"></a><span class="w">        </span><span class="nt">S2L1C_B10</span><span class="p">:</span>
+</span><span id="__span-10-148"><a id="__codelineno-10-148" name="__codelineno-10-148" href="#__codelineno-10-148"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-149"><a id="__codelineno-10-149" name="__codelineno-10-149" href="#__codelineno-10-149"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B10</span>
+</span><span id="__span-10-150"><a id="__codelineno-10-150" name="__codelineno-10-150" href="#__codelineno-10-150"></a><span class="w">        </span><span class="nt">S2L1C_B11</span><span class="p">:</span>
+</span><span id="__span-10-151"><a id="__codelineno-10-151" name="__codelineno-10-151" href="#__codelineno-10-151"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-152"><a id="__codelineno-10-152" name="__codelineno-10-152" href="#__codelineno-10-152"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B11</span>
+</span><span id="__span-10-153"><a id="__codelineno-10-153" name="__codelineno-10-153" href="#__codelineno-10-153"></a><span class="w">        </span><span class="nt">S2L1C_B12</span><span class="p">:</span>
+</span><span id="__span-10-154"><a id="__codelineno-10-154" name="__codelineno-10-154" href="#__codelineno-10-154"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-155"><a id="__codelineno-10-155" name="__codelineno-10-155" href="#__codelineno-10-155"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B12</span>
+</span><span id="__span-10-156"><a id="__codelineno-10-156" name="__codelineno-10-156" href="#__codelineno-10-156"></a><span class="w">      </span><span class="nt">defaultBrowse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TRUE_COLOR</span>
+</span><span id="__span-10-157"><a id="__codelineno-10-157" name="__codelineno-10-157" href="#__codelineno-10-157"></a><span class="w">      </span><span class="nt">browses</span><span class="p">:</span>
+</span><span id="__span-10-158"><a id="__codelineno-10-158" name="__codelineno-10-158" href="#__codelineno-10-158"></a><span class="w">        </span><span class="nt">TRUE_COLOR</span><span class="p">:</span>
+</span><span id="__span-10-159"><a id="__codelineno-10-159" name="__codelineno-10-159" href="#__codelineno-10-159"></a><span class="w">          </span><span class="nt">asset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">visual</span>
+</span><span id="__span-10-160"><a id="__codelineno-10-160" name="__codelineno-10-160" href="#__codelineno-10-160"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span>
+</span><span id="__span-10-161"><a id="__codelineno-10-161" name="__codelineno-10-161" href="#__codelineno-10-161"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span>
+</span><span id="__span-10-162"><a id="__codelineno-10-162" name="__codelineno-10-162" href="#__codelineno-10-162"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-163"><a id="__codelineno-10-163" name="__codelineno-10-163" href="#__codelineno-10-163"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-164"><a id="__codelineno-10-164" name="__codelineno-10-164" href="#__codelineno-10-164"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span>
+</span><span id="__span-10-165"><a id="__codelineno-10-165" name="__codelineno-10-165" href="#__codelineno-10-165"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span>
+</span><span id="__span-10-166"><a id="__codelineno-10-166" name="__codelineno-10-166" href="#__codelineno-10-166"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-167"><a id="__codelineno-10-167" name="__codelineno-10-167" href="#__codelineno-10-167"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-168"><a id="__codelineno-10-168" name="__codelineno-10-168" href="#__codelineno-10-168"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span>
+</span><span id="__span-10-169"><a id="__codelineno-10-169" name="__codelineno-10-169" href="#__codelineno-10-169"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span>
+</span><span id="__span-10-170"><a id="__codelineno-10-170" name="__codelineno-10-170" href="#__codelineno-10-170"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-171"><a id="__codelineno-10-171" name="__codelineno-10-171" href="#__codelineno-10-171"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-172"><a id="__codelineno-10-172" name="__codelineno-10-172" href="#__codelineno-10-172"></a><span class="w">        </span><span class="nt">FALSE_COLOR</span><span class="p">:</span>
+</span><span id="__span-10-173"><a id="__codelineno-10-173" name="__codelineno-10-173" href="#__codelineno-10-173"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span>
+</span><span id="__span-10-174"><a id="__codelineno-10-174" name="__codelineno-10-174" href="#__codelineno-10-174"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span>
+</span><span id="__span-10-175"><a id="__codelineno-10-175" name="__codelineno-10-175" href="#__codelineno-10-175"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-176"><a id="__codelineno-10-176" name="__codelineno-10-176" href="#__codelineno-10-176"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-177"><a id="__codelineno-10-177" name="__codelineno-10-177" href="#__codelineno-10-177"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span>
+</span><span id="__span-10-178"><a id="__codelineno-10-178" name="__codelineno-10-178" href="#__codelineno-10-178"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span>
+</span><span id="__span-10-179"><a id="__codelineno-10-179" name="__codelineno-10-179" href="#__codelineno-10-179"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-180"><a id="__codelineno-10-180" name="__codelineno-10-180" href="#__codelineno-10-180"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-181"><a id="__codelineno-10-181" name="__codelineno-10-181" href="#__codelineno-10-181"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span>
+</span><span id="__span-10-182"><a id="__codelineno-10-182" name="__codelineno-10-182" href="#__codelineno-10-182"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span>
+</span><span id="__span-10-183"><a id="__codelineno-10-183" name="__codelineno-10-183" href="#__codelineno-10-183"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-184"><a id="__codelineno-10-184" name="__codelineno-10-184" href="#__codelineno-10-184"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-185"><a id="__codelineno-10-185" name="__codelineno-10-185" href="#__codelineno-10-185"></a><span class="w">        </span><span class="nt">NDVI</span><span class="p">:</span>
+</span><span id="__span-10-186"><a id="__codelineno-10-186" name="__codelineno-10-186" href="#__codelineno-10-186"></a><span class="w">          </span><span class="nt">grey</span><span class="p">:</span>
+</span><span id="__span-10-187"><a id="__codelineno-10-187" name="__codelineno-10-187" href="#__codelineno-10-187"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(B08-B04)/(B08+B04)</span>
+</span><span id="__span-10-188"><a id="__codelineno-10-188" name="__codelineno-10-188" href="#__codelineno-10-188"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-189"><a id="__codelineno-10-189" name="__codelineno-10-189" href="#__codelineno-10-189"></a><span class="w">      </span><span class="nt">masks</span><span class="p">:</span>
+</span><span id="__span-10-190"><a id="__codelineno-10-190" name="__codelineno-10-190" href="#__codelineno-10-190"></a><span class="w">        </span><span class="nt">clouds</span><span class="p">:</span>
+</span><span id="__span-10-191"><a id="__codelineno-10-191" name="__codelineno-10-191" href="#__codelineno-10-191"></a><span class="w">          </span><span class="nt">validity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-10-192"><a id="__codelineno-10-192" name="__codelineno-10-192" href="#__codelineno-10-192"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI2A</span>
+</span><span id="__span-10-193"><a id="__codelineno-10-193" name="__codelineno-10-193" href="#__codelineno-10-193"></a><span class="w">      </span><span class="nt">filter</span><span class="p">:</span>
+</span><span id="__span-10-194"><a id="__codelineno-10-194" name="__codelineno-10-194" href="#__codelineno-10-194"></a><span class="w">        </span><span class="nt">s2:product_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">S2MSI2A</span>
+</span><span id="__span-10-195"><a id="__codelineno-10-195" name="__codelineno-10-195" href="#__codelineno-10-195"></a><span class="w">      </span><span class="nt">metadata_assets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+</span><span id="__span-10-196"><a id="__codelineno-10-196" name="__codelineno-10-196" href="#__codelineno-10-196"></a><span class="w">      </span><span class="nt">coverages</span><span class="p">:</span>
+</span><span id="__span-10-197"><a id="__codelineno-10-197" name="__codelineno-10-197" href="#__codelineno-10-197"></a><span class="w">        </span><span class="nt">S2L2A_B01</span><span class="p">:</span>
+</span><span id="__span-10-198"><a id="__codelineno-10-198" name="__codelineno-10-198" href="#__codelineno-10-198"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-199"><a id="__codelineno-10-199" name="__codelineno-10-199" href="#__codelineno-10-199"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B01</span>
+</span><span id="__span-10-200"><a id="__codelineno-10-200" name="__codelineno-10-200" href="#__codelineno-10-200"></a><span class="w">        </span><span class="nt">S2L2A_B02</span><span class="p">:</span>
+</span><span id="__span-10-201"><a id="__codelineno-10-201" name="__codelineno-10-201" href="#__codelineno-10-201"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-202"><a id="__codelineno-10-202" name="__codelineno-10-202" href="#__codelineno-10-202"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span>
+</span><span id="__span-10-203"><a id="__codelineno-10-203" name="__codelineno-10-203" href="#__codelineno-10-203"></a><span class="w">        </span><span class="nt">S2L2A_B03</span><span class="p">:</span>
+</span><span id="__span-10-204"><a id="__codelineno-10-204" name="__codelineno-10-204" href="#__codelineno-10-204"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-205"><a id="__codelineno-10-205" name="__codelineno-10-205" href="#__codelineno-10-205"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span>
+</span><span id="__span-10-206"><a id="__codelineno-10-206" name="__codelineno-10-206" href="#__codelineno-10-206"></a><span class="w">        </span><span class="nt">S2L2A_B04</span><span class="p">:</span>
+</span><span id="__span-10-207"><a id="__codelineno-10-207" name="__codelineno-10-207" href="#__codelineno-10-207"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-208"><a id="__codelineno-10-208" name="__codelineno-10-208" href="#__codelineno-10-208"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span>
+</span><span id="__span-10-209"><a id="__codelineno-10-209" name="__codelineno-10-209" href="#__codelineno-10-209"></a><span class="w">        </span><span class="nt">S2L2A_B05</span><span class="p">:</span>
+</span><span id="__span-10-210"><a id="__codelineno-10-210" name="__codelineno-10-210" href="#__codelineno-10-210"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-211"><a id="__codelineno-10-211" name="__codelineno-10-211" href="#__codelineno-10-211"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B05</span>
+</span><span id="__span-10-212"><a id="__codelineno-10-212" name="__codelineno-10-212" href="#__codelineno-10-212"></a><span class="w">        </span><span class="nt">S2L2A_B06</span><span class="p">:</span>
+</span><span id="__span-10-213"><a id="__codelineno-10-213" name="__codelineno-10-213" href="#__codelineno-10-213"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-214"><a id="__codelineno-10-214" name="__codelineno-10-214" href="#__codelineno-10-214"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B06</span>
+</span><span id="__span-10-215"><a id="__codelineno-10-215" name="__codelineno-10-215" href="#__codelineno-10-215"></a><span class="w">        </span><span class="nt">S2L2A_B07</span><span class="p">:</span>
+</span><span id="__span-10-216"><a id="__codelineno-10-216" name="__codelineno-10-216" href="#__codelineno-10-216"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-217"><a id="__codelineno-10-217" name="__codelineno-10-217" href="#__codelineno-10-217"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B07</span>
+</span><span id="__span-10-218"><a id="__codelineno-10-218" name="__codelineno-10-218" href="#__codelineno-10-218"></a><span class="w">        </span><span class="nt">S2L2A_B08</span><span class="p">:</span>
+</span><span id="__span-10-219"><a id="__codelineno-10-219" name="__codelineno-10-219" href="#__codelineno-10-219"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-220"><a id="__codelineno-10-220" name="__codelineno-10-220" href="#__codelineno-10-220"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span>
+</span><span id="__span-10-221"><a id="__codelineno-10-221" name="__codelineno-10-221" href="#__codelineno-10-221"></a><span class="w">        </span><span class="nt">S2L2A_B8A</span><span class="p">:</span>
+</span><span id="__span-10-222"><a id="__codelineno-10-222" name="__codelineno-10-222" href="#__codelineno-10-222"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-223"><a id="__codelineno-10-223" name="__codelineno-10-223" href="#__codelineno-10-223"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B8A</span>
+</span><span id="__span-10-224"><a id="__codelineno-10-224" name="__codelineno-10-224" href="#__codelineno-10-224"></a><span class="w">        </span><span class="nt">S2L2A_B09</span><span class="p">:</span>
+</span><span id="__span-10-225"><a id="__codelineno-10-225" name="__codelineno-10-225" href="#__codelineno-10-225"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-226"><a id="__codelineno-10-226" name="__codelineno-10-226" href="#__codelineno-10-226"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B09</span>
+</span><span id="__span-10-227"><a id="__codelineno-10-227" name="__codelineno-10-227" href="#__codelineno-10-227"></a><span class="w">        </span><span class="nt">S2L2A_B11</span><span class="p">:</span>
+</span><span id="__span-10-228"><a id="__codelineno-10-228" name="__codelineno-10-228" href="#__codelineno-10-228"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-229"><a id="__codelineno-10-229" name="__codelineno-10-229" href="#__codelineno-10-229"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B11</span>
+</span><span id="__span-10-230"><a id="__codelineno-10-230" name="__codelineno-10-230" href="#__codelineno-10-230"></a><span class="w">        </span><span class="nt">S2L2A_B12</span><span class="p">:</span>
+</span><span id="__span-10-231"><a id="__codelineno-10-231" name="__codelineno-10-231" href="#__codelineno-10-231"></a><span class="w">          </span><span class="nt">assets</span><span class="p">:</span>
+</span><span id="__span-10-232"><a id="__codelineno-10-232" name="__codelineno-10-232" href="#__codelineno-10-232"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B12</span>
+</span><span id="__span-10-233"><a id="__codelineno-10-233" name="__codelineno-10-233" href="#__codelineno-10-233"></a><span class="w">      </span><span class="nt">default_browse_locator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TCI_10m</span>
+</span><span id="__span-10-234"><a id="__codelineno-10-234" name="__codelineno-10-234" href="#__codelineno-10-234"></a><span class="w">      </span><span class="nt">browses</span><span class="p">:</span>
+</span><span id="__span-10-235"><a id="__codelineno-10-235" name="__codelineno-10-235" href="#__codelineno-10-235"></a><span class="w">        </span><span class="nt">TRUE_COLOR</span><span class="p">:</span>
+</span><span id="__span-10-236"><a id="__codelineno-10-236" name="__codelineno-10-236" href="#__codelineno-10-236"></a><span class="w">          </span><span class="nt">asset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">visual-10m</span>
+</span><span id="__span-10-237"><a id="__codelineno-10-237" name="__codelineno-10-237" href="#__codelineno-10-237"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span>
+</span><span id="__span-10-238"><a id="__codelineno-10-238" name="__codelineno-10-238" href="#__codelineno-10-238"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span>
+</span><span id="__span-10-239"><a id="__codelineno-10-239" name="__codelineno-10-239" href="#__codelineno-10-239"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-240"><a id="__codelineno-10-240" name="__codelineno-10-240" href="#__codelineno-10-240"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-241"><a id="__codelineno-10-241" name="__codelineno-10-241" href="#__codelineno-10-241"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span>
+</span><span id="__span-10-242"><a id="__codelineno-10-242" name="__codelineno-10-242" href="#__codelineno-10-242"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span>
+</span><span id="__span-10-243"><a id="__codelineno-10-243" name="__codelineno-10-243" href="#__codelineno-10-243"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-244"><a id="__codelineno-10-244" name="__codelineno-10-244" href="#__codelineno-10-244"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-245"><a id="__codelineno-10-245" name="__codelineno-10-245" href="#__codelineno-10-245"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span>
+</span><span id="__span-10-246"><a id="__codelineno-10-246" name="__codelineno-10-246" href="#__codelineno-10-246"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B02</span>
+</span><span id="__span-10-247"><a id="__codelineno-10-247" name="__codelineno-10-247" href="#__codelineno-10-247"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-248"><a id="__codelineno-10-248" name="__codelineno-10-248" href="#__codelineno-10-248"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-249"><a id="__codelineno-10-249" name="__codelineno-10-249" href="#__codelineno-10-249"></a><span class="w">        </span><span class="nt">FALSE_COLOR</span><span class="p">:</span>
+</span><span id="__span-10-250"><a id="__codelineno-10-250" name="__codelineno-10-250" href="#__codelineno-10-250"></a><span class="w">          </span><span class="nt">red</span><span class="p">:</span>
+</span><span id="__span-10-251"><a id="__codelineno-10-251" name="__codelineno-10-251" href="#__codelineno-10-251"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B08</span>
+</span><span id="__span-10-252"><a id="__codelineno-10-252" name="__codelineno-10-252" href="#__codelineno-10-252"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-253"><a id="__codelineno-10-253" name="__codelineno-10-253" href="#__codelineno-10-253"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-254"><a id="__codelineno-10-254" name="__codelineno-10-254" href="#__codelineno-10-254"></a><span class="w">          </span><span class="nt">green</span><span class="p">:</span>
+</span><span id="__span-10-255"><a id="__codelineno-10-255" name="__codelineno-10-255" href="#__codelineno-10-255"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B04</span>
+</span><span id="__span-10-256"><a id="__codelineno-10-256" name="__codelineno-10-256" href="#__codelineno-10-256"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-257"><a id="__codelineno-10-257" name="__codelineno-10-257" href="#__codelineno-10-257"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-258"><a id="__codelineno-10-258" name="__codelineno-10-258" href="#__codelineno-10-258"></a><span class="w">          </span><span class="nt">blue</span><span class="p">:</span>
+</span><span id="__span-10-259"><a id="__codelineno-10-259" name="__codelineno-10-259" href="#__codelineno-10-259"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B03</span>
+</span><span id="__span-10-260"><a id="__codelineno-10-260" name="__codelineno-10-260" href="#__codelineno-10-260"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4000</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-261"><a id="__codelineno-10-261" name="__codelineno-10-261" href="#__codelineno-10-261"></a><span class="w">            </span><span class="nt">nodata</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</span><span id="__span-10-262"><a id="__codelineno-10-262" name="__codelineno-10-262" href="#__codelineno-10-262"></a><span class="w">        </span><span class="nt">NDVI</span><span class="p">:</span>
+</span><span id="__span-10-263"><a id="__codelineno-10-263" name="__codelineno-10-263" href="#__codelineno-10-263"></a><span class="w">          </span><span class="nt">grey</span><span class="p">:</span>
+</span><span id="__span-10-264"><a id="__codelineno-10-264" name="__codelineno-10-264" href="#__codelineno-10-264"></a><span class="w">            </span><span class="nt">expression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(B08-B04)/(B08+B04)</span>
+</span><span id="__span-10-265"><a id="__codelineno-10-265" name="__codelineno-10-265" href="#__codelineno-10-265"></a><span class="w">            </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+</span><span id="__span-10-266"><a id="__codelineno-10-266" name="__codelineno-10-266" href="#__codelineno-10-266"></a><span class="w">      </span><span class="nt">masks</span><span class="p">:</span>
+</span><span id="__span-10-267"><a id="__codelineno-10-267" name="__codelineno-10-267" href="#__codelineno-10-267"></a><span class="w">        </span><span class="nt">clouds</span><span class="p">:</span>
+</span><span id="__span-10-268"><a id="__codelineno-10-268" name="__codelineno-10-268" href="#__codelineno-10-268"></a><span class="w">          </span><span class="nt">validity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </span></code></pre></div>
+
+
+
+
+
+
+
 
 
 
@@ -1349,52 +1945,18 @@
             </div>
           
           
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
-            Back to top
-          </a>
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
         
       </main>
       
         <footer class="md-footer">
-  
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../userman-deployment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: User Management" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              User Management
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../../cluster/prerequisite-tooling/" class="md-footer__link md-footer__link--next" aria-label="Next: Prerequisite Tooling" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Prerequisite Tooling
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1417,10 +1979,11 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.integrate", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.8492ddcf.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
       
     
   </body>
