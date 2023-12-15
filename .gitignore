@@ -3,3 +3,4 @@ site/
 deploy/eoepca/client.yaml
 deploy/eoepca/client-apphub.yaml
 deploy/cluster/s3cfg
+.idea
