@@ -161,7 +161,7 @@ For more information:
 ```bash
 sh create-client.sh -h
 ```
-### Using Identity API
+#### Using Identity API
 
 Also, an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management. The API documentation can be found in: https://identity.api.eoepca.org/docs (access granted after signing in into eoepca-portal)
 
