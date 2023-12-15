@@ -2,6 +2,12 @@
 
 The _Identity Service_ provides the platform _Authorization Server_ for authenticated user identity and request authorization.
 
+_Identity Service_ is composed of:
+- **Keycloak** - IAM solution which Identity Service relies on.
+- **Postgres DB** - Database to store Keycloak's data.
+- **Identity API** - API with endpoints to create clients and protect resources for applications using that client. Uses a keycloak python client which sends requests to Keycloak API.
+- **Identity API Gatekeeper** - Authorization proxy used to enforce authorization access policies to the Identity API. A gatekeeper should be configured and launched for each application that wishes to be protected by access policies. 
+
 ## Helm Chart
 
 The _Identity Service_ is deployed via the `identity-service` helm chart from the [EOEPCA Helm Chart Repository](https://eoepca.github.io/helm-charts).
@@ -30,7 +36,7 @@ spec:
   chart:
     spec:
       chart: identity-service
-      version: 1.0.68
+      version: 1.0.0
       sourceRef:
         kind: HelmRepository
         name: eoepca
@@ -68,19 +74,6 @@ spec:
           - secretName: identity-api-tls-certificate
             hosts:
               - identity.api.192-168-49-2.nip.io
-    identity-manager:
-      ingress:
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt
-        hosts:
-          - host: identity.manager.192-168-49-2.nip.io
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: identity-manager-tls-certificate
-            hosts:
-              - identity.manager.192-168-49-2.nip.io
     identity-gateekeper:
       ingress:
         annotations:
@@ -96,24 +89,49 @@ spec:
               - identity.gatekeeper.192-168-49-2.nip.io
   timeout: 5m0s
   interval: 1m0s
-        secretName: login-service-tls
+  secretName: login-service-tls
 ```
 
-## Post-deployment Manual Steps
+## Post-deployment Steps
 
-The deployment of the Login Service has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed...
+Identity service is capable of protecting resources using OpenID-connect/SAML clients, resources (URIs/scopes), policies (user based, role based, etc) and permissions (associations between policies and resources).
+Creating and protecting resources can be done in multiple ways, as we will see next.
 
-Suggested Steps:
-* Create clients. Clients can be created using the keycloak user interface at identity.keycloak.${environment}.eoepca.org. You need to login as admin.
+#### Using Admin UI
+
+To create and protect resources using the keycloak User Interface (UI), do the following steps:
+
+* (Optional) Create clients. Clients can be created using the keycloak user interface at identity.keycloak.${environment}.eoepca.org. You need to login as admin.
   To create a client: Login as admin in the keycloak UI > Clients > Create Client > Set a name > Next > Turn Client Authentication and Authorization On > Add the valid redirect URI's > Save.
-* Create Users. Users > Add User. Then set a password for the user. Credentials > Set Password.
+* (Optional) Create Users. Users > Add User. Then set a password for the user. Credentials > Set Password.
+* Select a client.
+* Create a Resource: Select Authorization tab > Resources > Create Resource.
+* Create a Policy: In client details, select Authorization > Policies > Create Policy > Select Policy Type (e.g.: User) > Select users > Save.
+* Create Authorization Scope: In client details, select Authorization > Scopes > Create authorization scope > Save.
+* Create a Permission: In client details, select Authorization > Permissions > Create Permission > Create Resource Based Permission > Select Resources to protect > Select Policies > Save.
 
-### OR
 
-Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect these. The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts .
+#### Using Bash script
 
-To generate the access token needed to use the script, you can get it through the login in the eoepca portal, by accessing the cookies in the browser. Or you can perform the login using postman oauth2.0, as described in: ADD HERE LINK TO HOW TO OBTAIN ACCESS TOKEN
+Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them. The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts.  
+The script interacts with Identity API and therefore requires admin authorization.
+It accepts basic authentication with username and password with -u and -p, respectively. Or a bearer access token with -t. To generate the access token needed to use the script, you can get it through the login in the eoepca portal, by accessing the cookies in the browser. Or you can generate an access token using postman oauth2.0, as described in: https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token.
 
+Script execution examples:
+1. With username/password
+```bash
+sh create-client.sh \
+-e production \
+-u admin
+-p password
+--id=api-gateekeper \
+--name="Identity API Gatekeeper" \
+--description="Client to be used by Identity API Gatekeeper" \
+--resource="Eric space" --uris=/eric/* --users=eric \
+--resource="Alice space" --uris=/alice/* --users=alice \
+--resource="Admin space" --uris=/admin/* --roles=admin
+```
+2. With access token
 ```bash
 sh create-client.sh \
 -e production \
@@ -122,49 +140,54 @@ sh create-client.sh \
 --name="Identity API Gatekeeper" \
 --description="Client to be used by Identity API Gatekeeper" \
 --resource="Eric space" --uris=/eric/* --users=eric \
---resource="Alice space" --uris=/alice/* --users=alice
+--resource="Alice space" --uris=/alice/* --users=alice \
+--resource="Admin space" --uris=/admin/* --roles=admin
 ```
 
-Where -e is the environment (development, demo or production), -t is the authentication token, --id is the clientId, --name is the client name, --description the client description.
+Where:
+- -e is the environment (development, demo or production)
+- -u is the username
+- -p is the password
+- -t is the bearer access token
+- --id is the clientId
+- --name is the client name
+- --description the client description
+- --resource is the name of the resource
+- --uris is the list of resource uris
+- --users is the list of users with access to the resource
+- --roles is the list of roles with acess to the resource
 
-For the resources part: --resource is the name of the resource, --uris is the resource uris and --users is the example of the policy, in this case the listed users will be the ones capable of accessing the resource.
+For more information:
+```bash
+sh create-client.sh -h
+```
+### Using Identity API
 
-### OR
-
-Also an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management. The API documentation can be found in: https://identity.api.eoepca.org/docs (needs login)
-
-## Create and Protect Resources (UI)
-
-To create and protect resources using the keycloak User Interface (UI), do the following steps:
-* Select a client.
-* Create a Resource: Select Authorization tab > Resources > Create Resource.
-* Create a Policy: In client details, select Authorization > Policies > Create Policy > Select Policy Type (e.g.: User) > Select users > Save.
-* Create Authorization Scope: In client details, select Authorization > Scopes > Create authorization scope > Save.
-* Create a Permission: In client details, select Authorization > Permissions > Create Permission > Create Resource Based Permission > Select Resources to protect > Select Policies > Save.
+Also, an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management. The API documentation can be found in: https://identity.api.eoepca.org/docs (access granted after signing in into eoepca-portal)
 
 ## Gatekeeper
 
-Gatekeeper is a authentication and authorization proxy. The gatekeeper is also deployed along the identity-service, but it has its own configuration file:
+Gatekeeper is an authentication and authorization proxy. The gatekeeper is also deployed along the identity-service, with its own configuration file:
 
-gatekeeper.yaml
+For example **identity-api-gatekeeper.yaml:**
 
 ```
-discovery-url: http://keycloak:8080/realms/demo
-client-id: gatekeeper
-client-secret: Oj5bPfRNJyerALL60eFyQuZBCNj9woXR
-encryption-key: AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j
-upstream-url: http://spring-boot-oauth2-resource-server:7072
-enable-request-id: true
-enable-refresh-tokens: true
-enable-login-handler: true
+client-id: identity-api
+discovery-url: https://identity.keycloak.develop.eoepca.org/realms/master
+no-redirects: true
+no-proxy: true
 enable-uma: true
-secure-cookie: false
+cookie-domain: develop.eoepca.org
 cookie-access-name: auth_user_id
-enable-logout-redirect: true
+cookie-refresh-name: auth_refresh_token
 enable-metrics: true
 enable-logging: true
+enable-request-id: true
+enable-login-handler: true
+enable-refresh-tokens: true
+enable-logout-redirect: true
 listen: :3000
-
+listen-admin: :4000
 ```
 
 ## Additional Information
