@@ -7,7 +7,7 @@ edit_uri: ""
 nav:
   - Deployment Guide:
     - Introduction: index.md
-    - Quick Start:
+    - Getting Started:
       - Quick Start: quickstart/quickstart.md
       - Scripted Deployment: quickstart/scripted-deployment.md
       - Simple Deployment: quickstart/simple-deployment.md
@@ -16,17 +16,22 @@ nav:
       - Exploitation: quickstart/exploitation-deployment.md
       - User Management: quickstart/userman-deployment.md
       - CREODIAS Deployment: quickstart/creodias-deployment.md
-    - Cluster:
+    - Prepare Cluster:
       - Prerequisite Tooling: cluster/prerequisite-tooling.md
       - Kubernetes Cluster: cluster/kubernetes.md
       - Helm Repositories: cluster/helm-repositories.md
       - Cluster Prerequisites: cluster/cluster-prerequisites.md
-    - EOEPCA:
+    - Deploy EOEPCA Components:
       - Persistence: eoepca/persistence.md
-      - Login Service: eoepca/login-service.md
-      - User Profile: eoepca/user-profile.md
-      - Policy Decision Point: eoepca/pdp.md
-      - Resource Protection: eoepca/resource-protection.md
+      - Identity & Access Management:
+        - IAM Overview: eoepca/iam-overview.md
+        - Keycloak Solution (NEW):
+          - Keycloak: eoepca/keycloak.md
+        - Gluu Solution (deprecated):
+          - Login Service: eoepca/login-service.md
+          - Policy Decision Point: eoepca/pdp.md
+          - Resource Protection: eoepca/resource-protection.md
+        - User Profile: eoepca/user-profile.md
       - Application Deployment & Execution: eoepca/ades.md
       - Resource Catalogue: eoepca/resource-catalogue.md
       - Data Access: eoepca/data-access.md
@@ -61,7 +66,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.sections
     # - navigation.expand
-    - toc.integrate
+    # - toc.integrate
     - navigation.top
     - content.code.copy
 

@@ -87,11 +87,14 @@ nginx:
 
 The deployment of the Login Service has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed...
 
+* [Configure `UMA Resource Lifetime`](#uma-resource-lifetime)
+* [Configure `Operator` user](#configure-operator-user)
+
 ### UMA Resource Lifetime
 
 The Login Service maintains a background service that 'cleans' UMA resources that are older than aa certain age - by default 30 days (`2592000` secs). This lifetime does not fit the approach we are adopting, and so we must update this lifetime value to avoid the unexpected removal of UMA resources that would cause unexpected failures in policy enforcement.
 
-* In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the `admin` user
+* In a browser, navigate to the Login Service (Gluu) - `https://auth.192-168-49-2.nip.io/` - and login as the `admin` user
 * Open `Configuration -> JSON Configuration -> OxAuth Configuration`
 * Search for the setting `umaResourceLifetime`
 * Update the values of `umaResourceLifetime` to `2147483647`
@@ -100,6 +103,16 @@ The Login Service maintains a background service that 'cleans' UMA resources tha
   ```
   kubectl -n um rollout restart deploy/login-service-oxauth
   ```
+
+### Configure `Operator` user
+
+The default resource protection establishes policy in which 'operator' privilege is required for some services, such as the Workspace API. Thus, we need to configure a user with this privilege. For convenience we add this attribute to the built-in `admin` user - but alternatively you may choose to create a new user for this role.
+
+* In a browser, navigate to the Login Service (Gluu) - `https://auth.192-168-49-2.nip.io/` - and login as the `admin` user
+* Select `Users -> Manage People` and search for user `admin`
+* For user `admin` select `Available User Claims -> gluuCustomPerson`
+* Select `Is Operator` and ensure the value is set `True`
+* Select `Update` to confirm
 
 ## Login Service Usage
 

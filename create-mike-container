@@ -11,7 +11,7 @@ trap onExit EXIT
 
 PUSH="${1:-false}"
 
-docker build -t eoepca/mkdocs-material .
+docker build --pull -t eoepca/mkdocs-material .
 
 if [ "$PUSH" = "push" ]; then
   docker push eoepca/mkdocs-material

@@ -38,6 +38,7 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **REQUIRE_<cluster-component\>** | A set of variables that can be used to control which **CLUSTER** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_MINIKUBE=true`<br>`REQUIRE_INGRESS_NGINX=true`<br>`REQUIRE_CERT_MANAGER=true`<br>`REQUIRE_LETSENCRYPT=true`<br>`REQUIRE_SEALED_SECRETS=false`<br>`REQUIRE_MINIO=false` | see description
     **REQUIRE_<eoepca-component\>** | A set of variables that can be used to control which **EOEPCA** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_STORAGE=true`<br>`REQUIRE_DUMMY_SERVICE=false`<br>`REQUIRE_LOGIN_SERVICE=true`<br>`REQUIRE_PDP=true`<br>`REQUIRE_USER_PROFILE=true`<br>`REQUIRE_ADES=true`<br>`REQUIRE_RESOURCE_CATALOGUE=true`<br>`REQUIRE_DATA_ACCESS=true`<br>`REQUIRE_REGISTRATION_API=true`<br>`REQUIRE_WORKSPACE_API=true`<br>`REQUIRE_HARBOR=true`<br>`REQUIRE_PORTAL=true`<br>`REQUIRE_APPLICATION_HUB=true` | see description
     **REQUIRE_<protection-component\>** | A set of variables that can be used to control which **PROTECTION** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_DUMMY_SERVICE_PROTECTION=false`<br>`REQUIRE_ADES_PROTECTION=true`<br>`REQUIRE_RESOURCE_CATALOGUE_PROTECTION=true`<br>`REQUIRE_DATA_ACCESS_PROTECTION=true`<br>`REGISTRATION_API_PROTECTION=true`<br>`REQUIRE_WORKSPACE_API_PROTECTION=true` | see description
+    **MINIKUBE_VERSION** | The Minikube version to be (optionally) installed<br>Note that the EOEPCA development has been conducted using the default stated here. | `v1.32.0`
     **MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5. | `v1.22.5`
     **MINIKUBE_MEMORY_AMOUNT** | Amount of memory to allocate to the docker containers used by minikube to implement the cluster. | `12g`
     **MINIKUBE_DISK_AMOUNT** | Amount of disk space to allocate to the docker containers used by minikube to implement the cluster. | `20g`
@@ -108,6 +109,16 @@ kubectl get pods -A
 
 The deployment is ready once all pods are either `Running` or `Completed`. This can be further confirmed by accessing the login-service web interface at `https://auth.<domain>/` and logging in as user `admin` using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
 
+## Post-deployment Manual Steps
+
+The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
+See the building block specific pages...
+
+* **Login Service:** [Post-deployment Manual Steps](../eoepca/login-service.md#post-deployment-manual-steps)
+
+!!! note
+    See also [Post-protection Manual Steps](#post-protection-manual-steps) for additional interventions to be performed later in the process.
+
 ## Default Credentials
 
 ### Login Service
@@ -170,13 +181,12 @@ _Ensure that the script is executed with the environment variables and command-l
 ./deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
 ```
 
-## Post-deploy Manual Steps
+## Post-protection Manual Steps
 
-The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed...
+The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
+See the building block specific pages...
 
-* Login Service: [UMA Resource Lifetime](../../eoepca/login-service/#uma-resource-lifetime)
-* Application Hub: [OIDC Client](../../eoepca/application-hub/#oidc-client)
-* Application Hub: [Groups and Users](../../eoepca/application-hub/#groups-and-users)
+* **Application Hub:** [Post-deployment Manual Steps](../eoepca/application-hub.md#post-deployment-manual-steps)
 
 ## Create User Workspaces
 

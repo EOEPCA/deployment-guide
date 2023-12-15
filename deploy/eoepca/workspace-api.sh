@@ -59,7 +59,7 @@ ingress:
       secretName: ${name}-tls
 fluxHelmOperator:
   enabled: ${INSTALL_FLUX}
-prefixForName: "guide-user"
+prefixForName: "ws"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
 s3Endpoint: "https://minio.${domain}"

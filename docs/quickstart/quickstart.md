@@ -1,15 +1,15 @@
-# Quickstart
+# Quick Start
 
 The deployment of the EOEPCA components and the supporting Kubernetes cluster is described in the sections [**Cluster**](../cluster/prerequisite-tooling.md) and [**EOEPCA**](../eoepca/persistence.md). These sections should be consulted for more detailed information.
 
-### **Scripted Deployment**
+## Scripted Deployment
 
 As a companion to these descriptions, we have developed a set of scripts to provide a demonstration of an example deployment. This is described in the following section [Scripted Deployment](scripted-deployment.md).
 
 !!! note
     The scripted deployment assumes that installation of the [Prerequisite Tooling](../cluster/prerequisite-tooling.md) has been performed
 
-### **Customised Deployments**
+## Customised Deployments
 
 The Scripted Deployment can be quickly exploited through the following customisations for particular use cases:
 
@@ -28,7 +28,7 @@ The Scripted Deployment can be quickly exploited through the following customisa
 
 Each customisation is introduced in their respective sections.
 
-### **Quick Example**
+## Quick Example
 
 Follow these steps to create a simple local deployment in minikube...
 

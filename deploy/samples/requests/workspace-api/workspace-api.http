@@ -6,7 +6,7 @@
 @pass = defaultPWD
 @clientId = e12780c1-7d4c-4e7e-86a8-e55ef0351d00
 @clientSecret = a66f6ac2-c7f0-4756-9dbb-dc5665b09deb
-@wsPrefix = guide-user
+@wsPrefix = ws
 
 @tokenEndpoint = {{openidConfiguration.response.body.token_endpoint}}
 @idToken = {{authenticate.response.body.id_token}}
