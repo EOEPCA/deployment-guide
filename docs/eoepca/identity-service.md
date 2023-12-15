@@ -94,7 +94,8 @@ spec:
 
 ## Post-deployment Steps
 
-Identity service is capable of protecting resources using OpenID-connect/SAML clients, resources (URIs/scopes), policies (user based, role based, etc) and permissions (associations between policies and resources).
+Identity service is capable of protecting resources using OpenID-connect/SAML clients, resources (URIs/scopes), 
+policies (user based, role based, etc) and permissions (associations between policies and resources).
 Creating and protecting resources can be done in multiple ways, as we will see next.
 
 #### Using Admin UI
@@ -113,9 +114,13 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 
 #### Using Bash script
 
-Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them. The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts.  
+Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them. 
+The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts.  
 The script interacts with Identity API and therefore requires admin authorization.
-It accepts basic authentication with username and password with -u and -p, respectively. Or a bearer access token with -t. To generate the access token needed to use the script, you can get it through the login in the eoepca portal, by accessing the cookies in the browser. Or you can generate an access token using postman oauth2.0, as described in: https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token.
+It accepts basic authentication with username and password with -u and -p, respectively. Or a bearer access token with -t. 
+To generate the access token needed to use the script, you can get it through the login in the eoepca portal, 
+by accessing the cookies in the browser. Or you can generate an access token using postman oauth2.0, as described in: 
+https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token.
 
 Script execution examples:
 1. With username/password
@@ -163,13 +168,16 @@ sh create-client.sh -h
 ```
 #### Using Identity API
 
-Also, an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management. The API documentation can be found in: https://identity.api.eoepca.org/docs (access granted after signing in into eoepca-portal)
+Also, an API was developed to interact more easily with the Keycloak API, that allows client, resource, 
+policies and permissions management. The API documentation can be found in: https://identity.api.eoepca.org/docs 
+(access granted after signing in into eoepca-portal)
 
 ## Gatekeeper
 
-Gatekeeper is an authentication and authorization proxy. The gatekeeper is also deployed along the identity-service, with its own configuration file:
+Gatekeeper is an authentication and authorization proxy. It can be launched alogside applications to protect URIs.
+As a showcase, the gatekeeper is deployed along the identity-service, to protect the identity API, with its own configuration file:
 
-For example **identity-api-gatekeeper.yaml:**
+**identity-api-gatekeeper.yaml:**
 
 ```
 client-id: identity-api
