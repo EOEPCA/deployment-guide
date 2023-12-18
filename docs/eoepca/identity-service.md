@@ -117,7 +117,7 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them. 
 The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts.  
 The script interacts with Identity API and therefore requires admin authorization.
-It accepts basic authentication with username and password with -u and -p, respectively. Or a bearer access token with -t. 
+It accepts basic authentication with username and password with `-u` and `-p` parameters, respectively. Or a bearer access token with `-t` parameter.
 To generate the access token needed to use the script, you can get it through the login in the eoepca portal, 
 by accessing the cookies in the browser. Or you can generate an access token using postman oauth2.0, as described in: 
 https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token.
@@ -127,8 +127,10 @@ Script execution examples:
 ```bash
 sh create-client.sh \
 -e production \
--u admin
--p password
+-u admin \
+-p password \
+-c client_id \
+-s client_secret \
 --id=api-gateekeper \
 --name="Identity API Gatekeeper" \
 --description="Client to be used by Identity API Gatekeeper" \
@@ -153,8 +155,10 @@ Where:
 - -e is the environment (development, demo or production)
 - -u is the username
 - -p is the password
+- -c is the client id used for authentication
+- -s is the client secret used for authentication
 - -t is the bearer access token
-- --id is the clientId
+- --id is the client id
 - --name is the client name
 - --description the client description
 - --resource is the name of the resource
