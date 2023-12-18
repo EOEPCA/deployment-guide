@@ -61,7 +61,7 @@ jupyterhub:
         OAUTH_LOGOUT_REDIRECT_URL: "https://applicationhub.192-168-49-2.nip.io"
         OAUTH2_USERNAME_KEY: "user_name"
         STORAGE_CLASS: "standard"
-        RESOURCE_MANAGER_WORKSPACE_PREFIX: "guide-user"
+        RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
         JUPYTERHUB_CRYPT_KEY:
           valueFrom:
@@ -123,7 +123,7 @@ nodeSelector:
 
 The Application Hub requires an OIDC client to registered with the Login Service in order to enable user identity integration. The client can be created via the login service web interface - e.g. [https://auth.192-168-49-2.nip.io](https://auth.192-168-49-2.nip.io).
 
-In addition there is a helper script that can be used to create a basic client and obtain the credentials - using an approach that it similar to that described for [Resource Protection](../resource-protection/#client-registration)...
+In addition there is a helper script that can be used to create a basic client and obtain the credentials - using an approach that it similar to that described for [Resource Protection](resource-protection.md#client-registration)...
 ```bash
 ./deploy/bin/register-client auth.192-168-49-2.nip.io "Application Hub" | tee client-apphub.yaml
 ```
@@ -156,12 +156,15 @@ data:
 
 The deployment of the Application Hub has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed...
 
+* [Configure OIDC Client](#oidc-client)
+* [Configure Groups and Users](#groups-and-users)
+
 ### OIDC Client
 
 The client that is created by the script `./deploy/bin/register-client` (as per above) needs to be manually adjusted using the Web UI of the Login Service...
 
 * In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the `admin` user
-* Open `OpenID Connection -> Clients` and search for the client created earlier - `Application Hub`
+* Open `OpenID Connect -> Clients` and search for the client created earlier - `Application Hub`
 * Fix the setting `Authentication method for the Token Endpoint`  for the `ApplicationHub` - `client_secret_post` -> `client_secret_basic`
 * Save the update
 

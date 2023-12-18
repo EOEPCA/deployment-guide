@@ -21,7 +21,7 @@ At minimum, values for the following attributes should be specified:
 * Details of the _S3 Object Store_ for stage-out of processing results
 * Dynamic provisioning _StorageClass_ of `ReadWriteMany` storage
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the ADES will **not** be protected by the `resource-guard` component - ref. [Resource Protection](../resource-protection). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the ADES will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
 
 **Example `ades-values.yaml`...**
 
@@ -111,7 +111,7 @@ For a detailed description see [ADES stage-in/out configuration in the ADES wiki
 
 ## Workspace Integration
 
-The ADES has the facility to integrate with the EOEPCA [Workspace component](../workspace/) for registration of staged-out processing results. This is disabled by default (`useResourceManager: false`).
+The ADES has the facility to integrate with the EOEPCA [Workspace component](workspace.md) for registration of staged-out processing results. This is disabled by default (`useResourceManager: false`).
 
 When enabled, the ADES will register the staged-out products with the user's Workspace, such that they are indexed and available via the user's Resource Catalogue and Data Access services.
 
@@ -121,17 +121,17 @@ When enabled, the ADES will register the staged-out products with the user's Wor
 workflowExecutor:
   ...
   useResourceManager: "true"
-  resourceManagerWorkspacePrefix: "guide-user"
+  resourceManagerWorkspacePrefix: "ws"
   resourceManagerEndpoint: "https://workspace-api.192-168-49-2.nip.io"
   platformDomain: "https://auth.192-168-49-2.nip.io"
   ...
 ```
 
-The value `resourceManagerWorkspacePrefix` must be consistent with that [configured for the Workspace API deployment](../workspace/#values), (ref. value `prefixForName`).
+The value `resourceManagerWorkspacePrefix` must be consistent with that [configured for the Workspace API deployment](workspace.md#values), (ref. value `prefixForName`).
 
 ## Protection
 
-As described in [section Resource Protection](../resource-protection), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
+As described in [section Resource Protection](resource-protection.md), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
 
 ```bash
 helm install --version 1.3.1 --values ades-guard-values.yaml \
@@ -236,7 +236,7 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](../resource-protection/#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection.md#client-registration)...
 ```bash
 ./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
@@ -246,8 +246,8 @@ The client credentials are obtained by registration of a client at the login ser
 This section includes some sample requests to test the deployed ADES.
 
 !!! note
-    1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](../resource-protection)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
-       See section [User ID Token](../resource-protection/#user-id-token) for more details.
+    1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](resource-protection.md)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
+       See section [User ID Token](resource-protection.md#user-id-token) for more details.
     2. The samples assume a user `eric`
     3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
 

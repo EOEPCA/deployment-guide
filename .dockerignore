@@ -1,0 +1,3 @@
+
+# Ignore everything - the Dockerfile uses no local files
+*

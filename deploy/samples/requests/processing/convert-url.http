@@ -105,7 +105,7 @@ Accept: application/json
 ###
 
 # @name undeployProcess
-DELETE https://{{ades}}/{{user}}/wps3/processes/convert-url-0_0_1 HTTP/1.1
+DELETE https://{{ades}}/{{user}}/wps3/processes/convert-url-0_1_2 HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 

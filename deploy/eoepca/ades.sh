@@ -37,7 +37,7 @@ workflowExecutor:
 $(stageOut)
   # Workspace integration
   useResourceManager: $(if [ "${STAGEOUT_TARGET}" = "workspace" ]; then echo -n "true"; else echo -n "false"; fi)
-  resourceManagerWorkspacePrefix: "guide-user"
+  resourceManagerWorkspacePrefix: "ws"
   resourceManagerEndpoint: "https://${workspaceApiName}.${domain}"
   platformDomain: "https://auth.${domain}"
   # Kubernetes storage
