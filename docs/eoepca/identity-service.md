@@ -85,9 +85,15 @@ spec:
           - secretName: identity-keycloak-tls-certificate
             hosts:
               - identity.keycloak.192-168-49-2.nip.io
+      secrets:
+        kcDbPassword: REPLACEME
+        keycloakAdminPassword: REPLACEME
     identity-postgres:
       volumeClaim:
         name: eoepca-userman-pvc
+      secrets:
+        postgresPassword: REPLACEME
+        pgPassword: REPLACEME
     identity-api:
       ingress:
         annotations:
@@ -101,6 +107,10 @@ spec:
           - secretName: identity-api-tls-certificate
             hosts:
               - identity.api.192-168-49-2.nip.io
+      configMap:
+        authServerUrl: identity.keycloak.192-168-49-2.nip.io
+      secrets:
+        adminPassword: REPLACEME
     identity-api-gatekeeper:
       config:
         client-id: identity-api
