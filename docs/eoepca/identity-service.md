@@ -15,14 +15,41 @@ The _Identity Service_ is deployed via the `identity-service` helm chart from th
 The chart is configured via values that are fully documented in the [README for the `identity-service` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/identity-service#readme).
 
 ```bash
-helm install --version 1.0.47 --values identity-service-values.yaml \
+helm install --version 1.0.0 --values identity-service-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   identity-service identity-service
 ```
 
+## Sealed secrets
+`identity-service` helm chart relies on sealed secrets to store secret data.
+Sealed secrets can be generated with...
+
+```bash
+export ADMIN_PASSWORD=
+export PROXY_CLIENT_SECRET=
+export PROXY_ENCRYPTION_KEY=
+export KC_DB_PASSWORD=
+export PGPASSWORD=
+export POSTGRES_PASSWORD=${KC_DB_PASSWORD}
+export IDENTITY_API_CLIENT_SECRET=
+
+kubectl create secret generic identity-api -n um --dry-run --from-literal=ADMIN_PASSWORD=${ADMIN_PASSWORD} -o yaml | kubeseal --controller-name=eoepca-sealed-secrets --controller-namespace=infra --format yaml > identity-api-sealedsecret.yaml
+kubectl create secret generic identity-gatekeeper -n um --dry-run --from-literal=PROXY_CLIENT_SECRET=${PROXY_CLIENT_SECRET} --from-literal=PROXY_ENCRYPTION_KEY=${PROXY_ENCRYPTION_KEY} -o yaml | kubeseal --controller-name=eoepca-sealed-secrets --controller-namespace=infra --format yaml > identity-gatekeeper-sealedsecret.yaml
+kubectl create secret generic identity-keycloak -n um --dry-run --from-literal=KEYCLOAK_ADMIN_PASSWORD=${ADMIN_PASSWORD} --from-literal=KC_DB_PASSWORD=${KC_DB_PASSWORD} -o yaml | kubeseal --controller-name=eoepca-sealed-secrets --controller-namespace=infra --format yaml > identity-keycloak-sealedsecret.yaml
+kubectl create secret generic identity-postgres -n um --dry-run --from-literal=POSTGRES_PASSWORD=${POSTGRES_PASSWORD} --from-literal=PGPASSWORD=${PGPASSWORD} -o yaml | kubeseal --controller-name=eoepca-sealed-secrets --controller-namespace=infra --format yaml > identity-postgres-sealedsecret.yaml
+kubectl create secret generic identity-api-gatekeeper -n um --dry-run --from-literal=PROXY_CLIENT_SECRET=${IDENTITY_API_CLIENT_SECRET} --from-literal=PROXY_ENCRYPTION_KEY=${PROXY_ENCRYPTION_KEY} -o yaml | kubeseal --controller-name=eoepca-sealed-secrets --controller-namespace=infra --format yaml > identity-api-gatekeeper-sealedsecret.yaml
+
+cat identity-api-sealedsecret.yaml | kubeseal --validate --controller-name=eoepca-sealed-secrets --controller-namespace=infra
+cat identity-gatekeeper-sealedsecret.yaml | kubeseal --validate --controller-name=eoepca-sealed-secrets --controller-namespace=infra
+cat identity-keycloak-sealedsecret.yaml | kubeseal --validate --controller-name=eoepca-sealed-secrets --controller-namespace=infra
+cat identity-postgres-sealedsecret.yaml | kubeseal --validate --controller-name=eoepca-sealed-secrets --controller-namespace=infra
+cat identity-api-gatekeeper-sealedsecret.yaml | kubeseal --validate --controller-name=eoepca-sealed-secrets --controller-namespace=infra
+```
+
 ## Values
 
-Example `identity-service-values.yaml`...
+Example `identity-service-values.yaml`...   
+Replace `REPLACEME` secrets with actual secret values generated from Sealed secrets.
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -58,9 +85,15 @@ spec:
           - secretName: identity-keycloak-tls-certificate
             hosts:
               - identity.keycloak.192-168-49-2.nip.io
+      secrets:
+        kcDbPassword: REPLACEME
+        keycloakAdminPassword: REPLACEME
     identity-postgres:
       volumeClaim:
         name: eoepca-userman-pvc
+      secrets:
+        postgresPassword: REPLACEME
+        pgPassword: REPLACEME
     identity-api:
       ingress:
         annotations:
@@ -74,6 +107,31 @@ spec:
           - secretName: identity-api-tls-certificate
             hosts:
               - identity.api.192-168-49-2.nip.io
+      configMap:
+        authServerUrl: identity.keycloak.192-168-49-2.nip.io
+      secrets:
+        adminPassword: REPLACEME
+    identity-api-gatekeeper:
+      config:
+        client-id: identity-api
+        discovery-url: identity.keycloak.192-168-49-2.nip.io
+        no-redirects: true
+        no-proxy: true
+        enable-uma: true
+        cookie-domain: 192-168-49-2.nip.io
+        cookie-access-name: auth_user_id
+        cookie-refresh-name: auth_refresh_token
+        enable-metrics: true
+        enable-logging: true
+        enable-request-id: true
+        enable-login-handler: true
+        enable-refresh-tokens: true
+        enable-logout-redirect: true
+        listen: :3000
+        listen-admin: :4000
+      secrets:
+        clientSecret: REPLACEME
+        encryptionKey: REPLACEME
     identity-gateekeper:
       ingress:
         annotations:
@@ -87,9 +145,28 @@ spec:
           - secretName: identity-gatekeeper-tls-certificate
             hosts:
               - identity.gatekeeper.192-168-49-2.nip.io
+      config:
+        client-id: dummy-service
+        discovery-url: identity.keycloak.192-168-49-2.nip.io
+        no-redirects: true
+        no-proxy: true
+        enable-uma: true
+        cookie-domain: 192-168-49-2.nip.io
+        cookie-access-name: auth_user_id
+        cookie-refresh-name: auth_refresh_token
+        enable-metrics: true
+        enable-logging: true
+        enable-request-id: true
+        enable-login-handler: true
+        enable-refresh-tokens: true
+        enable-logout-redirect: true
+        listen: :3000
+        listen-admin: :4000
+      secrets:
+        clientSecret: REPLACEME
+        encryptionKey: REPLACEME
   timeout: 5m0s
   interval: 1m0s
-  secretName: login-service-tls
 ```
 
 ## Post-deployment Steps
@@ -117,7 +194,7 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them. 
 The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts.  
 The script interacts with Identity API and therefore requires admin authorization.
-It accepts basic authentication with username and password with -u and -p, respectively. Or a bearer access token with -t. 
+It accepts basic authentication with username and password with `-u` and `-p` parameters, respectively. Or a bearer access token with `-t` parameter.
 To generate the access token needed to use the script, you can get it through the login in the eoepca portal, 
 by accessing the cookies in the browser. Or you can generate an access token using postman oauth2.0, as described in: 
 https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token.
@@ -127,8 +204,10 @@ Script execution examples:
 ```bash
 sh create-client.sh \
 -e production \
--u admin
--p password
+-u admin \
+-p password \
+-c client_id \
+-s client_secret \
 --id=api-gateekeper \
 --name="Identity API Gatekeeper" \
 --description="Client to be used by Identity API Gatekeeper" \
@@ -153,8 +232,10 @@ Where:
 - -e is the environment (development, demo or production)
 - -u is the username
 - -p is the password
+- -c is the client id used for authentication
+- -s is the client secret used for authentication
 - -t is the bearer access token
-- --id is the clientId
+- --id is the client id
 - --name is the client name
 - --description the client description
 - --resource is the name of the resource
