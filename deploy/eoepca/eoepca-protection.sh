@@ -54,7 +54,8 @@ fi
 # portal
 if [ "${REQUIRE_PORTAL}" = "true" ]; then
   echo -e "\nDeploy portal..."
-  ./portal.sh "${ACTION}" "${domain}"
+  ./portal-gluu.sh "${ACTION}" "${domain}"
+  ./portal-keycloak.sh "${ACTION}" "${domain}"
 fi
 
 # Application Hub
@@ -71,6 +72,7 @@ fi
 if [ "${REQUIRE_DUMMY_SERVICE_PROTECTION}" = "true" ]; then
   echo -e "\nProtect dummy-service..."
   ./dummy-service-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+  ./dummy-service-keycloak.sh "$ACTION" "${domain}"
 fi
 
 # ades

@@ -53,5 +53,5 @@ else
   values | helm ${ACTION_HELM} registration-api rm-registration-api -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace ${NAMESPACE} --create-namespace \
-    --version 1.3.0
+    --version 1.4.0
 fi

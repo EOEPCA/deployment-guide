@@ -76,8 +76,8 @@ jupyterhub:
     image:
       #name: jupyterhub/k8s-hub
       #tag: "2.0.0"
-      name: eoepca/application-hub
-      tag: "1.0.0"
+      #name: eoepca/application-hub
+      #tag: "1.0.0"
       pullPolicy: Always
       pullSecrets: []
 
@@ -121,7 +121,7 @@ helmChart() {
     values | helm ${ACTION_HELM} application-hub application-hub -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.49
+      --version 2.0.52
   fi
 }
 

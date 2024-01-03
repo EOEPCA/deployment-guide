@@ -31,7 +31,7 @@ main() {
     values | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
-      --version 1.3.1
+      --version 1.4.0
   fi
 }
 
@@ -40,7 +40,8 @@ values() {
 global:
   env:
     REGISTRAR_REPLACE: "true"
-    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
+    CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.TIFF,.tif,.tiff,.xml,.jp2,.jpg,.jpeg,.png,.nc
+    AWS_ENDPOINT_URL_S3: https://minio.${domain}
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
@@ -74,7 +75,7 @@ global:
     cache:
       type: S3
       bucket: cache-bucket
-      endpoint_url: "http://minio.${domain}/cache-bucket"
+      endpoint_url: "https://minio.${domain}/cache-bucket"
       host: "minio.${domain}"
       access_key_id: ${MINIO_ROOT_USER}
       secret_access_key: ${MINIO_ROOT_PASSWORD}
@@ -233,6 +234,11 @@ $(harvesterSpecification)
     ingress:
       enabled: false
 
+  # seeder:
+  #   image:
+  #     repository: registry.gitlab.eox.at/vs/vs/seeder
+  #     tag: release-4.1.3
+
   cache:
     ingress:
       enabled: false
@@ -374,6 +380,17 @@ creodiasData() {
         - name: WGS84
           zoom: 13
       parentLayer: L8L1GT
+    - id: S3A_OL_2_LFR
+      title: Sentinel-3 OL_2_LFR
+      abstract: Sentinel-3 Quicklooks
+      displayColor: '#eb3700'
+      grids:
+        - name: WGS84
+          zoom: 13
+      parentLayer: S3A_OL_2_LFR
+      search:
+        histogramBinCount: 15
+        histogramThreshold: 80
   collections:
     S2L1C:
       product_types:
@@ -439,6 +456,14 @@ creodiasData() {
     S1IWGRD1C:
       product_types:
         - S1IWGRD1C_VVVH
+      coverage_types: []
+    S1SLC:
+      product_types:
+        - S1SLC
+      coverage_types: []
+    S3A_OL_2_LFR:
+      product_types:
+        - S3A_OL_2_LFR
       coverage_types: []
   coverageTypes:
     # Landsat-8 L1TP
@@ -824,7 +849,7 @@ creodiasData() {
     - name: L8MSI1TP
       filter:
         platform: landsat-8
-        landsat:processing_level: L1TP
+        landsat:correction: L1TP
       collections:
         - L8L1TP
       metadata_assets: []
@@ -871,7 +896,7 @@ creodiasData() {
     - name: L8MSI1GT
       filter:
         platform: landsat-8
-        landsat:processing_level: L1GT
+        landsat:correction: L1GT
       collections:
         - L8L1GT
       metadata_assets: []
@@ -917,7 +942,7 @@ creodiasData() {
           validity: false
     - name: S1IWGRD1C_VVVH
       filter:
-        constellation: Sentinel-1
+        constellation: sentinel-1
         sar:instrument_mode: IW
         sar:product_type: GRD
         sar:polarizations: ["VV", "VH"]
@@ -949,6 +974,69 @@ creodiasData() {
             expression: VV/VH
             range: [5000, 12000]
             nodata: 0
+    - name: S1SLC
+      filter:
+        constellation: sentinel-1
+        sar:product_type: SLC
+      collections:
+        - S1SLC
+      metadata_assets: []
+      coverages: {}
+        # S1IWGRD1C_VV:
+        #   assets:
+        #     - vv
+        # S1IWGRD1C_VH:
+        #   assets:
+        #     - vh
+      defaultBrowse: QUICKLOOK
+      browses:
+        QUICKLOOK:
+          asset: thumbnail
+    - name: S3A_OL_2_LFR
+      filter:
+        constellation: Sentinel-3
+        s3:productType: OL_2_LFR___
+      collections:
+        - S3A_OL_2_LFR
+      metadata_assets: []
+      coverages: {}
+        # OGVI:
+        #   assets:
+        #     - ogvi
+        # RCOGVI:
+        #   assets:
+        #     - rcOgvi
+        # OTCI:
+        #   assets:
+        #     - otci
+        # IWV:
+        #   assets:
+        #     - iwv
+        # LQSF:
+        #   assets:
+        #     - lqsf
+        # TIMECOORDINATES:
+        #   assets:
+        #     - timeCoordinates
+        # GEOCOORDINATES:
+        #   assets:
+        #     - geoCoordinates
+        # TIEGEOCOORDINATES:
+        #   assets:
+        #     - tieGeoCoordinates
+        # TIEGEOMETRIES:
+        #   assets:
+        #     - tieGeometries
+        # TIEMETEO:
+        #   assets:
+        #     - tieMeteo
+        # INSTRUMENTDATA:
+        #   assets:
+        #     - instrumentData
+      defaultBrowse: THUMBNAIL
+      browses:
+        THUMBNAIL:
+          asset: thumbnail
 EOF
 }
 
@@ -980,49 +1068,131 @@ creodiasHarvester() {
         host: data-access-redis-master
         port: 6379
       harvesters:
-        - name: Creodias-Opensearch
+        Sentinel2:
           resource:
-            url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
             type: OpenSearch
-            format_config:
-              type: 'application/json'
-              property_mapping:
-                start_datetime: 'startDate'
-                end_datetime: 'completionDate'
-                productIdentifier: 'productIdentifier'
-            query:
-              time:
-                property: sensed
-                begin: 2019-09-10T00:00:00Z
-                end: 2019-09-11T00:00:00Z
-              collection: null
-              bbox: 14.9,47.7,16.4,48.7
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
           filter: {}
-          postprocess:
-            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel2
+              kwargs: {}
           queue: register
-        - name: Creodias-Opensearch-Sentinel1
-          resource:
-            url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
-            type: OpenSearch
-            format_config:
-              type: 'application/json'
-              property_mapping:
-                start_datetime: 'startDate'
-                end_datetime: 'completionDate'
-                productIdentifier: 'productIdentifier'
-            query:
-              time:
-                property: sensed
-                begin: 2019-09-10T00:00:00Z
-                end: 2019-09-11T00:00:00Z
-              collection: null
-              bbox: 14.9,47.7,16.4,48.7
-              extra_params:
-                productType: GRD-COG
+        Landsat8:
           filter: {}
-          postprocess:
-            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
+          postprocessors:
+          - kwargs: {}
+            process: harvester_eoepca.postprocess.postprocess_landsat8
+            type: external
+          queue: register
+          resource:
+            opensearch:
+              format:
+                json:
+                  property_mapping:
+                    end_datetime: completionDate
+                    productIdentifier: productIdentifier
+                    start_datetime: startDate
+                type: application/json
+              query:
+                bbox: 19.7,34.7,28.5,42.0
+                collection: null
+                time:
+                  begin: 2020-09-01T00:00:00Z
+                  end: 2020-09-05T00:00:00Z
+              url: https://datahub.creodias.eu/resto/api/collections/Landsat8/describe.xml
+            type: OpenSearch
+        Sentinel1-GRD:
+          resource:
+            type: OpenSearch
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
+                extra_params:
+                  productType: GRD-COG
+          filter: {}
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel1
+              kwargs: {}
+          queue: register
+        Sentinel3:
+          resource:
+            type: OpenSearch
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel3/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
+                extra_params:
+                  productType: OL_2_LFR___
+          filter: {}
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel3
+              kwargs: {}
+          queue: register
+        Sentinel1-SLC:
+          resource:
+            type: OpenSearch
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
+                extra_params:
+                  productType: SLC
+          filter: {}
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel1
+              kwargs: {}
           queue: register
 EOF
 }
