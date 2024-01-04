@@ -27,6 +27,7 @@ nav:
         - IAM Overview: eoepca/iam-overview.md
         - Keycloak Solution (NEW):
           - Keycloak: eoepca/keycloak.md
+          - Identity Service: eoepca/identity-service.md
         - Gluu Solution (deprecated):
           - Login Service: eoepca/login-service.md
           - Policy Decision Point: eoepca/pdp.md

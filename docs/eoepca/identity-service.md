@@ -3,6 +3,7 @@
 The _Identity Service_ provides the platform _Authorization Server_ for authenticated user identity and request authorization.
 
 _Identity Service_ is composed of:
+
 - **Keycloak** - IAM solution which Identity Service relies on.
 - **Postgres DB** - Database to store Keycloak's data.
 - **Identity API** - API with endpoints to create clients and protect resources for applications using that client. Uses a keycloak python client which sends requests to Keycloak API.
@@ -179,7 +180,7 @@ Creating and protecting resources can be done in multiple ways, as we will see n
 
 To create and protect resources using the keycloak User Interface (UI), do the following steps:
 
-* (Optional) Create clients. Clients can be created using the keycloak user interface at identity.keycloak.${environment}.eoepca.org. You need to login as admin.
+* (Optional) Create clients. Clients can be created using the keycloak user interface at identity.keycloak.${environment}.eoepca.org. You need to login as admin.<br>
   To create a client: Login as admin in the keycloak UI > Clients > Create Client > Set a name > Next > Turn Client Authentication and Authorization On > Add the valid redirect URI's > Save.
 * (Optional) Create Users. Users > Add User. Then set a password for the user. Credentials > Set Password.
 * Select a client.
@@ -191,13 +192,13 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 
 #### Using Bash script
 
-Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them. 
-The script can be found in https://github.com/EOEPCA/um-identity-service/tree/master/scripts.  
-The script interacts with Identity API and therefore requires admin authorization.
-It accepts basic authentication with username and password with `-u` and `-p` parameters, respectively. Or a bearer access token with `-t` parameter.
+Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them.<br>
+The script can be found in the [Identity Service git repository](https://github.com/EOEPCA/um-identity-service/tree/master/scripts).<br>
+The script interacts with Identity API and therefore requires admin authorization.<br>
+It accepts basic authentication with username and password with `-u` and `-p` parameters, respectively - or a bearer access token with `-t` parameter.<br>
 To generate the access token needed to use the script, you can get it through the login in the eoepca portal, 
-by accessing the cookies in the browser. Or you can generate an access token using postman oauth2.0, as described in: 
-https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token.
+by accessing the cookies in the browser.<br>
+Or you can generate an access token using postman oauth2.0, as described in the Postman document [Requesting an OAuth 2.0 token](https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token).
 
 Script execution examples:
 1. With username/password
@@ -229,19 +230,20 @@ sh create-client.sh \
 ```
 
 Where:
-- -e is the environment (development, demo or production)
-- -u is the username
-- -p is the password
-- -c is the client id used for authentication
-- -s is the client secret used for authentication
-- -t is the bearer access token
-- --id is the client id
-- --name is the client name
-- --description the client description
-- --resource is the name of the resource
-- --uris is the list of resource uris
-- --users is the list of users with access to the resource
-- --roles is the list of roles with acess to the resource
+
+* `-e` is the environment (development, demo or production)
+* `-u` is the username
+* `-p` is the password
+* `-c` is the client id used for authentication
+* `-s` is the client secret used for authentication
+* `-t` is the bearer access token
+* `--id` is the client id
+* `--name` is the client name
+* `--description` the client description
+* `--resource` is the name of the resource
+* `--uris` is the list of resource uris
+* `--users` is the list of users with access to the resource
+* `--roles` is the list of roles with acess to the resource
 
 For more information:
 ```bash
