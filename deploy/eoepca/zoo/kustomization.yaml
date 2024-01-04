@@ -1,0 +1,88 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+- releaseName: zoo-project-dru
+  namespace: zp
+  name: zoo-project-dru
+  version: 0.2.0
+  repo: https://zoo-project.github.io/charts/
+  valuesInline:
+    cookiecutter:
+      templateBranch: feature/collection-output-sample
+      templateUrl: https://github.com/gfenoy/eoepca-proc-service-template.git
+    iam:
+      enabled: true
+      clientId: 536510d0-0a88-4c08-a273-35090d1031db
+      clientSecret: cd5b1516-549a-4dbb-836c-f5aead66eb97
+      name: OpenIDAuth
+      openIdConnectUrl: https://auth.c23121301.guide.eoepca.org/.well-known/openid-configuration
+      realm: Secured section
+      type: openIdConnect
+      userinfoUrl: https://auth.c23121301.guide.eoepca.org/oxauth/restv1/userinfo
+    ingress:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-production
+      enabled: true
+      hosts:
+      - host: zoo-project-dru.testing.guide.eoepca.org
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+      tls:
+      - hosts:
+        - zoo-project-dru.testing.guide.eoepca.org
+        secretName: zoo-project-dru-tls
+    minio:
+      auth:
+        rootPassword: minio-secret-password
+        rootUser: minio-admin
+      defaultBuckets: processingresults
+      enabled: true
+      persistence:
+        accessMode: ReadWriteOnce
+        enabled: true
+        size: 2Gi
+        storageClass: standard
+    persistence:
+      procServicesStorageClass: standard
+      storageClass: standard
+      tmpStorageClass: standard
+    postgresql:
+      primary:
+        persistence:
+          storageClass: standard
+      readReplicas:
+        persistence:
+          storageClass: standard
+    rabbitmq:
+      persistence:
+        storageClass: standard
+    websocketd:
+      enabled: false
+    workflow:
+      additionalInputs:
+        APP: zoo-project-dru
+        STAGEOUT_AWS_ACCESS_KEY_ID: minio-admin
+        STAGEOUT_AWS_REGION: RegionOne
+        STAGEOUT_AWS_SECRET_ACCESS_KEY: minio-secret-password
+        STAGEOUT_AWS_SERVICEURL: http://zoo-project-dru-minio.zp.svc.cluster.local:9000
+        STAGEOUT_OUTPUT: s3://processingresults
+      nodeSelector:
+        minikube.k8s.io/primary: "true"
+        # node-role.kubernetes.io/worker: "true"
+      storageClass: standard
+    zoofpm:
+      autoscaling:
+        enabled: false
+      extraMountPoints: []
+      image:
+        pullPolicy: IfNotPresent
+        repository: zooproject/zoo-project
+        tag: eoepca-fdf95be6bfcc34ebc29ae368d44d9992f8213c1e
+      replicaCount: 1
+    zookernel:
+      extraMountPoints: []
+      image:
+        pullPolicy: IfNotPresent
+        repository: zooproject/zoo-project
+        tag: eoepca-fdf95be6bfcc34ebc29ae368d44d9992f8213c1e
