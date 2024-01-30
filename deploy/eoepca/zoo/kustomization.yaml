@@ -10,7 +10,7 @@ helmCharts:
     customConfig:
       main:
         eoepca: |-
-          domain=c23121301.guide.eoepca.org
+          domain=eoepca.svc.rconway.uk
           workspace_prefix=ws
     cookiecutter:
       templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
@@ -29,25 +29,25 @@ helmCharts:
         cert-manager.io/cluster-issuer: letsencrypt-production
       enabled: true
       hosts:
-      - host: zoo-project-dru.testing.guide.eoepca.org
+      - host: zoo-project-dru.eoepca.svc.rconway.uk
         paths:
         - path: /
           pathType: ImplementationSpecific
       tls:
       - hosts:
-        - zoo-project-dru.testing.guide.eoepca.org
+        - zoo-project-dru.eoepca.svc.rconway.uk
         secretName: zoo-project-dru-tls
     minio:
-      auth:
-        rootPassword: minio-secret-password
-        rootUser: minio-admin
-      defaultBuckets: processingresults
-      enabled: true
-      persistence:
-        accessMode: ReadWriteOnce
-        enabled: true
-        size: 2Gi
-        storageClass: standard
+      enabled: false
+      # auth:
+      #   rootPassword: minio-secret-password
+      #   rootUser: minio-admin
+      # defaultBuckets: processingresults
+      # persistence:
+      #   accessMode: ReadWriteOnce
+      #   enabled: true
+      #   size: 2Gi
+      #   storageClass: standard
     persistence:
       procServicesStorageClass: standard
       storageClass: standard
@@ -76,6 +76,8 @@ helmCharts:
         minikube.k8s.io/primary: "true"
         # node-role.kubernetes.io/worker: "true"
       storageClass: standard
+      # defaultMaxRam: 512
+      # defaultMaxCores: 1
     zoofpm:
       autoscaling:
         enabled: false
@@ -140,9 +142,6 @@ helmCharts:
                 AWS_SECRET_ACCESS_KEY: $( inputs.STAGEOUT_AWS_SECRET_ACCESS_KEY )
                 AWS_REGION: $( inputs.STAGEOUT_AWS_REGION )
                 AWS_S3_ENDPOINT: $( inputs.STAGEOUT_AWS_SERVICEURL )
-            ResourceRequirement:
-              coresMax: 1
-              ramMax: 1024
             InitialWorkDirRequirement:
               listing:
                 - entryname: stage.py
