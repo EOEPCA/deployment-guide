@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 helmCharts:
-- releaseName: zoo-project-dru
+- releaseName: zoo-kustomization
   namespace: zp
   name: zoo-project-dru
   version: 0.2.4
@@ -29,14 +29,14 @@ helmCharts:
         cert-manager.io/cluster-issuer: letsencrypt-production
       enabled: true
       hosts:
-      - host: zoo-project-dru.eoepca.svc.rconway.uk
+      - host: zoo-kustomization.eoepca.svc.rconway.uk
         paths:
         - path: /
           pathType: ImplementationSpecific
       tls:
       - hosts:
-        - zoo-project-dru.eoepca.svc.rconway.uk
-        secretName: zoo-project-dru-tls
+        - zoo-kustomization.eoepca.svc.rconway.uk
+        secretName: zoo-kustomization-tls
     minio:
       enabled: false
       # auth:
@@ -65,13 +65,12 @@ helmCharts:
     websocketd:
       enabled: false
     workflow:
-      additionalInputs:
-        APP: zoo-project-dru
-        STAGEOUT_AWS_ACCESS_KEY_ID: minio-admin
+      inputs:
+        STAGEOUT_AWS_SERVICEURL: https://minio.eoepca.svc.rconway.uk
+        STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
+        STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
         STAGEOUT_AWS_REGION: RegionOne
-        STAGEOUT_AWS_SECRET_ACCESS_KEY: minio-secret-password
-        STAGEOUT_AWS_SERVICEURL: http://zoo-project-dru-minio.zp.svc.cluster.local:9000
-        STAGEOUT_OUTPUT: s3://processingresults
+        STAGEOUT_OUTPUT: eoepca
       nodeSelector:
         minikube.k8s.io/primary: "true"
         # node-role.kubernetes.io/worker: "true"
@@ -160,15 +159,19 @@ helmCharts:
                     bucket = sys.argv[2]
                     subfolder = sys.argv[3]
                     collection_id = sys.argv[4]
-
                     print(f"cat_url: {cat_url}", file=sys.stderr)
                     print(f"bucket: {bucket}", file=sys.stderr)
                     print(f"subfolder: {subfolder}", file=sys.stderr)
+                    print(f"collection_id: {collection_id}", file=sys.stderr)
 
                     aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
                     aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
                     region_name = os.environ["AWS_REGION"]
                     endpoint_url = os.environ["AWS_S3_ENDPOINT"]
+                    print(f"aws_access_key_id: {aws_access_key_id}", file=sys.stderr)
+                    print(f"aws_secret_access_key: {aws_secret_access_key}", file=sys.stderr)
+                    print(f"region_name: {region_name}", file=sys.stderr)
+                    print(f"endpoint_url: {endpoint_url}", file=sys.stderr)
 
                     shutil.copytree(cat_url, "/tmp/catalog")
                     cat = pystac.read_file(os.path.join("/tmp/catalog", "catalog.json"))

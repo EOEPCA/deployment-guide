@@ -58,6 +58,8 @@ fi
 if [ "${REQUIRE_ADES}" = "true" ]; then
   echo -e "\nDeploy ades..."
   ./ades.sh "${ACTION}" "${domain}"
+  echo -e "\nDeploy zoo..."
+  ./zoo.sh "${ACTION}" "${domain}"
 fi
 
 # resource catalogue

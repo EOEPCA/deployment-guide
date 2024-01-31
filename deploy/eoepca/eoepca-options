@@ -46,7 +46,7 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export MINIKUBE_MEMORY_AMOUNT="${MINIKUBE_MEMORY_AMOUNT:-12g}"
   export MINIKUBE_DISK_AMOUNT="${MINIKUBE_DISK_AMOUNT:-20g}"
   # We assume use of a public IP for external traffic ingress and use of letsencrypt tls
-  export MINIKUBE_EXTRA_OPTIONS="--ports=80:31080,443:31443"
+  export MINIKUBE_EXTRA_OPTIONS="${MINIKUBE_EXTRA_OPTIONS:---ports=80:31080,443:31443}"
 
   # Ingress options
   export USE_METALLB="${USE_METALLB:-false}"
@@ -72,6 +72,7 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   # ADES
   export PROCESSING_MAX_RAM="${PROCESSING_MAX_RAM:-8Gi}"
   export PROCESSING_MAX_CORES="${PROCESSING_MAX_CORES:-4}"
+  export PROCESSING_ZOO_IMAGE="${PROCESSING_ZOO_IMAGE:-eoepca-983b8de2b98ce925cdc24753b17bc277261c0330}"
   export STAGEOUT_TARGET="${STAGEOUT_TARGET:-workspace}"
 
   # Workspace
