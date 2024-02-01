@@ -79,6 +79,8 @@ fi
 if [ "${REQUIRE_ADES_PROTECTION}" = "true" ]; then
   echo -e "\nProtect ades..."
   ./ades-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
+  echo -e "\nProtect ZOO..."
+  ./zoo-guard.sh "$ACTION" "${eric_id}" "${bob_id}" "${public_ip}" "${domain}"
 fi
 
 # resource catalogue

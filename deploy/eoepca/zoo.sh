@@ -47,6 +47,7 @@ iam:
   enabled: false
 ingress:
   enabled: ${OPEN_INGRESS}
+$(hostUrl)
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
@@ -107,6 +108,15 @@ files:
     # stageout.yaml: ""
 $(stageOutYaml)
 EOF
+}
+
+hostUrl() {
+  if [ "${REQUIRE_ADES_PROTECTION}" = "true" ]; then
+    if [ "${USE_TLS}" = "true" ]; then scheme="https"; else scheme="http"; fi
+    cat - <<EOF
+  hosturl: ${scheme}://zoo.${domain}
+EOF
+  fi
 }
 
 workspacePrefix() {

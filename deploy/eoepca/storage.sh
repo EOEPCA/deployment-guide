@@ -36,7 +36,25 @@ spec:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: rm
+  name: zoo
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eoepca-zoo-pvc
+  namespace: zoo
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ${DEFAULT_STORAGE}
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zoo
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
