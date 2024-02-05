@@ -79,12 +79,12 @@ POST https://{{ades}}/{{user}}/ogc-api/processes/convert-stac/execution HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
-Prefer: respond-async;return=representation
+Prefer: respond-async
 
 {
   "inputs": {
       "fn": "resize",
-      "stac":  "https://raw.githubusercontent.com/EOEPCA/convert/main/stac/catalog.json",
+      "stac":  "https://raw.githubusercontent.com/EOEPCA/convert/main/stac/eoepca-logo.json",
       "size": "50%"
   }
 }

@@ -29,7 +29,9 @@ main() {
     values | helm ${ACTION_HELM} zoo-project-dru zoo-project-dru -f - \
       --repo https://zoo-project.github.io/charts/ \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 0.2.4
+      --version 0.2.5
+    # values | helm ${ACTION_HELM} zoo-project-dru /home/rconway/develop/EOEPCA/zoo-project-charts/zoo-project-dru -f - \
+    #   --namespace "${NAMESPACE}" --create-namespace
   fi
 }
 

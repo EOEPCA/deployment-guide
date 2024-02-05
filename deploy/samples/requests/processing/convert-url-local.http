@@ -79,7 +79,7 @@ POST https://{{ades}}/{{user}}/ogc-api/processes/convert-url/execution HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
 Content-Type: application/json
-Prefer: respond-async;return=representation
+Prefer: respond-async
 
 {
   "inputs": {
