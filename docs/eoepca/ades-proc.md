@@ -1,4 +1,11 @@
-# Application Deployment & Execution Service (ADES)
+# **proc-ades --Deprecated--**
+
+<div style="text-align: center; font-weight: bold; font-style: italic;">
+  ADES - Application Deployment & Execution Service
+</div>
+
+!!! note
+    With EOEPCA release 1.4, the `proc-ades` implementation has been deprecated, in favour of the new `zoo-project-dru` - see [ZOO-Project DRU](../ades-zoo).
 
 The _ADES_ provides a platform-hosted execution engine through which users can initiate parameterised processing jobs using applications made available within the platform - supporting the efficient execution of the processing 'close to the data'. Users can deploy specific 'applications' to the ADES, which may be their own applications, or those published by other platform users.
 

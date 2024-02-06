@@ -48,12 +48,12 @@ pep-engine:
     asHostname: auth
     pdpHostname: auth
   customDefaultResources:
-    - name: "ZOO Service for user 'eric'"
+    - name: "ZOO-Project DRU Service for user 'eric'"
       description: "Protected Access for eric to his space in ZOO"
       resource_uri: "/eric"
       scopes: []
       default_owner: "${eric_id}"
-    - name: "ZOO Service for user 'bob'"
+    - name: "ZOO-Project DRU Service for user 'bob'"
       description: "Protected Access for bob to his space in ZOO"
       resource_uri: "/bob"
       scopes: []

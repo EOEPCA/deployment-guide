@@ -33,7 +33,9 @@ nav:
           - Policy Decision Point: eoepca/pdp.md
           - Resource Protection: eoepca/resource-protection.md
         - User Profile: eoepca/user-profile.md
-      - Application Deployment & Execution: eoepca/ades.md
+      - ADES (Processing):
+        - ZOO-Project DRU --NEW--: eoepca/ades-zoo.md
+        - proc-ades --Deprecated--: eoepca/ades-proc.md
       - Resource Catalogue: eoepca/resource-catalogue.md
       - Data Access: eoepca/data-access.md
       - Registration API: eoepca/registration-api.md
