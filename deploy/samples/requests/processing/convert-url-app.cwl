@@ -28,7 +28,7 @@ $graph:
         doc: the percentage for a resize operation
         type: string
     outputs:
-      - id: stac
+      - id: converted_image
         type: Directory
         outputSource:
           - convert/results

@@ -29,7 +29,7 @@ main() {
     values | helm ${ACTION_HELM} zoo-project-dru zoo-project-dru -f - \
       --repo https://zoo-project.github.io/charts/ \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 0.2.5
+      --version 0.2.6
     # values | helm ${ACTION_HELM} zoo-project-dru /home/rconway/develop/EOEPCA/zoo-project-charts/zoo-project-dru -f - \
     #   --namespace "${NAMESPACE}" --create-namespace
   fi
@@ -91,16 +91,11 @@ $(stageOutConfig)
     minikube.k8s.io/primary: "true"
   storageClass: ${ADES_STORAGE}
 zoofpm:
-  autoscaling:
-    enabled: false
-  extraMountPoints: []
   image:
-    tag: eoepca-983b8de2b98ce925cdc24753b17bc277261c0330
-  replicaCount: 1
+    tag: ${PROCESSING_ZOO_IMAGE}
 zookernel:
-  extraMountPoints: []
   image:
-    tag: eoepca-983b8de2b98ce925cdc24753b17bc277261c0330
+    tag: ${PROCESSING_ZOO_IMAGE}
 files:
   # Directory 'files/cwlwrapper-assets' - assets for ConfigMap 'XXX-cwlwrapper-config'
   cwlwrapperAssets:

@@ -49,14 +49,9 @@ Accept: application/json
 POST https://{{ades}}/{{user}}/ogc-api/processes HTTP/1.1
 Authorization: Bearer {{idToken}}
 Accept: application/json
-Content-Type: application/json
+Content-Type: application/cwl+yaml
 
-{
-  "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/convert/main/convert-url-app.cwl",
-    "type": "application/cwl"
-  }
-}
+< convert-url-app.cwl
 
 ###
 
