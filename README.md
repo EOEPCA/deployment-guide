@@ -34,6 +34,8 @@ This is achieved by the steps:
 
 This script is used to invoke publishing of the docs under a given version - by default the version `current`.
 
+Mkdocs is [configured to support versioning](https://squidfunk.github.io/mkdocs-material/setup/setting-up-versioning/) by using the [`mike` plugin](https://github.com/jimporter/mike).
+
 **Examples**
 
 Publish to `current` version, and update the `latest` alias to point to this...
