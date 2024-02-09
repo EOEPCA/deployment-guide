@@ -397,3 +397,13 @@ runcurl \
   -H "Authorization: Bearer ${access_token}" \
   --data "${updatedDefaultResourceDetails}" \
   "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+
+# Get resource details (again) to check the outcome
+runcurl \
+  -X GET \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${access_token}" \
+  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+
+echo "Updated Default Resource..."
+jq <<<"${response_body}"
