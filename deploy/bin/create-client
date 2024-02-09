@@ -4,21 +4,23 @@ args_count=$#
 
 usage="
 Add a client with protected resources.
-$(basename "$0") [-h] [-e] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
+$(basename "$0") [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] --secret secret [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
 
 where:
     -h                    show help message
-    -e                    enviroment - local, develop, demo, production - defaults to local
+    -a                    authorization server url - e.g. https://auth.myplatform.mydomain
+    -i                    identity-api server url - e.g. https://identity-api.myplatform.mydomain
     -u                    username used for authentication
     -p                    password used for authentication
-    -c                    client id used for authentication
-    -s                    client secret used for authentication
+    -c                    client id (of the bootstrap client used in the create request)
+    -s                    client secret (of the bootstrap client used in the create request)
     -t or --token         access token used for authentication
     -r                    realm
-    --id                  client id
-    --name                client name
+    --id                  client id (of the created client)
+    --name                client name (of the created client)
+    --secret              client secret (of the created client)
     --default             add default resource - /* authenticated
-    --authenticated       allow access to the resource when authenticated
+    --authenticated       allow access to the resource only when authenticated
     --resource            resource name
     --uris                resource uris - separated by comma (,)
     --scopes              resource scopes - separated by comma (,)
@@ -26,7 +28,7 @@ where:
     --roles               role names with access to the resource - separated by comma (,)
 "
 
-TEMP=$(getopt -o he:u:p:c:s:t:r: --long id:,name:,description:,default,authenticated,resource:,uris:,scopes:,users:,roles: \
+TEMP=$(getopt -o ha:i:u:p:c:s:t:r: --long id:,name:,description:,secret:,default,authenticated,resource:,uris:,scopes:,users:,roles: \
   -n "$(basename "$0")" -- "$@")
 
 if [ $? != 0 ]; then
@@ -35,10 +37,12 @@ fi
 
 eval set -- "$TEMP"
 
-environment="develop"
-realm="eoepca"
+auth_server=
+identity_api=
+realm=
 client_id=
 client_name=
+client_secret=
 client_description=
 resource_name=
 resource_uris=
@@ -103,6 +107,14 @@ join_array() {
   echo "$*"
 }
 
+runcurl() {
+  # Make the curl request and store the response in a variable
+  response=$(curl -s -w "%{http_code}" "$@")
+  # Extract the response code (last 3 characters) and body (rest of the string)
+  response_code="${response: -3}"
+  response_body="${response:0:${#response}-3}"
+}
+
 while true; do
   case "$1" in
   --id)
@@ -111,6 +123,10 @@ while true; do
     ;;
   --name)
     client_name="$2"
+    shift 2
+    ;;
+  --secret)
+    client_secret="$2"
     shift 2
     ;;
   --description)
@@ -134,7 +150,7 @@ while true; do
     shift
     ;;
   --authenticated)
-    authenticated="$1"
+    authenticated=true
     shift
     ;;
   --uris)
@@ -153,8 +169,12 @@ while true; do
     roles="$2"
     shift 2
     ;;
-  -e)
-    environment="$2"
+  -a)
+    auth_server="$2"
+    shift 2
+    ;;
+  -i)
+    identity_api="$2"
     shift 2
     ;;
   -u)
@@ -193,23 +213,35 @@ while true; do
   esac
 done
 
-if [ "$args_count" -ne 0 ]; then
-  if [ -n "${client_id}" ]; then
-    add_resource
-  fi
-else
+# Ensure the 'last' resource is added
+if [ -n "$resource_name" ]; then
+  add_resource
+fi
+
+# zzz - don't think this is needed
+# if [ "$args_count" -ne 0 ]; then
+#   if [ -n "${client_id}" ]; then
+#     add_resource
+#   fi
+# else
+if [ "$args_count" -eq 0 ]; then
   # no args passed, ask for input
-  read -rp "> Environment (local/develop/demo/production): " environment
-  if [ -z "$environment" ]; then
-    echo "Using default environment (local)"
-    environment="local"
+  read -rp "> Authorization Server: " auth_server
+  if [ -z "$auth_server" ]; then
+    auth_server="http://localhost:8080"
+    echo "Using default auth_server (${auth_server})"
+  fi
+  read -rp "> Identity API: " identity_api
+  if [ -z "$identity_api" ]; then
+    identity_api="http://localhost:8080"
+    echo "Using default identity_api (${identity_api})"
   fi
   read -rp "> Realm: " realm
   if [ -z "$realm" ]; then
-    echo "Using default realm (eoepca)"
-    realm="eoepca"
+    realm="master"
+    echo "Using default realm (${realm})"
   fi
-  if [ "$environment" != "local" ]; then
+  if [ "$auth_server" != *'localhost'* ]; then
     read -rp "> [Authentication] Username (optional): " username
     read -rsp "> [Authentication] Password (optional): " password
     read -rp "> [Authentication] Client id (optional): " client
@@ -234,6 +266,7 @@ else
   fi
   read -rp "> Client Id: " client_id
   read -rp "> Client Name (optional): " client_name
+  read -rp "> Client Secret: " client_secret
   read -rp "> Client Description (optional): " client_description
   read -rp "> Add resource? [y/N] " add_resource_answer
   resources=()
@@ -258,7 +291,7 @@ else
   done
 fi
 
-if [ "$environment" != "local" ]; then
+if [ "$auth_server" != *'localhost'* ]; then
   if [ -z "$username" ] && [ -z "$password" ] && [ -z "$access_token" ]; then
     echo "> Authentication is required"
     exit 1
@@ -276,46 +309,31 @@ then
     exit 1
 fi
 
-if [[ -n "$username" && -n "$password" && -n "$client"  && -n "$secret" ]]; then
-  if [ "$environment" == "local" ]; then
-    token_endpoint="http://localhost:8080/realms/$realm/protocol/openid-connect/token"
-    "https://identity.keycloak.develop.eoepca.org/realms/$realm/protocol/openid-connect/token",
-  elif [[ "$environment" == "develop" || "$environment" == "demo" ]]; then
-    token_endpoint="https://identity.keycloak.${environment}.eoepca.org/realms/$realm/protocol/openid-connect/token"
-  elif [ "$environment" == "production" ]; then
-    token_endpoint="https://identity.keycloak.eoepca.org/realms/$realm/protocol/openid-connect/token"
-  else
-    echo "Invalid environment $environment"
-    exit 1
-  fi
+# if [[ -n "$username" && -n "$password" && -n "$client"  && -n "$secret" ]]; then
+if [[ -n "$username" && -n "$password" && -n "$client" ]]; then
+  token_endpoint="${auth_server}/realms/${realm}/protocol/openid-connect/token"
   echo "Getting access token..."
-  token_payload="username=$username&password=$password&client_id=$client&client_secret=$secret&grant_type=password"
-  access_token=$(curl -H "Content-Type: application/x-www-form-urlencoded" \
-                      -X POST --data "$token_payload" "$token_endpoint" | jq -r '.access_token')
+  echo "${token_endpoint}"
+  token_payload="username=$username&password=$password&client_id=$client&grant_type=password"
+  runcurl -H "Content-Type: application/x-www-form-urlencoded" -X POST --data "$token_payload" "$token_endpoint"
+  echo "Get Access Token status = ${response_code}"
+  access_token=$(echo "${response_body}" | jq -r '.access_token')
 fi
 
-url=
-if [ "$environment" == "local" ]; then
-  url="http://localhost:8080"
-elif [[ "$environment" == "develop" || "$environment" == "demo" ]]; then
-  url="https://identity.api.${environment}.eoepca.org"
-elif [ "$environment" == "production" ]; then
-  url="https://identity.api.eoepca.org"
-else
-  echo "Invalid environment $environment"
-  exit 1
-fi
-endpoint="$url/clients"
+endpoint="${identity_api}/clients"
+
 payload=""
 if ((${#resources[@]} == 0)); then
   payload="{
         \"clientId\": \"${client_id}\",
+        \"secret\": \"${client_secret}\",
         \"name\": \"${client_name}\",
         \"description\": \"${client_description}\"
       }"
 else
   payload="{
     \"clientId\": \"${client_id}\",
+    \"secret\": \"${client_secret}\",
     \"name\": \"${client_name}\",
     \"description\": \"${client_description}\",
     \"resources\": [$(join_array , "${resources[@]}")]
@@ -324,15 +342,58 @@ fi
 echo ""
 echo "Adding client"
 echo "$endpoint"
+echo "$access_token"
 echo "$payload"
 echo ""
 if [ -n "$access_token" ]; then
-  curl -i \
+  runcurl \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $access_token" \
     -X POST --data "$payload" "$endpoint"
+  echo "Create Client status = ${response_code}"
 else
-  curl -i \
+  runcurl \
     -H "Content-Type: application/json" \
     -X POST --data "$payload" "$endpoint"
+  echo "Create Client status = ${response_code}"
 fi
+
+echo ${response_body}
+
+echo "Adding 'view' scope to 'Default Resource'"
+
+# Get client ID
+runcurl \
+  -X GET \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${access_token}" \
+  "${auth_server}/admin/realms/${realm}/clients"
+
+createdClientId="$(jq -r '.[] | select(.clientId == "identity-api") | .id' <<<${response_body})"
+
+# Get resource ID
+runcurl \
+  -X GET \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${access_token}" \
+  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
+
+defaultResourceId="$(jq -r '.[] | select(.name == "Default Resource") | ._id' <<<${response_body})"
+
+# Get resource details
+runcurl \
+  -X GET \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${access_token}" \
+  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+
+updatedDefaultResourceDetails="$(jq '.scopes += ["view"]' <<<${response_body})"
+
+# Update the Default Resource
+runcurl \
+  -X PUT \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${access_token}" \
+  --data "${updatedDefaultResourceDetails}" \
+  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
