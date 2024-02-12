@@ -1,6 +1,4 @@
-#!/bin/bash
-
-args_count=$#
+#!/usr/bin/env bash
 
 usage="
 Add a client with protected resources.
@@ -53,179 +51,136 @@ authenticated=false
 
 resources=()
 
-add_resource() {
-  if [ -z "${resource_scopes}" ]; then
-    resource_scopes="view"
-  fi
-  IFS=',' read -ra resource_uris_array <<<"$resource_uris"
-  IFS=',' read -ra resource_scopes_array <<<"$resource_scopes"
-  IFS=',' read -ra users_array <<<"$users"
-  IFS=',' read -ra roles_array <<<"$roles"
-  if ((${#users_array[@]} == 0 && ${#roles_array[@]} == 0)); then
-    resource="{
-      \"name\": \"${resource_name}\",
-      \"uris\": $(json_array "${resource_uris_array[@]}"),
-      \"scopes\": $(json_array "${resource_scopes_array[@]}"),
-      \"permissions\": {
-        \"authenticated\": ${authenticated}
-      }
-    }"
+main() {
+  checkPrerequisites
+  args_count=$#
+  if (( args_count > 0 )); then
+    processCmdline "$@"
   else
-    resource="{
-      \"name\": \"${resource_name}\",
-      \"uris\": $(json_array "${resource_uris_array[@]}"),
-      \"scopes\": $(json_array "${resource_scopes_array[@]}"),
-      \"permissions\": {
-        \"user\": $(json_array "${users_array[@]}"),
-        \"role\": $(json_array "${roles_array[@]}")
-      }
-    }"
+    askForInput
   fi
-  resources+=("$resource")
-  resource_name=
-  resource_uris=
-  resource_scopes=
-  users=
-  roles=
-  authenticated=false
+  checkInputs
+  getAccessToken
+  createClient
+  configureDefaultResource
+  summariseClient
 }
 
-json_array() {
-  echo -n '['
-  while [ $# -gt 0 ]; do
-    x=${1//\\/\\\\}
-    echo -n "\"${x//\"/\\\"}\""
-    [ $# -gt 1 ] && echo -n ', '
-    shift
+checkPrerequisites() {
+  if ! command -v jq &> /dev/null
+  then
+      echo "jq command is required"
+      exit 1
+  fi
+}
+
+processCmdline() {
+  while true; do
+    case "$1" in
+    --id)
+      client_id="$2"
+      shift 2
+      ;;
+    --name)
+      client_name="$2"
+      shift 2
+      ;;
+    --secret)
+      client_secret="$2"
+      shift 2
+      ;;
+    --description)
+      client_description="$2"
+      shift 2
+      ;;
+    --resource)
+      if [ -n "${resource_name}" ]; then
+        add_resource
+      fi
+      resource_name="$2"
+      shift 2
+      ;;
+    --default)
+      resource_name="Default Resource"
+      resource_uris="/*"
+      resource_scopes="view"
+      users=
+      roles=
+      authenticated=true
+      shift
+      ;;
+    --authenticated)
+      authenticated=true
+      shift
+      ;;
+    --uris)
+      resource_uris="$2"
+      shift 2
+      ;;
+    --scopes)
+      resource_scopes="$2"
+      shift 2
+      ;;
+    --users)
+      users="$2"
+      shift 2
+      ;;
+    --roles)
+      roles="$2"
+      shift 2
+      ;;
+    -a)
+      auth_server="$2"
+      shift 2
+      ;;
+    -i)
+      identity_api="$2"
+      shift 2
+      ;;
+    -u)
+      username="$2"
+      shift 2
+      ;;
+    -p)
+      password="$2"
+      shift 2
+      ;;
+    -c)
+      client="$2"
+      shift 2
+      ;;
+    -s)
+      secret="$2"
+      shift 2
+      ;;
+    -t | --token)
+      access_token="$2"
+      shift 2
+      ;;
+    -r)
+      realm="$2"
+      shift 2
+      ;;
+    -h)
+      echo "$usage"
+      exit 1
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *) break ;;
+    esac
   done
-  echo ']'
+
+  # Ensure the 'last' resource is added
+  if [ -n "$resource_name" ]; then
+    add_resource
+  fi
 }
 
-join_array() {
-  local IFS="$1"
-  shift
-  echo "$*"
-}
-
-runcurl() {
-  # Make the curl request and store the response in a variable
-  response=$(curl -s -w "%{http_code}" "$@")
-  # Extract the response code (last 3 characters) and body (rest of the string)
-  response_code="${response: -3}"
-  response_body="${response:0:${#response}-3}"
-}
-
-while true; do
-  case "$1" in
-  --id)
-    client_id="$2"
-    shift 2
-    ;;
-  --name)
-    client_name="$2"
-    shift 2
-    ;;
-  --secret)
-    client_secret="$2"
-    shift 2
-    ;;
-  --description)
-    client_description="$2"
-    shift 2
-    ;;
-  --resource)
-    if [ -n "${resource_name}" ]; then
-      add_resource
-    fi
-    resource_name="$2"
-    shift 2
-    ;;
-  --default)
-    resource_name="Default Resource"
-    resource_uris="/*"
-    resource_scopes="view"
-    users=
-    roles=
-    authenticated=true
-    shift
-    ;;
-  --authenticated)
-    authenticated=true
-    shift
-    ;;
-  --uris)
-    resource_uris="$2"
-    shift 2
-    ;;
-  --scopes)
-    resource_scopes="$2"
-    shift 2
-    ;;
-  --users)
-    users="$2"
-    shift 2
-    ;;
-  --roles)
-    roles="$2"
-    shift 2
-    ;;
-  -a)
-    auth_server="$2"
-    shift 2
-    ;;
-  -i)
-    identity_api="$2"
-    shift 2
-    ;;
-  -u)
-    username="$2"
-    shift 2
-    ;;
-  -p)
-    password="$2"
-    shift 2
-    ;;
-  -c)
-    client="$2"
-    shift 2
-    ;;
-  -s)
-    secret="$2"
-    shift 2
-    ;;
-  -t | --token)
-    access_token="$2"
-    shift 2
-    ;;
-  -r)
-    realm="$2"
-    shift 2
-    ;;
-  -h)
-    echo "$usage"
-    exit 1
-    ;;
-  --)
-    shift
-    break
-    ;;
-  *) break ;;
-  esac
-done
-
-# Ensure the 'last' resource is added
-if [ -n "$resource_name" ]; then
-  add_resource
-fi
-
-# zzz - don't think this is needed
-# if [ "$args_count" -ne 0 ]; then
-#   if [ -n "${client_id}" ]; then
-#     add_resource
-#   fi
-# else
-if [ "$args_count" -eq 0 ]; then
-  # no args passed, ask for input
+# no args passed, ask for input
+askForInput() {
   read -rp "> Authorization Server: " auth_server
   if [ -z "$auth_server" ]; then
     auth_server="http://localhost:8080"
@@ -289,121 +244,262 @@ if [ "$args_count" -eq 0 ]; then
     add_resource
     read -rp "> Add resource? [y/N] " add_resource_answer
   done
-fi
+}
 
-if [ "$auth_server" != *'localhost'* ]; then
-  if [ -z "$username" ] && [ -z "$password" ] && [ -z "$access_token" ]; then
-    echo "> Authentication is required"
+checkInputs() {
+  if [ "$auth_server" != *'localhost'* ]; then
+    if [ -z "$username" ] && [ -z "$password" ] && [ -z "$access_token" ]; then
+      echo "Authentication is required"
+      exit 1
+    fi
+  fi
+  if [ -z "$client_id" ]; then
+    echo "Missing client id"
     exit 1
   fi
-fi
+}
 
-if [ -z "$client_id" ]; then
-  echo "Missing client id"
-  exit 1
-fi
+getAccessToken() {
+  if [[ -n "$username" && -n "$password" && -n "$client" ]]; then
+    token_endpoint="${auth_server}/realms/${realm}/protocol/openid-connect/token"
+    echo "Using Token Endpoint - ${token_endpoint}"
+    token_payload="username=$username&password=$password&client_id=$client&grant_type=password"
+    runcurl -d "Get Access Token" -r 200 -- \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -X POST --data "$token_payload" "$token_endpoint"
+    access_token=$(jq -r '.access_token' <<<${response_body})
+  fi
+}
 
-if ! command -v jq &> /dev/null
-then
-    echo "jq command is required"
-    exit 1
-fi
+createClient() {
+  endpoint="${identity_api}/clients"
 
-# if [[ -n "$username" && -n "$password" && -n "$client"  && -n "$secret" ]]; then
-if [[ -n "$username" && -n "$password" && -n "$client" ]]; then
-  token_endpoint="${auth_server}/realms/${realm}/protocol/openid-connect/token"
-  echo "Getting access token..."
-  echo "${token_endpoint}"
-  token_payload="username=$username&password=$password&client_id=$client&grant_type=password"
-  runcurl -H "Content-Type: application/x-www-form-urlencoded" -X POST --data "$token_payload" "$token_endpoint"
-  echo "Get Access Token status = ${response_code}"
-  access_token=$(echo "${response_body}" | jq -r '.access_token')
-fi
+  resourcesJson() {
+    if ((${#resources[@]} > 0)); then
+      cat - <<EOF
+  "resources": [$(join_array , "${resources[@]}")],
+EOF
+    fi
+  }
 
-endpoint="${identity_api}/clients"
+  payload=$(cat - <<EOF
+{
+  "clientId": "${client_id}",
+  "secret": "${client_secret}",
+  "name": "${client_name}",
+$(resourcesJson)
+  "description": "${client_description}"
+}
+EOF
+  )
 
-payload=""
-if ((${#resources[@]} == 0)); then
-  payload="{
-        \"clientId\": \"${client_id}\",
-        \"secret\": \"${client_secret}\",
-        \"name\": \"${client_name}\",
-        \"description\": \"${client_description}\"
-      }"
-else
-  payload="{
-    \"clientId\": \"${client_id}\",
-    \"secret\": \"${client_secret}\",
-    \"name\": \"${client_name}\",
-    \"description\": \"${client_description}\",
-    \"resources\": [$(join_array , "${resources[@]}")]
-  }"
-fi
-echo ""
-echo "Adding client"
-echo "$endpoint"
-echo "$access_token"
-echo "$payload"
-echo ""
-if [ -n "$access_token" ]; then
-  runcurl \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $access_token" \
+  if [ -n "$access_token" ]; then
+    bearer="-H \"Authorization: Bearer $access_token\""
+  fi
+  runcurl -d "Create Client" -r 200 -- \
+    -H "Content-Type: application/json" ${bearer} \
     -X POST --data "$payload" "$endpoint"
-  echo "Create Client status = ${response_code}"
-else
-  runcurl \
+}
+
+# The new client is created with a Default Resource. We need to update this
+# resource to set the 'view' scope against its policy, to meet the expectations
+# of the Gatekeeper.
+configureDefaultResource() {
+  echo "Adding 'view' scope to 'Default Resource'..."
+  # Get client ID
+  runcurl -d "Get Created Client ID" -r 200 -- \
+    -X GET \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    "${auth_server}/admin/realms/${realm}/clients"
+
+  createdClientId="$(jq -r ".[] | select(.clientId == \"${client_id}\") | .id" <<<${response_body})"
+
+  # Get resource ID
+  runcurl -d "Get Default Resource ID" -r 200 -- \
+    -X GET \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
+
+  defaultResourceId="$(jq -r '.[] | select(.name == "Default Resource") | ._id' <<<${response_body})"
+
+  # Get resource details
+  runcurl -d "Get Default Resource Details" -r 200 -- \
+    -X GET \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+
+  updatedDefaultResourceDetails="$(jq '.scopes += ["view"]' <<<${response_body})"
+
+  # Update the Default Resource
+  runcurl -d "Update the Default Resource" -r 204 -- \
+    -X PUT \
     -H "Content-Type: application/json" \
-    -X POST --data "$payload" "$endpoint"
-  echo "Create Client status = ${response_code}"
-fi
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    --data "${updatedDefaultResourceDetails}" \
+    "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
 
-echo ${response_body}
+  # Get resource details (again) to check the outcome
+  runcurl -d "Check Default Resource Details" -r 200 -- \
+    -X GET \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+}
 
-echo "Adding 'view' scope to 'Default Resource'"
+summariseClient() {
+  # Client Details...
+  runcurl -d "Get Client Details" -r 200 -- \
+    -X GET \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    "${auth_server}/admin/realms/${realm}/clients"
+  createdClientId="$(jq -r ".[] | select(.clientId == \"${client_id}\") | .id" <<<${response_body})"
+  echo "Client Details..."
+  jq -r ".[] | select(.clientId == \"${client_id}\")" <<<${response_body}
 
-# Get client ID
-runcurl \
-  -X GET \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer ${access_token}" \
-  "${auth_server}/admin/realms/${realm}/clients"
+  # Get Resources...
+  runcurl -d "Get Client Resources" -r 200 -- \
+    -X GET \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${access_token}" \
+    "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
+  echo "Client Resources..."
+  jq <<<${response_body}
+}
 
-createdClientId="$(jq -r '.[] | select(.clientId == "identity-api") | .id' <<<${response_body})"
+add_resource() {
+  if [ -z "${resource_scopes}" ]; then
+    resource_scopes="view"
+  fi
+  IFS=',' read -ra resource_uris_array <<<"$resource_uris"
+  IFS=',' read -ra resource_scopes_array <<<"$resource_scopes"
+  IFS=',' read -ra users_array <<<"$users"
+  IFS=',' read -ra roles_array <<<"$roles"
+  if ((${#users_array[@]} == 0 && ${#roles_array[@]} == 0)); then
+    resource="{
+      \"name\": \"${resource_name}\",
+      \"uris\": $(json_array "${resource_uris_array[@]}"),
+      \"scopes\": $(json_array "${resource_scopes_array[@]}"),
+      \"permissions\": {
+        \"authenticated\": ${authenticated}
+      }
+    }"
+  else
+    resource="{
+      \"name\": \"${resource_name}\",
+      \"uris\": $(json_array "${resource_uris_array[@]}"),
+      \"scopes\": $(json_array "${resource_scopes_array[@]}"),
+      \"permissions\": {
+        \"user\": $(json_array "${users_array[@]}"),
+        \"role\": $(json_array "${roles_array[@]}")
+      }
+    }"
+  fi
+  resources+=("$resource")
+  resource_name=
+  resource_uris=
+  resource_scopes=
+  users=
+  roles=
+  authenticated=false
+}
 
-# Get resource ID
-runcurl \
-  -X GET \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer ${access_token}" \
-  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
+json_array() {
+  echo -n '['
+  while [ $# -gt 0 ]; do
+    x=${1//\\/\\\\}
+    echo -n "\"${x//\"/\\\"}\""
+    [ $# -gt 1 ] && echo -n ', '
+    shift
+  done
+  echo ']'
+}
 
-defaultResourceId="$(jq -r '.[] | select(.name == "Default Resource") | ._id' <<<${response_body})"
+join_array() {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
 
-# Get resource details
-runcurl \
-  -X GET \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer ${access_token}" \
-  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+# Run curl with optional retry logic
+# Outputs in variables...
+#   * response_code - the HTTP response code
+#   * response_body - the response body
+runcurl() {
+  runcurllog() {
+    echo "$@" >&2
+  }
+  # Parse cmdline - up to the '--'
+  OPTIND=1
+  request_description="curl request"
+  response_lower=
+  response_upper=
+  attempt_count=0  # zero means keep trying undefinitely
+  retry_interval=10
+  while getopts "d:r:c:i:" opt; do
+    case "${opt}" in
+      d)
+        request_description="${OPTARG}"
+        ;;
+      r)
+        if [[ ${OPTARG} == "OK" ]]; then
+          response_lower=200
+          response_upper=299
+        else
+          response_lower=${OPTARG}
+          response_upper=${OPTARG}
+        fi
+        ;;
+      c)
+        attempt_count=$((OPTARG))
+        ;;
+      i)
+        retry_interval=$((OPTARG))
+        ;;
+      *)
+        return 1
+    esac
+  done
+  shift $((OPTIND-1))
 
-updatedDefaultResourceDetails="$(jq '.scopes += ["view"]' <<<${response_body})"
+  # Make request with optional retries
+  status=0
+  count=$((attempt_count))
+  while ((!status)); do
+    # for item in "$@"; do runcurllog "${item}"; done
+    runcurllog -n "[${request_description}] Initiating request... => "
+    response=$(curl -L -s -w "%{http_code}" "$@")
+    response_code="${response: -3}"
+    if [[ -n "${response_lower}" ]]; then
+      if (( response_code >= response_lower && response_code <= response_upper )); then
+        runcurllog "Got expected response ${response_code}"
+        status=1
+      else
+        if (( --count != 0 )); then
+          runcurllog "Got response ${response_code} - waiting to retry"
+          sleep ${retry_interval}
+        else
+          runcurllog "Got response ${response_code}"
+          break
+        fi
+      fi
+    else
+      runcurllog "Got response ${response_code}"
+      status=1
+    fi
+  done
 
-# Update the Default Resource
-runcurl \
-  -X PUT \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer ${access_token}" \
-  --data "${updatedDefaultResourceDetails}" \
-  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
+  # On success get the response body
+  if ((status)); then
+    response_body="${response:0:${#response}-3}"
+    return 0
+  else
+    return 1
+  fi
+}
 
-# Get resource details (again) to check the outcome
-runcurl \
-  -X GET \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer ${access_token}" \
-  "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
-
-echo "Updated Default Resource..."
-jq <<<"${response_body}"
+main "$@"
