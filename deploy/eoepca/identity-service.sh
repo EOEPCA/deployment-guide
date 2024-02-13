@@ -181,7 +181,7 @@ EOF
   auth_server="https://identity.keycloak.${domain}"
   realm="${IDENTITY_REALM}"
 
-  runcurl -a -d "Create User ${user}" -r 201 -- \
+  runcurl -a -d "Create User ${user}" -r "201 409" -- \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -X POST --data "${payload}" \

@@ -60,6 +60,7 @@ runcurl() {
   local request_description="curl request"
   local response_lower=
   local response_upper=
+  local response_list=
   local attempt_count=0  # zero means keep trying undefinitely
   local retry_interval=10
   while getopts "ad:r:c:i:" opt; do
@@ -75,8 +76,13 @@ runcurl() {
           response_lower=200
           response_upper=299
         else
-          response_lower=${OPTARG}
-          response_upper=${OPTARG}
+          IFS=' ' read -ra codes <<<"${OPTARG}"
+          if (( ${#codes[@]} == 1 )); then
+            response_lower=${codes[0]}
+            response_upper=${response_lower}
+          elif (( ${#codes[@]} > 1 )); then
+            response_list=("${codes[@]}")
+          fi
         fi
         ;;
       c)
@@ -95,6 +101,9 @@ runcurl() {
   local status=0
   local count=$((attempt_count))
   while ((!status)); do
+    #---------------------------------------------------------------------------
+    # Run the curl command
+    #---------------------------------------------------------------------------
     runcurllog -n "[${request_description}] Initiating request... => "
     if ((authenticate)); then
       if [[ -z "${access_token}" ]]; then
@@ -106,26 +115,48 @@ runcurl() {
       response=$(curl -L -s -w "%{http_code}" "$@")
     fi
     response_code="${response: -3}"
-    # check response against expectation and retry as required
-    if [[ -n "${response_lower}" ]]; then
-      if (( response_code >= response_lower && response_code <= response_upper )); then
-        runcurllog "Got expected response ${response_code}"
-        status=1
-      elif (( authenticate && ((response_code == 401 || response_code == 403)) )); then
+    #---------------------------------------------------------------------------
+    # Check response code against expectation
+    #---------------------------------------------------------------------------
+    #
+    # Response code in range
+    if (( response_lower && response_code >= response_lower && response_code <= response_upper )); then
+      status=1
+    #
+    # Response code in allowed list
+    elif (( response_list )); then
+      for code in "${response_list[@]}"; do
+        if [[ "${response_code}" = "${code}" ]]; then status=1; break; fi
+      done
+    fi
+    #---------------------------------------------------------------------------
+    # Handle unexpected response
+    #---------------------------------------------------------------------------
+    #
+    # Response as expected
+    if ((status)); then
+      runcurllog "Got expected response ${response_code}"
+    #
+    # Response code not matched...
+    else
+      # Possible need to re-authenticate
+      if (( authenticate && ((response_code == 401 || response_code == 403)) )); then
         runcurllog "Attempting re-auth due to response ${response_code}"
         access_token=
-      else
+      # Check for possible retry attempt
+      elif (( response_lower || response_list )); then
         if (( --count != 0 )); then
           runcurllog "Got response ${response_code} - waiting to retry"
           sleep ${retry_interval}
         else
           runcurllog "Got response ${response_code}"
-          break
+          break  # no more retries
         fi
+      # Otherwise, accept the response
+      else
+        runcurllog "Got response ${response_code}"
+        status=1
       fi
-    else
-      runcurllog "Got response ${response_code}"
-      status=1
     fi
   done
 

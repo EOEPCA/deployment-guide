@@ -291,7 +291,7 @@ $(resourcesJson)
 EOF
   )
 
-  runcurl -a -d "Create Client" -r 200 -- \
+  runcurl -a -d "Create Client" -r "200 409" -- \
     -H "Content-Type: application/json" \
     -X POST --data "$payload" "$endpoint"
 }
