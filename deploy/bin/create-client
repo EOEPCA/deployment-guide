@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+
+onExit() {
+  cd "${ORIG_DIR}"
+}
+trap onExit EXIT
+
+source ../cluster/functions
+
 usage="
 Add a client with protected resources.
 $(basename "$0") [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] --secret secret [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
@@ -258,18 +269,6 @@ checkInputs() {
   fi
 }
 
-getAccessToken() {
-  if [[ -n "$username" && -n "$password" && -n "$client" ]]; then
-    token_endpoint="${auth_server}/realms/${realm}/protocol/openid-connect/token"
-    echo "Using Token Endpoint - ${token_endpoint}"
-    token_payload="username=$username&password=$password&client_id=$client&grant_type=password"
-    runcurl -d "Get Access Token" -r 200 -- \
-      -H "Content-Type: application/x-www-form-urlencoded" \
-      -X POST --data "$token_payload" "$token_endpoint"
-    access_token=$(jq -r '.access_token' <<<${response_body})
-  fi
-}
-
 createClient() {
   endpoint="${identity_api}/clients"
 
@@ -412,98 +411,6 @@ join_array() {
   local IFS="$1"
   shift
   echo "$*"
-}
-
-# Run curl with optional retry logic
-# Outputs in variables...
-#   * response_code - the HTTP response code
-#   * response_body - the response body
-runcurl() {
-  runcurllog() {
-    echo "$@" >&2
-  }
-  # Parse cmdline - up to the '--'
-  OPTIND=1
-  local authenticate=0
-  local request_description="curl request"
-  local response_lower=
-  local response_upper=
-  local attempt_count=0  # zero means keep trying undefinitely
-  local retry_interval=10
-  while getopts "ad:r:c:i:" opt; do
-    case "${opt}" in
-      a)
-        authenticate=1
-        ;;
-      d)
-        request_description="${OPTARG}"
-        ;;
-      r)
-        if [[ ${OPTARG} == "OK" ]]; then
-          response_lower=200
-          response_upper=299
-        else
-          response_lower=${OPTARG}
-          response_upper=${OPTARG}
-        fi
-        ;;
-      c)
-        attempt_count=$((OPTARG))
-        ;;
-      i)
-        retry_interval=$((OPTARG))
-        ;;
-      *)
-        return 1
-    esac
-  done
-  shift $((OPTIND-1))
-
-  # Make request with optional retries
-  local status=0
-  local count=$((attempt_count))
-  while ((!status)); do
-    runcurllog -n "[${request_description}] Initiating request... => "
-    if ((authenticate)); then
-      if [[ -z "${access_token}" ]]; then
-        runcurllog  # force a newline for readability
-        getAccessToken
-      fi
-      response=$(curl -L -s -w "%{http_code}" -H "Authorization: Bearer ${access_token}" "$@")
-    else
-      response=$(curl -L -s -w "%{http_code}" "$@")
-    fi
-    response_code="${response: -3}"
-    # check response against expectation and retry as required
-    if [[ -n "${response_lower}" ]]; then
-      if (( response_code >= response_lower && response_code <= response_upper )); then
-        runcurllog "Got expected response ${response_code}"
-        status=1
-      elif (( authenticate && ((response_code == 401 || response_code == 403)) )); then
-        runcurllog "Attempting re-auth due to response ${response_code}"
-        access_token=
-      else
-        if (( --count != 0 )); then
-          runcurllog "Got response ${response_code} - waiting to retry"
-          sleep ${retry_interval}
-        else
-          runcurllog "Got response ${response_code}"
-          break
-        fi
-      fi
-    else
-      runcurllog "Got response ${response_code}"
-      status=1
-    fi
-  done
-
-  # On success get the response body
-  if ((status)); then
-    response_body="${response:0:${#response}-3}"
-    return 0
-  else
-    return 1
-  fi
 }
 
 main "$@"

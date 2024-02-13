@@ -30,6 +30,7 @@ main() {
     #   --namespace "${NAMESPACE}" --create-namespace
 
     createIdentityApiClient
+    createTestUsers
   fi
 }
 
@@ -148,6 +149,43 @@ createIdentityApiClient() {
   # Stop the port-forwarding
   echo "Stop port-forwarding to Identity API service on port ${TEMP_FORWARDING_PORT}..."
   kill -TERM $portForwardPid
+}
+
+createTestUsers() {
+  createTestUser "eric"
+  createTestUser "bob"
+  createTestUser "alice"
+}
+
+createTestUser() {
+  user=""$1
+  echo "Creating user ${user}"
+
+  payload=$(cat - <<EOF
+{
+  "username": "${user}",
+  "enabled": true,
+  "credentials": [{
+    "type": "password",
+    "value": "${IDENTITY_SERVICE_DEFAULT_SECRET}",
+    "temporary": false
+  }]
+}
+EOF
+  )
+
+  # env vars expected by runcurl
+  username="${IDENTITY_SERVICE_ADMIN_USER}"
+  password="${IDENTITY_SERVICE_ADMIN_PASSWORD}"
+  client="${IDENTITY_SERVICE_ADMIN_CLIENT}"
+  auth_server="https://identity.keycloak.${domain}"
+  realm="${IDENTITY_REALM}"
+
+  runcurl -a -d "Create User ${user}" -r 201 -- \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -X POST --data "${payload}" \
+    "https://identity.keycloak.${domain}/admin/realms/${realm}/users"
 }
 
 main "$@"

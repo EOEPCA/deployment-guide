@@ -22,7 +22,29 @@ else
   name="dummy-service"
 fi
 
-values() {
+main() {
+  # deploy the service
+  dummyService
+  # protect the service (optional)
+  if [ "${REQUIRE_DUMMY_SERVICE_PROTECTION}" = "true" ]; then
+    echo -e "\nProtect dummy-service..."
+    createDummyServiceClient
+    dummyServiceProtection
+  fi
+}
+
+dummyService() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace "${NAMESPACE}" uninstall dummy-service
+  else
+    serviceValues | helm ${ACTION_HELM} dummy-service dummy -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.0.1
+  fi
+}
+
+serviceValues() {
   cat - <<EOF
 ingress:
   enabled: ${OPEN_INGRESS}
@@ -43,11 +65,60 @@ ingress:
 EOF
 }
 
-if [ "${ACTION_HELM}" = "uninstall" ]; then
-  helm --namespace "${NAMESPACE}" uninstall dummy-service
-else
-  values | helm ${ACTION_HELM} dummy-service dummy -f - \
-    --repo https://eoepca.github.io/helm-charts \
-    --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.1
-fi
+createDummyServiceClient() {
+  # Create the client
+  ../bin/create-client \
+    -a https://identity.keycloak.${domain} \
+    -i https://identity-api-protected.${domain} \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    --id=dummy-service \
+    --name="Dummy Service Gatekeeper" \
+    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --description="Client to be used by Dummy Service Gatekeeper" \
+    --resource="eric" --uris='/eric/*' --scopes=view --users="eric" \
+    --resource="bob" --uris='/bob/*' --scopes=view --users="bob" \
+    --resource="alice" --uris='/alice/*' --scopes=view --users="alice"
+}
+
+dummyServiceProtection() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace "${NAMESPACE}" uninstall dummy-service-protection
+  else
+    serviceProtectionValues | helm ${ACTION_HELM} dummy-service-protection identity-gatekeeper -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.0.9
+  fi
+}
+
+serviceProtectionValues() {
+  cat - <<EOF
+nameOverride: dummy-service-protection
+config:
+  client-id: dummy-service
+  discovery-url: https://identity.keycloak.${domain}/realms/master
+  cookie-domain: ${domain}
+targetService:
+  host: dummy-service-protected.${domain}
+  name: dummy-service
+  port:
+    number: 80
+# Values for secret 'dummy-service-protection'
+secrets:
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
+  encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
+EOF
+}
+
+main "$@"
