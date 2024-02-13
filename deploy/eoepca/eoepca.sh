@@ -38,8 +38,10 @@ fi
 
 # login-service
 if [ "${REQUIRE_LOGIN_SERVICE}" = "true" ]; then
-  echo -e "\nDeploy login-service..."
+  echo -e "\nDeploy login-service (Gluu)..."
   ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
+  echo -e "\nDeploy identity-service (Keycloak)..."
+  ./identity-service.sh "${ACTION}" "${public_ip}" "${domain}"
 fi
 
 # pdp

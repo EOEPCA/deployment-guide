@@ -22,27 +22,14 @@ main() {
     helm --namespace "${NAMESPACE}" uninstall identity-service
   else
     # helm chart
-    # values | helm ${ACTION_HELM} identity-service identity-service -f - \
-    #   --repo https://eoepca.github.io/helm-charts \
-    #   --namespace "${NAMESPACE}" --create-namespace \
-    #   --version 1.0.90
-    values | helm ${ACTION_HELM} identity-service ~/develop/EOEPCA/helm-charts-dev/charts/identity-service -f - \
-      --namespace "${NAMESPACE}" --create-namespace
-    
-    # secrets
-    # createSecrets
+    values | helm ${ACTION_HELM} identity-service identity-service -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.0.91
+    # values | helm ${ACTION_HELM} identity-service ~/develop/EOEPCA/helm-charts-dev/charts/identity-service -f - \
+    #   --namespace "${NAMESPACE}" --create-namespace
 
-    # # create client
-    # # zzz use port-forward for the `-i` arg
-    # ./deploy/bin/create-client \
-    #   -a https://identity.keycloak.eoepca.svc.rconway.uk \
-    #   -i https://identity-api-protected.eoepca.svc.rconway.uk \
-    #   -u admin -p changeme \
-    #   --id=identity-api \
-    #   --name="Identity API Gatekeeper" \
-    #   --description="Client to be used by Identity API Gatekeeper" \
-    #   -c admin-cli \
-    #   -r master
+    createIdentityApiClient
   fi
 }
 
@@ -94,14 +81,14 @@ identity-api:
   deployment:
     # Config values that can be passed via env vars (defaults shown below)
     extraEnv:
-      # - name: AUTH_SERVER_URL
+      # - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
       #   value: http://localhost
-      # - name: ADMIN_USERNAME
+      - name: ADMIN_USERNAME
+        value: ${IDENTITY_SERVICE_ADMIN_USER}
+      # - name: ADMIN_PASSWORD  # see secrets.adminPassword instead
       #   value: admin
-      # - name: ADMIN_PASSWORD
-      #   value: admin
-      # - name: REALM
-      #   value: master
+      - name: REALM
+        value: ${IDENTITY_REALM}
       # - name: VERSION
       #   value: v1.0.0
       - name: LOG_LEVEL
@@ -132,34 +119,35 @@ identity-api-gatekeeper:
 EOF
 }
 
-createSecrets() {
-  createSecretForKeycloak
-  createSecretForPostgres
-  createSecretForIdentityApi
-  # createSecretForIdentityApiGatekeeper
-}
+createIdentityApiClient() {
+  # Use port-forwarding to go directly to the identity-api service
+  echo "Waiting for Identity API service to be ready..."
+  kubectl -n "${NAMESPACE}" rollout status deploy/identity-api --watch
+  echo "Establish port-forwarding to Identity API service on port ${TEMP_FORWARDING_PORT}..."
+  kubectl -n "${NAMESPACE}" port-forward svc/identity-api "${TEMP_FORWARDING_PORT}":http >/dev/null &
+  portForwardPid=$!
+  sleep 1
 
-createSecretForKeycloak() {
-  kubectl -n "${NAMESPACE}" create secret generic "identity-keycloak" \
-    --from-literal=KC_DB_PASSWORD="${IDENTITY_POSTGRES_PASSWORD}" \
-    --from-literal=KEYCLOAK_ADMIN_PASSWORD="${IDENTITY_SERVICE_ADMIN_PASSWORD}"
-}
+  # Create the client
+  ../bin/create-client \
+    -a https://identity.keycloak.${domain} \
+    -i http://localhost:${TEMP_FORWARDING_PORT} \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    --id=identity-api \
+    --name="Identity API Gatekeeper" \
+    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --description="Client to be used by Identity API Gatekeeper" \
+    --resource="admin" \
+      --uris='/*' \
+      --scopes=view \
+      --users="${IDENTITY_SERVICE_ADMIN_USER}"
 
-createSecretForPostgres() {
-  kubectl -n "${NAMESPACE}" create secret generic "identity-postgres" \
-    --from-literal=PGPASSWORD="${IDENTITY_POSTGRES_PASSWORD}" \
-    --from-literal=POSTGRES_PASSWORD="${IDENTITY_POSTGRES_PASSWORD}"
-}
-
-createSecretForIdentityApi() {
-  kubectl -n "${NAMESPACE}" create secret generic "identity-api" \
-    --from-literal=ADMIN_PASSWORD="${IDENTITY_SERVICE_ADMIN_PASSWORD}"
-}
-
-createSecretForIdentityApiGatekeeper() {
-  kubectl -n "${NAMESPACE}" create secret generic "identity-api" \
-    --from-literal=PROXY_CLIENT_SECRET="${zzz}" \
-    --from-literal=PROXY_ENCRYPTION_KEY="${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
+  # Stop the port-forwarding
+  echo "Stop port-forwarding to Identity API service on port ${TEMP_FORWARDING_PORT}..."
+  kill -TERM $portForwardPid
 }
 
 main "$@"

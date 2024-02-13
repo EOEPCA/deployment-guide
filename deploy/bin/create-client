@@ -60,7 +60,6 @@ main() {
     askForInput
   fi
   checkInputs
-  getAccessToken
   createClient
   configureDefaultResource
   summariseClient
@@ -293,11 +292,8 @@ $(resourcesJson)
 EOF
   )
 
-  if [ -n "$access_token" ]; then
-    bearer="-H \"Authorization: Bearer $access_token\""
-  fi
-  runcurl -d "Create Client" -r 200 -- \
-    -H "Content-Type: application/json" ${bearer} \
+  runcurl -a -d "Create Client" -r 200 -- \
+    -H "Content-Type: application/json" \
     -X POST --data "$payload" "$endpoint"
 }
 
@@ -307,65 +303,58 @@ EOF
 configureDefaultResource() {
   echo "Adding 'view' scope to 'Default Resource'..."
   # Get client ID
-  runcurl -d "Get Created Client ID" -r 200 -- \
+  runcurl -a -d "Get Created Client ID" -r 200 -- \
     -X GET \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     "${auth_server}/admin/realms/${realm}/clients"
 
-  createdClientId="$(jq -r ".[] | select(.clientId == \"${client_id}\") | .id" <<<${response_body})"
+  createdClientId="$(jq -r --arg CLIENTID "${client_id}" '.[] | select(.clientId == $CLIENTID) | .id' <<<${response_body})"
 
   # Get resource ID
-  runcurl -d "Get Default Resource ID" -r 200 -- \
+  runcurl -a -d "Get Default Resource ID" -r 200 -- \
     -X GET \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
 
   defaultResourceId="$(jq -r '.[] | select(.name == "Default Resource") | ._id' <<<${response_body})"
 
   # Get resource details
-  runcurl -d "Get Default Resource Details" -r 200 -- \
+  runcurl -a -d "Get Default Resource Details" -r 200 -- \
     -X GET \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
 
   updatedDefaultResourceDetails="$(jq '.scopes += ["view"]' <<<${response_body})"
 
   # Update the Default Resource
-  runcurl -d "Update the Default Resource" -r 204 -- \
+  runcurl -a -d "Update the Default Resource" -r 204 -- \
     -X PUT \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     --data "${updatedDefaultResourceDetails}" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
 
   # Get resource details (again) to check the outcome
-  runcurl -d "Check Default Resource Details" -r 200 -- \
+  runcurl -a -d "Check Default Resource Details" -r 200 -- \
     -X GET \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource/${defaultResourceId}"
 }
 
 summariseClient() {
   # Client Details...
-  runcurl -d "Get Client Details" -r 200 -- \
+  runcurl -a -d "Get Client Details" -r 200 -- \
     -X GET \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     "${auth_server}/admin/realms/${realm}/clients"
-  createdClientId="$(jq -r ".[] | select(.clientId == \"${client_id}\") | .id" <<<${response_body})"
+  createdClientId="$(jq -r --arg CLIENTID "${client_id}" '.[] | select(.clientId == $CLIENTID) | .id' <<<${response_body})"
   echo "Client Details..."
-  jq -r ".[] | select(.clientId == \"${client_id}\")" <<<${response_body}
+  jq -r --arg CLIENTID "${client_id}" '.[] | select(.clientId == $CLIENTID)' <<<${response_body}
 
   # Get Resources...
-  runcurl -d "Get Client Resources" -r 200 -- \
+  runcurl -a -d "Get Client Resources" -r 200 -- \
     -X GET \
     -H "Accept: application/json" \
-    -H "Authorization: Bearer ${access_token}" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
   echo "Client Resources..."
   jq <<<${response_body}
@@ -435,13 +424,17 @@ runcurl() {
   }
   # Parse cmdline - up to the '--'
   OPTIND=1
-  request_description="curl request"
-  response_lower=
-  response_upper=
-  attempt_count=0  # zero means keep trying undefinitely
-  retry_interval=10
-  while getopts "d:r:c:i:" opt; do
+  local authenticate=0
+  local request_description="curl request"
+  local response_lower=
+  local response_upper=
+  local attempt_count=0  # zero means keep trying undefinitely
+  local retry_interval=10
+  while getopts "ad:r:c:i:" opt; do
     case "${opt}" in
+      a)
+        authenticate=1
+        ;;
       d)
         request_description="${OPTARG}"
         ;;
@@ -467,17 +460,28 @@ runcurl() {
   shift $((OPTIND-1))
 
   # Make request with optional retries
-  status=0
-  count=$((attempt_count))
+  local status=0
+  local count=$((attempt_count))
   while ((!status)); do
-    # for item in "$@"; do runcurllog "${item}"; done
     runcurllog -n "[${request_description}] Initiating request... => "
-    response=$(curl -L -s -w "%{http_code}" "$@")
+    if ((authenticate)); then
+      if [[ -z "${access_token}" ]]; then
+        runcurllog  # force a newline for readability
+        getAccessToken
+      fi
+      response=$(curl -L -s -w "%{http_code}" -H "Authorization: Bearer ${access_token}" "$@")
+    else
+      response=$(curl -L -s -w "%{http_code}" "$@")
+    fi
     response_code="${response: -3}"
+    # check response against expectation and retry as required
     if [[ -n "${response_lower}" ]]; then
       if (( response_code >= response_lower && response_code <= response_upper )); then
         runcurllog "Got expected response ${response_code}"
         status=1
+      elif (( authenticate && ((response_code == 401 || response_code == 403)) )); then
+        runcurllog "Attempting re-auth due to response ${response_code}"
+        access_token=
       else
         if (( --count != 0 )); then
           runcurllog "Got response ${response_code} - waiting to retry"
