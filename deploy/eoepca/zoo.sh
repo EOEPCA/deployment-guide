@@ -23,19 +23,30 @@ else
 fi
 
 main() {
+  # deploy the service
+  deployService
+  # protect the service (optional)
+  if [ "${REQUIRE_ADES_PROTECTION}" = "true" ]; then
+    echo -e "\nProtect ADES (zoo-project-dru)..."
+    createClient
+    deployProtection
+  fi
+}
+
+deployService() {
   if [ "${ACTION_HELM}" = "uninstall" ]; then
-    helm --namespace "${NAMESPACE}" uninstall ades
+    helm --namespace "${NAMESPACE}" uninstall zoo-project-dru
   else
-    values | helm ${ACTION_HELM} zoo-project-dru zoo-project-dru -f - \
+    serviceValues | helm ${ACTION_HELM} zoo-project-dru zoo-project-dru -f - \
       --repo https://zoo-project.github.io/charts/ \
       --namespace "${NAMESPACE}" --create-namespace \
       --version 0.2.6
-    # values | helm ${ACTION_HELM} zoo-project-dru /home/rconway/develop/EOEPCA/zoo-project-charts/zoo-project-dru -f - \
+    # serviceValues | helm ${ACTION_HELM} zoo-project-dru /home/rconway/develop/EOEPCA/zoo-project-charts/zoo-project-dru -f - \
     #   --namespace "${NAMESPACE}" --create-namespace
   fi
 }
 
-values() {
+serviceValues() {
   cat - <<EOF
 cookiecutter:
   templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
@@ -124,18 +135,17 @@ EOF
   fi
 }
 
-# Destination service for stage-out
-# If STAGEOUT_TARGET is "workspace" then these details will be looked-up from the user's workspace
+# Destination service for stage-out - in particular for STAGEOUT_TARGET "minio".
+# If STAGEOUT_TARGET is "workspace" then these details will be looked-up (and overidden)
+# from the user's workspace - but, regardless, set these here as a fallback.
 stageOutConfig() {
-  if [ "${STAGEOUT_TARGET}" = "minio" ]; then
-    cat - <<EOF
+  cat - <<EOF
     STAGEOUT_AWS_SERVICEURL: https://minio.${domain}
     STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
     STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     STAGEOUT_AWS_REGION: RegionOne
     STAGEOUT_OUTPUT: eoepca
 EOF
-  fi
 }
 
 stageOutYaml() {
@@ -143,6 +153,62 @@ stageOutYaml() {
     stageout.yaml: |-
 $(cat zoo-files/stageout.yaml | sed 's/^/      /')
 $(cat zoo-files/stageout.py | sed 's/^/      /' | sed 's/^/          /')
+EOF
+}
+
+createClient() {
+  # Create the client
+  ../bin/create-client \
+    -a https://identity.keycloak.${domain} \
+    -i https://identity-api-protected.${domain} \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    --id=ades \
+    --name="ADES Gatekeeper" \
+    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --description="Client to be used by ADES Gatekeeper" \
+    --resource="eric" --uris='/eric/*' --scopes=view --users="eric" \
+    --resource="bob" --uris='/bob/*' --scopes=view --users="bob" \
+    --resource="alice" --uris='/alice/*' --scopes=view --users="alice"
+}
+
+deployProtection() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace "${NAMESPACE}" uninstall zoo-project-dru-protection
+  else
+    serviceProtectionValues | helm ${ACTION_HELM} zoo-project-dru-protection identity-gatekeeper -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.0.9
+  fi
+}
+
+serviceProtectionValues() {
+  cat - <<EOF
+nameOverride: zoo-project-dru-protection
+config:
+  client-id: ades
+  discovery-url: https://identity.keycloak.${domain}/realms/master
+  cookie-domain: ${domain}
+targetService:
+  host: ${name}.${domain}
+  name: zoo-project-dru-service
+  port:
+    number: 80
+# Values for secret 'zoo-project-dru-protection'
+secrets:
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
+  encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
 EOF
 }
 
