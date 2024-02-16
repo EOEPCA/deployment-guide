@@ -23,19 +23,35 @@ else
 fi
 
 main() {
+  # establish persistence
+  deployPersistence
+  # deploy the service
+  deployService
+  # protect the service (optional)
+  if [ "${REQUIRE_DATA_ACCESS_PROTECTION}" = "true" ]; then
+    echo -e "\nProtect Data Access..."
+    createClient
+    deployProtection
+  fi
+}
+
+deployPersistence() {
   databasePVC | kubectl ${ACTION_KUBECTL} -f -
   redisPVC | kubectl ${ACTION_KUBECTL} -f -
+}
+
+deployService() {
   if [ "${ACTION_HELM}" = "uninstall" ]; then
     helm --namespace ${NAMESPACE} uninstall data-access
   else
-    values | helm ${ACTION_HELM} data-access data-access -f - \
+    serviceValues | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
       --version 1.4.0
   fi
 }
 
-values() {
+serviceValues() {
   cat - <<EOF
 global:
   env:
@@ -1237,4 +1253,102 @@ spec:
 EOF
 }
 
-main
+createClient() {
+  # Create the client
+  ../bin/create-client \
+    -a https://identity.keycloak.${domain} \
+    -i https://identity-api-protected.${domain} \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    --id=data-access \
+    --name="Data Access Gatekeeper" \
+    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --description="Client to be used by Data Access Gatekeeper"
+}
+
+deployProtection() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace "${NAMESPACE}" uninstall data-access-protection
+  else
+    serviceProtectionValues | helm ${ACTION_HELM} data-access-protection identity-gatekeeper -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.0.10
+  fi
+}
+
+serviceProtectionValues() {
+  cat - <<EOF
+nameOverride: data-access-protection
+config:
+  client-id: data-access
+  discovery-url: https://identity.keycloak.${domain}/realms/master
+  cookie-domain: ${domain}
+targetService:
+  host: ${name}.${domain}
+  name: data-access-renderer
+  port:
+    number: 80
+# Values for secret 'data-access-protection'
+secrets:
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
+  encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /\$1
+  
+  # ROUTES...
+  # Use 'hosts' to define protected routes.
+  # Or use 'serverSnippets' to define 'custom' open routes.
+  # hosts:
+  #   - host: "{{ .Values.targetService.host }}"
+  #     paths:
+  #       - path: /(ows.*|opensearch.*|coverages/metadata.*|admin.*)
+  #         pathType: Prefix
+  #         backend:
+  #           service:
+  #             name: data-access-renderer
+  #             port:
+  #               number: 80
+  #       - path: /cache/(.*)
+  #         pathType: Prefix
+  #         backend:
+  #           service:
+  #             name: data-access-cache
+  #             port:
+  #               number: 80
+  #       - path: /(.*)
+  #         pathType: Prefix
+  #         backend:
+  #           service:
+  #             name: data-access-client
+  #             port:
+  #               number: 80
+  serverSnippets:
+    custom: |-
+      # Open access to renderer...
+      location ~ ^/(ows.*|opensearch.*|coverages/metadata.*|admin.*) {
+        proxy_pass http://data-access-renderer.${NAMESPACE}.svc.cluster.local:80/\$1;
+      }
+      # Open access to cache...
+      location ~ ^/cache/(.*) {
+        proxy_pass http://data-access-cache.${NAMESPACE}.svc.cluster.local:80/\$1;
+      }
+      # Open access to client...
+      location ~ ^/(.*) {
+        proxy_pass http://data-access-client.${NAMESPACE}.svc.cluster.local:80/\$1;
+      }
+EOF
+}
+
+main "$@"

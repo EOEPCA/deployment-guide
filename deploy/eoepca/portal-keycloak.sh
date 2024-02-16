@@ -47,5 +47,5 @@ else
   values | helm ${ACTION_HELM} eoepca-portal eoepca-portal -f - \
     --repo https://eoepca.github.io/helm-charts \
     --namespace "${NAMESPACE}" --create-namespace \
-    --version 1.0.9
+    --version 1.0.10
 fi

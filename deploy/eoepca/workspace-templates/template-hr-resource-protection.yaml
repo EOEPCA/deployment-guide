@@ -1,0 +1,77 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: resource-protection
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: identity-gatekeeper
+      version: 1.0.10
+      sourceRef:
+        kind: HelmRepository
+        name: eoepca
+        namespace: ${NAMESPACE}
+  values:
+    global:
+      default_owner: {{ default_owner }} # NOTE: do not remove, we need to store this here for redeploys
+    nameOverride: resource-protection
+    config:
+      client-id: {{ workspace_name }}
+      discovery-url: https://identity.keycloak.${domain}/realms/master
+      cookie-domain: ${domain}
+    targetService:
+      host: resource-catalogue.{{ workspace_name }}.${domain}
+      name: resource-catalogue-service
+      port:
+        number: 80
+    # Values for secret 'resource-protection'
+    secrets:
+      # Note - if ommitted, these can instead be set by creating the secret independently.
+      clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
+      encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+        nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+        cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+        nginx.ingress.kubernetes.io/enable-cors: "true"
+        nginx.ingress.kubernetes.io/rewrite-target: /\$1
+      hosts:
+        # Resource Catalogue
+        - host: resource-catalogue.{{ workspace_name }}.${domain}
+          paths:
+            - path: /(.*)
+              pathType: Prefix
+              backend:
+                service:
+                  name: resource-catalogue-service
+                  port:
+                    number: 80
+        # Data Access
+        - host: data-access.{{ workspace_name }}.${domain}
+          paths:
+            - path: /(ows.*|opensearch.*|coverages/metadata.*|admin.*)
+              pathType: Prefix
+              backend:
+                service:
+                  name: data-access-renderer
+                  port:
+                    number: 80
+            - path: /cache/(.*)
+              pathType: Prefix
+              backend:
+                service:
+                  name: data-access-cache
+                  port:
+                    number: 80
+            - path: /(.*)
+              pathType: Prefix
+              backend:
+                service:
+                  name: data-access-client
+                  port:
+                    number: 80

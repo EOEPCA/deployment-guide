@@ -25,9 +25,7 @@ main() {
     values | helm ${ACTION_HELM} identity-service identity-service -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.91
-    # values | helm ${ACTION_HELM} identity-service ~/develop/EOEPCA/helm-charts-dev/charts/identity-service -f - \
-    #   --namespace "${NAMESPACE}" --create-namespace
+      --version 1.0.93
 
     createIdentityApiClient
     createTestUsers
@@ -152,40 +150,23 @@ createIdentityApiClient() {
 }
 
 createTestUsers() {
-  createTestUser "eric"
-  createTestUser "bob"
-  createTestUser "alice"
+  users=("eric" "bob" "alice")
+  for user in "${users[@]}"; do
+    createUser "${user}"
+  done
 }
 
-createTestUser() {
-  user=""$1
-  echo "Creating user ${user}"
-
-  payload=$(cat - <<EOF
-{
-  "username": "${user}",
-  "enabled": true,
-  "credentials": [{
-    "type": "password",
-    "value": "${IDENTITY_SERVICE_DEFAULT_SECRET}",
-    "temporary": false
-  }]
-}
-EOF
-  )
-
-  # env vars expected by runcurl
-  username="${IDENTITY_SERVICE_ADMIN_USER}"
-  password="${IDENTITY_SERVICE_ADMIN_PASSWORD}"
-  client="${IDENTITY_SERVICE_ADMIN_CLIENT}"
-  auth_server="https://identity.keycloak.${domain}"
-  realm="${IDENTITY_REALM}"
-
-  runcurl -a -d "Create User ${user}" -r "201 409" -- \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -X POST --data "${payload}" \
-    "https://identity.keycloak.${domain}/admin/realms/${realm}/users"
+createUser() {
+  user="$1"
+  password="${IDENTITY_SERVICE_DEFAULT_SECRET}"
+  ../bin/create-user \
+    -a "https://identity.keycloak.${domain}" \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    -U "${user}" \
+    -P "${password}"
 }
 
 main "$@"
