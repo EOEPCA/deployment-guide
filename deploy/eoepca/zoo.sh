@@ -120,9 +120,8 @@ EOF
 
 hostUrl() {
   if [ "${REQUIRE_ADES_PROTECTION}" = "true" ]; then
-    if [ "${USE_TLS}" = "true" ]; then scheme="https"; else scheme="http"; fi
     cat - <<EOF
-  hosturl: ${scheme}://zoo.${domain}
+  hosturl: $(httpScheme)://zoo.${domain}
 EOF
   fi
 }
@@ -140,7 +139,7 @@ EOF
 # from the user's workspace - but, regardless, set these here as a fallback.
 stageOutConfig() {
   cat - <<EOF
-    STAGEOUT_AWS_SERVICEURL: https://minio.${domain}
+    STAGEOUT_AWS_SERVICEURL: $(httpScheme)://minio.${domain}
     STAGEOUT_AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
     STAGEOUT_AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
     STAGEOUT_AWS_REGION: RegionOne
@@ -159,8 +158,8 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a https://identity.keycloak.${domain} \
-    -i https://identity-api-protected.${domain} \
+    -a $(httpScheme)://identity.keycloak.${domain} \
+    -i $(httpScheme)://identity-api-protected.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
@@ -190,7 +189,7 @@ serviceProtectionValues() {
 nameOverride: zoo-project-dru-protection
 config:
   client-id: ades
-  discovery-url: https://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: ${name}.${domain}

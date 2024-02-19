@@ -32,13 +32,18 @@ fullnameOverride: registration-api
   # tag: "1.3-dev1"
 
 ingress:
-  enabled: false
+  enabled: ${OPEN_INGRESS}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
   hosts:
-    - host: registration-api-open.${domain}
+    - host: ${name}.${domain}
       paths: ["/"]
   tls:
     - hosts:
-        - registration-api-open.${domain}
+        - ${name}.${domain}
       secretName: registration-api-tls
 
 # some values for the workspace API

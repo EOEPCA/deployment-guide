@@ -30,7 +30,7 @@ spec:
       #   pullPolicy: Always
       config:
         server:
-          url: "https://${nameResourceCatalogue}.{{ workspace_name }}.${domain}"
+          url: "${http_scheme}://${nameResourceCatalogue}.{{ workspace_name }}.${domain}"
         manager:
           transactions: "true"
           allowed_ips: "*"

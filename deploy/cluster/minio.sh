@@ -98,7 +98,7 @@ if [ "${ACTION}" = "apply" ]; then
   host_bucket = minio.${domain}
   access_key = ${MINIO_ROOT_USER}
   secret_key = ${MINIO_ROOT_PASSWORD}
-  use_https = True
+  use_https = $(if [[ "${USE_TLS}" == "true" ]]; then echo -n "True"; else echo -n "False"; fi)
 EOF
 elif [ "${ACTION}" = "delete" ]; then
   rm -f s3cfg

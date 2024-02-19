@@ -57,7 +57,7 @@ persistence:
     trivy:
       storageClass: ${HARBOR_STORAGE}
 
-externalURL: https://harbor.${domain}
+externalURL: $(httpScheme)://harbor.${domain}
 # initial password for logging in with user "admin"
 harborAdminPassword: "${HARBOR_ADMIN_PASSWORD}"
 

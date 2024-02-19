@@ -57,7 +57,7 @@ global:
   env:
     REGISTRAR_REPLACE: "true"
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.TIFF,.tif,.tiff,.xml,.jp2,.jpg,.jpeg,.png,.nc
-    AWS_ENDPOINT_URL_S3: https://minio.${domain}
+    AWS_ENDPOINT_URL_S3: $(httpScheme)://minio.${domain}
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
@@ -91,7 +91,7 @@ global:
     cache:
       type: S3
       bucket: cache-bucket
-      endpoint_url: "https://minio.${domain}/cache-bucket"
+      endpoint_url: "$(httpScheme)://minio.${domain}/cache-bucket"
       host: "minio.${domain}"
       access_key_id: ${MINIO_ROOT_USER}
       secret_access_key: ${MINIO_ROOT_PASSWORD}
@@ -102,7 +102,7 @@ global:
     title: EOEPCA Data Access Service developed by EOX
     abstract: EOEPCA Data Access Service developed by EOX
     header: "EOEPCA Data Access View Server (VS) Client powered by <a href=\"//eox.at\"><img src=\"//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\" alt=\"EOX\" style=\"height:25px;margin-left:10px\"/></a>"
-    url: https://${name}.${domain}/ows
+    url: $(httpScheme)://${name}.${domain}/ows
 
 $(dataSpecification)
 
@@ -148,7 +148,7 @@ vs:
         - path: registrar_pycsw.backend.ItemBackend
           kwargs:
             repository_database_uri: postgresql://postgres:mypass@resource-catalogue-db/pycsw
-            ows_url: https://${name}.${domain}/ows
+            ows_url: $(httpScheme)://${name}.${domain}/ows
       defaultSuccessQueue: seed_queue
       #----------------
       # Specific routes
@@ -1256,8 +1256,8 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a https://identity.keycloak.${domain} \
-    -i https://identity-api-protected.${domain} \
+    -a $(httpScheme)://identity.keycloak.${domain} \
+    -i $(httpScheme)://identity-api-protected.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
@@ -1284,7 +1284,7 @@ serviceProtectionValues() {
 nameOverride: data-access-protection
 config:
   client-id: data-access
-  discovery-url: https://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: ${name}.${domain}

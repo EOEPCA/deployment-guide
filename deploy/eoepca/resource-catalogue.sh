@@ -55,6 +55,9 @@ ingress:
   tls_host: ${name}.${domain}
   tls_secret_name: ${name}-tls
   annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
 db:
   volume_storage_type: ${RESOURCE_CATALOGUE_STORAGE}
@@ -65,7 +68,7 @@ pycsw:
   #   pullPolicy: Always
   config:
     server:
-      url: https://${name}.${domain}/
+      url: $(httpScheme)://${name}.${domain}/
     manager:
       transactions: "true"
       allowed_ips: "*"
@@ -75,8 +78,8 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a https://identity.keycloak.${domain} \
-    -i https://identity-api-protected.${domain} \
+    -a $(httpScheme)://identity.keycloak.${domain} \
+    -i $(httpScheme)://identity-api-protected.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
@@ -103,7 +106,7 @@ serviceProtectionValues() {
 nameOverride: resource-catalogue-protection
 config:
   client-id: resource-catalogue
-  discovery-url: https://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: ${name}.${domain}

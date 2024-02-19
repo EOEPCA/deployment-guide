@@ -76,18 +76,18 @@ fluxHelmOperator:
 prefixForName: "ws"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
-s3Endpoint: "https://minio.${domain}"
+s3Endpoint: "$(httpScheme)://minio.${domain}"
 s3Region: "RegionOne"
-harborUrl: "https://harbor.${domain}"
+harborUrl: "$(httpScheme)://harbor.${domain}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor"
 workspaceChartsConfigMap: "workspace-charts"
 bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
 keycloakIntegration:
   enabled: true
-  keycloakUrl: "https://identity.keycloak.${domain}"
+  keycloakUrl: "$(httpScheme)://identity.keycloak.${domain}"
   realm: "${IDENTITY_REALM}"
-  identityApiUrl: "https://identity-api-protected.${domain}"
+  identityApiUrl: "$(httpScheme)://identity-api-protected.${domain}"
   workspaceApiIamClientId: "${WORKSPACE_API_IAM_CLIENT_ID}"
   defaultIamClientSecret: "${IDENTITY_SERVICE_DEFAULT_SECRET}"
 EOF
@@ -106,6 +106,7 @@ cleanUp() {
 
 substituteVariables() {
   mkdir workspace-templates-tmp
+  export http_scheme="$(httpScheme)"
   export NAMESPACE public_ip domain nameResourceCatalogue nameDataAccess
   for template in workspace-templates/*.yaml; do
     envsubst <$template >workspace-templates-tmp/$(basename $template)
@@ -156,7 +157,7 @@ deployMinioBucketApi() {
 valuesMinioBucketApi() {
   cat - <<EOF
 fullnameOverride: minio-bucket-api
-minIOServerEndpoint: https://minio.${domain}
+minIOServerEndpoint: $(httpScheme)://minio.${domain}
 accessCredentials:
   secretName: minio-auth
 EOF
@@ -165,8 +166,8 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a https://identity.keycloak.${domain} \
-    -i https://identity-api-protected.${domain} \
+    -a $(httpScheme)://identity.keycloak.${domain} \
+    -i $(httpScheme)://identity-api-protected.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
@@ -194,7 +195,7 @@ serviceProtectionValues() {
 nameOverride: workspace-api-protection
 config:
   client-id: workspace-api
-  discovery-url: https://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: ${name}.${domain}

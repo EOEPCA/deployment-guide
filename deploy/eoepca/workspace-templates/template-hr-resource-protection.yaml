@@ -18,7 +18,7 @@ spec:
     nameOverride: resource-protection
     config:
       client-id: {{ workspace_name }}
-      discovery-url: https://identity.keycloak.${domain}/realms/master
+      discovery-url: ${http_scheme}://identity.keycloak.${domain}/realms/master
       cookie-domain: ${domain}
     targetService:
       host: resource-catalogue.{{ workspace_name }}.${domain}

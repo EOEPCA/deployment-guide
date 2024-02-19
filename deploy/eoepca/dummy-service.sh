@@ -68,8 +68,8 @@ EOF
 createDummyServiceClient() {
   # Create the client
   ../bin/create-client \
-    -a https://identity.keycloak.${domain} \
-    -i https://identity-api-protected.${domain} \
+    -a $(httpScheme)://identity.keycloak.${domain} \
+    -i $(httpScheme)://identity-api-protected.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
@@ -99,7 +99,7 @@ serviceProtectionValues() {
 nameOverride: dummy-service-protection
 config:
   client-id: dummy-service
-  discovery-url: https://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: dummy-service-protected.${domain}
