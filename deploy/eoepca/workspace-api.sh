@@ -13,8 +13,7 @@ source ../cluster/functions
 configureAction "$1"
 initIpDefaults
 
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+domain="${2:-${default_domain}}"
 NAMESPACE="rm"
 WORKSPACE_API_IAM_CLIENT_ID="workspace-api"
 
@@ -107,7 +106,7 @@ cleanUp() {
 substituteVariables() {
   mkdir workspace-templates-tmp
   export http_scheme="$(httpScheme)"
-  export NAMESPACE public_ip domain nameResourceCatalogue nameDataAccess
+  export NAMESPACE domain nameResourceCatalogue nameDataAccess
   for template in workspace-templates/*.yaml; do
     envsubst <$template >workspace-templates-tmp/$(basename $template)
   done

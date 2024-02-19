@@ -13,8 +13,7 @@ source ../cluster/functions
 configureAction "$1"
 initIpDefaults
 
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+domain="${2:-${default_domain}}"
 NAMESPACE="um"
 
 main() {

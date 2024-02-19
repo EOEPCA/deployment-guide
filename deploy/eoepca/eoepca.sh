@@ -16,18 +16,24 @@ ACTION="${1:-apply}"
 configureAction "$ACTION"
 cluster_name="${2:-eoepca}"
 
-# Create the cluster
-../cluster/cluster.sh "${ACTION}" "${cluster_name}" $3 $4
-
 # deduce ip address from minikube
 initIpDefaults
-public_ip="${3:-${default_public_ip}}"
-domain="${4:-${default_domain}}"
+domain="${3:-${default_domain}}"
+public_ip="${4:-${default_public_ip}}"
+
+# Create the cluster
+../cluster/cluster.sh "${ACTION}" "${cluster_name}" "${domain}" "${public_ip}"
 
 # storage
 if [ "${REQUIRE_STORAGE}" = "true" ]; then
   echo -e "\nstorage..."
   ./storage.sh "${ACTION}"
+fi
+
+# identity-service (Keycloak)
+if [ "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then
+  echo -e "\nDeploy identity-service (Keycloak)..."
+  ./identity-service.sh "${ACTION}" "${domain}"
 fi
 
 # dummy-service
@@ -36,34 +42,8 @@ if [ "${REQUIRE_DUMMY_SERVICE}" = "true" ]; then
   ./dummy-service.sh "${ACTION}" "${domain}"
 fi
 
-# identity-service (Keycloak)
-if [ "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then
-  echo -e "\nDeploy identity-service (Keycloak)..."
-  ./identity-service.sh "${ACTION}" "${public_ip}" "${domain}"
-fi
-
-# login-service (Gluu)
-if [ "${REQUIRE_LOGIN_SERVICE}" = "true" ]; then
-  echo -e "\nDeploy login-service (Gluu)..."
-  ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
-fi
-
-# pdp (Gluu)
-if [ "${REQUIRE_PDP}" = "true" ]; then
-  echo -e "\nDeploy pdp (Gluu)..."
-  ./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
-fi
-
-# user-profile (Gluu)
-if [ "${REQUIRE_USER_PROFILE}" = "true" ]; then
-  echo -e "\nDeploy user-profile (Gluu)..."
-  ./user-profile.sh "${ACTION}" "${public_ip}" "${domain}"
-fi
-
 # ades
 if [ "${REQUIRE_ADES}" = "true" ]; then
-  echo -e "\nDeploy ades..."
-  ./ades.sh "${ACTION}" "${domain}"
   echo -e "\nDeploy ADES (zoo-project-dru)..."
   ./zoo.sh "${ACTION}" "${domain}"
 fi
@@ -95,7 +75,7 @@ fi
 # workspace api
 if [ "${REQUIRE_WORKSPACE_API}" = "true" ]; then
   echo -e "\nDeploy workspace-api..."
-  ./workspace-api.sh "${ACTION}" "${public_ip}" "${domain}"
+  ./workspace-api.sh "${ACTION}" "${domain}"
 fi
 
 # harbor artefact registry

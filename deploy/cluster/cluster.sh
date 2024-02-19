@@ -21,8 +21,8 @@ fi
 
 # deduce ip address from minikube
 initIpDefaults
-public_ip="${3:-${default_public_ip}}"
-domain="${4:-${default_domain}}"
+domain="${3:-${default_domain}}"
+public_ip="${4:-${default_public_ip}}"
 
 # metallb (Load Balancer)
 if [ "${USE_METALLB}" = "true" ]; then
