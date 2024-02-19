@@ -31,7 +31,7 @@ fi
 
 # ingress-nginx
 if [ "${REQUIRE_INGRESS_NGINX}" = "true" ]; then
-  ./ingress-nginx.sh "${ACTION}"
+  ./ingress-nginx.sh "${ACTION}" "${public_ip}"
 fi
 
 if [ "${USE_TLS}" = "true" ]; then

@@ -11,6 +11,9 @@ trap onExit EXIT
 
 source functions
 configureAction "$1"
+initIpDefaults
+
+public_ip="${2:-${default_public_ip}}"
 
 values() {
   cat - <<EOF
