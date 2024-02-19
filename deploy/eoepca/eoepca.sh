@@ -36,23 +36,27 @@ if [ "${REQUIRE_DUMMY_SERVICE}" = "true" ]; then
   ./dummy-service.sh "${ACTION}" "${domain}"
 fi
 
-# login-service
-if [ "${REQUIRE_LOGIN_SERVICE}" = "true" ]; then
-  echo -e "\nDeploy login-service (Gluu)..."
-  ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
+# identity-service (Keycloak)
+if [ "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then
   echo -e "\nDeploy identity-service (Keycloak)..."
   ./identity-service.sh "${ACTION}" "${public_ip}" "${domain}"
 fi
 
-# pdp
+# login-service (Gluu)
+if [ "${REQUIRE_LOGIN_SERVICE}" = "true" ]; then
+  echo -e "\nDeploy login-service (Gluu)..."
+  ./login-service.sh "${ACTION}" "${public_ip}" "${domain}"
+fi
+
+# pdp (Gluu)
 if [ "${REQUIRE_PDP}" = "true" ]; then
-  echo -e "\nDeploy pdp..."
+  echo -e "\nDeploy pdp (Gluu)..."
   ./pdp.sh "${ACTION}" "${public_ip}" "${domain}"
 fi
 
-# user-profile
+# user-profile (Gluu)
 if [ "${REQUIRE_USER_PROFILE}" = "true" ]; then
-  echo -e "\nDeploy user-profile..."
+  echo -e "\nDeploy user-profile (Gluu)..."
   ./user-profile.sh "${ACTION}" "${public_ip}" "${domain}"
 fi
 
@@ -62,6 +66,12 @@ if [ "${REQUIRE_ADES}" = "true" ]; then
   ./ades.sh "${ACTION}" "${domain}"
   echo -e "\nDeploy ADES (zoo-project-dru)..."
   ./zoo.sh "${ACTION}" "${domain}"
+fi
+
+# Application Hub
+if [ "${REQUIRE_APPLICATION_HUB}" = "true" ]; then
+  echo -e "\nDeploy Application Hub..."
+  ./application-hub.sh "${ACTION}" "${domain}"
 fi
 
 # resource catalogue

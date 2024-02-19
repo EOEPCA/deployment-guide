@@ -34,6 +34,14 @@ initIpDefaults() {
   default_domain="$(echo ${default_public_ip} | sed 's/\./-/g').nip.io"
 }
 
+httpScheme() {
+  if [[ "${USE_TLS}" == "true" ]]; then
+    echo -n "https"
+  else
+    echo -n "http"
+  fi
+}
+
 getAccessToken() {
   if [[ -n "$username" && -n "$password" && -n "$client" ]]; then
     token_endpoint="${auth_server}/realms/${realm}/protocol/openid-connect/token"

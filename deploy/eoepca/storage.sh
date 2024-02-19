@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: zoo
+  name: rm
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

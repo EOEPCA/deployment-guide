@@ -21,10 +21,8 @@ controller:
   ingressClassResource:
     default: true
   service:
-    type: NodePort
-    nodePorts:
-      http: 31080
-      https: 31443
+    externalIPs:
+      - ${public_ip}
   publishService:
     enabled: false
 EOF

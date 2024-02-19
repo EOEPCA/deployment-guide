@@ -76,7 +76,7 @@ identity-api:
     enabled: false  # ingress is provided by the associated gatekeeper instance
   configMap:
     # NOTE this can equally set via the AUTH_SERVER_URL env var (see below)
-    authServerUrl: https://identity.keycloak.${domain}
+    authServerUrl: "$(httpScheme)://identity.keycloak.${domain}"
   deployment:
     # Config values that can be passed via env vars (defaults shown below)
     extraEnv:
@@ -96,7 +96,7 @@ identity-api-gatekeeper:
   nameOverride: identity-api-protection
   config:
     client-id: identity-api
-    discovery-url: https://identity.keycloak.${domain}/realms/master
+    discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
     cookie-domain: ${domain}
   targetService:
     host: identity-api-protected.${domain}
@@ -129,7 +129,7 @@ createIdentityApiClient() {
 
   # Create the client
   ../bin/create-client \
-    -a https://identity.keycloak.${domain} \
+    -a $(httpScheme)://identity.keycloak.${domain} \
     -i http://localhost:${TEMP_FORWARDING_PORT} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
@@ -160,7 +160,7 @@ createUser() {
   user="$1"
   password="${IDENTITY_SERVICE_DEFAULT_SECRET}"
   ../bin/create-user \
-    -a "https://identity.keycloak.${domain}" \
+    -a $(httpScheme)://identity.keycloak.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \

@@ -17,11 +17,23 @@ domain="${2:-${default_domain}}"
 NAMESPACE="proc"
 
 main() {
-  helmChart
-  secret
+  deployService
+  createSecret
+  createClient
 }
 
-values() {
+deployService() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace "${NAMESPACE}" uninstall application-hub
+  else
+    serviceValues | helm ${ACTION_HELM} application-hub application-hub -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 2.0.53
+  fi
+}
+
+serviceValues() {
   cat - <<EOF
 ingress:
   enabled: true
@@ -46,12 +58,12 @@ jupyterhub:
     extraEnv: 
         JUPYTERHUB_ENV: "dev"
         JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
-        OAUTH_CALLBACK_URL: https://applicationhub.${domain}/hub/oauth_callback
-        OAUTH2_USERDATA_URL: https://auth.${domain}/oxauth/restv1/userinfo
-        OAUTH2_TOKEN_URL: https://auth.${domain}/oxauth/restv1/token
-        OAUTH2_AUTHORIZE_URL: https://auth.${domain}/oxauth/restv1/authorize
-        OAUTH_LOGOUT_REDIRECT_URL: "https://applicationhub.${domain}"
-        OAUTH2_USERNAME_KEY: "user_name"
+        OAUTH_CALLBACK_URL: $(httpScheme)://applicationhub.${domain}/hub/oauth_callback
+        OAUTH2_USERDATA_URL: $(httpScheme)://identity.keycloak.${domain}/realms/master/protocol/openid-connect/userinfo
+        OAUTH2_TOKEN_URL: $(httpScheme)://identity.keycloak.${domain}/realms/master/protocol/openid-connect/token
+        OAUTH2_AUTHORIZE_URL: $(httpScheme)://identity.keycloak.${domain}/realms/master/protocol/openid-connect/auth
+        OAUTH_LOGOUT_REDIRECT_URL: "$(httpScheme)://applicationhub.${domain}"
+        OAUTH2_USERNAME_KEY: "preferred_username"
         STORAGE_CLASS: "${APPLICATION_HUB_STORAGE}"
         RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
@@ -76,8 +88,8 @@ jupyterhub:
     image:
       #name: jupyterhub/k8s-hub
       #tag: "2.0.0"
-      #name: eoepca/application-hub
-      #tag: "1.0.0"
+      # name: eoepca/application-hub
+      # tag: "1.2.0"
       pullPolicy: Always
       pullSecrets: []
 
@@ -114,24 +126,28 @@ nodeSelector:
 EOF
 }
 
-helmChart() {
-  if [ "${ACTION_HELM}" = "uninstall" ]; then
-    helm --namespace "${NAMESPACE}" uninstall application-hub
-  else
-    values | helm ${ACTION_HELM} application-hub application-hub -f - \
-      --repo https://eoepca.github.io/helm-charts \
-      --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.52
-  fi
-}
-
 # Secret for Jupyter Hub access
-secret() {
+createSecret() {
   kubectl -n "${NAMESPACE}" create secret generic application-hub-secrets \
     --from-literal=JUPYTERHUB_CRYPT_KEY="$(openssl rand -hex 32)" \
-    --from-literal=OAUTH_CLIENT_ID="$(cat client-apphub.yaml | grep client-id | cut -d\  -f2)" \
-    --from-literal=OAUTH_CLIENT_SECRET="$(cat client-apphub.yaml | grep client-secret | cut -d\  -f2)" \
+    --from-literal=OAUTH_CLIENT_ID="application-hub" \
+    --from-literal=OAUTH_CLIENT_SECRET="changeme" \
     --dry-run=client -oyaml | kubectl ${ACTION_KUBECTL} -f -
+}
+
+createClient() {
+  # Create the client
+  ../bin/create-client \
+    -a $(httpScheme)://identity.keycloak.${domain} \
+    -i $(httpScheme)://identity-api-protected.${domain} \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    --id=application-hub \
+    --name="Application Hub OIDC Client" \
+    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --description="Client to be used by Application Hub for OIDC integration"
 }
 
 main "$@"
