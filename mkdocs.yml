@@ -12,6 +12,7 @@ nav:
       - Scripted Deployment: quickstart/scripted-deployment.md
       - Simple Deployment: quickstart/simple-deployment.md
       - Processing Deployment: quickstart/processing-deployment.md
+      - Application Hub: quickstart/application-hub-deployment.md
       - Data Access: quickstart/data-access-deployment.md
       - Exploitation: quickstart/exploitation-deployment.md
       - User Management: quickstart/userman-deployment.md
