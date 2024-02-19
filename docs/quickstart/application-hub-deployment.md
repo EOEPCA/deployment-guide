@@ -35,7 +35,7 @@ The Application Hub is accessed at the endpoint - [http://applicationhub.192-168
 
 The creation and configuration of the OIDC client are now performed automatically by the scripted deployment.
 
-However, it reamins necessary to manually configure the Groups and Users (test users eric and bob), as described in section [Post-deployment Manual Steps - Groups and Users](../eoepca/application-hub.md#groups-and-users).
+However, it reamins necessary to manually configure the Groups and Users (test users `eric` and `bob`), as described in section [Post-deployment Manual Steps - Groups and Users](../eoepca/application-hub.md#groups-and-users).
 
 ## Application Hub Notes
 
@@ -49,9 +49,9 @@ With the out-of-the-box configuration user `eric` or `bob` should be used with d
 
 Once logged in, the service list is presented for spawning of applications. Note that this list of applications is currently defined within the helm chart - see [https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/files/hub/config.yml](https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/files/hub/config.yml).
 
-From the list, a service is selected and the `Start` button initiataes spawning.
+From the list, a service is selected and the `Start` button initiates spawning.
 
-For a clean deployment, the first spawn of each application may take some time whilst the container image representing the application is downloaded to the node. Subsequent invocations (at least on the same node) should be much faster. Once running the application continues (in the background) until stopped by the user using the `Stop Server` button on the user's home screen.
+For a clean deployment, the first spawn of each application may take some time whilst the container image representing the application is downloaded to the node. Subsequent invocations (at least on the same node) should be much faster. Once running, the application continues (in the background) until stopped by the user using the `Stop Server` button on the user's home screen.
 
 The current JupyterHub configuration assumes a single application service (per user) running at a time - i.e. the current application must be stopped before the next can be started. There is an alternative configuration in which applications can be run in parallel and their lifecycles individually managed.
 
