@@ -13,7 +13,6 @@
 # domain="192-168-49-2.nip.io"
 # export USE_TLS=true
 # export TLS_CLUSTER_ISSUER=letsencrypt-production
-# export OPEN_INGRESS=false
 #---
 #
 #   NO Public IP and TLS disabled
@@ -21,10 +20,8 @@
 #   * Leave `public_ip` blank to fallback to minikube ip default
 #   * Leave `domain` blank to fallback to minikube ip default
 #   * Set `USE_TLS=false` to disable TLS
-#   * Set `OPEN_INGRESS=true` for unprotected access to services (optional)
 #---
 export USE_TLS=false
-# export OPEN_INGRESS=true
 #---
 
 # Enable desired services
@@ -32,7 +29,6 @@ export REQUIRE_IDENTITY_SERVICE=true
 export REQUIRE_APPLICATION_HUB=true
 
 # Disable not needed components
-export REQUIRE_DUMMY_SERVICE=false
 export REQUIRE_ADES=false
 export REQUIRE_RESOURCE_CATALOGUE=false
 export REQUIRE_DATA_ACCESS=false
@@ -40,6 +36,7 @@ export REQUIRE_REGISTRATION_API=false
 export REQUIRE_WORKSPACE_API=false
 export REQUIRE_HARBOR=false
 export REQUIRE_PORTAL=false
+export REQUIRE_DUMMY_SERVICE=false
 
 # Minikube options
 # Tune the resources afforded to minikube (assuming the `docker` driver)

@@ -33,12 +33,12 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export REQUIRE_PORTAL="${REQUIRE_PORTAL:-true}"
   export REQUIRE_APPLICATION_HUB="${REQUIRE_APPLICATION_HUB:-true}"
 # EOEPCA protection
-  export REQUIRE_DUMMY_SERVICE_PROTECTION="${REQUIRE_DUMMY_SERVICE_PROTECTION:-${REQUIRE_DUMMY_SERVICE}}"
-  export REQUIRE_ADES_PROTECTION="${REQUIRE_ADES_PROTECTION:-${REQUIRE_ADES}}"
-  export REQUIRE_RESOURCE_CATALOGUE_PROTECTION="${REQUIRE_RESOURCE_CATALOGUE_PROTECTION:-${REQUIRE_RESOURCE_CATALOGUE}}"
-  export REQUIRE_DATA_ACCESS_PROTECTION="${REQUIRE_DATA_ACCESS_PROTECTION:-${REQUIRE_DATA_ACCESS}}"
-  export REQUIRE_REGISTRATION_API_PROTECTION="${REQUIRE_REGISTRATION_API_PROTECTION:-${REQUIRE_REGISTRATION_API}}"
-  export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-${REQUIRE_WORKSPACE_API}}"
+  export REQUIRE_DUMMY_SERVICE_PROTECTION="${REQUIRE_DUMMY_SERVICE_PROTECTION:-$(if [ "${REQUIRE_DUMMY_SERVICE}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_ADES_PROTECTION="${REQUIRE_ADES_PROTECTION:-$(if [ "${REQUIRE_ADES}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_RESOURCE_CATALOGUE_PROTECTION="${REQUIRE_RESOURCE_CATALOGUE_PROTECTION:-$(if [ "${REQUIRE_RESOURCE_CATALOGUE}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_DATA_ACCESS_PROTECTION="${REQUIRE_DATA_ACCESS_PROTECTION:-$(if [ "${REQUIRE_DATA_ACCESS}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_REGISTRATION_API_PROTECTION="${REQUIRE_REGISTRATION_API_PROTECTION:-$(if [ "${REQUIRE_REGISTRATION_API}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-$(if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
 
   # Minikube options
   export MINIKUBE_VERSION="${MINIKUBE_VERSION:-v1.32.0}"
@@ -53,10 +53,9 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export USE_METALLB="${USE_METALLB:-false}"
   export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-true}"
   export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
-  export OPEN_INGRESS="${OPEN_INGRESS:-false}"
+  export OPEN_INGRESS="${OPEN_INGRESS:-$(if [ "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
 
   # Default Credentials
-  export LOGIN_SERVICE_ADMIN_PASSWORD="${LOGIN_SERVICE_ADMIN_PASSWORD:-Chang3me!}"
   export IDENTITY_SERVICE_DEFAULT_SECRET="${IDENTITY_SERVICE_DEFAULT_SECRET:-changeme}"
   export IDENTITY_SERVICE_ADMIN_USER="${IDENTITY_SERVICE_ADMIN_USER:-admin}"
   export IDENTITY_SERVICE_ADMIN_PASSWORD="${IDENTITY_SERVICE_ADMIN_PASSWORD:-${IDENTITY_SERVICE_DEFAULT_SECRET}}"
@@ -95,6 +94,10 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
 
   # Sanity checks
   #
+  # Ingress
+  if [ "${OPEN_INGRESS}" = "false" -a "${REQUIRE_IDENTITY_SERVICE}" = "false" ]; then
+    echo "WARNING: ingress is neither open (OPEN_INGRESS) nor provided via protection (REQUIRE_IDENTITY_SERVICE)"
+  fi
   # ADES Stage-out
   if [ "${STAGEOUT_TARGET}" = "minio" -a "${REQUIRE_MINIO}" = "false" ]; then
     echo "WARNING: stage-out target (STAGEOUT_TARGET) 'minio' has not been selected (REQUIRE_MINIO)"
