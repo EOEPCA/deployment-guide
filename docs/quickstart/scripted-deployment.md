@@ -83,7 +83,8 @@ For simplicity, the out-of-the-box scripts assume a 'private' deployment - with 
 
 In the case that an external-facing public deployment is desired, then the following configuration selections should be made:
 
-* `public_ip` - set to the external-facing public IP of your deployment, e.g. the floating IP of your load-balancer in a cloud deployment
+* `public_ip` - set to the public IP address through which the deployment is exposed via the ingress-controller<br>
+  _i.e. the IP address that is assigned to the ingress controller service of type LoadBalancer_
 * `domain` - set to the domain (as per DNS records) for your deployment<br>
   _Note that the EOEPCA components typically configure their ingress with hostname prefixes applied to this `domain`. Thus, it is necessary that the DNS record for the domain is established as a wildcard record - i.e. `*.<domain>`_
 * `USE_TLS=true` - to enable configuration of TLS endpoints in each component service ingress
