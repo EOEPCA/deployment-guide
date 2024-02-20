@@ -35,7 +35,7 @@ The Application Hub is accessed at the endpoint - [http://applicationhub.192-168
 
 The creation and configuration of the OIDC client are now performed automatically by the scripted deployment.
 
-However, it reamins necessary to manually configure the Groups and Users (test users `eric` and `bob`), as described in section [Post-deployment Manual Steps - Groups and Users](../eoepca/application-hub.md#groups-and-users).
+However, it remains necessary to manually configure the Groups and Users (test users `eric` and `bob`), as described in section [Post-deployment Manual Steps - Groups and Users](../eoepca/application-hub.md#groups-and-users).
 
 ## Application Hub Notes
 
