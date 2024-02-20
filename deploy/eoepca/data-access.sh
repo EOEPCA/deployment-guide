@@ -1345,7 +1345,7 @@ ingress:
         proxy_pass http://data-access-cache.${NAMESPACE}.svc.cluster.local:80/\$1;
       }
       # Open access to client...
-      location ~ ^/(.*) {
+      location ~ ^/(?!\.well-known)(.*) {
         proxy_pass http://data-access-client.${NAMESPACE}.svc.cluster.local:80/\$1;
       }
 EOF
