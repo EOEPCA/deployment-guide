@@ -36,7 +36,7 @@ ingress:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: eoepca-portal-tls-certificate
+    - secretName: eoepca-portal-tls
       hosts:
         - eoepca-portal.${domain}
 EOF

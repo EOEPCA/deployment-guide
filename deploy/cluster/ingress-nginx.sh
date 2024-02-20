@@ -13,7 +13,8 @@ source functions
 configureAction "$1"
 initIpDefaults
 
-public_ip="${2:-${default_public_ip}}"
+domain="${2:-${default_domain}}"
+public_ip="${3:-${default_public_ip}}"
 
 values() {
   cat - <<EOF
@@ -82,7 +83,8 @@ metadata:
   name: readycheck
 spec:
   rules:
-  - http:
+  - host: readycheck.${domain}
+    http:
       paths:
       - path: /
         pathType: ImplementationSpecific

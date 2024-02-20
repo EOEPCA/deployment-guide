@@ -55,7 +55,7 @@ identity-keycloak:
           - path: /
             pathType: Prefix
     tls:
-      - secretName: identity-keycloak-tls-certificate
+      - secretName: identity-keycloak-tls
         hosts:
           - identity.keycloak.${domain}
 identity-postgres:

@@ -4,7 +4,7 @@
 #
 #   With Public IP and TLS enabled
 #   ------------------------------
-#   * Set `public_ip` to external-facing IP address
+#   * Set `public_ip` to 'external' IP for cluster ingress (ingress-nginx)
 #   * Set `domain` for your DNS configuration
 #   * Set `USE_TLS=true` to enable TLS
 #   * Set `TLS_CLUSTER_ISSUER` for production
@@ -13,6 +13,7 @@
 # domain="192-168-49-2.nip.io"
 # export USE_TLS=true
 # export TLS_CLUSTER_ISSUER=letsencrypt-production
+# export OPEN_INGRESS=false
 #---
 #
 #   NO Public IP and TLS disabled
@@ -20,14 +21,15 @@
 #   * Leave `public_ip` blank to fallback to minikube ip default
 #   * Leave `domain` blank to fallback to minikube ip default
 #   * Set `USE_TLS=false` to disable TLS
+#   * Set `OPEN_INGRESS=true` for unprotected access to services (optional)
 #---
 export USE_TLS=false
+# export OPEN_INGRESS=true
 #---
 
 # Enable desired services
 export REQUIRE_IDENTITY_SERVICE=true
 export REQUIRE_APPLICATION_HUB=true
-export OPEN_INGRESS=true  # i.e. unprotected resource servers
 
 # Disable not needed components
 export REQUIRE_DUMMY_SERVICE=false
