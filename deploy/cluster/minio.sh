@@ -71,7 +71,7 @@ echo -e "\nMinio credentials..."
 if [ "${ACTION_HELM}" = "uninstall" ]; then
   kubectl -n "${NAMESPACE}" delete secret minio-auth
 else
-  kubectl create namespace "${NAMESPACE}"
+  kubectl create namespace "${NAMESPACE}" 2>/dev/null
   kubectl -n "${NAMESPACE}" create secret generic minio-auth \
     --from-literal=rootUser="${MINIO_ROOT_USER}" \
     --from-literal=rootPassword="${MINIO_ROOT_PASSWORD}" \
