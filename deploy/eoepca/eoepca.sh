@@ -16,13 +16,13 @@ ACTION="${1:-apply}"
 configureAction "$ACTION"
 cluster_name="${2:-eoepca}"
 
+# Create the cluster
+../cluster/cluster.sh "${ACTION}" "${cluster_name}" "${domain}" "${public_ip}"
+
 # deduce ip address from minikube
 initIpDefaults
 domain="${3:-${default_domain}}"
 public_ip="${4:-${default_public_ip}}"
-
-# Create the cluster
-../cluster/cluster.sh "${ACTION}" "${cluster_name}" "${domain}" "${public_ip}"
 
 # storage
 if [ "${REQUIRE_STORAGE}" = "true" ]; then
