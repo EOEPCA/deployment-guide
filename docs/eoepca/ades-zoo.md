@@ -14,7 +14,9 @@
     * **Deployed Application Endpoint**<br>
       The endpoint for a deployed Application no longer appends the version of the Application Package.<br>
       For example, previously the application `convert-url` at version `0.1.2` would result in the endpoint `/<username>/wps3/processes/convert-url_0_1_2`.<br>
-      With the new `zoo-project-dru` this same Application Package deployment will result in the endpoint `/<username>/ogc-api/processes/convert-url`. The version of the deployed application is obtained from the Application Package CWL (ref. `s:softwareVersion: 0.1.2`), and is maintained within the metadata for the deployed process that is returned from the APIs `Get Process Details` request.<br>
+      With the new `zoo-project-dru` this same Application Package deployment will result in the endpoint `/<username>/ogc-api/processes/convert-url`.
+    * **Deployed Application Version**<br>
+      The version of the deployed application is obtained from the Application Package CWL (ref. `s:softwareVersion: 0.1.2`), and is maintained within the metadata for the deployed process that is returned from the APIs `Get Process Details` request.<br>
       In the case that multiple versions of the same Application Package are required to be simultaneously deployed, then this would have to be handled with different CWL documents in which the version is embedded in the workflow `id` (or some other technique that establishes uniqueness of `id` between variants).
 
 The _ADES_ provides a platform-hosted execution engine through which users can initiate parameterised processing jobs using applications made available within the platform - supporting the efficient execution of the processing 'close to the data'. Users can deploy specific 'applications' to the ADES, which may be their own applications, or those published by other platform users.
