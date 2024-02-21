@@ -1345,6 +1345,8 @@ ingress:
         proxy_pass http://data-access-cache.${NAMESPACE}.svc.cluster.local:80/\$1;
       }
       # Open access to client...
+      # Note that we use a negative lookahead to avoid matching '/.well-known/*' which
+      # otherwise appears to interfere with the work of cert-manager/letsencrypt.
       location ~ ^/(?!\.well-known)(.*) {
         proxy_pass http://data-access-client.${NAMESPACE}.svc.cluster.local:80/\$1;
       }
