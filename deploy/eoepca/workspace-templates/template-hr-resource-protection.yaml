@@ -58,20 +58,20 @@ spec:
               pathType: Prefix
               backend:
                 service:
-                  name: data-access-renderer
+                  name: vs-renderer
                   port:
                     number: 80
             - path: /cache/(.*)
               pathType: Prefix
               backend:
                 service:
-                  name: data-access-cache
+                  name: vs-cache
                   port:
                     number: 80
             - path: /(.*)
               pathType: Prefix
               backend:
                 service:
-                  name: data-access-client
+                  name: vs-client
                   port:
                     number: 80
