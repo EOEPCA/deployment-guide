@@ -29,13 +29,20 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export REQUIRE_HARBOR="${REQUIRE_HARBOR:-${REQUIRE_WORKSPACE_API}}"
   export REQUIRE_PORTAL="${REQUIRE_PORTAL:-true}"
   export REQUIRE_APPLICATION_HUB="${REQUIRE_APPLICATION_HUB:-true}"
-# EOEPCA protection
-  export REQUIRE_DUMMY_SERVICE_PROTECTION="${REQUIRE_DUMMY_SERVICE_PROTECTION:-$(if [ "${REQUIRE_DUMMY_SERVICE}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
-  export REQUIRE_ADES_PROTECTION="${REQUIRE_ADES_PROTECTION:-$(if [ "${REQUIRE_ADES}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
-  export REQUIRE_RESOURCE_CATALOGUE_PROTECTION="${REQUIRE_RESOURCE_CATALOGUE_PROTECTION:-$(if [ "${REQUIRE_RESOURCE_CATALOGUE}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
-  export REQUIRE_DATA_ACCESS_PROTECTION="${REQUIRE_DATA_ACCESS_PROTECTION:-$(if [ "${REQUIRE_DATA_ACCESS}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
-  export REQUIRE_REGISTRATION_API_PROTECTION="${REQUIRE_REGISTRATION_API_PROTECTION:-$(if [ "${REQUIRE_REGISTRATION_API}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
-  export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-$(if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "true"; else echo "false"; fi)}"
+
+  # Ingress options
+  export USE_METALLB="${USE_METALLB:-false}"
+  export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-true}"
+  export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
+  export OPEN_INGRESS="${OPEN_INGRESS:-$(if [ "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
+
+  # EOEPCA protection
+  export REQUIRE_DUMMY_SERVICE_PROTECTION="${REQUIRE_DUMMY_SERVICE_PROTECTION:-$(if [ "${REQUIRE_DUMMY_SERVICE}" = "true" -a "${OPEN_INGRESS}" = "false" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_ADES_PROTECTION="${REQUIRE_ADES_PROTECTION:-$(if [ "${REQUIRE_ADES}" = "true" -a "${OPEN_INGRESS}" = "false" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_RESOURCE_CATALOGUE_PROTECTION="${REQUIRE_RESOURCE_CATALOGUE_PROTECTION:-$(if [ "${REQUIRE_RESOURCE_CATALOGUE}" = "true" -a "${OPEN_INGRESS}" = "false" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_DATA_ACCESS_PROTECTION="${REQUIRE_DATA_ACCESS_PROTECTION:-$(if [ "${REQUIRE_DATA_ACCESS}" = "true" -a "${OPEN_INGRESS}" = "false" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_REGISTRATION_API_PROTECTION="${REQUIRE_REGISTRATION_API_PROTECTION:-$(if [ "${REQUIRE_REGISTRATION_API}" = "true" -a "${OPEN_INGRESS}" = "false" ]; then echo "true"; else echo "false"; fi)}"
+  export REQUIRE_WORKSPACE_API_PROTECTION="${REQUIRE_WORKSPACE_API_PROTECTION:-$(if [ "${REQUIRE_WORKSPACE_API}" = "true" -a "${OPEN_INGRESS}" = "false" ]; then echo "true"; else echo "false"; fi)}"
 
   # Minikube options
   export MINIKUBE_VERSION="${MINIKUBE_VERSION:-v1.32.0}"
@@ -45,12 +52,6 @@ if [ -z "${_EOEPCA_OPTIONS_}" ]; then
   export MINIKUBE_DISK_AMOUNT="${MINIKUBE_DISK_AMOUNT:-20g}"
   # We assume use of a public IP for external traffic ingress and use of letsencrypt tls
   export MINIKUBE_EXTRA_OPTIONS="${MINIKUBE_EXTRA_OPTIONS:---ports=80:80,443:443}"
-
-  # Ingress options
-  export USE_METALLB="${USE_METALLB:-false}"
-  export USE_INGRESS_NGINX_HELM="${USE_INGRESS_NGINX_HELM:-true}"
-  export USE_INGRESS_NGINX_LOADBALANCER="${USE_INGRESS_NGINX_LOADBALANCER:-$(if [ "${REQUIRE_MINIKUBE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
-  export OPEN_INGRESS="${OPEN_INGRESS:-$(if [ "${REQUIRE_IDENTITY_SERVICE}" = "true" ]; then echo "false"; else echo "true"; fi)}"
 
   # Default Credentials
   export IDENTITY_SERVICE_DEFAULT_SECRET="${IDENTITY_SERVICE_DEFAULT_SECRET:-changeme}"

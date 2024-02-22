@@ -35,6 +35,7 @@ export REQUIRE_WORKSPACE_API=true
 export REQUIRE_HARBOR=true
 export REQUIRE_PORTAL=true
 export REQUIRE_DUMMY_SERVICE=true
+export OPEN_INGRESS=true
 
 # Disable not needed components
 # n/a - all components
