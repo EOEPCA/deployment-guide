@@ -1,6 +1,6 @@
 @domain = 192-168-49-2.nip.io
 @scheme = http
-@ades = zoo.{{domain}}
+@ades = zoo-open.{{domain}}
 @login = identity.keycloak.{{domain}}
 @identityApi = identity-api-protected.{{domain}}
 @realm = master
