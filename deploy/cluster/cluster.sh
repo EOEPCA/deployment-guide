@@ -13,6 +13,7 @@ source functions
 ACTION="${1:-apply}"
 configureAction "$ACTION"
 cluster_name="${2:-mykube}"
+provided_domain="${3}"
 
 # minikube
 if [ "${REQUIRE_MINIKUBE}" = "true" ]; then
@@ -21,7 +22,7 @@ fi
 
 # deduce ip address from minikube
 initIpDefaults
-domain="${3:-${default_domain}}"
+domain="${provided_domain:-${default_domain}}"
 public_ip="${4:-${default_public_ip}}"
 
 # metallb (Load Balancer)

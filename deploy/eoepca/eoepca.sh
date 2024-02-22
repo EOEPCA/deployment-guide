@@ -15,13 +15,14 @@ source ../cluster/functions
 ACTION="${1:-apply}"
 configureAction "$ACTION"
 cluster_name="${2:-eoepca}"
+provided_domain="${3}"
 
 # Create the cluster
-../cluster/cluster.sh "${ACTION}" "${cluster_name}" "${domain}" "${public_ip}"
+../cluster/cluster.sh "${ACTION}" "${cluster_name}" "${provided_domain}" "${public_ip}"
 
 # deduce ip address from minikube
 initIpDefaults
-domain="${3:-${default_domain}}"
+domain="${provided_domain:-${default_domain}}"
 public_ip="${4:-${default_public_ip}}"
 
 # storage
