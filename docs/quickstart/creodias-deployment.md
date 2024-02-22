@@ -14,7 +14,8 @@ The CREODIAS deployment applies the following configuration:
 
 With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
 
-* Passwords: `LOGIN_SERVICE_ADMIN_PASSWORD`, `MINIO_ROOT_PASSWORD`, `HARBOR_ADMIN_PASSWORD`
+* Passwords: `MINIO_ROOT_PASSWORD`, `HARBOR_ADMIN_PASSWORD`
+* Identity Service credentials - e.g. `IDENTITY_SERVICE_DEFAULT_SECRET`, `IDENTITY_SERVICE_ADMIN_PASSWORD`, etc.
 * OpenStack details: see section [Openstack Configuration](scripted-deployment.md#openstack-configuration)
 * If configuring an external deployment - ref. [Public Deployment](scripted-deployment.md#public-deployment)...
     * `public_ip` - The public IP address through which the deployment is exposed via the ingress-controller

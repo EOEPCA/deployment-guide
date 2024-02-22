@@ -36,7 +36,7 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     Variable | Description | Default
     -------- | ----------- | -------
     **REQUIRE_<cluster-component\>** | A set of variables that can be used to control which **CLUSTER** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_MINIKUBE=true`<br>`REQUIRE_INGRESS_NGINX=true`<br>`REQUIRE_CERT_MANAGER=true`<br>`REQUIRE_LETSENCRYPT=true`<br>`REQUIRE_SEALED_SECRETS=false`<br>`REQUIRE_MINIO=false` | see description
-    **REQUIRE_<eoepca-component\>** | A set of variables that can be used to control which **EOEPCA** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_STORAGE=true`<br>`REQUIRE_DUMMY_SERVICE=false`<br>`REQUIRE_LOGIN_SERVICE=true`<br>`REQUIRE_PDP=true`<br>`REQUIRE_USER_PROFILE=true`<br>`REQUIRE_ADES=true`<br>`REQUIRE_RESOURCE_CATALOGUE=true`<br>`REQUIRE_DATA_ACCESS=true`<br>`REQUIRE_REGISTRATION_API=true`<br>`REQUIRE_WORKSPACE_API=true`<br>`REQUIRE_HARBOR=true`<br>`REQUIRE_PORTAL=true`<br>`REQUIRE_APPLICATION_HUB=true` | see description
+    **REQUIRE_<eoepca-component\>** | A set of variables that can be used to control which **EOEPCA** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_STORAGE=true`<br>`REQUIRE_DUMMY_SERVICE=false`<br>`REQUIRE_IDENTITY_SERVICE=true`<br>`REQUIRE_ADES=true`<br>`REQUIRE_RESOURCE_CATALOGUE=true`<br>`REQUIRE_DATA_ACCESS=true`<br>`REQUIRE_REGISTRATION_API=true`<br>`REQUIRE_WORKSPACE_API=true`<br>`REQUIRE_HARBOR=true`<br>`REQUIRE_PORTAL=true`<br>`REQUIRE_APPLICATION_HUB=true` | see description
     **REQUIRE_<protection-component\>** | A set of variables that can be used to control which **PROTECTION** components are deployed by the script, as follows (with defaults):<br>`REQUIRE_DUMMY_SERVICE_PROTECTION=false`<br>`REQUIRE_ADES_PROTECTION=true`<br>`REQUIRE_RESOURCE_CATALOGUE_PROTECTION=true`<br>`REQUIRE_DATA_ACCESS_PROTECTION=true`<br>`REGISTRATION_API_PROTECTION=true`<br>`REQUIRE_WORKSPACE_API_PROTECTION=true` | see description
     **MINIKUBE_VERSION** | The Minikube version to be (optionally) installed<br>Note that the EOEPCA development has been conducted using the default stated here. | `v1.32.0`
     **MINIKUBE_KUBERNETES_VERSION** | The Kubernetes version to be used by minikube<br>Note that the EOEPCA development has been conducted primarily using version 1.22.5. | `v1.22.5`
@@ -49,7 +49,14 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **OPEN_INGRESS** | Create 'open' ingress endpoints that are not subject to authorization protection. For a secure system the open endpoints should be disabled (`false`) and access to resource should be protected via [ingress that apply protection](../eoepca/resource-protection.md) | `false`
     **USE_TLS** | Indicates whether TLS will be configured for service `Ingress` rules.<br>If not (i.e. `USE_TLS=false`), then the ingress-controller is configured to disable `ssl-redirect`, and `TLS_CLUSTER_ISSUER=notls` is set. | `true`
     **TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box _ClusterIssuer_ instances are configured in the file `deploy/cluster/letsencrypt.sh`. | `letsencrypt-staging`
-    **LOGIN_SERVICE_ADMIN_PASSWORD** | Initial password for the `admin` user in the login-service. | `changeme`
+    **IDENTITY_SERVICE_DEFAULT_SECRET** | Default secret that is used by exception for other Identity Service credentials | `changeme`
+    **IDENTITY_SERVICE_ADMIN_USER** | The admin user for Keycloak | `admin`
+    **IDENTITY_SERVICE_ADMIN_PASSWORD** | The admin user password for Keycloak | `${IDENTITY_SERVICE_DEFAULT_SECRET}`
+    **IDENTITY_SERVICE_ADMIN_CLIENT** | The Keycloak client to use for admin API tasks during scripted deployment | `admin-cli`
+    **IDENTITY_POSTGRES_PASSWORD** | The password for the Keycloak Postgres service | `${IDENTITY_SERVICE_DEFAULT_SECRET}`
+    **IDENTITY_GATEKEEPER_CLIENT_SECRET** | The secret used for each Keycloak client (one per resource service) created during scripted deployment | `${IDENTITY_SERVICE_DEFAULT_SECRET}`
+    **IDENTITY_GATEKEEPER_ENCRYPTION_KEY** | The encryption key for each Keycloak client (one per resource service) created during scripted deployment | `changemechangeme`
+    **IDENTITY_REALM** | Keycloak realm for Identity Service.<br>_This is not explicitly created by the scripted deployment, and so is assumed to exist within the Keycloak instance. Thus, will probably break the deployment if modified._ | `master`
     **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
     **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
     **HARBOR_ADMIN_PASSWORD** | Password for the 'admin' user for the Harbor artefact registry service. | `changeme`
@@ -57,9 +64,11 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **<component\>_STORAGE** | A set of variables to control the dynamic provisioning _Storage Class_ for individual components, as follows:<br>MINIO_STORAGE<br>ADES_STORAGE<br>APPLICATION_HUB_STORAGE<br>DATA_ACCESS_STORAGE<br>HARBOR_STORAGE<br>RESOURCE_CATALOGUE_STORAGE | `<DEFAULT_STORAGE>`
     **PROCESSING_MAX_RAM** | Max RAM allocated to an individual processing job | `8Gi`
     **PROCESSING_MAX_CORES** | Max number of CPU cores allocated to an individual processing job | `4`
+    **PROCESSING_ZOO_IMAGE** | Container image for `zoo-dru` deployment | `eoepca-092ea7a2c6823dba9c6d52c383a73f5ff92d0762`
     **STAGEOUT_TARGET** | Configures the ADES with the destination to which it should push processing results:<br>`workspace` - via the Workspace API<br>`minio` - to minio S3 object storage | `workspace`
     **INSTALL_FLUX** | The Workspace API relies upon [Flux CI/CD](https://fluxcd.io/), and has the capability to install the required flux components to the cluster. If your deployment already has flux installed then set this value `false` to suppress the Workspace API flux install | `true`
     **CREODIAS_DATA_SPECIFICATION** | Apply the data specification to harvest from the CREODIAS data offering into the resource-catalogue and data-access services.<br>_Can only be used when running in the CREODIAS (Cloudferro) cloud, with access to the `eodata` network._ | `false`
+    **TEMP_FORWARDING_PORT** | Local port used during the scripted deployment for `kubectl port-forward` operations | `9876`
 
 ### Command-line Arguments
 
@@ -108,38 +117,36 @@ The deployment takes 10+ minutes - depending on the resources of your host/clust
 kubectl get pods -A
 ```
 
-The deployment is ready once all pods are either `Running` or `Completed`. This can be further confirmed by accessing the login-service web interface at `https://auth.<domain>/` and logging in as user `admin` using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
+The deployment is ready once all pods are either `Running` or `Completed`.
 
 ## Post-deployment Manual Steps
 
 The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
 See the building block specific pages...
 
-* **Login Service:** [Post-deployment Manual Steps](../eoepca/login-service.md#post-deployment-manual-steps)
-
-!!! note
-    See also [Post-protection Manual Steps](#post-protection-manual-steps) for additional interventions to be performed later in the process.
+* **Identity Service:** [Token Lifespans](../eoepca/identity-service.md#token-lifespans)
+* **Application Hub:** [Post-deployment Manual Steps](../eoepca/application-hub.md#post-deployment-manual-steps)
 
 ## Default Credentials
 
-### Login Service
+### Identity Service
 
-By default, the Login Service is accessed at the URL `https://auth.<domain>/` with the credentials...
+By default, the Identity Service is accessed at the URL `https://identity.keycloak.<domain>/` with the credentials...
 
 ```
-username: admin
-password: Chang3me!
+username: `admin`
+password: `changeme`
 ```
 
-...unless the password is overridden via the variable `LOGIN_SERVICE_ADMIN_PASSWORD`.
+...unless the password is overridden via the variable `IDENTITY_SERVICE_ADMIN_PASSWORD`.
 
 ### Minio Object Storage
 
-By default, Minio is accessed at the URL `http://console.minio.<domain>/` with the credentials...
+By default, Minio is accessed at the URL `https://console.minio.<domain>/` with the credentials...
 
 ```
-username: eoepca
-password: changeme
+username: `eoepca`
+password: `changeme`
 ```
 
 ...unless the username/password are overridden via the variables `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD`.
@@ -149,49 +156,27 @@ password: changeme
 By default, Harbor is accessed at the URL `https://harbor.<domain>/` with the credentials...
 
 ```
-username: admin
-password: changeme
+username: `admin`
+password: `changeme`
 ```
 
 ...unless the password is overridden via the variable `HARBOR_ADMIN_PASSWORD`.
 
 ## Protection
 
-The protection of resource server endpoints is applied with the script `deploy/eoepca/eoepca-protection.sh`. This script should be executed with environment variables and command-line options that are consistent with those of the main deployment (ref. script `eoepca.sh`).
+The protection of resource server endpoints is applied during the deployment of each service requiring protection. This comprises creating a dedicated Keycloak client for each resource server, and the creation of associated resources and policies that protect the service-specific URLs.
 
-The script `eoepca-protection.sh` introduces two users `eric` and `bob` to demonstrate the application of authorized access to various service endpoints: ADES, Workspace API and dummy-service (simple endpoint used for debugging).
+This protection can be disabled via the environment variables `REQUIRE_XXX_PROTECTION` - e.g. `REQUIRE_ADES_PROTECTION=false`.
 
-Thus, the users must [first be created](#create-test-users) in the login-service and their unique IDs passed to the protection script.
+## Test Users
 
-```
-Usage: eoepca-protection.sh <action> <eric-id> <bob-id> <public-ip> <domain>
-```
+The deployment creates in the Identity Service the test users: `eric`, `bob`, `alice`.
 
-### Create Test Users
+NOTE that this does NOT create the workspace for each of these users - which must be performed via the Workspace API.
 
-Access the login-service web interface (`https://auth.<domain>/`) as user admin using the credentials configured via `LOGIN_SERVICE_ADMIN_PASSWORD`.
+## User Workspace Creation
 
-Select `Users -> Add person` to add users `eric` and `bob` (dummy details can be used). Note the `Inum` (unique user ID) for each user for use with the `eoepca-protection.sh` script.
-
-### Apply Protection
-
-Apply the protection...<br>
-_Ensure that the script is executed with the environment variables and command-line options that are consistent with those of the main [deployment](#deployment)._
-
-```bash
-./deploy/eoepca/eoepca-protection.sh apply "<eric-id>" "<bob-id>" "<public-ip>" "<domain>"
-```
-
-## Post-protection Manual Steps
-
-The scripted deployment has been designed, as far as possible, to automate the configuration of the deployed components. However, there remain some steps that must be performed manually after the scripted deployment has completed.<br>
-See the building block specific pages...
-
-* **Application Hub:** [Post-deployment Manual Steps](../eoepca/application-hub.md#post-deployment-manual-steps)
-
-## Create User Workspaces
-
-The protection steps created the test users `eric` and `bob`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../eoepca/workspace.md).
+The protection steps created the test users `eric`, `bob` and `alice`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../eoepca/workspace.md).
 
 ### Using Workspace Swagger UI
 
@@ -286,11 +271,7 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
   In the case that the minikube `none` driver is used, the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed. In this case, the minikube `standard` _StorageClass_ is fulfilled by the `hostpath` provisioner, whose persistence is removed as follows...<br>
   `sudo rm -rf /tmp/hostpath-provisioner`
 
-1. **Client Credentials**<br>
-  During the deployment a client of the Authorisation Server is registered, and its credentials stored for reuse in the file `client.yaml`. Once the cluster has been destroyed, then these client credentials become stale and so should be removed to avoid polluting subsequent deployments...<br>
-  `rm -rf ./deploy/eoepca/client.yaml`
-
-There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/cluster/clean) that can be used for steps 2 and 3 above, (the script does not delete the cluster).
+There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/cluster/clean) that can be used for step 2 above, (the script does not delete the cluster).
 ```bash
 ./deploy/cluster/clean
 ```
