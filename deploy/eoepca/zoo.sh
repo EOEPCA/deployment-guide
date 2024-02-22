@@ -18,8 +18,10 @@ NAMESPACE="zoo"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="zoo-open"
+  workspace_api_name="workspace-api-open"
 else
   name="zoo"
+  workspace_api_name="workspace-api"
 fi
 
 main() {
@@ -61,7 +63,7 @@ customConfig:
   main:
     eoepca: |-
       domain=${domain}
-$(workspacePrefix)
+$(workspaceConfig)
 files:
   # Directory 'files/cwlwrapper-assets' - assets for ConfigMap 'XXX-cwlwrapper-config'
   cwlwrapperAssets:
@@ -126,9 +128,10 @@ EOF
   fi
 }
 
-workspacePrefix() {
+workspaceConfig() {
   if [ "${STAGEOUT_TARGET}" = "workspace" ]; then
   cat - <<EOF
+      workspace_url=$(httpScheme)://${workspace_api_name}.${domain}
       workspace_prefix=ws
 EOF
   fi
