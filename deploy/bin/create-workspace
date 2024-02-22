@@ -23,8 +23,8 @@ where:
     -u  username used for authentication (default: admin)
     -p  password used for authentication (default: changeme)
     -c  client id of the bootstrap client used in the create request (default: admin-cli)
-    -O  user ID of the 'owner' of the new workspace
-    -W  name of the workspace to create
+    -O  user ID of the 'owner' of the new workspace (default: workspace(-W))
+    -W  name of the workspace to create (default: owner(-O))
 "
 
 main() {
