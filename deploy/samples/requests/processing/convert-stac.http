@@ -1,13 +1,16 @@
-
 @domain = 192-168-49-2.nip.io
-@ades = ades-open.{{domain}}
-@login = auth.{{domain}}
-@user = eric
-@pass = defaultPWD
-@clientId = 6195909b-04bc-4d8c-8b92-9cb4e1bdea1f
-@clientSecret = 9a614fe9-b1eb-465d-a0af-85115dcba2e6
+@scheme = http
+@ades = zoo.{{domain}}
+@login = identity.keycloak.{{domain}}
+@identityApi = identity-api-protected.{{domain}}
+@realm = master
+@username=eric
+@password=changeme
+@client=admin-cli
 
 @tokenEndpoint = {{openidConfiguration.response.body.token_endpoint}}
+@accessToken = {{authenticate.response.body.access_token}}
+@refreshToken = {{authenticate.response.body.refresh_token}}
 @idToken = {{authenticate.response.body.id_token}}
 @deployStatus = {{deployProcess.response.headers.Location}}
 @executeStatus = {{executeProcess.response.headers.Location}}
@@ -15,7 +18,7 @@
 ###
 
 # @name openidConfiguration
-GET https://{{login}}/.well-known/openid-configuration HTTP/1.1
+GET {{scheme}}://{{login}}/realms/{{realm}}/.well-known/openid-configuration HTTP/1.1
 Accept: application/json
 
 ###
@@ -25,56 +28,51 @@ POST {{tokenEndpoint}} HTTP/1.1
 Cache-Control: no-cache
 Content-Type: application/x-www-form-urlencoded
 
-scope=openid user_name is_operator&grant_type=password&username={{user}}&password={{pass}}&client_id={{clientId}}&client_secret={{clientSecret}}
+scope=openid profile email&grant_type=password&username={{username}}&password={{password}}&client_id={{client}}
+
+###
+
+# @name deleteProcess
+DELETE {{scheme}}://{{ades}}/{{username}}/ogc-api/processes/convert-stac HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Accept: application/json
 
 ###
 
 # @name listProcesses
-GET https://{{ades}}/{{user}}/wps3/processes HTTP/1.1
-Authorization: Bearer {{idToken}}
+GET {{scheme}}://{{ades}}/{{username}}/ogc-api/processes HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
 # @name deployProcess
-POST https://{{ades}}/{{user}}/wps3/processes HTTP/1.1
-Authorization: Bearer {{idToken}}
+POST {{scheme}}://{{ades}}/{{username}}/ogc-api/processes HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
-Content-Type: application/json
+Content-Type: application/cwl+yaml
 
-{
-  "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/convert/main/convert-stac-app.cwl",
-    "type": "application/cwl"
-  }
-}
+< convert-stac-app.cwl
 
 ###
 
 # @name getDeployStatus
-GET https://{{ades}}{{deployStatus}} HTTP/1.1
-Authorization: Bearer {{idToken}}
+GET {{deployStatus}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
 # @name getProcessDetails
-GET https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2 HTTP/1.1
-Authorization: Bearer {{idToken}}
-Accept: application/json
-
-###
-
-# @name deleteProcess
-DELETE https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2 HTTP/1.1
-Authorization: Bearer {{idToken}}
+GET {{scheme}}://{{ades}}/{{username}}/ogc-api/processes/convert-stac HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
 # @name executeProcess
-POST https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2/execution HTTP/1.1
-Authorization: Bearer {{idToken}}
+POST {{scheme}}://{{ades}}/{{username}}/ogc-api/processes/convert-stac/execution HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 Content-Type: application/json
 Prefer: respond-async
@@ -82,36 +80,60 @@ Prefer: respond-async
 {
   "inputs": {
       "fn": "resize",
-      "stac":  "https://raw.githubusercontent.com/EOEPCA/convert/main/stac/catalog.json",
+      "stac":  "https://raw.githubusercontent.com/EOEPCA/convert/main/stac/eoepca-logo.json",
       "size": "50%"
-  },
-  "response":"raw"
+  }
 }
 
 ###
 
 # @name getExecuteStatus
-GET https://{{ades}}{{executeStatus}} HTTP/1.1
-Authorization: Bearer {{idToken}}
+GET {{executeStatus}} HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
 # @name getProcessingResults
-GET https://{{ades}}{{executeStatus}}/result HTTP/1.1
-Authorization: Bearer {{idToken}}
+GET {{executeStatus}}/results HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
 # @name undeployProcess
-DELETE https://{{ades}}/{{user}}/wps3/processes/convert-stac-0_1_2 HTTP/1.1
-Authorization: Bearer {{idToken}}
+DELETE {{scheme}}://{{ades}}/{{username}}/ogc-api/processes/convert-stac HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ###
 
 # @name listJobs
-GET https://{{ades}}/{{user}}/wps3/jobs HTTP/1.1
-Authorization: Bearer {{idToken}}
+GET {{scheme}}://{{ades}}/{{username}}/ogc-api/jobs HTTP/1.1
+Authorization: Bearer {{accessToken}}
 Accept: application/json
+
+###
+
+# @name deployProcessCWL
+POST {{scheme}}://{{ades}}/{{username}}/ogc-api/processes HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+Content-Type: application/cwl+yaml
+
+< convert-stac-app.cwl
+
+###
+
+# @name deployProcessJson
+POST {{scheme}}://{{ades}}/{{username}}/ogc-api/processes HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "executionUnit": {
+    "href": "https://github.com/EOEPCA/deployment-guide/blob/main/deploy/samples/requests/processing/convert-stac-app.cwl",
+    "type": "application/cwl"
+  }
+}
