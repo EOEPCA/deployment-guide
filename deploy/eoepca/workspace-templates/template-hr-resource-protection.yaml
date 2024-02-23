@@ -7,7 +7,7 @@ spec:
   chart:
     spec:
       chart: identity-gatekeeper
-      version: 1.0.10
+      version: 1.0.11
       sourceRef:
         kind: HelmRepository
         name: eoepca
@@ -15,7 +15,7 @@ spec:
   values:
     global:
       default_owner: {{ default_owner }} # NOTE: do not remove, we need to store this here for redeploys
-    nameOverride: resource-protection
+    fullnameOverride: resource-protection
     config:
       client-id: {{ workspace_name }}
       discovery-url: ${http_scheme}://identity.keycloak.${domain}/realms/master

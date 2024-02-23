@@ -96,13 +96,13 @@ deployProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} registration-api-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.10
+      --version 1.0.11
   fi
 }
 
 serviceProtectionValues() {
   cat - <<EOF
-nameOverride: registration-api-protection
+fullnameOverride: registration-api-protection
 config:
   client-id: registration-api
   discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master

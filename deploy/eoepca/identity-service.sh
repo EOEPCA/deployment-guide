@@ -24,7 +24,7 @@ main() {
     values | helm ${ACTION_HELM} identity-service identity-service -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.93
+      --version 1.0.94
 
     createIdentityApiClient
     createTestUsers
@@ -33,9 +33,6 @@ main() {
 
 values() {
   cat - <<EOF
-volumeClaim:
-  name: eoepca-userman-pvc
-  create: false
 identity-keycloak:
   # Values for secret 'identity-keycloak'
   secrets:
@@ -92,24 +89,18 @@ identity-api:
       - name: LOG_LEVEL
         value: DEBUG
 identity-api-gatekeeper:
-  nameOverride: identity-api-protection
   config:
     client-id: identity-api
     discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
     cookie-domain: ${domain}
   targetService:
     host: identity-api-protected.${domain}
-    name: identity-api
-    port:
-      number: 8080
-  # Values for secret 'um-identity-service-identity-api-protection'
+  # Values for secret 'identity-api-protection'
   secrets:
     # Note - if ommitted, these can instead be set by creating the secret independently.
     clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
     encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
   ingress:
-    enabled: true
-    className: nginx
     annotations:
       ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
       nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"

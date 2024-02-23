@@ -183,13 +183,13 @@ deployProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} zoo-project-dru-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.10
+      --version 1.0.11
   fi
 }
 
 serviceProtectionValues() {
   cat - <<EOF
-nameOverride: zoo-project-dru-protection
+fullnameOverride: zoo-project-dru-protection
 config:
   client-id: ades
   discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master

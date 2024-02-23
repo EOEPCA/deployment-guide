@@ -185,13 +185,13 @@ deployProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} workspace-api-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.10
+      --version 1.0.11
   fi
 }
 
 serviceProtectionValues() {
   cat - <<EOF
-nameOverride: workspace-api-protection
+fullnameOverride: workspace-api-protection
 config:
   client-id: workspace-api
   discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
