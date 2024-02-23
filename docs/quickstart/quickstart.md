@@ -1,6 +1,7 @@
 # Quick Start
 
-The deployment of the EOEPCA components and the supporting Kubernetes cluster is described in the sections [**Prepare Cluster**](../cluster/prerequisite-tooling.md) and [**Deploy EOEPCA Components**](../eoepca/persistence.md). These sections should be consulted for more detailed information.
+!!! note
+    The deployment of the EOEPCA components and the supporting Kubernetes cluster is described in the sections [**Prepare Cluster**](../cluster/prerequisite-tooling.md) and [**Deploy EOEPCA Components**](../eoepca/persistence.md). These sections should be consulted for more detailed information.
 
 ## Scripted Deployment
 

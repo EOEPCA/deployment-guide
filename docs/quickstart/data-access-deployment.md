@@ -1,5 +1,7 @@
 # Data Access Deployment
 
+## Overview
+
 A deployment wrapper script has been prepared for a 'data access' deployment - that is focused on the Resource Catalogue and Data Access services.
 
 The script [`deploy/data-access/data-access`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/data-access/data-access) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/data-access/data-access-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/data-access/data-access-options).
@@ -24,9 +26,9 @@ Deployment is initiated by invoking the script...
 ./deploy/data-access/data-access
 ```
 
-The Resource Catalogue is accessed at the endpoint `resource-catalogue-open.<domain>` - e.g. `resource-catalogue-open.192-168-49-2.nip.io`.
+The Resource Catalogue is accessed at the endpoint `resource-catalogue-open.<domain>` - e.g. [`resource-catalogue-open.192-168-49-2.nip.io`](http://resource-catalogue-open.192-168-49-2.nip.io/).
 
-The Data Access View Server is accessed at the endpoint `data-access-open.<domain>` - e.g. `data-access-open.192-168-49-2.nip.io`.
+The Data Access View Server is accessed at the endpoint `data-access-open.<domain>` - e.g. [`data-access-open.192-168-49-2.nip.io`](http://data-access-open.192-168-49-2.nip.io/).
 
 ## Data Harvesting
 

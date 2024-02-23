@@ -1,5 +1,7 @@
 # CREODIAS Deployment
 
+## Deployment
+
 Based upon our development experiences on CREODIAS, there is a wrapper script [`creodias`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/creodias/creodias) with particular customisations suited to the [CREODIAS](https://creodias.eu/) infrastructure and data offering. The customisations are expressed through [environment variables](scripted-deployment.md#environment-variables) that are captured in the file [`creodias-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/creodias/creodias-options).
 
 These scripts are examples that can be seen as a starting point, from which they can be adapted to your needs.
@@ -9,8 +11,7 @@ The CREODIAS deployment applies the following configuration:
 * Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
   _To configure an external-facing deployment with TLS protection, then see section [Public Deployment](scripted-deployment.md#public-deployment)_
 * No TLS for service ingress endpoints
-* Protected service endpoints requiring IAM authorization<br>
-  _See [Endpoint Protection](#endpoint-protection) below for further information_
+* Protected service endpoints requiring IAM authorization
 
 With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
 
@@ -26,14 +27,6 @@ Once the file `creodias-options` has been well populated for your environment, t
 ./deploy/creodias/creodias
 ```
 ...noting that this step is a customised version of that described in section [Deployment](scripted-deployment.md#deployment).
-
-## Endpoint Protection
-
-Similarly the script `creodias-protection` is a customised version of that described in section [Apply Protection](scripted-deployment.md#apply-protection). Once the main deployment has completed, then the [test users can be created](scripted-deployment.md#create-test-users), their IDs (`Inum`) set in script `creodias-protection`, and the resource protection can then be applied...
-
-```bash
-./deploy/creodias/creodias-protection
-```
 
 ## Harvest CREODIAS Data
 

@@ -1,5 +1,7 @@
 # Scripted Deployment
 
+## Overview
+
 The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory [`deployment-guide/deploy`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) of the source repository for this guide...
 
 ```bash
