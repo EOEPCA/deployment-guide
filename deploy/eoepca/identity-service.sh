@@ -64,26 +64,17 @@ identity-postgres:
   volumeClaim:
     name: eoepca-userman-pvc
 identity-api:
-  # Values for secret 'identity-api'
-  secrets:
-    # Note - if ommitted, these can instead be set by creating the secret independently.
-    adminPassword: "${IDENTITY_SERVICE_ADMIN_PASSWORD}"
-  ingress:
-    enabled: false  # ingress is provided by the associated gatekeeper instance
-  configMap:
-    # NOTE this can equally set via the AUTH_SERVER_URL env var (see below)
-    authServerUrl: "$(httpScheme)://identity.keycloak.${domain}"
   deployment:
-    # Config values that can be passed via env vars (defaults shown below)
+    # Config values that can be passed via env vars
     extraEnv:
-      # - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
-      #   value: http://localhost
+      - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
+        value: $(httpScheme)://identity.keycloak.${domain}
       - name: ADMIN_USERNAME
-        value: ${IDENTITY_SERVICE_ADMIN_USER}
-      # - name: ADMIN_PASSWORD  # see secrets.adminPassword instead
-      #   value: admin
+        value: "${IDENTITY_SERVICE_ADMIN_USER}"
+      - name: ADMIN_PASSWORD  # see secrets.adminPassword instead
+        value: "${IDENTITY_SERVICE_ADMIN_PASSWORD}"
       - name: REALM
-        value: ${IDENTITY_REALM}
+        value: "${IDENTITY_REALM}"
       # - name: VERSION
       #   value: v1.0.0
       - name: LOG_LEVEL
