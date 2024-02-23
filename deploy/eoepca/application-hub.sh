@@ -29,7 +29,7 @@ deployService() {
     serviceValues | helm ${ACTION_HELM} application-hub application-hub -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.54
+      --version 2.0.55
   fi
 }
 
@@ -50,8 +50,6 @@ ingress:
   clusterIssuer: "${TLS_CLUSTER_ISSUER}"
 
 jupyterhub:
-  ingress:
-    enabled: true
   fullnameOverride: "application-hub"
   hub:
     existingSecret: application-hub-secrets
