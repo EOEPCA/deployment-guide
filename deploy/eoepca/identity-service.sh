@@ -24,7 +24,7 @@ main() {
     values | helm ${ACTION_HELM} identity-service identity-service -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.94
+      --version 1.0.95
 
     createIdentityApiClient
     createTestUsers
