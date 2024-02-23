@@ -2,6 +2,9 @@
 
 The EOEPCA Reference Implementation has been developed with Kubernetes as its deployment target. The system components have been developed, deployed and tested using a cluster at version `v1.22.5`.
 
+!!! note
+    The [Scripted Deployment](../quickstart/scripted-deployment.md) assumes that `minikube` is installed, and creates a minikube cluster under the profile `eoepca`.
+
 ## Rancher Kubernetes Engine (RKE)
 
 The development, integration and test clusters have been established using [Rancher Kubernetes Engine (RKE)](https://rancher.com/products/rke) at version `v1.22.5`.
