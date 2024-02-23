@@ -1,4 +1,4 @@
-# Resource Protection
+# Resource Protection (Gluu)
 
 EOEPCA defines _Building Blocks_ within a micro-service architecture. The services are subject to protection within an _Identity and Access Management (IAM)_ approach that includes:
 

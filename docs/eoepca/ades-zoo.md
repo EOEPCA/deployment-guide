@@ -278,7 +278,7 @@ ingress:
     secretName: zoo-open-tls
 ```
 
-The above example assumes that TLS should be enabled via Letsencrypt as certificate provider - see section [Letsencrypt Certificates](../../../cluster/cluster-prerequisites/#letsencrypt-certificates).
+The above example assumes that TLS should be enabled via Letsencrypt as certificate provider - see section [Letsencrypt Certificates](../cluster/cluster-prerequisites.md#letsencrypt-certificates).
 
 ### Persistence
 
@@ -324,7 +324,11 @@ iam:
 
 ## Protection
 
-As described in [section Resource Protection](resource-protection.md), the `resource-guard` component can be inserted into the request path of the `zoo-project-dru` service to provide access authorization decisions
+zzz
+
+## Protection OLD
+
+As described in [section Resource Protection](resource-protection-gluu.md), the `resource-guard` component can be inserted into the request path of the `zoo-project-dru` service to provide access authorization decisions
 
 ```bash
 helm install --version 1.3.3 --values zoo-guard-values.yaml \
@@ -429,7 +433,7 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection.md#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection-gluu.md#client-registration)...
 ```bash
 ./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
@@ -443,7 +447,7 @@ The `zoo-project-dru` service provides a mutil-user aware set of service interfa
 
 ## Usage Samples
 
-See the [Example Requests](../../quickstart/processing-deployment/#example-requests) in the [Processing Deployment](../../quickstart/processing-deployment) for sample requests that cans be used to test your deployment, and to learn usage of the OGC API Processes.
+See the [Example Requests](../quickstart/processing-deployment.md#example-requests) in the [Processing Deployment](../quickstart/processing-deployment.md) for sample requests that cans be used to test your deployment, and to learn usage of the OGC API Processes.
 
 ## Swagger UI (OpenAPI)
 

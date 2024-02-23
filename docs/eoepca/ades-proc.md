@@ -5,7 +5,7 @@
 </div>
 
 !!! note
-    With EOEPCA release 1.4, the `proc-ades` implementation has been deprecated, in favour of the new `zoo-project-dru` - see [ZOO-Project DRU](../ades-zoo).
+    With EOEPCA release 1.4, the `proc-ades` implementation has been deprecated, in favour of the new `zoo-project-dru` - see [ZOO-Project DRU](ades-zoo.md).
 
 The _ADES_ provides a platform-hosted execution engine through which users can initiate parameterised processing jobs using applications made available within the platform - supporting the efficient execution of the processing 'close to the data'. Users can deploy specific 'applications' to the ADES, which may be their own applications, or those published by other platform users.
 
@@ -28,7 +28,7 @@ At minimum, values for the following attributes should be specified:
 * Details of the _S3 Object Store_ for stage-out of processing results
 * Dynamic provisioning _StorageClass_ of `ReadWriteMany` storage
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the ADES will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the ADES will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection-gluu.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
 
 **Example `ades-values.yaml`...**
 
@@ -138,7 +138,7 @@ The value `resourceManagerWorkspacePrefix` must be consistent with that [configu
 
 ## Protection
 
-As described in [section Resource Protection](resource-protection.md), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
+As described in [section Resource Protection](resource-protection-gluu.md), the `resource-guard` component can be inserted into the request path of the ADES service to provide access authorization decisions
 
 ```bash
 helm install --version 1.3.1 --values ades-guard-values.yaml \
@@ -243,7 +243,7 @@ data:
   client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
 ```
 
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection.md#client-registration)...
+The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection-gluu.md#client-registration)...
 ```bash
 ./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
 ```
@@ -253,8 +253,8 @@ The client credentials are obtained by registration of a client at the login ser
 This section includes some sample requests to test the deployed ADES.
 
 !!! note
-    1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](resource-protection.md)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
-       See section [User ID Token](resource-protection.md#user-id-token) for more details.
+    1. It assumed that the ADES is subject to access protection (ref. [Resource Protection](resource-protection-gluu.md)), in which case a _User ID Token_ must be provided with the request - typically in the HTTP header, such as `Authorization: Bearer` or `X-User-Id`.<br>
+       See section [User ID Token](resource-protection-gluu.md#user-id-token) for more details.
     2. The samples assume a user `eric`
     3. The `snuggs` application is used in the example below. _See also [Application Package Example](#application-package-example)._
 

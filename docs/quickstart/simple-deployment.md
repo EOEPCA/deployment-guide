@@ -10,7 +10,7 @@ The simple deployment applies the following configuration:
   _To configure an external-facing deployment with TLS protection, then see section [Public Deployment](scripted-deployment.md#public-deployment)_
 * No TLS for service ingress endpoints
 * Configuration of 'open' interfaces - i.e. service/API endpoints that are not protected and can accessed without authentication. This facilitates experimentation with the services
-* Configuration of ADES stage-out to a local instance of `minio`, on the assumption that access to CREODIAS buckets for stage-out (via Workspace) is not an option
+* Configuration of ADES stage-out to a local instance of `minio`, to avoid the need to create a Workspace for each user
 
 ## Initiate Deployment
 
@@ -21,11 +21,3 @@ Deployment is initiated by invoking the script...
 ```
 
 See section [Deployment](scripted-deployment.md#deployment) for more details regarding the outcome of the scripted deployment.
-
-## Protection
-
-See section [Protection](scripted-deployment.md#protection) for more details regarding the protection of the deployed services - which, for the simple deployment, is performed via the script [`deploy/simple/simple-protection`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/simple/simple-protection)...
-
-```
-./deploy/simple/simple-protection
-```

@@ -21,14 +21,12 @@ The deployment follows these broad steps:
   Tailoring of deployment options.
 * **Deployment**<br>
   Creation of cluster and deployment of eoepca services.
-* **Protection**<br>
-  Application of protection for authorized access to services.
-
-The Protection step is split from Deployment as there are some manual steps to be performed before the Protection can be applied.
+* **Manual Steps**<br>
+  Manual steps to be performed post-deployment.
 
 ## Configuration
 
-The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) is configured by some environment variables and command-line arguments.
+The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/eoepca/eoepca.sh) is configured by some environment variables and command-line arguments.
 
 ### Environment Variables
 
@@ -46,7 +44,7 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **USE_METALLB** | Enable use of minikube's built-in load-balancer.<br>The load-balancer can be used to facilitate exposing services publicly. However, the same can be achieved using minikube's built-in ingress-controller. Therefore, this option is suppressed by default. | `false`
     **USE_INGRESS_NGINX_HELM** | Install the ingress-nginx controller using the published helm chart, rather than relying upon the version that is built-in to minikube. By default we prefer the version that is built in to minikube.  | `false`
     **USE_INGRESS_NGINX_LOADBALANCER** | Patch the built-in minikube nginx-ingress-controller to offer a service of type `LoadBalancer`, rather than the default `NodePort`. It was initially thought that this would be necessary to achieve public access to the ingress services - but was subsequently found that the default `NodePort` configuration of the ingress-controller was sufficient. This option is left in case it proves useful.<br>Only applicable for `USE_INGRESS_NGINX_HELM=false` (i.e. when using the minikube built-in ) | `false`
-    **OPEN_INGRESS** | Create 'open' ingress endpoints that are not subject to authorization protection. For a secure system the open endpoints should be disabled (`false`) and access to resource should be protected via [ingress that apply protection](../eoepca/resource-protection.md) | `false`
+    **OPEN_INGRESS** | Create 'open' ingress endpoints that are not subject to authorization protection. For a secure system the open endpoints should be disabled (`false`) and access to resource should be protected via [ingress that apply protection](../eoepca/resource-protection-keycloak.md) | `false`
     **USE_TLS** | Indicates whether TLS will be configured for service `Ingress` rules.<br>If not (i.e. `USE_TLS=false`), then the ingress-controller is configured to disable `ssl-redirect`, and `TLS_CLUSTER_ISSUER=notls` is set. | `true`
     **TLS_CLUSTER_ISSUER** | The name of the ClusterIssuer to satisfy ingress tls certificates.<br>Out-of-the-box _ClusterIssuer_ instances are configured in the file `deploy/cluster/letsencrypt.sh`. | `letsencrypt-staging`
     **IDENTITY_SERVICE_DEFAULT_SECRET** | Default secret that is used by exception for other Identity Service credentials | `changeme`
@@ -75,7 +73,7 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
 The eoepca.sh script is further configured via command-line arguments...
 
 ```bash
-eoepca.sh <action> <cluster-name> <public-ip> <domain>
+eoepca.sh <action> <cluster-name> <domain> <public-ip>
 ```
 
 ??? example "`eoepca.sh` Command-line Arguments"
@@ -83,8 +81,8 @@ eoepca.sh <action> <cluster-name> <public-ip> <domain>
     -------- | ----------- | -------
     **action** | Action to perform: `apply` \| `delete` \| `template`.<br>`apply` makes the deployment<br>`delete` removes the deployment<br>`template` outputs generated kubernetes yaml to stdout | `apply`
     **cluster-name** | The name of the minikube 'profile' for the created minikube cluster | `eoepca`
-    **public-ip** | The public IP address through which the deployment is exposed via the ingress-controller.<br>By default, the value is deduced from the assigned cluster minikube IP address - ref. command `minikube ip`. | `<minikube-ip>`
     **domain** | The DNS domain name through which the deployment is accessed. Forms the stem for all service hostnames in the ingress rules - i.e. `<service-name>.<domain>`.<br>By default, the value is deduced from the assigned cluster minikube IP address, using `nip.io` to establish a DNS lookup - i.e. `<minikube ip>.nip.io`. | `<minikube ip>.nip.io`
+    **public-ip** | The public IP address through which the deployment is exposed via the ingress-controller.<br>By default, the value is deduced from the assigned cluster minikube IP address - ref. command `minikube ip`. | `<minikube-ip>`
 
 ### Public Deployment
 
@@ -92,10 +90,10 @@ For simplicity, the out-of-the-box scripts assume a 'private' deployment - with 
 
 In the case that an external-facing public deployment is desired, then the following configuration selections should be made:
 
-* `public_ip` - set to the public IP address through which the deployment is exposed via the ingress-controller<br>
-  _i.e. the IP address that is assigned to the ingress controller service of type LoadBalancer_
 * `domain` - set to the domain (as per DNS records) for your deployment<br>
   _Note that the EOEPCA components typically configure their ingress with hostname prefixes applied to this `domain`. Thus, it is necessary that the DNS record for the domain is established as a wildcard record - i.e. `*.<domain>`_
+* `public_ip` - set to the public IP address through which the deployment is exposed via the ingress-controller<br>
+  _i.e. the IP address that is assigned to the ingress controller service of type LoadBalancer_
 * `USE_TLS=true` - to enable configuration of TLS endpoints in each component service ingress
 * `TLS_CLUSTER_ISSUER=<issuer>` - should be configured ~ e.g. using the `letsencrypt-production` or `letsencrypt-staging` (testing only) _Cluster Issuer_ that are configured by the scripted deployment
 
@@ -168,15 +166,19 @@ The protection of resource server endpoints is applied during the deployment of 
 
 This protection can be disabled via the environment variables `REQUIRE_XXX_PROTECTION` - e.g. `REQUIRE_ADES_PROTECTION=false`.
 
+!!! note
+    By default, if `OPEN_INGRESS` is set `true` then `PROTECTION` will be disabled (`false`) unless overridden via the `REQUIRE_XXX_PROTECTION` variables.
+
 ## Test Users
 
-The deployment creates in the Identity Service the test users: `eric`, `bob`, `alice`.
+The deployment creates (in the Keycloak Identity Service) the test users: `eric`, `bob`, `alice`.
 
-NOTE that this does NOT create the workspace for each of these users - which must be performed via the Workspace API.
+!!! note
+    This does NOT create the workspace for each of these users - which must be performed via the Workspace API.
 
 ## User Workspace Creation
 
-The protection steps created the test users `eric`, `bob` and `alice`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../eoepca/workspace.md).
+The deployment created the test users `eric`, `bob` and `alice`. For completeness we use the Workspace API to create their user workspaces, which hold their personal resources (data, processing results, etc.) within the platform - see [Workspace](../eoepca/workspace.md).
 
 ### Using Workspace Swagger UI
 
@@ -188,10 +190,10 @@ Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs`. Worksp
 ```json
 {
   "preferred_name": "eric",
-  "default_owner": "d95b0c2b-ea74-4b3f-9c6a-85198dec974d"
+  "default_owner": "eric"
 }
 ```
-...where the `default_owner` is the user ID (`Inum`) for the user - thus protecting the created workspace for the identified user.
+...where the `default_owner` is the ID for the user in Keycloak - thus protecting the created workspace for the identified user.
 
 ### Using `curl`
 
@@ -200,40 +202,39 @@ The same can be achieved with a straight http request, for example using `curl`.
 ```bash
 curl -X 'POST' \
   'https://workspace-api.192-168-49-2.nip.io/workspaces' \
-  -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
-  -H 'X-User-Id: <admin-id-token>' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer <admin-access-token>' \
   -d '{
   "preferred_name": "<workspace-name>",
-  "default_owner": "<user-inum>"
+  "default_owner": "<user-id>"
 }'
 ```
 
 Values must be provided for:
 
-* `admin-id-token` - User ID token for the admin user
+* `admin-access-token` - Access Token for the admin user
 * `workspace-name` - name of the workspace, typically the username
-* `user-inum` - the ID of the user for which the created workspace will be protected
+* `user-id` - the ID of the user for which the created workspace will be protected, typically the username
 
-The ID token for the `admin` user can be obtained with a call to the token endpoint of the Login Service - supplying the credentials for the `admin` user and the pre-registered client...
+The Access Token for the `admin` user can be obtained with a call to the token endpoint of the Identity Service - supplying the credentials for the `admin` user and the pre-registered client...
 
 ```bash
-curl -L -X POST 'https://auth.<domain>/oxauth/restv1/token' \
+curl -L -X POST 'https://identity.keycloak.<domain>/realms/master/protocol/openid-connect/token' \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  --data-urlencode 'scope=openid user_name is_operator' \
+  --data-urlencode 'scope=openid profile email' \
   --data-urlencode 'grant_type=password' \
   --data-urlencode 'username=admin' \
   --data-urlencode 'password=<admin-password>' \
-  --data-urlencode 'client_id=<client-id>' \
-  --data-urlencode 'client_secret=<client-secret>'
+  --data-urlencode 'client_id=admin-cli'
 ```
 
-A json response is returned, in which the field `id_token` provides the user ID token for the `admin` user.
+A json response is returned, in which the field `access_token` provides the Access Token for the `admin` user.
 
 ### Using `create-workspace` helper script
 
-As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
 git clone git@github.com:EOEPCA/deployment-guide
@@ -243,19 +244,45 @@ cd deployment-guide
 The `create-workspace` helper script requires some command-line arguments...
 
 ```
-Usage:
-  create-workspace <domain> <user> <user-inum> [<client-id> <client-secret>]
+$ ./deploy/bin/create-workspace -h
+
+Create a new User Workspace.
+create-workspace -h | -w {workspace_api} -a {auth_server} -r {realm} -c {client} -u {admin-username} -p {admin-password} -O {owner} -W {workspace-name}
+
+where:
+    -h  show help message
+    -w  workspace-api service url (default: http://workspace-api.192-168-49-2.nip.io)
+    -a  authorization server url (default: http://identity.keycloak.192-168-49-2.nip.io)
+    -r  realm within Keycloak (default: master)
+    -u  username used for authentication (default: admin)
+    -p  password used for authentication (default: changeme)
+    -c  client id of the bootstrap client used in the create request (default: admin-cli)
+    -O  user ID of the 'owner' of the new workspace (default: workspace(-W))
+    -W  name of the workspace to create (default: owner(-O))
 ```
 
-For example...
+Most of the arguments have default values that are aligned to the defaults of the scripted deployment.<br>
+At minimum either `-O owner` or `-W workspace` must be specified.
+
+For example (assuming defaults)...
 
 ```bash
-./deploy/bin/create-workspace 192-168-49-2.nip.io eric d95b0c2b-ea74-4b3f-9c6a-85198dec974d
+./deploy/bin/create-workspace -O eric
 ```
 
-The script prompts for the password of the `admin` user.
+For example (all arguments)...
 
-By default `<client-id>` and `<client-secret>` are read from the `client.yaml` file that is created by the deployment script, which auto-registers a Login Service client. Thus, these args can be ommited to use the default client credentials.
+```bash
+./deploy/bin/create-workspace 
+  -w http://workspace-api.192-168-49-2.nip.io \
+  -a http://identity.keycloak.192-168-49-2.nip.io \
+  -r master \
+  -u admin \
+  -p changeme \
+  -c admin-cli \
+  -O bob \
+  -W bob
+```
 
 ## Clean-up
 

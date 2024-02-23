@@ -123,7 +123,7 @@ nodeSelector:
 
 The Application Hub requires an OIDC client to registered with the Login Service in order to enable user identity integration. The client can be created via the login service web interface - e.g. [https://auth.192-168-49-2.nip.io](https://auth.192-168-49-2.nip.io).
 
-In addition there is a helper script that can be used to create a basic client and obtain the credentials - using an approach that it similar to that described for [Resource Protection](resource-protection.md#client-registration)...
+In addition there is a helper script that can be used to create a basic client and obtain the credentials - using an approach that it similar to that described for [Resource Protection](resource-protection-gluu.md#client-registration)...
 ```bash
 ./deploy/bin/register-client auth.192-168-49-2.nip.io "Application Hub" | tee client-apphub.yaml
 ```

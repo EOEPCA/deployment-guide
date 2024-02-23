@@ -27,12 +27,12 @@ nav:
       - Identity & Access Management:
         - IAM Overview: eoepca/iam-overview.md
         - Keycloak Solution (NEW):
-          - Keycloak: eoepca/keycloak.md
           - Identity Service: eoepca/identity-service.md
+          - Resource Protection: eoepca/resource-protection-keycloak.md
         - Gluu Solution (deprecated):
           - Login Service: eoepca/login-service.md
           - Policy Decision Point: eoepca/pdp.md
-          - Resource Protection: eoepca/resource-protection.md
+          - Resource Protection: eoepca/resource-protection-gluu.md
         - User Profile: eoepca/user-profile.md
       - ADES (Processing):
         - ZOO-Project DRU --NEW--: eoepca/ades-zoo.md
