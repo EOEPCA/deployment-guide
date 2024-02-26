@@ -43,8 +43,6 @@ deployService() {
       --repo https://zoo-project.github.io/charts/ \
       --namespace "${NAMESPACE}" --create-namespace \
       --version 0.2.6
-    # serviceValues | helm ${ACTION_HELM} zoo-project-dru /home/rconway/develop/EOEPCA/zoo-project-charts/zoo-project-dru -f - \
-    #   --namespace "${NAMESPACE}" --create-namespace
   fi
 }
 

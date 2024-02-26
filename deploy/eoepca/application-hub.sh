@@ -84,23 +84,13 @@ jupyterhub:
               key: OAUTH_CLIENT_SECRET
 
     image:
-      #name: jupyterhub/k8s-hub
-      #tag: "2.0.0"
       # name: eoepca/application-hub
       # tag: "1.2.0"
       pullPolicy: Always
-      pullSecrets: []
+      # pullSecrets: []
 
     db:
-      type: sqlite-pvc
-      upgrade:
       pvc:
-        annotations: {}
-        selector: {}
-        accessModes:
-          - ReadWriteOnce
-        storage: 1Gi
-        subPath:
         storageClassName: ${APPLICATION_HUB_STORAGE}
   
   singleuser:

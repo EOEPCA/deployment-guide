@@ -13,7 +13,7 @@ The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [
 The chart is configured via values that are fully documented in the [README for the `um-workspace-api` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme).
 
 ```bash
-helm install --version 1.3.5 --values workspace-api-values.yaml \
+helm install --version 1.4.2 --values workspace-api-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   workspace-api rm-workspace-api
 ```
@@ -58,18 +58,21 @@ s3Region: "RegionOne"
 harborUrl: "https://harbor.192-168-49-2.nip.io"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor"
-umaClientSecretName: "resman-client"
-umaClientSecretNamespace: "rm"
 workspaceChartsConfigMap: "workspace-charts"
 bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
-pepBaseUrl: "http://workspace-api-pep:5576/resources"
-autoProtectionEnabled: True
+keycloakIntegration:
+  enabled: true
+  keycloakUrl: "https://identity.keycloak.192-168-49-2.nip.io"
+  realm: "master"
+  identityApiUrl: "https://identity-api-protected.192-168-49-2.nip.io"
+  workspaceApiIamClientId: "workspace-api"
+  defaultIamClientSecret: "changeme"
 ```
 
 !!! note
     * The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the `harborXXX` values above.<br>See section [Container Registry](container-registry.md).
     * The password for the harbor `admin` user must be created as described in the section [Harbor `admin` Password](#harbor-admin-password).
-    * If the workspace-api is access protected (ref. [section Protection](#protection)), then it is recommended to enable `autoProtectionEnabled` and to specifiy the `pepBaseUrl`.
+    * The `keycloakIntegration` allows the Workspace API to apply protecion (for the specified workspace owner) to the services within newly created workspaces.
     * The workspace-api initiates the creation of a storage 'bucket' for each workspace - the actual bucket creation being abstracted via a webhook - the URL of which is specified in the value `bucketEndpointUrl`.<br>
       _See section [Bucket Creation Webhook](#bucket-creation-webhook) for details._
 
@@ -102,7 +105,7 @@ The default ConfigMap that is included with this guide contains the following te
 
 * **Data Access**: `template-hr-data-access.yaml`
 * **Resource Catalogue**: `template-hr-resource-catalogue.yaml`
-* **Protection**: `template-hr-resource-guard.yaml`
+* **Protection**: `template-hr-resource-protection.yaml`
 
 Each of these templates is expressed as a flux `HelmRelease` object that describes the helm chart and values required to deploy the service.
 
@@ -160,21 +163,21 @@ data:
             namespace: rm
       values:
         ...
-  template-hr-resource-guard.yaml: |
+  template-hr-resource-protection.yaml: |
     apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease
     metadata:
-      name: resource-guard
+      name: resource-protection
     spec:
       interval: 5m
       chart:
         spec:
-          chart: resource-guard
-          version: 1.3.1
+          chart: identity-gatekeeper
+          version: 1.0.11
           sourceRef:
             kind: HelmRepository
             name: eoepca
-            namespace: rm
+            namespace: ${NAMESPACE}
       values:
         ...
   template-cm-aws-config.yaml: |
@@ -329,8 +332,8 @@ For example, with path protection for the `admin` user...
 The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192-168-49-2.nip.io/.<br>
 See the [Swagger Docs - /docs](https://workspace-api.192-168-49-2.nip.io/docs).
 
-The Workspace API is best used in combination with the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal) test aide, which can be used to establish a login sesssion in the browser to the benefit of the Workspace API swagger UI.<br>
-See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) for details regarding deployment/configuration of the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal).
+!!! note
+    If the Workspace API has been protected ([via Gatekeeper with Keycloak](./identity-service.md#protection-of-resources)), then requests must be supported by an `access_token` carried in the HTTP header `Authorozation: Bearer <token>`. This diminishes the utility of the swagger UI.
 
 ### Additional Information
 

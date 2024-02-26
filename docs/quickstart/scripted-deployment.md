@@ -185,9 +185,10 @@ The deployment created the test users `eric`, `bob` and `alice`. For completenes
 
 ### Using Workspace Swagger UI
 
-The Workspace API provides a Swagger UI that facilitates interaction with the API - at the URL `https://workspace-api.<domain>/docs#`. Access to The Workspace API is protected, such that the necessary access tokens must be supplied in requests, which is most easily achieved by logging in via the 'portal'.
+The Workspace API provides a Swagger UI that facilitates interaction with the API - at the URL `https://workspace-api.<domain>/docs#`.
 
-The portal is accessed at `https://portal.<domain>/`. It is a rudimentary web service that facilitates establishing the appropriate tokens in the user's browser context. Login to the portal as the `admin` user, using the configured credentials.
+!!! note
+    If the Workspace API has been protected ([via Gatekeeper with Keycloak](../eoepca/identity-service.md#protection-of-resources)), then requests must be supported by an `access_token` carried in the HTTP header `Authorozation: Bearer <token>`. This diminishes the utility of the swagger UI.
 
 Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs`. Workspaces are created using `POST  /workspaces` **(Create Workspace)**. Expand the node and select `Try it out`. Complete the request body, such as...
 ```json

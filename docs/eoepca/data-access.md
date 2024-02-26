@@ -12,7 +12,7 @@ The chart is configured via values that are supplied with the instantiation of t
 * Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
 
 ```bash
-helm install --version 1.3.1 --values data-access-values.yaml \
+helm install --version 1.4.0 --values data-access-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   data-access data-access
 ```
@@ -39,6 +39,7 @@ global:
   env:
     REGISTRAR_REPLACE: "true"
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
+    AWS_ENDPOINT_URL_S3: http://minio.192-168-49-2.nip.io
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh

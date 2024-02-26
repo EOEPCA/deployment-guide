@@ -9,7 +9,7 @@ The _Application Hub_ is deployed via the `application-hub` helm chart from the 
 The chart is configured via values, which are detailed in the [default values file for the chart](https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/values.yaml).
 
 ```bash
-helm install --version 2.0.49 --values application-hub-values.yaml \
+helm install --version 2.0.55 --values application-hub-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   application-hub application-hub
 ```
@@ -43,11 +43,9 @@ ingress:
     - secretName: applicationhub-tls
       hosts:
       - applicationhub.192-168-49-2.nip.io
-  clusterIssuer: "${TLS_CLUSTER_ISSUER}"
+  clusterIssuer: letsencrypt-production
 
 jupyterhub:
-  ingress:
-    enabled: true
   fullnameOverride: "application-hub"
   hub:
     existingSecret: application-hub-secrets
@@ -59,7 +57,7 @@ jupyterhub:
         OAUTH2_TOKEN_URL: https://auth.192-168-49-2.nip.io/oxauth/restv1/token
         OAUTH2_AUTHORIZE_URL: https://auth.192-168-49-2.nip.io/oxauth/restv1/authorize
         OAUTH_LOGOUT_REDIRECT_URL: "https://applicationhub.192-168-49-2.nip.io"
-        OAUTH2_USERNAME_KEY: "user_name"
+        OAUTH2_USERNAME_KEY: "preferred_username"
         STORAGE_CLASS: "standard"
         RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
@@ -82,21 +80,13 @@ jupyterhub:
               key: OAUTH_CLIENT_SECRET
 
     image:
-      name: eoepca/application-hub
-      tag: "1.0.0"
+      # name: eoepca/application-hub
+      # tag: "1.2.0"
       pullPolicy: Always
-      pullSecrets: []
+      # pullSecrets: []
 
     db:
-      type: sqlite-pvc
-      upgrade:
       pvc:
-        annotations: {}
-        selector: {}
-        accessModes:
-          - ReadWriteOnce
-        storage: 1Gi
-        subPath:
         storageClassName: standard
   
   singleuser:
@@ -118,55 +108,42 @@ nodeSelector:
   value: \"true\"
 ```
 
-
 ## Client and Credentials
 
-The Application Hub requires an OIDC client to registered with the Login Service in order to enable user identity integration. The client can be created via the login service web interface - e.g. [https://auth.192-168-49-2.nip.io](https://auth.192-168-49-2.nip.io).
+The Application Hub requires an OIDC client to be registered with the Identity Service (Keycloak) in order to enable user identity integration - ref. `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET`.
 
-In addition there is a helper script that can be used to create a basic client and obtain the credentials - using an approach that it similar to that described for [Resource Protection](resource-protection-gluu.md#client-registration)...
+This can be created with the `create-client` helper script, as descirbed in section [Client Registration](./resource-protection-keycloak.md#client-registration).
+
+For example...
+
 ```bash
-./deploy/bin/register-client auth.192-168-49-2.nip.io "Application Hub" | tee client-apphub.yaml
+../bin/create-client \
+  -a http://identity.keycloak.192-168-49-2.nip.io \
+  -i http://identity-api-protected.192-168-49-2.nip.io \
+  -r "master" \
+  -u "admin" \
+  -p "changeme" \
+  -c "admin-cli" \
+  --id=application-hub \
+  --name="Application Hub OIDC Client" \
+  --secret="changeme" \
+  --description="Client to be used by Application Hub for OIDC integration"
 ```
 
-This command creates the client and outputs the credentials (to file and stdout), which must then be applied in a Kubernetes secret that is expected by the Application Hub deployment...
+Corresponding to this client, a secret `application-hub-secrets` must be created (ref. value `jupyterhub.hub.existingSecret: application-hub-secrets`)...
 
 ```bash
 kubectl -n proc create secret generic application-hub-secrets \
   --from-literal=JUPYTERHUB_CRYPT_KEY="$(openssl rand -hex 32)" \
-  --from-literal=OAUTH_CLIENT_ID="$(cat client-apphub.yaml | grep client-id | cut -d\  -f2)" \
-  --from-literal=OAUTH_CLIENT_SECRET="$(cat client-apphub.yaml | grep client-secret | cut -d\  -f2)"
-```
-
-For example...
-
-```yaml
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: application-hub-secrets
-  namespace: proc
-data:
-  JUPYTERHUB_CRYPT_KEY: YjA4OGEyZGU3Mzg4ZWQxNmM1Zjg2Njc0YTA5MzlhNzI5YTY5NzU1NDJhYjYwZTllNWU2ZTZhYTQ5ZTc5ZDM5Zg==
-  OAUTH_CLIENT_ID: Y2NhNDNmM2ItODQyZC00NzNmLTk3Y2YtYWUxOTNkZWJhOWMx
-  OAUTH_CLIENT_SECRET: ZWFkYjk5NDQtOTRkYS00MTU3LTg1ZDgtNWJhMmJmODg5ZjE2
+  --from-literal=OAUTH_CLIENT_ID="application-hub" \
+  --from-literal=OAUTH_CLIENT_SECRET="changeme"
 ```
 
 ## Post-deployment Manual Steps
 
 The deployment of the Application Hub has been designed, as far as possible, to automate the configuration. However, there remain some steps that must be performed manually after the scripted deployment has completed...
 
-* [Configure OIDC Client](#oidc-client)
 * [Configure Groups and Users](#groups-and-users)
-
-### OIDC Client
-
-The client that is created by the script `./deploy/bin/register-client` (as per above) needs to be manually adjusted using the Web UI of the Login Service...
-
-* In a browser, navigate to the Login Service (Gluu) - https://auth.192-168-49-2.nip.io/ - and login as the `admin` user
-* Open `OpenID Connect -> Clients` and search for the client created earlier - `Application Hub`
-* Fix the setting `Authentication method for the Token Endpoint`  for the `ApplicationHub` - `client_secret_post` -> `client_secret_basic`
-* Save the update
 
 ### Groups and Users
 
@@ -176,6 +153,8 @@ The default helm chart has some built-in application launchers whose assignments
 * Login as the user eric (or bob) for admin access
 * Select the `Admin` menu (top of page)
 * Add groups `group-1`, `group-2`, `group-3` to ApplicationHub, and add users `eric`, `bob` to these groups
+
+This setup corresponds to the 'sample' configuration that is built=in to the help chart - see file [`config.yaml`](https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/files/hub/config.yml).
 
 ## Additional Information
 

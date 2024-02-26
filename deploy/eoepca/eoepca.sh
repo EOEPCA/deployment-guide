@@ -88,5 +88,5 @@ fi
 # eoepca portal (useful as a test tool)
 if [ "${REQUIRE_PORTAL}" = "true" ]; then
   echo -e "\nDeploy eoepca portal..."
-  ./eoepca.port.sh "${ACTION}" "${domain}"
+  ./eoepca-portal.sh "${ACTION}" "${domain}"
 fi

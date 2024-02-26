@@ -9,7 +9,7 @@ The _Registration API_ is deployed via the `rm-registration-api` helm chart from
 The chart is configured via values that are fully documented in the [README for the `rm-registration-api` chart](https://github.com/EOEPCA/helm-charts/blob/main/charts/rm-registration-api/README.md).
 
 ```bash
-helm install --version 1.3.0 --values registration-api-values.yaml \
+helm install --version 1.4.0 --values registration-api-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   registration-api rm-registration-api
 ```
@@ -29,11 +29,6 @@ Typically, values for the following attributes may be specified:
 
 ```yaml
 fullnameOverride: registration-api
-# image: # {}
-  # repository: eoepca/rm-registration-api
-  # pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  # tag: "1.3-dev1"
 
 ingress:
   enabled: false
