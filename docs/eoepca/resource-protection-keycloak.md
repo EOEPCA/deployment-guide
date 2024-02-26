@@ -48,8 +48,8 @@ targetService:
   name: myservice
   port:
     number: 80
-# Values for secret 'myservice-protection'
 secrets:
+  # Values for secret 'myservice-protection'
   # Note - if ommitted, these can instead be set by creating the secret independently.
   clientSecret: "changeme"
   encryptionKey: "changemechangeme"
@@ -72,7 +72,7 @@ ingress:
 
 Gatekeeper requires _Client Credentials_ for its interactions with the Keycloak `identity-service`. These credentials must be supplied by the secret named `<myservice>-protection`. The secret can be created directly by the helm chart - via the values `secrets.clientSecret` and `secrets.encryptionKey` - or perhaps more securely the secret can be created independently (e.g. via a `SealedSecret`).
 
-### Client Registration
+## Client Registration
 
 The Keycloak client can be created directly in the Keycloak admin console - e.g. via https://keycloak.myplatform.mydomain/admin.
 
@@ -132,9 +132,9 @@ For example...
   --resource="alice" --uris='/alice/*' --scopes=view --users="alice"
 ```
 
-# User Tokens
+## User Tokens
 
-Requests to resource server endpoints that are protected by Gatekeeper must carry an Access Token that has been obtained on behalf of the requesting user. The access_token is carried in the request header...
+Requests to resource server endpoints that are protected by Gatekeeper must carry an Access Token that has been obtained on behalf of the requesting user. The `access_token` is carried in the request header...
 
 ```http
 Authorization: Bearer <access_token>

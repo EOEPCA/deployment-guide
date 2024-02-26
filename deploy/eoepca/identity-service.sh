@@ -24,7 +24,7 @@ main() {
     values | helm ${ACTION_HELM} identity-service identity-service -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.95
+      --version 1.0.96
 
     createIdentityApiClient
     createTestUsers
@@ -34,8 +34,8 @@ main() {
 values() {
   cat - <<EOF
 identity-keycloak:
-  # Values for secret 'identity-keycloak'
   secrets:
+    # Values for secret 'identity-keycloak'
     # Note - if ommitted, these can instead be set by creating the secret independently.
     kcDbPassword: "${IDENTITY_POSTGRES_PASSWORD}"
     keycloakAdminPassword: "${IDENTITY_SERVICE_ADMIN_PASSWORD}"
@@ -56,14 +56,19 @@ identity-keycloak:
         hosts:
           - identity.keycloak.${domain}
 identity-postgres:
-  # Values for secret 'identity-postgres'
   secrets:
+    # Values for secret 'identity-postgres'
     # Note - if ommitted, these can instead be set by creating the secret independently.
     postgresPassword: "${IDENTITY_POSTGRES_PASSWORD}"
     pgPassword: "${IDENTITY_POSTGRES_PASSWORD}"
   volumeClaim:
     name: eoepca-userman-pvc
 identity-api:
+  secrets:
+    # Values for secret 'identity-api'
+    # Note - if ommitted, these can instead be set by creating the secret independently
+    # e.g. as a SealedSecret via GitOps.
+    adminPassword: "${IDENTITY_SERVICE_ADMIN_PASSWORD}"
   deployment:
     # Config values that can be passed via env vars
     extraEnv:
@@ -71,8 +76,6 @@ identity-api:
         value: $(httpScheme)://identity.keycloak.${domain}
       - name: ADMIN_USERNAME
         value: "${IDENTITY_SERVICE_ADMIN_USER}"
-      - name: ADMIN_PASSWORD  # see secrets.adminPassword instead
-        value: "${IDENTITY_SERVICE_ADMIN_PASSWORD}"
       - name: REALM
         value: "${IDENTITY_REALM}"
       # - name: VERSION
@@ -86,8 +89,8 @@ identity-api-gatekeeper:
     cookie-domain: ${domain}
   targetService:
     host: identity-api-protected.${domain}
-  # Values for secret 'identity-api-protection'
   secrets:
+    # Values for secret 'identity-api-protection'
     # Note - if ommitted, these can instead be set by creating the secret independently.
     clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
     encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"

@@ -56,8 +56,8 @@ The secret can either be created directly within the cluster, or can be created 
 
 ```yaml
 identity-keycloak:
-  # Values for secret 'identity-keycloak'
   secrets:
+    # Values for secret 'identity-keycloak'
     # Note - if ommitted, these can instead be set by creating the secret independently.
     kcDbPassword: "changeme"
     keycloakAdminPassword: "changeme"
@@ -100,8 +100,8 @@ The secret can either be created directly within the cluster, or can be created 
 
 ```yaml
 identity-postgres:
-  # Values for secret 'identity-postgres'
   secrets:
+    # Values for secret 'identity-postgres'
     # Note - if ommitted, these can instead be set by creating the secret independently.
     postgresPassword: "changeme"
     pgPassword: "changeme"
@@ -121,6 +121,35 @@ identity-postgres:
 
 ### identity-api
 
+#### Secrets
+
+The Identity API relies upon a secret `identity-api` that provides...
+
+* `ADMIN_PASSWORD`<br>
+  Admin password for Keycloak<br>
+  This should match the `KEYCLOAK_ADMIN_PASSWORD` setting for `identity-keycloak` (see above)
+
+The secret can either be created directly within the cluster, or can be created by the helm chart via values...
+
+```yaml
+identity-api:
+  secrets:
+    # Values for secret 'identity-api'
+    # Note - if ommitted, these can instead be set by creating the secret independently
+    # e.g. as a SealedSecret via GitOps.
+    adminPassword: "changeme"
+```
+
+!!! note
+    It is also possible to set the value of `ADMIN_PASSWORD` directly as an [environment variable](#environment-variables).<br>
+    In this case it is necessary to set the `secret` as optional...
+
+    ```
+    identity-api:
+      secrets:
+        optional: true
+    ```
+
 #### Environment Variables
 
 The Identity API service can be configured via environment variables as follows...
@@ -130,10 +159,6 @@ The Identity API service can be configured via environment variables as follows.
   Can also be set via value `configMap.authServerUrl`
 * `ADMIN_USERNAME`<br>
   Admin user for Keycloak
-* `ADMIN_PASSWORD`<br>
-  Admin password for Keycloak<br>
-  This should match the `KEYCLOAK_ADMIN_PASSWORD` setting for `identity-keycloak` (see above)
-  Can also be set via value `secrets.adminPassword`
 * `REALM`<br>
   The Keycloak realm
 
@@ -153,6 +178,26 @@ identity-api:
 ```
 
 ### identity-api-gatekeeper
+
+#### Secrets
+
+gatekeeper relies upon a secret `identity-api-protection` that provides...
+
+* `PROXY_CLIENT_SECRET`<br>
+  Password for the Keycloak client configured for use by this Gatekeeper instance - corresponding to `config.client-id`.
+* `PROXY_ENCRYPTION_KEY`<br>
+  Encryption Key used by Gatekeeper.
+
+The secret can either be created directly within the cluster, or can be created by the helm chart via values...
+
+```yaml
+identity-api-gatekeeper:
+  secrets:
+    # Values for secret 'identity-api-protection'
+    # Note - if ommitted, these can instead be set by creating the secret independently.
+    clientSecret: "changeme"
+    encryptionKey: "changemechangeme"
+```
 
 #### Configuration
 
@@ -381,5 +426,4 @@ Thus, the following settings are recommended to be updated following deployment.
 Additional information regarding the _Identity Service_ can be found at:
 
 * [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/identity-service)
-* [Wiki](https://github.com/EOEPCA/um-identity-service/wiki)
 * [GitHub Repository](https://github.com/EOEPCA/um-identity-service)
