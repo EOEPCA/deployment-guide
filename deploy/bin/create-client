@@ -310,11 +310,17 @@ configureDefaultResource() {
   createdClientId="$(jq -r --arg CLIENTID "${client_id}" '.[] | select(.clientId == $CLIENTID) | .id' <<<${response_body})"
 
   # Get resource ID
-  runcurl -a -d "Get Default Resource ID" -r 200 -- \
+  runcurl -a -d "Get Default Resource ID" -r "200 404" -- \
     -X GET \
     -H "Accept: application/json" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
 
+  # Catch the case that client has no resources (e.g. client for Application Hub)
+  if (( response_code == 404 )); then
+    echo "Client has no Default Resource - skipping..."
+    return
+  fi
+  
   defaultResourceId="$(jq -r '.[] | select(.name == "Default Resource") | ._id' <<<${response_body})"
 
   # Get resource details
@@ -351,12 +357,18 @@ summariseClient() {
   jq -r --arg CLIENTID "${client_id}" '.[] | select(.clientId == $CLIENTID)' <<<${response_body}
 
   # Get Resources...
-  runcurl -a -d "Get Client Resources" -r 200 -- \
+  runcurl -a -d "Get Client Resources" -r "200 404" -- \
     -X GET \
     -H "Accept: application/json" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
-  echo "Client Resources..."
-  jq <<<${response_body}
+
+  # Catch the case that client has no resources (e.g. client for Application Hub)
+  if (( response_code == 404 )); then
+    echo "Client has no resources"
+  else
+    echo "Client Resources..."
+    jq <<<${response_body}
+  fi
 }
 
 add_resource() {
