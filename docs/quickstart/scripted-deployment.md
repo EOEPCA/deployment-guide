@@ -126,6 +126,7 @@ See the building block specific pages...
 
 * **Identity Service:** [Token Lifespans](../eoepca/identity-service.md#token-lifespans)
 * **Application Hub:** [Post-deployment Manual Steps](../eoepca/application-hub.md#post-deployment-manual-steps)
+* **EOEPCA Portal**: [Disable Keycloak Client authentication](#eoepca-portal)
 
 ## Default Credentials
 
@@ -285,6 +286,62 @@ For example (all arguments)...
   -O bob \
   -W bob
 ```
+
+## EOEPCA Portal
+
+!!! Important
+    The eoepca-portal implementation expects a client that requires no client authentication. Thus, after using the `create-client` script, it is necessary to use the Keycloak Admin Console UI to edit the `eoepca-portal` client to set `Client authentication` to `Off`.
+
+The `eoepca-portal` is a simple web application that is used as a test aid. It's main purpose is to provide the ability to login, and so establish a session with appropriate browser cookies - which then allow authenticated access to other EOEPCA services such as the Workspace API, Identity API, etc.
+
+The portal is deployed via a helm chart...
+
+```bash
+helm install eoepca-portal eoepca-portal -f portal-values.yaml - \
+  --repo https://eoepca.github.io/helm-charts \
+  --namespace "demo" --create-namespace \
+  --version 1.0.11
+```
+
+The helm values must be tailored for your deployment.<br>
+For example...
+
+```yaml
+configMap:
+  identity_url: "http://identity.keycloak.192-168-49-2.nip.io"
+  realm: "master"
+  client_id: "eoepca-portal"
+  identity_api_url: "http://identity.api.192-168-49-2.nip.io"
+  ades_url: "http://zoo.192-168-49-2.nip.io/ogc-api/processes"
+  resource_catalogue_url: "http://resource-catalogue.192-168-49-2.nip.io"
+  data_access_url: "http://data-access.192-168-49-2.nip.io"
+  workspace_url: "http://workspace-api.192-168-49-2.nip.io"
+  workspace_docs_url: "http://workspace-api.192-168-49-2.nip.io/docs#"
+  images_registry_url: "http://harbor.192-168-49-2.nip.io"
+  dummy_service_url: "http://dummy-service-protected.192-168-49-2.nip.io"
+  access_token_name: "auth_user_id"
+  access_token_domain: ".192-168-49-2.nip.io"
+  refresh_token_name: "auth_refresh_token"
+  refresh_token_domain: ".192-168-49-2.nip.io"
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  hosts:
+    - host: eoepca-portal.192-168-49-2.nip.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: eoepca-portal-tls
+      hosts:
+        - eoepca-portal.192-168-49-2.nip.io
+```
+
+The setting `client_id: eoepca-portal` identifies a client that must be created in Keycloak - as described in section [`create-client` Helper Script](../eoepca/identity-service.md#create-client-helper-script).
 
 ## Clean-up
 

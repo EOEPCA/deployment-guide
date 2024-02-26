@@ -375,7 +375,10 @@ The client credentials are obtained by registration of a client at the login ser
 ### Workspace API Usage
 
 The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192-168-49-2.nip.io/.<br>
-See the [Swagger Docs](https://workspace-api.192-168-49-2.nip.io/docs).
+See the [Swagger Docs - /docs](https://workspace-api.192-168-49-2.nip.io/docs).
+
+The Workspace API is best used in combination with the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal) test aide, which can be used to establish a login sesssion in the browser to the benefit of the Workspace API swagger UI.<br>
+See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) for details regarding deployment/configuration of the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal).
 
 ### Additional Information
 

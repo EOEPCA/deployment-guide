@@ -360,6 +360,8 @@ The script interacts with Identity API and therefore requires admin authorizatio
 It accepts basic authentication with username and password with `-u` and `-p` parameters, respectively - or a bearer access token with `-t` parameter.
 
 To generate the access token needed to use the script, you can get it through the login in the eoepca portal, by accessing the cookies in the browser.<br>
+See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) for details regarding deployment/configuration of the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal).
+
 Or you can generate an access token using postman oauth2.0, as described in the Postman document [Requesting an OAuth 2.0 token](https://learning.postman.com/docs/sending-requests/authorization/oauth-20/#requesting-an-oauth-20-token).
 
 Script execution examples:
@@ -404,6 +406,9 @@ Script execution examples:
 Also, an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management.
 
 The API documentation can be found in its [Swagger UI](http://identity-api-protected.192-168-49-2.nip.io/docs) at the service endpoint - [http://identity-api-protected.192-168-49-2.nip.io/docs](http://identity-api-protected.192-168-49-2.nip.io/docs).
+
+The Identity API is best used in combination with the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal) test aide, which can be used to establish a login sesssion in the browser to the benefit of the Identity API swagger UI.<br>
+See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) for details regarding deployment/configuration of the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal).
 
 ## Token Lifespans
 

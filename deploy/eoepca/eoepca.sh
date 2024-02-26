@@ -84,3 +84,9 @@ if [ "${REQUIRE_HARBOR}" = "true" ]; then
   echo -e "\nDeploy harbor..."
   ./harbor.sh "${ACTION}" "${domain}"
 fi
+
+# eoepca portal (useful as a test tool)
+if [ "${REQUIRE_PORTAL}" = "true" ]; then
+  echo -e "\nDeploy eoepca portal..."
+  ./eoepca.port.sh "${ACTION}" "${domain}"
+fi
