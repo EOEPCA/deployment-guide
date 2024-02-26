@@ -172,26 +172,26 @@ inputs:
 outputs:
   StacCatalogUri:
     outputBinding:
-      outputEval: \${  return "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.process + "/catalog.json"; }
+      outputEval: ${  return "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.process + "/catalog.json"; }
     type: string
 baseCommand:
   - python
   - stageout.py
 arguments:
-  - \$( inputs.wf_outputs.path )
-  - \$( inputs.STAGEOUT_OUTPUT )
-  - \$( inputs.process )
-  - \$( inputs.collection_id )
+  - $( inputs.wf_outputs.path )
+  - $( inputs.STAGEOUT_OUTPUT )
+  - $( inputs.process )
+  - $( inputs.collection_id )
 requirements:
   DockerRequirement:
     dockerPull: ghcr.io/terradue/ogc-eo-application-package-hands-on/stage:1.3.2
   InlineJavascriptRequirement: {}
   EnvVarRequirement:
     envDef:
-      AWS_ACCESS_KEY_ID: \$( inputs.STAGEOUT_AWS_ACCESS_KEY_ID )
-      AWS_SECRET_ACCESS_KEY: \$( inputs.STAGEOUT_AWS_SECRET_ACCESS_KEY )
-      AWS_REGION: \$( inputs.STAGEOUT_AWS_REGION )
-      AWS_S3_ENDPOINT: \$( inputs.STAGEOUT_AWS_SERVICEURL )
+      AWS_ACCESS_KEY_ID: $( inputs.STAGEOUT_AWS_ACCESS_KEY_ID )
+      AWS_SECRET_ACCESS_KEY: $( inputs.STAGEOUT_AWS_SECRET_ACCESS_KEY )
+      AWS_REGION: $( inputs.STAGEOUT_AWS_REGION )
+      AWS_S3_ENDPOINT: $( inputs.STAGEOUT_AWS_SERVICEURL )
   InitialWorkDirRequirement:
     listing:
       - entryname: stageout.py
@@ -324,118 +324,77 @@ iam:
 
 ## Protection
 
-zzz
+As described in [section Resource Protection (Keycloak)](resource-protection-keycloak.md), the `identity-gatekeeper` component can be inserted into the request path of the `zoo-project-dru` service to provide access authorization decisions
 
-## Protection OLD
+### Gatekeeper
 
-As described in [section Resource Protection](resource-protection-gluu.md), the `resource-guard` component can be inserted into the request path of the `zoo-project-dru` service to provide access authorization decisions
+Gatekeeper is deployed using its helm chart...
 
 ```bash
-helm install --version 1.3.3 --values zoo-guard-values.yaml \
+helm install zoo-project-dru-protection identity-gatekeeper -f zoo-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
-  zoo-guard resource-guard
+  --namespace "zoo" --create-namespace \
+  --version 1.0.11
 ```
 
-The `resource-guard` must be configured with the values applicable to the `zoo-project-dru` for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_...
+The `identity-gatekeeper` must be configured with the values applicable to the `zoo-project-dru` - in particular the specific ingress requirements for the `zoo-project-dru-service`...
 
-**Example `zoo-guard-values.yaml`...**
+**Example `zoo-protection-values.yaml`...**
 
 ```yaml
-#---------------------------------------------------------------------------
-# Global values
-#---------------------------------------------------------------------------
-global:
-  context: zoo
-  domain: 192-168-49-2.nip.io
-  nginxIp: 192.168.49.2
-  certManager:
-    clusterIssuer: letsencrypt-production
-#---------------------------------------------------------------------------
-# PEP values
-#---------------------------------------------------------------------------
-pep-engine:
-  configMap:
-    asHostname: auth
-    pdpHostname: auth
-  customDefaultResources:
-    - name: "ZOO-Project DRU Service for user 'eric'"
-      description: "Protected Access for eric to his space in the ADES"
-      resource_uri: "/eric"
-      scopes: []
-      default_owner: "<eric-uuid-in-gluu>"
-    - name: "ZOO-Project DRU Service for user 'bob'"
-      description: "Protected Access for bob to his space in the ADES"
-      resource_uri: "/bob"
-      scopes: []
-      default_owner: "<bob-uuid-in-gluu>"
-  volumeClaim:
-    name: eoepca-proc-pvc
-    create: false
-#---------------------------------------------------------------------------
-# UMA User Agent values
-#---------------------------------------------------------------------------
-uma-user-agent:
-  nginxIntegration:
-    enabled: true
-    hosts:
-      - host: zoo
-        paths:
-          - path: /(.*)
-            service:
-              name: zoo-project-dru-service
-              port: 80
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-      nginx.ingress.kubernetes.io/enable-cors: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
-  client:
-    credentialsSecretName: "zoo-client"
-  logging:
-    level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
-  openAccess: false
-  insecureTlsSkipVerify: true
+fullnameOverride: zoo-project-dru-protection
+config:
+  client-id: ades
+  discovery-url: http://identity.keycloak.192-168-49-2.nip.io/realms/master
+  cookie-domain: 192-168-49-2.nip.io
+targetService:
+  host: zoo.192-168-49-2.nip.io
+  name: zoo-project-dru-service
+  port:
+    number: 80
+secrets:
+  # Values for secret 'zoo-project-dru-protection'
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "changeme"
+  encryptionKey: "changemechangeme"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  serverSnippets:
+    custom: |-
+      # Open access to some endpoints, including Swagger UI
+      location ~ /(ogc-api/api|swagger-ui) {
+        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
+      }
 ```
 
-!!! note
-    * TLS is enabled by the specification of `certManager.clusterIssuer`
-    * The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
-    * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
-    * `customDefaultResources` can be specified to apply initial protection to the endpoint. By way of example, the above pre-configures protection for user's `eric` and `bob`.
+### Keycloak Client
 
-### Client Secret
+The Gatekeeper instance relies upon an associated client configured within Keycloak - ref. `client-id: ades` above.
 
-The Resource Guard requires confidential client credentials to be configured through the file `client.yaml`, delivered via a kubernetes secret..
+This can be created with the `create-client` helper script, as descirbed in section [Client Registration](./resource-protection-keycloak.md#client-registration).
 
-**Example `client.yaml`...**
-
-```yaml
-client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
-client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
-```
-
-**Example `Secret`...**
+For example, with path protection for test users...
 
 ```bash
-kubectl -n zoo create secret generic zoo-client \
-  --from-file=client.yaml \
-  --dry-run=client -o yaml \
-  > zoo-client-secret.yaml
-```
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: zoo-client
-  namespace: zoo
-data:
-  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
-```
-
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection-gluu.md#client-registration)...
-```bash
-./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
+../bin/create-client \
+  -a http://identity.keycloak.192-168-49-2.nip.io \
+  -i http://identity-api-protected.192-168-49-2.nip.io \
+  -r "master" \
+  -u "admin" \
+  -p "changeme" \
+  -c "admin-cli" \
+  --id=ades \
+  --name="ADES Gatekeeper" \
+  --secret="changeme" \
+  --description="Client to be used by ADES Gatekeeper" \
+  --resource="eric" --uris='/eric/*' --scopes=view --users="eric" \
+  --resource="bob" --uris='/bob/*' --scopes=view --users="bob" \
+  --resource="alice" --uris='/alice/*' --scopes=view --users="alice"
 ```
 
 ## Service URLs

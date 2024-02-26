@@ -193,7 +193,7 @@ serviceProtectionValues() {
   cat - <<EOF
 fullnameOverride: workspace-api-protection
 config:
-  client-id: workspace-api
+  client-id: ${WORKSPACE_API_IAM_CLIENT_ID}
   discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
