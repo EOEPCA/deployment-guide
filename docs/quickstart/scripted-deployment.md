@@ -315,7 +315,7 @@ configMap:
   workspace_url: "http://workspace-api.192-168-49-2.nip.io"
   workspace_docs_url: "http://workspace-api.192-168-49-2.nip.io/docs#"
   images_registry_url: "http://harbor.192-168-49-2.nip.io"
-  dummy_service_url: "http://dummy-service-protected.192-168-49-2.nip.io"
+  dummy_service_url: "http://dummy-service.192-168-49-2.nip.io"
   access_token_name: "auth_user_id"
   access_token_domain: ".192-168-49-2.nip.io"
   refresh_token_name: "auth_refresh_token"
