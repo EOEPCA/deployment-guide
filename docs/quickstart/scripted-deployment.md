@@ -126,7 +126,6 @@ See the building block specific pages...
 
 * **Identity Service:** [Token Lifespans](../eoepca/identity-service.md#token-lifespans)
 * **Application Hub:** [Post-deployment Manual Steps](../eoepca/application-hub.md#post-deployment-manual-steps)
-* **EOEPCA Portal**: [Disable Keycloak Client authentication](#eoepca-portal)
 
 ## Default Credentials
 
@@ -290,9 +289,6 @@ For example (all arguments)...
 
 ## EOEPCA Portal
 
-!!! Important
-    The eoepca-portal implementation expects a client that requires no client authentication. Thus, after using the `create-client` script, it is necessary to use the Keycloak Admin Console UI to edit the `eoepca-portal` client to set `Client authentication` to `Off`.
-
 The `eoepca-portal` is a simple web application that is used as a test aid. It's main purpose is to provide the ability to login, and so establish a session with appropriate browser cookies - which then allow authenticated access to other EOEPCA services such as the Workspace API, Identity API, etc.
 
 The portal is deployed via a helm chart...
@@ -342,7 +338,21 @@ ingress:
         - eoepca-portal.192-168-49-2.nip.io
 ```
 
-The setting `client_id: eoepca-portal` identifies a client that must be created in Keycloak - as described in section [`create-client` Helper Script](../eoepca/identity-service.md#create-client-helper-script).
+The setting `client_id: eoepca-portal` identifies a client that must be created in Keycloak - as described in section [`create-client` Helper Script](../eoepca/identity-service.md#create-client-helper-script) - noting that the `eoepca-portal` requires a client that is configured as a `Public Client`...
+
+```bash
+../bin/create-client \
+  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -i https://identity-api-protected.192-168-49-2.nip.io \
+  -r "master" \
+  -u "admin" \
+  -p "changeme" \
+  -c "admin-cli" \
+  --id=eoepca-portal \
+  --name="EOEPCA Portal" \
+  --public \
+  --description="Client to be used by the EOEPCA Portal"
+```
 
 ## Clean-up
 
