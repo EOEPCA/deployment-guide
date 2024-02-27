@@ -76,10 +76,10 @@ Gatekeeper requires _Client Credentials_ for its interactions with the Keycloak 
 
 The Keycloak client can be created directly in the Keycloak admin console - e.g. via https://keycloak.192-168-49-2.nip.io/admin.
 
-As an aide there is a helper script [`create-client`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/create-client). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+As an aide there is a helper script [`create-client`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/create-client). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4), and can be obtained as follows...
 
 ```bash
-git clone git@github.com:EOEPCA/deployment-guide
+git clone -b eoepca-v1.4 git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 ```
 

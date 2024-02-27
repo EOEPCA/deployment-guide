@@ -269,10 +269,10 @@ The Keycloak Admin UI can be used to create users interactively.
 
 Alternatvely there is a helper script `create-user` that can be used.
 
-The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4), and can be obtained as follows...
 
 ```bash
-git clone git@github.com:EOEPCA/deployment-guide
+git clone -b eoepca-v1.4 git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 ```
 
@@ -319,10 +319,10 @@ To create and protect resources using the keycloak User Interface (UI), do the f
 
 Alternatively, a script was developed to allow simultaneaously create a client, create resources and protect them.
 
-The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
+The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4), and can be obtained as follows...
 
 ```bash
-git clone git@github.com:EOEPCA/deployment-guide
+git clone -b eoepca-v1.4 git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 ```
 

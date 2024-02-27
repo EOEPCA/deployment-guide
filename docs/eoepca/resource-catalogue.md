@@ -172,10 +172,10 @@ The name of the pycsw pod can be obtained using `kubectl`...
 kubectl -n rm get pod --selector='io.kompose.service=pycsw' --output=jsonpath={.items[0].metadata.name}
 ```
 
-To facilitate the loading of records via the pycsw pod, a helper script [`load-records`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/main/deploy/bin/load-records) has been provided in the [git repository that hosts this document](https://github.com/EOEPCA/deployment-guide)...
+To facilitate the loading of records via the pycsw pod, a helper script [`load-records`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/load-records) has been provided in the [git repository that hosts this document](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4)...
 
 ```bash
-git clone git@github.com:EOEPCA/deployment-guide
+git clone -b eoepca-v1.4 git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 ./deploy/bin/load-records "<metadata-file-or-directory>"
 ```

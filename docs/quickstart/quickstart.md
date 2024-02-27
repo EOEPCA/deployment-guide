@@ -38,7 +38,7 @@ Follow these steps to create a [simple local deployment](simple-deployment.md) i
 1. **Prerequisite Tooling**<br>
    Follow the steps in section [Prerequisite Tooling](../cluster/prerequisite-tooling.md) to install the required tooling.
 2. **Clone the repository**<br>
-   `git clone https://github.com/EOEPCA/deployment-guide`
+   `git clone -b eoepca-v1.4 https://github.com/EOEPCA/deployment-guide`
 3. **Initiate the deployment**<br>
    ```bash
    cd deployment-guide

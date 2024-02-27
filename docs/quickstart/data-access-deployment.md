@@ -4,7 +4,7 @@
 
 A deployment wrapper script has been prepared for a 'data access' deployment - that is focused on the Resource Catalogue and Data Access services.
 
-The script [`deploy/data-access/data-access`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/data-access/data-access) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/data-access/data-access-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/data-access/data-access-options).
+The script [`deploy/data-access/data-access`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/data-access/data-access) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/data-access/data-access-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/data-access/data-access-options).
 
 The data-access deployment applies the following configuration:
 

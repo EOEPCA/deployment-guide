@@ -4,7 +4,7 @@
 
 A deployment wrapper script has been prepared for an 'Application Hub' deployment - that provides the Application Hub integrated with the Identity Service (Keycloak) via OIDC for user authentication.
 
-The script [`deploy/apphub/apphub`](https://github.com/EOEPCA/deployment-guide/blob/integration/deploy/apphub/apphub) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/apphub/apphub-options`](https://github.com/EOEPCA/deployment-guide/blob/integration/deploy/apphub/apphub-options).
+The script [`deploy/apphub/apphub`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/apphub/apphub) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/apphub/apphub-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/apphub/apphub-options).
 
 The Application Hub deployment applies the following configuration:
 

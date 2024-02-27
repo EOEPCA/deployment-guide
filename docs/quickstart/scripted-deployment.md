@@ -2,15 +2,15 @@
 
 ## Overview
 
-The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory [`deployment-guide/deploy`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) of the source repository for this guide...
+The Scripted Deployment provides a demonstration of an example deployment, and can found in the subdirectory [`deployment-guide/deploy`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/eoepca/eoepca.sh) of the source repository for this guide...
 
 ```bash
-git clone https://github.com/EOEPCA/deployment-guide \
+git clone -b eoepca-v1.4 https://github.com/EOEPCA/deployment-guide \
 && cd deployment-guide \
 && ls deploy
 ```
 
-The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/eoepca/eoepca.sh) acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
+The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/eoepca/eoepca.sh) acts as an entry-point to the full system deployment. In order to tailor the deployment for your target environment, the script is configured through environment variables and command-line arguments. By default the script assumes deployment to a local minikube.
 
 !!! note
     The scripted deployment assumes that installation of the [Prerequisite Tooling](../cluster/prerequisite-tooling.md) has been performed.
@@ -240,7 +240,7 @@ A json response is returned, in which the field `access_token` provides the Acce
 As an aide there is a helper script [`create-workspace`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/create-workspace). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
 ```bash
-git clone git@github.com:EOEPCA/deployment-guide
+git clone -b eoepca-v1.4 git@github.com:EOEPCA/deployment-guide
 cd deployment-guide
 ```
 
@@ -368,7 +368,7 @@ Before initiating a fresh deployment, if a prior deployment has been attempted, 
   In the case that the minikube `none` driver is used, the persistence is maintained on the host and so is not naturally removed when the minikube cluster is destroyed. In this case, the minikube `standard` _StorageClass_ is fulfilled by the `hostpath` provisioner, whose persistence is removed as follows...<br>
   `sudo rm -rf /tmp/hostpath-provisioner`
 
-There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/cluster/clean) that can be used for step 2 above, (the script does not delete the cluster).
+There is a helper script [`clean`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/cluster/clean) that can be used for step 2 above, (the script does not delete the cluster).
 ```bash
 ./deploy/cluster/clean
 ```

@@ -121,7 +121,7 @@ These ConfigMaps are designed to be mounted as files into the runtime environmen
 
 The templates are provided to the Workspace API as a `ConfigMap` in the namespace of the Workspace API deployment...
 
-_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/eoepca/workspace-templates))_
+_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4/deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4/deploy/eoepca/workspace-templates))_
 
 ```yaml
 apiVersion: v1

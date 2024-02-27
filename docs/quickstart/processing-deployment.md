@@ -4,7 +4,7 @@
 
 A deployment wrapper script has been prepared for a 'processing' deployment - that is focused on the ADES and the deployment/execution of processing jobs.
 
-The script [`deploy/processing/processing`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/processing/processing) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/processing/processing-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/processing/processing-options).
+The script [`deploy/processing/processing`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/processing/processing) achieves this by appropriate [configuration of the environment variables](scripted-deployment.md#environment-variables), before launching the [eoepca.sh deployment script](scripted-deployment.md#command-line-arguments). The deployment configuration is captured in the file [`deploy/processing/processing-options`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/processing/processing-options).
 
 The processing deployment applies the following configuration:
 
@@ -34,11 +34,11 @@ To complete the deployment, see section [Post-deployment Manual Steps](./scripte
 
 ## Example Requests
 
-Some sample requests have been prepared in the subdirectory [`deploy/samples/requests/processing`](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/samples/requests/processing) - for example...
+Some sample requests have been prepared in the subdirectory [`deploy/samples/requests/processing`](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4/deploy/samples/requests/processing) - for example...
 
-* [`convert`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/samples/requests/processing/convert-url.http)<br>
+* [`convert`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/samples/requests/processing/convert-url.http)<br>
   _Provides a 'hello world' processing example that can be used simply to check that the processing capability has been well deployed_
-* [`snuggs`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/samples/requests/processing/snuggs.http)<br>
+* [`snuggs`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/samples/requests/processing/snuggs.http)<br>
   _Provides a packaged EO exploitation algorithm that perform 'real' work and, as such, is more resource demanding (10GB RAM, 3 CPU) - and so may not be suitable for execution within a local minikube deployment (depending on resource allocations)_
 
 These sample `http` files have been prepared with sample requests for **_OGC API Processes_** operations:
@@ -127,7 +127,7 @@ Alternatively the following `curl` commands can be used...
           --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
           --header 'accept: application/json' \
           --header 'content-type: application/json' \
-          --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/eoepca-v1.3/deploy/samples/requests/processing/snuggs.cwl","type": "application/cwl"}}'
+          --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/eoepca-v1.4/deploy/samples/requests/processing/snuggs.cwl","type": "application/cwl"}}'
         ```
 
     ??? example "Get Process Details (`snuggs`)"
