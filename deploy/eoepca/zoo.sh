@@ -160,7 +160,7 @@ createClient() {
   # Create the client
   ../bin/create-client \
     -a $(httpScheme)://identity.keycloak.${domain} \
-    -i $(httpScheme)://identity-api-protected.${domain} \
+    -i $(httpScheme)://identity-api.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \

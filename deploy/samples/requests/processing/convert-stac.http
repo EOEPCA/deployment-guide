@@ -2,7 +2,7 @@
 @scheme = http
 @ades = zoo-open.{{domain}}
 @login = identity.keycloak.{{domain}}
-@identityApi = identity-api-protected.{{domain}}
+@identityApi = identity-api.{{domain}}
 @realm = master
 @username=eric
 @password=changeme

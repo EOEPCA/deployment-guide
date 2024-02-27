@@ -88,7 +88,7 @@ identity-api-gatekeeper:
     discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
     cookie-domain: ${domain}
   targetService:
-    host: identity-api-protected.${domain}
+    host: identity-api.${domain}
   secrets:
     # Values for secret 'identity-api-protection'
     # Note - if ommitted, these can instead be set by creating the secret independently.
