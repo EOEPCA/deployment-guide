@@ -332,7 +332,7 @@ The `create-client` helper script requires some command-line arguments...
 $ ./deploy/bin/create-client -h
 
 Add a client with protected resources.
-create-client [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] --secret secret [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
+create-client [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] (--secret secret | --public) [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
 
 where:
     -h                    show help message
@@ -347,6 +347,7 @@ where:
     --id                  client id (of the created client)
     --name                client name (of the created client)
     --secret              client secret (of the created client)
+    --public              public client (no client secret)
     --default             add default resource - /* authenticated
     --authenticated       allow access to the resource only when authenticated
     --resource            resource name
