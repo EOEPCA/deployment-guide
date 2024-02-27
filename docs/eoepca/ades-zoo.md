@@ -414,6 +414,58 @@ The `zoo-project-dru` service provides a mutil-user aware set of service interfa
 
 See the [Example Requests](../quickstart/processing-deployment.md#example-requests) in the [Processing Deployment](../quickstart/processing-deployment.md) for sample requests that cans be used to test your deployment, and to learn usage of the OGC API Processes.
 
+## Debugging Tips
+
+This section includes some tips that may be useful in debugging errors with deployed application packages.
+
+### Execution Logs
+
+In the case that the execution of an application package is experiencing errors, then the execution logs can be accessed via the `zoofpm` pod.
+
+Connect to the `zoofpm` pod...
+```bash
+$ kubectl -n zoo exec -it deploy/zoo-project-dru-zoofpm -c zoofpm -- bash
+```
+
+The logs are in the directory `/tmp/zTmp`...
+```bash
+$ cd /tmp/zTmp/
+```
+
+In the log directory, each execution is characterised by a set of files/directories...
+
+* `<appname>_<jobid>_error.log` **<<START HERE**<br>
+  _The main log output of the job_
+* `<appname>_<jobid>.json`<br>
+  _The output (results) of the job_
+* `<jobid>_status.json`<br>
+  _The overall status of the job_
+* `<jobid>_logs.cfg`<br>
+  _Index of logs for job workflow steps_
+* `convert-url-c6637d4a-d561-11ee-bf3b-0242ac11000e` (directory)<br>
+  _Subdirectory with a dedicated log file for each step of the CWL workflow, including the stage-in and stage-out steps_
+
+### Deployed Process (Application Package)
+
+When the process is deployed from its Application Package, then a representation is created using the configured `cookiecutter.templateUrl`.
+
+It may be useful to debug the consequent process files, which are located under the path `/opt/zooservices_user/<username>`, with a dedicated subdirectory for each deployed process - i.e. `/opt/zooservices_user/<username>/<appname>/`.
+
+For example...
+
+```bash
+$ cd /opt/zooservices_user/eric/convert-url
+$ ls -l
+total 28
+-rw-rw-r-- 1 www-data www-data     0 Feb 27 11:17 __init__.py
+drwxrwxr-x 2 www-data www-data  4096 Feb 27 11:17 __pycache__
+-rw-rw-r-- 1 www-data www-data  1408 Feb 27 11:17 app-package.cwl
+-rw-rw-r-- 1 www-data www-data 17840 Feb 27 11:17 service.py
+```
+
+!!! note
+    In the case that the cookie-cutter template is updated, then the process can be re-deployed to force a refresh against the updated template.
+
 ## Swagger UI (OpenAPI)
 
 The `zoo-project-dru` service includes a Swagger UI interactive representation of its OpenAPI REST interface - available at the URL `https://zoo.192-168-49-2.nip.io/swagger-ui/oapip/`.
