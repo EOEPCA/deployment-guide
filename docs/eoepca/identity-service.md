@@ -33,7 +33,7 @@ The chart is configured via values - the full set of available values can be tai
   [https://github.com/EOEPCA/helm-charts/blob/main/charts/identity-service/charts/identity-api/values.yaml](https://github.com/EOEPCA/helm-charts/blob/main/charts/identity-service/charts/identity-api/values.yaml)
 
 ```bash
-helm install --version 1.0.93 --values identity-service-values.yaml \
+helm install --version 1.0.97 --values identity-service-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   identity-service identity-service
 ```
