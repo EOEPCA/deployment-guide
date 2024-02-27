@@ -1,6 +1,11 @@
 # Deployment Guide
 
-The Deployment Guide describes how each building-block comprising the EOEPCA Reference Implementation is configured and deployed. A full system deployment is described, in which components are deployed with complementary configurations that facilitate their integration as a coherent system. Nevertheless, each component can be cherry-picked from this system deployment for individual re-use.
+The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...
+
+* Description of how each building-block is configured and deployed - see **Deploy EOEPCA Components**
+* Scripted deployment in which each building-block can be selectively deployed to form a system - see **Getting Started**
+
+A full system deployment is described, in which components are deployed with complementary configurations that facilitate their integration as a coherent system. Nevertheless, each component can be cherry-picked from this system deployment for individual re-use.
 
 The deployment is organised into the following sections:
 
