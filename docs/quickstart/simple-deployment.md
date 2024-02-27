@@ -23,3 +23,7 @@ Deployment is initiated by invoking the script...
 ```
 
 See section [Deployment](scripted-deployment.md#deployment) for more details regarding the outcome of the scripted deployment.
+
+## Post-deploy Manual Steps
+
+To complete the deployment, see section [Post-deployment Manual Steps](./scripted-deployment.md#post-deployment-manual-steps) of the [Scripted Deployment](./scripted-deployment.md) page.

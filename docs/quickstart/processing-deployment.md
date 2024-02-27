@@ -28,6 +28,10 @@ Deployment is initiated by invoking the script...
 
 The ADES service is accessed at the endpoint `zoo-open.<domain>` - e.g. `zoo-open.192-168-49-2.nip.io`.
 
+## Post-deploy Manual Steps
+
+To complete the deployment, see section [Post-deployment Manual Steps](./scripted-deployment.md#post-deployment-manual-steps) of the [Scripted Deployment](./scripted-deployment.md) page.
+
 ## Example Requests
 
 Some sample requests have been prepared in the subdirectory [`deploy/samples/requests/processing`](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/samples/requests/processing) - for example...

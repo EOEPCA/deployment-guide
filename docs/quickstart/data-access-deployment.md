@@ -30,6 +30,10 @@ The Resource Catalogue is accessed at the endpoint `resource-catalogue-open.<dom
 
 The Data Access View Server is accessed at the endpoint `data-access-open.<domain>` - e.g. [`data-access-open.192-168-49-2.nip.io`](http://data-access-open.192-168-49-2.nip.io/).
 
+## Post-deploy Manual Steps
+
+To complete the deployment, see section [Post-deployment Manual Steps](./scripted-deployment.md#post-deployment-manual-steps) of the [Scripted Deployment](./scripted-deployment.md) page.
+
 ## Data Harvesting
 
 See section [Harvest CREODIAS Data](creodias-deployment.md#harvest-creodias-data) to harvest the default data specification from the CREODIAS data offering.

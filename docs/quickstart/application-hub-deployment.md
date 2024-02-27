@@ -33,11 +33,9 @@ The Identity Service (Keycloak) is accessed at the following endpoints...
 
 The Application Hub is accessed at the endpoint - [http://applicationhub.192-168-49-2.nip.io/](http://applicationhub.192-168-49-2.nip.io/).
 
-## Post-deployment Manual Steps
+## Post-deploy Manual Steps
 
-The creation and configuration of the OIDC client are now performed automatically by the scripted deployment.
-
-However, it remains necessary to manually configure the Groups and Users (test users `eric` and `bob`), as described in section [Post-deployment Manual Steps - Groups and Users](../eoepca/application-hub.md#groups-and-users).
+To complete the deployment, see section [Post-deployment Manual Steps](./scripted-deployment.md#post-deployment-manual-steps) of the [Scripted Deployment](./scripted-deployment.md) page.
 
 ## Application Hub Notes
 

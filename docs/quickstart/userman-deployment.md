@@ -28,3 +28,7 @@ Deployment is initiated by invoking the script...
 The _Identity Service_ is accessed at the endpoint `keycloak.<domain>` - e.g. [`keycloak.192-168-49-2.nip.io`](http://keycloak.192-168-49-2.nip.io/).
 
 The Identity API is accessed at the endpoint `identity-api.<domain>` - e.g. [`identity-api.192-168-49-2.nip.io`](http://identity-api.192-168-49-2.nip.io/).
+
+## Post-deploy Manual Steps
+
+To complete the deployment, see section [Post-deployment Manual Steps](./scripted-deployment.md#post-deployment-manual-steps) of the [Scripted Deployment](./scripted-deployment.md) page.
