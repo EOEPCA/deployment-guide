@@ -13,10 +13,9 @@ source ../cluster/functions
 configureAction "$1"
 initIpDefaults
 
-public_ip="${2:-${default_public_ip}}"
-domain="${3:-${default_domain}}"
+domain="${2:-${default_domain}}"
 NAMESPACE="rm"
-UMA_CLIENT_SECRET="resman-client"
+WORKSPACE_API_IAM_CLIENT_ID="workspace-api"
 
 if [ "${OPEN_INGRESS}" = "true" ]; then
   name="workspace-api-open"
@@ -25,23 +24,37 @@ if [ "${OPEN_INGRESS}" = "true" ]; then
 else
   name="workspace-api"
   nameResourceCatalogue="resource-catalogue"
-  nameDataAccess="data-access-open"
+  nameDataAccess="data-access"
 fi
 
 main() {
-  helmChart
+  deployWorkspaceApi
   workspaceTemplates
   helmRepositories
   harborPasswordSecret
-  minioBucketApi
+  deployMinioBucketApi
+  createClient
+  deployProtection
 }
 
-# Values for helm chart
-values() {
+# Deploy the Workspace API
+deployWorkspaceApi() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace rm uninstall workspace-api
+  else
+    valuesWorkspaceApi | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.4.2
+  fi
+}
+
+# Values for Workspace API helm chart
+valuesWorkspaceApi() {
   cat - <<EOF
 fullnameOverride: workspace-api
 # image:
-#   tag: "1.3-dev5"
+#   tag: integration
 #   pullPolicy: Always
 ingress:
   enabled: ${OPEN_INGRESS}
@@ -62,30 +75,21 @@ fluxHelmOperator:
 prefixForName: "ws"
 workspaceSecretName: "bucket"
 namespaceForBucketResource: ${NAMESPACE}
-s3Endpoint: "https://minio.${domain}"
+s3Endpoint: "$(httpScheme)://minio.${domain}"
 s3Region: "RegionOne"
-harborUrl: "https://harbor.${domain}"
+harborUrl: "$(httpScheme)://harbor.${domain}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor"
-umaClientSecretName: "${UMA_CLIENT_SECRET}"
-umaClientSecretNamespace: ${NAMESPACE}
 workspaceChartsConfigMap: "workspace-charts"
 bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
-pepBaseUrl: "http://workspace-api-pep:5576/resources"
-autoProtectionEnabled: $(if [ "${OPEN_INGRESS}" = "true" ]; then echo -n \"False\"; else echo -n \"True\"; fi)
+keycloakIntegration:
+  enabled: true
+  keycloakUrl: "$(httpScheme)://keycloak.${domain}"
+  realm: "${IDENTITY_REALM}"
+  identityApiUrl: "$(httpScheme)://identity-api.${domain}"
+  workspaceApiIamClientId: "${WORKSPACE_API_IAM_CLIENT_ID}"
+  defaultIamClientSecret: "${IDENTITY_SERVICE_DEFAULT_SECRET}"
 EOF
-}
-
-# Helm Chart
-helmChart() {
-  if [ "${ACTION_HELM}" = "uninstall" ]; then
-    helm --namespace rm uninstall workspace-api
-  else
-    values | helm ${ACTION_HELM} workspace-api rm-workspace-api -f - \
-      --repo https://eoepca.github.io/helm-charts \
-      --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.4.0
-  fi
 }
 
 workspaceTemplates() {
@@ -101,7 +105,8 @@ cleanUp() {
 
 substituteVariables() {
   mkdir workspace-templates-tmp
-  export NAMESPACE UMA_CLIENT_SECRET public_ip domain nameResourceCatalogue nameDataAccess
+  export http_scheme="$(httpScheme)"
+  export NAMESPACE domain nameResourceCatalogue nameDataAccess
   for template in workspace-templates/*.yaml; do
     envsubst <$template >workspace-templates-tmp/$(basename $template)
   done
@@ -137,16 +142,7 @@ harborPasswordSecret() {
   fi
 }
 
-valuesMinioBucketApi() {
-  cat - <<EOF
-fullnameOverride: minio-bucket-api
-minIOServerEndpoint: https://minio.${domain}
-accessCredentials:
-  secretName: minio-auth
-EOF
-}
-
-minioBucketApi() {
+deployMinioBucketApi() {
   if [ "${ACTION_HELM}" = "uninstall" ]; then
     helm --namespace rm uninstall rm-minio-bucket-api
   else
@@ -155,6 +151,75 @@ minioBucketApi() {
       --namespace "${NAMESPACE}" --create-namespace \
       --version 0.0.4
   fi
+}
+
+valuesMinioBucketApi() {
+  cat - <<EOF
+fullnameOverride: minio-bucket-api
+minIOServerEndpoint: $(httpScheme)://minio.${domain}
+accessCredentials:
+  secretName: minio-auth
+EOF
+}
+
+createClient() {
+  # Create the client
+  ../bin/create-client \
+    -a $(httpScheme)://keycloak.${domain} \
+    -i $(httpScheme)://identity-api.${domain} \
+    -r "${IDENTITY_REALM}" \
+    -u "${IDENTITY_SERVICE_ADMIN_USER}" \
+    -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \
+    -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
+    --id="${WORKSPACE_API_IAM_CLIENT_ID}" \
+    --name="Workspace API Gatekeeper" \
+    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --description="Client to be used by Workspace API Gatekeeper" \
+    --resource="admin" --uris='/*' --scopes=view --users="${IDENTITY_SERVICE_ADMIN_USER}"
+}
+
+deployProtection() {
+  if [ "${ACTION_HELM}" = "uninstall" ]; then
+    helm --namespace "${NAMESPACE}" uninstall workspace-api-protection
+  else
+    serviceProtectionValues | helm ${ACTION_HELM} workspace-api-protection identity-gatekeeper -f - \
+      --repo https://eoepca.github.io/helm-charts \
+      --namespace "${NAMESPACE}" --create-namespace \
+      --version 1.0.11
+  fi
+}
+
+serviceProtectionValues() {
+  cat - <<EOF
+fullnameOverride: workspace-api-protection
+config:
+  client-id: ${WORKSPACE_API_IAM_CLIENT_ID}
+  discovery-url: $(httpScheme)://keycloak.${domain}/realms/master
+  cookie-domain: ${domain}
+targetService:
+  host: ${name}.${domain}
+  name: workspace-api
+  port:
+    number: 8080
+# Values for secret 'workspace-api-protection'
+secrets:
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "${IDENTITY_GATEKEEPER_CLIENT_SECRET}"
+  encryptionKey: "${IDENTITY_GATEKEEPER_ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
+    cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
+  serverSnippets:
+    custom: |-
+      # Open access to some endpoints, including Swagger UI
+      location ~ ^/(docs|openapi.json|probe) {
+        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
+      }
+EOF
 }
 
 main "$@"

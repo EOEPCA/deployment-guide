@@ -1,6 +1,6 @@
 # Container Registry
 
-To support the development (ref. [Application Hub](application-hub.md)) and deployment/execution (ref. [ADES](ades.md)) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the [Harbor artefact repository](https://goharbor.io/).
+To support the development (ref. [Application Hub](application-hub.md)) and deployment/execution (ref. [ADES](ades-zoo.md)) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the [Harbor artefact repository](https://goharbor.io/).
 
 ## Helm Chart
 
@@ -73,7 +73,7 @@ notary:
 
 ## Container Registry Usage
 
-After deployemnt Harbor is accessible via its [web interface](https://harbor.192-168-49-2.nip.io/) at `https://harbor.<domain>/`<br>e.g. [https://harbor.192-168-49-2.nip.io/](https://harbor.192-168-49-2.nip.io/).
+After deployemnt Harbor is accessible via its [web interface](https://harbor.192-168-49-2.nip.io/) at `https://harbor.192-168-49-2.nip.io/`<br>e.g. [https://harbor.192-168-49-2.nip.io/](https://harbor.192-168-49-2.nip.io/).
 
 Login as the admin user with the password specified in the helm values.
 

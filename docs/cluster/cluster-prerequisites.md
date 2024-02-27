@@ -1,6 +1,18 @@
 # Cluster Prerequisites
 
+## Overview
+
 The following prerequisite components are assumed to be deployed in the cluster.
+
+!!! note
+    The Scripted Deployment automatically deploys most of the components list here - in particular...
+
+    * Nginx Ingress Controller
+    * Cert Manager
+    * Letsencrypt ClusterIssuers
+    * Minio Object Storage
+
+    The Sealed Secrets controller is **not** deployed - but can be added following the [instructions below](#sealed-secrets).
 
 ## Nginx Ingress Controller
 

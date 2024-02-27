@@ -4,7 +4,7 @@
 #
 #   With Public IP and TLS enabled
 #   ------------------------------
-#   * Set `public_ip` to external-facing IP address
+#   * Set `public_ip` to 'external' IP for cluster ingress (ingress-nginx)
 #   * Set `domain` for your DNS configuration
 #   * Set `USE_TLS=true` to enable TLS
 #   * Set `TLS_CLUSTER_ISSUER` for production
@@ -24,26 +24,25 @@
 export USE_TLS=false
 #---
 
+# Enable desired services
+export REQUIRE_ADES=true
+
 # Disable not needed components
-export REQUIRE_LOGIN_SERVICE=false
-export REQUIRE_PDP=false
-export REQUIRE_USER_PROFILE=false
+export REQUIRE_IDENTITY_SERVICE=false
+export REQUIRE_APPLICATION_HUB=false
 export REQUIRE_RESOURCE_CATALOGUE=false
 export REQUIRE_DATA_ACCESS=false
 export REQUIRE_REGISTRATION_API=false
 export REQUIRE_WORKSPACE_API=false
 export REQUIRE_HARBOR=false
 export REQUIRE_PORTAL=false
-export REQUIRE_APPLICATION_HUB=false
+export REQUIRE_DUMMY_SERVICE=false
 
 # Minikube options
 # Tune the resources afforded to minikube (assuming the `docker` driver)
 # export MINIKUBE_CPU_AMOUNT=max
 # export MINIKUBE_MEMORY_AMOUNT=12g
-# export MINIKUBE_DISK_AMOUNT=20g
-
-# Ingress
-export OPEN_INGRESS=true  # `open` - no need for IAM authorization
+# export MINIKUBE_DISK_AMOUNT=50g
 
 # ADES
 # export PROCESSING_MAX_RAM=16Gi  # RAM for a processing job

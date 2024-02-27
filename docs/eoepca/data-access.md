@@ -12,7 +12,7 @@ The chart is configured via values that are supplied with the instantiation of t
 * Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
 
 ```bash
-helm install --version 1.3.1 --values data-access-values.yaml \
+helm install --version 1.4.0 --values data-access-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   data-access data-access
 ```
@@ -32,13 +32,14 @@ Typically, values for the following attributes may be specified to override the 
 * Object storage details for `data` and `cache`
 * Container images for `renderer` and `registrar`
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the Data Access will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the Data Access will **not** be protected by the `identity-gatekeeper` component - ref. [Resource Protection](./resource-protection-keycloak.md). Otherwise the ingress will be handled by the `identity-gatekeeper` - use `ingress.enabled: false`._
 
 ```yaml
 global:
   env:
     REGISTRAR_REPLACE: "true"
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
+    AWS_ENDPOINT_URL_S3: https://minio.192-168-49-2.nip.io
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
@@ -67,7 +68,7 @@ global:
         validate_bucket_name: false
     cache:
       type: S3
-      endpoint_url: "http://minio.192-168-49-2.nip.io"
+      endpoint_url: "https://minio.192-168-49-2.nip.io"
       host: "minio.192-168-49-2.nip.io"
       access_key_id: xxx
       secret_access_key: xxx
@@ -425,123 +426,87 @@ global:
 
 ## Protection
 
-As described in [section Resource Protection](resource-protection.md), the `resource-guard` component can be inserted into the request path of the Data Access service to provide access authorization decisions.
+As described in [section Resource Protection (Keycloak)](resource-protection-keycloak.md), the `identity-gatekeeper` component can be inserted into the request path of the `data-access` service to provide access authorization decisions
+
+### Gatekeeper
+
+Gatekeeper is deployed using its helm chart...
 
 ```bash
-helm install --version 1.3.1 --values data-access-guard-values.yaml \
+helm install data-access-protection identity-gatekeeper -f data-access-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
-  data-access-guard resource-guard
+  --namespace "rm" --create-namespace \
+  --version 1.0.11
 ```
 
-The `resource-guard` must be configured with the values applicable to the Data Access for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...
+The `identity-gatekeeper` must be configured with the values applicable to the `data-access` - in particular the specific ingress requirements for the `data-access` backend services...
 
-**Example `data-access-guard-values.yaml`...**
+**Example `data-access-protection-values.yaml`...**
 
 ```yaml
-#---------------------------------------------------------------------------
-# Global values
-#---------------------------------------------------------------------------
-global:
-  context: data-access
-  domain: 192-168-49-2.nip.io
-  nginxIp: 192.168.49.2
-  certManager:
-    clusterIssuer: letsencrypt-production
-#---------------------------------------------------------------------------
-# PEP values
-#---------------------------------------------------------------------------
-pep-engine:
-  configMap:
-    asHostname: auth
-    pdpHostname: auth
-  volumeClaim:
-    name: eoepca-resman-pvc
-    create: false
-#---------------------------------------------------------------------------
-# UMA User Agent values
-#---------------------------------------------------------------------------
-uma-user-agent:
-  nginxIntegration:
-    enabled: true
-    hosts:
-      - host: data-access
-        paths:
-          - path: /(ows.*)
-            service:
-              name: data-access-renderer
-              port: 80
-          - path: /(opensearch.*)
-            service:
-              name: data-access-renderer
-              port: 80
-          - path: /(coverages/metadata.*)
-            service:
-              name: data-access-renderer
-              port: 80
-          - path: /(admin.*)
-            service:
-              name: data-access-renderer
-              port: 80
-          - path: /cache/(.*)
-            service:
-              name: data-access-cache
-              port: 80
-          - path: /(.*)
-            service:
-              name: data-access-client
-              port: 80
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-      nginx.ingress.kubernetes.io/enable-cors: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
-  client:
-    credentialsSecretName: "resman-client"
-  logging:
-    level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
-  openAccess: false
-  insecureTlsSkipVerify: true
+fullnameOverride: data-access-protection
+config:
+  client-id: data-access
+  discovery-url: https://keycloak.192-168-49-2.nip.io/realms/master
+  cookie-domain: 192-168-49-2.nip.io
+targetService:
+  host: data-access.192-168-49-2.nip.io
+  name: data-access-renderer
+  port:
+    number: 80
+secrets:
+  # Values for secret 'data-access-protection'
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "changeme"
+  encryptionKey: "changemechangeme"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  serverSnippets:
+    custom: |-
+      # Open access to renderer...
+      location ~ ^/(ows.*|opensearch.*|coverages/metadata.*|admin.*) {
+        proxy_pass http://data-access-renderer.rm.svc.cluster.local:80/$1;
+      }
+      # Open access to cache...
+      location ~ ^/cache/(.*) {
+        proxy_pass http://data-access-cache.rm.svc.cluster.local:80/$1;
+      }
+      # Open access to client...
+      # Note that we use a negative lookahead to avoid matching '/.well-known/*' which
+      # otherwise appears to interfere with the work of cert-manager/letsencrypt.
+      location ~ ^/(?!\.well-known)(.*) {
+        proxy_pass http://data-access-client.rm.svc.cluster.local:80/$1;
+      }
 ```
 
-!!! note
-    * TLS is enabled by the specification of `certManager.clusterIssuer`
-    * The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
-    * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
-    * `customDefaultResources` can be specified to apply initial protection to the endpoint
+### Keycloak Client
 
-### Client Secret
+The Gatekeeper instance relies upon an associated client configured within Keycloak - ref. `client-id: data-access` above.
 
-The Resource Guard requires confidential client credentials to be configured through the file `client.yaml`, delivered via a kubernetes secret..
+This can be created with the `create-client` helper script, as descirbed in section [Client Registration](./resource-protection-keycloak.md#client-registration).
 
-**Example `client.yaml`...**
-
-```yaml
-client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
-client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
-```
-
-**Example `Secret`...**
+For example...
 
 ```bash
-kubectl -n rm create secret generic resman-client \
-  --from-file=client.yaml \
-  --dry-run=client -o yaml \
-  > resman-client-secret.yaml
-```
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: resman-client
-  namespace: rm
-data:
-  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
-```
-
-The client credentials are obtained by registration of a client at the login service web interface - e.g. https://auth.192-168-49-2.nip.io. In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection.md#client-registration)...
-```bash
-./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
+../bin/create-client \
+  -a https://keycloak.192-168-49-2.nip.io \
+  -i https://identity-api.192-168-49-2.nip.io \
+  -r "master" \
+  -u "admin" \
+  -p "changeme" \
+  -c "admin-cli" \
+  --id=data-access \
+  --name="Data Access Gatekeeper" \
+  --secret="changeme" \
+  --description="Client to be used by Data Access Gatekeeper"
 ```
 
 ## Data Access Usage

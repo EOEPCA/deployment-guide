@@ -11,6 +11,10 @@ trap onExit EXIT
 
 source functions
 configureAction "$1"
+initIpDefaults
+
+domain="${2:-${default_domain}}"
+public_ip="${3:-${default_public_ip}}"
 
 values() {
   cat - <<EOF
@@ -21,10 +25,8 @@ controller:
   ingressClassResource:
     default: true
   service:
-    type: NodePort
-    nodePorts:
-      http: 31080
-      https: 31443
+    externalIPs:
+      - ${public_ip}
   publishService:
     enabled: false
 EOF
@@ -81,7 +83,8 @@ metadata:
   name: readycheck
 spec:
   rules:
-  - http:
+  - host: readycheck.${domain}
+    http:
       paths:
       - path: /
         pathType: ImplementationSpecific

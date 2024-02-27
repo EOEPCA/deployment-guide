@@ -33,3 +33,146 @@ initIpDefaults() {
 
   default_domain="$(echo ${default_public_ip} | sed 's/\./-/g').nip.io"
 }
+
+httpScheme() {
+  if [[ "${USE_TLS}" == "true" ]]; then
+    echo -n "https"
+  else
+    echo -n "http"
+  fi
+}
+
+getAccessToken() {
+  if [[ -n "$username" && -n "$password" && -n "$client" ]]; then
+    token_endpoint="${auth_server}/realms/${realm}/protocol/openid-connect/token"
+    echo "Using Token Endpoint - ${token_endpoint}"
+    token_payload="username=$username&password=$password&client_id=$client&grant_type=password"
+    runcurl -d "Get Access Token" -r 200 -- \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -X POST --data "$token_payload" "$token_endpoint"
+    access_token=$(jq -r '.access_token' <<<${response_body})
+  fi
+}
+
+# Run curl with optional retry logic
+# Outputs in variables...
+#   * response_code - the HTTP response code
+#   * response_body - the response body
+runcurl() {
+  runcurllog() {
+    echo "$@" >&2
+  }
+  # Parse cmdline - up to the '--'
+  OPTIND=1
+  local authenticate=0
+  local request_description="curl request"
+  local response_lower=
+  local response_upper=
+  local response_list=
+  local attempt_count=0  # zero means keep trying undefinitely
+  local retry_interval=10
+  while getopts "ad:r:c:i:" opt; do
+    case "${opt}" in
+      a)
+        authenticate=1
+        ;;
+      d)
+        request_description="${OPTARG}"
+        ;;
+      r)
+        if [[ ${OPTARG} == "OK" ]]; then
+          response_lower=200
+          response_upper=299
+        else
+          IFS=' ' read -ra codes <<<"${OPTARG}"
+          if (( ${#codes[@]} == 1 )); then
+            response_lower=${codes[0]}
+            response_upper=${response_lower}
+          elif (( ${#codes[@]} > 1 )); then
+            response_list=("${codes[@]}")
+          fi
+        fi
+        ;;
+      c)
+        attempt_count=$((OPTARG))
+        ;;
+      i)
+        retry_interval=$((OPTARG))
+        ;;
+      *)
+        return 1
+    esac
+  done
+  shift $((OPTIND-1))
+
+  # Make request with optional retries
+  local status=0
+  local count=$((attempt_count))
+  while ((!status)); do
+    #---------------------------------------------------------------------------
+    # Run the curl command
+    #---------------------------------------------------------------------------
+    runcurllog -n "[${request_description}] Initiating request... => "
+    if ((authenticate)); then
+      if [[ -z "${access_token}" ]]; then
+        runcurllog  # force a newline for readability
+        getAccessToken
+      fi
+      response=$(curl -L -s -w "%{http_code}" -H "Authorization: Bearer ${access_token}" "$@")
+    else
+      response=$(curl -L -s -w "%{http_code}" "$@")
+    fi
+    response_code="${response: -3}"
+    #---------------------------------------------------------------------------
+    # Check response code against expectation
+    #---------------------------------------------------------------------------
+    #
+    # Response code in range
+    if (( response_lower && response_code >= response_lower && response_code <= response_upper )); then
+      status=1
+    #
+    # Response code in allowed list
+    elif (( response_list )); then
+      for code in "${response_list[@]}"; do
+        if [[ "${response_code}" = "${code}" ]]; then status=1; break; fi
+      done
+    fi
+    #---------------------------------------------------------------------------
+    # Handle unexpected response
+    #---------------------------------------------------------------------------
+    #
+    # Response as expected
+    if ((status)); then
+      runcurllog "Got expected response ${response_code}"
+    #
+    # Response code not matched...
+    else
+      # Possible need to re-authenticate
+      if (( authenticate && ((response_code == 401 || response_code == 403)) )); then
+        runcurllog "Attempting re-auth due to response ${response_code}"
+        access_token=
+      # Check for possible retry attempt
+      elif (( response_lower || response_list )); then
+        if (( --count != 0 )); then
+          runcurllog "Got response ${response_code} - waiting to retry"
+          sleep ${retry_interval}
+        else
+          runcurllog "Got response ${response_code}"
+          break  # no more retries
+        fi
+      # Otherwise, accept the response
+      else
+        runcurllog "Got response ${response_code}"
+        status=1
+      fi
+    fi
+  done
+
+  # On success get the response body
+  if ((status)); then
+    response_body="${response:0:${#response}-3}"
+    return 0
+  else
+    return 1
+  fi
+}

@@ -1,6 +1,12 @@
 # Persistence
 
+## Overview
+
 The EOEPCA building-blocks rely upon Kubernetes `Persistent Volumes` for their component persistence. Components integrate with the storage provided in the cluster by means of configurable `Persistent Volume Claims` and/or dynamic `Storage Class` that are specfied as values at time of deployment. Some components require storage of type  `ReadWriteMany` - which, for a multi-node cluster, implies a network-based storage solution.
+
+!!! note
+    **Local CLuster Storage**<br>
+    For the purposes of the [Scripted Deployment](../quickstart/scripted-deployment.md), the default Storage Class included with the local Kubernetes distribution can be used for all storage concerns - e.g. `standard` for `minikube` which provides the `ReadWriteMany` persistence that is required by the ADES.
 
 ## ReadWriteMany Storage
 
@@ -114,7 +120,3 @@ Candidate clustered storage solutions include:
   Longhorn offers a solution that is similar to that of GlusterFS, except that Longhorn is ‘cloud-native’ in that its service layer deploys within the Kubernetes cluster itself. Thus, the storage nodes are also the cluster compute nodes by design.
 
 **_All things being equal, Longhorn is recommended as the best approach for Kubernetes clusters._**
-
-## Local Cluster Storage
-
-For the purposes of the EOEPCA deployment, the default Storage Class included with the local Kubernetes distribution can be used for all storage concerns - e.g. `standard` for `minikube` which provides the `ReadWriteMany` persistence that is required by the ADES.

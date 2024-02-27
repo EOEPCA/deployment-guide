@@ -13,6 +13,7 @@ source functions
 ACTION="${1:-apply}"
 configureAction "$ACTION"
 cluster_name="${2:-mykube}"
+provided_domain="${3}"
 
 # minikube
 if [ "${REQUIRE_MINIKUBE}" = "true" ]; then
@@ -21,8 +22,8 @@ fi
 
 # deduce ip address from minikube
 initIpDefaults
-public_ip="${3:-${default_public_ip}}"
-domain="${4:-${default_domain}}"
+domain="${provided_domain:-${default_domain}}"
+public_ip="${4:-${default_public_ip}}"
 
 # metallb (Load Balancer)
 if [ "${USE_METALLB}" = "true" ]; then
@@ -31,7 +32,7 @@ fi
 
 # ingress-nginx
 if [ "${REQUIRE_INGRESS_NGINX}" = "true" ]; then
-  ./ingress-nginx.sh "${ACTION}"
+  ./ingress-nginx.sh "${ACTION}" "${domain}" "${public_ip}"
 fi
 
 if [ "${USE_TLS}" = "true" ]; then

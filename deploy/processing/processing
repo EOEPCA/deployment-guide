@@ -11,6 +11,6 @@ trap onExit EXIT
 
 source ./processing-options
 
-cluster_name="eoepca"
+cluster_name="${1:-eoepca}"
 
-../eoepca/eoepca.sh apply ${cluster_name} ${public_ip} ${domain}
+../eoepca/eoepca.sh apply ${cluster_name} ${domain} ${public_ip}

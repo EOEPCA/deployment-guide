@@ -10,12 +10,14 @@ nav:
     - Getting Started:
       - Quick Start: quickstart/quickstart.md
       - Scripted Deployment: quickstart/scripted-deployment.md
-      - Simple Deployment: quickstart/simple-deployment.md
-      - Processing Deployment: quickstart/processing-deployment.md
-      - Data Access: quickstart/data-access-deployment.md
-      - Exploitation: quickstart/exploitation-deployment.md
-      - User Management: quickstart/userman-deployment.md
-      - CREODIAS Deployment: quickstart/creodias-deployment.md
+      - Profiles:
+        - Simple: quickstart/simple-deployment.md
+        - Processing: quickstart/processing-deployment.md
+        - Application Hub: quickstart/application-hub-deployment.md
+        - Data Access: quickstart/data-access-deployment.md
+        - Exploitation: quickstart/exploitation-deployment.md
+        - User Management: quickstart/userman-deployment.md
+        - CREODIAS Data: quickstart/creodias-deployment.md
     - Prepare Cluster:
       - Prerequisite Tooling: cluster/prerequisite-tooling.md
       - Kubernetes Cluster: cluster/kubernetes.md
@@ -26,19 +28,20 @@ nav:
       - Identity & Access Management:
         - IAM Overview: eoepca/iam-overview.md
         - Keycloak Solution (NEW):
-          - Keycloak: eoepca/keycloak.md
+          - Identity Service: eoepca/identity-service.md
+          - Resource Protection: eoepca/resource-protection-keycloak.md
         - Gluu Solution (deprecated):
           - Login Service: eoepca/login-service.md
           - Policy Decision Point: eoepca/pdp.md
-          - Resource Protection: eoepca/resource-protection.md
-        - User Profile: eoepca/user-profile.md
-      - Application Deployment & Execution: eoepca/ades.md
+          - Resource Protection: eoepca/resource-protection-gluu.md
+          - User Profile: eoepca/user-profile.md
+      - ADES (Processing): eoepca/ades-zoo.md
+      - Application Hub: eoepca/application-hub.md
       - Resource Catalogue: eoepca/resource-catalogue.md
       - Data Access: eoepca/data-access.md
       - Registration API: eoepca/registration-api.md
       - Workspace: eoepca/workspace.md
       - Container Registry: eoepca/container-registry.md
-      - Application Hub: eoepca/application-hub.md
 
 theme:
   # name: mkdocs

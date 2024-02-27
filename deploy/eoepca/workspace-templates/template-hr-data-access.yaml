@@ -17,7 +17,7 @@ spec:
       env:
         REGISTRAR_REPLACE: "true"
         CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.TIFF,.tif,.tiff,.xml,.jp2,.jpg,.jpeg,.png,.nc
-        AWS_ENDPOINT_URL_S3: https://minio.${domain}
+        AWS_ENDPOINT_URL_S3: ${http_scheme}://minio.${domain}
         startup_scripts: []
 
       # the tls host is still needed to provide the hostname for the view server client
@@ -42,7 +42,7 @@ spec:
           data:
             # TODO: this values are secret pass them as secret
             type: "S3"
-            endpoint_url: https://minio.${domain}
+            endpoint_url: ${http_scheme}://minio.${domain}
             access_key_id: {{ access_key_id }}
             secret_access_key: {{ secret_access_key }}
             bucket: {{ bucket }}
@@ -108,8 +108,8 @@ spec:
                 - path: "registrar_pycsw.backend.ItemBackend"
                   kwargs:
                     repository_database_uri: "postgresql://postgres:mypass@resource-catalogue-db/pycsw"
-                    ows_url: "https://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
-                    public_s3_url: "https://minio.${domain}/{{ bucket }}"
+                    ows_url: "${http_scheme}://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
+                    public_s3_url: "${http_scheme}://minio.${domain}/{{ bucket }}"
             collections:
               path: registrar.route.stac.CollectionRoute
               queue: register_collection_queue
@@ -136,8 +136,8 @@ spec:
                 - path: registrar_pycsw.backend.CWLBackend
                   kwargs:
                     repository_database_uri: "postgresql://postgres:mypass@resource-catalogue-db/pycsw"
-                    ows_url: "https://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
-                    public_s3_url: "https://minio.${domain}/{{ bucket }}"
+                    ows_url: "${http_scheme}://${nameDataAccess}.{{ workspace_name }}.${domain}/ows"
+                    public_s3_url: "${http_scheme}://minio.${domain}/{{ bucket }}"
             catalogue:
               path: registrar.route.json.JSONRoute
               queue: register_catalogue_queue
@@ -188,7 +188,7 @@ spec:
               s3:
                 access_key_id: {{ access_key_id }}
                 secret_access_key: {{ secret_access_key }}
-                endpoint_url: https://minio.${domain}
+                endpoint_url: ${http_scheme}://minio.${domain}
                 region: RegionOne
                 public: False
 

@@ -9,104 +9,122 @@ onExit() {
 }
 trap onExit EXIT
 
-CLIENT_YAML="../eoepca/client.yaml"
+source ../cluster/functions
+
+usage="
+Create a new User Workspace.
+$(basename "$0") -h | -w {workspace_api} -a {auth_server} -r {realm} -c {client} -u {admin-username} -p {admin-password} -O {owner} -W {workspace-name}
+
+where:
+    -h  show help message
+    -w  workspace-api service url (default: http://workspace-api.192-168-49-2.nip.io)
+    -a  authorization server url (default: http://keycloak.192-168-49-2.nip.io)
+    -r  realm within Keycloak (default: master)
+    -u  username used for authentication (default: admin)
+    -p  password used for authentication (default: changeme)
+    -c  client id of the bootstrap client used in the create request (default: admin-cli)
+    -O  user ID of the 'owner' of the new workspace (default: workspace(-W))
+    -W  name of the workspace to create (default: owner(-O))
+"
 
 main() {
-  checkPrerequisites
-  processCmdline "$@"
-  getAdminIdToken
-  createWorkspace
+  processCmdline "$@" && \
+    checkInputs && \
+    createWorkspace
+    # echo "All GOOD"
 }
 
-checkPrerequisites() {
-  if ! hash jq 2>/dev/null; then
-    printMsg "ERROR: missing required command 'jq' - must be installed"
-    exit
-  fi
-}
-
-# Process command-line args
-# create-workspace <domain> <user> <user-inum> [<client-id> <client-secret>]
 processCmdline() {
-  # client credentials from file
-  getClientCredentials
-  # mandatory args
-  if test $# -ge 3; then
-    domain="$1"
-    username="$2"
-    user_inum="$3"
-  else
-    printMsg "ERROR: not enough args"
-    usage
-    exit 1
-  fi
-  # client_id
-  if test $# -ge 4; then
-    client_id="$4"
-    client_secret=
-  fi
-  # client_secret
-  if test $# -ge 5; then
-    client_secret="$5"
-  fi
-  # check client credentials
-  if test -z "${client_id}" -o -z "${client_secret}"; then
-    printMsg "ERROR: missing client credentials"
-    exit
-  fi
+  OPTIND=1  ## reset
+  # Env vars expected by the 'runcurl' function
+  auth_server="http://keycloak.192-168-49-2.nip.io"
+  realm="master"
+  client="admin-cli"
+  username="admin"
+  password="changeme"
+  # Service url
+  workspace_api="http://workspace-api.192-168-49-2.nip.io"
+  # Details of the new workspace to create
+  owner=
+  workspace=
+  # Loop throught the cmdline options
+  while getopts ":hw:a:r:c:u:p:O:W:" opt; do
+    case "${opt}" in
+      h)
+        echo "${usage}"
+        return 1
+        ;;
+      w)
+        workspace_api="${OPTARG}"
+        ;;
+      a)
+        auth_server="${OPTARG}"
+        ;;
+      r)
+        realm="${OPTARG}"
+        ;;
+      c)
+        client="${OPTARG}"
+        ;;
+      u)
+        username="${OPTARG}"
+        ;;
+      p)
+        password="${OPTARG}"
+        ;;
+      O)
+        owner="${OPTARG}"
+        if [[ -z "${workspace}" ]]; then workspace="${owner}"; fi
+        ;;
+      W)
+        workspace="${OPTARG}"
+        if [[ -z "${owner}" ]]; then workspace="${workspace}"; fi
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        return 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument." >&2
+        return 1
+        ;;
+    esac
+  done
+  shift $((OPTIND-1))
 }
 
-getClientCredentials() {
-  if [ -f "${CLIENT_YAML}" ]; then
-    client_id="$(cat ${CLIENT_YAML} | grep client-id | cut -d\  -f2)"
-    client_secret=$(cat ${CLIENT_YAML} | grep client-secret | cut -d\  -f2)
-  fi
-}
-
-getAdminIdToken() {
-  echo -n "admin password> "
-  read -s password
-  echo
-  admin_id_token=$(curl -s -L -k -X POST "https://auth.${domain}/oxauth/restv1/token" \
-    -H "Cache-Control: no-cache" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    --data-urlencode "scope=openid user_name is_operator" \
-    --data-urlencode "grant_type=password" \
-    --data-urlencode "username=admin" \
-    --data-urlencode "password=${password}" \
-    --data-urlencode "client_id=${client_id}" \
-    --data-urlencode "client_secret=${client_secret}" \
-    | jq -r '.id_token')
-  if test "${admin_id_token}" = "null"; then
-    printMsg "ERROR: ID token is null"
-    exit
+checkInputs() {
+  if ! [[ -n "${workspace_api}" && \
+          -n "${auth_server}" && \
+          -n "${realm}" && \
+          -n "${client}" && \
+          -n "${username}" && \
+          -n "${password}" && \
+          -n "${owner}" && \
+          -n "${workspace}" \
+       ]]; then
+    echo "ERROR - missing arguments" >&2
+    return 1
   fi
 }
 
 createWorkspace() {
-  curl -s -L -k -X POST \
-  "https://workspace-api.${domain}/workspaces" \
-  -H "accept: application/json" \
-  -H "Content-Type: application/json" \
-  -H "X-User-Id: ${admin_id_token}" \
-  -d "{
-  \"preferred_name\": \"${username}\",
-  \"default_owner\": \"${user_inum}\"
-}"
-  echo
-}
+  echo "Creating workspace ${workspace} owned by user ${owner}..."
 
-# usage summary
-usage() {
-  cat - <<EOF 1>&2
-Usage:
-  $(basename $0) <domain> <user> <user-inum> [<client-id> <client-secret>]
+  payload=$(cat - <<EOF
+{
+  "preferred_name": "${workspace}",
+  "default_owner": "${owner}"
+}
 EOF
-}
+  )
 
-# Write all output to stderr - keeping stdout 'clean' for the client details
-printMsg() {
-  echo "$@" 1>&2
+  # env vars expected by runcurl
+  runcurl -a -d "Create Workspace ${workspace}" -r "201 422" -- \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -X POST --data "${payload}" \
+    "${workspace_api}/workspaces"
 }
 
 main "$@"

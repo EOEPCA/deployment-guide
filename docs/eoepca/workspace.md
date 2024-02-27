@@ -13,7 +13,7 @@ The _Workspace API_ is deployed via the `rm-workspace-api` helm chart from the [
 The chart is configured via values that are fully documented in the [README for the `um-workspace-api` chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-workspace-api#readme).
 
 ```bash
-helm install --version 1.3.5 --values workspace-api-values.yaml \
+helm install --version 1.4.2 --values workspace-api-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   workspace-api rm-workspace-api
 ```
@@ -24,7 +24,7 @@ At minimum, values for the following attributes should be specified:
 
 * The fully-qualified public URL for the service
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the Workspace API will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the Workspace API will **not** be protected by the `identity-gatekeeper` component - ref. [Resource Protection](./resource-protection-keycloak.md). Otherwise the ingress will be handled by the `identity-gatekeeper` - use `ingress.enabled: false`._
 * Prefix for user projects in OpenStack
 * Details for underlying S3 object storage service
 * Identification of secret that provides the client credentials for resource protection
@@ -58,18 +58,21 @@ s3Region: "RegionOne"
 harborUrl: "https://harbor.192-168-49-2.nip.io"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor"
-umaClientSecretName: "resman-client"
-umaClientSecretNamespace: "rm"
 workspaceChartsConfigMap: "workspace-charts"
 bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
-pepBaseUrl: "http://workspace-api-pep:5576/resources"
-autoProtectionEnabled: True
+keycloakIntegration:
+  enabled: true
+  keycloakUrl: "https://keycloak.192-168-49-2.nip.io"
+  realm: "master"
+  identityApiUrl: "https://identity-api.192-168-49-2.nip.io"
+  workspaceApiIamClientId: "workspace-api"
+  defaultIamClientSecret: "changeme"
 ```
 
 !!! note
     * The Workspace API assumes a deployment of the Harbor Container Regsitry, as configured by the `harborXXX` values above.<br>See section [Container Registry](container-registry.md).
     * The password for the harbor `admin` user must be created as described in the section [Harbor `admin` Password](#harbor-admin-password).
-    * If the workspace-api is access protected (ref. [section Protection](#protection)), then it is recommended to enable `autoProtectionEnabled` and to specifiy the `pepBaseUrl`.
+    * The `keycloakIntegration` allows the Workspace API to apply protecion (for the specified workspace owner) to the services within newly created workspaces.
     * The workspace-api initiates the creation of a storage 'bucket' for each workspace - the actual bucket creation being abstracted via a webhook - the URL of which is specified in the value `bucketEndpointUrl`.<br>
       _See section [Bucket Creation Webhook](#bucket-creation-webhook) for details._
 
@@ -102,7 +105,7 @@ The default ConfigMap that is included with this guide contains the following te
 
 * **Data Access**: `template-hr-data-access.yaml`
 * **Resource Catalogue**: `template-hr-resource-catalogue.yaml`
-* **Protection**: `template-hr-resource-guard.yaml`
+* **Protection**: `template-hr-resource-protection.yaml`
 
 Each of these templates is expressed as a flux `HelmRelease` object that describes the helm chart and values required to deploy the service.
 
@@ -118,7 +121,7 @@ These ConfigMaps are designed to be mounted as files into the runtime environmen
 
 The templates are provided to the Workspace API as a `ConfigMap` in the namespace of the Workspace API deployment...
 
-_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.3/deploy/eoepca/workspace-templates))_
+_(for full examples see [https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4/deploy/eoepca/workspace-templates](https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4/deploy/eoepca/workspace-templates))_
 
 ```yaml
 apiVersion: v1
@@ -160,21 +163,21 @@ data:
             namespace: rm
       values:
         ...
-  template-hr-resource-guard.yaml: |
+  template-hr-resource-protection.yaml: |
     apiVersion: helm.toolkit.fluxcd.io/v2beta1
     kind: HelmRelease
     metadata:
-      name: resource-guard
+      name: resource-protection
     spec:
       interval: 5m
       chart:
         spec:
-          chart: resource-guard
-          version: 1.3.1
+          chart: identity-gatekeeper
+          version: 1.0.11
           sourceRef:
             kind: HelmRepository
             name: eoepca
-            namespace: rm
+            namespace: ${NAMESPACE}
       values:
         ...
   template-cm-aws-config.yaml: |
@@ -253,129 +256,84 @@ The Workspace API uses the [`jinja2` templating engine](https://palletsprojects.
 
 ### Protection
 
-As described in [section Resource Protection](resource-protection.md), the `resource-guard` component can be inserted into the request path of the Workspace API service to provide access authorization decisions
+As described in [section Resource Protection (Keycloak)](resource-protection-keycloak.md), the `identity-gatekeeper` component can be inserted into the request path of the `workspace-api` service to provide access authorization decisions
+
+#### Gatekeeper
+
+Gatekeeper is deployed using its helm chart...
 
 ```bash
-helm install --version 1.3.1 --values workspace-api-guard-values.yaml \
+helm install workspace-api-protection identity-gatekeeper -f workspace-api-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
-  workspace-api-guard resource-guard
+  --namespace "rm" --create-namespace \
+  --version 1.0.11
 ```
 
-The `resource-guard` must be configured with the values applicable to the Workspace API for the _Policy Enforcement Point_ (`pep-engine`) and the _UMA User Agent_ (`uma-user-agent`)...
+The `identity-gatekeeper` must be configured with the values applicable to the `workspace-api` - in particular the specific ingress requirements for the `workspace-api` backend service...
 
-**Example `workspace-api-guard-values.yaml`...**
+**Example `workspace-api-protection-values.yaml`...**
 
 ```yaml
-#---------------------------------------------------------------------------
-# Global values
-#---------------------------------------------------------------------------
-global:
-  context: workspace-api
-  domain: 192-168-49-2.nip.io
-  nginxIp: 192.168.49.2
-  certManager:
-    clusterIssuer: letsencrypt-production
-#---------------------------------------------------------------------------
-# PEP values
-#---------------------------------------------------------------------------
-pep-engine:
-  configMap:
-    asHostname: auth
-    pdpHostname: auth
-  defaultResources:
-    - name: "Workspace API Base Path"
-      description: "Protected root path for operators only"
-      resource_uri: "/"
-      scopes: []
-      default_owner: "0000000000000"
-  customDefaultResources:
-    - name: "Workspace API Swagger Docs"
-      description: "Public access to workspace API swagger docs"
-      resource_uri: "/docs"
-      scopes:
-        - "public_access"
-      default_owner: "0000000000000"
-    - name: "Workspace API OpenAPI JSON"
-      description: "Public access to workspace API openapi.json file"
-      resource_uri: "/openapi.json"
-      scopes:
-        - "public_access"
-      default_owner: "0000000000000"
-  volumeClaim:
-    name: eoepca-resman-pvc
-    create: false
-#---------------------------------------------------------------------------
-# UMA User Agent values
-#---------------------------------------------------------------------------
-uma-user-agent:
-  nginxIntegration:
-    enabled: true
-    hosts:
-      - host: workspace-api
-        paths:
-          - path: /(.*)
-            service:
-              name: workspace-api
-              port: http
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-      nginx.ingress.kubernetes.io/enable-cors: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
-  client:
-    credentialsSecretName: "resman-client"
-  logging:
-    level: "info"
-  unauthorizedResponse: 'Bearer realm="https://portal.192-168-49-2.nip.io/oidc/authenticate/"'
-  openAccess: false
-  insecureTlsSkipVerify: true
+fullnameOverride: workspace-api-protection
+config:
+  client-id: workspace-api
+  discovery-url: https://keycloak.192-168-49-2.nip.io/realms/master
+  cookie-domain: 192-168-49-2.nip.io
+targetService:
+  host: workspace-api.192-168-49-2.nip.io
+  name: workspace-api
+  port:
+    number: 8080
+secrets:
+  # Values for secret 'workspace-api-protection'
+  # Note - if ommitted, these can instead be set by creating the secret independently.
+  clientSecret: "changeme"
+  encryptionKey: "changemechangeme"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  serverSnippets:
+    custom: |-
+      # Open access to some endpoints, including Swagger UI
+      location ~ ^/(docs|openapi.json|probe) {
+        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
+      }
 ```
 
-!!! note
-    * TLS is enabled by the specification of `certManager.clusterIssuer`
-    * The `letsencrypt` Cluster Issuer relies upon the deployment being accessible from the public internet via the `global.domain` DNS name. If this is not the case, e.g. for a local minikube deployment in which this is unlikely to be so. In this case the TLS will fall-back to the self-signed certificate built-in to the nginx ingress controller
-    * `insecureTlsSkipVerify` may be required in the case that good TLS certificates cannot be established, e.g. if letsencrypt cannot be used for a local deployment. Otherwise the certificates offered by login-service _Authorization Server_ will fail validation in the _Resource Guard_.
-    * `customDefaultResources` can be specified to apply initial protection to the endpoint.<br>
-      _In the example above we open up access to the OpenAPI (swagger) documentation that does not require protection._
+#### Keycloak Client
 
-### Client Secret
+The Gatekeeper instance relies upon an associated client configured within Keycloak - ref. `client-id: workspace-api` above.
 
-The Resource Guard requires confidential client credentials to be configured through the file `client.yaml`, delivered via a kubernetes secret..
+This can be created with the `create-client` helper script, as descirbed in section [Client Registration](./resource-protection-keycloak.md#client-registration).
 
-**Example `client.yaml`...**
-
-```yaml
-client-id: a98ba66e-e876-46e1-8619-5e130a38d1a4
-client-secret: 73914cfc-c7dd-4b54-8807-ce17c3645558
-```
-
-**Example `Secret`...**
+For example, with path protection for the `admin` user...
 
 ```bash
-kubectl -n rm create secret generic resman-client \
-  --from-file=client.yaml \
-  --dry-run=client -o yaml \
-  > resman-client-secret.yaml
-```
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: resman-client
-  namespace: rm
-data:
-  client.yaml: Y2xpZW50LWlkOiBhOThiYTY2ZS1lODc2LTQ2ZTEtODYxOS01ZTEzMGEzOGQxYTQKY2xpZW50LXNlY3JldDogNzM5MTRjZmMtYzdkZC00YjU0LTg4MDctY2UxN2MzNjQ1NTU4
-```
-
-The client credentials are obtained by registration of a client at the login service web interface - e.g. [https://auth.192-168-49-2.nip.io](https://auth.192-168-49-2.nip.io). In addition there is a helper script that can be used to create a basic client and obtain the credentials, as described in [section Resource Protection](resource-protection.md#client-registration)...
-```bash
-./deploy/bin/register-client auth.192-168-49-2.nip.io "Resource Guard" | tee client.yaml
+../bin/create-client \
+  -a https://keycloak.192-168-49-2.nip.io \
+  -i https://identity-api.192-168-49-2.nip.io \
+  -r "master" \
+  -u "admin" \
+  -p "changeme" \
+  -c "admin-cli" \
+  --id="workspace-api" \
+  --name="Workspace API Gatekeeper" \
+  --secret="changeme" \
+  --description="Client to be used by Workspace API Gatekeeper" \
+  --resource="admin" --uris='/*' --scopes=view --users="admin"
 ```
 
 ### Workspace API Usage
 
 The Workspace API provides a REST interface that is accessed at the endpoint https://workspace-api.192-168-49-2.nip.io/.<br>
-See the [Swagger Docs](https://workspace-api.192-168-49-2.nip.io/docs).
+See the [Swagger Docs - /docs](https://workspace-api.192-168-49-2.nip.io/docs).
+
+!!! note
+    If the Workspace API has been protected ([via Gatekeeper with Keycloak](./identity-service.md#protection-of-resources)), then requests must be supported by an `access_token` carried in the HTTP header `Authorozation: Bearer <token>`. This diminishes the utility of the swagger UI.
 
 ### Additional Information
 

@@ -1,7 +1,7 @@
 
 @domain = 192-168-49-2.nip.io
 @wsapi = workspace-api.{{domain}}
-@login = auth.{{domain}}
+@login = keycloak.{{domain}}
 @user = eric
 @pass = defaultPWD
 @clientId = e12780c1-7d4c-4e7e-86a8-e55ef0351d00
