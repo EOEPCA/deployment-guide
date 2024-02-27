@@ -103,9 +103,15 @@ EOF
 }
 
 createIdentityApiClient() {
-  # Use port-forwarding to go directly to the identity-api service
+  # Wait for services to be ready..
+  echo "Waiting for Identity Postgres service to be ready..."
+  kubectl -n "${NAMESPACE}" rollout status deploy/identity-postgres --watch
+  echo "Waiting for Identity Keycloak service to be ready..."
+  kubectl -n "${NAMESPACE}" rollout status deploy/identity-keycloak --watch
   echo "Waiting for Identity API service to be ready..."
   kubectl -n "${NAMESPACE}" rollout status deploy/identity-api --watch
+
+  # Use port-forwarding to go directly to the identity-api service
   echo "Establish port-forwarding to Identity API service on port ${TEMP_FORWARDING_PORT}..."
   kubectl -n "${NAMESPACE}" port-forward svc/identity-api "${TEMP_FORWARDING_PORT}":http >/dev/null &
   portForwardPid=$!
@@ -131,6 +137,10 @@ createIdentityApiClient() {
   # Stop the port-forwarding
   echo "Stop port-forwarding to Identity API service on port ${TEMP_FORWARDING_PORT}..."
   kill -TERM $portForwardPid
+
+  # Wait for services to be ready..
+  echo "Waiting for Identity API Protection service to be ready..."
+  kubectl -n "${NAMESPACE}" rollout status deploy/identity-api-protection --watch
 }
 
 createTestUsers() {

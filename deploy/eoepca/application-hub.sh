@@ -27,6 +27,7 @@ deployService() {
     helm --namespace "${NAMESPACE}" uninstall application-hub
   else
     serviceValues | helm ${ACTION_HELM} application-hub application-hub -f - \
+      --timeout 10m \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
       --version 2.0.55
