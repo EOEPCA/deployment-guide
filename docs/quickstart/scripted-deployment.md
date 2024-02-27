@@ -131,7 +131,7 @@ See the building block specific pages...
 
 ### Identity Service
 
-By default, the Identity Service is accessed at the URL `https://keycloak.<domain>/` with the credentials...
+By default, the Identity Service is accessed at the URL `https://keycloak.192-168-49-2.nip.io/` with the credentials...
 
 ```
 username: `admin`
@@ -142,7 +142,7 @@ password: `changeme`
 
 ### Minio Object Storage
 
-By default, Minio is accessed at the URL `https://console.minio.<domain>/` with the credentials...
+By default, Minio is accessed at the URL `https://console.minio.192-168-49-2.nip.io/` with the credentials...
 
 ```
 username: `eoepca`
@@ -153,7 +153,7 @@ password: `changeme`
 
 ### Harbor Container Registry
 
-By default, Harbor is accessed at the URL `https://harbor.<domain>/` with the credentials...
+By default, Harbor is accessed at the URL `https://harbor.192-168-49-2.nip.io/` with the credentials...
 
 ```
 username: `admin`
@@ -184,12 +184,12 @@ The deployment created the test users `eric`, `bob` and `alice`. For completenes
 
 ### Using Workspace Swagger UI
 
-The Workspace API provides a Swagger UI that facilitates interaction with the API - at the URL `https://workspace-api.<domain>/docs#`.
+The Workspace API provides a Swagger UI that facilitates interaction with the API - at the URL `https://workspace-api.192-168-49-2.nip.io/docs#`.
 
 !!! note
     If the Workspace API has been protected ([via Gatekeeper with Keycloak](../eoepca/identity-service.md#protection-of-resources)), then requests must be supported by an `access_token` carried in the HTTP header `Authorozation: Bearer <token>`. This diminishes the utility of the swagger UI.
 
-Access the Workspace Swagger UI at `https://workspace-api.<domain>/docs`. Workspaces are created using `POST  /workspaces` **(Create Workspace)**. Expand the node and select `Try it out`. Complete the request body, such as...
+Access the Workspace Swagger UI at `https://workspace-api.192-168-49-2.nip.io/docs`. Workspaces are created using `POST  /workspaces` **(Create Workspace)**. Expand the node and select `Try it out`. Complete the request body, such as...
 ```json
 {
   "preferred_name": "eric",
@@ -223,7 +223,7 @@ Values must be provided for:
 The Access Token for the `admin` user can be obtained with a call to the token endpoint of the Identity Service - supplying the credentials for the `admin` user and the pre-registered client...
 
 ```bash
-curl -L -X POST 'https://keycloak.<domain>/realms/master/protocol/openid-connect/token' \
+curl -L -X POST 'https://keycloak.192-168-49-2.nip.io/realms/master/protocol/openid-connect/token' \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   --data-urlencode 'scope=openid profile email' \

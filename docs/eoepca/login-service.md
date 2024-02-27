@@ -116,7 +116,7 @@ The default resource protection establishes policy in which 'operator' privilege
 
 ## Login Service Usage
 
-Once the deployment has been completed successfully, the Login Service is accessed at the endpoint `https://auth.<domain>/`, configured by your domain - e.g. [https://auth.192-168-49-2.nip.io/](https://auth.192-168-49-2.nip.io/).
+Once the deployment has been completed successfully, the Login Service is accessed at the endpoint `https://auth.192-168-49-2.nip.io/`, configured by your domain - e.g. [https://auth.192-168-49-2.nip.io/](https://auth.192-168-49-2.nip.io/).
 
 Login as the `admin` user with the credentials configured in the helm values - ref. `adminPass` / `ldapPass`.
 

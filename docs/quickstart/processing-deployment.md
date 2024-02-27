@@ -26,7 +26,7 @@ Deployment is initiated by invoking the script...
 ./deploy/processing/processing
 ```
 
-The ADES service is accessed at the endpoint `zoo-open.<domain>` - e.g. `zoo-open.192-168-49-2.nip.io`.
+The ADES service is accessed at the endpoint `zoo-open.192-168-49-2.nip.io`.
 
 ## Post-deploy Manual Steps
 
@@ -193,7 +193,7 @@ Alternatively the following `curl` commands can be used...
 
 The outputs are published as a static STAC catalogue to a path that includes the unique job ID.
 
-In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `console.minio.<domain>` e.g. http://console.minio.192-168-49-2.nip.io/, or using an S3 client such as...
+In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `http://console.minio.192-168-49-2.nip.io/`, or using an S3 client such as...
 
 ```bash
 s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca

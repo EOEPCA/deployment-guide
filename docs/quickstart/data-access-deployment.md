@@ -26,9 +26,9 @@ Deployment is initiated by invoking the script...
 ./deploy/data-access/data-access
 ```
 
-The Resource Catalogue is accessed at the endpoint `resource-catalogue-open.<domain>` - e.g. [`resource-catalogue-open.192-168-49-2.nip.io`](http://resource-catalogue-open.192-168-49-2.nip.io/).
+The Resource Catalogue is accessed at the endpoint `resource-catalogue-open.192-168-49-2.nip.io` - e.g. [`resource-catalogue-open.192-168-49-2.nip.io`](http://resource-catalogue-open.192-168-49-2.nip.io/).
 
-The Data Access View Server is accessed at the endpoint `data-access-open.<domain>` - e.g. [`data-access-open.192-168-49-2.nip.io`](http://data-access-open.192-168-49-2.nip.io/).
+The Data Access View Server is accessed at the endpoint `data-access-open.192-168-49-2.nip.io` - e.g. [`data-access-open.192-168-49-2.nip.io`](http://data-access-open.192-168-49-2.nip.io/).
 
 ## Post-deploy Manual Steps
 

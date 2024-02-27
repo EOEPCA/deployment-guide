@@ -305,7 +305,7 @@ Creating and protecting resources can be done in multiple ways, as described in 
 
 To create and protect resources using the keycloak User Interface (UI), do the following steps:
 
-* (Optional) Create clients. Clients can be created using the keycloak user interface at http://keycloak.<domain>. You need to login as admin.<br>
+* (Optional) Create clients. Clients can be created using the keycloak user interface at http://keycloak.192-168-49-2.nip.io. You need to login as admin.<br>
   To create a client: Login as admin in the keycloak UI > Clients > Create Client > Set a name > Next > Turn Client Authentication and Authorization On > Add the valid redirect URI's > Save.
 * (Optional) Create Users. Users > Add User. Then set a password for the user. Credentials > Set Password.
 * Select a client.

@@ -73,7 +73,7 @@ notary:
 
 ## Container Registry Usage
 
-After deployemnt Harbor is accessible via its [web interface](https://harbor.192-168-49-2.nip.io/) at `https://harbor.<domain>/`<br>e.g. [https://harbor.192-168-49-2.nip.io/](https://harbor.192-168-49-2.nip.io/).
+After deployemnt Harbor is accessible via its [web interface](https://harbor.192-168-49-2.nip.io/) at `https://harbor.192-168-49-2.nip.io/`<br>e.g. [https://harbor.192-168-49-2.nip.io/](https://harbor.192-168-49-2.nip.io/).
 
 Login as the admin user with the password specified in the helm values.
 

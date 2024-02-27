@@ -147,7 +147,7 @@ For example...
 The Resource Catalogue is initially populated during the initialisation of the Data Access service.<br>
 See section [Data-layer Configuration](data-access.md#data-layer-configuration).
 
-The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.<domain>/`, configured by your domain - e.g. [https://resource-catalogue.192-168-49-2.nip.io/](https://resource-catalogue.192-168-49-2.nip.io/).
+The Resource Catalogue is accessed at the endpoint `https://resource-catalogue.192-168-49-2.nip.io/`, configured by your domain - e.g. [https://resource-catalogue.192-168-49-2.nip.io/](https://resource-catalogue.192-168-49-2.nip.io/).
 
 ### Loading Records
 
