@@ -23,7 +23,7 @@ Typically, values for the following attributes may be specified:
 * The fully-qualified public URL for the service
 * Dynamic provisioning _StorageClass_ for database persistence
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the Resource Catalogue will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection-gluu.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the Resource Catalogue will **not** be protected by the `identity-gatekeeper` component - ref. [Resource Protection](./resource-protection-keycloak.md). Otherwise the ingress will be handled by the `identity-gatekeeper` - use `ingress.enabled: false`._
 * Metadata describing the Catalogue instance
 * Tuning configuration for PostgreSQL - see values `db.config.XXX`.
 
@@ -32,7 +32,7 @@ Typically, values for the following attributes may be specified:
 ```yaml
 global:
   namespace: rm
-# For protected access disable this ingress, and rely upon the resource-guard
+# For protected access disable this ingress, and rely upon the identity-gatekeeper
 # for ingress with protection.
 ingress:
   # Enabled for unprotected 'open' access to the resource-catalogue.

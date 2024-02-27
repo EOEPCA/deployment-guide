@@ -32,7 +32,7 @@ Typically, values for the following attributes may be specified to override the 
 * Object storage details for `data` and `cache`
 * Container images for `renderer` and `registrar`
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the Data Access will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection-gluu.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the Data Access will **not** be protected by the `identity-gatekeeper` component - ref. [Resource Protection](./resource-protection-keycloak.md). Otherwise the ingress will be handled by the `identity-gatekeeper` - use `ingress.enabled: false`._
 
 ```yaml
 global:

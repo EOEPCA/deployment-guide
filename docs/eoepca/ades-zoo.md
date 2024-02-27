@@ -1,8 +1,10 @@
-# **ZOO-Project DRU --NEW--**
+# **ADES (Processing)**
 
 <div style="text-align: center; font-weight: bold; font-style: italic;">
   ADES - Application Deployment & Execution Service
 </div>
+
+## ZOO-Project DRU
 
 !!! note
     With EOEPCA release 1.4, the ADES implementation has been significantly reworked and fully aligned with the upstream [ZOO-Project](https://www.zoo-project.org/) ([GitHub](https://github.com/ZOO-Project/ZOO-Project)). This `zoo-project-dru` version deprecates the previous `proc-ades` implementation.
@@ -18,6 +20,10 @@
     * **Deployed Application Version**<br>
       The version of the deployed application is obtained from the Application Package CWL (ref. `s:softwareVersion: 0.1.2`), and is maintained within the metadata for the deployed process that is returned from the APIs `Get Process Details` request.<br>
       In the case that multiple versions of the same Application Package are required to be simultaneously deployed, then this would have to be handled with different CWL documents in which the version is embedded in the workflow `id` (or some other technique that establishes uniqueness of `id` between variants).
+
+<div style="text-align: center; font-weight: bold; font-style: italic;">
+  DRU - Deploy, Replace, Undeploy - OFC API Processes Part 2
+</div>
 
 The _ADES_ provides a platform-hosted execution engine through which users can initiate parameterised processing jobs using applications made available within the platform - supporting the efficient execution of the processing 'close to the data'. Users can deploy specific 'applications' to the ADES, which may be their own applications, or those published by other platform users.
 

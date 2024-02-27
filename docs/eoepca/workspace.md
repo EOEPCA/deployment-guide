@@ -24,7 +24,7 @@ At minimum, values for the following attributes should be specified:
 
 * The fully-qualified public URL for the service
 * (optional) Specification of Ingress for reverse-proxy access to the service<br>
-  _Note that this is only required in the case that the Workspace API will **not** be protected by the `resource-guard` component - ref. [Resource Protection](resource-protection-gluu.md). Otherwise the ingress will be handled by the `resource-guard` - use `ingress.enabled: false`._
+  _Note that this is only required in the case that the Workspace API will **not** be protected by the `identity-gatekeeper` component - ref. [Resource Protection](./resource-protection-keycloak.md). Otherwise the ingress will be handled by the `identity-gatekeeper` - use `ingress.enabled: false`._
 * Prefix for user projects in OpenStack
 * Details for underlying S3 object storage service
 * Identification of secret that provides the client credentials for resource protection

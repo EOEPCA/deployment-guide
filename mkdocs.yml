@@ -35,9 +35,7 @@ nav:
           - Policy Decision Point: eoepca/pdp.md
           - Resource Protection: eoepca/resource-protection-gluu.md
           - User Profile: eoepca/user-profile.md
-      - ADES (Processing):
-        - ZOO-Project DRU --NEW--: eoepca/ades-zoo.md
-        - proc-ades --Deprecated--: eoepca/ades-proc.md
+      - ADES (Processing): eoepca/ades-zoo.md
       - Application Hub: eoepca/application-hub.md
       - Resource Catalogue: eoepca/resource-catalogue.md
       - Data Access: eoepca/data-access.md
