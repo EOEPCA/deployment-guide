@@ -13,7 +13,7 @@ source ../cluster/functions
 
 usage="
 Add a client with protected resources.
-$(basename "$0") [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] --secret secret [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
+$(basename "$0") [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] (--secret secret | --public) [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
 
 where:
     -h                    show help message
@@ -28,6 +28,7 @@ where:
     --id                  client id (of the created client)
     --name                client name (of the created client)
     --secret              client secret (of the created client)
+    --public              public client (no client secret)
     --default             add default resource - /* authenticated
     --authenticated       allow access to the resource only when authenticated
     --resource            resource name
@@ -37,7 +38,7 @@ where:
     --roles               role names with access to the resource - separated by comma (,)
 "
 
-TEMP=$(getopt -o ha:i:u:p:c:s:t:r: --long id:,name:,description:,secret:,default,authenticated,resource:,uris:,scopes:,users:,roles: \
+TEMP=$(getopt -o ha:i:u:p:c:s:t:r: --long id:,name:,description:,secret:,public,default,authenticated,resource:,uris:,scopes:,users:,roles: \
   -n "$(basename "$0")" -- "$@")
 
 if [ $? != 0 ]; then
@@ -52,6 +53,7 @@ realm=
 client_id=
 client_name=
 client_secret=
+client_public=
 client_description=
 resource_name=
 resource_uris=
@@ -72,7 +74,9 @@ main() {
   fi
   checkInputs
   createClient
-  configureDefaultResource
+  if [[ -z "${client_public}" || "${client_public}" != "true" ]]; then
+    configureDefaultResource
+  fi
   summariseClient
 }
 
@@ -98,6 +102,10 @@ processCmdline() {
     --secret)
       client_secret="$2"
       shift 2
+      ;;
+    --public)
+      client_public="true"
+      shift
       ;;
     --description)
       client_description="$2"
@@ -280,10 +288,23 @@ EOF
     fi
   }
 
+  secretOrPublic() {
+    if [[ -n "${client_public}" && "${client_public}" == "true" ]]; then
+      cat - <<EOF
+  "publicClient": true,
+  "authorizationServicesEnabled": false,
+EOF
+    else
+      cat - <<EOF
+  "secret": "${client_secret}",
+EOF
+    fi
+  }
+
   payload=$(cat - <<EOF
 {
   "clientId": "${client_id}",
-  "secret": "${client_secret}",
+$(secretOrPublic)
   "name": "${client_name}",
 $(resourcesJson)
   "description": "${client_description}"
@@ -315,7 +336,7 @@ configureDefaultResource() {
     -H "Accept: application/json" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
 
-  # Catch the case that client has no resources (e.g. client for Application Hub)
+  # Catch the case that client has no resources (e.g. client for eoepca-portal)
   if (( response_code == 404 )); then
     echo "Client has no Default Resource - skipping..."
     return
@@ -362,7 +383,7 @@ summariseClient() {
     -H "Accept: application/json" \
     "${auth_server}/admin/realms/${realm}/clients/${createdClientId}/authz/resource-server/resource"
 
-  # Catch the case that client has no resources (e.g. client for Application Hub)
+  # Catch the case that client has no resources (e.g. client for eoepca-portal)
   if (( response_code == 404 )); then
     echo "Client has no resources"
   else

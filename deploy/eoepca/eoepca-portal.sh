@@ -33,7 +33,7 @@ deployService() {
     serviceValues | helm ${ACTION_HELM} eoepca-portal ~/develop/EOEPCA/helm-charts-dev/charts/eoepca-portal -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.11
+      --version 1.0.13
   fi
 }
 
@@ -87,7 +87,7 @@ createClient() {
     -c "${IDENTITY_SERVICE_ADMIN_CLIENT}" \
     --id=eoepca-portal \
     --name="EOEPCA Portal" \
-    --secret="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
+    --public \
     --description="Client to be used by the EOEPCA Portal"
 }
 
