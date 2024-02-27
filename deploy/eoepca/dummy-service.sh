@@ -102,7 +102,7 @@ config:
   discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
-  host: dummy-service-protected.${domain}
+  host: dummy-service.${domain}
   name: dummy-service
   port:
     number: 80

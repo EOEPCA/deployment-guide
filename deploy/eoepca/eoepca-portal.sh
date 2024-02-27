@@ -52,7 +52,7 @@ configMap:
   workspace_url: "$(httpScheme)://workspace-api.${domain}"
   workspace_docs_url: "$(httpScheme)://workspace-api.${domain}/docs#"
   images_registry_url: "$(httpScheme)://harbor.${domain}"
-  dummy_service_url: "$(httpScheme)://dummy-service-protected.${domain}"
+  dummy_service_url: "$(httpScheme)://dummy-service.${domain}"
   access_token_name: "auth_user_id"
   access_token_domain: ".${domain}"
   refresh_token_name: "auth_refresh_token"
