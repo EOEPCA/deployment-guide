@@ -292,7 +292,6 @@ EOF
     if [[ -n "${client_public}" && "${client_public}" == "true" ]]; then
       cat - <<EOF
   "publicClient": true,
-  "authorizationServicesEnabled": false,
 EOF
     else
       cat - <<EOF
