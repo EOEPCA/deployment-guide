@@ -27,4 +27,4 @@ jobs:
           git config --global user.email "ci@eoepca.org"
           git fetch origin gh-pages --depth=1
       - name: Publish version
-        run: mike deploy --push --update-aliases current latest
+        run: mike deploy --push --update-aliases current
