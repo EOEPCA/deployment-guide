@@ -475,12 +475,49 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Profiles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Profiles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Simple Deployment
+    Simple
   </span>
   
 
@@ -501,7 +538,28 @@
         
   
   <span class="md-ellipsis">
-    Processing Deployment
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-hub-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -585,11 +643,19 @@
         
   
   <span class="md-ellipsis">
-    CREODIAS Deployment
+    CREODIAS Data
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -898,11 +964,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/keycloak.md" class="md-nav__link">
+      <a href="../../eoepca/identity-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Keycloak
+    Identity Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/resource-protection-keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
   </span>
   
 
@@ -1006,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/resource-protection/" class="md-nav__link">
+      <a href="../../eoepca/resource-protection-gluu/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1015,14 +1102,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1057,6 +1136,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -1064,11 +1151,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/ades/" class="md-nav__link">
+      <a href="../../eoepca/ades-zoo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Application Deployment & Execution
+    ADES (Processing)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -1183,27 +1291,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../eoepca/application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1288,15 +1375,18 @@
 
 
 <h1 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">⚓︎</a></h1>
-<p>The deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components and the supporting Kubernetes cluster is described in the sections <a href="../../cluster/prerequisite-tooling/"><strong>Cluster</strong></a> and <a href="../../eoepca/persistence/"><strong><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr></strong></a>. These sections should be consulted for more detailed information.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components and the supporting Kubernetes cluster is described in the sections <a href="../../cluster/prerequisite-tooling/"><strong>Prepare Cluster</strong></a> and <a href="../../eoepca/persistence/"><strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong></a>. These sections should be consulted for more detailed information.</p>
+</div>
 <h2 id="scripted-deployment">Scripted Deployment<a class="headerlink" href="#scripted-deployment" title="Permanent link">⚓︎</a></h2>
-<p>As a companion to these descriptions, we have developed a set of scripts to provide a demonstration of an example deployment. This is described in the following section <a href="../scripted-deployment/">Scripted Deployment</a>.</p>
+<p>As a companion to these descriptions, we have developed a set of scripts to provide a demonstration of example deployments - see section <a href="../scripted-deployment/">Scripted Deployment</a> for a detailed description of the scripts and how they are configured and used.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The scripted deployment assumes that installation of the <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> has been performed</p>
 </div>
 <h2 id="customised-deployments">Customised Deployments<a class="headerlink" href="#customised-deployments" title="Permanent link">⚓︎</a></h2>
-<p>The Scripted Deployment can be quickly exploited through the following customisations for particular use cases:</p>
+<p>The Scripted Deployment can be quickly exploited through the following customisations (profiles) for particular use cases:</p>
 <ul>
 <li><strong><a href="../simple-deployment/">Simple</a></strong><br>
   <em>Basic local deployment</em></li>
@@ -1307,18 +1397,20 @@
 <li><strong><a href="../exploitation-deployment/">Exploitation</a></strong><br>
   <em>Deployment providing deployment/execution of processing via the ADES, supported by Resource Catalogue and Data Access services</em></li>
 <li><strong><a href="../userman-deployment/">User Management</a></strong><br>
-  <em>Deployment focused on the User Management services</em></li>
+  <em>Deployment focused on the Identity &amp; Access Management services</em></li>
+<li><strong><a href="../application-hub-deployment/">Application Hub</a></strong><br>
+  <em>Deployment providing the Application Hub that is pre-integrated via OIDC with the Identity Service</em></li>
 <li><strong><a href="../creodias-deployment/">CREODIAS</a></strong><br>
   <em>Deployment with access to CREODIAS <abbr title="Earth Observation">EO</abbr> data</em></li>
 </ul>
 <p>Each customisation is introduced in their respective sections.</p>
 <h2 id="quick-example">Quick Example<a class="headerlink" href="#quick-example" title="Permanent link">⚓︎</a></h2>
-<p>Follow these steps to create a simple local deployment in minikube&hellip;</p>
+<p>Follow these steps to create a <a href="../simple-deployment/">simple local deployment</a> in minikube&hellip;</p>
 <ol>
 <li><strong>Prerequisite Tooling</strong><br>
    Follow the steps in section <a href="../../cluster/prerequisite-tooling/">Prerequisite Tooling</a> to install the required tooling.</li>
 <li><strong>Clone the repository</strong><br>
-   <code>git clone https://github.com/EOEPCA/deployment-guide</code></li>
+   <code>git clone -b eoepca-v1.4 https://github.com/EOEPCA/deployment-guide</code></li>
 <li><strong>Initiate the deployment</strong><br>
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>./deploy/simple/simple

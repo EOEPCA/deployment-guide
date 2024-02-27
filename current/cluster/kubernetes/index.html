@@ -406,12 +406,49 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Profiles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Profiles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../quickstart/simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Simple Deployment
+    Simple
   </span>
   
 
@@ -432,7 +469,28 @@
         
   
   <span class="md-ellipsis">
-    Processing Deployment
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/application-hub-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -516,11 +574,19 @@
         
   
   <span class="md-ellipsis">
-    CREODIAS Deployment
+    CREODIAS Data
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -889,11 +955,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/keycloak.md" class="md-nav__link">
+      <a href="../../eoepca/identity-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Keycloak
+    Identity Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/resource-protection-keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
   </span>
   
 
@@ -997,7 +1084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/resource-protection/" class="md-nav__link">
+      <a href="../../eoepca/resource-protection-gluu/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1006,14 +1093,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1048,6 +1127,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -1055,11 +1142,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/ades/" class="md-nav__link">
+      <a href="../../eoepca/ades-zoo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Application Deployment & Execution
+    ADES (Processing)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -1174,27 +1282,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../eoepca/application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1271,6 +1358,10 @@
 
 <h1 id="kubernetes-cluster">Kubernetes Cluster<a class="headerlink" href="#kubernetes-cluster" title="Permanent link">⚓︎</a></h1>
 <p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation has been developed with Kubernetes as its deployment target. The system components have been developed, deployed and tested using a cluster at version <code>v1.22.5</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a href="../../quickstart/scripted-deployment/">Scripted Deployment</a> assumes that <code>minikube</code> is installed, and creates a minikube cluster under the profile <code>eoepca</code>.</p>
+</div>
 <h2 id="rancher-kubernetes-engine-rke">Rancher Kubernetes Engine (RKE)<a class="headerlink" href="#rancher-kubernetes-engine-rke" title="Permanent link">⚓︎</a></h2>
 <p>The development, integration and test clusters have been established using <a href="https://rancher.com/products/rke">Rancher Kubernetes Engine (RKE)</a> at version <code>v1.22.5</code>.</p>
 <p>An example of the creation of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Kubernetes clusters can be found on the <a href="https://github.com/EOEPCA/eoepca/tree/develop/kubernetes#readme">GitHub Kubernetes Setup page</a>. <a href="https://creodias.eu/">CREODIAS</a> has been used for the development hosting infrastructure - which provides OpenStack infrastructure that is backed by <a href="https://cloudferro.com/">Cloudferro</a>. An example of the <a href="https://www.terraform.io/">Terraform</a> configurations used to automate the creation of the cloud infrastructure that underpins the RKE deployment can be found on the <a href="https://github.com/EOEPCA/eoepca/tree/develop/creodias#readme">GitHub CREODIAS Setup page</a>.</p>

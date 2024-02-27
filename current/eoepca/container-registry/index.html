@@ -14,8 +14,6 @@
         <link rel="prev" href="../workspace/">
       
       
-        <link rel="next" href="../application-hub/">
-      
       
       <link rel="icon" href="../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.2">
@@ -406,12 +404,49 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Profiles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Profiles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../quickstart/simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Simple Deployment
+    Simple
   </span>
   
 
@@ -432,7 +467,28 @@
         
   
   <span class="md-ellipsis">
-    Processing Deployment
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/application-hub-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -516,11 +572,19 @@
         
   
   <span class="md-ellipsis">
-    CREODIAS Deployment
+    CREODIAS Data
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -831,11 +895,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../keycloak.md" class="md-nav__link">
+      <a href="../identity-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Keycloak
+    Identity Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-protection-keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
   </span>
   
 
@@ -939,7 +1024,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../resource-protection/" class="md-nav__link">
+      <a href="../resource-protection-gluu/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -948,14 +1033,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -990,6 +1067,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -997,11 +1082,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../ades/" class="md-nav__link">
+      <a href="../ades-zoo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Application Deployment & Execution
+    ADES (Processing)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -1192,27 +1298,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1306,7 +1391,7 @@
 
 
 <h1 id="container-registry">Container Registry<a class="headerlink" href="#container-registry" title="Permanent link">⚓︎</a></h1>
-<p>To support the development (ref. <a href="../application-hub/">Application Hub</a>) and deployment/execution (ref. <a href="../ades/">ADES</a>) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the <a href="https://goharbor.io/">Harbor artefact repository</a>.</p>
+<p>To support the development (ref. <a href="../application-hub/">Application Hub</a>) and deployment/execution (ref. <a href="../ades-zoo/">ADES</a>) of user-defined applications, we deploy a container registry to host container images. This is provied by a deployment of the <a href="https://goharbor.io/">Harbor artefact repository</a>.</p>
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
 <p><em>Harbor</em> is deployed via the <code>harbor</code> helm chart from the <a href="https://helm.goharbor.io">Harbor Helm Chart Repository</a>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>install<span class="w"> </span>--version<span class="w"> </span><span class="m">1</span>.7.3<span class="w"> </span>--values<span class="w"> </span>harbor-values.yaml<span class="w"> </span><span class="se">\</span>
@@ -1371,7 +1456,7 @@
 </ul>
 </div>
 <h2 id="container-registry-usage">Container Registry Usage<a class="headerlink" href="#container-registry-usage" title="Permanent link">⚓︎</a></h2>
-<p>After deployemnt Harbor is accessible via its <a href="https://harbor.192-168-49-2.nip.io/">web interface</a> at <code>https://harbor.&lt;domain&gt;/</code><br>e.g. <a href="https://harbor.192-168-49-2.nip.io/">https://harbor.192-168-49-2.nip.io/</a>.</p>
+<p>After deployemnt Harbor is accessible via its <a href="https://harbor.192-168-49-2.nip.io/">web interface</a> at <code>https://harbor.192-168-49-2.nip.io/</code><br>e.g. <a href="https://harbor.192-168-49-2.nip.io/">https://harbor.192-168-49-2.nip.io/</a>.</p>
 <p>Login as the admin user with the password specified in the helm values.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
 <p>Additional information regarding the <em>Container Registry</em> can be found at:</p>

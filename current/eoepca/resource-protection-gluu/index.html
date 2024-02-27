@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/eoepca/resource-protection/">
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/eoepca/resource-protection-gluu/">
       
       
         <link rel="prev" href="../pdp/">
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#resource-protection" class="md-skip">
+        <a href="#resource-protection-gluu" class="md-skip">
           Skip to content
         </a>
       
@@ -406,12 +406,49 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Profiles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Profiles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../quickstart/simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Simple Deployment
+    Simple
   </span>
   
 
@@ -432,7 +469,28 @@
         
   
   <span class="md-ellipsis">
-    Processing Deployment
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/application-hub-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -516,11 +574,19 @@
         
   
   <span class="md-ellipsis">
-    CREODIAS Deployment
+    CREODIAS Data
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -833,11 +899,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../keycloak.md" class="md-nav__link">
+      <a href="../identity-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Keycloak
+    Identity Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-protection-keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
   </span>
   
 
@@ -1090,14 +1177,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -1127,6 +1206,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -1134,11 +1221,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../ades/" class="md-nav__link">
+      <a href="../ades-zoo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Application Deployment & Execution
+    ADES (Processing)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -1244,27 +1352,6 @@
   
   <span class="md-ellipsis">
     Container Registry
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
   </span>
   
 
@@ -1423,7 +1510,7 @@
                   
 
 
-<h1 id="resource-protection">Resource Protection<a class="headerlink" href="#resource-protection" title="Permanent link">⚓︎</a></h1>
+<h1 id="resource-protection-gluu">Resource Protection (Gluu)<a class="headerlink" href="#resource-protection-gluu" title="Permanent link">⚓︎</a></h1>
 <p><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> defines <em>Building Blocks</em> within a micro-service architecture. The services are subject to protection within an <em>Identity and Access Management (IAM)</em> approach that includes:</p>
 <ul>
 <li>Login Service (Authorization Server)</li>
@@ -1521,8 +1608,8 @@
 </span></code></pre></div>
 <h3 id="client-registration">Client Registration<a class="headerlink" href="#client-registration" title="Permanent link">⚓︎</a></h3>
 <p>To obtain the <em>Client Credentials</em> required by the <code>uma-user-agent</code> it is necessary to register a client with the <code>login-service</code>, or use the credentials for an existing client.</p>
-<p>A <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.3/deploy/bin/register-client">helper script</a> is provided to register a basic client and obtain the required credentials. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:EOEPCA/deployment-guide
+<p>A <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/register-client">helper script</a> is provided to register a basic client and obtain the required credentials. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span>eoepca-v1.4<span class="w"> </span>git@github.com:EOEPCA/deployment-guide
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide
 </span></code></pre></div>
 <p>The <code>register-client</code> helper script requires some command-line arguments&hellip;</p>

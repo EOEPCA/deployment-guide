@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/eoepca/user-profile/">
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/eoepca/resource-protection-keycloak/">
       
       
-        <link rel="prev" href="../resource-protection-gluu/">
+        <link rel="prev" href="../identity-service/">
       
       
-        <link rel="next" href="../ades-zoo/">
+        <link rel="next" href="../login-service/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>User Profile - EOEPCA Deployment Guide</title>
+        <title>Resource Protection - EOEPCA Deployment Guide</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#user-profile" class="md-skip">
+        <a href="#resource-protection-keycloak" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              User Profile
+              Resource Protection
             
           </span>
         </div>
@@ -859,19 +859,21 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2_2" checked>
         
           
           <label class="md-nav__link" for="__nav_1_4_2_2" id="__nav_1_4_2_2_label" tabindex="0">
@@ -885,7 +887,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_4_2_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_4_2_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_4_2_2">
             <span class="md-nav__icon md-icon"></span>
             Keycloak Solution (NEW)
@@ -917,10 +919,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../resource-protection-keycloak/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Resource Protection
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -929,6 +951,80 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#helm-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helm Chart
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Values
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Credentials
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Registration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      User Tokens
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Information
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -946,21 +1042,19 @@
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_2_3" >
         
           
           <label class="md-nav__link" for="__nav_1_4_2_3" id="__nav_1_4_2_3_label" tabindex="0">
@@ -974,7 +1068,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_4_2_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_4_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_2_3">
             <span class="md-nav__icon md-icon"></span>
             Gluu Solution (deprecated)
@@ -1048,30 +1142,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    User Profile
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../user-profile/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1080,62 +1154,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#helm-chart" class="md-nav__link">
-    <span class="md-ellipsis">
-      Helm Chart
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#values" class="md-nav__link">
-    <span class="md-ellipsis">
-      Values
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#user-profile-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      User Profile Usage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-information" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Information
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1364,9 +1382,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#user-profile-usage" class="md-nav__link">
+  <a href="#client-credentials" class="md-nav__link">
     <span class="md-ellipsis">
-      User Profile Usage
+      Client Credentials
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client Registration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      User Tokens
     </span>
   </a>
   
@@ -1396,39 +1432,138 @@
                   
 
 
-<h1 id="user-profile">User Profile<a class="headerlink" href="#user-profile" title="Permanent link">⚓︎</a></h1>
-<p>The <em>User Profile</em> represents the user&rsquo;s &lsquo;account&rsquo; within the platform.</p>
+<h1 id="resource-protection-keycloak">Resource Protection (Keycloak)<a class="headerlink" href="#resource-protection-keycloak" title="Permanent link">⚓︎</a></h1>
+<p><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> defines <em>Building Blocks</em> within a micro-service architecture. The services are subject to protection within an <em>Identity and Access Management (IAM)</em> approach that includes:</p>
+<ul>
+<li>Keycloak - Identity Service (Authorization Server)</li>
+<li>Gatekeeper - Policy Enforcement</li>
+</ul>
+<p>Building Blocks that act as a <em>Resource Server</em> are individually protected by a dedicated Gatekeeper instance that enforces the authorization decision in collaboration with the Identity Service (Keycloak).</p>
+<p>Gatekeeper &lsquo;inserts itself&rsquo; into the request path of the target Resource Server using the <code>auth_request</code> facility offered by Nginx. Thus, Gatekeeper deploys with an Ingress specification that:</p>
+<ul>
+<li>Configures the <code>auth_request</code> module to defer access authorization to the <code>gatekeeper</code> service</li>
+<li>Configures the ingress rules (host/path) for the target Resource Server</li>
+</ul>
 <h2 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h2>
-<p>The <em>User Profile</em> is deployed via the <code>user-profile</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
-<p>The chart is configured via values that are fully documented in the <a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/user-profile#readme">README for the <code>user-profile</code> chart</a>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>install<span class="w"> </span>--version<span class="w"> </span><span class="m">1</span>.1.12<span class="w"> </span>--values<span class="w"> </span>user-profile-values.yaml<span class="w"> </span><span class="se">\</span>
+<p>Each <em>Gatekeeper</em> is deployed via the <code>identity-gatekeeper</code> helm chart from the <a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository</a>.</p>
+<p>The chart is configured via values - the full set of available values can be seen at <a href="https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/values.yaml">https://github.com/<abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/helm-charts/blob/main/charts/application-hub/values.yaml</a>.</p>
+<p>It is expected to deploy multiple instances of the <code>Gatekeeper</code> chart, one for each Resource Server to be protected.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>install<span class="w"> </span>--version<span class="w"> </span><span class="m">1</span>.0.10<span class="w"> </span>--values<span class="w"> </span>myservice-gatekeeper-values.yaml<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>--repo<span class="w"> </span>https://eoepca.github.io/helm-charts<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>user-profile<span class="w"> </span>user-profile
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>myservice-protection<span class="w"> </span>identity-gatekeeper
 </span></code></pre></div>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">⚓︎</a></h2>
-<p>At minimum, values for the following attributes should be specified:</p>
+<p>The helm chart is deployed with values that customise the service for the specific needs of the resource-server under protection and the deployment target platform.<br>
+Typical values to be specified include:</p>
 <ul>
-<li>Public hostname of the Authorization Server, e.g. <code>auth.192-168-49-2.nip.io</code></li>
-<li>IP Address of the public facing reverse proxy (Nginx Ingress Controller), e.g. <code>192.168.49.2</code></li>
-<li>Name of Persistent Volume Claim for <code>user-profile</code> persistence, e.g. <code>eoepca-userman-pvc</code><br>
-  <em>The boolen value <code>volumeClaim.create</code> can be used for the PVC to be created by the helm release. This creates a volume of type <code>host-path</code> and, hence, is only useful for single-node development usage.</em></li>
+<li>Host/domain details for the Keycloak Identity Service, e.g. <code>keycloak.192-168-49-2.nip.io</code></li>
+<li>Credentials for the Keycloak client to be used by Gatekeeper (ideally via secret)</li>
+<li>TLS Certificate Provider, e.g. <code>letsencrypt-production</code></li>
+<li>Ingress rules definition for reverse-proxy to the target Resource Server</li>
 </ul>
-<p>Example <code>user-profile-values.yaml</code>&hellip;
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">global</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auth.192-168-49-2.nip.io</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">nginxIp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.49.2</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nt">volumeClaim</span><span class="p">:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca-userman-pvc</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<p>Example <code>myservice-protection-values.yaml</code>&hellip;
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">nameOverride</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myservice-protection</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">config</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">client-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myservice</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">discovery-url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://keycloak.192-168-49-2.nip.io/realms/master</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">cookie-domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192-168-49-2.nip.io</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nt">targetService</span><span class="p">:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myservice.192-168-49-2.nip.io</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myservice</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nt">secrets</span><span class="p">:</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="c1"># Values for secret &#39;myservice-protection&#39;</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="c1"># Note - if ommitted, these can instead be set by creating the secret independently.</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="nt">clientSecret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;changeme&quot;</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">encryptionKey</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;changemechangeme&quot;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nt">ingress</span><span class="p">:</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="nt">className</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="nt">ingress.kubernetes.io/ssl-redirect</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="nt">nginx.ingress.kubernetes.io/ssl-redirect</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="nt">cert-manager.io/cluster-issuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">letsencrypt-production</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="nt">serverSnippets</span><span class="p">:</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|-</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">      </span><span class="no"># Open access to some endpoints, including Swagger UI</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">      </span><span class="no">location ~ ^/(docs|openapi.json|probe) {</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">        </span><span class="no">proxy_pass {{ include &quot;identity-gatekeeper.targetUrl&quot; . }}$request_uri;</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">      </span><span class="no">}</span>
 </span></code></pre></div></p>
-<h2 id="user-profile-usage">User Profile Usage<a class="headerlink" href="#user-profile-usage" title="Permanent link">⚓︎</a></h2>
-<p>The User Profile is accessed through the <a href="http://auth.kube.guide.eoepca.org/web_ui"><code>/web_ui</code></a> path of the Login Service, e.g. http://auth.kube.guide.eoepca.org/web_ui.</p>
+<h2 id="client-credentials">Client Credentials<a class="headerlink" href="#client-credentials" title="Permanent link">⚓︎</a></h2>
+<p>Gatekeeper requires <em>Client Credentials</em> for its interactions with the Keycloak <code>identity-service</code>. These credentials must be supplied by the secret named <code>&lt;myservice&gt;-protection</code>. The secret can be created directly by the helm chart - via the values <code>secrets.clientSecret</code> and <code>secrets.encryptionKey</code> - or perhaps more securely the secret can be created independently (e.g. via a <code>SealedSecret</code>).</p>
+<h2 id="client-registration">Client Registration<a class="headerlink" href="#client-registration" title="Permanent link">⚓︎</a></h2>
+<p>The Keycloak client can be created directly in the Keycloak admin console - e.g. via https://keycloak.192-168-49-2.nip.io/admin.</p>
+<p>As an aide there is a helper script <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/create-client"><code>create-client</code></a>. The script is available in the <a href="https://github.com/EOEPCA/deployment-guide/tree/eoepca-v1.4"><code>deployment-guide</code> repository</a>, and can be obtained as follows&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span>eoepca-v1.4<span class="w"> </span>git@github.com:EOEPCA/deployment-guide
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide
+</span></code></pre></div>
+<p>The <code>create-client</code> helper script requires some command-line arguments&hellip;</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$ ./deploy/bin/create-client -h
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Add a client with protected resources.
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>create-client [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [--name name] (--secret secret | --public) [--default] [--authenticated] [--resource name] [--uris u1,u2] [--scopes s1,s2] [--users u1,u2] [--roles r1,r2]
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>where:
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    -h                    show help message
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    -a                    authorization server url - e.g. https://keycloak.192-168-49-2.nip.io
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    -i                    identity-api server url - e.g. https://identity-api.192-168-49-2.nip.io
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    -u                    username used for authentication
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    -p                    password used for authentication
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    -c                    client id (of the bootstrap client used in the create request)
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    -s                    client secret (of the bootstrap client used in the create request)
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    -t or --token         access token used for authentication
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    -r                    realm
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    --id                  client id (of the created client)
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    --name                client name (of the created client)
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    --secret              client secret (of the created client)
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    --public              public client (no client secret)
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    --default             add default resource - /* authenticated
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    --authenticated       allow access to the resource only when authenticated
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    --resource            resource name
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    --uris                resource uris - separated by comma (,)
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    --scopes              resource scopes - separated by comma (,)
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    --users               user names with access to the resource - separated by comma (,)
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    --roles               role names with access to the resource - separated by comma (,)
+</span></code></pre></div>
+<p>For example&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>./deploy/bin/create-client<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-a<span class="w"> </span>https://keycloak.192-168-49-2.nip.io<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-i<span class="w"> </span>https://identity-api.192-168-49-2.nip.io<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>-r<span class="w"> </span><span class="s2">&quot;master&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>-u<span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>-p<span class="w"> </span><span class="s2">&quot;changeme&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>-c<span class="w"> </span><span class="s2">&quot;admin-cli&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span>--id<span class="o">=</span>myservice<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span>--name<span class="o">=</span><span class="s2">&quot;Gatekeeper for myservice&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span>--secret<span class="o">=</span><span class="s2">&quot;changeme&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span>--description<span class="o">=</span><span class="s2">&quot;Client to be used by Gatekeeper for myservice&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span>--resource<span class="o">=</span><span class="s2">&quot;eric&quot;</span><span class="w"> </span>--uris<span class="o">=</span><span class="s1">&#39;/eric/*&#39;</span><span class="w"> </span>--scopes<span class="o">=</span>view<span class="w"> </span>--users<span class="o">=</span><span class="s2">&quot;eric&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span>--resource<span class="o">=</span><span class="s2">&quot;bob&quot;</span><span class="w"> </span>--uris<span class="o">=</span><span class="s1">&#39;/bob/*&#39;</span><span class="w"> </span>--scopes<span class="o">=</span>view<span class="w"> </span>--users<span class="o">=</span><span class="s2">&quot;bob&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span>--resource<span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="w"> </span>--uris<span class="o">=</span><span class="s1">&#39;/alice/*&#39;</span><span class="w"> </span>--scopes<span class="o">=</span>view<span class="w"> </span>--users<span class="o">=</span><span class="s2">&quot;alice&quot;</span>
+</span></code></pre></div>
+<h2 id="user-tokens">User Tokens<a class="headerlink" href="#user-tokens" title="Permanent link">⚓︎</a></h2>
+<p>Requests to resource server endpoints that are protected by Gatekeeper must carry an Access Token that has been obtained on behalf of the requesting user. The <code>access_token</code> is carried in the request header&hellip;</p>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="err">Authorization: Bearer &lt;access_token&gt;</span>
+</span></code></pre></div>
+<p>The Access Token for a given user  can be obtained with a call to the token endpoint of the Keycloak Identity Service - supplying the credentials for the user and the pre-registered client&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s1">&#39;https://keycloak.192-168-49-2.nip.io/realms/master/protocol/openid-connect/token&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Cache-Control: no-cache&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/x-www-form-urlencoded&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;scope=openid profile email&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;grant_type=password&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;username=&lt;username&gt;&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;password=&lt;password&gt;&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span>--data-urlencode<span class="w"> </span><span class="s1">&#39;client_id=admin-cli&#39;</span>
+</span></code></pre></div>
+<p>A json response is returned, in which the field <code>access_token</code> provides the Access Token for the specified <code>&lt;username&gt;</code>.</p>
 <h2 id="additional-information">Additional Information<a class="headerlink" href="#additional-information" title="Permanent link">⚓︎</a></h2>
-<p>Additional information regarding the <em>User Profile</em> can be found at:</p>
+<p>Additional information regarding the <em>Gatekeeper</em> can be found at:</p>
 <ul>
-<li><a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/user-profile">Helm Chart</a></li>
-<li><a href="https://github.com/EOEPCA/um-user-profile/wiki">Wiki</a></li>
-<li><a href="https://github.com/EOEPCA/um-user-profile">GitHub Repository</a></li>
+<li><a href="https://quay.io/repository/gogatekeeper/gatekeeper">Container Image</a></li>
+<li><a href="https://github.com/EOEPCA/helm-charts/tree/main/charts/identity-gatekeeper">Helm Chart</a></li>
+<li><a href="https://github.com/gogatekeeper/gatekeeper">GitHub Repository</a></li>
 </ul>
 
 

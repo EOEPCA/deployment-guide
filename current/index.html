@@ -414,12 +414,49 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Profiles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Profiles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="quickstart/simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Simple Deployment
+    Simple
   </span>
   
 
@@ -440,7 +477,28 @@
         
   
   <span class="md-ellipsis">
-    Processing Deployment
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quickstart/application-hub-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -524,11 +582,19 @@
         
   
   <span class="md-ellipsis">
-    CREODIAS Deployment
+    CREODIAS Data
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -837,11 +903,32 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/keycloak.md" class="md-nav__link">
+      <a href="eoepca/identity-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Keycloak
+    Identity Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="eoepca/resource-protection-keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
   </span>
   
 
@@ -945,7 +1032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/resource-protection/" class="md-nav__link">
+      <a href="eoepca/resource-protection-gluu/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -954,14 +1041,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -996,6 +1075,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -1003,11 +1090,32 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/ades/" class="md-nav__link">
+      <a href="eoepca/ades-zoo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Application Deployment & Execution
+    ADES (Processing)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="eoepca/application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -1122,27 +1230,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1192,15 +1279,21 @@
 
 
 <h1 id="deployment-guide">Deployment Guide<a class="headerlink" href="#deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p>The Deployment Guide describes how each building-block comprising the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation is configured and deployed. A full system deployment is described, in which components are deployed with complementary configurations that facilitate their integration as a coherent system. Nevertheless, each component can be cherry-picked from this system deployment for individual re-use.</p>
+<p>The Deployment Guide captures each release of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation, by providing for each version&hellip;</p>
+<ul>
+<li>Description of how each building-block is configured and deployed - see <strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong></li>
+<li>Scripted deployment in which each building-block can be selectively deployed to form a system - see <strong>Getting Started</strong></li>
+</ul>
+<p>A full system deployment is described, in which components are deployed with complementary configurations that facilitate their integration as a coherent system. Nevertheless, each component can be cherry-picked from this system deployment for individual re-use.</p>
 <p>The deployment is organised into the following sections:</p>
 <ul>
-<li><strong>Cluster</strong><br>
+<li><strong>Getting Started</strong><br>
+  A quickstart guide with associated scripts to facilitate example deployments, which preempt the descriptions that follow later in the document.<br>
+  Scripts are provided in a variety of &lsquo;profiles&rsquo; that deploy different combinations of building-blocks for different notional use cases.</li>
+<li><strong>Prepare Cluster</strong><br>
   Establish the Kubernetes cluster and other prerequisites for the deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> system.</li>
-<li><strong><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr></strong><br>
+<li><strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong><br>
   Deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components.</li>
-<li><strong>Examples</strong><br>
-  Deployment examples.</li>
 </ul>
 
 

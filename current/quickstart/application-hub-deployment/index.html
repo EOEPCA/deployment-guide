@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/cluster/helm-repositories/">
+        <link rel="canonical" href="https://deployment-guide.docs.eoepca.org/current/quickstart/application-hub-deployment/">
       
       
-        <link rel="prev" href="../kubernetes/">
+        <link rel="prev" href="../processing-deployment/">
       
       
-        <link rel="next" href="../cluster-prerequisites/">
+        <link rel="next" href="../data-access-deployment/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Helm Repositories - EOEPCA Deployment Guide</title>
+        <title>Application Hub - EOEPCA Deployment Guide</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#helm-repositories" class="md-skip">
+        <a href="#application-hub-deployment" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Helm Repositories
+              Application Hub
             
           </span>
         </div>
@@ -322,8 +322,10 @@
                 
   
   
+    
   
   
+  
     
     
     
@@ -332,12 +334,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
         
           
           <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="">
@@ -351,7 +353,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_2">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -365,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/quickstart/" class="md-nav__link">
+      <a href="../quickstart/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -386,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/scripted-deployment/" class="md-nav__link">
+      <a href="../scripted-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -404,19 +406,21 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" checked>
         
           
           <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
@@ -430,7 +434,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_2_3">
             <span class="md-nav__icon md-icon"></span>
             Profiles
@@ -444,7 +448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/simple-deployment/" class="md-nav__link">
+      <a href="../simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -465,7 +469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/processing-deployment/" class="md-nav__link">
+      <a href="../processing-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -483,10 +487,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../quickstart/application-hub-deployment/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Application Hub
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -495,6 +519,104 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initiate-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initiate Deployment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#post-deploy-manual-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Post-deploy Manual Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-hub-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Application Hub Notes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Application Hub Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#login" class="md-nav__link">
+    <span class="md-ellipsis">
+      Login
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spawning-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spawning Applications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-to-the-home-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning to the Home Screen
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iat-jupyterlab" class="md-nav__link">
+    <span class="md-ellipsis">
+      IAT - JupyterLab
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -507,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/data-access-deployment/" class="md-nav__link">
+      <a href="../data-access-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -528,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/exploitation-deployment/" class="md-nav__link">
+      <a href="../exploitation-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -549,7 +671,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/userman-deployment/" class="md-nav__link">
+      <a href="../userman-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -570,7 +692,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quickstart/creodias-deployment/" class="md-nav__link">
+      <a href="../creodias-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -604,8 +726,6 @@
                 
   
   
-    
-  
   
   
     
@@ -616,12 +736,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
         
           
           <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="">
@@ -635,7 +755,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3">
             <span class="md-nav__icon md-icon"></span>
             Prepare Cluster
@@ -649,7 +769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../prerequisite-tooling/" class="md-nav__link">
+      <a href="../../cluster/prerequisite-tooling/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -670,7 +790,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kubernetes/" class="md-nav__link">
+      <a href="../../cluster/kubernetes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -688,30 +808,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Helm Repositories
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../cluster/helm-repositories/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -720,104 +820,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#eoepca-helm-charts" class="md-nav__link">
-    <span class="md-ellipsis">
-      EOEPCA Helm Charts
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#third-party-helm-charts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Third-party Helm Charts
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Third-party Helm Charts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#cert-manager" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cert Manager
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nginx-ingress-controller" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nginx Ingress Controller
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#minio" class="md-nav__link">
-    <span class="md-ellipsis">
-      Minio
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sealed-secrets-bitnami" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sealed Secrets (Bitnami)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#harbor" class="md-nav__link">
-    <span class="md-ellipsis">
-      Harbor
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#repo-update" class="md-nav__link">
-    <span class="md-ellipsis">
-      Repo Update
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -830,7 +832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cluster-prerequisites/" class="md-nav__link">
+      <a href="../../cluster/cluster-prerequisites/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1384,64 +1386,73 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#eoepca-helm-charts" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      EOEPCA Helm Charts
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#third-party-helm-charts" class="md-nav__link">
+  <a href="#initiate-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      Third-party Helm Charts
+      Initiate Deployment
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Third-party Helm Charts">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#post-deploy-manual-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Post-deploy Manual Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-hub-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Application Hub Notes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Application Hub Notes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cert-manager" class="md-nav__link">
+  <a href="#login" class="md-nav__link">
     <span class="md-ellipsis">
-      Cert Manager
+      Login
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nginx-ingress-controller" class="md-nav__link">
+  <a href="#spawning-applications" class="md-nav__link">
     <span class="md-ellipsis">
-      Nginx Ingress Controller
+      Spawning Applications
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#minio" class="md-nav__link">
+  <a href="#returning-to-the-home-screen" class="md-nav__link">
     <span class="md-ellipsis">
-      Minio
+      Returning to the Home Screen
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sealed-secrets-bitnami" class="md-nav__link">
+  <a href="#iat-jupyterlab" class="md-nav__link">
     <span class="md-ellipsis">
-      Sealed Secrets (Bitnami)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#harbor" class="md-nav__link">
-    <span class="md-ellipsis">
-      Harbor
+      IAT - JupyterLab
     </span>
   </a>
   
@@ -1449,15 +1460,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#repo-update" class="md-nav__link">
-    <span class="md-ellipsis">
-      Repo Update
-    </span>
-  </a>
   
 </li>
       
@@ -1476,38 +1478,51 @@
                   
 
 
-<h1 id="helm-repositories">Helm Repositories<a class="headerlink" href="#helm-repositories" title="Permanent link">⚓︎</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This section identifies some helm chart repositories that can be referenced (for convenience) via <code>helm add</code>.<br>
-Nevertheless, all helm commands included in the guide specifically reference the source helm repository via the <code>--repo</code> argument to the <code>helm install</code> command - and thus it is not specifically necessary to <code>add</code> these repositories in advance.</p>
-</div>
-<h2 id="eoepca-helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Charts<a class="headerlink" href="#eoepca-helm-charts" title="Permanent link">⚓︎</a></h2>
-<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> building-blocks are engineered as containers for deployment to a Kubernetes cluster. Each building block defines a <em>Helm Chart</em> to facilitate its deployment.</p>
-<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository is configured with <code>helm</code> as follows&hellip;
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca<span class="w"> </span>https://eoepca.github.io/helm-charts/
-</span></code></pre></div></p>
-<h2 id="third-party-helm-charts">Third-party Helm Charts<a class="headerlink" href="#third-party-helm-charts" title="Permanent link">⚓︎</a></h2>
-<p>In addition to the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm Chart Repository, a variety of third party helm repositories are relied upon, as identified below.</p>
-<h3 id="cert-manager">Cert Manager<a class="headerlink" href="#cert-manager" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>jetstack<span class="w"> </span>https://charts.jetstack.io
+<h1 id="application-hub-deployment">Application Hub Deployment<a class="headerlink" href="#application-hub-deployment" title="Permanent link">⚓︎</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">⚓︎</a></h2>
+<p>A deployment wrapper script has been prepared for an &lsquo;Application Hub&rsquo; deployment - that provides the Application Hub integrated with the Identity Service (Keycloak) via OIDC for user authentication.</p>
+<p>The script <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/apphub/apphub"><code>deploy/apphub/apphub</code></a> achieves this by appropriate <a href="../scripted-deployment/#environment-variables">configuration of the environment variables</a>, before launching the <a href="../scripted-deployment/#command-line-arguments">eoepca.sh deployment script</a>. The deployment configuration is captured in the file <a href="https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/apphub/apphub-options"><code>deploy/apphub/apphub-options</code></a>.</p>
+<p>The Application Hub deployment applies the following configuration:</p>
+<ul>
+<li>Assumes a private deployment - i.e. no external-facing IP/ingress, and hence no TLS<br>
+  <em>To configure an external-facing deployment with TLS protection, then see section <a href="../scripted-deployment/#public-deployment">Public Deployment</a></em></li>
+<li>No TLS for service ingress endpoints</li>
+<li>Services deployed:<ul>
+<li>Identity Service (Keycloak)<br>
+  <em>With test users eric, bob and alice created in Keycloak</em></li>
+<li>Application Hub<br>
+  <em>User eric and bob predefined as admin users</em></li>
+</ul>
+</li>
+<li>Other eoepca services not deployed</li>
+</ul>
+<h2 id="initiate-deployment">Initiate Deployment<a class="headerlink" href="#initiate-deployment" title="Permanent link">⚓︎</a></h2>
+<p>Deployment is initiated by invoking the script&hellip;</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./deploy/apphub/apphub
 </span></code></pre></div>
-<h3 id="nginx-ingress-controller">Nginx Ingress Controller<a class="headerlink" href="#nginx-ingress-controller" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>ingress-nginx<span class="w"> </span>https://kubernetes.github.io/ingress-nginx
-</span></code></pre></div>
-<h3 id="minio">Minio<a class="headerlink" href="#minio" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>minio<span class="w"> </span>https://charts.min.io/
-</span></code></pre></div>
-<h3 id="sealed-secrets-bitnami">Sealed Secrets (Bitnami)<a class="headerlink" href="#sealed-secrets-bitnami" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>sealed-secrets<span class="w"> </span>https://bitnami-labs.github.io/sealed-secrets
-</span></code></pre></div>
-<h3 id="harbor">Harbor<a class="headerlink" href="#harbor" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>harbor<span class="w"> </span>https://helm.goharbor.io
-</span></code></pre></div>
-<h2 id="repo-update">Repo Update<a class="headerlink" href="#repo-update" title="Permanent link">⚓︎</a></h2>
-<p>Refresh the local repo cache, after <code>helm repo add</code>&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>update
-</span></code></pre></div>
+<p>The Identity Service (Keycloak) is accessed at the following endpoints&hellip;</p>
+<ul>
+<li><a href="http://keycloak.192-168-49-2.nip.io/">http://keycloak.192-168-49-2.nip.io/</a></li>
+<li><a href="http://identity-api.192-168-49-2.nip.io/docs">http://identity-api.192-168-49-2.nip.io/docs</a> (Swagger docs for the API)</li>
+</ul>
+<p>The Application Hub is accessed at the endpoint - <a href="http://applicationhub.192-168-49-2.nip.io/">http://applicationhub.192-168-49-2.nip.io/</a>.</p>
+<h2 id="post-deploy-manual-steps">Post-deploy Manual Steps<a class="headerlink" href="#post-deploy-manual-steps" title="Permanent link">⚓︎</a></h2>
+<p>To complete the deployment, see section <a href="../scripted-deployment/#post-deployment-manual-steps">Post-deployment Manual Steps</a> of the <a href="../scripted-deployment/">Scripted Deployment</a> page.</p>
+<h2 id="application-hub-notes">Application Hub Notes<a class="headerlink" href="#application-hub-notes" title="Permanent link">⚓︎</a></h2>
+<h3 id="login">Login<a class="headerlink" href="#login" title="Permanent link">⚓︎</a></h3>
+<p>Authentication is made via the <code>Sign in with EOEPCA</code> button on the service home page - which redirects to Keycloak for authentication.</p>
+<p>With the out-of-the-box configuration user <code>eric</code> or <code>bob</code> should be used with default password <code>changeme</code>. Users eric and bob are currently predefined within the helm chart as admin users - see <a href="https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/files/hub/jupyter_config.py#L171">https://github.com/<abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/helm-charts/blob/main/charts/application-hub/files/hub/jupyter_config.py#L171</a>.</p>
+<h3 id="spawning-applications">Spawning Applications<a class="headerlink" href="#spawning-applications" title="Permanent link">⚓︎</a></h3>
+<p>Once logged in, the service list is presented for spawning of applications. Note that this list of applications is currently defined within the helm chart - see <a href="https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/files/hub/config.yml">https://github.com/<abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/helm-charts/blob/main/charts/application-hub/files/hub/config.yml</a>.</p>
+<p>From the list, a service is selected and the <code>Start</code> button initiates spawning.</p>
+<p>For a clean deployment, the first spawn of each application may take some time whilst the container image representing the application is downloaded to the node. Subsequent invocations (at least on the same node) should be much faster. Once running, the application continues (in the background) until stopped by the user using the <code>Stop Server</code> button on the user&rsquo;s home screen.</p>
+<p>The current JupyterHub configuration assumes a single application service (per user) running at a time - i.e. the current application must be stopped before the next can be started. There is an alternative configuration in which applications can be run in parallel and their lifecycles individually managed.</p>
+<h3 id="returning-to-the-home-screen">Returning to the Home Screen<a class="headerlink" href="#returning-to-the-home-screen" title="Permanent link">⚓︎</a></h3>
+<p>The launched applications do not (yet) have a navigation link &lsquo;out&rsquo; of the application back to the home screen.</p>
+<p>Therefore, it is necessary to manually modify the url in the browser address bar to <code>/hub/home</code> to navigate to the home screen - from where the current running server can be stopped or re-entered.</p>
+<h3 id="iat-jupyterlab">IAT - JupyterLab<a class="headerlink" href="#iat-jupyterlab" title="Permanent link">⚓︎</a></h3>
+<p>Following instantiation, the IAT application (Interactive Analysis Tool) defaults to the &lsquo;Jupyter Notebook&rsquo; view (<code>/user/&lt;user&gt;/tree</code>) - rather than the Jupyter Lab view (<code>/user/&lt;user&gt;/lab</code>).</p>
+<p>To switch to the Jupyter Lab view it is necessary to manually edit the url path from <code>/user/&lt;user&gt;/tree</code> to <code>/user/&lt;user&gt;/lab</code>. It is intended to update the default to this Jupyter Lab path.</p>
 
 
 

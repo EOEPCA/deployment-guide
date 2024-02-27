@@ -406,12 +406,49 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_3" id="__nav_1_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Profiles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Profiles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../quickstart/simple-deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Simple Deployment
+    Simple
   </span>
   
 
@@ -432,7 +469,28 @@
         
   
   <span class="md-ellipsis">
-    Processing Deployment
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/application-hub-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -516,11 +574,19 @@
         
   
   <span class="md-ellipsis">
-    CREODIAS Deployment
+    CREODIAS Data
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -690,6 +756,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#nginx-ingress-controller" class="md-nav__link">
@@ -988,11 +1063,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/keycloak.md" class="md-nav__link">
+      <a href="../../eoepca/identity-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Keycloak
+    Identity Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/resource-protection-keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Protection
   </span>
   
 
@@ -1096,7 +1192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/resource-protection/" class="md-nav__link">
+      <a href="../../eoepca/resource-protection-gluu/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1105,14 +1201,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1147,6 +1235,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -1154,11 +1250,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../eoepca/ades/" class="md-nav__link">
+      <a href="../../eoepca/ades-zoo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Application Deployment & Execution
+    ADES (Processing)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../eoepca/application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
   </span>
   
 
@@ -1273,27 +1390,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../eoepca/application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1334,6 +1430,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#nginx-ingress-controller" class="md-nav__link">
@@ -1468,7 +1573,19 @@
 
 
 <h1 id="cluster-prerequisites">Cluster Prerequisites<a class="headerlink" href="#cluster-prerequisites" title="Permanent link">⚓︎</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">⚓︎</a></h2>
 <p>The following prerequisite components are assumed to be deployed in the cluster.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Scripted Deployment automatically deploys most of the components list here - in particular&hellip;</p>
+<ul>
+<li>Nginx Ingress Controller</li>
+<li>Cert Manager</li>
+<li>Letsencrypt ClusterIssuers</li>
+<li>Minio Object Storage</li>
+</ul>
+<p>The Sealed Secrets controller is <strong>not</strong> deployed - but can be added following the <a href="#sealed-secrets">instructions below</a>.</p>
+</div>
 <h2 id="nginx-ingress-controller">Nginx Ingress Controller<a class="headerlink" href="#nginx-ingress-controller" title="Permanent link">⚓︎</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Install the Nginx Ingress Controller helm chart</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>--version<span class="o">=</span><span class="s1">&#39;&lt;4.5.0&#39;</span><span class="w"> </span><span class="se">\</span>
