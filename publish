@@ -22,12 +22,17 @@ mike deploy --push --update-aliases "${VERSION}" ${ALIAS}
 EOF
 }
 
+sshAgent() {
+  if [[ -n "${SSH_AUTH_SOCK}" ]]; then
+    echo -n "-v ${SSH_AUTH_SOCK}:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent"
+  fi
+}
+
 # publish
 command | docker run --name mkdocs-deploy --rm -i \
   -v ${PWD}:/docs \
   -v ${HOME}/.ssh:/root/.ssh \
-  -v ${SSH_AUTH_SOCK}:/ssh-agent \
-  -e SSH_AUTH_SOCK=/ssh-agent \
+  $(sshAgent) \
   --entrypoint="sh" \
   eoepca/mkdocs-material \
   -
