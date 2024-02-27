@@ -418,16 +418,16 @@ See the [Example Requests](../quickstart/processing-deployment.md#example-reques
 
 This section includes some tips that may be useful in debugging errors with deployed application packages.
 
-### Execution Logs
+For debugging, establish a shell session with the `zoofpm` pod...
 
-In the case that the execution of an application package is experiencing errors, then the execution logs can be accessed via the `zoofpm` pod.
-
-Connect to the `zoofpm` pod...
 ```bash
 $ kubectl -n zoo exec -it deploy/zoo-project-dru-zoofpm -c zoofpm -- bash
 ```
 
+### Execution Logs
+
 The logs are in the directory `/tmp/zTmp`...
+
 ```bash
 $ cd /tmp/zTmp/
 ```
@@ -445,7 +445,7 @@ In the log directory, each execution is characterised by a set of files/director
 * `convert-url-c6637d4a-d561-11ee-bf3b-0242ac11000e` (directory)<br>
   _Subdirectory with a dedicated log file for each step of the CWL workflow, including the stage-in and stage-out steps_
 
-### Deployed Process (Application Package)
+### Deployed Process 'Executables'
 
 When the process is deployed from its Application Package, then a representation is created using the configured `cookiecutter.templateUrl`.
 
