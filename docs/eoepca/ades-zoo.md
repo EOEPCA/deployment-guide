@@ -322,7 +322,7 @@ For example...
 ```yaml
 iam: 
   enabled: true
-  openIdConnectUrl: https://identity.keycloak.192-168-49-2.nip.io/realms/master/.well-known/openid-configuration
+  openIdConnectUrl: https://keycloak.192-168-49-2.nip.io/realms/master/.well-known/openid-configuration
   type: openIdConnect
   name: OpenIDAuth
   realm: Secured section
@@ -351,7 +351,7 @@ The `identity-gatekeeper` must be configured with the values applicable to the `
 fullnameOverride: zoo-project-dru-protection
 config:
   client-id: ades
-  discovery-url: https://identity.keycloak.192-168-49-2.nip.io/realms/master
+  discovery-url: https://keycloak.192-168-49-2.nip.io/realms/master
   cookie-domain: 192-168-49-2.nip.io
 targetService:
   host: zoo.192-168-49-2.nip.io
@@ -388,7 +388,7 @@ For example, with path protection for test users...
 
 ```bash
 ../bin/create-client \
-  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -a https://keycloak.192-168-49-2.nip.io \
   -i https://identity-api.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \

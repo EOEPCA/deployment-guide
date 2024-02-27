@@ -77,14 +77,14 @@ identity-keycloak:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - host: identity.keycloak.192-168-49-2.nip.io
+      - host: keycloak.192-168-49-2.nip.io
         paths:
           - path: /
             pathType: Prefix
     tls:
       - secretName: identity-keycloak-tls
         hosts:
-          - identity.keycloak.192-168-49-2.nip.io
+          - keycloak.192-168-49-2.nip.io
 ```
 
 ### identity-postgres
@@ -168,7 +168,7 @@ identity-api:
     # Config values that can be passed via env vars
     extraEnv:
       - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
-        value: https://identity.keycloak.192-168-49-2.nip.io
+        value: https://keycloak.192-168-49-2.nip.io
       - name: ADMIN_USERNAME
         value: admin
       - name: ADMIN_PASSWORD  # see secrets.adminPassword instead
@@ -214,7 +214,7 @@ Configuration of Gatekeeper via the file `config.yaml` that is mounted into the 
 identity-api-gatekeeper:
   config:
     client-id: identity-api
-    discovery-url: https://identity.keycloak.192-168-49-2.nip.io/realms/master
+    discovery-url: https://keycloak.192-168-49-2.nip.io/realms/master
     cookie-domain: 192-168-49-2.nip.io
 ```
 
@@ -248,7 +248,7 @@ $ kubectl -n um port-forward svc/identity-api "9876":http >/dev/null &
 $ portForwardPid=$!
 
 $ ./deploy/bin/create-client \
-  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -a https://keycloak.192-168-49-2.nip.io \
   -i http://localhost:9876 \
   -r master \
   -u admin \
@@ -286,7 +286,7 @@ create-user -h | -a {auth_server} -r {realm} -c {client} -u {admin-username} -p 
 
 where:
     -h  show help message
-    -a  authorization server url (default: http://identity.keycloak.192-168-49-2.nip.io)
+    -a  authorization server url (default: http://keycloak.192-168-49-2.nip.io)
     -r  realm within Keycloak (default: master)
     -u  username used for authentication (default: admin)
     -p  password used for authentication (default: changeme)
@@ -305,7 +305,7 @@ Creating and protecting resources can be done in multiple ways, as described in 
 
 To create and protect resources using the keycloak User Interface (UI), do the following steps:
 
-* (Optional) Create clients. Clients can be created using the keycloak user interface at http://identity.keycloak.<domain>. You need to login as admin.<br>
+* (Optional) Create clients. Clients can be created using the keycloak user interface at http://keycloak.<domain>. You need to login as admin.<br>
   To create a client: Login as admin in the keycloak UI > Clients > Create Client > Set a name > Next > Turn Client Authentication and Authorization On > Add the valid redirect URI's > Save.
 * (Optional) Create Users. Users > Add User. Then set a password for the user. Credentials > Set Password.
 * Select a client.
@@ -369,7 +369,7 @@ Script execution examples:
 1. With username/password<br>
   ```bash
   ./deploy/bin/create-client \
-    -a https://identity.keycloak.192-168-49-2.nip.io \
+    -a https://keycloak.192-168-49-2.nip.io \
     -i https://identity-api.192-168-49-2.nip.io \
     -r master \
     -u admin \
@@ -387,7 +387,7 @@ Script execution examples:
 1. With access token<br>
   ```bash
   ./deploy/bin/create-client \
-    -a https://identity.keycloak.192-168-49-2.nip.io \
+    -a https://keycloak.192-168-49-2.nip.io \
     -i https://identity-api.192-168-49-2.nip.io \
     -r master \
     -t eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXZWFIY2pscThPc1RUYjdlV0s5SjJTTDFBUDIyazZpajdlMGFlVHRNU2xRIn0.eyJleHAiOjE3MDAyNDM4MzgsImlhdCI6MTcwMDI0Mzc3OCwiYXV0aF90aW1lIjoxNzAwMjQxODYyLCJqdGkiOiI2MWI0ZGRhYy1mOWZjLTRmZjktOWQ4Zi01NWU1N2NlNmE5ODgiLCJpc3MiOiJodHRwczovL2lkZW50aXR5LmtleWNsb2FrLmRldmVsb3AuZW9lcGNhLm9yZy9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbImFkZXMtcmVhbG0iLCJkZW1vLXJlYWxtIiwiZHVtbXktc2VydmljZS1yZWFsbSIsIm1hc3Rlci1yZWFsbSIsImFjY291bnQiLCJlb2VwY2EtcmVhbG0iXSwic3ViIjoiZTNkZTMyNGUtMGY0NS00MWUwLTk2YTctNTM1YzkxMTA1NTUyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZW9lcGNhLXBvcnRhbCIsIm5vbmNlIjoiMTIwMGJlNzAtZWI1Ni00Nzc2LThjODgtOWRiOWQxMDdiMGY2Iiwic2Vzc2lvbl9zdGF0ZSI6ImVmNGUwOTlmLTFmMDgtNDY3MC04ZmE2LTJiOGI3OGUwNWMzMSIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWRlcy1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiZGVtby1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiZHVtbXktc2VydmljZS1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwibWFzdGVyLXJlYWxtIjp7InJvbGVzIjpbInZpZXctaWRlbnRpdHktcHJvdmlkZXJzIiwidmlldy1yZWFsbSIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX0sImVvZXBjYS1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfX0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJzaWQiOiJlZjRlMDk5Zi0xZjA4LTQ2NzAtOGZhNi0yYjhiNzhlMDVjMzEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIn0.FK6DhVzpCRFmef2acD2Hmc149e1GTOCGz13dZA828crFbG8j4uhpkoNpiZqdyOPmDtMQ-OebNfjTAUaOt2sS1FmEIBgb9IddcpHKNJOquRjdzQNsX09bX8pFUq1haGwKh6_QmABNOBcT-kQNDSZO-aq7-8FoO9PYa0GWvBRcbcx0W_ngyb7xHglaZTElzcDPBcUTW6llVTTTFygn55smwdxTZ7-tEsMVGM5gNuHwJyLB51HI5KDWrwgUm1hqhhRzvcoutDEAB_HSEXGNNeF7fjP9Qx6q04b7fKOTtnIlXsu3oYW4va9y754llMSJ7w8U-y7yI6Tm2UdNMdYqju7hAA \
@@ -414,16 +414,16 @@ See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) 
 
 By default the Access Token Lifespan is 1 minute. With the current ADES (zoo-dru) implementation this presents a problem - since the `access_token` that is provided to the process execute request will (most likely) have expired by the time the ADES attempts to use the `access_token` in its call to the Workspace API to register the processing outputs. The lifespan of the token must outlive the duration of the processing execution - which we must assume can take a long time.
 
-To avoid this potential problem, the [Keycloak Admin web console](https://identity.keycloak.192-168-49-2.nip.io/admin/master/console/) can be used to increase this token lifespan.
+To avoid this potential problem, the [Keycloak Admin web console](https://keycloak.192-168-49-2.nip.io/admin/master/console/) can be used to increase this token lifespan.
 
 Thus, the following settings are recommended to be updated following deployment...
 
-* [SSO Session Settings](https://identity.keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)<br>
-  [/admin/master/console/#/master/realm-settings/sessions](https://identity.keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)
+* [SSO Session Settings](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)<br>
+  [/admin/master/console/#/master/realm-settings/sessions](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)
   * SSO Session Idle: `1 day`
   * SSO Session Max: `1 day`
-* [Tokens](https://identity.keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)<br>
-  [/admin/master/console/#/master/realm-settings/tokens](https://identity.keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)
+* [Tokens](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)<br>
+  [/admin/master/console/#/master/realm-settings/tokens](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)
   * Access Token Lifespan: `1 day`
 
 ## Additional Information

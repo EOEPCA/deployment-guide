@@ -57,9 +57,9 @@ jupyterhub:
         JUPYTERHUB_ENV: "dev"
         JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
         OAUTH_CALLBACK_URL: $(httpScheme)://applicationhub.${domain}/hub/oauth_callback
-        OAUTH2_USERDATA_URL: $(httpScheme)://identity.keycloak.${domain}/realms/master/protocol/openid-connect/userinfo
-        OAUTH2_TOKEN_URL: $(httpScheme)://identity.keycloak.${domain}/realms/master/protocol/openid-connect/token
-        OAUTH2_AUTHORIZE_URL: $(httpScheme)://identity.keycloak.${domain}/realms/master/protocol/openid-connect/auth
+        OAUTH2_USERDATA_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/userinfo
+        OAUTH2_TOKEN_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/token
+        OAUTH2_AUTHORIZE_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/auth
         OAUTH_LOGOUT_REDIRECT_URL: "$(httpScheme)://applicationhub.${domain}"
         OAUTH2_USERNAME_KEY: "preferred_username"
         STORAGE_CLASS: "${APPLICATION_HUB_STORAGE}"
@@ -126,7 +126,7 @@ createSecret() {
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a $(httpScheme)://identity.keycloak.${domain} \
+    -a $(httpScheme)://keycloak.${domain} \
     -i $(httpScheme)://identity-api.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \

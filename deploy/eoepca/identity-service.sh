@@ -47,14 +47,14 @@ identity-keycloak:
       nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
       cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
     hosts:
-      - host: identity.keycloak.${domain}
+      - host: keycloak.${domain}
         paths:
           - path: /
             pathType: Prefix
     tls:
       - secretName: identity-keycloak-tls
         hosts:
-          - identity.keycloak.${domain}
+          - keycloak.${domain}
 identity-postgres:
   secrets:
     # Values for secret 'identity-postgres'
@@ -73,7 +73,7 @@ identity-api:
     # Config values that can be passed via env vars
     extraEnv:
       - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
-        value: $(httpScheme)://identity.keycloak.${domain}
+        value: $(httpScheme)://keycloak.${domain}
       - name: ADMIN_USERNAME
         value: "${IDENTITY_SERVICE_ADMIN_USER}"
       - name: REALM
@@ -85,7 +85,7 @@ identity-api:
 identity-api-gatekeeper:
   config:
     client-id: identity-api
-    discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
+    discovery-url: $(httpScheme)://keycloak.${domain}/realms/master
     cookie-domain: ${domain}
   targetService:
     host: identity-api.${domain}
@@ -113,7 +113,7 @@ createIdentityApiClient() {
 
   # Create the client
   ../bin/create-client \
-    -a $(httpScheme)://identity.keycloak.${domain} \
+    -a $(httpScheme)://keycloak.${domain} \
     -i http://localhost:${TEMP_FORWARDING_PORT} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
@@ -144,7 +144,7 @@ createUser() {
   user="$1"
   password="${IDENTITY_SERVICE_DEFAULT_SECRET}"
   ../bin/create-user \
-    -a $(httpScheme)://identity.keycloak.${domain} \
+    -a $(httpScheme)://keycloak.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
     -p "${IDENTITY_SERVICE_ADMIN_PASSWORD}" \

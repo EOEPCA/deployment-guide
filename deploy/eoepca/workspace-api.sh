@@ -84,7 +84,7 @@ workspaceChartsConfigMap: "workspace-charts"
 bucketEndpointUrl: "http://minio-bucket-api:8080/bucket"
 keycloakIntegration:
   enabled: true
-  keycloakUrl: "$(httpScheme)://identity.keycloak.${domain}"
+  keycloakUrl: "$(httpScheme)://keycloak.${domain}"
   realm: "${IDENTITY_REALM}"
   identityApiUrl: "$(httpScheme)://identity-api.${domain}"
   workspaceApiIamClientId: "${WORKSPACE_API_IAM_CLIENT_ID}"
@@ -165,7 +165,7 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a $(httpScheme)://identity.keycloak.${domain} \
+    -a $(httpScheme)://keycloak.${domain} \
     -i $(httpScheme)://identity-api.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
@@ -194,7 +194,7 @@ serviceProtectionValues() {
 fullnameOverride: workspace-api-protection
 config:
   client-id: ${WORKSPACE_API_IAM_CLIENT_ID}
-  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: ${name}.${domain}

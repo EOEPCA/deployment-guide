@@ -42,7 +42,7 @@ serviceValues() {
 # image:
 #   tag: "demo"
 configMap:
-  identity_url: "$(httpScheme)://identity.keycloak.${domain}"
+  identity_url: "$(httpScheme)://keycloak.${domain}"
   realm: "${IDENTITY_REALM}"
   client_id: "eoepca-portal"
   identity_api_url: "$(httpScheme)://identity.api.${domain}"
@@ -79,7 +79,7 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a $(httpScheme)://identity.keycloak.${domain} \
+    -a $(httpScheme)://keycloak.${domain} \
     -i $(httpScheme)://identity-api.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \

@@ -18,7 +18,7 @@ $(basename "$0") -h | -w {workspace_api} -a {auth_server} -r {realm} -c {client}
 where:
     -h  show help message
     -w  workspace-api service url (default: http://workspace-api.192-168-49-2.nip.io)
-    -a  authorization server url (default: http://identity.keycloak.192-168-49-2.nip.io)
+    -a  authorization server url (default: http://keycloak.192-168-49-2.nip.io)
     -r  realm within Keycloak (default: master)
     -u  username used for authentication (default: admin)
     -p  password used for authentication (default: changeme)
@@ -37,7 +37,7 @@ main() {
 processCmdline() {
   OPTIND=1  ## reset
   # Env vars expected by the 'runcurl' function
-  auth_server="http://identity.keycloak.192-168-49-2.nip.io"
+  auth_server="http://keycloak.192-168-49-2.nip.io"
   realm="master"
   client="admin-cli"
   username="admin"

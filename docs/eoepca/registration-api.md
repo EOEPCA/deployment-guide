@@ -68,7 +68,7 @@ The `identity-gatekeeper` must be configured with the values applicable to the `
 fullnameOverride: registration-api-protection
 config:
   client-id: registration-api
-  discovery-url: https://identity.keycloak.192-168-49-2.nip.io/realms/master
+  discovery-url: https://keycloak.192-168-49-2.nip.io/realms/master
   cookie-domain: 192-168-49-2.nip.io
 targetService:
   host: registration-api.192-168-49-2.nip.io
@@ -107,7 +107,7 @@ For example...
 
 ```bash
 ../bin/create-client \
-  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -a https://keycloak.192-168-49-2.nip.io \
   -i https://identity-api.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \

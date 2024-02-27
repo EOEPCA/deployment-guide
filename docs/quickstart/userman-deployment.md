@@ -25,6 +25,6 @@ Deployment is initiated by invoking the script...
 ./deploy/userman/userman
 ```
 
-The _Identity Service_ is accessed at the endpoint `identity.keycloak.<domain>` - e.g. [`identity.keycloak.192-168-49-2.nip.io`](http://identity.keycloak.192-168-49-2.nip.io/).
+The _Identity Service_ is accessed at the endpoint `keycloak.<domain>` - e.g. [`keycloak.192-168-49-2.nip.io`](http://keycloak.192-168-49-2.nip.io/).
 
 The Identity API is accessed at the endpoint `identity-api.<domain>` - e.g. [`identity-api.192-168-49-2.nip.io`](http://identity-api.192-168-49-2.nip.io/).

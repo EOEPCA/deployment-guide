@@ -131,7 +131,7 @@ See the building block specific pages...
 
 ### Identity Service
 
-By default, the Identity Service is accessed at the URL `https://identity.keycloak.<domain>/` with the credentials...
+By default, the Identity Service is accessed at the URL `https://keycloak.<domain>/` with the credentials...
 
 ```
 username: `admin`
@@ -223,7 +223,7 @@ Values must be provided for:
 The Access Token for the `admin` user can be obtained with a call to the token endpoint of the Identity Service - supplying the credentials for the `admin` user and the pre-registered client...
 
 ```bash
-curl -L -X POST 'https://identity.keycloak.<domain>/realms/master/protocol/openid-connect/token' \
+curl -L -X POST 'https://keycloak.<domain>/realms/master/protocol/openid-connect/token' \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   --data-urlencode 'scope=openid profile email' \
@@ -255,7 +255,7 @@ create-workspace -h | -w {workspace_api} -a {auth_server} -r {realm} -c {client}
 where:
     -h  show help message
     -w  workspace-api service url (default: http://workspace-api.192-168-49-2.nip.io)
-    -a  authorization server url (default: http://identity.keycloak.192-168-49-2.nip.io)
+    -a  authorization server url (default: http://keycloak.192-168-49-2.nip.io)
     -r  realm within Keycloak (default: master)
     -u  username used for authentication (default: admin)
     -p  password used for authentication (default: changeme)
@@ -278,7 +278,7 @@ For example (all arguments)...
 ```bash
 ./deploy/bin/create-workspace 
   -w http://workspace-api.192-168-49-2.nip.io \
-  -a http://identity.keycloak.192-168-49-2.nip.io \
+  -a http://keycloak.192-168-49-2.nip.io \
   -r master \
   -u admin \
   -p changeme \
@@ -305,7 +305,7 @@ For example...
 
 ```yaml
 configMap:
-  identity_url: "http://identity.keycloak.192-168-49-2.nip.io"
+  identity_url: "http://keycloak.192-168-49-2.nip.io"
   realm: "master"
   client_id: "eoepca-portal"
   identity_api_url: "http://identity.api.192-168-49-2.nip.io"
@@ -342,7 +342,7 @@ The setting `client_id: eoepca-portal` identifies a client that must be created 
 
 ```bash
 ../bin/create-client \
-  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -a https://keycloak.192-168-49-2.nip.io \
   -i https://identity-api.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \

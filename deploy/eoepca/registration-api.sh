@@ -77,7 +77,7 @@ EOF
 createClient() {
   # Create the client
   ../bin/create-client \
-    -a $(httpScheme)://identity.keycloak.${domain} \
+    -a $(httpScheme)://keycloak.${domain} \
     -i $(httpScheme)://identity-api.${domain} \
     -r "${IDENTITY_REALM}" \
     -u "${IDENTITY_SERVICE_ADMIN_USER}" \
@@ -105,7 +105,7 @@ serviceProtectionValues() {
 fullnameOverride: registration-api-protection
 config:
   client-id: registration-api
-  discovery-url: $(httpScheme)://identity.keycloak.${domain}/realms/master
+  discovery-url: $(httpScheme)://keycloak.${domain}/realms/master
   cookie-domain: ${domain}
 targetService:
   host: ${name}.${domain}

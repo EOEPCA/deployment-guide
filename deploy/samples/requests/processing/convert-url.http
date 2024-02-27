@@ -1,7 +1,7 @@
 @domain = 192-168-49-2.nip.io
 @scheme = http
 @ades = zoo-open.{{domain}}
-@login = identity.keycloak.{{domain}}
+@login = keycloak.{{domain}}
 @identityApi = identity-api.{{domain}}
 @realm = master
 @username=eric
