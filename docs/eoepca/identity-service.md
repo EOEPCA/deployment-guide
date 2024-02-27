@@ -415,16 +415,16 @@ See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) 
 
 By default the Access Token Lifespan is 1 minute. With the current ADES (zoo-dru) implementation this presents a problem - since the `access_token` that is provided to the process execute request will (most likely) have expired by the time the ADES attempts to use the `access_token` in its call to the Workspace API to register the processing outputs. The lifespan of the token must outlive the duration of the processing execution - which we must assume can take a long time.
 
-To avoid this potential problem, the [Keycloak Admin web console](https://keycloak.192-168-49-2.nip.io/admin/master/console/) can be used to increase this token lifespan.
+To avoid this potential problem, the [Keycloak Admin web console](http://keycloak.192-168-49-2.nip.io/admin/master/console/) can be used to increase this token lifespan.
 
 Thus, the following settings are recommended to be updated following deployment...
 
-* [SSO Session Settings](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)<br>
-  [/admin/master/console/#/master/realm-settings/sessions](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)
+* [SSO Session Settings](http://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)<br>
+  [/admin/master/console/#/master/realm-settings/sessions](http://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/sessions)
   * SSO Session Idle: `1 day`
   * SSO Session Max: `1 day`
-* [Tokens](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)<br>
-  [/admin/master/console/#/master/realm-settings/tokens](https://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)
+* [Tokens](http://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)<br>
+  [/admin/master/console/#/master/realm-settings/tokens](http://keycloak.192-168-49-2.nip.io/admin/master/console/#/master/realm-settings/tokens)
   * Access Token Lifespan: `1 day`
 
 ## Additional Information

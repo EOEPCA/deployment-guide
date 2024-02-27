@@ -308,7 +308,7 @@ configMap:
   identity_url: "http://keycloak.192-168-49-2.nip.io"
   realm: "master"
   client_id: "eoepca-portal"
-  identity_api_url: "http://identity.api.192-168-49-2.nip.io"
+  identity_api_url: "http://identity-api.192-168-49-2.nip.io"
   ades_url: "http://zoo.192-168-49-2.nip.io/ogc-api/processes"
   resource_catalogue_url: "http://resource-catalogue.192-168-49-2.nip.io"
   data_access_url: "http://data-access.192-168-49-2.nip.io"

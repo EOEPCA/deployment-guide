@@ -45,7 +45,7 @@ configMap:
   identity_url: "$(httpScheme)://keycloak.${domain}"
   realm: "${IDENTITY_REALM}"
   client_id: "eoepca-portal"
-  identity_api_url: "$(httpScheme)://identity.api.${domain}"
+  identity_api_url: "$(httpScheme)://identity-api.${domain}"
   ades_url: "$(httpScheme)://zoo.${domain}/ogc-api/processes"
   resource_catalogue_url: "$(httpScheme)://resource-catalogue.${domain}"
   data_access_url: "$(httpScheme)://data-access.${domain}"
