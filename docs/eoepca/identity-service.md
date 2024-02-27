@@ -225,7 +225,7 @@ The details for ingress (reverse-proxy) to the Gatekeeper service that protects 
 ```
 identity-api-gatekeeper:
   targetService:
-    host: identity-api-protected.192-168-49-2.nip.io
+    host: identity-api.192-168-49-2.nip.io
   ingress:
     annotations:
       ingress.kubernetes.io/ssl-redirect: "true"
@@ -370,7 +370,7 @@ Script execution examples:
   ```bash
   ./deploy/bin/create-client \
     -a https://identity.keycloak.192-168-49-2.nip.io \
-    -i https://identity-api-protected.192-168-49-2.nip.io \
+    -i https://identity-api.192-168-49-2.nip.io \
     -r master \
     -u admin \
     -p changeme \
@@ -388,7 +388,7 @@ Script execution examples:
   ```bash
   ./deploy/bin/create-client \
     -a https://identity.keycloak.192-168-49-2.nip.io \
-    -i https://identity-api-protected.192-168-49-2.nip.io \
+    -i https://identity-api.192-168-49-2.nip.io \
     -r master \
     -t eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXZWFIY2pscThPc1RUYjdlV0s5SjJTTDFBUDIyazZpajdlMGFlVHRNU2xRIn0.eyJleHAiOjE3MDAyNDM4MzgsImlhdCI6MTcwMDI0Mzc3OCwiYXV0aF90aW1lIjoxNzAwMjQxODYyLCJqdGkiOiI2MWI0ZGRhYy1mOWZjLTRmZjktOWQ4Zi01NWU1N2NlNmE5ODgiLCJpc3MiOiJodHRwczovL2lkZW50aXR5LmtleWNsb2FrLmRldmVsb3AuZW9lcGNhLm9yZy9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbImFkZXMtcmVhbG0iLCJkZW1vLXJlYWxtIiwiZHVtbXktc2VydmljZS1yZWFsbSIsIm1hc3Rlci1yZWFsbSIsImFjY291bnQiLCJlb2VwY2EtcmVhbG0iXSwic3ViIjoiZTNkZTMyNGUtMGY0NS00MWUwLTk2YTctNTM1YzkxMTA1NTUyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiZW9lcGNhLXBvcnRhbCIsIm5vbmNlIjoiMTIwMGJlNzAtZWI1Ni00Nzc2LThjODgtOWRiOWQxMDdiMGY2Iiwic2Vzc2lvbl9zdGF0ZSI6ImVmNGUwOTlmLTFmMDgtNDY3MC04ZmE2LTJiOGI3OGUwNWMzMSIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiY3JlYXRlLXJlYWxtIiwiZGVmYXVsdC1yb2xlcy1tYXN0ZXIiLCJvZmZsaW5lX2FjY2VzcyIsImFkbWluIiwidW1hX2F1dGhvcml6YXRpb24iLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWRlcy1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiZGVtby1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiZHVtbXktc2VydmljZS1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwibWFzdGVyLXJlYWxtIjp7InJvbGVzIjpbInZpZXctaWRlbnRpdHktcHJvdmlkZXJzIiwidmlldy1yZWFsbSIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX0sImVvZXBjYS1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfX0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJzaWQiOiJlZjRlMDk5Zi0xZjA4LTQ2NzAtOGZhNi0yYjhiNzhlMDVjMzEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIn0.FK6DhVzpCRFmef2acD2Hmc149e1GTOCGz13dZA828crFbG8j4uhpkoNpiZqdyOPmDtMQ-OebNfjTAUaOt2sS1FmEIBgb9IddcpHKNJOquRjdzQNsX09bX8pFUq1haGwKh6_QmABNOBcT-kQNDSZO-aq7-8FoO9PYa0GWvBRcbcx0W_ngyb7xHglaZTElzcDPBcUTW6llVTTTFygn55smwdxTZ7-tEsMVGM5gNuHwJyLB51HI5KDWrwgUm1hqhhRzvcoutDEAB_HSEXGNNeF7fjP9Qx6q04b7fKOTtnIlXsu3oYW4va9y754llMSJ7w8U-y7yI6Tm2UdNMdYqju7hAA \
     -c admin-cli \
@@ -405,7 +405,7 @@ Script execution examples:
 
 Also, an API was developed to interact more easily with the Keycloak API, that allows client, resource, policies and permissions management.
 
-The API documentation can be found in its [Swagger UI](https://identity-api-protected.192-168-49-2.nip.io/docs) at the service endpoint - [https://identity-api-protected.192-168-49-2.nip.io/docs](https://identity-api-protected.192-168-49-2.nip.io/docs).
+The API documentation can be found in its [Swagger UI](https://identity-api.192-168-49-2.nip.io/docs) at the service endpoint - [https://identity-api.192-168-49-2.nip.io/docs](https://identity-api.192-168-49-2.nip.io/docs).
 
 The Identity API is best used in combination with the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal) test aide, which can be used to establish a login sesssion in the browser to the benefit of the Identity API swagger UI.<br>
 See section [EOEPCA Portal](../quickstart/scripted-deployment.md#eoepca-portal) for details regarding deployment/configuration of the [`eoepca-portal`](../quickstart/scripted-deployment.md#eoepca-portal).

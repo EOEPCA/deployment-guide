@@ -29,7 +29,7 @@ Deployment is initiated by invoking the script...
 The Identity Service (Keycloak) is accessed at the following endpoints...
 
 * [http://identity.keycloak.192-168-49-2.nip.io/](http://identity.keycloak.192-168-49-2.nip.io/)
-* [http://identity-api-protected.192-168-49-2.nip.io/docs](http://identity-api-protected.192-168-49-2.nip.io/docs) (Swagger docs for the API)
+* [http://identity-api.192-168-49-2.nip.io/docs](http://identity-api.192-168-49-2.nip.io/docs) (Swagger docs for the API)
 
 The Application Hub is accessed at the endpoint - [http://applicationhub.192-168-49-2.nip.io/](http://applicationhub.192-168-49-2.nip.io/).
 

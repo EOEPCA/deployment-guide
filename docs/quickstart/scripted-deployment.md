@@ -343,7 +343,7 @@ The setting `client_id: eoepca-portal` identifies a client that must be created 
 ```bash
 ../bin/create-client \
   -a https://identity.keycloak.192-168-49-2.nip.io \
-  -i https://identity-api-protected.192-168-49-2.nip.io \
+  -i https://identity-api.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \
   -p "changeme" \
