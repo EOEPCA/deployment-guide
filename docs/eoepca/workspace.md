@@ -277,7 +277,7 @@ The `identity-gatekeeper` must be configured with the values applicable to the `
 fullnameOverride: workspace-api-protection
 config:
   client-id: workspace-api
-  discovery-url: http://identity.keycloak.192-168-49-2.nip.io/realms/master
+  discovery-url: https://identity.keycloak.192-168-49-2.nip.io/realms/master
   cookie-domain: 192-168-49-2.nip.io
 targetService:
   host: workspace-api.192-168-49-2.nip.io
@@ -314,8 +314,8 @@ For example, with path protection for the `admin` user...
 
 ```bash
 ../bin/create-client \
-  -a http://identity.keycloak.192-168-49-2.nip.io \
-  -i http://identity-api-protected.192-168-49-2.nip.io \
+  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -i https://identity-api-protected.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \
   -p "changeme" \

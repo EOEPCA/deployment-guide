@@ -43,7 +43,7 @@ workflowExecutor:
     STAGEIN_AWS_REGION: RegionOne
     # Stage-out to minio S3
     # (use this if the ADES is not configured to stage-out to the Workspace)
-    STAGEOUT_AWS_SERVICEURL: http://minio.192-168-49-2.nip.io
+    STAGEOUT_AWS_SERVICEURL: https://minio.192-168-49-2.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
     STAGEOUT_AWS_REGION: us-east-1

@@ -39,7 +39,7 @@ global:
   env:
     REGISTRAR_REPLACE: "true"
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
-    AWS_ENDPOINT_URL_S3: http://minio.192-168-49-2.nip.io
+    AWS_ENDPOINT_URL_S3: https://minio.192-168-49-2.nip.io
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
@@ -68,7 +68,7 @@ global:
         validate_bucket_name: false
     cache:
       type: S3
-      endpoint_url: "http://minio.192-168-49-2.nip.io"
+      endpoint_url: "https://minio.192-168-49-2.nip.io"
       host: "minio.192-168-49-2.nip.io"
       access_key_id: xxx
       secret_access_key: xxx
@@ -447,7 +447,7 @@ The `identity-gatekeeper` must be configured with the values applicable to the `
 fullnameOverride: data-access-protection
 config:
   client-id: data-access
-  discovery-url: http://identity.keycloak.192-168-49-2.nip.io/realms/master
+  discovery-url: https://identity.keycloak.192-168-49-2.nip.io/realms/master
   cookie-domain: 192-168-49-2.nip.io
 targetService:
   host: data-access.192-168-49-2.nip.io
@@ -497,8 +497,8 @@ For example...
 
 ```bash
 ../bin/create-client \
-  -a http://identity.keycloak.192-168-49-2.nip.io \
-  -i http://identity-api-protected.192-168-49-2.nip.io \
+  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -i https://identity-api-protected.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \
   -p "changeme" \

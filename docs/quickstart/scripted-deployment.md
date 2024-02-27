@@ -205,7 +205,7 @@ The same can be achieved with a straight http request, for example using `curl`.
 
 ```bash
 curl -X 'POST' \
-  'https://workspace-api.192-168-49-2.nip.io/workspaces' \
+  'http://workspace-api.192-168-49-2.nip.io/workspaces' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer <admin-access-token>' \

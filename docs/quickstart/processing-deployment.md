@@ -61,7 +61,7 @@ Alternatively the following `curl` commands can be used...
     ```bash
     curl -k \
       --request GET \
-      --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
+      --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
       --header 'accept: application/json'
     ```
 
@@ -71,7 +71,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k \
           --request POST \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
           --header 'accept: application/json' \
           --header 'content-type: application/json' \
           --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/convert/main/convert-url-app.cwl","type": "application/cwl"}}'
@@ -81,7 +81,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k \
           --request POST \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
           --header 'accept: application/json' \
           --header 'content-type: application/cwl+yaml' \
           --data '< convert-url-app.cwl'
@@ -91,7 +91,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k \
           --request GET \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/convert-url \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/convert-url \
           --header 'accept: application/json'
         ```
 
@@ -99,7 +99,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k -v \
           --request POST \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/convert-url/execution \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/convert-url/execution \
           --header 'accept: application/json' \
           --header 'content-type: application/json' \
           --header 'prefer: respond-async' \
@@ -110,7 +110,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k -v \
           --request DELETE \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/convert-url \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/convert-url \
           --header 'accept: application/json'
         ```
 
@@ -120,7 +120,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k \
           --request POST \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes \
           --header 'accept: application/json' \
           --header 'content-type: application/json' \
           --data '{"executionUnit": {"href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/eoepca-v1.3/deploy/samples/requests/processing/snuggs.cwl","type": "application/cwl"}}'
@@ -130,7 +130,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k \
           --request GET \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/snuggs \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/snuggs \
           --header 'accept: application/json'
         ```
 
@@ -138,7 +138,7 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k -v \
           --request POST \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/snuggs/execution \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/snuggs/execution \
           --header 'accept: application/json' \
           --header 'content-type: application/json' \
           --header 'prefer: respond-async' \
@@ -149,12 +149,12 @@ Alternatively the following `curl` commands can be used...
         ```bash
         curl -k -v \
           --request DELETE \
-          --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/snuggs \
+          --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/processes/snuggs \
           --header 'accept: application/json'
         ```
 
 ??? example "Get Job Status"
-    This request requires the `Location` header from the response to the execute request. This will be of the form `https://zoo-open.192-168-49-2.nip.io/{user}/ogc-api/jobs/{job-id}` - e.g. `https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e`.
+    This request requires the `Location` header from the response to the execute request. This will be of the form `http://zoo-open.192-168-49-2.nip.io/{user}/ogc-api/jobs/{job-id}` - e.g. `http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/jobs/7b58bc38-64d4-11ed-b962-0242ac11000e`.
 
     ```bash
     curl -k \
@@ -181,7 +181,7 @@ Alternatively the following `curl` commands can be used...
     ```bash
     curl -k \
       --request GET \
-      --url https://zoo-open.192-168-49-2.nip.io/eric/ogc-api/jobs \
+      --url http://zoo-open.192-168-49-2.nip.io/eric/ogc-api/jobs \
       --header 'accept: application/json'
     ```
 
@@ -189,7 +189,7 @@ Alternatively the following `curl` commands can be used...
 
 The outputs are published as a static STAC catalogue to a path that includes the unique job ID.
 
-In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `console.minio.<domain>` e.g. https://console.minio.192-168-49-2.nip.io/, or using an S3 client such as...
+In the default configuration, the processing results are pushed to the Minio S3 object storage. This can be checked via browser access at the endpoint `console.minio.<domain>` e.g. http://console.minio.192-168-49-2.nip.io/, or using an S3 client such as...
 
 ```bash
 s3cmd -c ./deploy/cluster/s3cfg ls s3://eoepca

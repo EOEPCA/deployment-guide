@@ -85,7 +85,7 @@ In addition, we can add values to the ZOO-Project DRU `main.cfg` configuration f
 customConfig:
   main:
     eoepca: |-
-      domain=myplatform.mydomain
+      domain=192-168-49-2.nip.io
       workspace_prefix=ws
 ```
 
@@ -93,7 +93,7 @@ This is manifest in zoo's `main.cfg` in INI file configuration syntax...
 
 ```ini
 [eoepca]
-domain=myplatform.mydomain
+domain=192-168-49-2.nip.io
 workspace_prefix=ws
 ```
 
@@ -104,7 +104,7 @@ In the case that `workspace_prefix` is not set, then the object storage specific
 ```yaml
 workflow:
   inputs:
-    STAGEOUT_AWS_SERVICEURL: https://minio.myplatform.mydomain
+    STAGEOUT_AWS_SERVICEURL: https://minio.192-168-49-2.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
     STAGEOUT_AWS_REGION: RegionOne
@@ -218,7 +218,7 @@ workflow:
     STAGEIN_AWS_ACCESS_KEY_ID: test
     STAGEIN_AWS_SECRET_ACCESS_KEY: test
     STAGEIN_AWS_REGION: RegionOne
-    STAGEOUT_AWS_SERVICEURL: https://minio.myplatform.mydomain
+    STAGEOUT_AWS_SERVICEURL: https://minio.192-168-49-2.nip.io
     STAGEOUT_AWS_ACCESS_KEY_ID: eoepca
     STAGEOUT_AWS_SECRET_ACCESS_KEY: changeme
     STAGEOUT_AWS_REGION: RegionOne
@@ -253,7 +253,7 @@ Ingress can be enabled and configured to establish (reverse-proxy) external acce
 ```yaml
 ingress:
   enabled: false
-  hosturl: zoo.myplatform.mydomain
+  hosturl: zoo.192-168-49-2.nip.io
 
 ```
 
@@ -268,13 +268,13 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: true
     cert-manager.io/cluster-issuer: letsencrypt-production
   hosts:
-  - host: zoo-open.myplatform.mydomain
+  - host: zoo-open.192-168-49-2.nip.io
     paths:
     - path: /
       pathType: ImplementationSpecific
   tls:
   - hosts:
-    - zoo-open.myplatform.mydomain
+    - zoo-open.192-168-49-2.nip.io
     secretName: zoo-open-tls
 ```
 
@@ -316,7 +316,7 @@ For example...
 ```yaml
 iam: 
   enabled: true
-  openIdConnectUrl: https://myauth.mydomain.myplatform/realms/myrealm/.well-known/openid-configuration
+  openIdConnectUrl: https://identity.keycloak.192-168-49-2.nip.io/realms/master/.well-known/openid-configuration
   type: openIdConnect
   name: OpenIDAuth
   realm: Secured section
@@ -345,7 +345,7 @@ The `identity-gatekeeper` must be configured with the values applicable to the `
 fullnameOverride: zoo-project-dru-protection
 config:
   client-id: ades
-  discovery-url: http://identity.keycloak.192-168-49-2.nip.io/realms/master
+  discovery-url: https://identity.keycloak.192-168-49-2.nip.io/realms/master
   cookie-domain: 192-168-49-2.nip.io
 targetService:
   host: zoo.192-168-49-2.nip.io
@@ -382,8 +382,8 @@ For example, with path protection for test users...
 
 ```bash
 ../bin/create-client \
-  -a http://identity.keycloak.192-168-49-2.nip.io \
-  -i http://identity-api-protected.192-168-49-2.nip.io \
+  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -i https://identity-api-protected.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \
   -p "changeme" \
@@ -401,8 +401,8 @@ For example, with path protection for test users...
 
 The `zoo-project-dru` service provides a mutil-user aware set of service interfaces at...
 
-* OGC API Processes: `https://zoo.myplatform.mydomain/<username>/ogc-api/`
-* Swagger UI: `https://zoo.myplatform.mydomain/swagger-ui/oapip/`
+* OGC API Processes: `https://zoo.192-168-49-2.nip.io/<username>/ogc-api/`
+* Swagger UI: `https://zoo.192-168-49-2.nip.io/swagger-ui/oapip/`
 
 ## Usage Samples
 
@@ -410,7 +410,7 @@ See the [Example Requests](../quickstart/processing-deployment.md#example-reques
 
 ## Swagger UI (OpenAPI)
 
-The `zoo-project-dru` service includes a Swagger UI interactive representation of its OpenAPI REST interface - available at the URL `https://zoo.myplatform.mydomain/swagger-ui/oapip/`.
+The `zoo-project-dru` service includes a Swagger UI interactive representation of its OpenAPI REST interface - available at the URL `https://zoo.192-168-49-2.nip.io/swagger-ui/oapip/`.
 
 ## Application Package Example
 

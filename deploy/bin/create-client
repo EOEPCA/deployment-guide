@@ -17,8 +17,8 @@ $(basename "$0") [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id i
 
 where:
     -h                    show help message
-    -a                    authorization server url - e.g. https://auth.myplatform.mydomain
-    -i                    identity-api server url - e.g. https://identity-api.myplatform.mydomain
+    -a                    authorization server url - e.g. https://keycloak.192-168-49-2.nip.io
+    -i                    identity-api server url - e.g. https://identity-api.192-168-49-2.nip.io
     -u                    username used for authentication
     -p                    password used for authentication
     -c                    client id (of the bootstrap client used in the create request)

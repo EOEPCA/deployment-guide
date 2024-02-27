@@ -41,10 +41,10 @@ Example `myservice-protection-values.yaml`...
 nameOverride: myservice-protection
 config:
   client-id: myservice
-  discovery-url: https://keycloak.myplatform.mydomain/realms/master
-  cookie-domain: myplatform.mydomain
+  discovery-url: https://keycloak.192-168-49-2.nip.io/realms/master
+  cookie-domain: 192-168-49-2.nip.io
 targetService:
-  host: myservice.myplatform.mydomain
+  host: myservice.192-168-49-2.nip.io
   name: myservice
   port:
     number: 80
@@ -74,7 +74,7 @@ Gatekeeper requires _Client Credentials_ for its interactions with the Keycloak 
 
 ## Client Registration
 
-The Keycloak client can be created directly in the Keycloak admin console - e.g. via https://keycloak.myplatform.mydomain/admin.
+The Keycloak client can be created directly in the Keycloak admin console - e.g. via https://keycloak.192-168-49-2.nip.io/admin.
 
 As an aide there is a helper script [`create-client`](https://github.com/EOEPCA/deployment-guide/blob/eoepca-v1.4/deploy/bin/create-client). The script is available in the [`deployment-guide` repository](https://github.com/EOEPCA/deployment-guide), and can be obtained as follows...
 
@@ -93,8 +93,8 @@ create-client [-h] [-a] [-i] [-u] [-p] [-c] [-s] [-t | --token t] [-r] --id id [
 
 where:
     -h                    show help message
-    -a                    authorization server url - e.g. https://auth.myplatform.mydomain
-    -i                    identity-api server url - e.g. https://identity-api.myplatform.mydomain
+    -a                    authorization server url - e.g. https://keycloak.192-168-49-2.nip.io
+    -i                    identity-api server url - e.g. https://identity-api.192-168-49-2.nip.io
     -u                    username used for authentication
     -p                    password used for authentication
     -c                    client id (of the bootstrap client used in the create request)
@@ -117,8 +117,8 @@ For example...
 
 ```bash
 ./deploy/bin/create-client \
-  -a https://keycloak.myplatform.mydomain \
-  -i https://identity-api-protected.myplatform.mydomain \
+  -a https://keycloak.192-168-49-2.nip.io \
+  -i https://identity-api-protected.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \
   -p "changeme" \
@@ -143,7 +143,7 @@ Authorization: Bearer <access_token>
 The Access Token for a given user  can be obtained with a call to the token endpoint of the Keycloak Identity Service - supplying the credentials for the user and the pre-registered client...
 
 ```bash
-curl -L -X POST 'https://keycloak.myplatform.mydomain/realms/master/protocol/openid-connect/token' \
+curl -L -X POST 'https://keycloak.192-168-49-2.nip.io/realms/master/protocol/openid-connect/token' \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   --data-urlencode 'scope=openid profile email' \

@@ -53,9 +53,9 @@ jupyterhub:
         JUPYTERHUB_ENV: "dev"
         JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
         OAUTH_CALLBACK_URL: https://applicationhub.192-168-49-2.nip.io/hub/oauth_callback
-        OAUTH2_USERDATA_URL: https://auth.192-168-49-2.nip.io/oxauth/restv1/userinfo
-        OAUTH2_TOKEN_URL: https://auth.192-168-49-2.nip.io/oxauth/restv1/token
-        OAUTH2_AUTHORIZE_URL: https://auth.192-168-49-2.nip.io/oxauth/restv1/authorize
+        OAUTH2_USERDATA_URL: https://keycloak.192-168-49-2.nip.io/oxauth/restv1/userinfo
+        OAUTH2_TOKEN_URL: https://keycloak.192-168-49-2.nip.io/oxauth/restv1/token
+        OAUTH2_AUTHORIZE_URL: https://keycloak.192-168-49-2.nip.io/oxauth/restv1/authorize
         OAUTH_LOGOUT_REDIRECT_URL: "https://applicationhub.192-168-49-2.nip.io"
         OAUTH2_USERNAME_KEY: "preferred_username"
         STORAGE_CLASS: "standard"
@@ -118,8 +118,8 @@ For example...
 
 ```bash
 ../bin/create-client \
-  -a http://identity.keycloak.192-168-49-2.nip.io \
-  -i http://identity-api-protected.192-168-49-2.nip.io \
+  -a https://identity.keycloak.192-168-49-2.nip.io \
+  -i https://identity-api-protected.192-168-49-2.nip.io \
   -r "master" \
   -u "admin" \
   -p "changeme" \
