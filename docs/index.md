@@ -1,5 +1,13 @@
 # Deployment Guide
 
+!!! ChangeLog
+    
+    This `current` version of the Deployment Guide represents the development tip that goes beyond the [latest release verion v1.4](../v1.4).
+
+    The following provides a summary of changes since the last release (v1.4)...
+    
+    * **[FIX]** Update Application Hub to chart version `2.0.57` to fix hard-coded ingress namespace
+
 The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...
 
 * Description of how each building-block is configured and deployed - see **Deploy EOEPCA Components**
