@@ -9,7 +9,7 @@ The _Application Hub_ is deployed via the `application-hub` helm chart from the 
 The chart is configured via values, which are detailed in the [default values file for the chart](https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/values.yaml).
 
 ```bash
-helm install --version 2.0.55 --values application-hub-values.yaml \
+helm install --version 2.0.57 --values application-hub-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   application-hub application-hub
 ```

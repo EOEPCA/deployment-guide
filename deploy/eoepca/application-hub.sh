@@ -30,7 +30,7 @@ deployService() {
       --timeout 10m \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.55
+      --version 2.0.57
   fi
 }
 
