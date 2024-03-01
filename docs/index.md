@@ -7,6 +7,7 @@
     The following provides a summary of changes since the last release (v1.4)...
     
     * **[FIX]** Update Application Hub to chart version `2.0.57` to fix hard-coded ingress namespace
+    * **[FIX]** Correct default value of `PROCESSING_MAX_RAM` to the integer value in Mi `8192` (was string `8Gi`)
 
 The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...
 
