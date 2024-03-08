@@ -6,7 +6,8 @@
 
     The following provides a summary of changes since the last release (v1.4)...
     
-    * **[FIX]** Update Application Hub to chart version `2.0.57` to fix hard-coded ingress namespace
+    * **[FIX]** Update Application Hub to chart version `2.0.58` to fix hard-coded namespace `proc`<br>
+      _Namespace can now be set via chart environment variable `APP_HUB_NAMESPACE`_
     * **[FIX]** Correct default value of `PROCESSING_MAX_RAM` to the integer value in Mi `1024` (was string `8Gi`)
 
 The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...

@@ -14,7 +14,7 @@ configureAction "$1"
 initIpDefaults
 
 domain="${2:-${default_domain}}"
-NAMESPACE="proc"
+NAMESPACE="app-hub"
 
 main() {
   deployService
@@ -30,7 +30,7 @@ deployService() {
       --timeout 10m \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.57
+      --version 2.0.58
   fi
 }
 
@@ -63,6 +63,7 @@ jupyterhub:
         OAUTH2_AUTHORIZE_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/auth
         OAUTH_LOGOUT_REDIRECT_URL: "$(httpScheme)://applicationhub.${domain}"
         OAUTH2_USERNAME_KEY: "preferred_username"
+        APP_HUB_NAMESPACE: "${NAMESPACE}"
         STORAGE_CLASS: "${APPLICATION_HUB_STORAGE}"
         RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
