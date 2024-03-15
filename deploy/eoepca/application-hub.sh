@@ -15,6 +15,11 @@ initIpDefaults
 
 domain="${2:-${default_domain}}"
 NAMESPACE="app-hub"
+BASE_URL="/"
+
+if [[ "${BASE_URL}" != */ ]]; then
+  BASE_URL="${BASE_URL}/"
+fi
 
 main() {
   deployService
@@ -30,7 +35,7 @@ deployService() {
       --timeout 10m \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 2.0.58
+      --version 2.0.59
   fi
 }
 
@@ -42,7 +47,7 @@ ingress:
   hosts:
     - host: applicationhub.${domain}
       paths:
-        - path: /
+        - path: ${BASE_URL}
           pathType: ImplementationSpecific
   tls:
     - secretName: applicationhub-tls
@@ -53,19 +58,21 @@ ingress:
 jupyterhub:
   fullnameOverride: "application-hub"
   hub:
+    baseUrl: ${BASE_URL}
     existingSecret: application-hub-secrets
     extraEnv: 
         JUPYTERHUB_ENV: "dev"
         JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
-        OAUTH_CALLBACK_URL: $(httpScheme)://applicationhub.${domain}/hub/oauth_callback
+        OAUTH_CALLBACK_URL: $(httpScheme)://applicationhub.${domain}${BASE_URL}hub/oauth_callback
         OAUTH2_USERDATA_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/userinfo
         OAUTH2_TOKEN_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/token
         OAUTH2_AUTHORIZE_URL: $(httpScheme)://keycloak.${domain}/realms/master/protocol/openid-connect/auth
-        OAUTH_LOGOUT_REDIRECT_URL: "$(httpScheme)://applicationhub.${domain}"
+        OAUTH_LOGOUT_REDIRECT_URL: "$(httpScheme)://applicationhub.${domain}${BASE_URL}hub/home"
         OAUTH2_USERNAME_KEY: "preferred_username"
         APP_HUB_NAMESPACE: "${NAMESPACE}"
         STORAGE_CLASS: "${APPLICATION_HUB_STORAGE}"
         RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
+        BASE_URL: ${BASE_URL}
 
         JUPYTERHUB_CRYPT_KEY:
           valueFrom:
