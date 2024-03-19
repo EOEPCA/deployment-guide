@@ -8,14 +8,18 @@ from pystac.stac_io import DefaultStacIO, StacIO
 from urllib.parse import urlparse
 from datetime import datetime
 
-cat_url = sys.argv[1]
-bucket = sys.argv[2]
-subfolder = sys.argv[3]
-collection_id = sys.argv[4]
-print(f"cat_url: {cat_url}", file=sys.stderr)
+bucket = sys.argv[1]
+subfolder = sys.argv[2]
+collection_id = sys.argv[3]
 print(f"bucket: {bucket}", file=sys.stderr)
 print(f"subfolder: {subfolder}", file=sys.stderr)
 print(f"collection_id: {collection_id}", file=sys.stderr)
+
+# cat_url
+# Should really be one or more, for cwl outputs of type Directory[]
+# - but as a quick fix we just take the first one for now.
+cat_url = sys.argv[4]
+print(f"cat_url: {cat_url}", file=sys.stderr)
 
 aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
 aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]

@@ -10,6 +10,7 @@
       _Namespace can now be set via chart environment variable `APP_HUB_NAMESPACE`_
     * **[FIX]** Update Application Hub to chart version `2.0.59` to add support for path-prefix (`BASE_URL`)
     * **[FIX]** Correct default value of `PROCESSING_MAX_RAM` to the integer value in Mi `1024` (was string `8Gi`)
+    * **[FIX]** ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. `snuggs` sample app
 
 The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...
 

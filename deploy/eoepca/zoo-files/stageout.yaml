@@ -26,10 +26,22 @@ baseCommand:
   - python
   - stageout.py
 arguments:
-  - $( inputs.wf_outputs.path )
   - $( inputs.STAGEOUT_OUTPUT )
   - $( inputs.process )
   - $( inputs.collection_id )
+  - valueFrom: |
+      ${
+        if( !Array.isArray(inputs.wf_outputs) ) 
+        {
+          return inputs.wf_outputs.path;
+        }
+        var args=[];
+        for (var i = 0; i < inputs.wf_outputs.length; i++) 
+        {
+          args.push(inputs.wf_outputs[i].path);
+        }
+        return args;
+      }
 requirements:
   DockerRequirement:
     dockerPull: ghcr.io/terradue/ogc-eo-application-package-hands-on/stage:1.3.2
