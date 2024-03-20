@@ -55,7 +55,7 @@ The script [`deploy/eoepca/eoepca.sh`](https://github.com/EOEPCA/deployment-guid
     **IDENTITY_SERVICE_ADMIN_CLIENT** | The Keycloak client to use for admin API tasks during scripted deployment | `admin-cli`
     **IDENTITY_POSTGRES_PASSWORD** | The password for the Keycloak Postgres service | `${IDENTITY_SERVICE_DEFAULT_SECRET}`
     **IDENTITY_GATEKEEPER_CLIENT_SECRET** | The secret used for each Keycloak client (one per resource service) created during scripted deployment | `${IDENTITY_SERVICE_DEFAULT_SECRET}`
-    **IDENTITY_GATEKEEPER_ENCRYPTION_KEY** | The encryption key for each Keycloak client (one per resource service) created during scripted deployment | `changemechangeme`
+    **IDENTITY_GATEKEEPER_ENCRYPTION_KEY** | The encryption key for each Keycloak client (one per resource service) created during scripted deployment<br>NOTE that this must be either 16 or 32 characters long | `changemechangeme`
     **IDENTITY_REALM** | Keycloak realm for Identity Service.<br>_This is not explicitly created by the scripted deployment, and so is assumed to exist within the Keycloak instance. Thus, will probably break the deployment if modified._ | `master`
     **MINIO_ROOT_USER** | Name of the 'root' user for the Minio object storage service. | `eoepca`
     **MINIO_ROOT_PASSWORD** | Password for the 'root' user for the Minio object storage service. | `changeme`
