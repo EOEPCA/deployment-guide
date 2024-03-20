@@ -5,12 +5,13 @@
     This `current` version of the Deployment Guide represents the development tip that goes beyond the [latest release verion v1.4](../v1.4).
 
     The following provides a summary of changes since the last release (v1.4)...
-    
-    * **[FIX]** Update Application Hub to chart version `2.0.58` to fix hard-coded namespace `proc`<br>
+
+    * **19/03/2024** - ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. `snuggs` sample app
+    * **15/03/2024** - Update Application Hub to chart version `2.0.59` to add support for path-prefix (`BASE_URL`)
+    * **08/03/2024** - Update Application Hub to chart version `2.0.58` to fix hard-coded namespace `proc`<br>
       _Namespace can now be set via chart environment variable `APP_HUB_NAMESPACE`_
-    * **[FIX]** Update Application Hub to chart version `2.0.59` to add support for path-prefix (`BASE_URL`)
-    * **[FIX]** Correct default value of `PROCESSING_MAX_RAM` to the integer value in Mi `1024` (was string `8Gi`)
-    * **[FIX]** ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. `snuggs` sample app
+    * **01/03/2024** - Adjust default Calrissian pod resource limits to 1024 Mi RAM, 2 vCPU
+    * **01/03/2024** - Correct default value of `PROCESSING_MAX_RAM` to the integer value in Mi `1024` (was string `8Gi`)
 
 The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...
 
