@@ -6,6 +6,7 @@
 
     The following provides a summary of changes since the last release (v1.4)...
 
+    * **20/03/2024** - Correction to chart path for helm deployment of `eoepca-portal`
     * **20/03/2024** - Correct hardcoded OAuth client secret for Application Hub
     * **20/03/2024** - Clarify Gatekeeper encryption key must be 16 or 32 characters long
     * **19/03/2024** - ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. `snuggs` sample app
