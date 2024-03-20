@@ -1284,11 +1284,12 @@
 <p>This <code>current</code> version of the Deployment Guide represents the development tip that goes beyond the <a href="../v1.4">latest release verion v1.4</a>.</p>
 <p>The following provides a summary of changes since the last release (v1.4)&hellip;</p>
 <ul>
-<li><strong>[FIX]</strong> Update Application Hub to chart version <code>2.0.58</code> to fix hard-coded namespace <code>proc</code><br>
+<li><strong>19/03/2024</strong> - ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. <code>snuggs</code> sample app</li>
+<li><strong>15/03/2024</strong> - Update Application Hub to chart version <code>2.0.59</code> to add support for path-prefix (<code>BASE_URL</code>)</li>
+<li><strong>08/03/2024</strong> - Update Application Hub to chart version <code>2.0.58</code> to fix hard-coded namespace <code>proc</code><br>
   <em>Namespace can now be set via chart environment variable <code>APP_HUB_NAMESPACE</code></em></li>
-<li><strong>[FIX]</strong> Update Application Hub to chart version <code>2.0.59</code> to add support for path-prefix (<code>BASE_URL</code>)</li>
-<li><strong>[FIX]</strong> Correct default value of <code>PROCESSING_MAX_RAM</code> to the integer value in Mi <code>1024</code> (was string <code>8Gi</code>)</li>
-<li><strong>[FIX]</strong> ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. <code>snuggs</code> sample app</li>
+<li><strong>01/03/2024</strong> - Adjust default Calrissian pod resource limits to 1024 Mi RAM, 2 vCPU</li>
+<li><strong>01/03/2024</strong> - Correct default value of <code>PROCESSING_MAX_RAM</code> to the integer value in Mi <code>1024</code> (was string <code>8Gi</code>)</li>
 </ul>
 </div>
 <p>The Deployment Guide captures each release of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation, by providing for each version&hellip;</p>
