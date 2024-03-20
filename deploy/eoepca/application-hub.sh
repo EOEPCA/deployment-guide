@@ -128,7 +128,7 @@ createSecret() {
   kubectl -n "${NAMESPACE}" create secret generic application-hub-secrets \
     --from-literal=JUPYTERHUB_CRYPT_KEY="$(openssl rand -hex 32)" \
     --from-literal=OAUTH_CLIENT_ID="application-hub" \
-    --from-literal=OAUTH_CLIENT_SECRET="changeme" \
+    --from-literal=OAUTH_CLIENT_SECRET="${IDENTITY_SERVICE_DEFAULT_SECRET}" \
     --dry-run=client -oyaml | kubectl ${ACTION_KUBECTL} -f -
 }
 
