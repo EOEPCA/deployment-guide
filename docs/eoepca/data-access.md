@@ -240,56 +240,55 @@ The Harvester can be configured through the helm chart values...
 ```yaml
 vs:
   harvester:
-    replicaCount: 1
-    config:
-      redis:
-        host: data-access-redis-master
-        port: 6379
-      harvesters:
-        - name: Creodias-Opensearch
-          resource:
-            url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
-            type: OpenSearch
-            format_config:
-              type: 'application/json'
+    # Update is needed according to schema: https://gitlab.eox.at/vs/harvester/-/blob/release-3.1.0/src/harvester/config-schema.json?ref_type=tags to avoid CrashLoopBackOff of Harvester container
+    Creodias-Opensearch:
+      resource:
+        type: OpenSearch
+        opensearch:
+          url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+          format:
+            type: 'application/json'
+            json: 
               property_mapping:
                 start_datetime: 'startDate'
                 end_datetime: 'completionDate'
                 productIdentifier: 'productIdentifier'
-            query:
-              time:
-                property: sensed
-                begin: 2019-09-10T00:00:00Z
-                end: 2019-09-11T00:00:00Z
-              collection: null
-              bbox: 14.9,47.7,16.4,48.7
-          filter: {}
-          postprocess:
-            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
-          queue: register
-        - name: Creodias-Opensearch-Sentinel1
-          resource:
-            url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
-            type: OpenSearch
-            format_config:
-              type: 'application/json'
+          query:
+            time:
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+      filter: {}
+      postprocessors:
+        - type: builtin
+          process: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+      queue: register
+    Creodias-Opensearch-Sentinel1:
+      resource:
+        type: OpenSearch
+        opensearch:
+          url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+          format:
+            type: 'application/json'
+            json:
               property_mapping:
                 start_datetime: 'startDate'
                 end_datetime: 'completionDate'
                 productIdentifier: 'productIdentifier'
-            query:
-              time:
-                property: sensed
-                begin: 2019-09-10T00:00:00Z
-                end: 2019-09-11T00:00:00Z
-              collection: null
-              bbox: 14.9,47.7,16.4,48.7
-              extra_params:
-                productType: GRD-COG
-          filter: {}
-          postprocess:
-            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
-          queue: register
+          query:
+            time:
+              begin: 2019-09-10T00:00:00Z
+              end: 2019-09-11T00:00:00Z
+            collection: null
+            bbox: 14.9,47.7,16.4,48.7
+            extra_params:
+              productType: GRD-COG
+      filter: {}
+      postprocessors:
+        - type: builtin
+          process: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
+      queue: register
 ```
 
 The `harvester.config.harvesters` list defines a set of pre-defined harvesters which can be invoked in a later stage. The name property must be unique for each harvester and must be unique among all harvesters in the list. Each harvester is associated with a `resource`, an optional `filter` or `postprocess` function, and a `queue`.
