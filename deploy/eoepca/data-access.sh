@@ -47,7 +47,7 @@ deployService() {
     serviceValues | helm ${ACTION_HELM} data-access data-access -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace ${NAMESPACE} --create-namespace \
-      --version 1.4.0
+      --version 1.4.1
   fi
 }
 
@@ -61,6 +61,10 @@ global:
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
+    CREODIAS_EODATA_S3_ENDPOINT: "${CREODIAS_EODATA_S3_ENDPOINT}"
+    CREODIAS_EODATA_S3_ACCESS_KEY: "${CREODIAS_EODATA_S3_ACCESS_KEY}"
+    CREODIAS_EODATA_S3_ACCESS_SECRET: "${CREODIAS_EODATA_S3_ACCESS_SECRET}"
+    CREODIAS_EODATA_S3_REGION: "${CREODIAS_EODATA_S3_REGION}"
 
   # The data-access relies on the value 'ingress.tls.hosts[0]' to specify the service
   # hostname. So this must be supplied even if the ingress is disabled.
@@ -83,9 +87,9 @@ global:
     data:
       data:
         type: S3
-        endpoint_url: http://data.cloudferro.com
-        access_key_id: access
-        secret_access_key: access
+        endpoint_url: "${CREODIAS_EODATA_S3_ENDPOINT}"
+        access_key_id: "${CREODIAS_EODATA_S3_ACCESS_KEY}"
+        secret_access_key: "${CREODIAS_EODATA_S3_ACCESS_SECRET}"
         region_name: RegionOne
         validate_bucket_name: false
     cache:

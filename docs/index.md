@@ -6,6 +6,7 @@
 
     The following provides a summary of changes since the last release (v1.4)...
 
+    * **03/04/2024** - Update Data Access to chart `1.4.1` to introduce variables to remedy hard-coded harvester values for access to Creodias eodata. Ref. - `CREODIAS_EODATA_S3_ENDPOINT`, `CREODIAS_EODATA_S3_ACCESS_KEY`, `CREODIAS_EODATA_S3_ACCESS_SECRET` and `CREODIAS_EODATA_S3_REGION`.
     * **20/03/2024** - Correction to chart path for helm deployment of `eoepca-portal`
     * **20/03/2024** - Correct hardcoded OAuth client secret for Application Hub
     * **20/03/2024** - Clarify Gatekeeper encryption key must be 16 or 32 characters long

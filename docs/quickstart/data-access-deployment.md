@@ -14,7 +14,8 @@ The data-access deployment applies the following configuration:
 * Services deployed:
     * Resource Catalogue for data discovery
     * Data Access for data visualisation and download
-* Includes data specification for CREODIAS Sentinel-2, which can be exploited if running in a CREODIAS VM connected to the `eodata` network - [see description of variable `CREODIAS_DATA_SPECIFICATION`](scripted-deployment.md#environment-variables)
+* Includes data specification for CREODIAS Sentinel-2, which can be exploited if running in a CREODIAS VM connected to the `eodata` network - [see description of variable `CREODIAS_DATA_SPECIFICATION`](scripted-deployment.md#environment-variables)<br>
+  _Note that it may be necessary to set the variable `CREODIAS_EODATA_S3_ENDPOINT` if different from the default - for example the value `http://eodata.cloudferro.com` for the `WAW3-2` Cloudferro cloud._
 * Open ingress are enabled for unauthenticated access to resource-catalogue and data-access services
 * Other eoepca services not deployed
 

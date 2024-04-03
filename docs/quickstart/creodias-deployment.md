@@ -15,6 +15,10 @@ The CREODIAS deployment applies the following configuration:
 
 With reference to the file `creodias-options`, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment...
 
+* Values for access to CREODIAS eodata...
+    * CREODIAS_EODATA_S3_ENDPOINT - if different from the default `http://data.cloudferro.com`
+    * Credentials required for the new clouds, including `WAW3-2` and `FRA1-2`<br>
+      Credentials must be created at - [https://eodata-keymanager.creodias.eu/panel/s3-credentials](https://eodata-keymanager.creodias.eu/panel/s3-credentials) - and set into the variables `CREODIAS_EODATA_S3_ACCESS_KEY` and `CREODIAS_EODATA_S3_ACCESS_SECRET`
 * Passwords: `MINIO_ROOT_PASSWORD`, `HARBOR_ADMIN_PASSWORD`
 * Identity Service credentials - e.g. `IDENTITY_SERVICE_DEFAULT_SECRET`, `IDENTITY_SERVICE_ADMIN_PASSWORD`, etc.
 * OpenStack details: see section [Openstack Configuration](scripted-deployment.md#openstack-configuration)
@@ -37,9 +41,11 @@ kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harve
 
 See the [Harvester](#harvester) section below for an explanation of this harvester configuration.
 
+See [EOData Catalogue API Manual on CREODIAS](https://creodias.docs.cloudferro.com/en/latest/eodata/EOData-Catalogue-API-Manual-on-Creodias.html) for details regarding access to the CREODIAS data offering.
+
 ## Data Specification Walkthrough
 
-The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option `CREODIAS_DATA_SPECIFICATION=true` - see [Environment Variables](scripted-deployment.md#environment-variables).
+The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option `CREODIAS_DATA_SPECIFICATION=true` - see [Environment Variables](scripted-deployment.md#environment-variables). In addition, it may be necessary to set the variable `CREODIAS_EODATA_S3_ENDPOINT` if different from the default - for example the value `http://eodata.cloudferro.com` for the `WAW3-2` Cloudferro cloud.
 
 This section provides a walkthrough of this configuration for CREODIAS - to act as an aid to understanding by way of a worked example.
 
