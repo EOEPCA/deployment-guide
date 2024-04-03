@@ -1596,7 +1596,7 @@
 &hellip;noting that this step is a customised version of that described in section <a href="../scripted-deployment/#deployment">Deployment</a>.</p>
 <h2 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h2>
 <p>The harvester can be <a href="../../eoepca/data-access/#harvester-helm-configuration">deployed with a default configuration</a> file at <code>/config.yaml</code>. As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml Sentinel2
 </span></code></pre></div></p>
 <p>See the <a href="#harvester">Harvester</a> section below for an explanation of this harvester configuration.</p>
 <p>See <a href="https://creodias.docs.cloudferro.com/en/latest/eodata/EOData-Catalogue-API-Manual-on-Creodias.html">EOData Catalogue API Manual on CREODIAS</a> for details regarding access to the CREODIAS data offering.</p>
