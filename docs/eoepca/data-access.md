@@ -310,12 +310,12 @@ The harvester can either do one-off harvests via the CLI or listen on a redis qu
 
 In order to start a harvest from the CLI, the operator first needs to connect to the kubernetes pod of the harvester. Within that pod, the harvest can be executed like this...
 ```bash
-python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+python3 -m harvester harvest --config-file /config-run.yaml Sentinel2
 ```
 
-This will invoke the Creodias-Opensearch harvester with default arguments. When some values are to be overridden, the --values switch can be used to pass override values. These values must be a JSON string. The following example adjusts the begin and end times of the query parameters...
+This will invoke the `Sentinel2` harvester with default arguments. When some values are to be overridden, the --values switch can be used to pass override values. These values must be a JSON string. The following example adjusts the begin and end times of the query parameters...
 ```bash
-python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch --values '{"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}'
+python3 -m harvester harvest --config-file /config-run.yaml Sentinel2 --values '{"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}'
 ```
 
 ##### Harvests via the harvest daemon
@@ -324,7 +324,7 @@ The harvester pod runs a service listening on a redis queue. When a message is r
 
 To send a harvesting request via the redis queue, it is necessary to connect to the redis pod and execute the redis-cli there. Then the following command can be used to achieve the same result as above with CLI harvesting...
 ```bash
-redis-cli LPUSH '{"name": "Creodias-Opensearch", "values": {"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}}'
+redis-cli LPUSH '{"name": "Sentinel2", "values": {"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}}'
 ```
 
 #### Results of the harvesting
@@ -531,7 +531,7 @@ The Data Access and Resource Catalogue services are configured to properly inter
 
 The harvesting of data can be triggered (post deployment), in accordance with this default configuration, by connecting to the `rm/harvester` service and executing the command...
 ```
-python3 -m harvester harvest --config-file /config-run.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+python3 -m harvester harvest --config-file /config-run.yaml Sentinel2
 ```
 
 ### Ad-hoc Harvesting

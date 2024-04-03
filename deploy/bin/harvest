@@ -30,7 +30,7 @@ main() {
   # Copy config to pod and invoke harvester
   kubectl -n rm exec -i "${pod_name}" -- rm -f "${tmp_config_file}"
   kubectl -n rm cp "$(realpath "${tmp_config_file}")" "${pod_name}":"${tmp_config_file}"
-  kubectl -n rm exec -i "${pod_name}" -- python3 -m harvester harvest --config-file "${tmp_config_file}" --host data-access-redis-master --port 6379 "${harvester_name}"
+  kubectl -n rm exec -i "${pod_name}" -- python3 -m harvester harvest --config-file "${tmp_config_file}" "${harvester_name}"
 }
 
 create_config_file() {

@@ -36,7 +36,7 @@ Once the file `creodias-options` has been well populated for your environment, t
 
 The harvester can be [deployed with a default configuration](../eoepca/data-access.md#harvester-helm-configuration) file at `/config.yaml`. As described in the [Data Access section](../eoepca/data-access.md#starting-the-harvester), harvesting according to this configuration can be triggered with...
 ```
-kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
+kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml Sentinel2
 ```
 
 See the [Harvester](#harvester) section below for an explanation of this harvester configuration.
