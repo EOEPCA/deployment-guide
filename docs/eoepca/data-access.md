@@ -240,55 +240,136 @@ The Harvester can be configured through the helm chart values...
 ```yaml
 vs:
   harvester:
-    replicaCount: 1
     config:
       redis:
         host: data-access-redis-master
         port: 6379
       harvesters:
-        - name: Creodias-Opensearch
+        Sentinel2:
           resource:
-            url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
             type: OpenSearch
-            format_config:
-              type: 'application/json'
-              property_mapping:
-                start_datetime: 'startDate'
-                end_datetime: 'completionDate'
-                productIdentifier: 'productIdentifier'
-            query:
-              time:
-                property: sensed
-                begin: 2019-09-10T00:00:00Z
-                end: 2019-09-11T00:00:00Z
-              collection: null
-              bbox: 14.9,47.7,16.4,48.7
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel2/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
           filter: {}
-          postprocess:
-            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel2Postprocessor
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel2
+              kwargs: {}
           queue: register
-        - name: Creodias-Opensearch-Sentinel1
-          resource:
-            url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
-            type: OpenSearch
-            format_config:
-              type: 'application/json'
-              property_mapping:
-                start_datetime: 'startDate'
-                end_datetime: 'completionDate'
-                productIdentifier: 'productIdentifier'
-            query:
-              time:
-                property: sensed
-                begin: 2019-09-10T00:00:00Z
-                end: 2019-09-11T00:00:00Z
-              collection: null
-              bbox: 14.9,47.7,16.4,48.7
-              extra_params:
-                productType: GRD-COG
+        Landsat8:
           filter: {}
-          postprocess:
-            - type: harvester_eoepca.postprocess.CREODIASOpenSearchSentinel1Postprocessor
+          postprocessors:
+          - kwargs: {}
+            process: harvester_eoepca.postprocess.postprocess_landsat8
+            type: external
+          queue: register
+          resource:
+            opensearch:
+              format:
+                json:
+                  property_mapping:
+                    end_datetime: completionDate
+                    productIdentifier: productIdentifier
+                    start_datetime: startDate
+                type: application/json
+              query:
+                bbox: 19.7,34.7,28.5,42.0
+                collection: null
+                time:
+                  begin: 2020-09-01T00:00:00Z
+                  end: 2020-09-05T00:00:00Z
+              url: https://datahub.creodias.eu/resto/api/collections/Landsat8/describe.xml
+            type: OpenSearch
+        Sentinel1-GRD:
+          resource:
+            type: OpenSearch
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
+                extra_params:
+                  productType: GRD-COG
+          filter: {}
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel1
+              kwargs: {}
+          queue: register
+        Sentinel3:
+          resource:
+            type: OpenSearch
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel3/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
+                extra_params:
+                  productType: OL_2_LFR___
+          filter: {}
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel3
+              kwargs: {}
+          queue: register
+        Sentinel1-SLC:
+          resource:
+            type: OpenSearch
+            opensearch:
+              url: https://datahub.creodias.eu/resto/api/collections/Sentinel1/describe.xml
+              format:
+                type: 'application/json'
+                json:
+                  property_mapping:
+                    start_datetime: 'startDate'
+                    end_datetime: 'completionDate'
+                    productIdentifier: 'productIdentifier'
+              query:
+                time:
+                  begin: 2019-09-10T00:00:00Z
+                  end: 2019-09-11T00:00:00Z
+                collection: null
+                bbox: 14.9,47.7,16.4,48.7
+                extra_params:
+                  productType: SLC
+          filter: {}
+          postprocessors:
+            - type: external
+              process: harvester_eoepca.postprocess.postprocess_sentinel1
+              kwargs: {}
           queue: register
 ```
 
