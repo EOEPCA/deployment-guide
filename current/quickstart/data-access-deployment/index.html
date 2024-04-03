@@ -1408,7 +1408,8 @@
 <li>Data Access for data visualisation and download</li>
 </ul>
 </li>
-<li>Includes data specification for CREODIAS Sentinel-2, which can be exploited if running in a CREODIAS VM connected to the <code>eodata</code> network - <a href="../scripted-deployment/#environment-variables">see description of variable <code>CREODIAS_DATA_SPECIFICATION</code></a></li>
+<li>Includes data specification for CREODIAS Sentinel-2, which can be exploited if running in a CREODIAS VM connected to the <code>eodata</code> network - <a href="../scripted-deployment/#environment-variables">see description of variable <code>CREODIAS_DATA_SPECIFICATION</code></a><br>
+  <em>Note that it may be necessary to set the variable <code>CREODIAS_EODATA_S3_ENDPOINT</code> if different from the default - for example the value <code>http://eodata.cloudferro.com</code> for the <code>WAW3-2</code> Cloudferro cloud.</em></li>
 <li>Open ingress are enabled for unauthenticated access to resource-catalogue and data-access services</li>
 <li>Other eoepca services not deployed</li>
 </ul>

@@ -1575,6 +1575,12 @@
 </ul>
 <p>With reference to the file <code>creodias-options</code>, particular attention is drawn to the following environment variables that require tailoring to your CREODIAS (Cloudferro) environment&hellip;</p>
 <ul>
+<li>Values for access to CREODIAS eodata&hellip;<ul>
+<li>CREODIAS_EODATA_S3_ENDPOINT - if different from the default <code>http://data.cloudferro.com</code></li>
+<li>Credentials required for the new clouds, including <code>WAW3-2</code> and <code>FRA1-2</code><br>
+  Credentials must be created at - <a href="https://eodata-keymanager.creodias.eu/panel/s3-credentials">https://eodata-keymanager.creodias.eu/panel/s3-credentials</a> - and set into the variables <code>CREODIAS_EODATA_S3_ACCESS_KEY</code> and <code>CREODIAS_EODATA_S3_ACCESS_SECRET</code></li>
+</ul>
+</li>
 <li>Passwords: <code>MINIO_ROOT_PASSWORD</code>, <code>HARBOR_ADMIN_PASSWORD</code></li>
 <li>Identity Service credentials - e.g. <code>IDENTITY_SERVICE_DEFAULT_SECRET</code>, <code>IDENTITY_SERVICE_ADMIN_PASSWORD</code>, etc.</li>
 <li>OpenStack details: see section <a href="../scripted-deployment/#openstack-configuration">Openstack Configuration</a></li>
@@ -1593,8 +1599,9 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml --host data-access-redis-master --port 6379 Creodias-Opensearch
 </span></code></pre></div></p>
 <p>See the <a href="#harvester">Harvester</a> section below for an explanation of this harvester configuration.</p>
+<p>See <a href="https://creodias.docs.cloudferro.com/en/latest/eodata/EOData-Catalogue-API-Manual-on-Creodias.html">EOData Catalogue API Manual on CREODIAS</a> for details regarding access to the CREODIAS data offering.</p>
 <h2 id="data-specification-walkthrough">Data Specification Walkthrough<a class="headerlink" href="#data-specification-walkthrough" title="Permanent link">⚓︎</a></h2>
-<p>The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option <code>CREODIAS_DATA_SPECIFICATION=true</code> - see <a href="../scripted-deployment/#environment-variables">Environment Variables</a>.</p>
+<p>The example scripts include optional specifcation of data-access/harvesting configuration that is tailored for the CREODIAS data offering. This is controlled via the option <code>CREODIAS_DATA_SPECIFICATION=true</code> - see <a href="../scripted-deployment/#environment-variables">Environment Variables</a>. In addition, it may be necessary to set the variable <code>CREODIAS_EODATA_S3_ENDPOINT</code> if different from the default - for example the value <code>http://eodata.cloudferro.com</code> for the <code>WAW3-2</code> Cloudferro cloud.</p>
 <p>This section provides a walkthrough of this configuration for CREODIAS - to act as an aid to understanding by way of a worked example.</p>
 <h3 id="harvester">Harvester<a class="headerlink" href="#harvester" title="Permanent link">⚓︎</a></h3>
 <p>The harvester configuration specifies datasets with spatial/temporal extents, which is configured into the file <code>/config.yaml</code> of the <code>data-access-harvester</code> deployment.</p>
