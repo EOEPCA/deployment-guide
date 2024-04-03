@@ -240,6 +240,11 @@ The Harvester can be configured through the helm chart values...
 ```yaml
 vs:
   harvester:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
     config:
       redis:
         host: data-access-redis-master
