@@ -1279,7 +1279,7 @@ deployProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} data-access-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.11
+      --version 1.0.12
   fi
 }
 
@@ -1310,50 +1310,36 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /\$1
+
+  # Full open access - all request uri are open
+  openUri:
+    - ^.*
   
-  # ROUTES...
-  # Use 'hosts' to define protected routes.
-  # Or use 'serverSnippets' to define 'custom' open routes.
-  # hosts:
-  #   - host: "{{ .Values.targetService.host }}"
-  #     paths:
-  #       - path: /(ows.*|opensearch.*|coverages/metadata.*|admin.*)
-  #         pathType: Prefix
-  #         backend:
-  #           service:
-  #             name: data-access-renderer
-  #             port:
-  #               number: 80
-  #       - path: /cache/(.*)
-  #         pathType: Prefix
-  #         backend:
-  #           service:
-  #             name: data-access-cache
-  #             port:
-  #               number: 80
-  #       - path: /(.*)
-  #         pathType: Prefix
-  #         backend:
-  #           service:
-  #             name: data-access-client
-  #             port:
-  #               number: 80
-  serverSnippets:
-    custom: |-
-      # Open access to renderer...
-      location ~ ^/(ows.*|opensearch.*|coverages/metadata.*|admin.*) {
-        proxy_pass http://data-access-renderer.${NAMESPACE}.svc.cluster.local:80/\$1;
-      }
-      # Open access to cache...
-      location ~ ^/cache/(.*) {
-        proxy_pass http://data-access-cache.${NAMESPACE}.svc.cluster.local:80/\$1;
-      }
-      # Open access to client...
-      # Note that we use a negative lookahead to avoid matching '/.well-known/*' which
-      # otherwise appears to interfere with the work of cert-manager/letsencrypt.
-      location ~ ^/(?!\.well-known)(.*) {
-        proxy_pass http://data-access-client.${NAMESPACE}.svc.cluster.local:80/\$1;
-      }
+  # Routes proxied to services
+  hosts:
+    - host: "{{ .Values.targetService.host }}"
+      paths:
+        - path: /(ows.*|opensearch.*|coverages/metadata.*|admin.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: data-access-renderer
+              port:
+                number: 80
+        - path: /cache/(.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: data-access-cache
+              port:
+                number: 80
+        - path: /(.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: data-access-client
+              port:
+                number: 80
 EOF
 }
 

@@ -90,7 +90,7 @@ dummyServiceProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} dummy-service-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.11
+      --version 1.0.12
   fi
 }
 

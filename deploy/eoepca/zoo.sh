@@ -181,7 +181,7 @@ deployProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} zoo-project-dru-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.11
+      --version 1.0.12
   fi
 }
 
@@ -209,12 +209,9 @@ ingress:
     ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
     nginx.ingress.kubernetes.io/ssl-redirect: "${USE_TLS}"
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
-  serverSnippets:
-    custom: |-
-      # Open access to some endpoints, including Swagger UI
-      location ~ /(ogc-api/api|swagger-ui) {
-        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
-      }
+  # open access to swagger docs
+  openUri:
+    - ^/(ogc-api/api.*|swagger-ui.*)
 EOF
 }
 

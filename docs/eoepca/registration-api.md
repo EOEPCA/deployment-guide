@@ -57,7 +57,7 @@ Gatekeeper is deployed using its helm chart...
 helm install registration-api-protection identity-gatekeeper -f registration-api-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   --namespace "rm" --create-namespace \
-  --version 1.0.11
+  --version 1.0.12
 ```
 
 The `identity-gatekeeper` must be configured with the values applicable to the `registration-api` - in particular the specific ingress requirements for the `registration-api` backend service...
@@ -89,12 +89,9 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-production
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-  serverSnippets:
-    custom: |-
-      # Open access...
-      location ~ ^/ {
-        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
-      }
+  # open access
+  openUri:
+    - ^.*
 ```
 
 ### Keycloak Client

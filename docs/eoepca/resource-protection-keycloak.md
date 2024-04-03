@@ -21,7 +21,7 @@ The chart is configured via values - the full set of available values can be see
 It is expected to deploy multiple instances of the `Gatekeeper` chart, one for each Resource Server to be protected.
 
 ```bash
-helm install --version 1.0.10 --values myservice-gatekeeper-values.yaml \
+helm install --version 1.0.12 --values myservice-gatekeeper-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   myservice-protection identity-gatekeeper
 ```
@@ -60,12 +60,9 @@ ingress:
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt-production
-  serverSnippets:
-    custom: |-
-      # Open access to some endpoints, including Swagger UI
-      location ~ ^/(docs|openapi.json|probe) {
-        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
-      }
+  # Open access to some endpoints, including Swagger UI
+  openUri:
+    - ^/(docs|openapi.json|probe)
 ```
 
 ## Client Credentials

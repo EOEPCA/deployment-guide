@@ -97,7 +97,7 @@ deployProtection() {
     serviceProtectionValues | helm ${ACTION_HELM} resource-catalogue-protection identity-gatekeeper -f - \
       --repo https://eoepca.github.io/helm-charts \
       --namespace "${NAMESPACE}" --create-namespace \
-      --version 1.0.11
+      --version 1.0.12
   fi
 }
 
@@ -127,12 +127,9 @@ ingress:
     cert-manager.io/cluster-issuer: ${TLS_CLUSTER_ISSUER}
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-  serverSnippets:
-    custom: |-
-      # Open access...
-      location ~ ^/ {
-        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
-      }
+  # open access
+  openUri:
+    - ^.*
 EOF
 }
 

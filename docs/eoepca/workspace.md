@@ -173,7 +173,7 @@ data:
       chart:
         spec:
           chart: identity-gatekeeper
-          version: 1.0.11
+          version: 1.0.12
           sourceRef:
             kind: HelmRepository
             name: eoepca
@@ -266,7 +266,7 @@ Gatekeeper is deployed using its helm chart...
 helm install workspace-api-protection identity-gatekeeper -f workspace-api-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   --namespace "rm" --create-namespace \
-  --version 1.0.11
+  --version 1.0.12
 ```
 
 The `identity-gatekeeper` must be configured with the values applicable to the `workspace-api` - in particular the specific ingress requirements for the `workspace-api` backend service...
@@ -296,12 +296,9 @@ ingress:
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt-production
-  serverSnippets:
-    custom: |-
-      # Open access to some endpoints, including Swagger UI
-      location ~ ^/(docs|openapi.json|probe) {
-        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
-      }
+  # Open access to swagger docs etc.
+  openUri:
+    - ^/(docs.*|openapi.json|probe.*)
 ```
 
 #### Keycloak Client

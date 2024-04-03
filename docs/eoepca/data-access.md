@@ -436,7 +436,7 @@ Gatekeeper is deployed using its helm chart...
 helm install data-access-protection identity-gatekeeper -f data-access-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   --namespace "rm" --create-namespace \
-  --version 1.0.11
+  --version 1.0.12
 ```
 
 The `identity-gatekeeper` must be configured with the values applicable to the `data-access` - in particular the specific ingress requirements for the `data-access` backend services...
@@ -469,22 +469,34 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
-  serverSnippets:
-    custom: |-
-      # Open access to renderer...
-      location ~ ^/(ows.*|opensearch.*|coverages/metadata.*|admin.*) {
-        proxy_pass http://data-access-renderer.rm.svc.cluster.local:80/$1;
-      }
-      # Open access to cache...
-      location ~ ^/cache/(.*) {
-        proxy_pass http://data-access-cache.rm.svc.cluster.local:80/$1;
-      }
-      # Open access to client...
-      # Note that we use a negative lookahead to avoid matching '/.well-known/*' which
-      # otherwise appears to interfere with the work of cert-manager/letsencrypt.
-      location ~ ^/(?!\.well-known)(.*) {
-        proxy_pass http://data-access-client.rm.svc.cluster.local:80/$1;
-      }
+  # Full open access - all request uri are open
+  openUri:
+    - ^.*
+  # Routes proxied to services
+  hosts:
+    - host: "{{ .Values.targetService.host }}"
+      paths:
+        - path: /(ows.*|opensearch.*|coverages/metadata.*|admin.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: data-access-renderer
+              port:
+                number: 80
+        - path: /cache/(.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: data-access-cache
+              port:
+                number: 80
+        - path: /(.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: data-access-client
+              port:
+                number: 80
 ```
 
 ### Keycloak Client

@@ -340,7 +340,7 @@ Gatekeeper is deployed using its helm chart...
 helm install zoo-project-dru-protection identity-gatekeeper -f zoo-protection-values.yaml \
   --repo https://eoepca.github.io/helm-charts \
   --namespace "zoo" --create-namespace \
-  --version 1.0.11
+  --version 1.0.12
 ```
 
 The `identity-gatekeeper` must be configured with the values applicable to the `zoo-project-dru` - in particular the specific ingress requirements for the `zoo-project-dru-service`...
@@ -370,12 +370,9 @@ ingress:
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt-production
-  serverSnippets:
-    custom: |-
-      # Open access to some endpoints, including Swagger UI
-      location ~ /(ogc-api/api|swagger-ui) {
-        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
-      }
+  # open access to swagger docs
+  openUri:
+    - ^/(ogc-api/api.*|swagger-ui.*)
 ```
 
 ### Keycloak Client
