@@ -6,6 +6,7 @@
 
     The following provides a summary of changes since the last release (v1.4)...
 
+    * **08/04/2023** - Correction to example usage of the data-access `harvester` CLI - in particular use of `-co, --config-override` for values override
     * **03/04/2024** - Update Identity Gatekeeper to chart version `1.0.12` with an alternative approach to establishing 'open' access to select request paths (e.g. for docs etc.), to simplify proxying to the backend resource server.
     * **03/04/2024** - Update Data Access to chart `1.4.1` to introduce variables to remedy hard-coded harvester values for access to Creodias eodata. Ref. - `CREODIAS_EODATA_S3_ENDPOINT`, `CREODIAS_EODATA_S3_ACCESS_KEY`, `CREODIAS_EODATA_S3_ACCESS_SECRET` and `CREODIAS_EODATA_S3_REGION`.
     * **20/03/2024** - Correction to chart path for helm deployment of `eoepca-portal`

@@ -395,13 +395,18 @@ The harvester can either do one-off harvests via the CLI or listen on a redis qu
 ##### One-off harvests via the CLI
 
 In order to start a harvest from the CLI, the operator first needs to connect to the kubernetes pod of the harvester. Within that pod, the harvest can be executed like this...
+
 ```bash
 python3 -m harvester harvest --config-file /config-run.yaml Sentinel2
 ```
 
-This will invoke the `Sentinel2` harvester with default arguments. When some values are to be overridden, the --values switch can be used to pass override values. These values must be a JSON string. The following example adjusts the begin and end times of the query parameters...
+This will invoke the `Sentinel2` harvester with default arguments. When some values are to be overridden, the `-co` or `--config-override` switch can be used to pass override values - using the same yaml paths as per the config file.<br>
+The following example adjusts the begin and end times of the query parameters...
+
 ```bash
-python3 -m harvester harvest --config-file /config-run.yaml Sentinel2 --values '{"resource": {"query": {"time": {"begin": "2020-09-10T00:00:00Z", "end": "2020-09-11T00:00:00Z"}}}}'
+python3 -m harvester harvest --config-file /config-run.yaml Sentinel2 \
+  -co harvesters.Sentinel2.resource.opensearch.query.time.begin=2020-09-10T00:00:00Z \
+  -co harvesters.Sentinel2.resource.opensearch.query.time.end=2020-09-11T00:00:00Z
 ```
 
 ##### Harvests via the harvest daemon
@@ -616,7 +621,7 @@ At deployment time the `harvester` helm values include configuration that popula
 The Data Access and Resource Catalogue services are configured to properly interpret harvested data via these values specified in the instantiation of the helm release. See section [Data-layer Configuration](#data-layer-configuration).
 
 The harvesting of data can be triggered (post deployment), in accordance with this default configuration, by connecting to the `rm/harvester` service and executing the command...
-```
+```bash
 python3 -m harvester harvest --config-file /config-run.yaml Sentinel2
 ```
 

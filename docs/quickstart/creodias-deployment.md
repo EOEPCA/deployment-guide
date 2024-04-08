@@ -35,7 +35,8 @@ Once the file `creodias-options` has been well populated for your environment, t
 ## Harvest CREODIAS Data
 
 The harvester can be [deployed with a default configuration](../eoepca/data-access.md#harvester-helm-configuration) file at `/config.yaml`. As described in the [Data Access section](../eoepca/data-access.md#starting-the-harvester), harvesting according to this configuration can be triggered with...
-```
+
+```bash
 kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml Sentinel2
 ```
 
