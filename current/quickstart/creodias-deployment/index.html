@@ -1595,9 +1595,9 @@
 </span></code></pre></div>
 &hellip;noting that this step is a customised version of that described in section <a href="../scripted-deployment/#deployment">Deployment</a>.</p>
 <h2 id="harvest-creodias-data">Harvest CREODIAS Data<a class="headerlink" href="#harvest-creodias-data" title="Permanent link">⚓︎</a></h2>
-<p>The harvester can be <a href="../../eoepca/data-access/#harvester-helm-configuration">deployed with a default configuration</a> file at <code>/config.yaml</code>. As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl -n rm exec -it deployment.apps/data-access-harvester -- python3 -m harvester harvest --config-file /config.yaml Sentinel2
-</span></code></pre></div></p>
+<p>The harvester can be <a href="../../eoepca/data-access/#harvester-helm-configuration">deployed with a default configuration</a> file at <code>/config.yaml</code>. As described in the <a href="../../eoepca/data-access/#starting-the-harvester">Data Access section</a>, harvesting according to this configuration can be triggered with&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>rm<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>deployment.apps/data-access-harvester<span class="w"> </span>--<span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>harvester<span class="w"> </span>harvest<span class="w"> </span>--config-file<span class="w"> </span>/config.yaml<span class="w"> </span>Sentinel2
+</span></code></pre></div>
 <p>See the <a href="#harvester">Harvester</a> section below for an explanation of this harvester configuration.</p>
 <p>See <a href="https://creodias.docs.cloudferro.com/en/latest/eodata/EOData-Catalogue-API-Manual-on-Creodias.html">EOData Catalogue API Manual on CREODIAS</a> for details regarding access to the CREODIAS data offering.</p>
 <h2 id="data-specification-walkthrough">Data Specification Walkthrough<a class="headerlink" href="#data-specification-walkthrough" title="Permanent link">⚓︎</a></h2>
