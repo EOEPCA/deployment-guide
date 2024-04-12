@@ -1,5 +1,9 @@
 # Deployment Guide
 
+!!! Updates
+    See the [ChangeLog](../latest) for any updates/fixes that have been made to the tip since the v1.4 release.<br>
+    This may include relevant fixes that you may wish to take account of in your deployment.
+
 The Deployment Guide captures each release of the EOEPCA Reference Implementation, by providing for each version...
 
 * Description of how each building-block is configured and deployed - see **Deploy EOEPCA Components**
