@@ -2,7 +2,7 @@
 
 !!! ChangeLog
     
-    This `current` version of the Deployment Guide represents the development tip that goes beyond the [latest release version v1.4](../v1.4).
+    This `current` version of the Deployment Guide represents the development tip that goes beyond the [latest release version v1.4](../1.4).
 
     The following provides a summary of changes since the last release (v1.4)...
 
