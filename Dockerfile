@@ -1,3 +1,6 @@
 FROM squidfunk/mkdocs-material
-RUN pip install mike
+COPY ./docs/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -U -r /tmp/requirements.txt \
+  && rm /tmp/requirements.txt
+RUN pip install --no-cache-dir -U mike
 RUN git config --global --add safe.directory /docs
