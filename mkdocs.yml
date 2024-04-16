@@ -1,7 +1,7 @@
 site_name: EOEPCA Deployment Guide
-site_url: https://deployment-guide.docs.eoepca.org
+site_url: https://eoepca.readthedocs.io/projects/deploy/en/stable/
 repo_url: https://github.com/EOEPCA/deployment-guide
-edit_uri: ""
+edit_uri: "edit/main/docs/"
 
 # Site navigation
 nav:
@@ -72,6 +72,21 @@ theme:
     # - toc.integrate
     - navigation.top
     - content.code.copy
+    - content.action.edit
+
+extra_css:
+  - css/eoepca.css
+
+plugins:
+  - autorefs
+  # - pub-debugger:
+  #     console_log:
+  #       enabled: true
+  #       log_level: INFO
+  #     file_log:
+  #       enabled: false
+  #     zip_log:
+  #       enabled: false
 
 markdown_extensions:
   - tables
@@ -97,23 +112,3 @@ markdown_extensions:
 extra:
   version:
     provider: mike
-
-# docs_dir: docs
-# site_dir: site
-# extra_css:
-#     - css/extra.css
-#     - css/second_extra.css
-# extra_javascript: []
-# extra_templates: []
-# extra: {}
-# use_directory_urls: true
-# strict: false
-# dev_addr: 127.0.0.1:8000
-# plugins:
-#   - search:
-#     separator: '[\s\-\.]+'
-#     min_search_length: 3
-#     lang: en
-#     prebuild_index: False
-#     indexing: full
-#   - your_other_plugin
