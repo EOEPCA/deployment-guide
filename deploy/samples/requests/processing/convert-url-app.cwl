@@ -19,14 +19,17 @@ $graph:
         label: the operation to perform
         doc: the operation to perform
         type: string
+        default: "resize"
       url:
         label: the image to convert
         doc: the image to convert
         type: string
+        default: "https://eoepca.org/media_portal/images/logo6_med.original.png"
       size:
         label: the percentage for a resize operation
         doc: the percentage for a resize operation
         type: string
+        default: "50%"
     outputs:
       - id: converted_image
         type: Directory
