@@ -36,11 +36,11 @@ expose:
 
     hosts:
       core: harbor.${domain}
-    tls:
-      enabled: "${USE_TLS}"
-      certSource: secret
-      secret:
-        secretName: "harbor-tls"
+  tls:
+    enabled: "${USE_TLS}"
+    certSource: secret
+    secret:
+      secretName: "harbor-tls"
 
 persistence:
   persistentVolumeClaim:
