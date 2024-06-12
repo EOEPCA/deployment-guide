@@ -157,8 +157,13 @@ The default helm chart has some built-in application launchers whose assignments
 
 This setup corresponds to the 'sample' configuration that is built=in to the help chart - see file [`config.yaml`](https://github.com/EOEPCA/helm-charts/blob/main/charts/application-hub/files/hub/config.yml).
 
+## Advanced Configuration
+
+See the documentation for the [Application-Hub context](https://eoepca.github.io/application-hub-context/) for more details regarding configuration and customisation of the Application Hub.
+
 ## Additional Information
 
 Additional information regarding the _Application Hub_ can be found at:
 
 * [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/application-hub)
+* [Application-Hub context](https://eoepca.github.io/application-hub-context/)
