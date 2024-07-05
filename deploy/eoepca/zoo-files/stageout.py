@@ -59,6 +59,17 @@ class CustomStacIO(DefaultStacIO):
         else:
             super().write_text(dest, txt, *args, **kwargs)
 
+def upload_directory(client, local_path, bucket, s3_path):
+    base_directory = os.path.basename(local_path)
+    for root,dirs,files in os.walk(local_path):
+        # Get path after the base directory
+        base_path = root.split(base_directory, 1)[1]
+        # If base_path is non-empty need to remove preceeding "/"
+        base_path = base_path[1:] if base_path else base_path
+        for file in files:
+            upload_path_base = os.path.join(s3_path, base_path)
+            upload_path = os.path.join(upload_path_base, file)
+            client.upload_file(os.path.join(root,file),bucket,upload_path)
 
 client = boto3.client(
     "s3",
@@ -106,11 +117,17 @@ for item in cat.get_items():
             os.path.join(subfolder, collection_id, item.id, os.path.basename(asset.href))
         )
         print(f"upload {asset.href} to s3://{bucket}/{s3_path}",file=sys.stderr)
-        client.upload_file(
-            asset.get_absolute_href(),
-            bucket,
-            s3_path,
-        )
+        try:
+            client.upload_file(
+                asset.get_absolute_href(),
+                bucket,
+                s3_path,
+            )
+        except IsADirectoryError:
+            upload_directory(client, asset.get_absolute_href(), bucket, s3_path)
+        except Exception as e:
+            print(f"upload {item.id} to s3://{bucket}/{subfolder} failed", file=sys.stderr)
+            raise e
         asset.href = f"s3://{bucket}/{s3_path}"
         item.add_asset(key, asset)
 
