@@ -5,6 +5,7 @@ edit_uri: "edit/main/docs/"
 
 # Site navigation
 nav:
+  - EOEPCA Documentation: https://eoepca.readthedocs.io/
   - Deployment Guide:
     - Introduction: index.md
     - Getting Started:
