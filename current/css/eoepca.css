@@ -1,0 +1,21 @@
+.green-text {
+  color: green;
+}
+
+.blue-text {
+  color: steelblue;
+}
+
+.yellow-text {
+  color: #F6BE00;
+}
+
+.grey-text {
+  color: grey;
+}
+
+img.centered {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
