@@ -6,7 +6,7 @@ source ../common/utils.sh
 # Template paths
 template_path="./values-template.yaml"
 intermediate_output_path="./intermediate-values.yaml"
-final_output_path="./generated-values-2.yaml"
+final_output_path="./generated-values.yaml"
 
 # Collect user inputs
 ask IS_NAMESPACE_OVERRIDE "Enter the namespace for the Identity Service:" "default"
