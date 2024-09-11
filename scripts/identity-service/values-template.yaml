@@ -1,0 +1,93 @@
+identity-postgres:
+  enabled: true
+  namespaceOverride: "{{ IS_NAMESPACE_OVERRIDE }}"
+  persistence:
+    storageClassName: "{{ DB_STORAGE_CLASS }}"
+  secrets:
+    # Lets keep the passwords aligned for now.
+    postgresPassword: "{{ IS_POSTGRES_PASSWORD }}"
+    pgPassword: "{{ IS_POSTGRES_PASSWORD }}"
+  volumeClaim:
+    name: "{{ IS_VOLUME_CLAIM_NAME }}"
+    create: "{{ IS_CREATE_VOLUME_CLAIM }}"
+
+identity-keycloak:
+  enabled: true
+  namespaceOverride: "{{ IS_NAMESPACE_OVERRIDE }}"
+  secrets:
+    keycloakAdminPassword: "{{ IS_KEYCLOAK_ADMIN_PASSWORD }}"
+    kcDbPassword: "{{ IS_KEYCLOAK_DB_PASSWORD }}"
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: {{ IS_CERT_MANAGER_CLUSTER_ISSUER }}
+    hosts:
+      - host: identity.keycloak.{{ IS_INGRESS_HOST }}
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: identity-keycloak-tls-certificate
+        hosts:
+          - identity.keycloak.{{ IS_INGRESS_HOST }}
+
+identity-api:
+  enabled: true
+  namespaceOverride: "{{ IS_NAMESPACE_OVERRIDE }}"
+  ingress:
+    enabled: {{ IS_INGRESS_ENABLED }}
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: {{ IS_CERT_MANAGER_CLUSTER_ISSUER }}
+    hosts:
+      - host: identity.api.{{ IS_INGRESS_HOST }}
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: identity-api-tls-certificate
+        hosts:
+          - identity.api.{{ IS_INGRESS_HOST }}
+  secrets:
+    optional: false
+    adminPassword: "{{ IS_API_ADMIN_PASSWORD }}"
+
+identity-api-gatekeeper:
+  enabled: true
+  config:
+    client-id: identity-api
+    discovery-url: https://identity.keycloak.{{ IS_INGRESS_HOST }}/realms/master
+    cookie-domain: {{ IS_INGRESS_HOST }}
+  targetService:
+    host: identity-api-protected.{{ IS_INGRESS_HOST }}
+    name: identity-api
+    port:
+      number: 8080
+  # Values for secret 'identity-api-protection'
+  secrets:
+    # Note - if ommitted, these can instead be set by creating the secret independently.
+    clientSecret: "{{ IS_API_GATEKEEPER_CLIENT_SECRET }}"
+    encryptionKey: "{{ IS_API_GATEKEEPER_ENCRYPTION_KEY }}"
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    openUri:
+      - ^/(docs|openapi.json)
+    hosts:
+      - host: identity.api.{{ IS_INGRESS_HOST }}
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: identity-api-protection
+                port:
+                  number: 8080
+    tls:
+      - secretName: identity-api-tls-certificate
+        hosts:
+          - identity.api.{{ IS_INGRESS_HOST }}
