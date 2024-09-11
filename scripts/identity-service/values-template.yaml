@@ -36,7 +36,7 @@ identity-api:
   enabled: true
   namespaceOverride: "{{ IS_NAMESPACE_OVERRIDE }}"
   ingress:
-    enabled: {{ IS_INGRESS_ENABLED }}
+    enabled: true
     className: nginx
     annotations:
       cert-manager.io/cluster-issuer: {{ IS_CERT_MANAGER_CLUSTER_ISSUER }}

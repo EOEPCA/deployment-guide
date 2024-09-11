@@ -40,6 +40,7 @@ replace_placeholder "$final_output_path" "$final_output_path" "IS_API_ADMIN_PASS
 replace_placeholder "$final_output_path" "$final_output_path" "IS_API_GATEKEEPER_CLIENT_SECRET" "$IS_API_GATEKEEPER_CLIENT_SECRET"
 replace_placeholder "$final_output_path" "$final_output_path" "IS_API_GATEKEEPER_ENCRYPTION_KEY" "$IS_API_GATEKEEPER_ENCRYPTION_KEY"
 
+rm "$intermediate_output_path"
 echo "Configuration file generated: $final_output_path"
 
 # Notify the user to securely store the generated passwords
