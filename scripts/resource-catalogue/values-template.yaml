@@ -1,0 +1,20 @@
+global:
+  namespace: {{ RESOURCE_CATALOGUE_NAMESPACE }}
+ingress:
+  enabled: {{ RESOURCE_CATALOGUE_INGRESS_ENABLED }}
+  name: resource-catalogue
+  host: resource-catalogue.{{ INGRESS_HOST }}
+  tls_host: resource-catalogue.{{ INGRESS_HOST }}
+  tls_secret_name: resource-catalogue-tls
+  class: nginx
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: {{ CLUSTER_ISSUER }}
+db:
+  volume_storage_type: {{ DB_STORAGE_CLASS }}
+  config:
+    enabled: {{ RESOURCE_CATALOGUE_DB_ENABLED }}
+pycsw:
+  config:
+    server:
+      url: https://resource-catalogue.{{ PYCSW_URL }}
