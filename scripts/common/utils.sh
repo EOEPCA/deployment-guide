@@ -48,6 +48,35 @@ create_state_file() {
     touch "$STATE_FILE"
 }
 
+# Function to generate a secure password and encode it in base64
+generate_password() {
+    head -c 32 /dev/urandom | base64
+}
+
+# Function to replace a placeholder in a file template
+replace_placeholder() {
+    local input_file=$1
+    local output_file=$2
+    local placeholder=$3
+    local value=$4
+
+    # Ensure the value is escaped for use in sed replacements:
+    local escaped_value=$(echo "$value" | sed 's/[&/\]/\\&/g')
+
+    # Check if the input and output files are the same
+    if [[ "$input_file" == "$output_file" ]]; then
+        # Perform in-place replacement
+        sed -i'' -e "s|{{ $placeholder }}|$escaped_value|g" "$input_file"
+    else
+        # Perform replacement and write to a new file
+        sed -e "s|{{ $placeholder }}|$escaped_value|g" "$input_file" >"$output_file"
+    fi
+}
+
+############################################
+# Functions for checking resources status  #
+############################################
+
 # Function to check if a resource exists
 check_resource() {
     resource_type=$1
