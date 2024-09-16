@@ -4,7 +4,7 @@ global:
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
 
     # Consider how we would link this once Minio has been deployed?
-    AWS_ENDPOINT_URL_S3: {{ AWS_ENDPOINT_URL_S3 }}
+    AWS_ENDPOINT_URL_S3: $AWS_ENDPOINT_URL_S3 
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh
@@ -15,18 +15,18 @@ global:
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       nginx.ingress.kubernetes.io/enable-cors: "true"
-      cert-manager.io/cluster-issuer: {{ CLUSTER_ISSUER }}
+      cert-manager.io/cluster-issuer: $CLUSTER_ISSUER 
     hosts:
-      - host: data-access.{{ INGRESS_HOST }}
+      - host: data-access.$INGRESS_HOST 
     tls:
       - hosts:
-          - data-access.{{ INGRESS_HOST }}
+          - data-access.$INGRESS_HOST 
         secretName: data-access-tls
   metadata:
     title: EOEPCA Data Access Service developed by EOX
     abstract: EOEPCA Data Access Service developed by EOX
     header: "EOEPCA Data Access View Server (VS) Client powered by <a href=\"//eox.at\"><img src=\"//eox.at/wp-content/uploads/2017/09/EOX_Logo.svg\" alt=\"EOX\" style=\"height:25px;margin-left:10px\"/></a>"
-    url: https://data-access.{{ INGRESS_HOST }}/ows
+    url: https://data-access.$INGRESS_HOST/ows
 vs:
   renderer:
     replicaCount: 4
@@ -62,7 +62,7 @@ vs:
     master:
       persistence:
         enabled: true
-        storageClass: {{ DB_STORAGE_CLASS }}
+        storageClass: $DB_STORAGE_CLASS 
   ingestor:
     replicaCount: 0
     ingress:

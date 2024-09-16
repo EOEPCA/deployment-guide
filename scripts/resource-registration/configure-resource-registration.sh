@@ -3,20 +3,12 @@
 # Load utility functions
 source ../common/utils.sh
 
-# Template paths
-template_path="./values-template.yaml"
-intermediate_output_path="./intermediate-values.yaml"
-final_output_path="./generated-values.yaml"
+echo "Configuring the Resource Registration..."
 
 # Collect user inputs
-ask CLUSTER_ISSUER "Enter the namespace for the CLUSTER_ISSUER:" "letsencrypt-prod"
-ask INGRESS_HOST "Enter the base ingress host for the Identity Service (e.g., mydomain.com):" "identity.example.com"
+ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificates (e.g., letsencrypt-prod)" "letsencrypt-prod" is_non_empty
+ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 
-# Apply replacements
-cp "$template_path" "$intermediate_output_path"
+envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
 
-replace_placeholder "$intermediate_output_path" "$final_output_path" "CLUSTER_ISSUER" "$CLUSTER_ISSUER"
-replace_placeholder "$final_output_path" "$final_output_path" "INGRESS_HOST" "$INGRESS_HOST"
-
-rm "$intermediate_output_path"
-echo "Configuration file generated: $final_output_path"
+echo "✅ Configuration file generated: $OUTPUT_PATH"
