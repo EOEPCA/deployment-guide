@@ -3,14 +3,6 @@
 echo "Starting validation for the Resource Catalogue deployment..."
 source ../common/utils.sh
 
-# Check if state file exists and source it
-if [ -f ~/.eoepca/state ]; then
-  source ~/.eoepca/state
-else
-  echo "State file not found at ~/.eoepca/state"
-  exit 1
-fi
-
 # Ask for namespace if it's not set
 if [ -z "${RESOURCE_CATALOGUE_NAMESPACE}" ]; then
   ask RESOURCE_CATALOGUE_NAMESPACE "Enter the namespace for the Resource Catalogue:" "default" "$STATE_FILE"

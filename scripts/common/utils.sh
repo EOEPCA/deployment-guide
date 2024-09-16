@@ -102,35 +102,26 @@ check_resource() {
 
 # Check if pods with a specific label are running
 check_pods() {
-    local namespace="$1"
-    local label_selector="$2"
-    echo "Checking if all pods with label '$label_selector' are in 'Running' state..."
+    local prefix=$1
+    echo "Checking if all pods starting with '$prefix' are in 'Running' state..."
+    PODS=$(kubectl get pods -n $RESOURCE_CATALOGUE_NAMESPACE --no-headers | grep "^$prefix")
 
-    local pods
-    pods=$(kubectl get pods -n "$namespace" -l "$label_selector" --no-headers)
-    if [ -z "$pods" ]; then
-        echo "❌ No pods found with label '$label_selector' in namespace '$namespace'."
-        exit 1
+    if [ -z "$PODS" ]; then
+        echo "❌ No pods found that start with '$prefix' in namespace '$RESOURCE_CATALOGUE_NAMESPACE'."
     fi
 
-    local all_running=true
-    while read -r pod_line; do
-        local pod_name pod_status
-        pod_name=$(echo "$pod_line" | awk '{print $1}')
-        pod_status=$(echo "$pod_line" | awk '{print $3}')
+    # Internal field seperator set to empty to stop whitespace being trimmed
+    while IFS= read -r pod; do
+        POD_NAME=$(echo $pod | awk '{print $1}')
+        POD_STATUS=$(echo $pod | awk '{print $3}')
 
-        if [ "$pod_status" != "Running" ]; then
-            echo "❌ Pod $pod_name is not running (status: $pod_status)."
-            all_running=false
+        if [ "$POD_STATUS" != "Running" ]; then
+            echo "❌ Pod $POD_NAME is not running (status: $POD_STATUS)."
+            exit 1
         else
-            echo "✅ Pod $pod_name is running."
+            echo "✅ Pod $POD_NAME is running."
         fi
-    done <<<"$pods"
-
-    if [ "$all_running" = false ]; then
-        echo "Some pods are not running. Please check the pod statuses."
-        exit 1
-    fi
+    done <<<"$PODS"
 }
 
 # Validation functions
