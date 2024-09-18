@@ -15,12 +15,12 @@ ask "IS_VOLUME_CLAIM_NAME" "Enter the Persistent Volume Claim name for the Ident
 ask "IS_CREATE_VOLUME_CLAIM" "Do you want to create a new Persistent Volume Claim? (true/false)" "true" is_boolean
 
 # Generate passwords
-IS_POSTGRES_PASSWORD=$(generate_password)
-IS_KEYCLOAK_ADMIN_PASSWORD=$(generate_password)
-IS_KEYCLOAK_DB_PASSWORD=$(generate_password)
-IS_API_ADMIN_PASSWORD=$(generate_password)
-IS_API_GATEKEEPER_CLIENT_SECRET=$(generate_password)
-IS_API_GATEKEEPER_ENCRYPTION_KEY=$(generate_password)
+export IS_POSTGRES_PASSWORD=$(generate_password)
+export IS_KEYCLOAK_ADMIN_PASSWORD=$(generate_password)
+export IS_KEYCLOAK_DB_PASSWORD=$(generate_password)
+export IS_API_ADMIN_PASSWORD=$(generate_password)
+export IS_API_GATEKEEPER_CLIENT_SECRET=$(generate_password)
+export IS_API_GATEKEEPER_ENCRYPTION_KEY=$(generate_password)
 
 envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
 

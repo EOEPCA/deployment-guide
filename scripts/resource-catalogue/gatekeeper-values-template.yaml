@@ -1,0 +1,35 @@
+fullnameOverride: resource-catalogue-protection
+config:
+  client-id: resource-catalogue
+  discovery-url: https://keycloak.${INGRESS_HOST}/realms/master
+  cookie-domain: ${INGRESS_HOST}
+targetService:
+  host: resource-catalogue.${INGRESS_HOST}
+  name: resource-catalogue-service
+  port:
+    number: 80
+secrets:
+  # Values for secret 'resource-catalogue-protection'
+  # Note - if omitted, these can instead be set by creating the secret independently.
+  clientSecret: "${RC_GC_CLIENT_SECRET}"
+  encryptionKey: "${RC_GC_ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+  hosts:
+    - host: resource-catalogue.${INGRESS_HOST}
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  serverSnippets:
+    custom: |-
+      # Open access...
+      location ~ ^/ {
+        proxy_pass {{ include "identity-gatekeeper.targetUrl" . }}$request_uri;
+      }

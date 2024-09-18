@@ -1,0 +1,45 @@
+expose:
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+      nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+
+      # from chart:
+      ingress.kubernetes.io/ssl-redirect: "true"
+      ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+    hosts:
+      core: harbor.${INGRESS_HOST}
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: "harbor-tls"
+
+persistence:
+  persistentVolumeClaim:
+    registry:
+      storageClass: $DB_STORAGE_CLASS
+    chartmuseum:
+      storageClass: $DB_STORAGE_CLASS
+    jobservice:
+      storageClass: $DB_STORAGE_CLASS
+    database:
+      storageClass: $DB_STORAGE_CLASS
+    redis:
+      storageClass: $DB_STORAGE_CLASS
+    trivy:
+      storageClass: $DB_STORAGE_CLASS
+
+externalURL: https://harbor.$INGRESS_HOST
+harborAdminPassword: $HARBOR_ADMIN_PASSWORD
+
+chartmuseum:
+  enabled: false
+trivy:
+  enabled: false
+notary:
+  enabled: false
