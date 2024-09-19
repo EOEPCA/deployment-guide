@@ -6,12 +6,6 @@
 TEMPLATE_PATH="./values-template.yaml"
 OUTPUT_PATH="./generated-values.yaml"
 
-# Ensure the template file exists
-if [ ! -f "$TEMPLATE_PATH" ]; then
-    echo "❌ Template file '$TEMPLATE_PATH' not found."
-    exit 1
-fi
-
 # Create and source the EOEPCA state file
 create_state_file() {
     STATE_FILE="$HOME/.eoepca/state"
@@ -86,6 +80,18 @@ generate_password() {
     head -c 32 /dev/urandom | base64
 }
 
+generate_aes_key() {
+    local key_length="$1"  # Desired key length: 16 or 32 characters
+
+    if [[ "$key_length" != "16" && "$key_length" != "32" ]]; then
+        echo "Invalid key length: $key_length. Please specify 16 or 32." >&2
+        return 1
+    fi
+
+    # Generate a base64 string and ensure it contains only URL-safe characters
+    openssl rand -base64 $(( key_length * 3 / 4 + 2 )) | tr -dc 'A-Za-z0-9@#$%^&*()-_=+' | head -c "32"
+}
+
 # Check if a Kubernetes resource exists
 check_resource() {
     local resource_type="$1"
@@ -143,3 +149,25 @@ if ! command_exists envsubst; then
     echo "Run 'apt install gettext' to use 'envsubst'."
     exit 1
 fi
+
+
+# Function to check if kubectl can connect to the cluster
+check_kubectl_connection() {
+  if kubectl cluster-info >/dev/null 2>&1; then
+    echo "kubectl is configured to interact with your cluster."
+  else
+    echo "kubectl cannot connect to your cluster. Please check your configuration."
+    exit 1
+  fi
+}
+
+# Function to check Helm version
+check_helm_version() {
+  helm_version=$(helm version --short | cut -d '.' -f1 | sed 's/[^0-9]*//g')
+  if [ "$helm_version" -ge 3 ]; then
+    echo "Helm version is $helm_version, which is suitable for deployment."
+  else
+    echo "Helm version is less than 3. Please upgrade Helm."
+    exit 1
+  fi
+}

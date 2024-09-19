@@ -1,0 +1,20 @@
+fullnameOverride: workspace-api-protection
+config:
+  client-id: ${WORKSPACE_API_CLIENT_ID}
+  discovery-url: https://${KEYCLOAK_URL}/realms/master
+  cookie-domain: ${INGRESS_HOST}
+targetService:
+  host: ${WORKSPACE_API_HOST}
+  name: workspace-api
+  port:
+    number: 8080
+secrets:
+  clientSecret: "${WORKSPACE_API_CLIENT_SECRET}"
+  encryptionKey: "${ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
