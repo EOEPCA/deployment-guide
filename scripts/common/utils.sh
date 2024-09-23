@@ -88,8 +88,8 @@ generate_aes_key() {
         return 1
     fi
 
-    # Generate a base64 string and ensure it contains only URL-safe characters
-    openssl rand -base64 $(( key_length * 3 / 4 + 2 )) | tr -dc 'A-Za-z0-9@#$%^&*()-_=+' | head -c "32"
+    # Generate a URL-safe base64 string
+    openssl rand -base64 $key_length | tr -dc 'A-Za-z0-9' | head -c "$key_length"
 }
 
 # Check if a Kubernetes resource exists
