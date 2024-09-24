@@ -1,5 +1,5 @@
 global:
-  namespace: $RESOURCE_CATALOGUE_NAMESPACE
+  namespace: default
 ingress:
   enabled: $RESOURCE_CATALOGUE_INGRESS_ENABLED
   name: resource-catalogue

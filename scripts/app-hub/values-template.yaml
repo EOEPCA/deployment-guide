@@ -3,14 +3,14 @@ ingress:
   className: nginx
   annotations: {}
   hosts:
-    - host: ${INGRESS_HOST}
+    - host: app-hub.${INGRESS_HOST}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: ${APP_HUB_TLS_SECRET}
+    - secretName: app-hub-tls
       hosts:
-      - ${INGRESS_HOST}
+      - app-hub.${INGRESS_HOST}
   clusterIssuer: ${CLUSTER_ISSUER}
 
 jupyterhub:
