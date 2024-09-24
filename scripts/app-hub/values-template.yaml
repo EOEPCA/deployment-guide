@@ -1,0 +1,50 @@
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: ${INGRESS_HOST}
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: ${APP_HUB_TLS_SECRET}
+      hosts:
+      - ${INGRESS_HOST}
+  clusterIssuer: ${CLUSTER_ISSUER}
+
+jupyterhub:
+  fullnameOverride: "application-hub"
+  hub:
+    extraEnv:
+      JUPYTERHUB_ENV: "dev"
+      JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
+      APP_HUB_NAMESPACE: "app-hub"
+      STORAGE_CLASS: "standard"
+      RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
+
+      JUPYTERHUB_CRYPT_KEY: "${APPHUB_JUPYTERHUB_CRYPT_KEY}"
+
+    image:
+      pullPolicy: Always
+
+    db:
+      pvc:
+        storageClassName: ${DB_STORAGE_CLASS}
+
+  singleuser:
+    image:
+      name: jupyter/minimal-notebook
+      tag: "2343e33dec46"
+    profileList: 
+    - display_name:  "Minimal environment"
+      description: "To avoid too much bells and whistles: Python."
+      default: "True"
+    - display_name:  "EOEPCA profile"
+      description: "Sample profile"
+      kubespawner_override:
+        cpu_limit: 4
+        mem_limit: "8G"
+nodeSelector:
+  key: "node-role.kubernetes.io/master"
+  value: "true"
