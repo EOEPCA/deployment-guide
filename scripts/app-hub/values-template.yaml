@@ -19,11 +19,18 @@ jupyterhub:
     extraEnv:
       JUPYTERHUB_ENV: "dev"
       JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
-      APP_HUB_NAMESPACE: "app-hub"
-      STORAGE_CLASS: "standard"
+      APP_HUB_NAMESPACE: "default"
+      STORAGE_CLASS: ${DB_STORAGE_CLASS}
       RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
       JUPYTERHUB_CRYPT_KEY: "${APPHUB_JUPYTERHUB_CRYPT_KEY}"
+      OAUTH_CALLBACK_URL: https://app-hub.${INGRESS_HOST}/hub/oauth_callback
+      OAUTH_LOGOUT_REDIRECT_URL: https://app-hub.${INGRESS_HOST}/hub/home
+      OAUTH2_USERDATA_URL: https://identity.keycloak.${INGRESS_HOST}/realms/master/protocol/openid-connect/userinfo
+      OAUTH2_TOKEN_URL: https://identity.keycloak.${INGRESS_HOST}/realms/master/protocol/openid-connect/token
+      OAUTH2_AUTHORIZE_URL: https://identity.keycloak.${INGRESS_HOST}/realms/master/protocol/openid-connect/auth
+      OAUTH_CLIENT_ID: application-hub
+      OAUTH_CLIENT_SECRET: "${APPHUB_CLIENT_SECRET}"
 
     image:
       pullPolicy: Always

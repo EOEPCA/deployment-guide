@@ -7,6 +7,7 @@ source ../common/utils.sh
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
 ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
 ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persistence" "managed-nfs-storage-retain" is_non_empty
+ask "APPHUB_CLIENT_SECRET" "Enter the Keycloak client secret for App Hub" "" is_non_empty
 
 export APPHUB_JUPYTERHUB_CRYPT_KEY=$(openssl rand -base64 32)
 
