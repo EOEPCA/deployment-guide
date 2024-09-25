@@ -6,3 +6,4 @@ deploy/cluster/s3cfg
 .idea
 generated-values.yaml
 gatekeeper-values.yaml
+generated-gatekeeper-values.yaml

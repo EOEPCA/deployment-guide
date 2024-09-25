@@ -5,6 +5,8 @@
 # Template paths
 TEMPLATE_PATH="./values-template.yaml"
 OUTPUT_PATH="./generated-values.yaml"
+GATEKEEPER_TEMPLATE_PATH="./gatekeeper-template.yaml"
+GATEKEEPER_OUTPUT_PATH="./generated-gatekeeper-values.yaml"
 
 # Create and source the EOEPCA state file
 create_state_file() {
@@ -67,10 +69,17 @@ ask() {
     # Export variable and update state file
     export "$variable=$input"
 
+    add_to_state_file "$variable" "$input"
+}
+
+add_to_state_file() {
+    local variable="$1"
+    local value="$2"
+
     if grep -q "export $variable=" "$HOME/.eoepca/state"; then
-        sed -i "s|export $variable=.*|export $variable=\"$input\"|" "$HOME/.eoepca/state"
+        sed -i "s|export $variable=.*|export $variable=\"$value\"|" "$HOME/.eoepca/state"
     else
-        echo "export $variable=\"$input\"" >>"$HOME/.eoepca/state"
+        echo "export $variable=\"$value\"" >>"$HOME/.eoepca/state"
     fi
 }
 

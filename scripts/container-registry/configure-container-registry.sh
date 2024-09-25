@@ -11,6 +11,8 @@ ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persis
 
 export HARBOR_ADMIN_PASSWORD=$(generate_password)
 
+add_to_state_file "HARBOR_ADMIN_PASSWORD" $HARBOR_ADMIN_PASSWORD
+
 envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
 
 echo "✅ Configuration file generated: $OUTPUT_PATH"

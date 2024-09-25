@@ -9,10 +9,9 @@ echo "Configuring the Workspace API..."
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificates (e.g., letsencrypt-prod)" "letsencrypt-prod" is_non_empty
 
-ask "HARBOR_URL" "Enter the Harbor URL (e.g., harbor.example.com)" "harbor.example.com" is_valid_domain
-ask "HARBOR_USERNAME" "Enter the Harbor admin username" "admin" is_non_empty
-ask "HARBOR_PASSWORD" "Enter the Harbor admin password (will be stored in a Kubernetes secret)" "" is_non_empty
-ask "S3_ENDPOINT" "Enter the S3 Endpoint URL (e.g., minio.example.com)" "minio.example.com" is_valid_domain
+ask "HARBOR_URL" "Enter the Harbor URL (e.g., harbor.$INGRESS_HOST)" "harbor.$INGRESS_HOST" is_valid_domain
+ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password (will be stored in a Kubernetes secret)" "" is_non_empty
+ask "S3_ENDPOINT" "Enter the S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
 ask "S3_REGION" "Enter the S3 Region" "RegionOne" is_non_empty
 ask "BUCKET_ENDPOINT_URL" "Enter the Bucket Endpoint URL (e.g., http://minio-bucket-api:8080/bucket)" "http://minio-bucket-api:8080/bucket" is_non_empty
 
@@ -23,7 +22,7 @@ ask "ENABLE_WORKSPACE_OIDC" "Enable OIDC for the Workspace API (true/false)" "tr
 if [ "$ENABLE_WORKSPACE_OIDC" = "true" ]; then
   ask "KEYCLOAK_URL" "Enter the Keycloak URL (e.g., identity.keycloak.$INGRESS_HOST)" "identity.keycloak.$INGRESS_HOST" is_valid_domain
   ask "IDENTITY_API_URL" "Enter the Identity API URL (e.g., identity.api.$INGRESS_HOST)" "identity.api.$INGRESS_HOST" is_non_empty
-  ask "WORKSPACE_API_CLIENT_SECRET" "Enter the Keycloak client ID" "workspace-api" is_non_empty
+  ask "WORKSPACE_API_CLIENT_SECRET" "Enter the Keycloak client secret for workspace-api" "" is_non_empty
   export ENCRYPTION_KEY=$(generate_aes_key 32)
 fi
 

@@ -2,9 +2,9 @@ fullnameOverride: workspace-api-protection
 config:
   client-id: workspace-api
   discovery-url: https://identity.keycloak.$INGRESS_HOST/realms/master
-  cookie-domain: $INGRESS_HOST
+  cookie-domain: workspace-api.$INGRESS_HOST
 targetService:
-  host: $INGRESS_HOST
+  host: workspace-api.$INGRESS_HOST
   name: workspace-api
   port:
     number: 8080
