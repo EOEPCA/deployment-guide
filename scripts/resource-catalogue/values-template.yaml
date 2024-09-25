@@ -1,15 +1,7 @@
 global:
   namespace: default
 ingress:
-  enabled: $RESOURCE_CATALOGUE_INGRESS_ENABLED
-  name: resource-catalogue
-  host: resource-catalogue.$INGRESS_HOST
-  tls_host: resource-catalogue.$INGRESS_HOST
-  tls_secret_name: resource-catalogue-tls
-  class: nginx
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: $CLUSTER_ISSUER
+  enabled: false
 db:
   volume_storage_type: $DB_STORAGE_CLASS
   config:

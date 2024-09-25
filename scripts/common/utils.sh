@@ -83,6 +83,16 @@ add_to_state_file() {
     fi
 }
 
+check() {
+    local message="$1"
+    local error_message="$2"
+
+    read -p "$message (yes/no): " RESPONSE
+    if [[ "$RESPONSE" != "yes" ]]; then
+        echo "$error_message"
+        exit 1
+    fi
+}
 
 # Function to generate a secure password and encode it in base64
 generate_password() {

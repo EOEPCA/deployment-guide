@@ -17,6 +17,7 @@ ask "STAGEIN_S3_SECRET_KEY" "Enter the Stage-In S3 Secret Key" "" is_non_empty
 ask "STAGEIN_S3_REGION" "Enter the Stage-In S3 Region" "eu-west-2" is_non_empty
 
 # Primary S3 configuration
+check "Do you have an existing S3 object store?" "Please setup an S3 object store before proceeding."
 ask "S3_ENDPOINT" "Enter the S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
 ask "S3_ACCESS_KEY" "Enter the S3 Access Key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 Secret Key" "" is_non_empty
