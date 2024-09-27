@@ -2,7 +2,7 @@
 
 source ../common/utils.sh
 source ../common/prerequisite-utils.sh
-echo "🔍 Checking prerequisites for Resource Catalogue deployment..."
+echo "🔍 Checking prerequisites for Container Registry deployment..."
 
 declare -a checks=(
     "check_kubernetes_access"
@@ -10,7 +10,6 @@ declare -a checks=(
     "check_helm_installed"
     "check_cert_manager_installed"
     "check_ingress_controller_installed"
-    "check_keycloak_accessible $KEYCLOAK_URL"
 )
 
 run_validation "${checks[@]}"

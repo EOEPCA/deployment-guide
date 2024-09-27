@@ -2,7 +2,7 @@
 
 source ../common/utils.sh
 source ../common/prerequisite-utils.sh
-echo "🔍 Checking prerequisites for Resource Catalogue deployment..."
+echo "🔍 Checking prerequisites for ADES deployment..."
 
 declare -a checks=(
     "check_kubernetes_access"
