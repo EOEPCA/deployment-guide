@@ -11,6 +11,8 @@ check_service_exists "default" "resource-catalogue-db"
 check_service_exists "default" "resource-catalogue-service"
 
 check_url_status_code "https://resource-catalogue.$INGRESS_HOST" "200"
+check_url_status_code "https://resource-catalogue.$INGRESS_HOST/collections" "200"
+
 check_pvc_bound "default" "db-data-resource-catalogue-db-0"
 
 check_configmap_exists "default" "resource-catalogue-db-configmap"

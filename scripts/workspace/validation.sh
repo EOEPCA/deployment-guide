@@ -10,8 +10,9 @@ check_deployment_ready "default" "workspace-api"
 check_service_exists "default" "workspace-api"
 
 check_url_status_code "https://workspace-api.$INGRESS_HOST" "200"
+check_url_status_code "https://workspace-api.$INGRESS_HOST/docs" "200"
 
 echo
 echo "All Resources:"
 echo
-kubectl get all -l app=harbor --all-namespaces
+kubectl get all -l app.kubernetes.io/instance=workspace-api --all-namespaces
