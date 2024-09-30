@@ -17,6 +17,9 @@ export MINIO_PASSWORD=$(generate_aes_key 32)
 add_to_state_file "MINIO_USER" $MINIO_USER
 add_to_state_file "MINIO_PASSWORD" $MINIO_PASSWORD
 
+add_to_state_file "S3_ENDPOINT" minio.$INGRESS_HOST
+add_to_state_file "S3_REGION" RegionOne
+
 kubectl create secret generic minio-auth \
     --from-literal=rootUser="$MINIO_USER" \
     --from-literal=rootPassword="$MINIO_PASSWORD"
