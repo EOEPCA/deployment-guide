@@ -43,6 +43,8 @@ nav:
       - Registration API: eoepca/registration-api.md
       - Workspace: eoepca/workspace.md
       - Container Registry: eoepca/container-registry.md
+      - openEO Geotrellis (Processing): eoepca/openeo-geotrellis.md
+      - Federated orchestrator: eoepca/openeo-aggregator.md
 
 theme:
   # name: mkdocs
@@ -80,7 +82,7 @@ extra_css:
   - css/eoepca.css
 
 plugins:
-  - autorefs
+#  - autorefs
   # - pub-debugger:
   #     console_log:
   #       enabled: true
