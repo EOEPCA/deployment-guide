@@ -49,7 +49,7 @@ identity-api:
     adminPassword: "${IS_KEYCLOAK_ADMIN_PASSWORD}"
   deployment:
     extraEnv:
-      - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
+      - name: AUTH_SERVER_URL
         value: https://identity.keycloak.${INGRESS_HOST}
       - name: ADMIN_USERNAME
         value: "admin"
@@ -58,35 +58,8 @@ identity-api:
       - name: LOG_LEVEL
         value: DEBUG
   
+# identity-api-gatekeeper:
+#   enabled: false
+
 identity-api-gatekeeper:
-  enabled: true
-  config:
-    client-id: identity-api
-    discovery-url: https://identity.keycloak.${INGRESS_HOST}/realms/master
-    cookie-domain: ${INGRESS_HOST}
-  targetService:
-    host: identity-api-protected.${INGRESS_HOST}
-    # name: identity-api
-    # port:
-      # number: 8080
-  secrets:
-    clientSecret: "${IS_API_GATEKEEPER_CLIENT_SECRET}"
-    encryptionKey: "${IS_API_GATEKEEPER_ENCRYPTION_KEY}"
-  ingress:
-    enabled: true
-    className: nginx
-    annotations:
-      ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
-    # openUri:
-    #   - ^/(docs|openapi.json)
-    # hosts:
-    #   - host: identity.api.${INGRESS_HOST}
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix
-    # tls:
-    #   - secretName: identity-api-tls-certificate
-    #     hosts:
-    #       - identity.api.${INGRESS_HOST}
+  enabled: false

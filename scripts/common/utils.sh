@@ -76,6 +76,8 @@ add_to_state_file() {
     local variable="$1"
     local value="$2"
 
+    export "$variable=$value"
+
     if grep -q "export $variable=" "$HOME/.eoepca/state"; then
         sed -i "s|export $variable=.*|export $variable=\"$value\"|" "$HOME/.eoepca/state"
     else

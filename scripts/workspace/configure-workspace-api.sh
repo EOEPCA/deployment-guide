@@ -13,6 +13,8 @@ ask "HARBOR_URL" "Enter the Harbor URL (e.g., harbor.$INGRESS_HOST)" "harbor.$IN
 ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password (will be stored in a Kubernetes secret)" "" is_non_empty
 ask "S3_ENDPOINT" "Enter the S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
 ask "S3_REGION" "Enter the S3 Region" "RegionOne" is_non_empty
+
+# TODO: FIND THE SERVICE THAT THE RM-MINIO-API RUNS ON! THIS IS IT!!! set this inside the minio configuration step!
 ask "BUCKET_ENDPOINT_URL" "Enter the Bucket Endpoint URL (e.g., http://minio-bucket-api:8080/bucket)" "http://minio-bucket-api:8080/bucket" is_non_empty
 
 export DEFAULT_IAM_CLIENT_SECRET=$(generate_password)
@@ -42,9 +44,5 @@ fi
 echo "✅ Configuration file generated: $OUTPUT_PATH"
 echo ""
 echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"
-echo "Harbor Admin Password: [Stored in Kubernetes secret 'harbor']"
 echo "Default IAM Client Secret: $DEFAULT_IAM_CLIENT_SECRET"
-if [ "$ENABLE_WORKSPACE_OIDC" = "true" ]; then
-  echo "Workspace API Encryption Key: $ENCRYPTION_KEY"
-fi
 echo "Please ensure these are stored securely!"

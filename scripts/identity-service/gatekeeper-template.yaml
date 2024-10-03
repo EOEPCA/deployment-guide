@@ -1,0 +1,20 @@
+fullnameOverride: identity-server-api-protection
+config:
+  client-id: identity-api
+  discovery-url: https://identity.keycloak.${INGRESS_HOST}/realms/master
+  cookie-domain: ${INGRESS_HOST}
+targetService:
+  host: identity-api-protected.${INGRESS_HOST}
+  name: identity-api # Check this is correct....
+  port:
+    number: 8080
+secrets:
+  clientSecret: "${IS_API_CLIENT_SECRET}"
+  encryptionKey: "${ENCRYPTION_KEY}"
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}

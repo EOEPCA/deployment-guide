@@ -3,12 +3,12 @@
 # Load utility functions
 source ../common/utils.sh
 
-echo "Configuring the Resource Registration..."
+echo "Configuring the Identity Gatekeeper..."
 
-# Collect user inputs
 ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificates (e.g., letsencrypt-prod)" "letsencrypt-prod" is_non_empty
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
+ask "IS_API_CLIENT_SECRET" "Enter the Keycloak client secret for the Identity Service (identity-api)" "" is_non_empty
 
-envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
+export ENCRYPTION_KEY=$(generate_aes_key 32)
 
-echo "✅ Configuration file generated: $OUTPUT_PATH"
+envsubst < "$GATEKEEPER_TEMPLATE_PATH" > "$GATEKEEPER_OUTPUT_PATH"

@@ -11,8 +11,6 @@ customConfig:
   main:
     eoepca: |-
       domain=${INGRESS_HOST}
-      workspace_url=https://workspace-api.${INGRESS_HOST}
-      workspace_prefix=ws
 workflow:
   defaultMaxRam: 1024
   defaultMaxCores: 2
@@ -30,7 +28,7 @@ workflow:
     minikube.k8s.io/primary: "true"
   storageClass: managed-nfs-storage-retain
 ingress:
-  enabled: true
+  enabled: false
   hosturl: https://zoo.${INGRESS_HOST}
   annotations:
     kubernetes.io/ingress.class: nginx

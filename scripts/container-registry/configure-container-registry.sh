@@ -10,8 +10,10 @@ ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificat
 ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persistence" "managed-nfs-storage-retain" is_non_empty
 
 export HARBOR_ADMIN_PASSWORD=$(generate_password)
+export HARBOR_URL="https://harbor.$INGRESS_HOST"
 
 add_to_state_file "HARBOR_ADMIN_PASSWORD" $HARBOR_ADMIN_PASSWORD
+add_to_state_file "HARBOR_URL" $HARBOR_URL
 
 envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
 

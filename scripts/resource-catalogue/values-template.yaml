@@ -5,8 +5,8 @@ ingress:
 db:
   volume_storage_type: $DB_STORAGE_CLASS
   config:
-    enabled: $RESOURCE_CATALOGUE_DB_ENABLED
+    enabled: true
 pycsw:
   config:
     server:
-      url: https://resource-catalogue.$PYCSW_URL
+      url: https://resource-catalogue.$INGRESS_HOST

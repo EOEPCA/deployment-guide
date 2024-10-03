@@ -4,7 +4,7 @@ global:
     CPL_VSIL_CURL_ALLOWED_EXTENSIONS: .TIF,.tif,.xml,.jp2,.jpg,.jpeg
 
     # Consider how we would link this once Minio has been deployed?
-    AWS_ENDPOINT_URL_S3: $AWS_ENDPOINT_URL_S3 
+    AWS_ENDPOINT_URL_S3: $S3_ENDPOINT 
     AWS_HTTPS: "FALSE"
     startup_scripts:
       - /registrar_pycsw/registrar_pycsw/initialize-collections.sh

@@ -5,7 +5,6 @@ expose:
       cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
       nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
 
-      # from chart:
       ingress.kubernetes.io/ssl-redirect: "true"
       ingress.kubernetes.io/proxy-body-size: "0"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"

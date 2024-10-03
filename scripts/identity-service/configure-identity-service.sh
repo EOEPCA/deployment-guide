@@ -10,12 +10,12 @@ ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificat
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 ask "DB_STORAGE_CLASS" "Specify the storage class for the Identity Service database (e.g., managed-nfs-storage-retain)" "managed-nfs-storage-retain" is_non_empty
 
-# Generate passwords
-export IS_POSTGRES_PASSWORD=$(generate_password)
-export IS_KEYCLOAK_ADMIN_PASSWORD=$(generate_password)
-
-export IS_API_GATEKEEPER_CLIENT_SECRET=$(generate_aes_key 32)
-export IS_API_GATEKEEPER_ENCRYPTION_KEY=$(generate_aes_key 32)
+# Generate other variables
+add_to_state_file "IS_POSTGRES_PASSWORD" $(generate_password)
+add_to_state_file "IS_KEYCLOAK_ADMIN_USERNAME" "admin"
+add_to_state_file "IS_KEYCLOAK_ADMIN_PASSWORD" $(generate_password)
+add_to_state_file "KEYCLOAK_URL" "identity.keycloak.$INGRESS_HOST"
+add_to_state_file "IDENTITY_API_URL" "identity.api.$INGRESS_HOST"
 
 envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
 
@@ -25,9 +25,8 @@ echo "✅ Configuration file generated: $OUTPUT_PATH"
 echo ""
 echo "🔐 IMPORTANT: The following passwords have been generated for your deployment:"
 echo "PostgreSQL Password: $IS_POSTGRES_PASSWORD"
+echo "Keycloak Admin Username: $IS_KEYCLOAK_ADMIN_USERNAME"
 echo "Keycloak Admin Password: $IS_KEYCLOAK_ADMIN_PASSWORD"
-echo "Identity API Gatekeeper Client Secret: $IS_API_GATEKEEPER_CLIENT_SECRET"
-echo "Identity API Gatekeeper Encryption Key: $IS_API_GATEKEEPER_ENCRYPTION_KEY"
 echo "Please ensure these are stored securely!"
 
 # Manually apply the pvc
