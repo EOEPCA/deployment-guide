@@ -1,0 +1,43 @@
+# Default values for Application Quality Building Block.
+
+namespace: application-quality
+
+image:
+  repository: nexus.spaceapplications.com/repository/docker-asb-public/eoepca/application-quality
+  pullPolicy: Always
+  tag: 0.0.1
+
+persistence:
+  enabled: true
+  storageClassName: ${DB_STORAGE_CLASS}
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+ingress:
+  enabled: true
+  className: nginx
+  domain: application-quality.${INGRESS_HOST}
+  annotations:
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+  tls:
+    - hosts:
+        - application-quality.${INGRESS_HOST}
+      secretName: application-quality-tls
+
+service:
+  type: ClusterIP
+  port: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  create: false
+
+application:
+  secretKey: "${APPLICATION_QUALITY_SECRET_KEY}"
