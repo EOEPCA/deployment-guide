@@ -12,7 +12,10 @@ envsubst <"api/$TEMPLATE_PATH" >"api/$OUTPUT_PATH"
 envsubst <"server/$TEMPLATE_PATH" >"server/$OUTPUT_PATH"
 
 add_to_state_file "MINIO_USER" user
-add_to_state_file "MINIO_PASSWORD" $(generate_aes_key 32) # dont reset the password
+if [ -z "$MINIO_PASSWORD" ]; then
+    add_to_state_file "MINIO_PASSWORD" $(generate_aes_key 32)
+fi
+add_to_state_file "S3_HOST" "minio.$INGRESS_HOST"
 add_to_state_file "S3_ENDPOINT" "https://minio.$INGRESS_HOST"
 add_to_state_file "S3_REGION" "us-east-1"
 

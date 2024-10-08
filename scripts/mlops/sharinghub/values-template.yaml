@@ -1,0 +1,38 @@
+image:
+  repository: eoepca/sharinghub
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 10g
+  hosts:
+    - host: sharinghub.${INGRESS_HOST}
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: sharinghub.${INGRESS_HOST}-tls
+      hosts:
+        - sharinghub.${INGRESS_HOST}
+
+config: |-
+  server:
+    allowed-origins:
+      - https://eoepca.readthedocs.io
+    session:
+      secret-key: "${SHARINGHUB_SESSION_SECRET}"
+  gitlab:
+    url: https://gitlab.${INGRESS_HOST}
+    allow-public: true
+  s3:
+    enable: true
+    bucket: ${S3_BUCKET}
+    region: us-east-1
+    endpoint: ${S3_ENDPOINT}
+  mlflow:
+    type: mlflow-sharinghub
+    url: https://sharinghub.${INGRESS_HOST}/mlflow

@@ -1,0 +1,33 @@
+image:
+  repository: eoepca/mlflow-sharinghub
+  pullPolicy: IfNotPresent
+
+mlflowSharinghub:
+  sharinghubUrl: https://sharinghub.${INGRESS_HOST}
+  sharinghubStacCollection: ai-model
+  sharinghubAuthDefaultToken: false
+  artifactsDestination: s3://${S3_BUCKET}
+
+s3:
+  enabled: true
+  endpointUrl: ${S3_ENDPOINT}
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 10g
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Script-Name /mlflow;
+      rewrite ^/mlflow/(.*)$ /$1 break;
+  hosts:
+    - host: sharinghub.${INGRESS_HOST}
+      paths:
+        - path: /mlflow/
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: sharinghub.${INGRESS_HOST}-tls
+      hosts:
+        - sharinghub.${INGRESS_HOST}

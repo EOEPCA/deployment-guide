@@ -1,0 +1,105 @@
+global:
+  edition: ce
+  hosts:
+    domain: ${INGRESS_HOST}
+  ingress:
+    configureCertmanager: false
+    class: nginx
+    tls:
+      external: true
+    annotations:
+      kubernetes.io/tls-acme: true
+      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+
+  minio:
+    enabled: false
+
+  appConfig:
+    omniauth:
+      enabled: true
+      allowSingleSignOn: ["saml", "openid_connect"]
+      blockAutoCreatedUsers: false
+      providers:
+        - secret: openid-connect
+    lfs:
+      enabled: true
+      bucket: gitlab-lfs-storage
+      connection:
+        secret: object-storage
+        key: connection
+    artifacts:
+      enabled: false
+    uploads:
+      enabled: false
+    packages:
+      enabled: false
+    backups:
+      bucket: gitlab-backup-storage
+      tmpBucket: gitlab-tmp-storage
+
+  registry:
+    enabled: false
+
+upgradeCheck:
+  enabled: false
+
+gitlab:
+  gitaly:
+    persistence:
+      storageClass: ${DB_STORAGE_CLASS}
+  webservice:
+    ingress:
+      tls:
+        secretName: gitlab.${INGRESS_HOST}-tls
+
+  kas:
+    ingress:
+      tls:
+        secretName: kas.${INGRESS_HOST}-tls
+
+  toolbox:
+    backups:
+      objectStorage:
+        config:
+          secret: gitlab-storage-config
+          key: config
+  sidekiq:
+    enabled: true
+
+registry:
+  enabled: false
+  ingress:
+    tls:
+      secretName: registry.${INGRESS_HOST}-tls
+
+minio:
+  ingress:
+    tls:
+      secretName: minio.${INGRESS_HOST}-tls
+
+certmanager:
+  install: false
+
+nginx-ingress:
+  enabled: false
+
+nginx-ingress-geo:
+  enabled: false
+
+prometheus:
+  install: false
+
+gitlab-runner:
+  install: false
+
+redis:
+  global:
+    storageClass: ${DB_STORAGE_CLASS}
+  metrics:
+    enabled: false
+
+postgresql:
+  global:
+    storageClass: ${DB_STORAGE_CLASS}
+  metrics:
+    enabled: false

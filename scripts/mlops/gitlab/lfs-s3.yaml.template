@@ -1,0 +1,8 @@
+provider: AWS
+region: ${S3_REGION}
+aws_access_key_id: ${S3_ACCESS_KEY}
+aws_secret_access_key: ${S3_SECRET_KEY}
+aws_signature_version: 4
+host: ${S3_HOST}
+endpoint: "${S3_ENDPOINT}"
+path_style: true
