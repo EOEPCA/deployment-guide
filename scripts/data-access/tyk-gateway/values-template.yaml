@@ -1,0 +1,24 @@
+global:
+  redis:
+    passSecret:
+      name: tyk-redis
+      keyName: redis-password
+
+licenseKey: ""
+
+ingressController:
+  enabled: true
+
+gateway:
+  service:
+    type: ClusterIP
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - host: tyk-gateway.${INGRESS_HOST}
+        paths:
+          - path: /
+            pathType: Prefix

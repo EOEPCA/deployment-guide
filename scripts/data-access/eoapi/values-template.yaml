@@ -1,0 +1,78 @@
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+  host: eoapi.${INGRESS_HOST}
+  tls:
+    enabled: true
+    certManager: false
+    secretName: eoapi-tls
+
+db:
+  enabled: false
+
+postgrescluster:
+  enabled: true
+  postgresVersion: 16
+  postGISVersion: 3.4
+  pgBouncerReplicas: 1
+  monitoring: false
+  instances:
+  - name: eoapi
+    replicas: 1
+    dataVolumeClaimSpec:
+      storageClassName: ${DB_STORAGE_CLASS}
+      accessModes:
+      - "ReadWriteMany"
+      resources:
+        requests:
+          storage: 1Gi
+  backupsStorageClassName: ${DB_STORAGE_CLASS}
+  nfsCustom:  # we added a manual option to our postgresql chart to try and accommodate this b/c it was hardcoded as ReadWriteOnce: https://github.com/developmentseed/eoapi-k8s/pull/147
+      - name: repo1
+
+pgstacBootstrap:
+  enabled: true
+  settings:
+    envVars:
+      KEEP_ALIVE: "false"
+
+raster:
+  enabled: true
+  image:
+    tag: "1.4.0"
+  settings:
+    envVars:
+      AWS_S3_ENDPOINT: ${S3_HOST}
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      AWS_VIRTUAL_HOSTING: "FALSE"
+    resources:
+      requests:
+        memory: "3072Mi"
+stac:
+  enabled: true
+  settings:
+    envVars:
+      ENABLED_EXTENSIONS: "query,sort,fields,pagination,filter"
+    resources:
+      limits:
+        cpu: "1280m"
+        memory: "1536Mi"
+      requests:
+        cpu: "512m"
+vector:
+  enabled: true
+  settings:
+    resources:
+      limits:
+        memory: "1536Mi"
+      requests:
+        memory: "1024Mi"
+    envVars:
+      TIPG_DEBUG: "True"
+      TIPG_CATALOG_TTL: "30"

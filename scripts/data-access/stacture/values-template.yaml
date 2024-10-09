@@ -1,0 +1,189 @@
+stacture:
+  image:
+    tag: v0.0.6
+
+  env:
+    - name: DEBUG
+      value: "true"
+    - name: STACTURE_TERRAVIS_URL
+      value: http://stacture-terravis:8080
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    hosts:
+      - host: stacture.${INGRESS_HOST}
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+    - hosts:
+        - stacture.${INGRESS_HOST}
+      secretName: data-access-stacture-tls
+
+
+  config:
+    terravis_url: http://stacture-terravis:8080
+    title: Stacture API
+    apis:
+      maps: true
+      coverages: true
+      wms_config:
+        projections:
+          - 4326
+          - 3857
+          - 3035
+    collections:
+      sentinel-2-l2a:
+        coverage:
+          fields:
+            ndvi:
+              asset: "ndvi"
+        source:
+          type: stac-api
+          href: https://eoapi.develop.eoepca.org/stac/
+          collection: sentinel-2-l2a
+          extra:
+            properties:
+              renders:
+                trc:
+                  assets:
+                    - trc
+                  rescale:
+                    - - 100
+                      - 1500
+                    - - 25
+                      - 1500
+                    - - 75
+                      - 1500
+                ndvi:
+                  assets:
+                    - ndvi
+                  rescale:
+                    - - -1
+                      - 1
+                  colormap_name: viridis
+                scl:
+                  assets:
+                    - scl
+            assets:
+              trc:
+                title: True color image
+                type: "image/tiff; application=geotiff; profile=cloud-optimized"
+                roles:
+                  - visual
+                  - data
+                  - virtual
+                href: "#/assets/trc"
+                vrt:hrefs:
+                  - key: B04
+                    href: "#/assets/B04_10m"
+                  - key: B03
+                    href: "#/assets/B03_10m"
+                  - key: B02
+                    href: "#/assets/B02_10m"
+              ndvi:
+                roles:
+                  - virtual
+                  - data
+                  - index
+                href: "#/assets/ndvi"
+                vrt:hrefs:
+                  - key: B04
+                    href: "#/assets/B04_10m"
+                  - key: B08
+                    href: "#/assets/B08_10m"
+                title: "Normalized Difference Vegetation Index"
+                vrt:algorithm: "band_arithmetic"
+                vrt:algorithm_opts:
+                  expression: (B08-B04)/(B08+B04)
+                  rescale:
+                    - - -1.0
+                      - 1.0
+              # scl:
+              #   raster:bands:
+              #     - classification:classes:
+              #       - value: 0
+              #         color_hint: "000000"
+              #         title: NO_DATA
+              #         name: NO_DATA
+              #       - value: 1
+              #         color_hint: "ff0000"
+              #         title: SATURATED_OR_DEFECTIVE
+              #         name: SATURATED_OR_DEFECTIVE
+              #       - value: 2
+              #         color_hint: "2e2e2e"
+              #         title: DARK_AREA_PIXELS
+              #         name: DARK_AREA_PIXELS
+              #       - value: 3
+              #         color_hint: "541800"
+              #         title: CLOUD_SHADOWS
+              #         name: CLOUD_SHADOWS
+              #       - value: 4
+              #         color_hint: "46e800"
+              #         title: VEGETATION
+              #         name: VEGETATION
+              #       - value: 5
+              #         color_hint: "ffff00"
+              #         title: NOT_VEGETATED
+              #         name: NOT_VEGETATED
+              #       - value: 6
+              #         color_hint: "0000ff"
+              #         title: WATER
+              #         name: WATER
+              #       - value: 7
+              #         color_hint: "525252"
+              #         title: UNCLASSIFIED
+              #         name: UNCLASSIFIED
+              #       - value: 8
+              #         color_hint: "787878"
+              #         title: CLOUD_MEDIUM_PROBABILITY
+              #         name: CLOUD_MEDIUM_PROBABILITY
+              #       - value: 9
+              #         color_hint: "b5b5b5"
+              #         title: CLOUD_HIGH_PROBABILITY
+              #         name: CLOUD_HIGH_PROBABILITY
+              #       - value: 10
+              #         color_hint: "00b6bf"
+              #         title: THIN_CIRRUS
+              #         name: THIN_CIRRUS
+              #       - value: 11
+              #         color_hint: "da00f2"
+              #         title: SNOW
+              #         name: SNOW
+        map:
+          default_style: default
+          styles:
+            default:
+              render: trc
+            trc:
+              render: trc
+            ndvi:
+              render: ndvi
+            scl:
+              render: scl
+
+terravis:
+  image:
+    tag: v0.0.6
+
+  env:
+    - name: CPL_VSIL_CURL_ALLOWED_EXTENSIONS
+      value: .TIF,.TIFF,.tif,.tiff,.xml,.jp2,.jpg,.jpeg,.png,.nc
+    - name: AWS_ACCESS_KEY_ID
+      value: ${S3_ACCESS_KEY}
+    - name: AWS_SECRET_ACCESS_KEY
+      value: ${S3_SECRET_KEY}
+    - name: AWS_S3_ENDPOINT
+      value: ${S3_HOST}
+    - name: AWS_VIRTUAL_HOSTING
+      value: "FALSE"
+    - name: AWS_HTTPS
+      value: "FALSE"
+    - name: AWS_REGION
+      value: default
