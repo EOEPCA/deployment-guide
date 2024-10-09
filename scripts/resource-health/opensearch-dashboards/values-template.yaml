@@ -1,0 +1,26 @@
+# values-opensearch-dashboards.yaml
+
+config:
+  opensearch_dashboards.yml:
+    server:
+      name: dashboards
+      host: 0.0.0.0
+      ssl:
+        enabled: true
+        certificate: /usr/share/opensearch-dashboards/certs/tls.crt
+        key: /usr/share/opensearch-dashboards/certs/tls.key
+    opensearch:
+      ssl:
+        verificationMode: full
+        certificateAuthorities:
+          - "/usr/share/opensearch-dashboards/clientcerts/ca.crt"
+        certificate: /usr/share/opensearch-dashboards/clientcerts/tls.crt
+        key: /usr/share/opensearch-dashboards/clientcerts/tls.key
+
+secretMounts:
+  - name: certs
+    secretName: opensearch-dashboards-tls-certificate
+    path: /usr/share/opensearch-dashboards/certs
+  - name: clientcerts
+    secretName: opensearch-dashboards-client-certificate
+    path: /usr/share/opensearch-dashboards/clientcerts

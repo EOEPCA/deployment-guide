@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: opensearch-tls-certificate
+  namespace: resource-health-opensearch
+spec:
+  secretName: opensearch-tls-certificate
+  isCA: false
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  commonName: resource-health-opensearch.svc.cluster.local
+  dnsNames:
+    - "opensearch-cluster-master-headless.resource-health-opensearch.svc.cluster.local"
+    - "opensearch-cluster-master.resource-health-opensearch.svc.cluster.local"
+    - "opensearch-cluster-master-headless"
+    - "opensearch-cluster-master"
+  issuerRef:
+    kind: ClusterIssuer
+    name: eoepca-ca-clusterissuer
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048

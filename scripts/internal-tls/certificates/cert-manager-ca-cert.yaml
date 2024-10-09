@@ -1,0 +1,20 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eoepca-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: "EOEPCA Root CA"
+  subject:
+    organizations:
+      - EOEPCA
+    organizationalUnits:
+      - Certificate Authority
+  secretName: eoepca-ca-secret
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  issuerRef:
+    name: eoepca-selfsigned-issuer
+    kind: Issuer

@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eoepca-test-server
+  namespace: cert-manager 
+spec:
+  secretName: eoepca-test-server-tls 
+  isCA: false
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - "eoepca-test-server.test.svc.cluster.local"
+    - "eoepca-test-server"
+  issuerRef:
+    kind: ClusterIssuer
+    name: eoepca-ca-clusterissuer
