@@ -1,0 +1,33 @@
+host:
+  external: registration-harvester-api.${INGRESS_HOST}
+
+rest:
+  admin:
+    username: ${FLOWABLE_ADMIN_USER}
+    password: ${FLOWABLE_ADMIN_PASSWORD}
+
+ingress:
+  useHost: "true"
+  sslRedirect: "true"
+  clusterIssuer: ${CLUSTER_ISSUER}
+
+harvester:
+  service:
+    name: registration-harvester
+    type: ClusterIP
+    port: 8080
+  image:
+    repository: eoepca/registration-harvester
+    pullPolicy: Always
+    tag: 2.0.0-beta1
+  container_port: 8080
+  config:
+    flowable:
+      host: https://registration-harvester-api.${INGRESS_HOST}/flowable-rest
+      rest_user: ${FLOWABLE_ADMIN_USER}
+      rest_password: ${FLOWABLE_ADMIN_PASSWORD}
+      use_tls: true
+
+# Global storage class
+global:
+  storageClass: ${DB_STORAGE_CLASS}

@@ -1,0 +1,49 @@
+imagePullSecrets: []
+
+global:
+  namespace: rm
+ingress:
+  enabled: "true"
+  name: registration-api
+  class: nginx
+  host: registration-api.${INGRESS_HOST}
+  tls_host: registration-api.${INGRESS_HOST}
+  tls_secret_name: registration-api-tls-secret
+  subpath_enabled: false
+  default_annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+
+  annotations:
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+pygeoapi:
+  image:
+    repository: eoepca/registration-api
+    pullPolicy: Always
+    tag: "2.0.0-beta1"
+  config:
+    server:
+      url: https://registration-api.${INGRESS_HOST}
+    logging:
+      level: ERROR
+      # /tmp/pygeoapi.log
+    metadata:
+      identification:
+        title: EOEPCA+ Registration API
+    resources:
+      register:
+        type: process
+        processor:
+          name: registration_api.processes.registration.RegisterProcessor
+      deregister:
+        type: process
+        processor:
+          name: registration_api.processes.registration.DeregisterProcessor
+      hello-world:
+        type: process
+        processor:
+          name: HelloWorld
