@@ -43,8 +43,12 @@ envsubst <"gitlab/storage.config.template" >"gitlab/storage.config"
 envsubst <"gitlab/lfs-s3.yaml.template" >"gitlab/lfs-s3.yaml"
 envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
 
-# Create namespaces if they don't exist
-# kubectl create namespace gitlab --dry-run=client -o yaml | kubectl apply -f -
-# kubectl create namespace sharinghub --dry-run=client -o yaml | kubectl apply -f -
+echo ""
+echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"
+echo "Workspace UI Password: $WORKSPACE_UI_PASSWORD"
+echo "SharingHub Session Secret: $SHARINGHUB"
+echo "MLflow Secret Key: $MLFLOW_SECRET_KEY"
+echo "GitLab Root Password: $GITLAB_ROOT_PASSWORD"
+echo ""
 
 echo "Please proceed to create the required Kubernetes secrets before deploying GitLab."

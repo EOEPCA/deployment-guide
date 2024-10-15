@@ -1,18 +1,22 @@
-
-
 #!/bin/bash
 source ../common/utils.sh
 source ../common/validation-utils.sh
+source "$HOME/.eoepca/state"
 
-check_pods_running "default" "app.kubernetes.io/instance=workspace-api" 1
-check_deployment_ready "default" "workspace-api"
+# Check pods in workspace namespace
+check_pods_running "workspace" "" 5
 
-check_service_exists "default" "workspace-api"
+# Check services
+check_service_exists "workspace" "workspace-api-v2"
+check_service_exists "workspace" "workspace-ui"
+check_service_exists "workspace" "workspace-admin"
 
-check_url_status_code "https://workspace-api.$INGRESS_HOST" "200"
-check_url_status_code "https://workspace-api.$INGRESS_HOST/docs" "200"
+# Check ingress
+check_url_status_code "https://workspace-api-v2.$INGRESS_HOST" "200"
+check_url_status_code "https://workspace-ui.$INGRESS_HOST" "200"
+check_url_status_code "https://workspace-admin.$INGRESS_HOST" "200"
 
 echo
-echo "All Resources:"
+echo "All Resources in 'workspace' namespace:"
 echo
-kubectl get all -l app.kubernetes.io/instance=workspace-api --all-namespaces
+kubectl get all -n workspace

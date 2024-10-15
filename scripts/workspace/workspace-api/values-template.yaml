@@ -1,0 +1,28 @@
+existingSecret: git-credentials
+fullnameOverride: workspace-api
+image:
+  tag: 2.0.0_pre1
+  pullPolicy: Always
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+  hosts:
+    - host: workspace-api-v2.${INGRESS_HOST}
+      paths: ["/"]
+  tls:
+    - hosts:
+        - workspace-api-v2.${INGRESS_HOST}
+      secretName: workspace-api-v2-tls
+fluxHelmOperator:
+  enabled: false
+prefixForName: "ws-v2"
+workspaceSecretName: "bucket"
+s3Endpoint: ${S3_ENDPOINT}
+s3Region: ${S3_REGION}
+harborUrl: "https://harbor.${INGRESS_HOST}"
+harborUsername: "admin"
+harborPasswordSecretName: "harbor-admin-password"

@@ -19,12 +19,6 @@ add_to_state_file "S3_HOST" "minio.$INGRESS_HOST"
 add_to_state_file "S3_ENDPOINT" "https://minio.$INGRESS_HOST"
 add_to_state_file "S3_REGION" "us-east-1"
 
-# Store the S3 Endpoint URL for the creation of buckets!!!!
-
-kubectl create secret generic minio-auth \
-    --from-literal=rootUser="$MINIO_USER" \
-    --from-literal=rootPassword="$MINIO_PASSWORD"
-
 echo "✅ Configuration file generated: $OUTPUT_PATH"
 
 echo ""
