@@ -96,6 +96,15 @@ check() {
     fi
 }
 
+ask_yes_no() {
+    local message="$1"
+
+    read -p "$message (yes/no): " RESPONSE
+    if [[ "$RESPONSE" != "yes" ]]; then
+        return 1
+    fi
+}
+
 # Function to generate a secure password and encode it in base64
 generate_password() {
     head -c 32 /dev/urandom | base64
@@ -111,44 +120,6 @@ generate_aes_key() {
 
     # Generate a URL-safe base64 string
     openssl rand -base64 $key_length | tr -dc 'A-Za-z0-9' | head -c "$key_length"
-}
-
-# Check if a Kubernetes resource exists
-check_resource() {
-    local resource_type="$1"
-    local resource_name="$2"
-    local namespace="$3"
-
-    if kubectl get "$resource_type" "$resource_name" -n "$namespace" >/dev/null 2>&1; then
-        echo "✅ $resource_type $resource_name found in namespace $namespace."
-    else
-        echo "❌ $resource_type $resource_name not found in namespace $namespace."
-        exit 1
-    fi
-}
-
-# Check if pods with a specific label are running
-check_pods() {
-    local prefix=$1
-    echo "Checking if all pods starting with '$prefix' are in 'Running' state..."
-    PODS=$(kubectl get pods -n $RESOURCE_CATALOGUE_NAMESPACE --no-headers | grep "^$prefix")
-
-    if [ -z "$PODS" ]; then
-        echo "❌ No pods found that start with '$prefix' in namespace '$RESOURCE_CATALOGUE_NAMESPACE'."
-    fi
-
-    # Internal field seperator set to empty to stop whitespace being trimmed
-    while IFS= read -r pod; do
-        POD_NAME=$(echo $pod | awk '{print $1}')
-        POD_STATUS=$(echo $pod | awk '{print $3}')
-
-        if [ "$POD_STATUS" != "Running" ]; then
-            echo "❌ Pod $POD_NAME is not running (status: $POD_STATUS)."
-            exit 1
-        else
-            echo "✅ Pod $POD_NAME is running."
-        fi
-    done <<<"$PODS"
 }
 
 # Validation functions
