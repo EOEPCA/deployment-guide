@@ -44,9 +44,3 @@ buckets:
   - name: gitlab-lfs-storage
   - name: mlopbb-mlflow-sharinghub
   - name: mlopbb-sharinghub
-
-{{- if .Values.clusterIssuer }}
-clusterIssuer: ${CLUSTER_ISSUER}
-{{- else }}
-clusterIssuer: ""
-{{- end }}

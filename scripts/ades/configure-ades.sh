@@ -33,9 +33,4 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
     add_to_state_file "STAGEIN_S3_REGION" $S3_REGION
 fi
 
-# Gatekeeper
-ask "ADES_CLIENT_SECRET" "Enter the Keycloak client secret for ADES" "" is_non_empty
-export ENCRYPTION_KEY=$(generate_aes_key 32)
-
 envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
-envsubst < "$GATEKEEPER_TEMPLATE_PATH" > "$GATEKEEPER_OUTPUT_PATH"

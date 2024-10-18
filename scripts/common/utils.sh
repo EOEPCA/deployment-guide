@@ -143,9 +143,6 @@ if ! command_exists envsubst; then
     exit 1
 fi
 
-# For configuring TLS
-# iF use_cert_manager hasnt been set yet...
-
 configure_cert() {
     if [ -z "$USE_CERT_MANAGER" ]; then
         ask_yes_no "Do you want to use automatic certificate issuance with cert-manager (yes/no)?"
@@ -163,3 +160,10 @@ configure_cert() {
         add_to_state_file "CLUSTER_ISSUER_ANNOTATION" ""
     fi
 }
+
+configure_http_scheme() {
+    if [ -z "$HTTP_SCHEME" ]; then
+        ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_boolean
+    fi
+}
+configure_http_scheme
