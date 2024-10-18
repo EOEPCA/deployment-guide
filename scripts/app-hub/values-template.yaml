@@ -20,7 +20,7 @@ jupyterhub:
       JUPYTERHUB_ENV: "dev"
       JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
       APP_HUB_NAMESPACE: "default"
-      STORAGE_CLASS: ${DB_STORAGE_CLASS}
+      STORAGE_CLASS: ${STORAGE_CLASS}
       RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
       JUPYTERHUB_CRYPT_KEY: "${APPHUB_JUPYTERHUB_CRYPT_KEY}"
@@ -37,7 +37,7 @@ jupyterhub:
 
     db:
       pvc:
-        storageClassName: ${DB_STORAGE_CLASS}
+        storageClassName: ${STORAGE_CLASS}
 
   singleuser:
     image:

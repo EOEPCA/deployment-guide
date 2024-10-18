@@ -26,7 +26,7 @@ workflow:
     STAGEOUT_OUTPUT: eoepca
   nodeSelector:
     minikube.k8s.io/primary: "true"
-  storageClass: managed-nfs-storage-retain
+  storageClass: default
 ingress:
   enabled: false
   hosturl: https://zoo.${INGRESS_HOST}
@@ -45,19 +45,19 @@ ingress:
     - zoo-open.${INGRESS_HOST}
     secretName: zoo-open-tls
 persistence:
-  procServicesStorageClass: ${DB_STORAGE_CLASS}
-  storageClass: ${DB_STORAGE_CLASS}
-  tmpStorageClass: ${DB_STORAGE_CLASS}
+  procServicesStorageClass: ${STORAGE_CLASS}
+  storageClass: ${STORAGE_CLASS}
+  tmpStorageClass: ${STORAGE_CLASS}
 postgresql:
   primary:
     persistence:
-      storageClass: ${DB_STORAGE_CLASS}
+      storageClass: ${STORAGE_CLASS}
   readReplicas:
     persistence:
-      storageClass: ${DB_STORAGE_CLASS}
+      storageClass: ${STORAGE_CLASS}
 rabbitmq:
   persistence:
-    storageClass: ${DB_STORAGE_CLASS}
+    storageClass: ${STORAGE_CLASS}
 iam:
   enabled: false
 files:

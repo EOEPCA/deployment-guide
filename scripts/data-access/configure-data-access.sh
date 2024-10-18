@@ -6,7 +6,7 @@ echo "Configuring the Data Access Building Block..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persistence" "managed-nfs-storage-retain" is_non_empty
+ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
 configure_cert
 
 ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.example.com" is_non_empty

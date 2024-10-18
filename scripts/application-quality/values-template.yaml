@@ -9,7 +9,7 @@ image:
 
 persistence:
   enabled: true
-  storageClassName: ${DB_STORAGE_CLASS}
+  storageClassName: ${STORAGE_CLASS}
   accessMode: ReadWriteOnce
   size: 1Gi
 

@@ -21,17 +21,17 @@ expose:
 persistence:
   persistentVolumeClaim:
     registry:
-      storageClass: $DB_STORAGE_CLASS
+      storageClass: $STORAGE_CLASS
     chartmuseum:
-      storageClass: $DB_STORAGE_CLASS
+      storageClass: $STORAGE_CLASS
     jobservice:
-      storageClass: $DB_STORAGE_CLASS
+      storageClass: $STORAGE_CLASS
     database:
-      storageClass: $DB_STORAGE_CLASS
+      storageClass: $STORAGE_CLASS
     redis:
-      storageClass: $DB_STORAGE_CLASS
+      storageClass: $STORAGE_CLASS
     trivy:
-      storageClass: $DB_STORAGE_CLASS
+      storageClass: $STORAGE_CLASS
 
 externalURL: https://harbor.$INGRESS_HOST
 harborAdminPassword: $HARBOR_ADMIN_PASSWORD

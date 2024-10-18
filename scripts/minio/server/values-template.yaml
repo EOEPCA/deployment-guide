@@ -34,7 +34,7 @@ resources:
   requests:
     memory: 1Gi
 persistence:
-  storageClass: ${DB_STORAGE_CLASS}
+  storageClass: ${STORAGE_CLASS}
   size: 50Gi
 buckets:
   - name: eoepca

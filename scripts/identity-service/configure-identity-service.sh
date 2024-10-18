@@ -8,7 +8,7 @@ echo "Configuring the Identity Service..."
 # Collect user inputs
 ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificates (e.g., letsencrypt-prod)" "letsencrypt-prod" is_non_empty
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
-ask "DB_STORAGE_CLASS" "Specify the storage class for the Identity Service database (e.g., managed-nfs-storage-retain)" "managed-nfs-storage-retain" is_non_empty
+ask "STORAGE_CLASS" "Specify the storage class for the Identity Service database (e.g., default)" "default" is_non_empty
 
 # Generate other variables
 add_to_state_file "IS_POSTGRES_PASSWORD" $(generate_password)

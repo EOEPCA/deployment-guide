@@ -8,7 +8,7 @@ echo "Configuring the ADES..."
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificates (e.g., letsencrypt-prod)" "letsencrypt-prod" is_non_empty
-ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persistence" "managed-nfs-storage-retain" is_non_empty
+ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
 
 # Stage-out S3 configuration
 check "Do you have an existing S3 Stage-Out object store e.g. MinIO or AWS S3?" "Please setup an S3 object store before proceeding."

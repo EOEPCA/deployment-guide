@@ -46,7 +46,7 @@ upgradeCheck:
 gitlab:
   gitaly:
     persistence:
-      storageClass: ${DB_STORAGE_CLASS}
+      storageClass: ${STORAGE_CLASS}
   webservice:
     ingress:
       tls:
@@ -94,12 +94,12 @@ gitlab-runner:
 
 redis:
   global:
-    storageClass: ${DB_STORAGE_CLASS}
+    storageClass: ${STORAGE_CLASS}
   metrics:
     enabled: false
 
 postgresql:
   global:
-    storageClass: ${DB_STORAGE_CLASS}
+    storageClass: ${STORAGE_CLASS}
   metrics:
     enabled: false

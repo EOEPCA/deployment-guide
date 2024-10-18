@@ -12,7 +12,7 @@ ingress:
     ${CLUSTER_ISSUER_ANNOTATION}
 
 db:
-  volume_storage_type: $DB_STORAGE_CLASS
+  volume_storage_type: $STORAGE_CLASS
   config:
     enabled: true
 pycsw:

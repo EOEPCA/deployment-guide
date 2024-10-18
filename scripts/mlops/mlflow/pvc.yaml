@@ -11,7 +11,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: managed-nfs-storage-retain
+  storageClassName: default
   resources:
     requests:
       storage: 10Gi

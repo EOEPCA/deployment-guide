@@ -25,13 +25,13 @@ postgrescluster:
   - name: eoapi
     replicas: 1
     dataVolumeClaimSpec:
-      storageClassName: ${DB_STORAGE_CLASS}
+      storageClassName: ${STORAGE_CLASS}
       accessModes:
       - "ReadWriteMany"
       resources:
         requests:
           storage: 1Gi
-  backupsStorageClassName: ${DB_STORAGE_CLASS}
+  backupsStorageClassName: ${STORAGE_CLASS}
   nfsCustom:  # we added a manual option to our postgresql chart to try and accommodate this b/c it was hardcoded as ReadWriteOnce: https://github.com/developmentseed/eoapi-k8s/pull/147
       - name: repo1
 
