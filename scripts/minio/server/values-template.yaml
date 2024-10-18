@@ -4,10 +4,10 @@ ingress:
   enabled: true
   ingressClassName: nginx
   annotations:
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+    ${CLUSTER_ISSUER_ANNOTATION}
   path: /
   hosts:
     - minio.${INGRESS_HOST}
@@ -19,17 +19,17 @@ consoleIngress:
   enabled: true
   ingressClassName: nginx
   annotations:
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+    ${CLUSTER_ISSUER_ANNOTATION}
   path: /
   hosts:
     - console.minio.${INGRESS_HOST}
   tls:
-  - secretName: minio-console-tls
-    hosts:
-      - console.minio.${INGRESS_HOST}
+    - secretName: minio-console-tls
+      hosts:
+        - console.minio.${INGRESS_HOST}
 resources:
   requests:
     memory: 1Gi
@@ -44,3 +44,9 @@ buckets:
   - name: gitlab-lfs-storage
   - name: mlopbb-mlflow-sharinghub
   - name: mlopbb-sharinghub
+
+{{- if .Values.clusterIssuer }}
+clusterIssuer: ${CLUSTER_ISSUER}
+{{- else }}
+clusterIssuer: ""
+{{- end }}

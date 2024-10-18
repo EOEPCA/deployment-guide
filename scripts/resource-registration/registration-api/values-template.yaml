@@ -16,7 +16,7 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
 
   annotations:
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    ${CLUSTER_ISSUER_ANNOTATION}
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 

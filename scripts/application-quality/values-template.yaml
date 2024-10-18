@@ -18,7 +18,7 @@ ingress:
   className: nginx
   domain: application-quality.${INGRESS_HOST}
   annotations:
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    ${CLUSTER_ISSUER_ANNOTATION}
     ingress.kubernetes.io/ssl-redirect: 'true'
     nginx.ingress.kubernetes.io/ssl-redirect: 'true'
   tls:

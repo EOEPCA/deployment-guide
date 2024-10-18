@@ -1,7 +1,16 @@
 global:
   namespace: default
 ingress:
-  enabled: false
+  enabled: true
+  name: resource-catalogue
+  host: resource-catalogue.$INGRESS_HOST
+  tls_host: resource-catalogue.$INGRESS_HOST
+  tls_secret_name: resource-catalogue-tls
+  class: nginx
+  className: nginx
+  annotations:
+    ${CLUSTER_ISSUER_ANNOTATION}
+
 db:
   volume_storage_type: $DB_STORAGE_CLASS
   config:

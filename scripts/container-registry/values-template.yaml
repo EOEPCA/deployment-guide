@@ -2,7 +2,7 @@ expose:
   ingress:
     annotations:
       kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+      ${CLUSTER_ISSUER_ANNOTATION}
       nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
 
       ingress.kubernetes.io/ssl-redirect: "true"

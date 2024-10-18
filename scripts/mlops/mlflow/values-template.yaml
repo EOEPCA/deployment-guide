@@ -16,7 +16,7 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    ${CLUSTER_ISSUER_ANNOTATION}
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: 10g
     nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -28,6 +28,6 @@ ingress:
         - path: /mlflow/
           pathType: ImplementationSpecific
   tls:
-    - secretName: sharinghub.${INGRESS_HOST}-tls
+    - secretName: sharinghub-tls
       hosts:
         - sharinghub.${INGRESS_HOST}

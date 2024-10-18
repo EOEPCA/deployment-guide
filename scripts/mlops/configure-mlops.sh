@@ -6,8 +6,8 @@ echo "Configuring the MLOps Building Block..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
 ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persistence" "managed-nfs-storage-retain" is_non_empty
+configure_cert
 
 # S3 configuration
 ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "https://minio.example.com" is_non_empty
@@ -52,3 +52,12 @@ echo "GitLab Root Password: $GITLAB_ROOT_PASSWORD"
 echo ""
 
 echo "Please proceed to create the required Kubernetes secrets before deploying GitLab."
+
+# find what happens to the gitlab one?
+# sharinghub-tls is the same as mlflow?
+if [ "$USE_CERT_MANAGER" == "no" ]; then
+    echo ""
+    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
+    echo "- sharinghub-tls (for SharingHub and MLflow??)"
+    echo "- gitlab-tls (for GitLab)"
+fi

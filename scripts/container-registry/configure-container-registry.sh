@@ -6,8 +6,8 @@ echo "Configuring the Container Registry..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
 ask "DB_STORAGE_CLASS" "Specify the Kubernetes storage class for database persistence" "managed-nfs-storage-retain" is_non_empty
+configure_cert
 
 export HARBOR_ADMIN_PASSWORD=$(generate_password)
 export HARBOR_URL="https://harbor.$INGRESS_HOST"
@@ -23,3 +23,9 @@ echo "✅ Configuration file generated: $OUTPUT_PATH"
 echo ""
 echo "🔐 IMPORTANT: The following passwords have been generated for your deployment:"
 echo "Harbor admin password: $HARBOR_ADMIN_PASSWORD"
+
+if [ "$USE_CERT_MANAGER" == "no" ]; then
+    echo ""
+    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
+    echo "- harbor-tls"
+fi

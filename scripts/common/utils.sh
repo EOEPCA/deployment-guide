@@ -98,9 +98,10 @@ check() {
 
 ask_yes_no() {
     local message="$1"
-
     read -p "$message (yes/no): " RESPONSE
-    if [[ "$RESPONSE" != "yes" ]]; then
+    if [[ "$RESPONSE" == "yes" ]]; then
+        return 0
+    else
         return 1
     fi
 }
@@ -141,3 +142,24 @@ if ! command_exists envsubst; then
     echo "Run 'apt install gettext' to use 'envsubst'."
     exit 1
 fi
+
+# For configuring TLS
+# iF use_cert_manager hasnt been set yet...
+
+configure_cert() {
+    if [ -z "$USE_CERT_MANAGER" ]; then
+        ask_yes_no "Do you want to use automatic certificate issuance with cert-manager (yes/no)?"
+        if [ "$?" == 1 ]; then
+            add_to_state_file "USE_CERT_MANAGER" "no"
+        else
+            add_to_state_file "USE_CERT_MANAGER" "yes"
+        fi
+    fi
+
+    if [ "$USE_CERT_MANAGER" == "yes" ]; then
+        ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
+        add_to_state_file "CLUSTER_ISSUER_ANNOTATION" "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
+    else
+        add_to_state_file "CLUSTER_ISSUER_ANNOTATION" ""
+    fi
+}

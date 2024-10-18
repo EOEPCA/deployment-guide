@@ -9,7 +9,7 @@ global:
       external: true
     annotations:
       kubernetes.io/tls-acme: true
-      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+      ${CLUSTER_ISSUER_ANNOTATION}
 
   minio:
     enabled: false
@@ -50,12 +50,12 @@ gitlab:
   webservice:
     ingress:
       tls:
-        secretName: gitlab.${INGRESS_HOST}-tls
+        secretName: gitlab-tls
 
   kas:
     ingress:
       tls:
-        secretName: kas.${INGRESS_HOST}-tls
+        secretName: kas-tls
 
   toolbox:
     backups:
@@ -70,12 +70,12 @@ registry:
   enabled: false
   ingress:
     tls:
-      secretName: registry.${INGRESS_HOST}-tls
+      secretName: registry-tls
 
 minio:
   ingress:
     tls:
-      secretName: minio.${INGRESS_HOST}-tls
+      secretName: minio-tls
 
 certmanager:
   install: false

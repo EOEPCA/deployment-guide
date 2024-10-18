@@ -15,7 +15,7 @@ stacture:
       kubernetes.io/ingress.class: nginx
       ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+      ${CLUSTER_ISSUER_ANNOTATION}
     hosts:
       - host: stacture.${INGRESS_HOST}
         paths:

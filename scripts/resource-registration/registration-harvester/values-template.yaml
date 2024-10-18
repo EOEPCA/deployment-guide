@@ -6,6 +6,7 @@ rest:
     username: ${FLOWABLE_ADMIN_USER}
     password: ${FLOWABLE_ADMIN_PASSWORD}
 
+# Non standard, how will we deal with this?
 ingress:
   useHost: "true"
   sslRedirect: "true"
