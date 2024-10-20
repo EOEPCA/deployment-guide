@@ -10,7 +10,7 @@ declare -a checks=(
     "check_helm_installed"
     "check_cert_manager_installed"
     "check_ingress_controller_installed"
-    "check_keycloak_accessible $KEYCLOAK_URL"
+    "check_object_store_accessible"
 )
 
 run_validation "${checks[@]}"

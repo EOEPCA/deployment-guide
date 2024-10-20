@@ -5,10 +5,10 @@ source ../common/utils.sh
 
 echo "Applying Kubernetes secrets..."
 
-# GitLab secrets maybe dont need? kubectl get secret gitlab-gitlab-initial-root-password -o yaml
-# kubectl create secret generic gitlab-secrets \
-#   --from-literal=initial_root_password="$GITLAB_ROOT_PASSWORD" \
-#   --namespace gitlab
+kubectl create namespace gitlab
+kubectl create namespace sharinghub
+
+kubectl apply -f mlflow/generated-pvc.yaml
 
 kubectl create secret generic gitlab-storage-config \
   --from-file=config=gitlab/storage.config \

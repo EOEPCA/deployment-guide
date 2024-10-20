@@ -94,8 +94,9 @@ function check_docker_installed() {
 
 function check_cert_manager_installed() {
     if ! kubectl get pods --all-namespaces | grep -q cert-manager; then
-        echo "❌ Cert-Manager is not installed in the cluster."
+        echo "⚠️  Cert-Manager is not installed in the cluster."
         echo "   Please install Cert-Manager: https://cert-manager.io/docs/installation/"
+        echo "   If you are manually managing certificates, you can ignore this message."
         return 1
     else
         echo "✅ Cert-Manager is installed."
@@ -106,8 +107,9 @@ function check_cert_manager_installed() {
 # Improve this
 function check_ingress_controller_installed() {
     if ! kubectl get pods --all-namespaces | grep -q 'ingress";'; then
-        echo "❌ Ingress Controller is not installed in the cluster."
+        echo "⚠️  Ingress Controller is not installed in the cluster."
         echo "   Please install NGINX Ingress Controller: https://kubernetes.github.io/ingress-nginx/deploy/"
+        echo "   If you are using a different Ingress Controller, you can ignore this message."
         return 1
     else
         echo "✅ Ingress Controller is installed."
@@ -126,6 +128,21 @@ function check_keycloak_accessible() {
         echo "   Deployment guide: $HTTP_SCHEME://eoepca.github.io/deployment-guide/identity-service-deployment"
         return 1
     fi
+}
+
+function check_object_store_accessible() {
+    if [ -z "$S3_HOST" ] && [ -z "$S3_ENDPOINT" ]; then
+        echo "⚠️ S3_HOST or S3_ENDPOINT environment variable is not set."
+        echo "   Please ensure that you have an accessible object store (S3-compatible)"
+        echo "   You will be prompted to set these variables during the configuration script setup"
+        return 1
+    fi
+
+    echo "✅ You have set the S3_HOST or S3_ENDPOINT environment variable."
+}
+
+function check_internal_certificates() {
+    echo "TODO"
 }
 
 function run_validation() {

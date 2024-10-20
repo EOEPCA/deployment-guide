@@ -1,5 +1,5 @@
 cookiecutter:
-  templateUrl: $HTTP_SCHEME://github.com/EOEPCA/eoepca-proc-service-template.git
+  templateUrl: ${HTTP_SCHEME}://github.com/EOEPCA/eoepca-proc-service-template.git
   templateBranch: master
 zoofpm:
   image:
@@ -28,13 +28,13 @@ workflow:
     minikube.k8s.io/primary: "true"
   storageClass: default
 ingress:
-  enabled: false
-  hosturl: $HTTP_SCHEME://zoo.${INGRESS_HOST}
+  enabled: true
+  hosturl: ${HTTP_SCHEME}://zoo-open.${INGRESS_HOST}
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
+    ${CLUSTER_ISSUER_ANNOTATION}
   hosts:
   - host: zoo-open.${INGRESS_HOST}
     paths:

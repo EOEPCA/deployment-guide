@@ -26,16 +26,14 @@ if [ -z "$SHARINGHUB_SESSION_SECRET" ]; then
     add_to_state_file "SHARINGHUB_SESSION_SECRET" "$(generate_aes_key 32)"
 fi
 if [ -z "$MLFLOW_SECRET_KEY" ]; then
-    add_to_state_file "MLFLOW_SECRET_KEY" "$(MLOPS_SECRET_KEY)"
-fi
-if [ -z "$GITLAB_ROOT_PASSWORD" ]; then
-    add_to_state_file "GITLAB_ROOT_PASSWORD" "$(generate_password)"
+    add_to_state_file "MLFLOW_SECRET_KEY" "$(generate_aes_key 32)"
 fi
 
 # Generate configuration files for GitLab, SharingHub, and MLflow SharingHub
 envsubst <"gitlab/values-template.yaml" >"gitlab/generated-values.yaml"
 envsubst <"sharinghub/values-template.yaml" >"sharinghub/generated-values.yaml"
 envsubst <"mlflow/values-template.yaml" >"mlflow/generated-values.yaml"
+envsubst <"mlflow/pvc-template.yaml" >"mlflow/generated-pvc.yaml"
 
 # Generate configuration files for secrets
 envsubst <"gitlab/storage.config.template" >"gitlab/storage.config"
@@ -44,19 +42,16 @@ envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
 
 echo ""
 echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"
-echo "Workspace UI Password: $WORKSPACE_UI_PASSWORD"
-echo "SharingHub Session Secret: $SHARINGHUB"
+echo "SharingHub Session Secret: $SHARINGHUB_SESSION_SECRET"
 echo "MLflow Secret Key: $MLFLOW_SECRET_KEY"
-echo "GitLab Root Password: $GITLAB_ROOT_PASSWORD"
 echo ""
 
 echo "Please proceed to create the required Kubernetes secrets before deploying GitLab."
 
 # find what happens to the gitlab one?
-# sharinghub-tls is the same as mlflow?
 if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""
     echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- sharinghub-tls (for SharingHub and MLflow??)"
+    echo "- sharinghub-tls (for SharingHub and MLflow)"
     echo "- gitlab-tls (for GitLab)"
 fi

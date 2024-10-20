@@ -5,10 +5,10 @@ source ../common/utils.sh
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
+configure_cert
 
-# Gatekeeper
+# OAuth2 configuration
 ask "APPHUB_CLIENT_SECRET" "Enter the Keycloak client secret for App Hub" "" is_non_empty
 export APPHUB_JUPYTERHUB_CRYPT_KEY=$(openssl rand -base64 32)
 add_to_state_file "APPHUB_JUPYTERHUB_CRYPT_KEY" $APPHUB_JUPYTERHUB_CRYPT_KEY
@@ -17,7 +17,8 @@ envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
 
 echo "✅ Configuration file generated: $OUTPUT_PATH"
 
-# Notify the user to store the generated passwords
-echo ""
-echo "🔐 IMPORTANT: The following passwords have been generated for your deployment:"
-echo "JupyterHub crypt key: $APPHUB_JUPYTERHUB_CRYPT_KEY"
+if [ "$USE_CERT_MANAGER" == "no" ]; then
+    echo ""
+    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
+    echo "- app-hub-tls (for App Hub)"
+fi

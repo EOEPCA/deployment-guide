@@ -3,15 +3,14 @@
 # Load utility functions
 source ../common/utils.sh
 
-echo "Configuring the ADES..."
+echo "Configuring the Processing Building Block..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
-ask "CLUSTER_ISSUER" "Specify the cert-manager Cluster Issuer for TLS certificates (e.g., letsencrypt-prod)" "letsencrypt-prod" is_non_empty
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
+configure_cert
 
 # Stage-out S3 configuration
-check "Do you have an existing S3 Stage-Out object store e.g. MinIO or AWS S3?" "Please setup an S3 object store before proceeding."
 ask "S3_ENDPOINT" "Enter the Stage-Out S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
 ask "S3_ACCESS_KEY" "Enter the Stage-Out S3 Access Key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the Stage-Out S3 Secret Key" "" is_non_empty
@@ -34,3 +33,9 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
 fi
 
 envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
+
+if [ "$USE_CERT_MANAGER" == "no" ]; then
+    echo ""
+    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
+    echo "- zoo-open-tls"
+fi
