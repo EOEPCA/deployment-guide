@@ -18,10 +18,10 @@ check_service_exists "default" "zoo-project-dru-service"
 check_service_exists "default" "zoo-project-dru-postgresql"
 check_service_exists "default" "zoo-project-dru-rabbitmq"
 
-check_url_status_code "https://zoo.$INGRESS_HOST" "200"
-check_url_status_code "https://zoo-open.$INGRESS_HOST" "200"
-check_url_status_code "https://zoo-open.$INGRESS_HOST/ogc-api/processes" "200"
-check_url_status_code "https://zoo-open.$INGRESS_HOST/swagger-ui/oapip/" "200"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST/ogc-api/processes" "200"
+check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST/swagger-ui/oapip/" "200"
 
 echo
 echo "All Resources:"

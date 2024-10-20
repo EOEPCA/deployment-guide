@@ -1,4 +1,5 @@
-existingSecret: minio-auth
+rootUser: $MINIO_USER
+rootPassword: $MINIO_PASSWORD
 replicas: 2
 ingress:
   enabled: true

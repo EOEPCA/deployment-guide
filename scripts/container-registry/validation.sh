@@ -18,7 +18,7 @@ check_service_exists "default" "harbor-registry"
 check_service_exists "default" "harbor-database"
 check_service_exists "default" "harbor-redis"
 
-check_url_status_code "https://harbor.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://harbor.$INGRESS_HOST" "200"
 check_pvc_bound "default" "data-harbor-redis-0"
 
 check_secret_exists "default" "harbor-core"

@@ -19,7 +19,7 @@ if [ -z "$MINIO_PASSWORD" ]; then
     add_to_state_file "MINIO_PASSWORD" "$MINIO_PASSWORD"
 fi
 add_to_state_file "S3_HOST" "minio.$INGRESS_HOST"
-add_to_state_file "S3_ENDPOINT" "https://minio.$INGRESS_HOST"
+add_to_state_file "S3_ENDPOINT" "$HTTP_SCHEME://minio.$INGRESS_HOST"
 add_to_state_file "S3_REGION" "us-east-1"
 
 echo "✅ Configuration files generated:"

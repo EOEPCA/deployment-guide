@@ -46,7 +46,7 @@ stacture:
               asset: "ndvi"
         source:
           type: stac-api
-          href: https://eoapi.develop.eoepca.org/stac/
+          href: $HTTP_SCHEME://eoapi.develop.eoepca.org/stac/
           collection: sentinel-2-l2a
           extra:
             properties:

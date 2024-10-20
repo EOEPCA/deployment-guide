@@ -33,7 +33,7 @@ persistence:
     trivy:
       storageClass: $STORAGE_CLASS
 
-externalURL: https://harbor.$INGRESS_HOST
+externalURL: $HTTP_SCHEME://harbor.$INGRESS_HOST
 harborAdminPassword: $HARBOR_ADMIN_PASSWORD
 
 chartmuseum:

@@ -24,7 +24,7 @@ harvester:
   container_port: 8080
   config:
     flowable:
-      host: https://registration-harvester-api.${INGRESS_HOST}/flowable-rest
+      host: $HTTP_SCHEME://registration-harvester-api.${INGRESS_HOST}/flowable-rest
       rest_user: ${FLOWABLE_ADMIN_USER}
       rest_password: ${FLOWABLE_ADMIN_PASSWORD}
       use_tls: true

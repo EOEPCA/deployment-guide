@@ -3,7 +3,7 @@ image:
   pullPolicy: IfNotPresent
 
 mlflowSharinghub:
-  sharinghubUrl: https://sharinghub.${INGRESS_HOST}
+  sharinghubUrl: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}
   sharinghubStacCollection: ai-model
   sharinghubAuthDefaultToken: false
   artifactsDestination: s3://${S3_BUCKET}

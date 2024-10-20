@@ -10,7 +10,7 @@ ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes
 configure_cert
 
 export HARBOR_ADMIN_PASSWORD=$(generate_password)
-export HARBOR_URL="https://harbor.$INGRESS_HOST"
+export HARBOR_URL="$HTTP_SCHEME://harbor.$INGRESS_HOST"
 
 add_to_state_file "HARBOR_ADMIN_PASSWORD" $HARBOR_ADMIN_PASSWORD
 add_to_state_file "HARBOR_URL" $HARBOR_URL

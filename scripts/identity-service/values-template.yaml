@@ -50,7 +50,7 @@ identity-api:
   deployment:
     extraEnv:
       - name: AUTH_SERVER_URL
-        value: https://identity.keycloak.${INGRESS_HOST}
+        value: $HTTP_SCHEME://identity.keycloak.${INGRESS_HOST}
       - name: ADMIN_USERNAME
         value: "admin"
       - name: REALM

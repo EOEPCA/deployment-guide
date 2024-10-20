@@ -27,7 +27,7 @@ pygeoapi:
     tag: "2.0.0-beta1"
   config:
     server:
-      url: https://registration-api.${INGRESS_HOST}
+      url: $HTTP_SCHEME://registration-api.${INGRESS_HOST}
     logging:
       level: ERROR
       # /tmp/pygeoapi.log

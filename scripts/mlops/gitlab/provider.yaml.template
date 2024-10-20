@@ -1,6 +1,6 @@
 name: openid_connect
 label: EOEPCA
-icon: "https://eoepca.readthedocs.io/img/favicon.ico"
+icon: "$HTTP_SCHEME://eoepca.readthedocs.io/img/favicon.ico"
 args:
   name: openid_connect
   scope: ["openid", "profile", "email"]
@@ -13,4 +13,4 @@ args:
   client_options:
     identifier: "${OIDC_CLIENT_ID}"
     secret: "${OIDC_CLIENT_SECRET}"
-    redirect_uri: "https://gitlab.${INGRESS_HOST}/users/auth/openid_connect/callback"
+    redirect_uri: "$HTTP_SCHEME://gitlab.${INGRESS_HOST}/users/auth/openid_connect/callback"

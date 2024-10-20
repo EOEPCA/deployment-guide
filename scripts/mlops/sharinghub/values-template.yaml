@@ -22,11 +22,11 @@ ingress:
 config: |-
   server:
     allowed-origins:
-      - https://eoepca.readthedocs.io
+      - $HTTP_SCHEME://eoepca.readthedocs.io
     session:
       secret-key: "${SHARINGHUB_SESSION_SECRET}"
   gitlab:
-    url: https://gitlab.${INGRESS_HOST}
+    url: $HTTP_SCHEME://gitlab.${INGRESS_HOST}
     allow-public: true
   s3:
     enable: true
@@ -35,4 +35,4 @@ config: |-
     endpoint: ${S3_ENDPOINT}
   mlflow:
     type: mlflow-sharinghub
-    url: https://sharinghub.${INGRESS_HOST}/mlflow
+    url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow

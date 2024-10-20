@@ -1,7 +1,7 @@
 fullnameOverride: identity-server-api-protection
 config:
   client-id: identity-api
-  discovery-url: https://identity.keycloak.${INGRESS_HOST}/realms/master
+  discovery-url: $HTTP_SCHEME://identity.keycloak.${INGRESS_HOST}/realms/master
   cookie-domain: ${INGRESS_HOST}
 targetService:
   host: identity-api-protected.${INGRESS_HOST}

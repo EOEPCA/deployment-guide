@@ -18,4 +18,4 @@ db:
 pycsw:
   config:
     server:
-      url: https://resource-catalogue.$INGRESS_HOST
+      url: $HTTP_SCHEME://resource-catalogue.$INGRESS_HOST

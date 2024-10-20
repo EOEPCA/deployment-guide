@@ -73,7 +73,7 @@ function check_kubernetes_access() {
 
 # Specific checks for common tools
 function check_kubectl_installed() {
-    check_command_installed "kubectl" "https://kubernetes.io/docs/tasks/tools/install-kubectl/" "kubectl"
+    check_command_installed "kubectl" "$HTTP_SCHEME://kubernetes.io/docs/tasks/tools/install-kubectl/" "kubectl"
 }
 
 function check_helm_installed() {
@@ -117,13 +117,13 @@ function check_ingress_controller_installed() {
 
 function check_keycloak_accessible() {
     local KEYCLOAK_URL="$1"
-    if curl -s -o /dev/null -w "%{http_code}" https://"$KEYCLOAK_URL" | grep -qE "200"; then
+    if curl -s -o /dev/null -w "%{http_code}" $HTTP_SCHEME://"$KEYCLOAK_URL" | grep -qE "200"; then
         echo "✅ Keycloak (Identity Service) is accessible at $KEYCLOAK_URL"
         return 0
     else
-        echo "❌ Keycloak (Identity Service) is not accessible at https://$KEYCLOAK_URL"
+        echo "❌ Keycloak (Identity Service) is not accessible at $HTTP_SCHEME://$KEYCLOAK_URL"
         echo "   Please ensure the Identity Service is deployed and accessible."
-        echo "   Deployment guide: https://eoepca.github.io/deployment-guide/identity-service-deployment"
+        echo "   Deployment guide: $HTTP_SCHEME://eoepca.github.io/deployment-guide/identity-service-deployment"
         return 1
     fi
 }

@@ -23,6 +23,6 @@ prefixForName: "ws-v2"
 workspaceSecretName: "bucket"
 s3Endpoint: ${S3_ENDPOINT}
 s3Region: ${S3_REGION}
-harborUrl: "https://harbor.${INGRESS_HOST}"
+harborUrl: "$HTTP_SCHEME://harbor.${INGRESS_HOST}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor-admin-password"

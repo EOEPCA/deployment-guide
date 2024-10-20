@@ -12,8 +12,8 @@ check_service_exists "data-access" "stacture"
 check_service_exists "data-access" "tyk-gateway"
 
 # Check ingress
-check_url_status_code "https://eoapi.$INGRESS_HOST" "200"
-check_url_status_code "https://stacture.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://eoapi.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://stacture.$INGRESS_HOST" "200"
 
 echo
 echo "All Resources in 'data-access' namespace:"

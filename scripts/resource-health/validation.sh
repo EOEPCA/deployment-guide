@@ -12,8 +12,8 @@ check_service_exists "resource-health" "resource-health-opensearch"
 check_service_exists "resource-health" "resource-health-opensearch-dashboards"
 
 # Check ingress
-check_url_status_code "https://resource-health.$INGRESS_HOST" "200"
-check_url_status_code "https://resource-health-opensearch-dashboards.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://resource-health.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://resource-health-opensearch-dashboards.$INGRESS_HOST" "200"
 
 echo
 echo "All Resources in 'resource-health' namespace:"

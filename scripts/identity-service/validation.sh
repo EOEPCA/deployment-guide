@@ -13,7 +13,7 @@ check_service_exists "default" "identity-postgres"
 check_service_exists "default" "identity-keycloak"
 check_service_exists "default" "identity-api"
 
-check_url_status_code "https://identity.keycloak.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://identity.keycloak.$INGRESS_HOST" "200"
 check_pvc_bound "default" "identity-service"
 
 check_configmap_exists "default" "identity-keycloak"

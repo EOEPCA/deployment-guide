@@ -1,5 +1,5 @@
 cookiecutter:
-  templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
+  templateUrl: $HTTP_SCHEME://github.com/EOEPCA/eoepca-proc-service-template.git
   templateBranch: master
 zoofpm:
   image:
@@ -29,7 +29,7 @@ workflow:
   storageClass: default
 ingress:
   enabled: false
-  hosturl: https://zoo.${INGRESS_HOST}
+  hosturl: $HTTP_SCHEME://zoo.${INGRESS_HOST}
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "true"
