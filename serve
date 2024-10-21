@@ -10,8 +10,10 @@ onExit() {
 
 trap onExit EXIT
 
+exec sudo docker build -t eoepca/mkdocs-material .
+
 exec docker run --name mkdocs-serve --rm -it \
   -p 8000:8000 \
   -v ${PWD}:/docs \
-  squidfunk/mkdocs-material \
+  eoepca/mkdocs-material \
   serve --dev-addr 0.0.0.0:8000

@@ -5,44 +5,56 @@ edit_uri: "edit/main/docs/"
 
 # Site navigation
 nav:
-  - EOEPCA Documentation: https://eoepca.readthedocs.io/
-  - Deployment Guide:
-    - Introduction: index.md
-    - Getting Started:
-      - Quick Start: quickstart/quickstart.md
-      - Scripted Deployment: quickstart/scripted-deployment.md
-      - Profiles:
-        - Simple: quickstart/simple-deployment.md
-        - Processing: quickstart/processing-deployment.md
-        - Application Hub: quickstart/application-hub-deployment.md
-        - Data Access: quickstart/data-access-deployment.md
-        - Exploitation: quickstart/exploitation-deployment.md
-        - User Management: quickstart/userman-deployment.md
-        - CREODIAS Data: quickstart/creodias-deployment.md
-    - Prepare Cluster:
-      - Prerequisite Tooling: cluster/prerequisite-tooling.md
-      - Kubernetes Cluster: cluster/kubernetes.md
-      - Helm Repositories: cluster/helm-repositories.md
-      - Cluster Prerequisites: cluster/cluster-prerequisites.md
-    - Deploy EOEPCA Components:
-      - Persistence: eoepca/persistence.md
-      - Identity & Access Management:
-        - IAM Overview: eoepca/iam-overview.md
-        - Keycloak Solution (NEW):
-          - Identity Service: eoepca/identity-service.md
-          - Resource Protection: eoepca/resource-protection-keycloak.md
-        - Gluu Solution (deprecated):
-          - Login Service: eoepca/login-service.md
-          - Policy Decision Point: eoepca/pdp.md
-          - Resource Protection: eoepca/resource-protection-gluu.md
-          - User Profile: eoepca/user-profile.md
-      - ADES (Processing): eoepca/ades-zoo.md
-      - Application Hub: eoepca/application-hub.md
-      - Resource Catalogue: eoepca/resource-catalogue.md
-      - Data Access: eoepca/data-access.md
-      - Registration API: eoepca/registration-api.md
-      - Workspace: eoepca/workspace.md
-      - Container Registry: eoepca/container-registry.md
+  - Introduction: index.md
+  # - Prerequisites: prerequisites.md
+  - Infrastructure Deployment:
+      - Overview: infra/infrastructure-overview.md
+      - Cluster Setup: infra/kubernetes-cluster-and-networking.md
+      - Ingress Controller Setup: infra/ingress-controller.md
+      - TLS Certificate Management:
+          - Overview: infra/tls/overview.md
+          - Using Cert-Manager: infra/tls/cert-manager.md
+          - Manual TLS Management: infra/tls/manual-tls.md
+      - Storage Provisioning:
+        - Storage Classes: infra/storage/storage-classes.md
+      - Additional Infrastructure Components:
+          - S3 Storage (MinIO): infra/minio.md
+          - Container Registry: infra/container-registry.md
+      - Application Deployment →: building-blocks/overview.md
+  - Application Deployment:
+    - Overview: building-blocks/overview.md
+    - Application Quality: building-blocks/application-quality.md
+    - Resource Catalogue: building-blocks/resource-catalogue.md
+    - Data Access: building-blocks/data-access.md
+    - Processing: building-blocks/processing.md
+    - Resource Health: building-blocks/resource-health.md
+    - Resource Registration: building-blocks/resource-registration.md
+    - MLOps: building-blocks/mlops.md
+    - Workspace: building-blocks/workspace.md
+    - Application Hub: building-blocks/application-hub.md
+    
+  - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
+
+
+  # - Deploy EOEPCA Components:
+  #   - Persistence: eoepca/persistence.md
+  #   - Identity & Access Management:
+  #     - IAM Overview: eoepca/iam-overview.md
+  #     - Keycloak Solution (NEW):
+  #       - Identity Service: eoepca/identity-service.md
+  #       - Resource Protection: eoepca/resource-protection-keycloak.md
+  #     - Gluu Solution (deprecated):
+  #       - Login Service: eoepca/login-service.md
+  #       - Policy Decision Point: eoepca/pdp.md
+  #       - Resource Protection: eoepca/resource-protection-gluu.md
+  #       - User Profile: eoepca/user-profile.md
+  #   - ADES (Processing): eoepca/ades-zoo.md
+  #   - Application Hub: eoepca/application-hub.md
+  #   - Resource Catalogue: eoepca/resource-catalogue.md
+  #   - Data Access: eoepca/data-access.md
+  #   - Registration API: eoepca/registration-api.md
+  #   - Workspace: eoepca/workspace.md
+  #   - Container Registry: eoepca/container-registry.md
 
 theme:
   # name: mkdocs
