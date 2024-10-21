@@ -286,6 +286,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
@@ -295,6 +306,34 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -998,6 +1037,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1020,23 +1076,10 @@
 
 
 <h1 id="eoepca-deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide<a class="headerlink" href="#eoepca-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p><img alt="EOEPCA" src="img/hero.jpg" /></p>
-<p>The Deployment Guide captures each release of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation, by providing for each version&hellip;</p>
-<ul>
-<li>Description of how each building-block is configured and deployed - see <strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong></li>
-<li>Scripted deployment in which each building-block can be selectively deployed to form a system - see <strong>Getting Started</strong></li>
-</ul>
-<p>A full system deployment is described, in which components are deployed with complementary configurations that facilitate their integration as a coherent system. Nevertheless, each component can be cherry-picked from this system deployment for individual re-use.</p>
-<p>The deployment is organised into the following sections:</p>
-<ul>
-<li><strong>Getting Started</strong><br>
-  A quickstart guide with associated scripts to facilitate example deployments, which preempt the descriptions that follow later in the document.<br>
-  Scripts are provided in a variety of &lsquo;profiles&rsquo; that deploy different combinations of building-blocks for different notional use cases.</li>
-<li><strong>Prepare Cluster</strong><br>
-  Establish the Kubernetes cluster and other prerequisites for the deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> system.</li>
-<li><strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong><br>
-  Deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components.</li>
-</ul>
+<p>This guide provides steps to deploy the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ platform&rsquo;s components in your environment.</p>
+<h3 id="getting-started"><strong>Getting Started:</strong><a class="headerlink" href="#getting-started" title="Permanent link">⚓︎</a></h3>
+<p>• <strong>Infrastructure Deployment</strong>: Set up the foundational infrastructure required for the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ platform. See the <a href="infra/infrastructure-overview/">Infrastructure Deployment Guide</a>.</p>
+<p>• <strong>Application Deployment</strong>: Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Building Blocks. Begin with the <a href="building-blocks/overview/">Application Deployment Overview</a>.</p>
 
 
 
