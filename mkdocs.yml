@@ -5,8 +5,11 @@ edit_uri: "edit/main/docs/"
 
 # Site navigation
 nav:
-  - Introduction: index.md
-  # - Prerequisites: prerequisites.md
+  - Introduction:
+      - Introduction: index.md
+      - Deployments:
+        - Infrastructure Deployment: infra/infrastructure-overview.md
+        - Application Deployment: building-blocks/overview.md
   - Infrastructure Deployment:
       - Overview: infra/infrastructure-overview.md
       - Cluster Setup: infra/kubernetes-cluster-and-networking.md
