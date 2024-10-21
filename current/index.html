@@ -12,7 +12,7 @@
       
       
       
-        <link rel="next" href="quickstart/quickstart/">
+        <link rel="next" href="infra/infrastructure-overview/">
       
       
       <link rel="icon" href="img/favicon.ico">
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#deployment-guide" class="md-skip">
+        <a href="#eoepca-deployment-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -151,23 +151,6 @@
         
   
   
-  
-    <li class="md-tabs__item">
-      <a href="https://eoepca.readthedocs.io/" class="md-tabs__link">
-        
-  
-    
-  
-  EOEPCA Documentation
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
     
   
   
@@ -177,11 +160,64 @@
         <a href="." class="md-tabs__link">
           
   
-  Deployment Guide
+  Introduction
 
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="infra/infrastructure-overview/" class="md-tabs__link">
+          
+  
+  Infrastructure Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="building-blocks/overview/" class="md-tabs__link">
+          
+  
+  Application Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://eoepca.readthedocs.io/" class="md-tabs__link">
+        
+  
+    
+  
+  Further EOEPCA+ Documentation
+
+      </a>
+    </li>
   
 
       
@@ -239,26 +275,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="https://eoepca.readthedocs.io/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    EOEPCA Documentation
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -279,24 +295,24 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
             
   
   <span class="md-ellipsis">
-    Deployment Guide
+    Introduction
   </span>
   
 
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
-            Deployment Guide
+            Introduction
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -316,6 +332,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
@@ -326,6 +353,34 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -353,24 +408,24 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
         
           
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
-    Getting Started
+    Deployments
   </span>
   
 
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
             <span class="md-nav__icon md-icon"></span>
-            Getting Started
+            Deployments
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -381,11 +436,11 @@
   
   
     <li class="md-nav__item">
-      <a href="quickstart/quickstart/" class="md-nav__link">
+      <a href="infra/infrastructure-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Quick Start
+    Infrastructure Deployment
   </span>
   
 
@@ -402,11 +457,129 @@
   
   
     <li class="md-nav__item">
-      <a href="quickstart/scripted-deployment/" class="md-nav__link">
+      <a href="building-blocks/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Scripted Deployment
+    Application Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Infrastructure Deployment
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Infrastructure Deployment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="infra/infrastructure-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="infra/kubernetes-cluster-and-networking/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cluster Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="infra/ingress-controller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Setup
   </span>
   
 
@@ -435,355 +608,14 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Profiles
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_2_3">
-            <span class="md-nav__icon md-icon"></span>
-            Profiles
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/simple-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Simple
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/processing-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Processing
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/application-hub-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/data-access-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Data Access
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/exploitation-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Exploitation
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/userman-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    User Management
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="quickstart/creodias-deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    CREODIAS Data
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
-            
-  
-  <span class="md-ellipsis">
-    Prepare Cluster
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_3">
-            <span class="md-nav__icon md-icon"></span>
-            Prepare Cluster
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="cluster/prerequisite-tooling/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Prerequisite Tooling
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="cluster/kubernetes/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kubernetes Cluster
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="cluster/helm-repositories/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Helm Repositories
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="cluster/cluster-prerequisites/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cluster Prerequisites
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-          
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
-    Deploy EOEPCA Components
+    TLS Certificate Management
   </span>
   
 
@@ -793,7 +625,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
-            Deploy EOEPCA Components
+            TLS Certificate Management
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -804,133 +636,11 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/persistence/" class="md-nav__link">
+      <a href="infra/tls/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Persistence
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Identity & Access Management
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            Identity & Access Management
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/iam-overview/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    IAM Overview
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_4_2_2" id="__nav_2_4_2_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Keycloak Solution (NEW)
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_4_2_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4_2_2">
-            <span class="md-nav__icon md-icon"></span>
-            Keycloak Solution (NEW)
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/identity-service/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Identity Service
+    Overview
   </span>
   
 
@@ -947,11 +657,32 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/resource-protection-keycloak/" class="md-nav__link">
+      <a href="infra/tls/cert-manager/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Resource Protection
+    Using Cert-Manager
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="infra/tls/manual-tls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Manual TLS Management
   </span>
   
 
@@ -988,24 +719,24 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_2_4_2_3" id="__nav_2_4_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
-    Gluu Solution (deprecated)
+    Storage Provisioning
   </span>
   
 
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_4_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4_2_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
             <span class="md-nav__icon md-icon"></span>
-            Gluu Solution (deprecated)
+            Storage Provisioning
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1016,74 +747,11 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/login-service/" class="md-nav__link">
+      <a href="infra/storage/storage-classes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Login Service
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/pdp/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Policy Decision Point
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/resource-protection-gluu/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Resource Protection
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/user-profile/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    User Profile
+    Storage Classes
   </span>
   
 
@@ -1101,13 +769,45 @@
 
               
             
-          </ul>
-        </nav>
+              
+                
+  
+  
+  
+  
+    
+    
+    
       
-    </li>
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Additional Infrastructure Components
+  </span>
   
 
-              
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Additional Infrastructure Components
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1116,11 +816,11 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/ades-zoo/" class="md-nav__link">
+      <a href="infra/minio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    ADES (Processing)
+    S3 Storage (MinIO)
   </span>
   
 
@@ -1137,112 +837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="eoepca/application-hub/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Hub
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/resource-catalogue/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Resource Catalogue
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/data-access/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Data Access
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/registration-api/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Registration API
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/workspace/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Workspace
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="eoepca/container-registry/" class="md-nav__link">
+      <a href="infra/container-registry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1264,9 +859,307 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Deployment →
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Application Deployment
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Application Deployment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/application-quality/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Quality
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/resource-catalogue/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Catalogue
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/data-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/processing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Processing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/resource-health/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Health
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/resource-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Registration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/mlops/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MLOps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/workspace/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workspace
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="building-blocks/application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://eoepca.readthedocs.io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Further EOEPCA+ Documentation
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1291,6 +1184,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Started:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1312,42 +1222,11 @@
   
 
 
-<h1 id="deployment-guide">Deployment Guide<a class="headerlink" href="#deployment-guide" title="Permanent link">⚓︎</a></h1>
-<div class="admonition changelog">
-<p class="admonition-title">Changelog</p>
-<p>This <code>current</code> version of the Deployment Guide represents the development tip that goes beyond the <a href="../1.4">latest release version v1.4</a>.</p>
-<p>The following provides a summary of changes since the last release (v1.4)&hellip;</p>
-<ul>
-<li><strong>08/04/2023</strong> - Correction to example usage of the data-access <code>harvester</code> CLI - in particular use of <code>-co, --config-override</code> for values override</li>
-<li><strong>03/04/2024</strong> - Update Identity Gatekeeper to chart version <code>1.0.12</code> with an alternative approach to establishing &lsquo;open&rsquo; access to select request paths (e.g. for docs etc.), to simplify proxying to the backend resource server.</li>
-<li><strong>03/04/2024</strong> - Update Data Access to chart <code>1.4.1</code> to introduce variables to remedy hard-coded harvester values for access to Creodias eodata. Ref. - <code>CREODIAS_EODATA_S3_ENDPOINT</code>, <code>CREODIAS_EODATA_S3_ACCESS_KEY</code>, <code>CREODIAS_EODATA_S3_ACCESS_SECRET</code> and <code>CREODIAS_EODATA_S3_REGION</code>.</li>
-<li><strong>20/03/2024</strong> - Correction to chart path for helm deployment of <code>eoepca-portal</code></li>
-<li><strong>20/03/2024</strong> - Correct hardcoded OAuth client secret for Application Hub</li>
-<li><strong>20/03/2024</strong> - Clarify Gatekeeper encryption key must be 16 or 32 characters long</li>
-<li><strong>19/03/2024</strong> - ADES stage-out fix (partial) for cwl workflow outputs of type Directory[] - e.g. <code>snuggs</code> sample app</li>
-<li><strong>15/03/2024</strong> - Update Application Hub to chart version <code>2.0.59</code> to add support for path-prefix (<code>BASE_URL</code>)</li>
-<li><strong>08/03/2024</strong> - Update Application Hub to chart version <code>2.0.58</code> to fix hard-coded namespace <code>proc</code><br>
-  <em>Namespace can now be set via chart environment variable <code>APP_HUB_NAMESPACE</code></em></li>
-<li><strong>01/03/2024</strong> - Adjust default Calrissian pod resource limits to 1024 Mi RAM, 2 vCPU</li>
-<li><strong>01/03/2024</strong> - Correct default value of <code>PROCESSING_MAX_RAM</code> to the integer value in Mi <code>1024</code> (was string <code>8Gi</code>)</li>
-</ul>
-</div>
-<p>The Deployment Guide captures each release of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Reference Implementation, by providing for each version&hellip;</p>
-<ul>
-<li>Description of how each building-block is configured and deployed - see <strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong></li>
-<li>Scripted deployment in which each building-block can be selectively deployed to form a system - see <strong>Getting Started</strong></li>
-</ul>
-<p>A full system deployment is described, in which components are deployed with complementary configurations that facilitate their integration as a coherent system. Nevertheless, each component can be cherry-picked from this system deployment for individual re-use.</p>
-<p>The deployment is organised into the following sections:</p>
-<ul>
-<li><strong>Getting Started</strong><br>
-  A quickstart guide with associated scripts to facilitate example deployments, which preempt the descriptions that follow later in the document.<br>
-  Scripts are provided in a variety of &lsquo;profiles&rsquo; that deploy different combinations of building-blocks for different notional use cases.</li>
-<li><strong>Prepare Cluster</strong><br>
-  Establish the Kubernetes cluster and other prerequisites for the deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> system.</li>
-<li><strong>Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Components</strong><br>
-  Deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components.</li>
-</ul>
+<h1 id="eoepca-deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide<a class="headerlink" href="#eoepca-deployment-guide" title="Permanent link">⚓︎</a></h1>
+<p>This guide provides steps to deploy the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ platform&rsquo;s components in your environment.</p>
+<h3 id="getting-started"><strong>Getting Started:</strong><a class="headerlink" href="#getting-started" title="Permanent link">⚓︎</a></h3>
+<p>• <strong>Infrastructure Deployment</strong>: Set up the foundational infrastructure required for the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ platform. See the <a href="infra/infrastructure-overview/">Infrastructure Deployment Guide</a>.</p>
+<p>• <strong>Application Deployment</strong>: Deploy <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Building Blocks. Begin with the <a href="building-blocks/overview/">Application Deployment Overview</a>.</p>
 
 
 
@@ -1384,13 +1263,13 @@
         
         
           
-          <a href="quickstart/quickstart/" class="md-footer__link md-footer__link--next" aria-label="Next: Quick Start">
+          <a href="infra/infrastructure-overview/" class="md-footer__link md-footer__link--next" aria-label="Next: Infrastructure Deployment">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Quick Start
+                Infrastructure Deployment
               </div>
             </div>
             <div class="md-footer__button md-icon">
