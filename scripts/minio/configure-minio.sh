@@ -8,10 +8,6 @@ ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
 configure_cert
 
-# Generate configuration files
-envsubst <"api/values-template.yaml" >"api/generated-values.yaml"
-envsubst <"server/values-template.yaml" >"server/generated-values.yaml"
-
 # Save state
 add_to_state_file "MINIO_USER" "user"
 if [ -z "$MINIO_PASSWORD" ]; then
@@ -21,6 +17,10 @@ fi
 add_to_state_file "S3_HOST" "minio.$INGRESS_HOST"
 add_to_state_file "S3_ENDPOINT" "$HTTP_SCHEME://minio.$INGRESS_HOST"
 add_to_state_file "S3_REGION" "us-east-1"
+
+# Generate configuration files
+envsubst <"api/values-template.yaml" >"api/generated-values.yaml"
+envsubst <"server/values-template.yaml" >"server/generated-values.yaml"
 
 echo "✅ Configuration files generated:"
 echo "- server/generated-values.yaml"
