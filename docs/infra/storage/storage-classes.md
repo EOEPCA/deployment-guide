@@ -10,15 +10,37 @@ Persistent storage is essential for many applications deployed in Kubernetes. Ku
 
 ---
 
+**_NOTE that some EOEPCA+ building-blocks require provisioning of storage with the `ReadWriteMany` access mode - the `Processing` BB for example_**
+
 If your cluster does not have a suitable storage class, you need to set one up. The method for doing this depends on your environment and the storage solution you wish to use.
 
-### Common Storage Solutions
+## Common Storage Solutions
 
 - **Cloud Provider Storage Classes**: Most cloud providers offer managed storage solutions that integrate with Kubernetes (e.g., AWS EBS, Azure Disk, Google Persistent Disk).
 - **Network File Systems (NFS)**: Allows multiple nodes to share the same storage. 
 - **Distributed Storage Systems**: Solutions like Ceph, GlusterFS, or Longhorn also provide storage.
 
-### Resources for Setting Up Storage Classes
+## Fallback Storage Option - for development/testing
+
+For a quick solution to support development/testing environments, the Host-Path provisioner can be used - noting that this can only be used for single node deployments, such as a local dev/test cluster.
+
+The Host-Path provisioner does support ther `ReadWriteMany` access mode, and so can be used with all EOEPCA+ building blocks.
+
+**_The Host-Path provisioner should not be used in production - or with clusters with more than one node_**
+
+Deploy the provisioner and its associated `standard` storage class with...
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/EOEPCA/eoepca-plus/refs/heads/deploy-develop/argocd/infra/storage/hostpath-provisioner.yaml
+```
+
+Check the deployement...
+
+```bash
+kubectl get -n kube-system sc/standard pod/hostpath-storage-provisioner
+```
+
+## Resources for Setting Up Storage Classes
 
 - **Kubernetes Documentation**: [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 - **NFS Provisioner**: [NFS Subdir External Provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)

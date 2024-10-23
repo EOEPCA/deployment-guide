@@ -106,7 +106,7 @@ function check_cert_manager_installed() {
 
 # Improve this
 function check_ingress_controller_installed() {
-    if ! kubectl get pods --all-namespaces | grep -q 'ingress";'; then
+    if ! kubectl get pods --all-namespaces | grep -q "ingress"; then
         echo "⚠️  Ingress Controller is not installed in the cluster."
         echo "   Please install NGINX Ingress Controller: https://kubernetes.github.io/ingress-nginx/deploy/"
         echo "   If you are using a different Ingress Controller, you can ignore this message."

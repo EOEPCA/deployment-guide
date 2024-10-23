@@ -10,7 +10,7 @@ onExit() {
 
 trap onExit EXIT
 
-exec sudo docker build -t eoepca/mkdocs-material .
+docker build -t eoepca/mkdocs-material .
 
 exec docker run --name mkdocs-serve --rm -it \
   -p 8000:8000 \
