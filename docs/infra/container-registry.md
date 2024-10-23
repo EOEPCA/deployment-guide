@@ -3,14 +3,18 @@ The Container Registry stores and distributes container images for application d
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Architecture Overview](#architecture-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment](#deployment)
-5. [Validation and Operation](#validation-and-operation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Feedback](#feedback)
+- [EOEPCA+ Container Registry Deployment Guide](#eoepca-container-registry-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Architecture Overview](#architecture-overview)
+  - [Prerequisites](#prerequisites)
+  - [Deployment](#deployment)
+  - [Validation](#validation)
+  - [Operation](#operation)
+  - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
+  - [Feedback](#feedback)
+    - [Enabling Optional Components](#enabling-optional-components)
 
 ***
 ## Introduction
@@ -107,8 +111,10 @@ helm install harbor harbor \
 
 4. **Log In**
 
-	- **Username**: `admin`
-	- **Password**: The password that was generated during configuration. (Alternatively check the `~/.eoepca/state` file)
+  Navigate to https://harbor.your-domain in your browser.
+
+  - **Username**: `admin`
+  - **Password**: The password that was generated during configuration. (Alternatively check the `~/.eoepca/state` file)
 
 ***
 ## Validation
