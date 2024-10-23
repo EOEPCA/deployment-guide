@@ -168,19 +168,19 @@ To remove MinIO and associated resources:
 1. **Uninstall MinIO**:
 
 ```bash
-helm uninstall minio
+helm -n minio uninstall minio
 ```
 
 2. **Uninstall MinIO Bucket API**:
 
 ```bash
-helm uninstall minio-bucket-api
+helm -n minio uninstall minio-bucket-api
 ```
 
 3. **Delete Secrets and PVCs**:
 
 ```bash
-kubectl delete secret minio-auth -n minio
+kubectl delete secret minio-auth -n minio ; \
 kubectl delete pvc -n minio --all
 ```
 
