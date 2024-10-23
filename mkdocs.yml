@@ -20,6 +20,7 @@ nav:
           - Manual TLS Management: infra/tls/manual-tls.md
       - Storage Provisioning:
         - Storage Classes: infra/storage/storage-classes.md
+        - HostPath Provisioner: infra/storage/hostpath-provisioner.md
       - Additional Infrastructure Components:
           - S3 Storage (MinIO): infra/minio.md
           - Container Registry: infra/container-registry.md

@@ -10,7 +10,7 @@ Persistent storage is essential for many applications deployed in Kubernetes. Ku
 
 ---
 
-**_NOTE that some EOEPCA+ building-blocks require provisioning of storage with the `ReadWriteMany` access mode - the `Processing` BB for example_**
+> Some EOEPCA+ Building Blocks require provisioning of storage with the `ReadWriteMany` access mode - the `Processing` BB for example
 
 If your cluster does not have a suitable storage class, you need to set one up. The method for doing this depends on your environment and the storage solution you wish to use.
 
@@ -20,25 +20,16 @@ If your cluster does not have a suitable storage class, you need to set one up. 
 - **Network File Systems (NFS)**: Allows multiple nodes to share the same storage. 
 - **Distributed Storage Systems**: Solutions like Ceph, GlusterFS, or Longhorn also provide storage.
 
-## Fallback Storage Option - for development/testing
+---
 
-For a quick solution to support development/testing environments, the Host-Path provisioner can be used - noting that this can only be used for single node deployments, such as a local dev/test cluster.
+## Local Development/Testing
 
-The Host-Path provisioner does support ther `ReadWriteMany` access mode, and so can be used with all EOEPCA+ building blocks.
+For development and testing environments, you can use the **HostPath Provisioner**. This provisioner uses the local filesystem of the node to create persistent volumes. This is not suitable for production environments or clusters with more than one node.
 
-**_The Host-Path provisioner should not be used in production - or with clusters with more than one node_**
+See the [HostPath Provisioner Guide](hostpath-provisioner.md) for more deployment instructions.
 
-Deploy the provisioner and its associated `standard` storage class with...
+---
 
-```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/eoepca-plus/refs/heads/deploy-develop/argocd/infra/storage/hostpath-provisioner.yaml
-```
-
-Check the deployement...
-
-```bash
-kubectl get -n kube-system sc/standard pod/hostpath-storage-provisioner
-```
 
 ## Resources for Setting Up Storage Classes
 
