@@ -6,12 +6,14 @@ This guide provides instructions to install and configure an ingress controller 
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Installing the Ingress Controller](#installing-the-ingress-controller)
-4. [Configuring the Ingress Controller](#configuring-the-ingress-controller)
-5. [Validation](#validation)
-6. [Further Reading](#further-reading)
+- [Ingress Controller Setup Guide](#ingress-controller-setup-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Prerequisites](#prerequisites)
+  - [Installing the Ingress Controller](#installing-the-ingress-controller)
+  - [Validation](#validation)
+  - [Next Steps](#next-steps)
+  - [Further Reading](#further-reading)
 
 ---
 
@@ -27,23 +29,19 @@ An ingress controller is a necessary component for managing external access to t
 - `kubectl` and `helm` installed and configured to interact with your cluster.
 - A domain name pointing to your cluster's load balancer.
 
+The Ingress Controller typically relies upon a Load Balancer to listen on the public IP address and forward http/https traffic to the cluster nodes - as described in section [Deploy the Load Balancer](kubernetes-cluster-and-networking.md#3-deploy-the-load-balancer). A local single-node development cluster can be provisioned without the need for a Load Balancer - if the Ingress Controller can be configured to listen directly on the external IP address - or if external DNS routing is not required.
+
 ---
 
 ## Installing the Ingress Controller
 
 We'll use the NGINX Ingress Controller in this example.
 
-1. **Add the Ingress NGINX Helm Repository**:
+1. **Install the Ingress NGINX Controller**:
 
    ```bash
-   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-   helm repo update
-   ```
-
-2. **Install the Ingress NGINX Controller**:
-
-   ```bash
-   helm install ingress-nginx ingress-nginx/ingress-nginx \
+   helm install ingress-nginx ingress-nginx \
+     --repo https://kubernetes.github.io/ingress-nginx \
      --namespace ingress-nginx --create-namespace \
      --set controller.service.type=NodePort \
      --set controller.service.nodePorts.http=31080 \
@@ -51,7 +49,7 @@ We'll use the NGINX Ingress Controller in this example.
      --set controller.ingressClassResource.default=true
    ```
 
-3. **Configure Load Balancer Backend**:
+2. **Configure Load Balancer Backend**:
 
    - Update your load balancer to forward ports 80 and 443 to the ingress controller's NodePorts (`31080` and `31443`) on the worker nodes.
 
@@ -63,35 +61,48 @@ We'll use the NGINX Ingress Controller in this example.
 
    Deploy a simple application and expose it via a service.
 
+```bash
+kubectl create deployment test-app --image=kennethreitz/httpbin && \
+kubectl expose deploy/test-app --port 80
+```
+
 2. **Create an Ingress Resource**:
 
    Create an ingress resource that routes traffic to your test application.
+
+   **_Update the ingress host (app.your-domain) to use the correct domain for your deployment_**
 
    ```yaml
    apiVersion: networking.k8s.io/v1
    kind: Ingress
    metadata:
-     name: test-ingress
+     name: test-app
      namespace: default
    spec:
      ingressClassName: nginx
      rules:
-       - host: app.example.com
+       - host: app.your-domain
          http:
            paths:
              - path: /
                pathType: Prefix
                backend:
                  service:
-                   name: test-service
+                   name: test-app
                    port:
                      number: 80
    ```
 
 3. **Test Access**:
 
-   - Ensure that `app.example.com` resolves to your load balancer's public IP.
-   - Access `http://app.example.com` in your browser and verify that you can reach your application.
+   - Ensure that `app.your-domain` resolves to your load balancer's public IP.
+   - Access `http://app.your-domain` in your browser and verify that you can reach the `httpbin` application.
+
+4. **Undeploy Test Resources**:
+
+```bash
+kubectl delete ingress/test-app svc/test-app deploy/test-app
+```
 
 ---
 

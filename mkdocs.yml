@@ -11,11 +11,11 @@ nav:
         - Infrastructure Deployment: infra/infrastructure-overview.md
         - Application Deployment: building-blocks/overview.md
   - Infrastructure Deployment:
-      - Overview: infra/infrastructure-overview.md
+      - Infrastructure Overview: infra/infrastructure-overview.md
       - Cluster Setup: infra/kubernetes-cluster-and-networking.md
       - Ingress Controller Setup: infra/ingress-controller.md
       - TLS Certificate Management:
-          - Overview: infra/tls/overview.md
+          - TLS Overview: infra/tls/overview.md
           - Using Cert-Manager: infra/tls/cert-manager.md
           - Manual TLS Management: infra/tls/manual-tls.md
       - Storage Provisioning:

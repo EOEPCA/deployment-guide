@@ -1,5 +1,7 @@
 > This is just one example of how to setup a Kubernetes cluster and networking that is required for deploying EOEPCA+ building blocks. This guide is intended to be a starting point and may need to be adapted based on your specific requirements.
 
+If you already have an established Kubernetes cluster then you can proceed directly to [Ingress Controller Setup](ingress-controller.md).
+
 ### 1. Generate SSH Key Pair
 
 Generate an SSH key pair for accessing your virtual machines.
@@ -44,7 +46,9 @@ Configure the network to allow your instances to communicate and access the inte
 
 ### 3. Deploy the Load Balancer
 
-Set up a load balancer to distribute traffic to your Kubernetes cluster.
+The Load Balancer represents the external entry-point to the cluster, and so listens on the public IP address to which your cluster DNS resolves. The Load Balancer is configured to forward traffic on ports 80 (http) and 443 (https) to the Ingress Controller running in the cluster - for example using a round-robin approach to the cluster worker nodes.
+
+In a simple setup the Load Balancer may not be necessary, if the Ingress Controller is able to directly listen on the external IP address. However, this is typically only applicable for a single node setup - for example a local development cluster.
 
 1. **Create the Load Balancer**:
 

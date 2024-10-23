@@ -1,19 +1,25 @@
 # EOEPCA+ MinIO Deployment Guide
 
-MinIO is a high-performance object storage system that's compatible with the Amazon S3 API. In the EOEPCA+ ecosystem, MinIO serves as the object storage backend for various services, including user workspaces and data storage needs.
+MinIO is a high-performance object storage system that's compatible with the Amazon S3 API. In the EOEPCA+ ecosystem, MinIO can serve as the object storage backend for various services, including user workspaces, MLOps and other data storage needs. This does not preclude the possibility to configure an alternaive S3-compatible object storage solution - but for the purposes of this guide we will assume use of MinIO.
 
 This guide provides instructions to deploy MinIO in your Kubernetes cluster.
 
 ---
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Deployment Steps](#deployment-steps)
-4. [Validation](#validation)
-5. [Uninstallation](#uninstallation)
-6. [Further Reading](#further-reading)
-7. [Feedback](#feedback)
+- [EOEPCA+ MinIO Deployment Guide](#eoepca-minio-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Prerequisites](#prerequisites)
+  - [Deployment Steps](#deployment-steps)
+    - [1. Configure MinIO](#1-configure-minio)
+    - [2. Deploy MinIO](#2-deploy-minio)
+    - [3. Create Access Keys](#3-create-access-keys)
+    - [4. Deploy MinIO Bucket API](#4-deploy-minio-bucket-api)
+  - [Validation](#validation)
+  - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
+  - [Feedback](#feedback)
 
 ---
 ## Introduction
