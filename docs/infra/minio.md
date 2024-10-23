@@ -1,6 +1,6 @@
 # EOEPCA+ MinIO Deployment Guide
 
-MinIO is a high-performance object storage system that's compatible with the Amazon S3 API. In the EOEPCA+ ecosystem, MinIO can serve as the object storage backend for various services, including user workspaces, MLOps and other data storage needs. This does not preclude the possibility to configure an alternaive S3-compatible object storage solution - but for the purposes of this guide we will assume use of MinIO.
+MinIO is a high-performance object storage system that's compatible with the Amazon S3 API. In the EOEPCA+ ecosystem, MinIO can serve as the object storage backend for various services, including user workspaces, MLOps and other data storage needs. This does not preclude the possibility to configure an alternaive S3-compatible object storage solution.
 
 This guide provides instructions to deploy MinIO in your Kubernetes cluster.
 
@@ -158,7 +158,19 @@ https://console.minio.<your-domain>
 
 4. **Verify Buckets**:
 
-   Once logged in, you should see any existing buckets. If none are present, you can create a new bucket to test functionality.
+   You should see the following buckets:
+
+    - eoepca
+    - cache-bucket
+    - gitlab-backup-storage
+    - gitlab-tmp-storage
+    - gitlab-lfs-storage
+    - mlopbb-mlflow-sharinghub
+    - mlopbb-sharinghub
+   
+5. **Create a Test Bucket**:
+
+   Use the dashboard to create a new bucket and upload a test file.
 
 ---
 ## Uninstallation
