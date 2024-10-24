@@ -156,7 +156,6 @@ helm uninstall resource-catalogue
 ***
 ## Further Reading
 
+- [Resource Catalogue BB](https://eoepca.readthedocs.io/projects/resource-discovery)
 - [pycsw Documentation](https://docs.pycsw.org/en/latest/)
-- [Resource Catalogue Design Document](https://eoepca.github.io/rm-resource-catalogue/SDD/)
-- [Resource Catalogue Interface Control Document](https://eoepca.github.io/rm-resource-catalogue/ICD/)
-
+- [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue)
