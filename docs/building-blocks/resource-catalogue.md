@@ -55,7 +55,7 @@ Before deploying the Resource Catalogue, ensure you have the following:
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta1 https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/resource-catalogue
 ```
 

@@ -42,7 +42,7 @@ Before you begin, make sure you have the following:
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta1 https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/minio
 ```
 

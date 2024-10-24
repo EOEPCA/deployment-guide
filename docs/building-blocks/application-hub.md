@@ -92,7 +92,7 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta1 https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/app-hub
 ```
 
