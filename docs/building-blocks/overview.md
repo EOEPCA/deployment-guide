@@ -18,11 +18,11 @@ To simplify and standardise the deployment process, each Building Block comes wi
 
 Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
-### 1. Application Hub
+### 1. Resource Catalogue
 
-The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
+The Resource Catalogue BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
 
-[Deploy Application Hub »](application-hub.md)
+[Deploy Resource Catalogue »](resource-catalogue.md)
 
 ### 2. Processing
 
@@ -30,29 +30,29 @@ The Processing BB provides deployment and execution of user-defined processing w
 
 [Deploy Processing »](processing.md)
 
-### 3. Application Quality
-
-The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
-
-[Deploy Application Quality »](application-quality.md)
-
-### 4. Data Access
+### 3. Data Access
 
 The Data Access BB provides efficient access to Earth Observation data. It provides data visualisation and retrieval services, enabling users and applications to interact with large datasets.
 
 [Deploy Data Access »](data-access.md)
 
-### 5. MLOps (Machine Learning Operations)
+### 4. Resource Registration
+
+Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
+
+[Deploy Resource Registration »](resource-registration.md)
+
+### 5. Workspace
+
+The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
+
+[Deploy Workspace »](workspace.md)
+
+### 6. MLOps (Machine Learning Operations)
 
 The MLOps BB faciliates the machine learning model development lifecycle - including model training, model version management and management of training data - and supports discovery of published models and training datasets.
 
 [Deploy MLOps »](mlops.md)
-
-### 6. Resource Catalogue
-
-The Resource Catalogue BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
-
-[Deploy Resource Catalogue »](resource-catalogue.md)
 
 ### 7. Resource Health
 
@@ -60,14 +60,14 @@ The Resource Health BB provides a flexible framework that allows platform users 
 
 [Deploy Resource Health »](resource-health.md)
 
-### 8. Resource Registration
+### 8. Application Hub
 
-Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
+The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
 
-[Deploy Resource Registration »](resource-registration.md)
+[Deploy Application Hub »](application-hub.md)
 
-### 9. Workspace
+### 9. Application Quality
 
-The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
+The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
 
-[Deploy Workspace »](workspace.md)
+[Deploy Application Quality »](application-quality.md)

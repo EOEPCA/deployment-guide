@@ -27,15 +27,15 @@ nav:
       - Application Deployment →: building-blocks/overview.md
   - Application Deployment:
     - Overview: building-blocks/overview.md
-    - Application Quality: building-blocks/application-quality.md
     - Resource Catalogue: building-blocks/resource-catalogue.md
-    - Data Access: building-blocks/data-access.md
     - Processing: building-blocks/processing.md
-    - Resource Health: building-blocks/resource-health.md
+    - Data Access: building-blocks/data-access.md
     - Resource Registration: building-blocks/resource-registration.md
-    - MLOps: building-blocks/mlops.md
     - Workspace: building-blocks/workspace.md
+    - MLOps: building-blocks/mlops.md
+    - Resource Health: building-blocks/resource-health.md
     - Application Hub: building-blocks/application-hub.md
+    - Application Quality: building-blocks/application-quality.md
     
   - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
 
