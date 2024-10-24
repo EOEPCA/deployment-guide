@@ -53,7 +53,7 @@ Before deploying the Workspace Building Block, ensure you have the following:
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-beta1 https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/workspace
 ```
 

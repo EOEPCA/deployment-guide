@@ -51,7 +51,7 @@ Before deploying the **OGC API Processes Engine**, ensure you have the following
 **Clone the Deployment Guide Repository:**
 
 ```
-git clone -b 2.0-beta1 https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/processing/oapip
 ```
 
