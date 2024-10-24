@@ -19,7 +19,7 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/eoepca-plus/refs/heads
 2. Monitor the deployment.
 
 ```bash
-kubectl get -n kube-system sc/standard pod/hostpath-storage-provisioner
+kubectl get -n kube-system sc/standard deploy/hostpath-storage-provisioner
 ```
 
 ---
