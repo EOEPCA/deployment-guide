@@ -115,7 +115,7 @@ This is where you will get the incoming data.
 
 ```bash
 helm install zoo-project-dru zoo-project-dru \
-  --version 0.2.6 \
+  --version 0.3.6 \
   --values generated-values.yaml \
   --repo https://zoo-project.github.io/charts/ \
   --namespace processing \
