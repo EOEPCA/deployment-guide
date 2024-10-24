@@ -101,7 +101,7 @@ During the script execution, you will be prompted to provide:
 helm install resource-catalogue rm-resource-catalogue \
   --values generated-values.yaml \
   --version 2.0.0-beta1 \
-  --repo https://eoepca.github.io/helm-charts-dev \
+  --repo https://eoepca.github.io/helm-charts \
   --namespace resource-catalogue \
   --create-namespace
 ```
