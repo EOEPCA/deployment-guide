@@ -1,28 +1,32 @@
 # Resource Catalogue Deployment Guide
 
-The **Resource Catalogue** is a standards-based Earth Observation (EO) metadata catalogue that supports OGC CSW, OGC API - Records, STAC, and OpenSearch. It leverages **pycsw**, an open-source OGC-compliant metadata catalog server, to manage and serve EO data. This guide provides step-by-step instructions to deploy the Resource Catalogue within your Kubernetes cluster.
+The **Resource Catalogue** is a standards-based Earth Observation (EO) metadata catalogue that supports OGC CSW, OGC API Records, STAC, and OpenSearch. It leverages **pycsw**, an open-source OGC-compliant metadata catalog server, to manage and serve EO data. This guide provides step-by-step instructions to deploy the Resource Catalogue within your Kubernetes cluster.
 
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Deployment Steps](#deployment-steps)
-4. [Validation and Operation](#validation-and-operation)
-5. [Uninstallation](#uninstallation)
+- [Resource Catalogue Deployment Guide](#resource-catalogue-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+    - [Key Features](#key-features)
+    - [Interfaces](#interfaces)
+  - [Prerequisites](#prerequisites)
+  - [Deployment Steps](#deployment-steps)
+  - [Validation and Operation](#validation-and-operation)
+  - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
 
 ***
 ## Introduction
 
-The Resource Catalogue is a key component of the EOEPCA+ecosystem, enabling users to aggregate, manage, and retrieve EO metadata from multiple sources. By adhering to open standards, it ensures discoverability and interoperability, facilitating integration with existing systems and enhancing scalability.
+The Resource Catalogue is a key component of the EOEPCA+ ecosystem, enabling users to aggregate, manage, and retrieve EO metadata from multiple sources. By adhering to open standards, it ensures discoverability and interoperability, facilitating integration with existing systems and enhancing scalability.
 
 ### Key Features
 
 - **Metadata Management**: Aggregate and retrieve EO metadata efficiently.
-- **Standards Compliance**: Supports OGC CSW, OGC API - Records, STAC, and OpenSearch.
+- **Standards Compliance**: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.
 - **Discoverability**: Advanced search capabilities to locate EO data.
 - **Scalability**: Built on **pycsw** for flexible and scalable deployments.
-- **Security**: Integrates with Keycloak for authentication and authorization, and Gatekeeper for resource protection.
 
 ### Interfaces
 
@@ -30,9 +34,9 @@ The Resource Catalogue provides the following interfaces:
 
 - **OGC CSW 2.0.2** (OGC Reference Implementation)
 - **OGC CSW 3.0.0** (OGC Reference Implementation)
-- **OGC API - Records - Part 1: Core** (Early Implementation)
+- **OGC API Records - Part 1: Core** (Early Implementation)
 - **STAC API 1.0.0** (Listed in STAC API Servers)
-- **OpenSearch** with OGC EO, Geo, and Time extensions
+- **OpenSearch** with OGC EO, Geo and Time extensions
 
 
 ***
@@ -96,8 +100,8 @@ During the script execution, you will be prompted to provide:
 ```bash
 helm install resource-catalogue rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 1.4.0 \
-  --repo https://eoepca.github.io/helm-charts \
+  --version 2.0.0-beta1 \
+  --repo https://eoepca.github.io/helm-charts-dev \
   --namespace resource-catalogue \
   --create-namespace
 ```
