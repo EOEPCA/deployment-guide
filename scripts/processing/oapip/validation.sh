@@ -1,8 +1,8 @@
 
 
 #!/bin/bash
-source ../common/utils.sh
-source ../common/validation-utils.sh
+source ../../common/utils.sh
+source ../../common/validation-utils.sh
 
 check_pods_running "processing" "app.kubernetes.io/name=zoo-project-dru-kubeproxy" 1
 check_pods_running "processing" "app.kubernetes.io/instance=zoo-project-dru" 3
@@ -17,10 +17,10 @@ check_service_exists "processing" "zoo-project-dru-service"
 check_service_exists "processing" "zoo-project-dru-postgresql"
 check_service_exists "processing" "zoo-project-dru-rabbitmq"
 
-check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST" "200"
-check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST" "200"
-check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST/ogc-api/processes" "200"
-check_url_status_code "$HTTP_SCHEME://zoo-open.$INGRESS_HOST/swagger-ui/oapip/" "200"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "200"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
 
 echo
 echo "All Resources:"

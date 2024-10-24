@@ -1,43 +1,42 @@
 # Processing Building Block Deployment Guide
 
-The **Processing Building Block** provides a platform-hosted execution engine through which users can deploy, manage, and execute Earth Observation applications using the OGC API Processes standards. The Processing Building Block aligns with the [Zoo Project](https://zoo-project.github.io/docs/intro.html#what-is-zoo-project) which is a WPS (Web Processing Service) implementation written in C, Python and JavaScript. It is an open source platform which implements the WPS 1.0.0 and WPS 2.0.0 standards edited by the Open Geospatial Consortium (OGC).
+The **Processing Building Block** provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO. The Processing BB is deployed in the form of a number of _Processing Engine_ variants that implement the different workflow approaches...
+
+* **OGC API Processes Engine**<br>
+  The **OGC API Processes Engine** provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the [ZOO-Project](https://zoo-project.github.io/docs/intro.html#what-is-zoo-project) `zoo-project-dru` implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 & 2.
+* **openEO Engine**<br>
+  Coming soon.
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Architecture Overview](#architecture-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment](#deployment)
-5. [Validation and Operation](#validation-and-operation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Feedback](#feedback)
+- [Processing Building Block Deployment Guide](#processing-building-block-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [OGC API Processes Engine](#ogc-api-processes-engine)
+    - [Introduction](#introduction)
+    - [Prerequisites](#prerequisites)
+    - [Deployment Steps](#deployment-steps)
+    - [Validation and Operation](#validation-and-operation)
+    - [Uninstallation](#uninstallation)
+      - [Additional Cleanup](#additional-cleanup)
+    - [Further Reading](#further-reading)
+  - [Feedback](#feedback)
 
 ***
-## Introduction
+## OGC API Processes Engine
 
-The Processing Building Block is made up of the following components:
+### Introduction
 
-- [ZOO-Kernel](https://zoo-project.github.io/docs/kernel/index.html#kernel-index): A WPS compliant implementation written in C offering a powerful WPS server able to manage and chain WPS services. by loading dynamic libraries and code written in different languages.
-- [ZOO-Services](https://zoo-project.github.io/docs/services/index.html#services-index): A growing collection of ready to use Web Processing Services built on top of reliable open source libraries such as GDAL, GRASS GIS, OrfeoToolbox, CGAL and SAGA GIS.
-- [ZOO-API](https://zoo-project.github.io/docs/api/index.html#api-index): A server-side JavaScript API for creating, chaining and orchestrating the available WPS Services.
-- [ZOO-Client](https://zoo-project.github.io/docs/client/index.html#client-index): A client side JavaScript API for interacting with WPS servers and executing standard requests from web applications.
-
-### Architecture Overview
+The OGC API Processes Engine provides...
 
 - **Standardised Interfaces**: Implements OGC API Processes standards for interoperability.
 - **Application Deployment**: Supports deployment, replacement, and undeployment of applications.
 - **Execution Engine**: Executes applications using Kubernetes and Calrissian for CWL workflows.
 - **Integration**: Works seamlessly with other EOEPCA+building blocks like Identity Management.
 
-
-![[processing-ADES-execute.png]]
-
-
 ***
-## Prerequisites
+### Prerequisites
 
-Before deploying the **Processing Building Block**, ensure you have the following:
+Before deploying the **OGC API Processes Engine**, ensure you have the following:
 
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -53,7 +52,7 @@ Before deploying the **Processing Building Block**, ensure you have the followin
 
 ```
 git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
-cd deployment-guide/scripts/processing
+cd deployment-guide/scripts/processing/oapip
 ```
 
 **Validate your environment:**
@@ -65,25 +64,26 @@ bash check-prerequisites.sh
 ```
 
 ***
-## Deployment Steps
+### Deployment Steps
 
 
 1. **Run the Configuration Script**
 
 ```bash
-bash configure-processing.sh
+bash configure-oapip.sh
 ```
 
 **Configuration Parameters**
+
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
-  - *Example*: `example.com`
+    - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-  - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-prod`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
-  - *Example*: `default`
+    - *Example*: `default`
 
 **Stage-Out S3 Configuration**:
-Before proceeding, ensure you have an existing S3 object store. If you need to set one up, refer to the [MinIO Deployment Guide](../infra/minio.md)(). These values get automatically set in the EOEPCA+state if you followed the Deployment Steps.
+Before proceeding, ensure you have an existing S3 object store. If you need to set one up, refer to the [MinIO Deployment Guide](../infra/minio.md). These values get automatically set in the EOEPCA+ state if you followed the Deployment Steps.
 
 - `S3_ENDPOINT`: S3 Endpoint URL.
     - Example: `minio.example.com`
@@ -108,10 +108,10 @@ This is where you will get the incoming data.
 
 - If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
   - The required TLS secret names are:
-    - `zoo-open-tls`
+    - `zoo-tls`
   - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
 
-3. **Deploy the Processing BB Using Helm**
+1. **Deploy the Processing BB Using Helm**
 
 ```bash
 helm install zoo-project-dru zoo-project-dru \
@@ -124,7 +124,7 @@ helm install zoo-project-dru zoo-project-dru \
 
 
 ---
-## Validation and Operation
+### Validation and Operation
 
 **Automated Validation:**
 
@@ -138,50 +138,46 @@ bash validation.sh
 1. **Check Kubernetes Resources:**
 
 ```bash
-kubectl get all -l app.kubernetes.io/name=zoo-project-dru-kubeproxy --all-namespaces
+kubectl get all -l app.kubernetes.io/name=zoo-project-dru-kubeproxy --all-namespaces ; \
 kubectl get all -l app.kubernetes.io/instance=zoo-project-dru --all-namespaces
 ```
 
-2. **Access Domain:**
+2. **Access Web Interface:**
+
+Use the ZOO-Project Swagger UI to test the endpoints.
 
 ```
-https://zoo-open.<your-domain>
+https://zoo.<your-domain>/swagger-ui/oapip/
 ```
 
 3. **Test the OGC API Processes Endpoint:**
 
 ```bash
-curl -X GET 'https://zoo-open.<your-domain>/ogc-api/processes' \
+curl -X GET 'https://zoo.<your-domain>/ogc-api/processes' \
   -H 'Accept: application/json'
-```
-
-4. **Access the Swagger page and test the endpoints:**
-
-```
-https://zoo-open.<your-domain>/swagger-ui/oapip
 ```
 
 
 ---
-## Uninstallation
+### Uninstallation
 
 To remove the Processing Building Block from your cluster:
 
 ```bash
-helm uninstall zoo-project-dru
+helm -n processing uninstall zoo-project-dru
 ```
 
-### Additional Cleanup
+#### Additional Cleanup
 
 - **Delete Persistent Volume Claims (PVCs):**
 
   ```bash
-  kubectl delete pvc -l app.kubernetes.io/instance=zoo-project-dru
+  kubectl -n processing delete pvc -l app.kubernetes.io/instance=zoo-project-dru
   ```
 
 
 ---
-## Further Reading
+### Further Reading
 
 - [ZOO-Project DRU Helm Chart](https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru)
 - [EOEPCA+Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)

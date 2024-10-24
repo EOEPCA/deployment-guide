@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load utility functions
-source ../common/utils.sh
+source ../../common/utils.sh
 
 echo "Configuring the Processing Building Block..."
 
@@ -37,5 +37,5 @@ envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
 if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""
     echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- zoo-open-tls"
+    echo "- zoo-tls"
 fi
