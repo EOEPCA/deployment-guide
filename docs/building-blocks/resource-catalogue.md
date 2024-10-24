@@ -142,7 +142,7 @@ curl -X GET 'https://resource-catalogue.<your-domain>/collections' \
 To uninstall the Resource Catalogue and clean up associated resources:
 
 ```
-helm uninstall resource-catalogue
+helm -n resource-catalogue uninstall resource-catalogue
 ```
 
 **Additional Cleanup**:
