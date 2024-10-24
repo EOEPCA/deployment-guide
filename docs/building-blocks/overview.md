@@ -20,54 +20,54 @@ Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
 ### 1. Application Hub
 
-The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
+The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
 
 [Deploy Application Hub »](application-hub.md)
 
 ### 2. Processing
 
-The Processing is responsible for deploying and executing applications within the EOEPCA+ platform. It manages containerised workloads and orchestrates the execution of processing tasks.
+The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
 
 [Deploy Processing »](processing.md)
 
 ### 3. Application Quality
 
-The Application Quality Building Block assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces standards.
+The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
 
 [Deploy Application Quality »](application-quality.md)
 
 ### 4. Data Access
 
-The Data Access Building Block provides secure and efficient access to Earth Observation data. It handles data retrieval, enabling users and applications to interact with large datasets.
+The Data Access BB provides efficient access to Earth Observation data. It provides data visualisation and retrieval services, enabling users and applications to interact with large datasets.
 
 [Deploy Data Access »](data-access.md)
 
 ### 5. MLOps (Machine Learning Operations)
 
-MLOps facilitates the deployment and management of machine learning models within the EOEPCA+ platform. It streamlines the model lifecycle from development to production.
+The MLOps BB faciliates the machine learning model development lifecycle - including model training, model version management and management of training data - and supports discovery of published models and training datasets.
 
 [Deploy MLOps »](mlops.md)
 
 ### 6. Resource Catalogue
 
-The Resource Catalogue indexes and catalogs the resources available within the EOEPCA+ ecosystem, including datasets, applications, and services. It provides metadata management and search capabilities.
+The Resource Catalogue BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
 
 [Deploy Resource Catalogue »](resource-catalogue.md)
 
 ### 7. Resource Health
 
-The Resource Health Building Block monitors the health and status of resources in the EOEPCA+ platform.
+The Resource Health BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
 
 [Deploy Resource Health »](resource-health.md)
 
 ### 8. Resource Registration
 
-Resource Registration allows for the addition of new resources to the EOEPCA+ ecosystem. It manages metadata and access controls.
+Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
 
 [Deploy Resource Registration »](resource-registration.md)
 
 ### 9. Workspace
 
-The Workspace Building Block provides a collaborative environment for users to interact with applications and data. It offers a shared workspace for users to collaborate on projects.
+The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
 
 [Deploy Workspace »](workspace.md)
