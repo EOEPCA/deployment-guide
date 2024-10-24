@@ -1,19 +1,8 @@
-cookiecutter:
-  templateUrl: ${HTTP_SCHEME}://github.com/EOEPCA/eoepca-proc-service-template.git
-  templateBranch: master
-zoofpm:
-  image:
-    tag: eoepca-092ea7a2c6823dba9c6d52c383a73f5ff92d0762
-zookernel:
-  image:
-    tag: eoepca-092ea7a2c6823dba9c6d52c383a73f5ff92d0762
 customConfig:
   main:
     eoepca: |-
       domain=${INGRESS_HOST}
 workflow:
-  defaultMaxRam: 1024
-  defaultMaxCores: 2
   inputs:
     STAGEIN_AWS_SERVICEURL: ${STAGEIN_S3_ENDPOINT}
     STAGEIN_AWS_ACCESS_KEY_ID: ${STAGEIN_S3_ACCESS_KEY}
@@ -25,25 +14,25 @@ workflow:
     STAGEOUT_AWS_REGION: ${S3_REGION}
     STAGEOUT_OUTPUT: eoepca
   nodeSelector:
-    minikube.k8s.io/primary: "true"
-  storageClass: default
+    kubernetes.io/os: linux
+  storageClass: ${STORAGE_CLASS}
 ingress:
   enabled: true
-  hosturl: ${HTTP_SCHEME}://zoo-open.${INGRESS_HOST}
+  hosturl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     ${CLUSTER_ISSUER_ANNOTATION}
   hosts:
-  - host: zoo-open.${INGRESS_HOST}
+  - host: zoo.${INGRESS_HOST}
     paths:
     - path: /
       pathType: ImplementationSpecific
   tls:
   - hosts:
-    - zoo-open.${INGRESS_HOST}
-    secretName: zoo-open-tls
+    - zoo.${INGRESS_HOST}
+    secretName: zoo-tls
 persistence:
   procServicesStorageClass: ${STORAGE_CLASS}
   storageClass: ${STORAGE_CLASS}
@@ -60,6 +49,8 @@ rabbitmq:
     storageClass: ${STORAGE_CLASS}
 iam:
   enabled: false
+documentation:
+  enabled: true
 files:
   cwlwrapperAssets:
     stageout.yaml: |-

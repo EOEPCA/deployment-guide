@@ -4,12 +4,17 @@ The **Application Quality** Building Block supports the evolution of scientific 
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Deployment Steps](#deployment-steps)
-4. [Validation](#validation)
-5. [Uninstallation](#uninstallation)
-6. [Further Reading](#further-reading)
+- [Application Quality Deployment Guide](#application-quality-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+    - [Key Features](#key-features)
+  - [Prerequisites](#prerequisites)
+  - [Deployment Steps](#deployment-steps)
+    - [1. Run the Configuration Script](#1-run-the-configuration-script)
+    - [2. Deploy Application Quality Using Helm](#2-deploy-application-quality-using-helm)
+  - [Validation](#validation)
+  - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
 
 ---
 
@@ -47,7 +52,7 @@ Before deploying the Application Quality Building Block, ensure you have the fol
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-alpha https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/application-quality
 ```
 

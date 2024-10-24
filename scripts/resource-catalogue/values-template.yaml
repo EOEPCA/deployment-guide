@@ -10,11 +10,10 @@ ingress:
   className: nginx
   annotations:
     ${CLUSTER_ISSUER_ANNOTATION}
+    ingress.kubernetes.io/ssl-redirect: "true"
 
 db:
   volume_storage_type: $STORAGE_CLASS
-  config:
-    enabled: true
 pycsw:
   config:
     server:

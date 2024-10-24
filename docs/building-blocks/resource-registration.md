@@ -51,7 +51,7 @@ Before deploying the Resource Registration Building Block, ensure you have the f
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-alpha https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/resource-registration
 ```
 

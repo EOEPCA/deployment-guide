@@ -7,9 +7,12 @@ source "$HOME/.eoepca/state"
 check_pods_running "data-access" "" 5
 
 # Check services
-check_service_exists "data-access" "eoapi"
+check_service_exists "data-access" "raster"
+check_service_exists "data-access" "stac"
+check_service_exists "data-access" "vector"
+check_service_exists "data-access" "doc-server-eoapi"
 check_service_exists "data-access" "stacture"
-check_service_exists "data-access" "tyk-gateway"
+check_service_exists "data-access" "gateway-svc-tyk-oss-tyk-gateway"
 
 # Check ingress
 check_url_status_code "$HTTP_SCHEME://eoapi.$INGRESS_HOST" "200"

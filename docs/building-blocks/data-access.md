@@ -21,11 +21,12 @@ The **Data Access** Building Block provides feature-rich and reliable interfaces
 
 The Data Access Building Block combines capabilities from two complementary libraries:
 
-- **eoAPI**: Provides OGC API Features and OGC API Tiles for vector and raster data access.
+- **eoAPI**: Provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.
 - **EOX View Server (Stacture and Terravis)**: Adds support for OGC API Coverages, OGC WCS, and advanced rendering mechanisms.
 
 The building block offers:
 
+- STAC API for data discovery
 - Support for retrieval and visualisation of features and coverages via standard OGC APIs.
 - Dynamic specification of which datasets should be delivered with which data access services.
 - Integration with other building blocks through shared databases (e.g., pgSTAC).
@@ -37,19 +38,19 @@ The building block offers:
 The Data Access BB consists of the following main components:
 
 1. **eoAPI**: A set of microservices for geospatial data access, including:
-   - **stac**: STAC API for accessing geospatial metadata.
-   - **raster**: Access to raster data via OGC APIs.
-   - **vector**: Access to vector data via OGC APIs.
+    1. **stac**: STAC API for accessing geospatial metadata.
+    1. **raster**: Access to raster data via OGC APIs.
+    1. **vector**: Access to vector data via OGC APIs.
 
-2. **PostgreSQL with PostGIS and pgSTAC**: Database for storing geospatial metadata and data.
+1. **PostgreSQL with PostGIS and pgSTAC**: Database for storing geospatial metadata and data.
 
-3. **Stacture and Terravis**: Components from EOX View Server providing:
-   - **Stacture**: Bridges STAC API with OGC API Coverages and OGC WCS.
-   - **Terravis**: Provides advanced rendering and processing capabilities.
+1. **Stacture and Terravis**: Components from EOX View Server providing:
+    1. **Stacture**: Bridges STAC API with OGC API Coverages and OGC WCS.
+    1. **Terravis**: Provides advanced rendering and processing capabilities.
 
-4. **Tyk Gateway**: API Gateway for authentication, authorization, rate-limiting, and caching, integrated with the Identity Management BB.
+1. **Tyk Gateway**: API Gateway for authentication, authorization, rate-limiting, and caching, integrated with the Identity Management BB.
 
-5. **Redis**: In-memory data structure store used by Tyk.
+1. **Redis**: In-memory data structure store used by Tyk.
 
 ---
 
@@ -70,7 +71,7 @@ Before deploying the Data Access Building Block, ensure you have the following:
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-alpha https://github.com/EOEPCA/deployment-guide
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/data-access
 ```
 
@@ -99,13 +100,13 @@ bash configure-data-access.sh
 During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
-  - *Example*: `example.com`
+    - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
-  - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-prod`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
- - *Example*: `managed-nfs-storage-retain`
+    - *Example*: `managed-nfs-storage-retain`
 - **`S3_HOST`**: Host URL for MinIO or S3-compatible storage.
-  - *Example*: `minio.example.com`
+    - *Example*: `minio.example.com`
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage.
 - **`S3_SECRET_KEY`**: Secret key for S3 storage.
 
@@ -120,13 +121,6 @@ During the script execution, you will be prompted to provide:
 
 ### 2. Deploy PostgreSQL Operator (pgo) and eoAPI
 
-**Add the required Helm repositories:**
-
-```bash
-helm repo add eoapi-k8s https://devseed.com/eoapi-k8s/
-helm repo update
-```
-
 **Install pgo (PostgreSQL Operator) from OCI registry:**
 
 ```bash
@@ -140,6 +134,8 @@ helm install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 **Install eoAPI:**
 
 ```bash
+helm repo add eoapi-k8s https://devseed.com/eoapi-k8s/ && \
+helm repo update && \
 helm install eoapi eoapi-k8s/eoapi \
   --version 0.4.17 \
   --namespace data-access \
@@ -148,16 +144,11 @@ helm install eoapi eoapi-k8s/eoapi \
 
 ### 3. Deploy Stacture
 
-**Add the EOX Helm repository:**
-
-```bash
-helm repo add eox https://charts-public.hub.eox.at/
-helm repo update
-```
-
 **Install Stacture:**
 
 ```bash
+helm repo add eox https://charts-public.hub.eox.at/ && \
+helm repo update && \
 helm install stacture eox/stacture \
   --version 0.0.0 \
   --namespace data-access \
@@ -166,18 +157,11 @@ helm install stacture eox/stacture \
 
 ### 4. Deploy Tyk Gateway and Redis
 
-**Add the Tyk and Bitnami Helm repositories:**
-
-```bash
-helm repo add tyk-helm https://helm.tyk.io/public/helm/charts/
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-```
-
 **Install Redis for Tyk Gateway:**
 
 ```bash
-helm install tyk-redis bitnami/redis \
+helm install tyk-redis redis \
+  --repo https://charts.bitnami.com/bitnami \
   --version 20.1.0 \
   --namespace data-access \
   --values tyk-gateway/redis-generated-values.yaml
@@ -186,7 +170,8 @@ helm install tyk-redis bitnami/redis \
 **Install Tyk Gateway:**
 
 ```bash
-helm install tyk-oss tyk-helm/tyk-oss \
+helm install tyk-oss tyk-oss \
+  --repo https://helm.tyk.io/public/helm/charts/ \
   --version 1.6.0 \
   --namespace data-access \
   --values tyk-gateway/generated-values.yaml
