@@ -18,6 +18,8 @@ if [ -z "$WORKSPACE_UI_PASSWORD" ]; then
     add_to_state_file "WORKSPACE_UI_PASSWORD" $(generate_aes_key 32)
 fi
 
+ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
+
 # Generate configuration files
 envsubst <"workspace-api/values-template.yaml" >"workspace-api/generated-values.yaml"
 envsubst <"workspace-ui/values-template.yaml" >"workspace-ui/generated-values.yaml"

@@ -1,8 +1,5 @@
-existingSecret: git-credentials
 fullnameOverride: workspace-api
-image:
-  tag: 2.0.0_pre1
-  pullPolicy: Always
+existingSecret: harbor
 ingress:
   enabled: true
   annotations:
@@ -21,8 +18,11 @@ fluxHelmOperator:
   enabled: false
 prefixForName: "ws-v2"
 workspaceSecretName: "bucket"
+namespaceForBucketResource: rm
 s3Endpoint: ${S3_ENDPOINT}
 s3Region: ${S3_REGION}
 harborUrl: "$HTTP_SCHEME://harbor.${INGRESS_HOST}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor-admin-password"
+workspaceChartsConfigMap: "workspace-charts"
+bucketEndpointUrl: "http://minio-bucket-api.infra:8080/bucket"
