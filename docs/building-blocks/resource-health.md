@@ -51,11 +51,11 @@ Before deploying the Resource Health Building Block, ensure you have the followi
 
 | Component                   | Requirement                             | Documentation Link                                                |
 | --------------------------- | --------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes                  | Cluster (tested on v1.23 or newer)      | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes                  | Cluster (tested on v1.28)      | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
 | Helm                        | Version 3.5 or newer                    | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl                     | Configured for cluster access           | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../infra/ingress-controller.md)      |
-| TLS Certificates (Internal) | ClusterIssuer for internal certificates | [Internal TLS Setup](../infra/tls/internal-tls.md) |
+| Internal TLS Certificates | ClusterIssuer for internal certificates | [Internal TLS Setup](../infra/tls/internal-tls.md) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -72,6 +72,8 @@ Run the validation script to ensure all prerequisites are met:
 bash check-prerequisites.sh
 ```
 
+**Important Note:** Ensure that you have internal TLS setup. Please refer to the [Internal TLS Deployment Guide](../infra/tls/internal-tls.md) for more information. 
+
 ---
 
 ## Deployment Steps
@@ -82,17 +84,11 @@ bash check-prerequisites.sh
 bash configure-resource-health.sh
 ```
 
-**Important Note:**
-- Ensure that you have internal TLS setup. Please refer to the [Internal TLS Deployment Guide]() 
-
-
 2. **Deploy the Resource Health BB Using Helm:**
 
 ```bash
-git clone https://github.com/EOEPCA/resource-health reference-repo
-
-helm dependency build reference-repo/resource-health-reference-deployment
-
+git clone https://github.com/EOEPCA/resource-health reference-repo &&
+helm dependency build reference-repo/resource-health-reference-deployment &&
 helm install resource-health reference-repo/resource-health-reference-deployment \
   --namespace resource-health \
   --create-namespace \
@@ -101,14 +97,9 @@ helm install resource-health reference-repo/resource-health-reference-deployment
 
 3. **Monitor the Deployment:**
 
-   ```bash
-   kubectl get all -n resource-health
-   ```
-
-4. **Access the Resource Health Services:**
-
-   Since we haven't defined any Ingress resources in the `values.yaml`, you might need to set up Ingress separately if required. However, if the Helm chart includes default Ingress configurations, you can access the services as per those configurations.
-
+```bash
+kubectl get all -n resource-health
+```
 
 ---
 
@@ -128,15 +119,7 @@ bash validation.sh
    kubectl get all -n resource-health
    ```
 
-2. **Access Resource Health API:**
-
-   Open a web browser and navigate to: `https://resource-health.${INGRESS_HOST}/`
-
-3. **Access OpenSearch Dashboards:**
-
-   Open a web browser and navigate to: `https://resource-health-opensearch-dashboards.${INGRESS_HOST}/`
-
-4. **Test Resource Health Functionality:**
+2. **Test Resource Health Functionality:**
 
    - Create sample health checks using the provided examples or your own scripts.
    - Verify that health checks are executed according to the schedule.
@@ -158,8 +141,8 @@ kubectl delete namespace resource-health
 
 ## Further Reading
 
-- [EOEPCA+Resource Health GitHub Repository](https://github.com/EOEPCA/resource-health)
-- [EOEPCA+Helm Charts](https://eoepca.github.io/helm-charts)
+- [EOEPCA+ Resource Health GitHub Repository](https://github.com/EOEPCA/resource-health)
+- [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts)
 - [OpenSearch Documentation](https://opensearch.org/docs/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/)
 - [EOEPCA+Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
