@@ -1,6 +1,6 @@
 # Resource Health Deployment Guide
 
-The **Resource Health** Building Block (BB) offers a generalized capability that allows users to specify and schedule health checks relating to their resources of interest, visualize the outcomes, and receive notifications according to the outcomes. This guide provides step-by-step instructions to deploy the Resource Health BB in your Kubernetes cluster using the simplified Helm approach.
+The **Resource Health** BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
 
 ---
 
