@@ -1,6 +1,10 @@
 # Resource Registration Deployment Guide
 
-The **Resource Registration** Building Block supports the ingestion of data and its associated metadata into the platform services, including metadata registration into the Resource Discovery service and data registration into Data Access services for data retrieval and visualisation. This guide provides step-by-step instructions to deploy the Resource Registration BB in your Kubernetes cluster.
+The **Resource Registration** Building Block enables data and metadata ingestion into platform services. It handles:
+
+- Metadata registration into Resource Discovery
+- Data registration into Data Access services
+- Resource visualisation configuration
 
 ---
 
@@ -19,7 +23,19 @@ The **Resource Registration** Building Block supports the ingestion of data and 
 
 ## Introduction
 
-The **Resource Registration Building Block** provides support for ingesting resources into the platform so that they can be discovered, accessed, and used collaboratively. These resources include, but are not limited to, datasets, workflows, Jupyter Notebooks, services, web applications, and documentation.
+The **Resource Registration Building Block** manages resource ingestion into the platform for discovery, access and collaboration. It supports:
+
+- Datasets (EO data, auxiliary data)
+- Processing workflows 
+- Jupyter Notebooks
+- Web services and applications
+- Documentation and metadata
+
+The BB integrates with other platform services to enable:
+- Automated metadata extraction
+- Resource discovery indexing
+- Access control configuration
+- Usage tracking
 
 ---
 
@@ -69,7 +85,7 @@ bash check-prerequisites.sh
 
 ### 1. Run the Configuration Script
 
-The configuration script will prompt you for necessary configuration values, generate configuration files, and prepare for deployment.
+Generate configuration files and prepare deployment:
 
 ```bash
 bash configure-resource-registration.sh
@@ -93,11 +109,13 @@ During the script execution, you will be prompted to provide:
 - If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
   - The required TLS secret names are:
     - `registration-api-tls-secret`
+    - `flowable-tls`
+
   - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
 
 ### 2. Apply Kubernetes Secrets
 
-Run the script to create the necessary Kubernetes secrets.
+Create required secrets:
 
 ```bash
 bash apply-secrets.sh
@@ -128,7 +146,6 @@ helm install registration-api eoepca-helm/registration-api \
 
 ```bash
 helm repo add flowable https://flowable.github.io/helm/
-
 helm repo update
 
 helm install registration-harvester-api-engine flowable/flowable \
@@ -148,7 +165,7 @@ helm install registration-harvester-worker eoepca-helm/registration-harvester \
 ```
 
 
-### 6. Monitor the Deployment
+### 5. Monitor the Deployment
 
 Check the status of the deployments:
 
@@ -157,7 +174,7 @@ kubectl get all -n rm
 kubectl get all -n registration-harvester-api
 ```
 
-### 7. Access the Registration Services
+### 6. Access the Registration Services
 
 Once the deployment is complete, you can access the services:
 
@@ -203,7 +220,6 @@ To uninstall the Resource Registration Building Block and clean up associated re
 
 ```bash
 helm uninstall registration-api -n rm
-helm uninstall registration-api-protection -n rm
 helm uninstall registration-harvester-api-engine -n registration-harvester-api
 helm uninstall registration-harvester-worker -n registration-harvester-api
 
@@ -215,7 +231,7 @@ kubectl delete namespace registration-harvester-api
 
 ## Further Reading
 
-- [EOEPCA+Resource Registration GitHub Repository](https://github.com/EOEPCA/resource-registration)
+- [EOEPCA+ Resource Registration GitHub Repository](https://github.com/EOEPCA/resource-registration)
 - [Flowable BPMN Platform](https://flowable.com/open-source/)
 - [pygeoapi Documentation](https://pygeoapi.io/)
-- [EOEPCA+Helm Charts](https://eoepca.github.io/helm-charts-dev)
+- [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts-dev)

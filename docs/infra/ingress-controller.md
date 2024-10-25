@@ -29,7 +29,9 @@ An ingress controller is a necessary component for managing external access to t
 - `kubectl` and `helm` installed and configured to interact with your cluster.
 - A domain name pointing to your cluster's load balancer.
 
-The Ingress Controller typically relies upon a Load Balancer to listen on the public IP address and forward http/https traffic to the cluster nodes - as described in section [Deploy the Load Balancer](kubernetes-cluster-and-networking.md#3-deploy-the-load-balancer). A local single-node development cluster can be provisioned without the need for a Load Balancer - if the Ingress Controller can be configured to listen directly on the external IP address - or if external DNS routing is not required.
+The Ingress Controller typically relies upon a Load Balancer to listen on the public IP address and forward http/https traffic to the cluster nodes - as described in section [Deploy the Load Balancer](kubernetes-cluster-and-networking.md#3-deploy-the-load-balancer). 
+
+A local single-node development cluster can be provisioned without the need for a Load Balancer - if the Ingress Controller can be configured to listen directly on the external IP address - or if external DNS routing is not required.
 
 ---
 
@@ -70,7 +72,7 @@ kubectl expose deploy/test-app --port 80
 
    Create an ingress resource that routes traffic to your test application.
 
-   **_Update the ingress host (app.your-domain) to use the correct domain for your deployment_**
+  > Update the ingress host (app.your-domain) to use the correct domain for your deployment
 
    ```yaml
    apiVersion: networking.k8s.io/v1

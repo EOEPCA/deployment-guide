@@ -11,6 +11,6 @@ kubectl create namespace rm
 kubectl create secret generic flowable-admin-credentials \
   --from-literal=FLOWABLE_ADMIN_USER="$FLOWABLE_ADMIN_USER" \
   --from-literal=FLOWABLE_ADMIN_PASSWORD="$FLOWABLE_ADMIN_PASSWORD" \
-  --namespace rm
+  --namespace registration-harvester-api
 
 echo "✅ Secrets applied."
