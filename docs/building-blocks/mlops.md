@@ -137,8 +137,8 @@ bash apply-secrets.sh
 Deploy GitLab using the generated configuration file.
 
 ```bash
-helm repo add gitlab https://charts.gitlab.io/
-helm repo update
+helm repo add gitlab https://charts.gitlab.io/ && \
+helm repo update && \
 helm install gitlab gitlab/gitlab \
   --namespace gitlab \
   --create-namespace \
@@ -163,22 +163,20 @@ kubectl get secret gitlab-gitlab-initial-root-password --template={{.data.passwo
   - **Name**: `SharingHub`
   - **Redirect URI**: `https://sharinghub.${INGRESS_HOST}/api/auth/login/callback`
   - **Scopes**: `openid`, `read_user`, `read_api`
-- After creating the application, note the **Application ID** and **Secret**.
+- After creating the application, note the **Application ID** and **Secret**, you will be asked for these in the next step.
 
 ### 5. Apply Remaining Kubernetes Secrets
 
 Now that we have the GitLab OAuth credentials, we can apply the remaining secrets for SharingHub and MLflow SharingHub.
 
 ```bash
-bash apply-secrets.sh
+bash utils/save-application-credentials-to-state.sh
 ```
-
-**Note:** The `apply-secrets.sh` script has been updated to apply the remaining secrets.
 
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-git clone https://github.com/csgroup-oss/sharinghub.git reference-repo-sharing-hub
+git clone https://github.com/csgroup-oss/sharinghub.git reference-repo-sharing-hub && \
 
 helm install sharinghub reference-repo-sharing-hub/deploy/helm/sharinghub/ \
   --namespace sharinghub \
@@ -190,9 +188,9 @@ helm install sharinghub reference-repo-sharing-hub/deploy/helm/sharinghub/ \
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
-git clone https://github.com/csgroup-oss/mlflow-sharinghub.git reference-repo-mlflow-sharinghub
+git clone https://github.com/csgroup-oss/mlflow-sharinghub.git reference-repo-mlflow-sharinghub && \
 
-helm dependency update reference-repo-mlflow-sharinghub/deploy/helm/mlflow-sharinghub/
+helm dependency update reference-repo-mlflow-sharinghub/deploy/helm/mlflow-sharinghub/ && \
 
 helm install mlflow-sharinghub reference-repo-mlflow-sharinghub/deploy/helm/mlflow-sharinghub/ \
   --namespace sharinghub \
@@ -214,9 +212,9 @@ bash validation.sh
 
 1. **Check Kubernetes Resources:**
 
-   ```bash
-   kubectl get all -n sharinghub
-   ```
+```bash
+kubectl get all -n sharinghub
+```
 
 2. **Access SharingHub Web Interface**:
 
@@ -241,6 +239,7 @@ To uninstall the MLOps Building Block and clean up associated resources:
 
 ```bash
 helm uninstall sharinghub mlflow-sharinghub -n sharinghub
+bash utils/uninstallation-cleanup.sh
 ```
 
 **Additional Cleanup**:

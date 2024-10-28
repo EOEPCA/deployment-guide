@@ -9,7 +9,7 @@ check_pods_running "application-quality" "app.kubernetes.io/name=application-qua
 check_service_exists "application-quality" "application-quality"
 
 # Check ingress
-check_url_status_code "$HTTP_SCHEME://application-quality.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://application-quality.${INGRESS_HOST}" "200"
 
 echo
 echo "All Resources in 'application-quality' namespace:"

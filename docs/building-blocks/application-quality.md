@@ -135,6 +135,8 @@ To uninstall the Application Quality Building Block and clean up associated reso
 
 ```bash
 helm uninstall application-quality -n application-quality
+
+kubectl delete namespace application-quality
 ```
 
 **Additional Cleanup:**

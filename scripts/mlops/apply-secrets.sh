@@ -28,11 +28,6 @@ kubectl create secret generic sharinghub \
   --namespace sharinghub
 
 
-kubectl create secret generic sharinghub-oidc \
-  --from-literal=client-id="$GITLAB_APP_ID" \
-  --from-literal=client-secret="$GITLAB_APP_SECRET" \
-  --namespace sharinghub
-
 kubectl create secret generic sharinghub-s3 \
   --from-literal access-key="$S3_ACCESS_KEY" \
   --from-literal secret-key="$S3_SECRET_KEY" \
