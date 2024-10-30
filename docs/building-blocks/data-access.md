@@ -6,14 +6,21 @@ The **Data Access** Building Block provides feature-rich and reliable interfaces
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Components Overview](#components-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment Steps](#deployment-steps)
-5. [Validation](#validation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Scripts and Manifests](#scripts-and-manifests)
+- [Data Access Deployment Guide](#data-access-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Components Overview](#components-overview)
+  - [Prerequisites](#prerequisites)
+  - [Deployment Steps](#deployment-steps)
+    - [1. Run the Configuration Script](#1-run-the-configuration-script)
+    - [2. Deploy PostgreSQL Operator (pgo) and eoAPI](#2-deploy-postgresql-operator-pgo-and-eoapi)
+    - [3. Deploy Stacture](#3-deploy-stacture)
+    - [4. Deploy Tyk Gateway and Redis](#4-deploy-tyk-gateway-and-redis)
+    - [Monitoring the Deployment](#monitoring-the-deployment)
+    - [Accessing the Data Access Services](#accessing-the-data-access-services)
+  - [Validation](#validation)
+    - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
 
 ---
 
@@ -197,23 +204,6 @@ Once the deployment is complete and all pods are running, you can access the ser
 
 ---
 
-### Uninstallation
-
-To uninstall all components and clean up resources:
-
-```bash
-helm uninstall tyk-oss -n data-access
-helm uninstall tyk-redis -n data-access
-helm uninstall stacture -n data-access
-helm uninstall eoapi -n data-access
-helm uninstall pgo -n data-access
-
-kubectl delete namespace data-access
-```
-
-
----
-
 ## Validation
 
 **Automated Validation:**
@@ -244,12 +234,12 @@ bash validation.sh
 
 ---
 
-## Uninstallation
+### Uninstallation
 
 To uninstall the Data Access Building Block and clean up associated resources:
 
 ```bash
-helm uninstall tyk-gateway -n data-access
+helm uninstall tyk-oss -n data-access
 helm uninstall tyk-redis -n data-access
 helm uninstall stacture -n data-access
 helm uninstall eoapi -n data-access
