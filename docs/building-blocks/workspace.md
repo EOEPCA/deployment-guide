@@ -121,9 +121,8 @@ Crossplane is used for managing cloud resources within Kubernetes.
 **Install Crossplane:**
 
 ```bash
-helm repo add crossplane-stable https://charts.crossplane.io/stable &&
-helm repo update &&
-helm install workspace-crossplane crossplane-stable/crossplane \
+helm upgrade -i workspace-crossplane crossplane \
+  --repo https://charts.crossplane.io/stable \
   --version v1.17.1 \
   --namespace workspace \
   --create-namespace
@@ -135,26 +134,30 @@ helm install workspace-crossplane crossplane-stable/crossplane \
 
 ```bash
 helm install workspace-api-v2 rm-workspace-api \
+  --repo https://eoepca.github.io/helm-charts \
   --version 1.4.2 \
   --namespace workspace \
-  --values workspace-api/generated-values.yaml \
-  --repo https://eoepca.github.io/helm-charts
+  --values workspace-api/generated-values.yaml
 ```
 
 ### 5. Deploy the Workspace Pipelines
 
-The Workspace Pipelines are Git repositories containing the desired state for the workspaces.
+The Workspace Pipelines define the template that specifies the services provisioned within newly created Workspaces.
 
-**Clone the Workspace Repository:**
+Some example pipelines are provided in the [Workspace Git Repository](https://github.com/EOEPCA/workspace) under the path `setup/eoepca-demo`.
 
-```bash
-git clone https://github.com/EOEPCA/workspace reference-repo
-```
+These example pipelines are deployed here using `kustomize` (`kubectl -k`) with inline patching to apply the values configured via the `configure-workspace.sh` script.
 
 **Apply the Pipelines:**
 
+_NOTE that due to a race condition regarding the deployment of the Crossplane CRDs, it is necessary to run the apply command twice._
+
 ```bash
-kubectl apply -f reference-repo/setup/eoepca-demo -n workspace
+kubectl -n workspace apply -k workspace-pipelines 2>/dev/null ; \
+while ! kubectl get crd providerconfigs.kubernetes.crossplane.io >/dev/null 2>&1 || \
+      ! kubectl get crd providerconfigs.minio.crossplane.io >/dev/null 2>&1; \
+      do sleep 1; done ; \
+kubectl -n workspace apply -k workspace-pipelines
 ```
 
 ### 6. Deploy the Workspace Admin Dashboard
@@ -162,9 +165,8 @@ kubectl apply -f reference-repo/setup/eoepca-demo -n workspace
 **Install the Workspace Admin Dashboard:**
 
 ```bash
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/ &&
-helm repo update &&
-helm install workspace-admin kubernetes-dashboard/kubernetes-dashboard \
+helm upgrade -i workspace-admin kubernetes-dashboard \
+  --repo https://kubernetes.github.io/dashboard/ \
   --version 7.6.1 \
   --namespace workspace \
   --values workspace-admin/generated-values.yaml
@@ -176,9 +178,9 @@ helm install workspace-admin kubernetes-dashboard/kubernetes-dashboard \
 **Install the Workspace UI:**
 
 ```bash
-helm repo add eoepca-helm-dev https://eoepca.github.io/helm-charts-dev &&
-helm repo update &&
-helm install workspace-ui eoepca-helm-dev/workspace-ui \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
+helm repo update && \
+helm install workspace-ui eoepca-dev/workspace-ui \
   --version 0.0.2 \
   --namespace workspace \
   --values workspace-ui/generated-values.yaml
@@ -220,7 +222,7 @@ kubectl get all -n workspace
 
 2. **Access Workspace API:**
 
-   Open a web browser and navigate to: `https://workspace-api-v2.${INGRESS_HOST}/`
+   Open a web browser and navigate to: `https://workspace-api-v2.${INGRESS_HOST}/docs`
 
 3. **Access Workspace UI:**
 
@@ -243,11 +245,11 @@ kubectl get all -n workspace
 To uninstall the Workspace Building Block and clean up associated resources:
 
 ```bash
-helm uninstall workspace-ui -n workspace
-helm uninstall workspace-admin -n workspace
-helm uninstall workspace-api-v2 -n workspace
-helm uninstall workspace-crossplane -n workspace
-
+helm uninstall workspace-ui -n workspace ; \
+helm uninstall workspace-admin -n workspace ; \
+helm uninstall workspace-api-v2 -n workspace ; \
+helm uninstall workspace-crossplane -n workspace ; \
+kubectl delete -k workspace-pipelines -n workspace ; \
 kubectl delete namespace workspace
 ```
 

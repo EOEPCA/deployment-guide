@@ -24,6 +24,7 @@ ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 envsubst <"workspace-api/values-template.yaml" >"workspace-api/generated-values.yaml"
 envsubst <"workspace-ui/values-template.yaml" >"workspace-ui/generated-values.yaml"
 envsubst <"workspace-admin/values-template.yaml" >"workspace-admin/generated-values.yaml"
+envsubst <"workspace-pipelines/kustomization-template.yaml" >"workspace-pipelines/kustomization.yaml"
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
 
