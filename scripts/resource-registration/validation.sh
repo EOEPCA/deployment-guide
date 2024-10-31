@@ -15,7 +15,7 @@ check_service_exists "resource-registration" "registration-harvester"
 
 # Check ingress
 check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "200"
-CHECK_USER=${FLOWABLE_ADMIN_USER} CHECK_PASSWORD=${FLOWABLE_ADMIN_PASSWORD} check_url_status_code "$HTTP_SCHEME://registration-harvester-api.$INGRESS_HOST/flowable-rest/docs/" "200"
+CHECK_USER=${FLOWABLE_ADMIN_USER} CHECK_PASSWORD=${FLOWABLE_ADMIN_PASSWORD} check_url_status_code "$HTTP_SCHEME://registration-harvester-api.$INGRESS_HOST/flowable-rest/service/repository/deployments" "200"
 
 echo
 echo "All Resources in 'resource-registration' namespace:"

@@ -181,8 +181,12 @@ kubectl get all -n resource-registration
 
 Once the deployment is complete, you can access the services:
 
-- **Registration API**: `http://registration-api.<your-domain>/`
-- **Registration Harvester API**: `http://registration-harvester-api.<your-domain>/flowable-rest/`
+- **Registration API**:
+    - Home: `http://registration-api.<your-domain>`
+    - Swagger Docs: `https://registration-api.<your-domain>/openapi?f=html`
+- **Registration Harvester API**:
+    - Swagger Docs: `http://registration-harvester-api.<your-domain>/flowable-rest/docs`
+    - Deployments: `http://registration-harvester-api.<your-domain>/flowable-rest/service/repository/deployments`
 
 ---
 
