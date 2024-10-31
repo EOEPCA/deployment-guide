@@ -32,6 +32,7 @@ The **Resource Registration Building Block** manages resource ingestion into the
 - Documentation and metadata
 
 The BB integrates with other platform services to enable:
+
 - Automated metadata extraction
 - Resource discovery indexing
 - Access control configuration
@@ -43,11 +44,14 @@ The BB integrates with other platform services to enable:
 
 The Resource Registration BB comprises the following key components:
 
-1. **Registration API**: Provides core resource management services on the local platform, offering an OGC API Processes interface for resource creation, update, and deletion.
+1. **Registration API**:<br>
+   Provides core resource management services on the local platform, offering an OGC API Processes interface for resource creation, update, and deletion.
 
-2. **Harvester**: Implements workflows for harvesting and registering resources from external data sources using the Flowable BPMN platform.
+1. **Harvester**:<br>
+   Implements workflows for harvesting and registering resources from external data sources using the Flowable BPMN platform.
 
-3. **Common Library**: A Python library that consolidates functionalities from various upstream packages, used to implement business logic in workflows and resource handling.
+1. **Common Library**:<br>
+   A Python library that consolidates functionalities from various upstream packages, used to implement business logic in workflows and resource handling.
 
 ---
 
@@ -96,13 +100,13 @@ bash configure-resource-registration.sh
 During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
-  - *Example*: `example.com`
+    - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
-  - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-prod`
 - **`FLOWABLE_ADMIN_USER`**: Admin username for Flowable.
-  - *Default*: `eoepca`
+    - *Default*: `eoepca`
 - **`FLOWABLE_ADMIN_PASSWORD`**: Admin password for Flowable.
-  - *Default*: `eoepca`
+    - *Default*: `eoepca`
 
 **Important Notes:**
 
@@ -127,15 +131,14 @@ bash apply-secrets.sh
 
 ### 3. Deploy the Registration API Using Helm
 
-Add the EOEPCA+Helm repository and deploy the Registration API using the generated values file.
+Deploy the Registration API using the generated values file.
 
 ```bash
-helm repo add eoepca-helm https://eoepca.github.io/helm-charts-dev
-helm repo update
-
-helm install registration-api eoepca-helm/registration-api \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
+helm repo update && \
+helm upgrade -i registration-api eoepca-dev/registration-api \
   --version 2.0.0-beta1 \
-  --namespace rm \
+  --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
 ```
@@ -145,12 +148,10 @@ helm install registration-api eoepca-helm/registration-api \
 **Deploy Flowable Engine:**
 
 ```bash
-helm repo add flowable https://flowable.github.io/helm/
-helm repo update
-
-helm install registration-harvester-api-engine flowable/flowable \
+helm upgrade -i registration-harvester-api-engine flowable \
+  --repo https://flowable.github.io/helm/ \
   --version 7.0.0 \
-  --namespace registration-harvester-api \
+  --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml
 ```
@@ -158,9 +159,12 @@ helm install registration-harvester-api-engine flowable/flowable \
 **Deploy Registration Harvester Worker:**
 
 ```bash
-helm install registration-harvester-worker eoepca-helm/registration-harvester \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
+helm repo update && \
+helm upgrade -i registration-harvester-worker eoepca-dev/registration-harvester \
   --version 2.0.0-beta1 \
-  --namespace registration-harvester-api \
+  --namespace resource-registration \
+  --create-namespace \
   --values registration-harvester/generated-values.yaml
 ```
 
@@ -170,8 +174,7 @@ helm install registration-harvester-worker eoepca-helm/registration-harvester \
 Check the status of the deployments:
 
 ```bash
-kubectl get all -n rm
-kubectl get all -n registration-harvester-api
+kubectl get all -n resource-registration
 ```
 
 ### 6. Access the Registration Services
@@ -179,7 +182,7 @@ kubectl get all -n registration-harvester-api
 Once the deployment is complete, you can access the services:
 
 - **Registration API**: `http://registration-api.<your-domain>/`
-- **Registration Harvester API**: `http://registration-harvester-api.<your-domain>/`
+- **Registration Harvester API**: `http://registration-harvester-api.<your-domain>/flowable-rest/`
 
 ---
 
@@ -196,8 +199,7 @@ bash validation.sh
 1. **Check Kubernetes Resources:**
 
    ```bash
-   kubectl get all -n rm
-   kubectl get all -n registration-harvester-api
+   kubectl get all -n resource-registration
    ```
 
 2. **Access Registration API:**
@@ -206,7 +208,7 @@ bash validation.sh
 
 3. **Access Flowable UI:**
 
-   Open a web browser and navigate to: `http://registration-harvester-api.${INGRESS_HOST}/flowable-ui/`
+   Open a web browser and navigate to: `http://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/`
 
 4. **Test Resource Registration Functionality:**
 
@@ -219,12 +221,11 @@ bash validation.sh
 To uninstall the Resource Registration Building Block and clean up associated resources:
 
 ```bash
-helm uninstall registration-api -n rm
-helm uninstall registration-harvester-api-engine -n registration-harvester-api
-helm uninstall registration-harvester-worker -n registration-harvester-api
+helm uninstall registration-api -n resource-registration
+helm uninstall registration-harvester-api-engine -n resource-registration
+helm uninstall registration-harvester-worker -n resource-registration
 
-kubectl delete namespace rm
-kubectl delete namespace registration-harvester-api
+kubectl delete namespace resource-registration
 ```
 
 ---
