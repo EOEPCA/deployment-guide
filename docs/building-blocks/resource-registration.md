@@ -135,7 +135,7 @@ Deploy the Registration API using the generated values file.
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update && \
+helm repo update eoepca-dev && \
 helm upgrade -i registration-api eoepca-dev/registration-api \
   --version 2.0.0-beta1 \
   --namespace resource-registration \
@@ -148,8 +148,9 @@ helm upgrade -i registration-api eoepca-dev/registration-api \
 **Deploy Flowable Engine:**
 
 ```bash
-helm upgrade -i registration-harvester-api-engine flowable \
-  --repo https://flowable.github.io/helm/ \
+helm repo add flowable https://flowable.github.io/helm/ && \
+helm repo update flowable && \
+helm upgrade -i registration-harvester-api-engine flowable/flowable \
   --version 7.0.0 \
   --namespace resource-registration \
   --create-namespace \
@@ -160,7 +161,7 @@ helm upgrade -i registration-harvester-api-engine flowable \
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update && \
+helm repo update eoepca-dev && \
 helm upgrade -i registration-harvester-worker eoepca-dev/registration-harvester \
   --version 2.0.0-beta1 \
   --namespace resource-registration \

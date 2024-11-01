@@ -17,8 +17,9 @@
 1. **Install Cert-Manager**:
 
 ```bash
-helm upgrade -i cert-manager cert-manager \
-  --repo https://charts.jetstack.io \
+helm repo add jetstack https://charts.jetstack.io && \
+helm repo update jetstack && \
+helm upgrade -i cert-manager jetstack/cert-manager \
   --namespace cert-manager --create-namespace \
   --version v1.16.1 \
   --set crds.enabled=true

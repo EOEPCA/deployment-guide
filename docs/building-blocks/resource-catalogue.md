@@ -98,10 +98,11 @@ During the script execution, you will be prompted to provide:
 2. **Deploy the Resource Catalogue Using Helm**
 
 ```bash
-helm upgrade -i resource-catalogue rm-resource-catalogue \
+helm repo add eoepca https://eoepca.github.io/helm-charts && \
+helm repo update eoepca && \
+helm upgrade -i resource-catalogue eoepca/rm-resource-catalogue \
   --values generated-values.yaml \
   --version 2.0.0-beta1 \
-  --repo https://eoepca.github.io/helm-charts \
   --namespace resource-catalogue \
   --create-namespace
 ```

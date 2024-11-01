@@ -141,9 +141,9 @@ helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 **Install eoAPI:**
 
 ```bash
-helm repo add eoapi-k8s https://devseed.com/eoapi-k8s/ && \
-helm repo update && \
-helm upgrade -i eoapi eoapi-k8s/eoapi \
+helm repo add eoapi https://devseed.com/eoapi-k8s/ && \
+helm repo update eoapi && \
+helm upgrade -i eoapi eoapi/eoapi \
   --version 0.4.17 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
@@ -155,7 +155,7 @@ helm upgrade -i eoapi eoapi-k8s/eoapi \
 
 ```bash
 helm repo add eox https://charts-public.hub.eox.at/ && \
-helm repo update && \
+helm repo update eox && \
 helm upgrade -i stacture eox/stacture \
   --version 0.0.0 \
   --namespace data-access \
@@ -167,8 +167,9 @@ helm upgrade -i stacture eox/stacture \
 **Install Redis for Tyk Gateway:**
 
 ```bash
-helm upgrade -i tyk-redis redis \
-  --repo https://charts.bitnami.com/bitnami \
+helm repo add bitnami https://charts.bitnami.com/bitnami && \
+helm repo update bitnami && \
+helm upgrade -i tyk-redis bitnami/redis \
   --version 20.1.0 \
   --namespace data-access \
   --values tyk-gateway/redis-generated-values.yaml
@@ -177,8 +178,9 @@ helm upgrade -i tyk-redis redis \
 **Install Tyk Gateway:**
 
 ```bash
-helm upgrade -i tyk-oss tyk-oss \
-  --repo https://helm.tyk.io/public/helm/charts/ \
+helm repo add tyk-oss https://helm.tyk.io/public/helm/charts/ && \
+helm repo update tyk-oss && \
+helm upgrade -i tyk-oss tyk-oss/tyk-oss \
   --version 1.6.0 \
   --namespace data-access \
   --values tyk-gateway/generated-values.yaml

@@ -55,11 +55,11 @@ Alternatively you can set it up manually:
 If you haven't installed cert-manager, install it using Helm:
 
 ```bash
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
-kubectl create namespace cert-manager
-
+helm repo add jetstack https://charts.jetstack.io && \
+helm repo update jetstack && \
+\
+kubectl create namespace cert-manager && \
+\
 helm upgrade -i cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --version v1.12.2 \

@@ -138,7 +138,7 @@ Deploy GitLab using the generated configuration file.
 
 ```bash
 helm repo add gitlab https://charts.gitlab.io/ && \
-helm repo update && \
+helm repo update gitlab && \
 helm upgrade -i gitlab gitlab/gitlab \
   --namespace gitlab \
   --create-namespace \

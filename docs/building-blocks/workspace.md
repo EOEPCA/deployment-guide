@@ -121,8 +121,9 @@ Crossplane is used for managing cloud resources within Kubernetes.
 **Install Crossplane:**
 
 ```bash
-helm upgrade -i workspace-crossplane crossplane \
-  --repo https://charts.crossplane.io/stable \
+helm repo add crossplane https://charts.crossplane.io/stable && \
+helm repo update crossplane && \
+helm upgrade -i workspace-crossplane crossplane/crossplane \
   --version v1.17.1 \
   --namespace workspace \
   --create-namespace
@@ -133,8 +134,9 @@ helm upgrade -i workspace-crossplane crossplane \
 **Install the Workspace API:**
 
 ```bash
-helm upgrade -i workspace-api-v2 rm-workspace-api \
-  --repo https://eoepca.github.io/helm-charts \
+helm repo add eoepca https://eoepca.github.io/helm-charts && \
+helm repo update eoepca && \
+helm upgrade -i workspace-api-v2 eoepca/rm-workspace-api \
   --version 1.4.2 \
   --namespace workspace \
   --values workspace-api/generated-values.yaml
@@ -165,8 +167,9 @@ kubectl -n workspace apply -k workspace-pipelines
 **Install the Workspace Admin Dashboard:**
 
 ```bash
-helm upgrade -i workspace-admin kubernetes-dashboard \
-  --repo https://kubernetes.github.io/dashboard/ \
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/ && \
+helm repo update kubernetes-dashboard && \
+helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
   --version 7.6.1 \
   --namespace workspace \
   --values workspace-admin/generated-values.yaml
@@ -179,7 +182,7 @@ helm upgrade -i workspace-admin kubernetes-dashboard \
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update && \
+helm repo update eoepca-dev && \
 helm upgrade -i workspace-ui eoepca-dev/workspace-ui \
   --version 0.0.2 \
   --namespace workspace \
