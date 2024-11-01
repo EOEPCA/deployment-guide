@@ -161,7 +161,7 @@ function check_object_store_accessible() {
 }
 
 function check_internal_certificates() {
-    echo "TODO"
+    echo "🛠️  TODO (check_internal_certificates)"
 }
 
 function run_validation() {
