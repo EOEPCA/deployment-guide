@@ -131,7 +131,7 @@ During the script execution, you will be prompted to provide:
 **Install pgo (PostgreSQL Operator) from OCI registry:**
 
 ```bash
-helm install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
+helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
   --version 5.5.2 \
   --namespace data-access \
   --create-namespace \
@@ -143,7 +143,7 @@ helm install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 ```bash
 helm repo add eoapi-k8s https://devseed.com/eoapi-k8s/ && \
 helm repo update && \
-helm install eoapi eoapi-k8s/eoapi \
+helm upgrade -i eoapi eoapi-k8s/eoapi \
   --version 0.4.17 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
@@ -156,7 +156,7 @@ helm install eoapi eoapi-k8s/eoapi \
 ```bash
 helm repo add eox https://charts-public.hub.eox.at/ && \
 helm repo update && \
-helm install stacture eox/stacture \
+helm upgrade -i stacture eox/stacture \
   --version 0.0.0 \
   --namespace data-access \
   --values stacture/generated-values.yaml
@@ -167,7 +167,7 @@ helm install stacture eox/stacture \
 **Install Redis for Tyk Gateway:**
 
 ```bash
-helm install tyk-redis redis \
+helm upgrade -i tyk-redis redis \
   --repo https://charts.bitnami.com/bitnami \
   --version 20.1.0 \
   --namespace data-access \
@@ -177,7 +177,7 @@ helm install tyk-redis redis \
 **Install Tyk Gateway:**
 
 ```bash
-helm install tyk-oss tyk-oss \
+helm upgrade -i tyk-oss tyk-oss \
   --repo https://helm.tyk.io/public/helm/charts/ \
   --version 1.6.0 \
   --namespace data-access \

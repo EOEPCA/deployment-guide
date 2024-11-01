@@ -114,7 +114,7 @@ This is where you will get the incoming data.
 1. **Deploy the Processing BB Using Helm**
 
 ```bash
-helm install zoo-project-dru zoo-project-dru \
+helm upgrade -i zoo-project-dru zoo-project-dru \
   --version 0.3.6 \
   --values generated-values.yaml \
   --repo https://zoo-project.github.io/charts/ \

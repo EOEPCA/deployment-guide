@@ -133,7 +133,7 @@ helm upgrade -i workspace-crossplane crossplane \
 **Install the Workspace API:**
 
 ```bash
-helm install workspace-api-v2 rm-workspace-api \
+helm upgrade -i workspace-api-v2 rm-workspace-api \
   --repo https://eoepca.github.io/helm-charts \
   --version 1.4.2 \
   --namespace workspace \
@@ -180,7 +180,7 @@ helm upgrade -i workspace-admin kubernetes-dashboard \
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
 helm repo update && \
-helm install workspace-ui eoepca-dev/workspace-ui \
+helm upgrade -i workspace-ui eoepca-dev/workspace-ui \
   --version 0.0.2 \
   --namespace workspace \
   --values workspace-ui/generated-values.yaml

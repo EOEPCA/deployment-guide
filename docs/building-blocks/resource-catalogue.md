@@ -98,7 +98,7 @@ During the script execution, you will be prompted to provide:
 2. **Deploy the Resource Catalogue Using Helm**
 
 ```bash
-helm install resource-catalogue rm-resource-catalogue \
+helm upgrade -i resource-catalogue rm-resource-catalogue \
   --values generated-values.yaml \
   --version 2.0.0-beta1 \
   --repo https://eoepca.github.io/helm-charts \

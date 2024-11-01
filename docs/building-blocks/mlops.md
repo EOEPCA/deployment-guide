@@ -139,7 +139,7 @@ Deploy GitLab using the generated configuration file.
 ```bash
 helm repo add gitlab https://charts.gitlab.io/ && \
 helm repo update && \
-helm install gitlab gitlab/gitlab \
+helm upgrade -i gitlab gitlab/gitlab \
   --namespace gitlab \
   --create-namespace \
   --values gitlab/generated-values.yaml
@@ -178,7 +178,7 @@ bash utils/save-application-credentials-to-state.sh
 ```bash
 helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=main" && \
 helm repo update sharinghub && \
-helm install sharinghub sharinghub/sharinghub \
+helm upgrade -i sharinghub sharinghub/sharinghub \
   --namespace sharinghub \
   --create-namespace \
   --values sharinghub/generated-values.yaml
