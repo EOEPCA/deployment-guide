@@ -9,7 +9,7 @@ ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
 configure_cert
 
-ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.example.com" is_non_empty
+ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
 

@@ -10,7 +10,7 @@ ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes
 configure_cert
 
 # S3 configuration
-ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.example.com" is_non_empty
+ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HOST}" is_non_empty
 ask "S3_BUCKET" "Enter the S3 bucket name" "mlops-bucket" is_non_empty
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
