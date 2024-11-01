@@ -6,16 +6,16 @@ This guide provides step-by-step instructions to set up internal TLS in your Kub
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Setup Steps](#setup-steps)
+- [Internal TLS Setup Guide](#internal-tls-setup-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Prerequisites](#prerequisites)
+  - [Setup Steps](#setup-steps)
     - [1. Install Cert-Manager](#1-install-cert-manager)
     - [2. Create the Self-Signed Issuer](#2-create-the-self-signed-issuer)
     - [3. Create the CA Certificate](#3-create-the-ca-certificate)
     - [4. Create the ClusterIssuer](#4-create-the-clusterissuer)
-4. [Validation](#validation)
-5. [Scripts](#scripts)
-6. [Conclusion](#conclusion)
+  - [Validation](#validation)
 
 ---
 
@@ -60,7 +60,7 @@ helm repo update
 
 kubectl create namespace cert-manager
 
-helm install cert-manager jetstack/cert-manager \
+helm upgrade -i cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --version v1.12.2 \
   --set installCRDs=true

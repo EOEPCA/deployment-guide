@@ -17,7 +17,7 @@
 1. **Install Cert-Manager**:
 
 ```bash
-helm install cert-manager cert-manager \
+helm upgrade -i cert-manager cert-manager \
   --repo https://charts.jetstack.io \
   --namespace cert-manager --create-namespace \
   --version v1.16.1 \
