@@ -19,7 +19,7 @@ The **MLOps Building Block** provides support services for training machine lear
 
 ## Introduction
 
-The MLOps Building Block enabling users to develop, train, and manage machine learning models efficiently. It leverages **SharingHub**, a web application offering collaborative services for ML development, and **MLflow SharingHub**, a custom version of MLflow integrated with SharingHub for experiment tracking and model management.
+The MLOps Building Block enables users to develop, train, and manage machine learning models efficiently. It leverages **SharingHub**, a web application offering collaborative services for ML development, and **MLflow SharingHub**, a custom version of MLflow integrated with SharingHub for experiment tracking and model management.
 
 ### Key Features
 
@@ -47,7 +47,9 @@ Before deploying the MLOps Building Block, ensure you have the following:
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)                                         |
+| Git              | Properly installed                     | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)                                     |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
+| Helm plugins     | `helm-git`: Version 1.3.0 tested       | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | OIDC             | OIDC                                   | TODO (GitLab uses this)                                                                       |
 | Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
@@ -86,24 +88,22 @@ bash configure-mlops.sh
 During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
-  - *Example*: `example.com`
+    - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
-  - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-prod`
 
 The S3 environment variables should be already set after successful deployment of the [Minio Building Block]():
 
 - **`S3_ENDPOINT`**: Endpoint URL for MinIO or S3-compatible storage.
-  - *Example*: `https://minio.example.com`
+    - *Example*: `https://minio.example.com`
 - **`S3_BUCKET`**: Name of the S3 bucket to be used.
-  - *Example*: `mlops-bucket`
+    - *Example*: `mlops-bucket`
 - **`S3_REGION`**: Region of your S3 storage.
-  - *Example*: `us-east-1`
+    - *Example*: `us-east-1`
 - **`S3_ACCESS_KEY`**: Access key for your MinIO or S3 storage.
 - **`S3_SECRET_KEY`**: Secret key for your MinIO or S3 storage.
-
-
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
-  - *Example*: `https://keycloak.example.com/realms/master`
+    - *Example*: `https://keycloak.example.com/realms/master`
 - **`OIDC_CLIENT_ID`**: The client ID registered with your OIDC provider for GitLab.
 - **`OIDC_CLIENT_SECRET`**: The client secret associated with the client ID.
 
@@ -156,13 +156,13 @@ kubectl get secret gitlab-gitlab-initial-root-password --template={{.data.passwo
 
 - Open a web browser and navigate to `https://gitlab.<your-domain>`
 - Log in using:
-	- Username: `root`
-	- Password: *The generated password.*
+	  - Username: `root`
+	  - Password: *The generated password.*
 - Navigate to **Admin Area > Applications**.
 - Create a new application with the following settings:
-  - **Name**: `SharingHub`
-  - **Redirect URI**: `https://sharinghub.${INGRESS_HOST}/api/auth/login/callback`
-  - **Scopes**: `openid`, `read_user`, `read_api`
+    - **Name**: `SharingHub`
+    - **Redirect URI**: `https://sharinghub.${INGRESS_HOST}/api/auth/login/callback`
+    - **Scopes**: `openid`, `read_user`, `read_api`
 - After creating the application, note the **Application ID** and **Secret**, you will be asked for these in the next step.
 
 ### 5. Apply Remaining Kubernetes Secrets
@@ -176,26 +176,23 @@ bash utils/save-application-credentials-to-state.sh
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-git clone https://github.com/csgroup-oss/sharinghub.git reference-repo-sharing-hub && \
-
-helm install sharinghub reference-repo-sharing-hub/deploy/helm/sharinghub/ \
+helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=main" && \
+helm repo update sharinghub && \
+helm install sharinghub sharinghub/sharinghub \
   --namespace sharinghub \
   --create-namespace \
-  --values sharinghub/generated-values.yaml \
-  --version 0.3.0
+  --values sharinghub/generated-values.yaml
 ```
 
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
-git clone https://github.com/csgroup-oss/mlflow-sharinghub.git reference-repo-mlflow-sharinghub && \
-
-helm dependency update reference-repo-mlflow-sharinghub/deploy/helm/mlflow-sharinghub/ && \
-
-helm install mlflow-sharinghub reference-repo-mlflow-sharinghub/deploy/helm/mlflow-sharinghub/ \
+helm repo add mlflow-sharinghub "git+https://github.com/csgroup-oss/mlflow-sharinghub@deploy/helm?ref=main" && \
+helm repo update mlflow-sharinghub && \
+helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --namespace sharinghub \
-  --values mlflow/generated-values.yaml \
-  --version 0.2.0 
+  --create-namespace \
+  --values mlflow/generated-values.yaml
 ```
 
 ---
@@ -222,14 +219,14 @@ kubectl get all -n sharinghub
    
 3. **Test API Endpoints**:
 
-   You can test the API using `curl`:
+    You can test the API using `curl`:
 
-   - **Get STAC Collections**:
+    - **Get STAC Collections**:
 
-```bash
-curl -X GET 'https://sharinghub.<your-domain>/api/stac/collections' \
-	-H 'Accept: application/json'
-```
+    ```bash
+    curl -X GET 'https://sharinghub.<your-domain>/api/stac/collections' \
+      -H 'Accept: application/json'
+    ```
 
 ---
 
@@ -238,17 +235,20 @@ curl -X GET 'https://sharinghub.<your-domain>/api/stac/collections' \
 To uninstall the MLOps Building Block and clean up associated resources:
 
 ```bash
-helm uninstall sharinghub mlflow-sharinghub -n sharinghub
-bash utils/uninstallation-cleanup.sh
+helm uninstall gitlab -n gitlab ; \
+helm uninstall sharinghub mlflow-sharinghub -n sharinghub ; \
+bash utils/uninstallation-cleanup.sh ; \
+kubectl delete ns gitlab sharinghub
 ```
 
 **Additional Cleanup**:
 
 - Delete any Persistent Volume Claims (PVCs) if used:
 
-  ```bash
-  kubectl delete pvc --all -n sharinghub
-  ```
+    ```bash
+    kubectl delete pvc -n sharinghub ; \
+    kubectl delete pvc -n gitlab
+    ```
 
 ---
 

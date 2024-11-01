@@ -17,7 +17,7 @@ ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 
 # OIDC configuration
-ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://keycloak.example.com/realms/master" is_non_empty
+ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master" is_non_empty
 ask "OIDC_CLIENT_ID" "Enter the OIDC client ID for GitLab" "" is_non_empty
 ask "OIDC_CLIENT_SECRET" "Enter the OIDC client secret for GitLab" "" is_non_empty
 

@@ -1,6 +1,6 @@
 name: openid_connect
 label: EOEPCA
-icon: "$HTTP_SCHEME://eoepca.readthedocs.io/img/favicon.ico"
+icon: "https://eoepca.readthedocs.io/img/favicon.ico"
 args:
   name: openid_connect
   scope: ["openid", "profile", "email"]

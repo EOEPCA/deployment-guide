@@ -42,13 +42,14 @@ We'll use the NGINX Ingress Controller in this example.
 1. **Install the Ingress NGINX Controller**:
 
    ```bash
-   helm install ingress-nginx ingress-nginx \
+   helm upgrade -i ingress-nginx ingress-nginx \
      --repo https://kubernetes.github.io/ingress-nginx \
      --namespace ingress-nginx --create-namespace \
      --set controller.service.type=NodePort \
      --set controller.service.nodePorts.http=31080 \
      --set controller.service.nodePorts.https=31443 \
-     --set controller.ingressClassResource.default=true
+     --set controller.ingressClassResource.default=true \
+     --set controller.allowSnippetAnnotations=true
    ```
 
 2. **Configure Load Balancer Backend**:

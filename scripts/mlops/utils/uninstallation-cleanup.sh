@@ -4,5 +4,3 @@ kubectl delete secrets gitlab-secrets gitlab-storage-config object-storage openi
 kubectl delete secrets -n sharinghub sharinghub sharinghub-oidc sharinghub-s3 mlflow-sharinghub mlflow-sharinghub-s3
 kubectl delete pvc -n gitlab repo-data-gitlab-gitaly-0 redis-data-gitlab-redis-master-0 data-gitlab-postgresql-0
 kubectl delete pvc -n sharinghub mlflow-sharinghub-store-pvc
-helm uninstall gitlab
-kubectl delete ns gitlab sharinghub

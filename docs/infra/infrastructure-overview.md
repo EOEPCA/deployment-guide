@@ -21,13 +21,22 @@ Components that often vary between deployments—such as ingress controllers, TL
 - **Cloud Provider Access**: Access to a cloud provider (e.g., AWS, Azure, OpenStack) to create virtual machines and networking resources.
 - **Domain Name**: A domain name you control (e.g., `example.com`) with the ability to manage DNS records.
 - **Local Machine Setup**:
-  - **Operating System**: Linux or Windows Subsystem for Linux (WSL).
-  - **Tools**:
-    - SSH client (`ssh`)
-    - `kubectl` ([Installation Guide](https://kubernetes.io/docs/tasks/tools/))
-    - `helm` ([Installation Guide](https://helm.sh/docs/intro/install/))
-    - `rke` ([RKE Installation Guide](https://rancher.com/docs/rke/latest/en/installation/))
-- **Email Address**: For certificate issuance if using Let's Encrypt.
+    - **Operating System**: Linux or Windows Subsystem for Linux (WSL).
+    - **Tools**:
+        - SSH client (`ssh`)
+        - `git` ([Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git))
+        - `kubectl` ([Installation Guide](https://kubernetes.io/docs/tasks/tools/))
+        - `helm` ([Installation Guide](https://helm.sh/docs/intro/install/))
+        - Helm plugins:<br>
+            - `helm-git` ([Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install))
+    - **Kubernetes Cluster Stack**:<br>
+        _Optional - depending on existing cluster availablity_<br>
+        NOTE that use of `rke` is assumed in the [Cluster Setup](./kubernetes-cluster-and-networking.md) guide.<br>
+        - Rancher Kubernetes Engine (`rke`) ([Installation Guide](https://rancher.com/docs/rke/latest/en/installation/))
+        - _Alternatives for local 'development' deployments:_
+            - Minikube ([Installation Guide](https://minikube.sigs.k8s.io/docs/start))
+            - k3d ([Installation Guide](https://k3d.io/#installation))
+    - **Email Address**: For certificate issuance if using Let's Encrypt.
 
 ---
 

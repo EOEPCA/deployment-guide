@@ -59,6 +59,21 @@ function check_command_version() {
     fi
 }
 
+function check_helm_plugin_installed() {
+    local plugin_name="$1"
+    local install_url="$2"
+    if helm plugin list | grep "^${plugin_name}\s" >/dev/null; then
+        echo "✅ Helm plugin ${plugin_name} is installed."
+        return 0
+    else
+        echo "❌ Helm plugin ${plugin_name} is NOT installed."
+        if [ -n "$install_url" ]; then
+            echo "   Please install the ${plugin_name} plugin. Installation instructions: $install_url"
+        fi
+        return 1
+    fi
+}
+
 # Function to check Kubernetes cluster accessibility
 function check_kubernetes_access() {
     if ! kubectl cluster-info >/dev/null 2>&1; then
@@ -82,6 +97,10 @@ function check_helm_installed() {
 
 function check_git_installed() {
     check_command_installed "git" "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" "Git"
+}
+
+function check_helm_git_plugin_installed() {
+    check_helm_plugin_installed "helm-git" "https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install"
 }
 
 function check_python3_installed() {
