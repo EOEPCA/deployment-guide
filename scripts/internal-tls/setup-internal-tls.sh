@@ -12,7 +12,7 @@ helm repo update
 
 kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
 
-helm install cert-manager jetstack/cert-manager \
+helm upgrade -i cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --version v1.12.2 \
   --set installCRDs=true

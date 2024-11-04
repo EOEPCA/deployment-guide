@@ -10,14 +10,14 @@ ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes
 configure_cert
 
 # S3 configuration
-ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.example.com" is_non_empty
+ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HOST}" is_non_empty
 ask "S3_BUCKET" "Enter the S3 bucket name" "mlops-bucket" is_non_empty
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 
 # OIDC configuration
-ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://keycloak.example.com/realms/master" is_non_empty
+ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master" is_non_empty
 ask "OIDC_CLIENT_ID" "Enter the OIDC client ID for GitLab" "" is_non_empty
 ask "OIDC_CLIENT_SECRET" "Enter the OIDC client secret for GitLab" "" is_non_empty
 

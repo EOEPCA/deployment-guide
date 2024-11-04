@@ -6,14 +6,15 @@ The **Resource Health** BB provides a flexible framework that allows platform us
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Components Overview](#components-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment Steps](#deployment-steps)
-5. [Validation](#validation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Scripts and Manifests](#scripts-and-manifests)
+- [Resource Health Deployment Guide](#resource-health-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Components Overview](#components-overview)
+  - [Prerequisites](#prerequisites)
+  - [Deployment Steps](#deployment-steps)
+  - [Validation](#validation)
+  - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
 
 ---
 
@@ -27,21 +28,23 @@ The **Resource Health Building Block** allows users to:
 - Visualise status and performance statistics through a dashboard.
 - Access health check status via API for integration into portals.
 
-This deployment guide provides instructions to deploy the Resource Health BB using a simplified Helm chart approach, consolidating previous complexities into a single Helm deployment.
-
 ---
 
 ## Components Overview
 
 The Resource Health BB comprises the following key components:
 
-1. **Resource Health Core**: The main component responsible for orchestrating health checks and collecting results.
+1. **Resource Health Core**<br>
+   The main component responsible for orchestrating health checks and collecting results.
 
-2. **OpenSearch and OpenSearch Dashboards**: Used for storing and visualizing health check results.
+2. **OpenSearch and OpenSearch Dashboards**<br>
+   Used for storing and visualizing health check results.
 
-3. **OpenTelemetry Collector**: Collects telemetry data from health checks and forwards it to OpenSearch.
+3. **OpenTelemetry Collector**<br>
+   Collects telemetry data from health checks and forwards it to OpenSearch.
 
-4. **Health Check Runner**: Executes the specified health checks according to the defined schedule.
+4. **Health Check Runner**<br>
+   Executes the specified health checks according to the defined schedule.
 
 ---
 
@@ -51,11 +54,13 @@ Before deploying the Resource Health Building Block, ensure you have the followi
 
 | Component                   | Requirement                             | Documentation Link                                                |
 | --------------------------- | --------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes                  | Cluster (tested on v1.28)      | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes                  | Cluster (tested on v1.28)               | [Installation Guide](../infra/kubernetes-cluster-and-networking.md) |
+| Git                         | Properly installed                      | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) |
 | Helm                        | Version 3.5 or newer                    | [Installation Guide](https://helm.sh/docs/intro/install/)         |
+| Helm plugins                | `helm-git`: Version 1.3.0 tested        | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install) |
 | kubectl                     | Configured for cluster access           | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../infra/ingress-controller.md)      |
-| Internal TLS Certificates | ClusterIssuer for internal certificates | [Internal TLS Setup](../infra/tls/internal-tls.md) |
+| Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../infra/tls/internal-tls.md) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -87,9 +92,9 @@ bash configure-resource-health.sh
 2. **Deploy the Resource Health BB Using Helm:**
 
 ```bash
-git clone https://github.com/EOEPCA/resource-health reference-repo &&
-helm dependency build reference-repo/resource-health-reference-deployment &&
-helm install resource-health reference-repo/resource-health-reference-deployment \
+helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=main" && \
+helm repo update resource-health && \
+helm upgrade -i resource-health resource-health/resource-health-reference-deployment \
   --namespace resource-health \
   --create-namespace \
   --values generated-values.yaml

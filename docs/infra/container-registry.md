@@ -101,10 +101,11 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
 3. **Deploy Container Registry**
 
 ```bash
-helm install harbor harbor \
+helm repo add harbor https://helm.goharbor.io && \
+helm repo update harbor && \
+helm upgrade -i harbor harbor/harbor \
   --version 1.7.3 \
   --values generated-values.yaml \
-  --repo https://helm.goharbor.io \
   --namespace harbor \
   --create-namespace
 ```

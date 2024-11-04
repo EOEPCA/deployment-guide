@@ -11,7 +11,7 @@ ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes
 configure_cert
 
 # Stage-out S3 configuration
-ask "S3_ENDPOINT" "Enter the Stage-Out S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
+ask "S3_ENDPOINT" "Enter the Stage-Out S3 Endpoint URL (e.g., ${HTTP_SCHEME}://minio.$INGRESS_HOST)" "${HTTP_SCHEME}://minio.$INGRESS_HOST" is_valid_domain
 ask "S3_ACCESS_KEY" "Enter the Stage-Out S3 Access Key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the Stage-Out S3 Secret Key" "" is_non_empty
 ask "S3_REGION" "Enter the Stage-Out S3 Region" "RegionOne" is_non_empty

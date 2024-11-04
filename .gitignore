@@ -5,6 +5,7 @@ deploy/eoepca/client-apphub.yaml
 deploy/cluster/s3cfg
 .idea
 generated-values.yaml
+generated-pvc.yaml
 gatekeeper-values.yaml
 generated-gatekeeper-values.yaml
 reference-repo/

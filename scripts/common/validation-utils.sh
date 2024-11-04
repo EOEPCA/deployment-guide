@@ -53,8 +53,12 @@ function check_url_status_code() {
     local url="$1"
     local expected_code="$2"
 
+    if [ -n "${CHECK_USER}" -a -n "${CHECK_PASSWORD}" ]; then
+        BASIC_AUTH="-u ${CHECK_USER}:${CHECK_PASSWORD}"
+    fi
+
     local actual_code
-    actual_code=$(curl -k -s -o /dev/null -w "%{http_code}" "$url")
+    actual_code=$(curl ${BASIC_AUTH} -L -k -s -o /dev/null -w "%{http_code}" "$url")
 
     if [ "$actual_code" -eq "$expected_code" ]; then
         echo "✅ URL '$url' returned expected HTTP status code $expected_code."

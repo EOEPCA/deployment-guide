@@ -1,7 +1,7 @@
 imagePullSecrets: []
 
 global:
-  namespace: rm
+  namespace: resource-registration
 ingress:
   enabled: "true"
   name: registration-api

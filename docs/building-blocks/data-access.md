@@ -6,14 +6,21 @@ The **Data Access** Building Block provides feature-rich and reliable interfaces
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Components Overview](#components-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment Steps](#deployment-steps)
-5. [Validation](#validation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Scripts and Manifests](#scripts-and-manifests)
+- [Data Access Deployment Guide](#data-access-deployment-guide)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Components Overview](#components-overview)
+  - [Prerequisites](#prerequisites)
+  - [Deployment Steps](#deployment-steps)
+    - [1. Run the Configuration Script](#1-run-the-configuration-script)
+    - [2. Deploy PostgreSQL Operator (pgo) and eoAPI](#2-deploy-postgresql-operator-pgo-and-eoapi)
+    - [3. Deploy Stacture](#3-deploy-stacture)
+    - [4. Deploy Tyk Gateway and Redis](#4-deploy-tyk-gateway-and-redis)
+    - [Monitoring the Deployment](#monitoring-the-deployment)
+    - [Accessing the Data Access Services](#accessing-the-data-access-services)
+  - [Validation](#validation)
+    - [Uninstallation](#uninstallation)
+  - [Further Reading](#further-reading)
 
 ---
 
@@ -124,7 +131,7 @@ During the script execution, you will be prompted to provide:
 **Install pgo (PostgreSQL Operator) from OCI registry:**
 
 ```bash
-helm install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
+helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
   --version 5.5.2 \
   --namespace data-access \
   --create-namespace \
@@ -134,9 +141,9 @@ helm install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 **Install eoAPI:**
 
 ```bash
-helm repo add eoapi-k8s https://devseed.com/eoapi-k8s/ && \
-helm repo update && \
-helm install eoapi eoapi-k8s/eoapi \
+helm repo add eoapi https://devseed.com/eoapi-k8s/ && \
+helm repo update eoapi && \
+helm upgrade -i eoapi eoapi/eoapi \
   --version 0.4.17 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
@@ -148,8 +155,8 @@ helm install eoapi eoapi-k8s/eoapi \
 
 ```bash
 helm repo add eox https://charts-public.hub.eox.at/ && \
-helm repo update && \
-helm install stacture eox/stacture \
+helm repo update eox && \
+helm upgrade -i stacture eox/stacture \
   --version 0.0.0 \
   --namespace data-access \
   --values stacture/generated-values.yaml
@@ -160,8 +167,9 @@ helm install stacture eox/stacture \
 **Install Redis for Tyk Gateway:**
 
 ```bash
-helm install tyk-redis redis \
-  --repo https://charts.bitnami.com/bitnami \
+helm repo add bitnami https://charts.bitnami.com/bitnami && \
+helm repo update bitnami && \
+helm upgrade -i tyk-redis bitnami/redis \
   --version 20.1.0 \
   --namespace data-access \
   --values tyk-gateway/redis-generated-values.yaml
@@ -170,8 +178,9 @@ helm install tyk-redis redis \
 **Install Tyk Gateway:**
 
 ```bash
-helm install tyk-oss tyk-oss \
-  --repo https://helm.tyk.io/public/helm/charts/ \
+helm repo add tyk-oss https://helm.tyk.io/public/helm/charts/ && \
+helm repo update tyk-oss && \
+helm upgrade -i tyk-oss tyk-oss/tyk-oss \
   --version 1.6.0 \
   --namespace data-access \
   --values tyk-gateway/generated-values.yaml
@@ -194,23 +203,6 @@ Once the deployment is complete and all pods are running, you can access the ser
 
 - **eoAPI STAC API:** `http://eoapi.${INGRESS_HOST}/stac/`
 - **Stacture API:** `http://stacture.${INGRESS_HOST}/`
-
----
-
-### Uninstallation
-
-To uninstall all components and clean up resources:
-
-```bash
-helm uninstall tyk-oss -n data-access
-helm uninstall tyk-redis -n data-access
-helm uninstall stacture -n data-access
-helm uninstall eoapi -n data-access
-helm uninstall pgo -n data-access
-
-kubectl delete namespace data-access
-```
-
 
 ---
 
@@ -244,12 +236,12 @@ bash validation.sh
 
 ---
 
-## Uninstallation
+### Uninstallation
 
 To uninstall the Data Access Building Block and clean up associated resources:
 
 ```bash
-helm uninstall tyk-gateway -n data-access
+helm uninstall tyk-oss -n data-access
 helm uninstall tyk-redis -n data-access
 helm uninstall stacture -n data-access
 helm uninstall eoapi -n data-access

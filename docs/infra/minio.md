@@ -87,10 +87,11 @@ bash configure-minio.sh
 Install MinIO using Helm:
 
 ```bash
-helm install minio minio \
+helm repo add minio https://charts.min.io/ && \
+helm repo update minio && \
+helm upgrade -i minio minio/minio \
   --version 5.2.0 \
   --values server/generated-values.yaml \
-  --repo https://charts.min.io/ \
   --namespace minio \
   --create-namespace
 ```
@@ -117,10 +118,11 @@ bash ./apply-secrets.sh
 The MinIO Bucket API allows other components to create buckets programmatically.
 
 ```bash
-helm install minio-bucket-api rm-minio-bucket-api \
+helm repo add eoepca https://eoepca.github.io/helm-charts && \
+helm repo update eoepca && \
+helm upgrade -i minio-bucket-api eoepca/rm-minio-bucket-api \
   --version 0.0.4 \
   --values api/generated-values.yaml \
-  --repo https://eoepca.github.io/helm-charts \
   --namespace minio
 ```
 
