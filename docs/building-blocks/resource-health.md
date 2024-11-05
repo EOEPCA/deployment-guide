@@ -137,8 +137,7 @@ bash validation.sh
 To uninstall the Resource Health Building Block and clean up associated resources:
 
 ```bash
-helm uninstall resource-health -n resource-health
-
+helm uninstall resource-health -n resource-health && \
 kubectl delete namespace resource-health
 ```
 

@@ -6,6 +6,7 @@ echo "Configuring the Resource Health Building Block..."
 
 # Collect user inputs
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
+ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
 
 # Generate configuration files
 envsubst <"values-template.yaml" >"generated-values.yaml"
