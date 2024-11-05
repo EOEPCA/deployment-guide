@@ -140,6 +140,7 @@ Deploy GitLab using the generated configuration file.
 helm repo add gitlab https://charts.gitlab.io/ && \
 helm repo update gitlab && \
 helm upgrade -i gitlab gitlab/gitlab \
+  --version 8.1.8 \
   --namespace gitlab \
   --create-namespace \
   --values gitlab/generated-values.yaml
