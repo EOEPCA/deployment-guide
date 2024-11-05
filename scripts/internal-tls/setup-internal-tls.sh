@@ -7,15 +7,12 @@ echo "Setting up internal TLS..."
 
 # Install Cert-Manager
 echo "Installing Cert-Manager..."
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
-kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
-
+helm repo add jetstack https://charts.jetstack.io && \
+helm repo update jetstack && \
 helm upgrade -i cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --version v1.12.2 \
-  --set installCRDs=true
+  --namespace cert-manager --create-namespace \
+  --version v1.16.1 \
+  --set crds.enabled=true
 
 # Wait for Cert-Manager to be ready
 echo "Waiting for Cert-Manager to be ready..."
