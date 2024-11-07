@@ -4,21 +4,6 @@ This guide provides step-by-step instructions to set up internal TLS in your Kub
 
 ---
 
-## Table of Contents
-
-- [Internal TLS Setup Guide](#internal-tls-setup-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Prerequisites](#prerequisites)
-  - [Setup Steps](#setup-steps)
-    - [1. Install Cert-Manager](#1-install-cert-manager)
-    - [2. Create the Self-Signed Issuer](#2-create-the-self-signed-issuer)
-    - [3. Create the CA Certificate](#3-create-the-ca-certificate)
-    - [4. Create the ClusterIssuer](#4-create-the-clusterissuer)
-  - [Validation](#validation)
-
----
-
 ## Introduction
 
 Internal TLS ensures secure communication between services within your Kubernetes cluster. By setting up an internal Certificate Authority (CA) and using cert-manager, you can automate the issuance and management of TLS certificates for internal services.

@@ -5,17 +5,6 @@
 
 The **Application Hub** provides a suite of web-based tools, including JupyterLab for interactive analysis, Code Server for application development, and the capability to add user-defined interactive dashboards. It empowers users to manage and deliver work environments and tools for a wide range of tasks, such as developing, hosting, executing, and performing exploratory analysis of Earth Observation (EO) applications, all within a unified Cloud infrastructure.
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Architecture Overview](#architecture-overview)
-3. [User Scenarios](#user-scenarios)
-4. [Prerequisites](#prerequisites)
-5. [Deployment](#deployment)
-6. [Validation and Operation](#validation-and-operation)
-7. [Uninstallation](#uninstallation)
-8. [Further Reading](#further-reading)
-
 ***
 ## Introduction
 

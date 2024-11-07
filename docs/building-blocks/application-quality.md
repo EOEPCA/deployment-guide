@@ -2,20 +2,6 @@
 
 The **Application Quality** Building Block supports the evolution of scientific algorithms from research projects to production environments. It provides tools for verifying non-functional requirements, including code quality, adherence to best practices, and performance optimisation through testing.
 
-## Table of Contents
-
-- [Application Quality Deployment Guide](#application-quality-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-    - [Key Features](#key-features)
-  - [Prerequisites](#prerequisites)
-  - [Deployment Steps](#deployment-steps)
-    - [1. Run the Configuration Script](#1-run-the-configuration-script)
-    - [2. Deploy Application Quality Using Helm](#2-deploy-application-quality-using-helm)
-  - [Validation](#validation)
-  - [Uninstallation](#uninstallation)
-  - [Further Reading](#further-reading)
-
 ---
 
 ## Introduction

@@ -5,16 +5,6 @@
 
 The **MLOps Building Block** provides support services for training machine learning models within the cloud platform. It orchestrates the training of ML models across popular frameworks, maintains a history of training runs with associated metrics, and manages the associated training data. This guide provides step-by-step instructions to deploy the MLOps Building Block within your Kubernetes cluster.
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Deployment Steps](#deployment-steps)
-4. [Validation](#validation)
-5. [Uninstallation](#uninstallation)
-6. [Further Reading](#further-reading)
-7. [Feedback](#feedback)
-
 ---
 
 ## Introduction

@@ -4,20 +4,6 @@ The **Resource Health** BB provides a flexible framework that allows platform us
 
 ---
 
-## Table of Contents
-
-- [Resource Health Deployment Guide](#resource-health-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Components Overview](#components-overview)
-  - [Prerequisites](#prerequisites)
-  - [Deployment Steps](#deployment-steps)
-  - [Validation](#validation)
-  - [Uninstallation](#uninstallation)
-  - [Further Reading](#further-reading)
-
----
-
 ## Introduction
 
 The **Resource Health Building Block** allows users to:

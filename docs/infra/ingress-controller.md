@@ -4,19 +4,6 @@ This guide provides instructions to install and configure an ingress controller 
 
 ---
 
-## Table of Contents
-
-- [Ingress Controller Setup Guide](#ingress-controller-setup-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Prerequisites](#prerequisites)
-  - [Installing the Ingress Controller](#installing-the-ingress-controller)
-  - [Validation](#validation)
-  - [Next Steps](#next-steps)
-  - [Further Reading](#further-reading)
-
----
-
 ## Introduction
 
 An ingress controller is a necessary component for managing external access to the services within your Kubernetes cluster. It listens for ingress resources and routes traffic accordingly.
