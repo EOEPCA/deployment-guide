@@ -78,7 +78,7 @@ bash configure-resource-health.sh
 2. **Deploy the Resource Health BB Using Helm:**
 
 ```bash
-helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=main" && \
+helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=2.0-beta" && \
 helm repo update resource-health && \
 helm upgrade -i resource-health resource-health/resource-health-reference-deployment \
   --namespace resource-health \
