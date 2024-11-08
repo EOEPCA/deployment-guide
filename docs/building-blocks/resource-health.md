@@ -4,20 +4,6 @@ The **Resource Health** BB provides a flexible framework that allows platform us
 
 ---
 
-## Table of Contents
-
-- [Resource Health Deployment Guide](#resource-health-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Components Overview](#components-overview)
-  - [Prerequisites](#prerequisites)
-  - [Deployment Steps](#deployment-steps)
-  - [Validation](#validation)
-  - [Uninstallation](#uninstallation)
-  - [Further Reading](#further-reading)
-
----
-
 ## Introduction
 
 The **Resource Health Building Block** allows users to:
@@ -92,7 +78,7 @@ bash configure-resource-health.sh
 2. **Deploy the Resource Health BB Using Helm:**
 
 ```bash
-helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=main" && \
+helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=2.0-beta" && \
 helm repo update resource-health && \
 helm upgrade -i resource-health resource-health/resource-health-reference-deployment \
   --namespace resource-health \
@@ -137,8 +123,7 @@ bash validation.sh
 To uninstall the Resource Health Building Block and clean up associated resources:
 
 ```bash
-helm uninstall resource-health -n resource-health
-
+helm uninstall resource-health -n resource-health && \
 kubectl delete namespace resource-health
 ```
 

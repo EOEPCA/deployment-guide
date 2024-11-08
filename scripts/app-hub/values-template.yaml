@@ -53,5 +53,5 @@ jupyterhub:
         cpu_limit: 4
         mem_limit: "8G"
 nodeSelector:
-  key: "node-role.kubernetes.io/master"
+  key: "node-role.kubernetes.io/worker"
   value: "true"

@@ -4,19 +4,6 @@ The **Workspace** Building Block provides a comprehensive solution for storing a
 
 ---
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Components Overview](#components-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment Steps](#deployment-steps)
-5. [Validation](#validation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Scripts and Manifests](#scripts-and-manifests)
-
----
-
 ## Introduction
 
 The **Workspace** Building Block provides a comprehensive environment where users can store, organise, and process data. It leverages Kubernetes and GitOps principles to create isolated and customisable workspaces for projects or individual users.

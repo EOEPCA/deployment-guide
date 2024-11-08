@@ -5,16 +5,6 @@
 
 The **MLOps Building Block** provides support services for training machine learning models within the cloud platform. It orchestrates the training of ML models across popular frameworks, maintains a history of training runs with associated metrics, and manages the associated training data. This guide provides step-by-step instructions to deploy the MLOps Building Block within your Kubernetes cluster.
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Deployment Steps](#deployment-steps)
-4. [Validation](#validation)
-5. [Uninstallation](#uninstallation)
-6. [Further Reading](#further-reading)
-7. [Feedback](#feedback)
-
 ---
 
 ## Introduction
@@ -140,6 +130,7 @@ Deploy GitLab using the generated configuration file.
 helm repo add gitlab https://charts.gitlab.io/ && \
 helm repo update gitlab && \
 helm upgrade -i gitlab gitlab/gitlab \
+  --version 8.1.8 \
   --namespace gitlab \
   --create-namespace \
   --values gitlab/generated-values.yaml
@@ -176,7 +167,7 @@ bash utils/save-application-credentials-to-state.sh
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=main" && \
+helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.3.0" && \
 helm repo update sharinghub && \
 helm upgrade -i sharinghub sharinghub/sharinghub \
   --namespace sharinghub \
@@ -187,7 +178,7 @@ helm upgrade -i sharinghub sharinghub/sharinghub \
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
-helm repo add mlflow-sharinghub "git+https://github.com/csgroup-oss/mlflow-sharinghub@deploy/helm?ref=main" && \
+helm repo add mlflow-sharinghub "git+https://github.com/csgroup-oss/mlflow-sharinghub@deploy/helm?ref=0.2.0" && \
 helm repo update mlflow-sharinghub && \
 helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --namespace sharinghub \

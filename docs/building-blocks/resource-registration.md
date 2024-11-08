@@ -8,19 +8,6 @@ The **Resource Registration** Building Block enables data and metadata ingestion
 
 ---
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Components Overview](#components-overview)
-3. [Prerequisites](#prerequisites)
-4. [Deployment Steps](#deployment-steps)
-5. [Validation](#validation)
-6. [Uninstallation](#uninstallation)
-7. [Further Reading](#further-reading)
-8. [Scripts and Manifests](#scripts-and-manifests)
-
----
-
 ## Introduction
 
 The **Resource Registration Building Block** manages resource ingestion into the platform for discovery, access and collaboration. It supports:

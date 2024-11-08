@@ -1,21 +1,6 @@
 # EOEPCA+ Container Registry Deployment Guide
 The Container Registry stores and distributes container images for application development and deployment.
 
-## Table of Contents
-
-- [EOEPCA+ Container Registry Deployment Guide](#eoepca-container-registry-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Architecture Overview](#architecture-overview)
-  - [Prerequisites](#prerequisites)
-  - [Deployment](#deployment)
-  - [Validation](#validation)
-  - [Operation](#operation)
-  - [Uninstallation](#uninstallation)
-  - [Further Reading](#further-reading)
-  - [Feedback](#feedback)
-    - [Enabling Optional Components](#enabling-optional-components)
-
 ***
 ## Introduction
 
@@ -116,6 +101,30 @@ helm upgrade -i harbor harbor/harbor \
 
   - **Username**: `admin`
   - **Password**: The password that was generated during configuration. (Alternatively check the `~/.eoepca/state` file)
+
+***
+### Enabling Optional Components
+
+- **Trivy (Vulnerability Scanning)**:
+
+```
+trivy:
+  enabled: true
+```
+
+- **ChartMuseum (Helm Chart Repository)**:
+
+```
+chartmuseum:
+  enabled: true
+```
+
+- **Notary (Image Signing)**:
+
+```
+notary:
+  enabled: true
+```
 
 ***
 ## Validation
@@ -227,27 +236,3 @@ To uninstall Harbor and clean up associated resources:
 ## Feedback
 
 If you encounter any issues or have suggestions for improvement, please open an issue on the [EOEPCA+ Deployment Guide GitHub Repository](https://github.com/EOEPCA/deployment-guide/issues).
-
-***
-### Enabling Optional Components
-
-- **Trivy (Vulnerability Scanning)**:
-
-```
-trivy:
-  enabled: true
-```
-
-- **ChartMuseum (Helm Chart Repository)**:
-
-```
-chartmuseum:
-  enabled: true
-```
-
-- **Notary (Image Signing)**:
-
-```
-notary:
-  enabled: true
-```

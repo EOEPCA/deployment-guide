@@ -5,23 +5,6 @@ MinIO is a high-performance object storage system that's compatible with the Ama
 This guide provides instructions to deploy MinIO in your Kubernetes cluster.
 
 ---
-## Table of Contents
-
-- [EOEPCA+ MinIO Deployment Guide](#eoepca-minio-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Prerequisites](#prerequisites)
-  - [Deployment Steps](#deployment-steps)
-    - [1. Configure MinIO](#1-configure-minio)
-    - [2. Deploy MinIO](#2-deploy-minio)
-    - [3. Create Access Keys](#3-create-access-keys)
-    - [4. Deploy MinIO Bucket API](#4-deploy-minio-bucket-api)
-  - [Validation](#validation)
-  - [Uninstallation](#uninstallation)
-  - [Further Reading](#further-reading)
-  - [Feedback](#feedback)
-
----
 ## Introduction
 
 MinIO provides a scalable and high-performance object storage solution that's compatible with AWS S3 APIs. It's used within the EOEPCA+ platform to store and manage data securely.

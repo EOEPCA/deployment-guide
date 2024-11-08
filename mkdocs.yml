@@ -18,6 +18,7 @@ nav:
           - TLS Overview: infra/tls/overview.md
           - Using Cert-Manager: infra/tls/cert-manager.md
           - Manual TLS Management: infra/tls/manual-tls.md
+          - Internal TLS Setup: infra/tls/internal-tls.md
       - Storage Provisioning:
         - Storage Classes: infra/storage/storage-classes.md
         - HostPath Provisioner: infra/storage/hostpath-provisioner.md
@@ -126,7 +127,3 @@ markdown_extensions:
   - pymdownx.snippets:
       auto_append:
         - includes/abbreviations.md
-
-extra:
-  version:
-    provider: mike

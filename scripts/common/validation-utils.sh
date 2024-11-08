@@ -99,6 +99,20 @@ function check_statefulset_ready() {
     fi
 }
 
+# Function to check the status of a DaemonSet
+function check_daemonset_ready() {
+    local namespace="$1"
+    local daemonset_name="$2"
+
+    if kubectl rollout status daemonset "$daemonset_name" -n "$namespace" --timeout=60s >/dev/null 2>&1; then
+        echo "✅ DaemonSet '$daemonset_name' is ready."
+        return 0
+    else
+        echo "❌ DaemonSet '$daemonset_name' is not ready."
+        return 1
+    fi
+}
+
 # Function to check if a ConfigMap exists
 function check_configmap_exists() {
     local namespace="$1"

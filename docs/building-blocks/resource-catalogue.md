@@ -2,20 +2,6 @@
 
 The **Resource Catalogue** is a standards-based Earth Observation (EO) metadata catalogue that supports OGC CSW, OGC API Records, STAC, and OpenSearch. It leverages **pycsw**, an open-source OGC-compliant metadata catalog server, to manage and serve EO data. This guide provides step-by-step instructions to deploy the Resource Catalogue within your Kubernetes cluster.
 
-
-## Table of Contents
-
-- [Resource Catalogue Deployment Guide](#resource-catalogue-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-    - [Key Features](#key-features)
-    - [Interfaces](#interfaces)
-  - [Prerequisites](#prerequisites)
-  - [Deployment Steps](#deployment-steps)
-  - [Validation and Operation](#validation-and-operation)
-  - [Uninstallation](#uninstallation)
-  - [Further Reading](#further-reading)
-
 ***
 ## Introduction
 
@@ -50,7 +36,7 @@ Before deploying the Resource Catalogue, ensure you have the following:
 | Helm             | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)   |
 | kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/) |
 | Ingress          | Properly installed            | [Installation Guide](../infra/ingress-controller.md) |
-| Cert Manager     | Properly installed            | [Installation Guide](../infra/tls/overview.mdkubernetes/) |
+| Cert Manager     | Properly installed            | [Installation Guide](../infra/tls/overview.md) |
 
 **Clone the Deployment Guide Repository:**
 

@@ -5,17 +5,6 @@
 
 The **Application Hub** provides a suite of web-based tools, including JupyterLab for interactive analysis, Code Server for application development, and the capability to add user-defined interactive dashboards. It empowers users to manage and deliver work environments and tools for a wide range of tasks, such as developing, hosting, executing, and performing exploratory analysis of Earth Observation (EO) applications, all within a unified Cloud infrastructure.
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Architecture Overview](#architecture-overview)
-3. [User Scenarios](#user-scenarios)
-4. [Prerequisites](#prerequisites)
-5. [Deployment](#deployment)
-6. [Validation and Operation](#validation-and-operation)
-7. [Uninstallation](#uninstallation)
-8. [Further Reading](#further-reading)
-
 ***
 ## Introduction
 
@@ -127,20 +116,30 @@ bash configure-app-hub.sh
 
 **Important Notes:**
 
-- If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-  - The required TLS secret names are:
-    - `app-hub-tls`
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
+- **TLS Certificates**<br>
+  If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
+    - The required TLS secret names are:
+      - `app-hub-tls`
+    - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
+- **Node Selection**<br>
+  The generated helm values include a `nodeSelector` that identifies the target nodes for spawned workloads...<br>
+  ```
+  nodeSelector:
+    key: "node-role.kubernetes.io/worker"
+    value: "true"
+  ```
+  As required, this node selector must be adjusted according to your Kubernetes cluster.
 
-3. **Deploy the Application Hub Using Helm**
+1. **Deploy the Application Hub Using Helm**
 
 	Run the Helm install command using the generated values file:
 
 ```bash
-helm install application-hub application-hub \
---version 2.0.59 \
+helm repo add eoepca https://eoepca.github.io/helm-charts && \
+helm repo update eoepca && \
+helm upgrade -i application-hub eoepca/application-hub \
+--version 2.1.0 \
 --values generated-values.yaml \
---repo https://eoepca.github.io/helm-charts \
 --namespace application-hub \
 --create-namespace
 ```

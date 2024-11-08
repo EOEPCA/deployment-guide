@@ -5,21 +5,7 @@ The **Processing Building Block** provides deployment and execution of user-defi
 * **OGC API Processes Engine**<br>
   The **OGC API Processes Engine** provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the [ZOO-Project](https://zoo-project.github.io/docs/intro.html#what-is-zoo-project) `zoo-project-dru` implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 & 2.
 * **openEO Engine**<br>
-  Coming soon.
-
-## Table of Contents
-
-- [Processing Building Block Deployment Guide](#processing-building-block-deployment-guide)
-  - [Table of Contents](#table-of-contents)
-  - [OGC API Processes Engine](#ogc-api-processes-engine)
-    - [Introduction](#introduction)
-    - [Prerequisites](#prerequisites)
-    - [Deployment Steps](#deployment-steps)
-    - [Validation and Operation](#validation-and-operation)
-    - [Uninstallation](#uninstallation)
-      - [Additional Cleanup](#additional-cleanup)
-    - [Further Reading](#further-reading)
-  - [Feedback](#feedback)
+  _Coming soon_
 
 ***
 ## OGC API Processes Engine

@@ -34,3 +34,7 @@ resource-health:
       env:
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: $HTTP_SCHEME://resource-health-opentelemetry-collector:4317
+
+opensearch:
+  persistence:
+    storageClass: ${STORAGE_CLASS}
