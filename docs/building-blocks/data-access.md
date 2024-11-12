@@ -186,33 +186,103 @@ Once the deployment is complete and all pods are running, you can access the ser
 
 ---
 
-## Validation
+## Testing and Validation
 
-**Automated Validation:**
+This section provides steps and examples to test the functionality of the Data Access services.
+
+### 1. Access the Swagger UI
+
+The Data Access Building Block provides Swagger UI documentation for its APIs, allowing you to interact with the APIs directly from your browser.
+
+- **eoAPI STAC API Swagger UI:**
+  - URL: `https://eoapi.<INGRESS_HOST>/stac/api.html`
+- **eoAPI Raster API Swagger UI:**
+  - URL: `https://eoapi.<INGRESS_HOST>/raster/api.html`
+- **eoAPI Vector API Swagger UI:**
+  - URL: `https://eoapi.<INGRESS_HOST>/vector/api.html`
+- **Stacture API Swagger UI:**
+  - URL: `https://stacture.<INGRESS_HOST>/`
+
+Replace `<INGRESS_HOST>` with your actual ingress host domain.
+
+### 2. Run Demo Jupyter Notebooks
+
+The provided Jupyter Notebooks showcase how to interact with the Data Access services programmatically. These notebooks include examples for data discovery, visualisation and data download using the APIs.
+
+**Demo Notebooks Repository:**
+
+- GitHub Repository: [EOEPCA/demo](https://github.com/EOEPCA/demo)
+
+**Notebooks for eoAPI and Stacture:**
+
+- The notebooks specifically for the eoAPI and Stacture-based endpoints can be found [here](https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb).
+
+**Steps to Run the Notebooks:**
+
+1. **Clone the Repository:**
 
 ```bash
-bash validation.sh
+git clone https://github.com/EOEPCA/demo.git
 ```
 
-**Further Validation:**
+2. **Install Dependencies:**
 
-1. **Check Kubernetes Resources:**
+```bash
+cd demoroot
+pip install -r requirements.txt
+```
 
-   ```bash
-   kubectl get all -n data-access
-   ```
+3. **Update Host Configuration:**
 
-2. **Access eoAPI STAC API:**
+In the notebooks, replace any occurrences of `develop.eoepca.org` with your own ingress host domain. For example, set:
 
-   Open a web browser and navigate to: `http://eoapi.<your-ingress-host>/stac/`
+```python
+base_domain = "<INGRESS_HOST>"
+```
 
-3. **Access Stacture API:**
+4. **Run Jupyter Notebook:**
 
-   Open a web browser and navigate to: `http://stacture.<your-ingress-host>/`
+Start Jupyter Notebook or JupyterLab and open the desired notebook:
 
-4. **Test Data Access Functionality:**
+```bash
+jupyter notebook
+```
 
-   Verify that the Data Access services are operational by performing test actions through the APIs.
+5. **Execute the Notebook:**
+
+Follow the instructions within the notebook to execute the cells and interact with the Data Access services.
+
+### 3. Example API Calls
+
+You can perform basic tests using `curl` to make HTTP requests to the APIs.
+
+**Example: Retrieve STAC API Landing Page**
+
+```bash
+curl -X GET "https://eoapi.<INGRESS_HOST>/stac/" -H "accept: application/json"
+```
+
+**Example: Search STAC Items**
+
+```bash
+curl -X POST "https://eoapi.develop.eoepca.org/stac/search" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bbox": [-10, 35, 0, 45],
+    "datetime": "2021-01-01T00:00:00Z/2021-12-31T23:59:59Z",
+    "limit": 10
+  }'
+```
+
+### 4. Validate Kubernetes Resources
+
+Ensure all Kubernetes resources are running correctly.
+
+```bash
+kubectl get all -n data-access
+```
+
+Check that all pods are in the `Running` state and services are exposed correctly.
 
 ---
 
