@@ -306,6 +306,5 @@ kubectl delete namespace data-access
 
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
-- [Stacture Documentation](https://stacture.readthedocs.io/)
 - [Tyk Gateway Documentation](https://tyk.io/docs/)
-- [Crunchy Data PostgreSQL Operator](https://github.com/CrunchyData/postgres-operator-examples)
+
