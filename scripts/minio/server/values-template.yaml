@@ -26,11 +26,11 @@ consoleIngress:
     ${CLUSTER_ISSUER_ANNOTATION}
   path: /
   hosts:
-    - console.minio.${INGRESS_HOST}
+    - console-minio.${INGRESS_HOST}
   tls:
     - secretName: minio-console-tls
       hosts:
-        - console.minio.${INGRESS_HOST}
+        - console-minio.${INGRESS_HOST}
 resources:
   requests:
     memory: 1Gi

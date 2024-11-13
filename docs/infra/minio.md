@@ -83,7 +83,7 @@ helm upgrade -i minio minio/minio \
 
 Access the MinIO Console to create access keys:
 
-1. Navigate to `https://console.minio.<your-domain>/access-keys/new-account`
+1. Navigate to `https://console-minio.<your-domain>/access-keys/new-account`
 2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step.
 3. Click **Create** to generate new access keys.
 4. Note down or download the **Access Key** and **Secret Key**.
@@ -131,7 +131,7 @@ kubectl get all -n minio
 2. **Access Dashboard:**
 
 ```
-https://console.minio.<your-domain>
+https://console-minio.<your-domain>
 ```
 
 3. **Log In**:
