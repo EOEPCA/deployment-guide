@@ -207,54 +207,21 @@ Replace `<INGRESS_HOST>` with your actual ingress host domain.
 
 ### 2. Run Demo Jupyter Notebooks
 
-The provided Jupyter Notebooks showcase how to interact with the Data Access services programmatically. These notebooks include examples for data discovery, visualisation and data download using the APIs.
+The [EOEPCA/demo](https://github.com/EOEPCA/demo) Jupyter Notebooks showcase how to interact with the Data Access services programmatically, including examples for data discovery, visualisation and data download using the Data Access APIs. The notebooks specifically for the eoAPI and Stacture-based endpoints can be found [here](https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb). 
 
-**Demo Notebooks Repository:**
+- Before running the notebooks, ensure that sample data is registered into the Data Access component. Follow the [Resource Registration Guide](./resource-registration.md).
 
-- GitHub Repository: [EOEPCA/demo](https://github.com/EOEPCA/demo)
-
-**Notebooks for eoAPI and Stacture:**
-
-- The notebooks specifically for the eoAPI and Stacture-based endpoints can be found [here](https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb).
-
-**Steps to Run the Notebooks:**
-
-1. **Clone the Repository:**
-
-```bash
-git clone https://github.com/EOEPCA/demo.git
-```
-
-2. **Install Dependencies:**
-
-```bash
-cd demoroot
-pip install -r requirements.txt
-```
-
-3. **Update Host Configuration:**
-
-In the notebooks, replace any occurrences of `develop.eoepca.org` with your own ingress host domain. For example, set:
+- In the notebooks, set the `base_domain` variable to reflect your endpoint:
 
 ```python
 base_domain = "<INGRESS_HOST>"
 ```
+For more information on how to run the demo Jupyter Notebooks, please visit the [EOEPCA/demo Readme](https://github.com/EOEPCA/demo/blob/main/README.md).
 
-4. **Run Jupyter Notebook:**
 
-Start Jupyter Notebook or JupyterLab and open the desired notebook:
+### 3. Perform Basic API Tests
 
-```bash
-jupyter notebook
-```
-
-5. **Execute the Notebook:**
-
-Follow the instructions within the notebook to execute the cells and interact with the Data Access services.
-
-### 3. Example API Calls
-
-You can perform basic tests using `curl` to make HTTP requests to the APIs.
+You can perform basic tests using tools like `curl` or directly through the Swagger UI.
 
 **Example: Retrieve STAC API Landing Page**
 
@@ -265,7 +232,7 @@ curl -X GET "https://eoapi.<INGRESS_HOST>/stac/" -H "accept: application/json"
 **Example: Search STAC Items**
 
 ```bash
-curl -X POST "https://eoapi.develop.eoepca.org/stac/search" \
+curl -X POST "https://eoapi.<INGRESS_HOST>/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
     "bbox": [-10, 35, 0, 45],
