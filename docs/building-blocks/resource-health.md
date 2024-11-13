@@ -71,26 +71,34 @@ bash check-prerequisites.sh
 
 1. **Run the Configuration Script:**
 
-```bash
-bash configure-resource-health.sh
-```
+      ```bash
+      bash configure-resource-health.sh
+      ```
 
 2. **Deploy the Resource Health BB Using Helm:**
 
-```bash
-helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=2.0-beta" && \
-helm repo update resource-health && \
-helm upgrade -i resource-health resource-health/resource-health-reference-deployment \
-  --namespace resource-health \
-  --create-namespace \
-  --values generated-values.yaml
-```
+      ```bash
+      helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=2.0-beta" && \
+      helm repo update resource-health && \
+      helm upgrade -i resource-health resource-health/resource-health-reference-deployment \
+      --namespace resource-health \
+      --create-namespace \
+      --values generated-values.yaml
+      ```
 
 3. **Monitor the Deployment:**
 
-```bash
-kubectl get all -n resource-health
-```
+      ```bash
+      kubectl get all -n resource-health
+      ```
+
+4. **Check creation of Certificates for Internal TLS:**
+
+      ```bash
+      kubectl -n resource-health get certificate
+      ```
+
+      Confirm that all `Certificates` are marked `Ready`.
 
 ---
 
