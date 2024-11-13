@@ -26,9 +26,9 @@ jupyterhub:
       JUPYTERHUB_CRYPT_KEY: "${APPHUB_JUPYTERHUB_CRYPT_KEY}"
       OAUTH_CALLBACK_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/oauth_callback
       OAUTH_LOGOUT_REDIRECT_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/home
-      OAUTH2_USERDATA_URL: $HTTP_SCHEME://identity.keycloak.${INGRESS_HOST}/realms/master/protocol/openid-connect/userinfo
-      OAUTH2_TOKEN_URL: $HTTP_SCHEME://identity.keycloak.${INGRESS_HOST}/realms/master/protocol/openid-connect/token
-      OAUTH2_AUTHORIZE_URL: $HTTP_SCHEME://identity.keycloak.${INGRESS_HOST}/realms/master/protocol/openid-connect/auth
+      OAUTH2_USERDATA_URL: $HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/userinfo
+      OAUTH2_TOKEN_URL: $HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token
+      OAUTH2_AUTHORIZE_URL: $HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/auth
       OAUTH_CLIENT_ID: application-hub
       OAUTH_CLIENT_SECRET: "${APPHUB_CLIENT_SECRET}"
 
