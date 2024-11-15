@@ -165,46 +165,120 @@ Check the status of the deployments:
 kubectl get all -n resource-registration
 ```
 
-### 6. Access the Registration Services
-
-Once the deployment is complete, you can access the services:
-
-- **Registration API**:
-    - Home: `http://registration-api.<your-domain>`
-    - Swagger Docs: `https://registration-api.<your-domain>/openapi?f=html`
-- **Registration Harvester API**:
-    - Swagger Docs: `http://registration-harvester-api.<your-domain>/flowable-rest/docs`
-    - Deployments: `http://registration-harvester-api.<your-domain>/flowable-rest/service/repository/deployments`
-
 ---
 
-## Validation
+## Validation and Usage
 
 **Automated Validation:**
+
+This script performs a series of automated tests to validate the deployment.
 
 ```bash
 bash validation.sh
 ```
 
-**Further Validation:**
+---
 
-1. **Check Kubernetes Resources:**
+**Registration API Home:**
 
-   ```bash
-   kubectl get all -n resource-registration
-   ```
+This page provides basic information about the Registration API.
 
-2. **Access Registration API:**
+```
+https://registration-api.<INGRESS_HOST>/
+```
+ 
 
-   Open a web browser and navigate to: `http://registration-api.${INGRESS_HOST}/`
+**Swagger UI Documentation:**
 
-3. **Access Flowable UI:**
+Interactive API documentation allowing you to explore and test the Registration API endpoints.
 
-   Open a web browser and navigate to: `http://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/`
+```
+https://registration-api.<INGRESS_HOST>/openapi?f=html
+``` 
 
-4. **Test Resource Registration Functionality:**
+**Flowable REST API Swagger UI:**
 
-   Verify that the Registration API services are operational by performing test actions through the APIs.
+Provides Swagger UI documentation for the Flowable REST API.
+
+```
+https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
+```
+
+**Note:**
+
+- Replace `<INGRESS_HOST>` with your actual ingress host domain.
+
+---
+
+**Testing the Registration API**
+
+You can test the Registration API by making requests to the `hello-world` process.
+
+
+```bash
+curl -X POST "https://registration-api.<INGRESS_HOST>/processes/hello-world/execution" \
+-H "Content-Type: application/json" \
+-d '{
+   "inputs": {
+      "name": "Resource Registration Validation Tester",
+      "message": "This confirms that the Registration API is working correctly."
+   }
+}'
+```
+
+**Registering a Resource**
+
+You can register a new resource by making a `POST` request to the `/processes/register-resource/execution` endpoint.
+
+```bash
+curl -X POST "https://registration-api.<INGRESS_HOST>/processes/register/execution" \
+-H "Content-Type: application/json" \
+-d '{
+      "inputs": {
+         "type": "dataset",
+         "source": "https://example.com/dataset",
+         "target": "https://example.com/dataset",
+         }
+   }'
+```
+
+---
+
+
+#### Using the Registration Harvester
+
+The Registration Harvester leverages Flowable to automate resource harvesting workflows.
+
+**Access the Flowable REST API Swagger UI:**
+
+```url
+https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
+```
+
+**List Deployed Processes**
+
+Retrieve a list of deployed processes:
+
+```bash
+curl -u <FLOWABLE_ADMIN_USER>:<FLOWABLE_ADMIN_PASSWORD> \
+     "https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/service/repository/process-definitions"
+```
+
+---
+
+
+### Validating Kubernetes Resources
+
+Ensure that all Kubernetes resources are running correctly.
+
+```bash
+kubectl get pods -n resource-registration
+```
+
+**Expected Output:**
+
+- All pods should be in the `Running` state.
+- No pods should be in `CrashLoopBackOff` or `Error` states.
 
 ---
 
