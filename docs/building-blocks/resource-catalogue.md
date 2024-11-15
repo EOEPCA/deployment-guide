@@ -93,7 +93,8 @@ helm upgrade -i resource-catalogue eoepca/rm-resource-catalogue \
   --create-namespace
 ```
 
-***
+---
+
 ## Validation and Operation
 
 **Automated Validation:**
@@ -102,47 +103,153 @@ helm upgrade -i resource-catalogue eoepca/rm-resource-catalogue \
 bash validation.sh
 ```
 
+
 **Further Validation:**
 
-1. **Check Kubernetes Resources:**
+
+After deployment, the Resource Catalogue exposes several interfaces compliant with open standards. Replace `<INGRESS_HOST>` with your actual ingress host domain in the URLs below.
+
+**Resource Catalogue Home**:
+
+  - URL: `https://resource-catalogue.<INGRESS_HOST>/`
+  - This page provides links to all available services and tools.
+
+**OGC CSW 2.0.2 Endpoint**:
+
+  - URL: `https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&request=GetCapabilities`
+
+**STAC API Endpoint**:
+
+  - URL: `https://resource-catalogue.<INGRESS_HOST>/stac`
+
+**OpenSearch Endpoint**:
+
+  - URL: `https://resource-catalogue.<INGRESS_HOST>/opensearch`
+
+**Additional Tools and Endpoints**:
+
+  - **Collections**: `https://resource-catalogue.<INGRESS_HOST>/collections`
+  - **Swagger UI**:
+    - **OpenAPI Swagger**: `https://resource-catalogue.<INGRESS_HOST>/openapi?f=html`
+    - **JSON OpenAPI Definition**: `https://resource-catalogue.<INGRESS_HOST>/openapi?f=json`
+  - **Conformance**: `https://resource-catalogue.<INGRESS_HOST>/conformance`
+  - **OAI-PMH Endpoint**: `https://resource-catalogue.<INGRESS_HOST>/oaipmh`
+  - **SRU Endpoint**: `https://resource-catalogue.<INGRESS_HOST>/sru`
+
+---
+
+To interact with the Resource Catalogue and perform queries, you need to ingest records. 
+It is recommended to use the [Resource Registration Building Block](../building-blocks/resource-registration.md) to register and ingest records into the catalogue.
+
+Alternatively, you can use the `pycsw-admin.py` utility inside the pycsw container to load sample data.
+
+**Note**: Ensure that you have sample records available or use the provided samples within the container. 
+
+**Steps**:
+
+1. **Identify the pycsw Pod**:
 
 ```bash
-kubectl get all -n resource-catalogue
+kubectl get pods -n resource-catalogue
 ```
 
-2. **Access the Resource Catalogue**:
+Look for the pod named similar to `resource-catalogue-service-xxxxxxxxx-xxxxx`.
 
-   Open a web browser and navigate to: `https://resource-catalogue.<your-domain>/`
+2. **Access the pycsw Pod**:
 
-3. **Test API Endpoints**:
-
-  You can test the API using `curl`:
- 
 ```bash
-curl -X GET 'https://resource-catalogue.<your-domain>/collections' \
--H 'Accept: application/json'
+kubectl exec -it <resource-catalogue-pod-name> -n resource-catalogue -- /bin/bash
 ```
 
-***
-## Uninstallation
+3. **Navigate to the pycsw Directory**:
 
-To uninstall the Resource Catalogue and clean up associated resources:
-
-```
-helm -n resource-catalogue uninstall resource-catalogue
+```bash
+cd /usr/local/bin
 ```
 
-**Additional Cleanup**:
+4. **Load Sample Data**:
 
-- Delete any Persistent Volume Claims (PVCs) if used:
+You can see the full list of commands available by running
+```bash
+pycsw-admin.py --help
+```
 
-  ```
-  kubectl delete pvc -n resource-catalogue db-data-resource-catalogue-db-0
-  ```
+For example, to load sample records from the `samples/records` directory, run the following command:
+```bash
+pycsw-admin.py -c load_records -f etc/pycsw/default.cfg -p samples/records
+```
+---
 
-***
+#### Querying the Catalogue
+
+Once you have records ingested, you can perform queries against the catalogue using various interfaces.
+
+View all collections and records via the web interface:
+
+```url
+https://resource-catalogue.<INGRESS_HOST>/collections/
+```
+
+Alternatively, use `curl` to get a JSON response of all collections:
+
+```bash
+curl "https://resource-catalogue.<INGRESS_HOST>/collections"
+```
+
+---
+
+**Using the STAC API**
+
+```bash
+curl "https://resource-catalogue.<INGRESS_HOST>/stac"
+```
+
+Perform a STAC Item Search:
+
+```bash
+curl -X POST "https://resource-catalogue.<INGRESS_HOST>/stac/search" \
+-H "Content-Type: application/json" \
+-d '{
+      "bbox": [-180, -90, 180, 90],
+      "datetime": "2010-01-01T00:00:00Z/2020-12-31T23:59:59Z",
+      "limit": 10
+    }'
+```
+
+---
+
+#### Using OGC CSW
+
+Access the `GetCapabilities` document to verify the CSW service:
+
+```bash
+curl "https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&request=GetCapabilities"
+```
+
+**Note**: For more advanced queries, refer to the [OGC CSW 2.0.2 Documentation](https://www.ogc.org/standards/cat).
+
+
+---
+
+### Validating Kubernetes Resources
+
+Ensure that all Kubernetes resources are running correctly.
+
+```bash
+kubectl get pods -n resource-catalogue
+```
+
+**Expected Output**:
+
+- All pods should be in the `Running` state.
+- No pods should be in `CrashLoopBackOff` or `Error` states.
+
+---
+
 ## Further Reading
 
-- [Resource Catalogue BB](https://eoepca.readthedocs.io/projects/resource-discovery)
-- [pycsw Documentation](https://docs.pycsw.org/en/latest/)
-- [Helm Chart](https://github.com/EOEPCA/helm-charts/tree/main/charts/rm-resource-catalogue)
+For more detailed information, refer to the following resources:
+
+- [EOEPCA Resource Catalogue Documentation](https://eoepca.readthedocs.io/projects/resource-discovery)
+- [pycsw Official Documentation](https://docs.pycsw.org/en/latest/)
+- [pycsw GitHub Repository](https://github.com/geopython/pycsw)

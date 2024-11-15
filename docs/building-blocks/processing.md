@@ -1,6 +1,6 @@
 # Processing Building Block Deployment Guide
 
-The **Processing Building Block** provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO. The Processing BB is deployed in the form of a number of _Processing Engine_ variants that implement the different workflow approaches...
+The **Processing Building Block** provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO. The Processing BB is deployed in the form of a number of _Processing Engine_ variants that implements different workflow approaches:
 
 * **OGC API Processes Engine**<br>
   The **OGC API Processes Engine** provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the [ZOO-Project](https://zoo-project.github.io/docs/intro.html#what-is-zoo-project) `zoo-project-dru` implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 & 2.
@@ -17,7 +17,6 @@ The OGC API Processes Engine provides...
 - **Standardised Interfaces**: Implements OGC API Processes standards for interoperability.
 - **Application Deployment**: Supports deployment, replacement, and undeployment of applications.
 - **Execution Engine**: Executes applications using Kubernetes and Calrissian for CWL workflows.
-- **Integration**: Works seamlessly with other EOEPCA+building blocks like Identity Management.
 
 ***
 ### Prerequisites
@@ -49,7 +48,8 @@ Run the validation script to ensure all prerequisites are met:
 bash check-prerequisites.sh
 ```
 
-***
+---
+
 ### Deployment Steps
 
 
@@ -71,24 +71,24 @@ bash configure-oapip.sh
 **Stage-Out S3 Configuration**:
 Before proceeding, ensure you have an existing S3 object store. If you need to set one up, refer to the [MinIO Deployment Guide](../infra/minio.md). These values get automatically set in the EOEPCA+ state if you followed the Deployment Steps.
 
-- `S3_ENDPOINT`: S3 Endpoint URL.
-    - Example: `minio.example.com`
-- `S3_ACCESS_KEY`: S3 Access Key.
-- `S3_SECRET_KEY`: S3 Secret Key.
-- `S3_REGION`: S3 Region.
-    - Example: `us-west-1`
+- **`S3_ENDPOINT`**: S3 Endpoint URL.
+    - `minio.example.com`
+- **`S3_ACCESS_KEY`**: S3 Access Key.
+- **`S3_SECRET_KEY`**: S3 Secret Key.
+- **`S3_REGION`**: S3 Region.
+    - `us-west-1`
     
 **Stage-In S3 Configuration**:
 This is where you will get the incoming data. 
 - This can be set to the same as the Stage-Out configuration if you are storing the data in the same S3. 
 - Alternatively if your stage-in is in a different location, for example, you are using the data hosted by CloudFerro, then update these.
 
-- `STAGEIN_S3_ENDPOINT`: Stage-In S3 Endpoint URL.
-    - Example: `stage-in-s3.example.com`
-- `STAGEIN_S3_ACCESS_KEY`: Stage-In S3 Access Key.
-- `STAGEIN_S3_SECRET_KEY`: Stage-In S3 Secret Key.
-- `STAGEIN_S3_REGION`: Stage-In S3 Region.
-    - Example: `eu-west-2`
+- **`STAGEIN_S3_ENDPOINT`**: Stage-In S3 Endpoint URL.
+    - `stage-in-s3.example.com`
+- **`STAGEIN_S3_ACCESS_KEY`**: Stage-In S3 Access Key.
+- **`STAGEIN_S3_SECRET_KEY`**: Stage-In S3 Secret Key.
+- **`STAGEIN_S3_REGION`**: Stage-In S3 Region.
+    - `eu-west-2`
 
 **Important Notes:**
 
@@ -97,7 +97,7 @@ This is where you will get the incoming data.
     - `zoo-tls`
   - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
 
-1. **Deploy the Processing BB Using Helm**
+2. **Deploy the Processing BB Using Helm**
 
 ```bash
 helm repo add zoo-project https://zoo-project.github.io/charts/ && \
@@ -110,41 +110,124 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 ```
 
 ---
-### Validation and Operation
+
+## Validation and Operation
 
 **Automated Validation:**
+
+This script performs a series of automated tests to validate the deployment.
 
 ```bash
 bash validation.sh
 ```
 
+---
 
-**Manual Validation:**
+**ZOO-Project Swagger UI:**
 
-1. **Check Kubernetes Resources:**
-
-```bash
-kubectl get all -l app.kubernetes.io/name=zoo-project-dru-kubeproxy --all-namespaces ; \
-kubectl get all -l app.kubernetes.io/instance=zoo-project-dru --all-namespaces
-```
-
-2. **Access Web Interface:**
-
-Use the ZOO-Project Swagger UI to test the endpoints.
+Access the Swagger UI to explore and test the OGC API Processes endpoints.
 
 ```
-https://zoo.<your-domain>/swagger-ui/oapip/
+https://zoo.<INGRESS_HOST>/swagger-ui/oapip/
 ```
 
-3. **Test the OGC API Processes Endpoint:**
+**OGC API Processes Landing Page:**
 
-```bash
-curl -X GET 'https://zoo.<your-domain>/ogc-api/processes' \
-  -H 'Accept: application/json'
+This is the landing page of the OGC API Processes service.
+
 ```
-
+https://zoo.<INGRESS_HOST>/ogc-api/processes/
+```
 
 ---
+
+**Get List of Processes:**
+
+Retrieve the list of available processes.
+
+```bash
+curl -X GET "https://zoo.<INGRESS_HOST>/ogc-api/processes" \
+-H "Accept: application/json"
+```
+
+---
+
+**Deploy a Simple Process**
+
+For this example, we will deploy a water bodies detection process.
+You can view the CWL file itself in `/examples/water-bodies.cwl`.
+
+```bash
+curl -X POST "https://zoo.<INGRESS_HOST>/ogc-api/processes" \
+-H "Content-Type: application/json" \
+-d '{
+  "executionUnit": {
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/water-bodies.cwl",
+    "type": "application/cwl"
+  }
+}'
+```
+
+---
+
+**Execute the Process:**
+
+Once the process is deployed, you can execute it.
+
+```bash
+curl -X POST "https://zoo.<INGRESS_HOST>/ogc-api/processes/water-bodies/execution" \
+-H "Content-Type: application/json" \
+-H "Prefer: respond-async" \
+-d '{
+  "inputs": {
+    "stac_items": [
+      "raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/stac-item.json",
+    ],
+    "aoi": "-6.059593683367105,53.123645037009204,-4.727280797333244,54.133792015262706",
+    "epsg": "EPSG:4326",
+    "bands": [
+      "green",
+      "nir"
+    ]
+  }
+}'
+```
+
+---
+
+**Retrieve Execution Result:**
+
+The response will contain a `location` header with the URL to check the job status.
+
+```bash
+curl -X GET "https://zoo.<INGRESS_HOST>/ogc-api/jobs/<jobId>" \
+-H "Accept: application/json"
+```
+
+Once the job is completed, retrieve the result:
+
+```bash
+curl -X GET "https://zoo.<INGRESS_HOST>/ogc-api/jobs/<jobId>/results" \
+-H "Accept: application/json"
+```
+
+---
+
+**Validating Kubernetes Resources**
+
+Ensure that all Kubernetes resources are running correctly.
+
+```bash
+kubectl get pods -n processing
+```
+
+**Expected Output:**
+
+- All pods should be in the `Running` state.
+- No pods should be in `CrashLoopBackOff` or `Error` states.
+
+---
+
 ### Uninstallation
 
 To remove the Processing Building Block from your cluster:
