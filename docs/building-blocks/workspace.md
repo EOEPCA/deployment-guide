@@ -184,14 +184,6 @@ Check the status of the deployments:
 kubectl get all -n workspace
 ```
 
-### 9. Access the Workspace Services
-
-Once the deployment is complete, you can access the services:
-
-- **Workspace API**: `https://workspace-api-v2.${INGRESS_HOST}/`
-- **Workspace UI**: `https://workspace-ui.${INGRESS_HOST}/`
-- **Workspace Admin Dashboard**: `https://workspace-admin.${INGRESS_HOST}/`
-
 ---
 
 ## Validation
@@ -212,21 +204,34 @@ kubectl get all -n workspace
 
 2. **Access Workspace API:**
 
-   Open a web browser and navigate to: `https://workspace-api-v2.${INGRESS_HOST}/docs`
+View the Swagger documentation for the Workspace API:
+
+```
+https://workspace-api-v2.${INGRESS_HOST}/docs
+```
 
 3. **Access Workspace UI:**
 
-   Open a web browser and navigate to: `https://workspace-ui.${INGRESS_HOST}/`
+To access the Workspace UI, you will need the password that was generated during the configuration script. 
+
+If you do not have the password, you can find it in the `generated-values.yaml` file. 
+
+```
+https://workspace-ui.${INGRESS_HOST}/
+```
+
 
 4. **Access Workspace Admin Dashboard:**
 
-   Open a web browser and navigate to: `https://workspace-admin.${INGRESS_HOST}/`
+```
+https://workspace-admin.${INGRESS_HOST}/
+```
 
 5. **Test Workspace Functionality:**
 
-   - Create a new workspace using the Workspace API or UI.
-   - Verify that the workspace is created and resources are provisioned.
-   - Check that you can access the services within the workspace.
+- Create a new workspace using the Workspace API or UI.
+- Verify that the workspace is created and resources are provisioned.
+- Check that you can access the services within the workspace.
 
 ---
 
