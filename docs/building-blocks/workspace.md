@@ -162,6 +162,8 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
   --values workspace-admin/generated-values.yaml
 ```
 
+**NOTE**: The Workspace Admin Dashboard is currently experiencing SSL certificate issues and will most likely not work as expected.
+
 ### 7. Deploy the Workspace UI
 
 
