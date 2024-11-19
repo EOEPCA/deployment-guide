@@ -111,6 +111,7 @@ helm upgrade -i minio-bucket-api eoepca/rm-minio-bucket-api \
 
 ---
 
+
 ## Validation
 
 **Automated Validation:**
@@ -119,6 +120,21 @@ helm upgrade -i minio-bucket-api eoepca/rm-minio-bucket-api \
 bash validation.sh
 ```
 
+This script performs several checks to validate your MinIO deployment:
+
+**Pod and Service Checks**: Verifies that all MinIO pods are running and services are available.
+
+**Endpoint Checks**: Confirms that the MinIO endpoints are accessible and return the expected HTTP status codes.
+
+**Functionality Tests**:
+  - Creates a test bucket.
+  - Uploads a test file to the bucket.
+  - Deletes the test file.
+  - Deletes the test bucket.
+
+> **Note**: The script uses the AWS CLI to interact with MinIO. Ensure that the AWS CLI is installed and configured on your machine. Please refer to the [Official AWS Documentation](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) for installation instructions.
+
+---
 
 **Manual Validation:**
 
