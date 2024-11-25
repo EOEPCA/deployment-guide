@@ -160,6 +160,17 @@ function check_object_store_accessible() {
     echo "✅ You have set the S3_HOST or S3_ENDPOINT environment variable."
 }
 
+function check_oidc_provider_accessible() {
+    if [ -z "$OIDC_ISSUER_URL" ]; then
+        echo "⚠️  OIDC_ISSUER_URL environment variable is not set."
+        echo "   Please ensure that you have an accessible OIDC provider (e.g., Keycloak)"
+        echo "   You will be prompted to set this variable during the configuration script setup"
+        return 1
+    fi
+
+    echo "✅ You have set the OIDC_ISSUER_URL environment variable."
+}
+
 function check_internal_certificates() {
     echo "🛠️  TODO (check_internal_certificates)"
 }
