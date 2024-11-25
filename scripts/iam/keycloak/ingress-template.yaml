@@ -1,0 +1,55 @@
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: keycloak
+spec:
+  http:
+    - name: keycloak
+      backends:
+        - serviceName: keycloak
+          servicePort: 80
+      match:
+        hosts:
+          - auth-apx.$INGRESS_HOST
+        paths:
+          - /*
+      plugins:
+        # Possible workaround for redirect-to-9443 problem that also works for HTTP
+        - name: serverless-pre-function
+          enable: true
+          config:
+            phase: "rewrite"
+            functions:
+              - "return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) > 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end"
+    # - name: redirect
+    #   enable: true
+    #   config:
+    #     http_to_https: true
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: auth-apx
+spec:
+  dnsNames:
+    - auth-apx.$INGRESS_HOST
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod-apx
+  secretName: auth-apx-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: keycloak
+spec:
+  hosts:
+    - auth-apx.$INGRESS_HOST
+  secret:
+    name: auth-apx-tls
+    namespace: iam

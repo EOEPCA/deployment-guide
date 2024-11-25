@@ -58,6 +58,34 @@ Within the scripted deployment of the Building Block components, you will be ask
 
 Cert-Manager will handle certificate issuance and renewal automatically.
 
+3. **(Optional) Create a ClusterIssuer for APISIX Routes**:
+
+If you are using the APISIX Ingress Controller - as described in section [Ingress Controller Setup](../ingress-controller.md#apisix-ingress-controller) - then configure a _ClusterIssuer_ utilising the `apisix` ingress class name...
+
+   ```yaml
+   # letsencrypt-clusterissuer-apisix.yaml
+   apiVersion: cert-manager.io/v1
+   kind: ClusterIssuer
+   metadata:
+     name: letsencrypt-prod-apx
+   spec:
+     acme:
+       server: https://acme-v02.api.letsencrypt.org/directory
+       email: your_email@your-domain
+       privateKeySecretRef:
+         name: letsencrypt-prod-apx
+       solvers:
+         - http01:
+             ingress:
+               class: apisix
+   ```
+
+   Apply the configuration:
+
+   ```bash
+   kubectl apply -f letsencrypt-clusterissuer-apisix.yaml
+   ```
+
 ---
 
 ## Validation
@@ -105,19 +133,75 @@ spec:
       secretName: test-app-tls
 ```
 
+2b. **(Optional) Create ingress via APISIX**:
+
+   Use APISIX to route traffic to your test application - requesting TLS to be established via the `letsencrypt-prod-apx` Cluster Issuer.
+
+   **_Update the ingress host (app-apx.your-domain) to use the correct domain for your deployment - noting the use of the host postfix `-apx` depending on which [Ingress Controller Setup](../ingress-controller.md#provisioning-approaches) approach was followed_**
+
+```yaml
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: test-app-apx
+spec:
+  http:
+    - name: test-app-apx
+      backends:
+        - serviceName: test-app
+          servicePort: 80
+      match:
+        hosts:
+          - app-apx.your-domain
+        paths:
+          - /*
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: test-app-apx
+spec:
+  dnsNames:
+    - app-apx.your-domain
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod-apx
+  secretName: test-app-apx-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: test-app-apx
+spec:
+  hosts:
+    - app-apx.your-domain
+  secret:
+    name: test-app-apx-tls
+    namespace: default
+```
+
 3. **Check Certificate Creation**:
 
-   After a short time (approx. 1 minute) the `Certificate` should have been created and stored into the secret `test-app-tls`.
+   After a short time (approx. 1 minute) the `Certificate` should have been created and stored into the secret `test-app-tls` (and optionally `test-app-apx-tls`).
 
    Check that the associated Kubernetes resources are ready and valid...
    ```bash
    kubectl get orders,certificates,secrets,ingress
    ```
 
+   For APISIX...
+   ```bash
+   kubectl get orders,certificates,secrets,apisixroute,apisixtls
+   ```
+
 4. **Test Access**:
 
-   - Ensure that `app.your-domain` resolves to your load balancer's public IP.
-   - Access `https://app.your-domain` in your browser and verify that you can reach the `httpbin` application, and that the TLS certificate is reported as valid in the browser.
+   - Ensure that `app.your-domain` (and optionally `app-apx.your-domain`) resolves to your load balancer's public IP.
+   - Access `https://app.your-domain` (and optionally `https://app-apx.your-domain`) in your browser and verify that you can reach the `httpbin` application, and that the TLS certificate is reported as valid in the browser.
 
 5. **Undeploy Test Resources**:
 
