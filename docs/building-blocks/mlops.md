@@ -27,7 +27,7 @@ The MLOps Building Block comprises the following components:
 
 - **SharingHub**: A web application offering collaborative services for ML development.
 - **MLflow SharingHub**: A custom version of MLflow integrated with SharingHub for tracking experiments and managing models.
-- **GitLab**: Used for version control, issue tracking, and CI/CD (can be an existing instance).
+- **GitLab**: Used for version control, issue tracking, and CI/CD (can be an existing instance). This deployment is intended for evaluation purposes and is not recommended for production use.
 
 ---
 ## Prerequisites
@@ -136,7 +136,12 @@ helm upgrade -i gitlab gitlab/gitlab \
   --values gitlab/generated-values.yaml
 ```
 
-**Note:** Wait for all GitLab pods to be up and running before proceeding.
+**Important Notice Regarding GitLab Deployment:**
+
+The provided Helm chart and configuration values for GitLab are intended for **evaluation and testing purposes only**. During deployment, you may encounter messages labeled as "CRITICAL," stating that certain components like **PostgreSQL**, **Redis**, and **Gitaly** are included for evaluation and are not supported by GitLab for production workloads. 
+
+For production instances, it's recommended to use GitLab's **Cloud Native Hybrid** deployment method. Refer to the [GitLab Production Deployment Documentation](https://docs.gitlab.com/charts/installation/index.html#use-the-reference-architectures) for more information.
+
 
 ### 4. Set Up GitLab OAuth Application
 
