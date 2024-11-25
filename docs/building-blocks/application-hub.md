@@ -223,7 +223,7 @@ For a comprehensive guide, visit the [Application-Hub Context Configuration](htt
 
 To uninstall the Application Hub and clean up associated resources:
 
-`helm uninstall application-hub`
+`helm uninstall application-hub -n application-hub`
 
 ***
 ## Further Reading
