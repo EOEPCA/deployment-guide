@@ -1,0 +1,60 @@
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: opa
+spec:
+  http:
+    - name: opa
+      backends:
+        - serviceName: opal-client
+          servicePort: 8181
+      match:
+        hosts:
+          - opa-apx.$INGRESS_HOST
+        paths:
+          - /*
+      plugins:
+        # TODO: Configure client secrets through secretRef
+        - name: openid-connect
+          enable: true
+          config:
+            client_id: "opa"
+            client_secret: "secret-value-here"
+            access_token_in_authorization_header: true
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+        - name: authz-keycloak
+          enable: true
+          config:
+            client_id: "opa"
+            client_secret: "secret-value-here"
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            lazy_load_paths: true
+            ssl_verify: false
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: opa-apx
+spec:
+  dnsNames:
+    - opa-apx.$INGRESS_HOST
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod-apx
+  secretName: opa-apx-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: keycloak
+spec:
+  hosts:
+    - opa-apx.$INGRESS_HOST
+  secret:
+    name: opa-apx-tls
+    namespace: iam

@@ -19,6 +19,8 @@ export KEYCLOAK_POSTGRES_PASSWORD=changeme
 envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomization.yaml
 envsubst <keycloak/values-template.yaml >keycloak/generated-values.yaml
 envsubst <keycloak/ingress-template.yaml >keycloak/generated-ingress.yaml
+
+envsubst <opa/ingress-template.yaml >opa/generated-ingress.yaml
 ```
 
 ## Keycloak
@@ -53,9 +55,32 @@ kubectl -n iam apply -f keycloak/generated-ingress.yaml
 kubectl -n iam delete -f keycloak/generated-ingress.yaml
 kubectl -n iam delete -k keycloak/secrets
 helm -n iam uninstall keycloak
-kubectl delete ns iam
 ```
 
 ## Open Policy Agent (OPA)
 
-TBD
+### Helm Chart
+
+```bash
+helm repo add opal https://permitio.github.io/opal-helm-chart && \
+helm repo update opal && \
+helm upgrade -i opa opal/opal \
+  --values opa/values.yaml \
+  --version 0.0.28 \
+  --namespace iam \
+  --create-namespace
+```
+
+### Ingress
+
+```bash
+kubectl -n iam apply -f opa/generated-ingress.yaml
+```
+
+### Uninstall
+
+```bash
+kubectl -n iam delete -f opa/generated-ingress.yaml
+helm -n iam uninstall opa
+```
+

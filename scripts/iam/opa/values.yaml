@@ -1,0 +1,141 @@
+# Adapted values.yaml for EOEPCA IAM BB (derived from
+# https://github.com/permitio/opal-helm-chart/blob/master/values.yaml)
+
+image:
+  client:
+    registry: docker.io
+    repository: permitio/opal-client
+  server:
+    registry: docker.io
+    repository: permitio/opal-server
+  pgsql:
+    registry: docker.io
+    repository: postgres
+    tag: alpine
+
+server:
+  port: 7002
+  # policyRepoUrl: "https://github.com/permitio/opal-example-policy-repo"
+  policyRepoUrl: https://github.com/EOEPCA/keycloak-opa-plugin.git/
+  policyRepoSshKey: null
+  policyRepoClonePath: null
+  policyRepoMainBranch: opatest
+  # Poll only every 5min for now. May be reduced or reconfigured to use webhooks if required.
+  pollingInterval: 300
+  dataConfigSources:
+    # Option #1 - No data sources
+    config:
+      entries: []
+
+    # Option #2 - Dynamically get data sources
+    # external_source_url: "https://your-api.com/path/to/api/endpoint"
+
+    # Option #3 - Example static data sources (endpoint is empty by default)
+    # config:
+    #   entries:
+    #   - url: http://opal-server:7002/policy-data
+    #     topics: ["policy_data"]
+    #     dst_path: "/static"
+
+    # Option #4 - Leave config empty and instead supply using the OPAL_DATA_CONFIG_SOURCES environment variable through env or secret
+    # config: null
+
+  broadcastUri: null
+  broadcastPgsql: true
+  uvicornWorkers: 4
+  replicas: 1
+  extraEnv: {
+    # "CUSTOM_ENV_VAR": "VALUE"
+  }
+
+client:
+  port: 7000
+  opaPort: 8181
+  replicas: 1
+  # If you need to specify a custom hostname for the opal-sever, configure the serverUrl property
+  # serverUrl: http://custom-hostname-for-opal:opal-port
+  opaStartupData:
+    policy.rego: |
+      # Simple example policy gives everyone read access to non-system documents
+      # and only gives a root user full access.
+      package system.authz
+      import rego.v1
+      jwks_request(url) := http.send({
+        "url": url,
+        "method": "GET",
+        "force_cache": true,
+        "force_cache_duration_seconds": 3600 # Cache response for an hour
+      })
+      jwks := jwks_request("http://keycloak/realms/eoepca/protocol/openid-connect/certs").raw_body
+      echo := input if {
+        print(input)
+      }
+      default allow_policy_evaluation := false
+      allow_policy_evaluation if {
+        # Generally allow GET and POST on /v1/data/**
+        #"GET" == input.method
+        input.method in ["GET", "POST"]
+        "v1" == input.path[0]
+        "data" == input.path[1]
+        "system" != input.path[2]
+      }
+      allow_policy_evaluation if {
+        # Generally allow POST on /v1/query
+        "POST" == input.method
+        ["v1", "query"] == input.path
+      }
+      allow_policy_evaluation if {
+        # Generally allow GET on /
+        "GET" == input.method
+        [""] == input.path
+        print("GET /, Input: ", input)
+      }
+      # Claims from JWT if JWT is present and can be verified; null otherwise 
+      default verified_claims = null
+      verified_claims := claims if {
+        [type, token] := split(input.headers["Authorization"][_], " ")
+        type == "Bearer"
+        io.jwt.verify_rs256(token, jwks) == true
+        claims := io.jwt.decode(token)[1]
+      }
+      default allow := false
+      allow if {
+        # Allow everything for "root" identity
+        "root$secret" == input.identity
+        print("Root identity, Input: ", input)
+      }
+      allow if {
+        # Preliminarily allow policy evaluation if Authorization header is unset,
+        # i.e., if the request is anonymous, but originates from within the cluster
+        print("Request data input: ", input)
+        not input.headers["Authorization"]
+        allow_policy_evaluation == true
+        print("AuthZ unset, Input: ", input)
+      }
+      allow if {
+        # Allow authenticated users to evaluate policies 
+        claims := verified_claims
+        claims != null
+        allow_policy_evaluation == true
+        print("External, Input: ", input, " Claims: ", claims)
+      }
+      allow if {
+        # Allow selected Werum users to GET arbitrary URLs 
+        claims := verified_claims
+        claims.email in ["w-scho@werum.de", "w-jfe@werum.de", "w-mwo@werum.de"]
+        input.method = "GET"
+        print("External, Input: ", input, " Claims: ", claims)
+      }
+  extraEnv:
+    OPAL_POLICY_STORE_URL: http://localhost:8181
+    OPAL_POLICY_STORE_AUTH_TYPE: token
+    OPAL_POLICY_STORE_AUTH_TOKEN: root$secret
+    OPAL_INLINE_OPA_LOG_FORMAT: full
+    OPAL_DATA_UPDATER_ENABLED: False
+    OPAL_INLINE_OPA_CONFIG: >-
+      {
+        "addr": "http://0.0.0.0:8181",
+        "authentication": "token",
+        "authorization": "basic",
+        "files": [ "/opt/opa/startup-data/policy.rego" ]
+      }
