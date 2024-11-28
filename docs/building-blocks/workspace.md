@@ -36,6 +36,7 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
 | APISIX Ingress Controller | Properly installed                         | [Installation Guide](../infra/ingress-controller.md#apisix-ingress-controller)      |
 | Git Repository     | Access to a Git repository (e.g., GitHub, GitLab) | N/A                                                               |
+| Keycloak Client    | `workspace-bb` Keycloak client for IAM integration | [See Guide Below](#create-iam-client) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -51,6 +52,13 @@ Run the validation script to ensure all prerequisites are met:
 ```bash
 bash check-prerequisites.sh
 ```
+
+---
+
+## Create IAM Client
+
+**TODO** - describe how to create the `workspace-bb` client in Keycloak for IAM integration.<br>
+The client secret is required in the deployment steps.
 
 ---
 
