@@ -52,6 +52,7 @@ jupyterhub:
       kubespawner_override:
         cpu_limit: 4
         mem_limit: "8G"
+
 nodeSelector:
-  key: "node-role.kubernetes.io/worker"
+  key: "${NODE_SELECTOR_KEY}"
   value: "true"

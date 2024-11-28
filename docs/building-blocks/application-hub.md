@@ -107,11 +107,14 @@ bash configure-app-hub.sh
 2. **Key Configuration Parameters**:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
-  - *Example*: `example.com`
+    - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-  - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-prod`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
-  - *Example*: `default`
+    - *Example*: `default`
+- **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
+    - *Example*: `node-role.kubernetes.io/worker`
+    - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`APPHUB_CLIENT_SECRET`**: Client secret for OAuth2
 
 **Important Notes:**
@@ -121,14 +124,9 @@ bash configure-app-hub.sh
     - The required TLS secret names are:
       - `app-hub-tls`
     - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
-- **Node Selection**<br>
-  The generated helm values include a `nodeSelector` that identifies the target nodes for spawned workloads...<br>
-  ```
-  nodeSelector:
-    key: "node-role.kubernetes.io/worker"
-    value: "true"
-  ```
-  As required, this node selector must be adjusted according to your Kubernetes cluster.
+
+---
+
 
 1. **Deploy the Application Hub Using Helm**
 
@@ -223,7 +221,7 @@ For a comprehensive guide, visit the [Application-Hub Context Configuration](htt
 
 To uninstall the Application Hub and clean up associated resources:
 
-`helm uninstall application-hub`
+`helm uninstall application-hub -n application-hub`
 
 ***
 ## Further Reading
