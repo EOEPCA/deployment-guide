@@ -1,0 +1,82 @@
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: workspace-api
+spec:
+  http:
+    - name: workspace-api-docs
+      match:
+        hosts:
+          - workspace-api-apx.$INGRESS_HOST
+        paths:
+          - /*
+        exprs:
+          - subject:
+              scope: Path
+            op: RegexMatch
+            value: "^/(docs(/.*|$)|openapi.json$)"
+      backends:
+        - serviceName: workspace-api
+          servicePort: 8080
+      plugins:
+        - name: redirect
+          enable: true
+          config:
+            http_to_https: true
+        # # Require authentication for access to docs
+        # - name: openid-connect
+        #   enable: true
+        #   config:
+        #     access_token_in_authorization_header: true
+        #     discovery: "https://iam-auth.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+        #   secretRef: workspace-api-client
+    - name: workspace-api
+      match:
+        hosts:
+          - workspace-api-apx.$INGRESS_HOST
+        paths:
+          - /*
+      backends:
+        - serviceName: workspace-api
+          servicePort: 8080
+      plugins:
+        - name: redirect
+          enable: true
+          config:
+            http_to_https: true
+        # Require authorization for access to API
+        - name: authz-keycloak
+          enable: true
+          config:
+            discovery: "https://iam-auth.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            lazy_load_paths: true
+            ssl_verify: false
+          secretRef: workspace-api-client
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: workspace-api-apx
+spec:
+  dnsNames:
+    - workspace-api-apx.$INGRESS_HOST
+  issuerRef:
+    kind: ClusterIssuer
+    name: ${CLUSTER_ISSUER}-apx
+  secretName: workspace-api-apx-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: workspace-api-apx
+spec:
+  hosts:
+    - workspace-api-apx.$INGRESS_HOST
+  secret:
+    name: workspace-api-apx-tls
+    namespace: workspace

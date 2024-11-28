@@ -25,4 +25,11 @@ kubectl create secret generic minio-secret \
   --from-literal=AWS_REGION="$S3_REGION" \
   --namespace workspace
 
+# TODO - create Keycloak client for Workspace and use state env for secret
+WORKSPACE_CLIENT_SECRET="client-secret-here"
+kubectl create secret generic workspace-api-client \
+  --from-literal=client_id="workspace-bb" \
+  --from-literal=client_secret="$WORKSPACE_CLIENT_SECRET" \
+  --namespace workspace
+
 echo "✅ Secrets applied."

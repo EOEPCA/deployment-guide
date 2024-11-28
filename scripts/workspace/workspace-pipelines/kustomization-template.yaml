@@ -2,13 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/function-patch-and-transform.yaml
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/provider-kubernetes.yaml
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/provider-minio.yaml
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/storage/definition.yaml
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/storage/composition.yaml
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/workspace/definition.yaml
-  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.0.2/setup/eoepca-demo/workspace/composition.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/function-patch-and-transform.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/provider-kubernetes.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/provider-minio.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/storage/definition.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/storage/composition.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/workspace/definition.yaml
+  - https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/0.1.0/setup/eoepca-demo/workspace/composition.yaml
 
 patches:
 - target:
@@ -25,3 +25,17 @@ patches:
     - op: replace
       path: /spec/pipeline/0/input/resources/3/base/spec/forProvider/manifest/spec/template/spec/containers/0/env/5/value
       value: https://minio.${INGRESS_HOST}
+- target:
+    kind: Composition
+    name: workspace
+  patch: |
+    - op: replace
+      path: /spec/pipeline/0/input/resources/5/patches/1/transforms/0/string/fmt
+      value: '%s.${INGRESS_HOST}'
+- target:
+    kind: Composition
+    name: workspace
+  patch: |
+    - op: replace
+      path: /spec/pipeline/0/input/resources/5/patches/2/transforms/0/string/fmt
+      value: '%s.${INGRESS_HOST}'

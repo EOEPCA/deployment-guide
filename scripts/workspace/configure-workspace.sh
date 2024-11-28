@@ -22,6 +22,7 @@ ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 
 # Generate configuration files
 envsubst <"workspace-api/values-template.yaml" >"workspace-api/generated-values.yaml"
+envsubst <"workspace-api/ingress-template.yaml" >"workspace-api/generated-ingress.yaml"
 envsubst <"workspace-ui/values-template.yaml" >"workspace-ui/generated-values.yaml"
 envsubst <"workspace-admin/values-template.yaml" >"workspace-admin/generated-values.yaml"
 envsubst <"workspace-pipelines/kustomization-template.yaml" >"workspace-pipelines/kustomization.yaml"
@@ -38,6 +39,6 @@ if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""
     echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
     echo "- workspace-admin-tls"
-    echo "- workspace-api-v2-tls"
+    echo "- workspace-api-tls"
     echo "- workspace-ui-tls"
 fi
