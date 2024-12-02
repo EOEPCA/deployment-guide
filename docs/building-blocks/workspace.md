@@ -34,8 +34,9 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | Helm               | Version 3.7 or newer                              | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
-| Ingress Controller | Properly installed (e.g., NGINX)                  | [Installation Guide](../infra/ingress-controller.md)      |
+| APISIX Ingress Controller | Properly installed                         | [Installation Guide](../infra/ingress-controller.md#apisix-ingress-controller)      |
 | Git Repository     | Access to a Git repository (e.g., GitHub, GitLab) | N/A                                                               |
+| Keycloak Client    | `workspace-bb` Keycloak client for IAM integration | [See Guide Below](#create-iam-client) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -51,6 +52,13 @@ Run the validation script to ensure all prerequisites are met:
 ```bash
 bash check-prerequisites.sh
 ```
+
+---
+
+## Create IAM Client
+
+**TODO** - describe how to create the `workspace-bb` client in Keycloak for IAM integration.<br>
+The client secret is required in the deployment steps.
 
 ---
 
@@ -91,13 +99,14 @@ bash apply-secrets.sh
 
 - `harbor-admin-password`
 - `minio-secret`
+- `workspace-api-client`
 
 **Important Notes:**
 
 - If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
   - The required TLS secret names are:
     - `workspace-admin-tls`
-    - `workspace-api-v2-tls`
+    - `workspace-api-tls`
     - `workspace-ui-tls`
   - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
 
@@ -121,12 +130,20 @@ helm upgrade -i workspace-crossplane crossplane/crossplane \
 **Install the Workspace API:**
 
 ```bash
-helm repo add eoepca https://eoepca.github.io/helm-charts && \
-helm repo update eoepca && \
-helm upgrade -i workspace-api-v2 eoepca/rm-workspace-api \
-  --version 1.4.2 \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
+helm repo update eoepca-dev && \
+helm upgrade -i workspace-api eoepca-dev/rm-workspace-api \
+  --version 2.0.0 \
   --namespace workspace \
   --values workspace-api/generated-values.yaml
+```
+
+**Workspace API Ingress**
+
+Note the ingress for the Workspace API is established using APISIX resources (ApisixRoute, ApisixTls). It is assumed that the `ClusterIssuer` dedicated to APISIX routes has been created (`letsencrypt-prod-apx`) - as described in section [Using Cert-Manager](../infra/tls/cert-manager.md).
+
+```bash
+kubectl -n workspace apply -f workspace-api/generated-ingress.yaml
 ```
 
 ### 5. Deploy the Workspace Pipelines
@@ -198,21 +215,21 @@ bash validation.sh
 
 **Further Validation:**
 
-1. **Check Kubernetes Resources:**
+### 1. **Check Kubernetes Resources**
 
 ```bash
 kubectl get all -n workspace
 ```
 
-2. **Access Workspace API:**
+### 2. **Access Workspace API**
 
 View the Swagger documentation for the Workspace API:
 
 ```
-https://workspace-api-v2.${INGRESS_HOST}/docs
+https://workspace-api.${INGRESS_HOST}/docs
 ```
 
-3. **Access Workspace UI:**
+### 3. **Access Workspace UI**
 
 To access the Workspace UI, you will need the password that was generated during the configuration script. 
 
@@ -223,17 +240,110 @@ https://workspace-ui.${INGRESS_HOST}/
 ```
 
 
-4. **Access Workspace Admin Dashboard:**
+### 4. **Access Workspace Admin Dashboard**
 
 ```
 https://workspace-admin.${INGRESS_HOST}/
 ```
 
-5. **Test Workspace Functionality:**
+### 6. **Create and check a new workspace**
 
-- Create a new workspace using the Workspace API or UI.
-- Verify that the workspace is created and resources are provisioned.
-- Check that you can access the services within the workspace.
+Apply a `Workspace` resource...
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: epca.eo/v1beta1
+kind: Workspace
+metadata:
+  name: ws-deploytest
+  namespace: workspace
+spec:
+  subscription: bronze
+EOF
+```
+
+Check a new namespace is created for the workspace...
+
+```bash
+kubectl get ns ws-deploytest
+```
+
+Check storage buckets (`ws-deploytest` and `ws-deploytest-stage`) are created for the workspace...
+
+```bash
+kubectl -n ws-deploytest get bucket
+```
+
+Get details for the new workspace via the workspace API...
+
+_For simplicity, using port forward to bypass authorization (leave running in terminal)_
+```bash
+kubectl -n workspace port-forward svc/workspace-api 8080:8080
+```
+
+Then call the API via localhost...
+
+```bash
+curl http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json'
+```
+
+Use the S3 credentials (response `storage.credentials.secret`) to access the buckets...
+
+```bash
+SECRET="$(curl -s http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
+```
+
+Set your deployment domain...
+
+```bash
+INGRESS_HOST=<your-platform>
+```
+
+List buckets...
+
+```bash
+s3cmd ls \
+  --host minio.${INGRESS_HOST} \
+  --host-bucket minio.${INGRESS_HOST} \
+  --access_key ws-deploytest \
+  --secret_key $SECRET
+```
+
+Put a file...
+
+```bash
+s3cmd put validation.sh s3://ws-deploytest \
+  --host minio.${INGRESS_HOST} \
+  --host-bucket minio.${INGRESS_HOST} \
+  --access_key ws-deploytest \
+  --secret_key $SECRET
+```
+
+Check the bucket...
+
+```bash
+s3cmd ls s3://ws-deploytest \
+  --host minio.${INGRESS_HOST} \
+  --host-bucket minio.${INGRESS_HOST} \
+  --access_key ws-deploytest \
+  --secret_key $SECRET
+```
+
+Empty the bucket...
+
+```bash
+s3cmd del s3://ws-deploytest/validation.sh \
+  --host minio.${INGRESS_HOST} \
+  --host-bucket minio.${INGRESS_HOST} \
+  --access_key ws-deploytest \
+  --secret_key $SECRET
+```
+
+Delete the workspace...
+
+```bash
+kubectl -n workspace delete workspaces ws-deploytest
+```
 
 ---
 
@@ -244,7 +354,8 @@ To uninstall the Workspace Building Block and clean up associated resources:
 ```bash
 helm uninstall workspace-ui -n workspace ; \
 helm uninstall workspace-admin -n workspace ; \
-helm uninstall workspace-api-v2 -n workspace ; \
+kubectl -n workspace delete -f workspace-api/generated-ingress.yaml; \
+helm uninstall workspace-api -n workspace ; \
 helm uninstall workspace-crossplane -n workspace ; \
 kubectl delete -k workspace-pipelines -n workspace ; \
 kubectl delete namespace workspace

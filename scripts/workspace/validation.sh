@@ -21,7 +21,7 @@ check_service_exists "workspace" "workspace-admin-web"
 check_service_exists "workspace" "workspace-ui"
 
 # Check ingress
-check_url_status_code "$HTTP_SCHEME://workspace-api-v2.$INGRESS_HOST/docs" "200"
+check_url_status_code "$HTTP_SCHEME://workspace-api-apx.$INGRESS_HOST/docs" "200"
 check_url_status_code "$HTTP_SCHEME://workspace-ui.$INGRESS_HOST" "200"
 check_url_status_code "$HTTP_SCHEME://workspace-admin.$INGRESS_HOST" "200"
 

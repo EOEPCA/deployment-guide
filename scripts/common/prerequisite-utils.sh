@@ -136,6 +136,18 @@ function check_ingress_controller_installed() {
     fi
 }
 
+# Improve this
+function check_apisix_ingress_controller_installed() {
+    if ! kubectl get pods --all-namespaces | grep -q "apisix-ingress-controller"; then
+        echo "⚠️  APISIX Ingress Controller is not installed in the cluster."
+        echo "   Please install APISIX Ingress Controller: https://eoepca.readthedocs.io/projects/deploy/en/2.0-beta/infra/ingress-controller/#apisix-ingress-controller"
+        return 1
+    else
+        echo "✅ APISIX Ingress Controller is installed."
+        return 0
+    fi
+}
+
 function check_keycloak_accessible() {
     local KEYCLOAK_URL="$1"
     if curl -s -o /dev/null -w "%{http_code}" $HTTP_SCHEME://"$KEYCLOAK_URL" | grep -qE "200"; then

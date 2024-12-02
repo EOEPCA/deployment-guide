@@ -1,28 +1,26 @@
 fullnameOverride: workspace-api
 existingSecret: harbor
+image:
+  tag: 2.0.0_pre1
+  pullPolicy: Always
 ingress:
-  enabled: true
-  annotations:
-    ${CLUSTER_ISSUER_ANNOTATION}
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-  hosts:
-    - host: workspace-api-v2.${INGRESS_HOST}
-      paths: ["/"]
-  tls:
-    - hosts:
-        - workspace-api-v2.${INGRESS_HOST}
-      secretName: workspace-api-v2-tls
-fluxHelmOperator:
   enabled: false
-prefixForName: "ws-v2"
+  # annotations:
+  #   ${CLUSTER_ISSUER_ANNOTATION}
+  #   kubernetes.io/ingress.class: nginx
+  #   nginx.ingress.kubernetes.io/enable-cors: "true"
+  #   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+  # hosts:
+  #   - host: workspace-api.${INGRESS_HOST}
+  #     paths: ["/"]
+  # tls:
+  #   - hosts:
+  #       - workspace-api.${INGRESS_HOST}
+  #     secretName: workspace-api-tls
+prefixForName: "ws-"
 workspaceSecretName: "bucket"
-namespaceForBucketResource: rm
 s3Endpoint: ${S3_ENDPOINT}
 s3Region: ${S3_REGION}
 harborUrl: "$HTTP_SCHEME://harbor.${INGRESS_HOST}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor-admin-password"
-workspaceChartsConfigMap: "workspace-charts"
-bucketEndpointUrl: "http://minio-bucket-api.infra:8080/bucket"

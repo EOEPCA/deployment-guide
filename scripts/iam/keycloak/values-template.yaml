@@ -1,0 +1,25 @@
+global:
+  storageClass: $STORAGE_CLASS
+# image:
+#   registry: byud8gih.c1.de1.container-registry.ovh.net
+#   repository: eoepca/keycloak-with-opa-plugin
+#   tag: 0.3.1
+  # pullPolicy: Always
+auth:
+  adminUser: $KEYCLOAK_ADMIN_USER
+  adminPassword: $KEYCLOAK_ADMIN_PASSWORD
+  # existingSecret: ""
+proxy: edge
+extraEnvVars:
+  - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
+    value: "http://opal-client:8181/v1/data/"
+  - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
+    value: "/opt/bitnami/keycloak/conf/opa-policies"
+  - name: KC_HOSTNAME_URL
+    value: "https://auth-apx.$INGRESS_HOST"
+  - name: KC_HOSTNAME_ADMIN_URL
+    value: "https://auth-apx.$INGRESS_HOST"
+postgresql:
+  auth:
+    existingSecret: kc-postgres
+resourcesPreset: "large"
