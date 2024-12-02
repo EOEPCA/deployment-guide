@@ -51,7 +51,7 @@ spec:
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
 metadata:
-  name: keycloak
+  name: opa
 spec:
   hosts:
     - opa-apx.$INGRESS_HOST
