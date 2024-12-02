@@ -80,6 +80,7 @@ kubectl -n iam apply -f opa/generated-ingress.yaml
 ### Uninstall
 
 ```bash
+kubectl -n iam delete cm/opa-startup-data
 kubectl -n iam delete -f opa/generated-ingress.yaml
 helm -n iam uninstall opa
 ```
