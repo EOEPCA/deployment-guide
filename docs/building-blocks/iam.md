@@ -221,5 +221,49 @@ kubectl -n iam apply -f opa/generated-ingress.yaml
 ```bash
 kubectl -n iam delete cm/opa-startup-data
 kubectl -n iam delete -f opa/generated-ingress.yaml
+kubectl -n iam delete -k opa/secrets
 helm -n iam uninstall opa
 ```
+
+#### Delete the `opa` Keycloak client
+
+Get the access token...
+
+```bash
+source ~/.eoepca/state
+export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
+export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+```
+
+Get the unique ID for the `opa` client...
+
+```bash
+OPA_CLIENT_ID="$( \
+  curl --silent --show-error \
+    -X GET \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Content-Type: application/json" \
+    "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
+    | jq -r '.[] | select(.clientId == "opa") | .id' \
+)"
+```
+
+Delete the client...
+
+```bash
+curl --silent --show-error \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${OPA_CLIENT_ID}"
+```
+
