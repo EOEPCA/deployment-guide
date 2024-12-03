@@ -104,6 +104,24 @@ curl --silent --show-error \
 EOF
 ```
 
+### Integrate GitHub as External IdP
+
+#### Create GitHub client
+
+To create a GitHub client for Keycloak to use for integration, follow the steps in the [GitHub Configuration](https://eoepca.readthedocs.io/projects/iam/en/latest/admin/configuration/github-idp/github-setup-idp/#github-configuration) section of the IAM documentation.
+
+Make note of the **client ID** and **client Secret**.
+
+#### Configure Keycloak
+
+To configure Keycloak integration with GitHub, using the above client credentials, follow the steps in the [Keycloak Configuration](https://eoepca.readthedocs.io/projects/iam/en/latest/admin/configuration/github-idp/github-setup-idp/#keycloak-configuration) section of the IAM documentation.
+
+#### Confirm Login via GitHub IdP
+
+Using a fresh browser session navigate to the user Account endpoint - `https://auth-apx.$INGRESS_HOST/realms/eoepca/account`.
+
+On the `Sign-in` page select GitHub, and follow the flow to authorise Keycloak to access your GitHub profile, and so complete login.
+
 ### Uninstall
 
 ```bash
