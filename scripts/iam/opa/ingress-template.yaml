@@ -20,14 +20,14 @@ spec:
           enable: true
           config:
             client_id: "opa"
-            client_secret: "changeme"
+            client_secret: "${OPA_CLIENT_SECRET}"
             access_token_in_authorization_header: true
             discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
         - name: authz-keycloak
           enable: true
           config:
             client_id: "opa"
-            client_secret: "changeme"
+            client_secret: "${OPA_CLIENT_SECRET}"
             discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false

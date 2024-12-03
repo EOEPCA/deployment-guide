@@ -13,6 +13,7 @@ cd deployment-guide/scripts/iam
 source ~/.eoepca/state
 export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
 export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+export OPA_CLIENT_SECRET=changeme  # TODO - should come from eoepca state
 
 envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomization.yaml
 envsubst <keycloak/values-template.yaml >keycloak/generated-values.yaml
@@ -158,6 +159,7 @@ kubectl -n iam apply -f opa/generated-ingress.yaml
 source ~/.eoepca/state
 export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
 export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+export OPA_CLIENT_SECRET=changeme  # TODO - should come from eoepca state
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -192,7 +194,7 @@ curl  \
   "webOrigins": ["/*"],
   "publicClient": false,
   "clientAuthenticatorType": "client-secret",
-  "secret": "changeme",
+  "secret": "${OPA_CLIENT_SECRET}",
   "directAccessGrantsEnabled": false,
   "serviceAccountsEnabled": true,
   "authorizationServicesEnabled": true,
