@@ -11,9 +11,10 @@ cd deployment-guide/scripts/iam
 
 ```bash
 source ~/.eoepca/state
-export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
-export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
-export OPA_CLIENT_SECRET=changeme  # TODO - should come from eoepca state
+# TODO - should come from eoepca state...
+# export KEYCLOAK_ADMIN_USER=admin
+# export KEYCLOAK_ADMIN_PASSWORD=changeme
+# export OPA_CLIENT_SECRET=changeme
 
 envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomization.yaml
 envsubst <keycloak/values-template.yaml >keycloak/generated-values.yaml
@@ -55,8 +56,9 @@ kubectl -n iam apply -f keycloak/generated-ingress.yaml
 
 ```bash
 source ~/.eoepca/state
-export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
-export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+# TODO - should come from eoepca state...
+# export KEYCLOAK_ADMIN_USER=admin
+# export KEYCLOAK_ADMIN_PASSWORD=changeme
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -108,15 +110,71 @@ EOF
 
 ### Integrate GitHub as External IdP
 
-#### Create GitHub client
+This comprises to two parts...
 
-To create a GitHub client for Keycloak to use for integration, follow the steps in the [GitHub Configuration](https://eoepca.readthedocs.io/projects/iam/en/latest/admin/configuration/github-idp/github-setup-idp/#github-configuration) section of the IAM documentation.
+1. Creation of GitHub OAuth client
+2. Add GitHub as Kewycloak Identity Provider
 
-Make note of the **client ID** and **client Secret**.
+#### Create GitHub OAuth client
 
-#### Configure Keycloak
+Navigate to the GitHub [Register a new OAuth app](https://github.com/settings/applications/new) page to create a new client with the following settings (replacing the value for `${INGRESS_HOST}`)...
 
-To configure Keycloak integration with GitHub, using the above client credentials, follow the steps in the [Keycloak Configuration](https://eoepca.readthedocs.io/projects/iam/en/latest/admin/configuration/github-idp/github-setup-idp/#keycloak-configuration) section of the IAM documentation.
+* **_Application name_**: e.g. `eoepca` (something meaningful to you)
+* **_Homepage URL_**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca`
+* **_Authorization callback URL_**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint`
+
+Select to `Generate a new client secret`.
+
+Make note of the **_Client ID_** and **_Client Secret_** which are needed to configure the Identity Provider in Keycloak.
+
+#### Add GitHub as a Keycloak Identity Provider
+
+Integration of GitHub as a Keycloak Identity Provider can be achieved via the Keycloak API using the following steps.
+
+Get access token...
+
+```bash
+source ~/.eoepca/state
+# TODO - should come from eoepca state...
+# export KEYCLOAK_ADMIN_USER=admin
+# export KEYCLOAK_ADMIN_PASSWORD=changeme
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+```
+
+Create the GitHub identity provider...
+
+```bash
+source ~/.eoepca/state
+# TODO - should come from eoepca state...
+# export GITHUB_CLIENT_ID=<tbd>
+# export GITHUB_CLIENT_SECRET=<tbd>
+curl --silent --show-error \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/identity-provider/instances" <<EOF
+{
+  "alias": "github",
+  "providerId": "github",
+  "enabled": true,
+  "config": {
+    "clientId": "${GITHUB_CLIENT_ID}",
+    "clientSecret": "${GITHUB_CLIENT_SECRET}",
+    "redirectUri": "https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/login"
+  }
+}
+EOF
+```
 
 #### Confirm Login via GitHub IdP
 
@@ -140,9 +198,10 @@ helm -n iam uninstall keycloak
 
 ```bash
 source ~/.eoepca/state
-export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
-export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
-export OPA_CLIENT_SECRET=changeme  # TODO - should come from eoepca state
+# TODO - should come from eoepca state...
+# export KEYCLOAK_ADMIN_USER=admin
+# export KEYCLOAK_ADMIN_PASSWORD=changeme
+# export OPA_CLIENT_SECRET=changeme
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -231,8 +290,9 @@ Get the access token...
 
 ```bash
 source ~/.eoepca/state
-export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
-export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+# TODO - should come from eoepca state...
+# export KEYCLOAK_ADMIN_USER=admin
+# export KEYCLOAK_ADMIN_PASSWORD=changeme
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -266,4 +326,3 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${OPA_CLIENT_ID}"
 ```
-
