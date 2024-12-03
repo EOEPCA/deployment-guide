@@ -19,6 +19,7 @@ envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomi
 envsubst <keycloak/values-template.yaml >keycloak/generated-values.yaml
 envsubst <keycloak/ingress-template.yaml >keycloak/generated-ingress.yaml
 
+envsubst <opa/secrets/kustomization-template.yaml >opa/secrets/kustomization.yaml
 envsubst <opa/ingress-template.yaml >opa/generated-ingress.yaml
 ```
 
@@ -133,25 +134,7 @@ helm -n iam uninstall keycloak
 
 ## Open Policy Agent (OPA)
 
-### Helm Chart
-
-```bash
-helm repo add opal https://permitio.github.io/opal-helm-chart && \
-helm repo update opal && \
-helm upgrade -i opa opal/opal \
-  --values opa/values.yaml \
-  --version 0.0.28 \
-  --namespace iam \
-  --create-namespace
-```
-
-### Ingress
-
-```bash
-kubectl -n iam apply -f opa/generated-ingress.yaml
-```
-
-### Post-deployment Configuration
+### Create Keycloak client for OPA
 
 #### Get access token for administration
 
@@ -172,7 +155,7 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-#### Create Keycloak client for OPA
+#### Create the `opa` client
 
 ```bash
 # curl --silent --show-error \
@@ -212,6 +195,25 @@ curl --silent --show-error \
   -H "Content-Type: application/json" \
   "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
   | jq '.[] | select(.clientId == "opa")'
+```
+
+### Helm Chart
+
+```bash
+helm repo add opal https://permitio.github.io/opal-helm-chart && \
+helm repo update opal && \
+helm upgrade -i opa opal/opal \
+  --values opa/values.yaml \
+  --version 0.0.28 \
+  --namespace iam \
+  --create-namespace
+```
+
+### Ingress
+
+```bash
+kubectl -n iam apply -k opa/secrets
+kubectl -n iam apply -f opa/generated-ingress.yaml
 ```
 
 ### Uninstall
