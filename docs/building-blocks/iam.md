@@ -10,11 +10,9 @@ cd deployment-guide/scripts/iam
 ## En Vars
 
 ```bash
-export INGRESS_HOST=endvrpad.rconway.uk
-export STORAGE_CLASS=standard
-export KEYCLOAK_ADMIN_USER=admin
-export KEYCLOAK_ADMIN_PASSWORD=changeme
-export KEYCLOAK_POSTGRES_PASSWORD=changeme
+source ~/.eoepca/state
+export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
+export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
 
 envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomization.yaml
 envsubst <keycloak/values-template.yaml >keycloak/generated-values.yaml
@@ -49,6 +47,63 @@ kubectl -n iam apply -k keycloak/secrets
 kubectl -n iam apply -f keycloak/generated-ingress.yaml
 ```
 
+### Post-deployment Configuration
+
+#### Get access token for administration
+
+```bash
+source ~/.eoepca/state
+export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
+export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+```
+
+#### Create `eoepca` realm
+
+```bash
+curl --silent --show-error \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms" <<EOF
+{
+  "realm": "eoepca",
+  "enabled": true
+}
+EOF
+```
+
+#### (optional) Create a dedicated `eoepca` user for the new realm
+
+```bash
+curl --silent --show-error \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/users" <<EOF
+{
+  "username": "eoepca",
+  "enabled": true,
+  "credentials": [{
+    "type": "password",
+    "value": "changeme",
+    "temporary": false
+  }]
+}
+EOF
+```
+
 ### Uninstall
 
 ```bash
@@ -77,6 +132,68 @@ helm upgrade -i opa opal/opal \
 kubectl -n iam apply -f opa/generated-ingress.yaml
 ```
 
+### Post-deployment Configuration
+
+#### Get access token for administration
+
+```bash
+source ~/.eoepca/state
+export KEYCLOAK_ADMIN_USER=admin  # TODO - should come from eoepca state
+export KEYCLOAK_ADMIN_PASSWORD=changeme  # TODO - should come from eoepca state
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+```
+
+#### Create Keycloak client for OPA
+
+```bash
+# curl --silent --show-error \
+curl  \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" <<EOF
+{
+  "clientId": "opa",
+  "name": "OPA",
+  "description": "Open Policy Agent",
+  "enabled": true,
+  "protocol": "openid-connect",
+  "rootUrl": "https://opa-apx.${INGRESS_HOST}",
+  "baseUrl": "https://opa-apx.${INGRESS_HOST}",
+  "redirectUris": ["https://opa-apx.${INGRESS_HOST}/*", "/*"],
+  "webOrigins": ["/*"],
+  "publicClient": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "changeme",
+  "directAccessGrantsEnabled": false,
+  "serviceAccountsEnabled": true,
+  "authorizationServicesEnabled": true,
+  "frontchannelLogout": true
+}
+EOF
+```
+
+#### Check details of new `opa` client
+
+```bash
+curl --silent --show-error \
+  -X GET \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
+  | jq '.[] | select(.clientId == "opa")'
+```
+
 ### Uninstall
 
 ```bash
@@ -84,4 +201,3 @@ kubectl -n iam delete cm/opa-startup-data
 kubectl -n iam delete -f opa/generated-ingress.yaml
 helm -n iam uninstall opa
 ```
-
