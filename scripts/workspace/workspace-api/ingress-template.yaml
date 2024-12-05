@@ -5,32 +5,10 @@ metadata:
   name: workspace-api
 spec:
   http:
-    - name: workspace-api-docs
-      match:
-        hosts:
-          - workspace-api-apx.$INGRESS_HOST
-        paths:
-          - /*
-        exprs:
-          - subject:
-              scope: Path
-            op: RegexMatch
-            value: "^/(docs(/.*|$)|openapi.json$)"
-      backends:
-        - serviceName: workspace-api
-          servicePort: 8080
-      plugins:
-        - name: redirect
-          enable: true
-          config:
-            http_to_https: true
-        # # Require authentication for access to docs
-        # - name: openid-connect
-        #   enable: true
-        #   config:
-        #     access_token_in_authorization_header: true
-        #     discovery: "https://iam-auth.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
-        #   secretRef: workspace-api-client
+    # Route for main API
+    # * Requires Authz
+    # * But do not include OIDC Authn flow, which cannot conveniently be followed for an API
+    #   * Instead assume that the JWT is obtained independently
     - name: workspace-api
       match:
         hosts:
@@ -41,15 +19,50 @@ spec:
         - serviceName: workspace-api
           servicePort: 8080
       plugins:
-        - name: redirect
-          enable: true
-          config:
-            http_to_https: true
         # Require authorization for access to API
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "https://iam-auth.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            lazy_load_paths: true
+            ssl_verify: false
+          secretRef: workspace-api-client
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: workspace-api-swagger
+spec:
+  http:
+    # Route for use of API via swagger docs
+    # * Requires both Authn and Authz
+    - name: workspace-api-swagger
+      match:
+        hosts:
+          - workspace-swagger-apx.$INGRESS_HOST
+        paths:
+          - /*
+      backends:
+        - serviceName: workspace-api
+          servicePort: 8080
+      plugins:
+        # Rewrite / to /docs
+        - name: proxy-rewrite
+          enable: true
+          config:
+            regex_uri: ["^(/)?$", "/docs"]
+        # Authenticate - to obtain JWT that supports API (Authz) requests
+        - name: openid-connect
+          enable: true
+          config:
+            access_token_in_authorization_header: true
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+          secretRef: workspace-api-client
+        # Require authorization for access to API
+        - name: authz-keycloak
+          enable: true
+          config:
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
           secretRef: workspace-api-client
@@ -61,6 +74,7 @@ metadata:
 spec:
   dnsNames:
     - workspace-api-apx.$INGRESS_HOST
+    - workspace-swagger-apx.$INGRESS_HOST
   issuerRef:
     kind: ClusterIssuer
     name: ${CLUSTER_ISSUER}-apx
@@ -77,6 +91,7 @@ metadata:
 spec:
   hosts:
     - workspace-api-apx.$INGRESS_HOST
+    - workspace-swagger-apx.$INGRESS_HOST
   secret:
     name: workspace-api-apx-tls
     namespace: workspace

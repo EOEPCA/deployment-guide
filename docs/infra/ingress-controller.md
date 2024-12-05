@@ -139,8 +139,9 @@ helm upgrade -i apisix apisix/apisix \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \
+  --set apisix.pluginAttrs.redirect.https_port=443 \
   --set ingress-controller.enabled=true \
-  --set etcd.replicaCount=1  
+  --set etcd.replicaCount=1
 ```
 
 ### Uninstall APISIX
