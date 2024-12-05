@@ -14,6 +14,7 @@ source ~/.eoepca/state
 # TODO - should come from eoepca state...
 # export KEYCLOAK_ADMIN_USER=admin
 # export KEYCLOAK_ADMIN_PASSWORD=changeme
+# export KEYCLOAK_POSTGRES_PASSWORD=changeme
 # export OPA_CLIENT_SECRET=changeme
 
 envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomization.yaml
