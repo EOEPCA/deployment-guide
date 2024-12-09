@@ -139,9 +139,31 @@ helm upgrade -i apisix apisix/apisix \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \
+  --set apisix.pluginAttrs.redirect.https_port=443 \
   --set ingress-controller.enabled=true \
-  --set etcd.replicaCount=1  
+  --set etcd.replicaCount=1
 ```
+
+### Forced TLS Redirection
+
+The following `ApisixGlobalRule` is used to configure Apisix to redirect all `http` traffic to `https`.
+
+```bash
+cat - <<EOF | kubectl -n ingress-apisix apply -f -
+apiVersion: apisix.apache.org/v2
+kind: ApisixGlobalRule
+metadata:
+  name: redirect-to-tls
+spec:
+  plugins:
+    - name: redirect
+      enable: true
+      config:
+        http_to_https: true
+EOF
+```
+
+Note that, in principle, this `redirect` plugin with `http_to_https` can be used on individual `ApisixRoute` resources - rather than globally as above. However, it has been found that use of `http_to_https` on a specific route interferes with the `openid-connect` plugin that is also used for authentication. Hence the use of global `http_to_https` redirection.
 
 ### Uninstall APISIX
 

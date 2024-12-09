@@ -14,18 +14,6 @@ spec:
           - auth-apx.$INGRESS_HOST
         paths:
           - /*
-      plugins:
-        # Possible workaround for redirect-to-9443 problem that also works for HTTP
-        - name: serverless-pre-function
-          enable: true
-          config:
-            phase: "rewrite"
-            functions:
-              - "return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) > 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end"
-    # - name: redirect
-    #   enable: true
-    #   config:
-    #     http_to_https: true
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate

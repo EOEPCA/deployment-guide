@@ -55,10 +55,76 @@ bash check-prerequisites.sh
 
 ---
 
-## Create IAM Client
+## Create Keycloak client for Workspace BB
 
-**TODO** - describe how to create the `workspace-bb` client in Keycloak for IAM integration.<br>
+Create the `workspace-bb` client in Keycloak for IAM integration.<br>
 The client secret is required in the deployment steps.
+
+### Get access token for administration
+
+```bash
+source ~/.eoepca/state
+# TODO - should come from eoepca state...
+# export KEYCLOAK_ADMIN_USER=admin
+# export KEYCLOAK_ADMIN_PASSWORD=changeme
+# export WORKSPACE_CLIENT_SECRET=changeme
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+```
+
+### Create the `workspace-bb` client
+
+```bash
+# curl --silent --show-error \
+curl  \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" <<EOF
+{
+  "clientId": "workspace-bb",
+  "name": "Workspace BB",
+  "description": "Workspace Building Block",
+  "enabled": true,
+  "protocol": "openid-connect",
+  "rootUrl": "https://workspace-api-apx.${INGRESS_HOST}",
+  "baseUrl": "https://workspace-api-apx.${INGRESS_HOST}",
+  "redirectUris": [
+    "https://workspace-api-apx.${INGRESS_HOST}/*",
+    "https://workspace-swagger-apx.${INGRESS_HOST}/*",
+    "/*"
+  ],
+  "webOrigins": ["/*"],
+  "publicClient": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "${WORKSPACE_CLIENT_SECRET}",
+  "directAccessGrantsEnabled": false,
+  "serviceAccountsEnabled": true,
+  "authorizationServicesEnabled": true,
+  "frontchannelLogout": true
+}
+EOF
+```
+
+### Check details of new `workspace-bb` client
+
+```bash
+curl --silent --show-error \
+  -X GET \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
+  | jq '.[] | select(.clientId == "workspace-bb")'
+```
 
 ---
 
@@ -293,15 +359,10 @@ Use the S3 credentials (response `storage.credentials.secret`) to access the buc
 SECRET="$(curl -s http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
 ```
 
-Set your deployment domain...
-
-```bash
-INGRESS_HOST=<your-platform>
-```
-
 List buckets...
 
 ```bash
+source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \

@@ -1,5 +1,7 @@
 global:
   storageClass: $STORAGE_CLASS
+
+# Uncomment and modify the image section if using a custom Keycloak image with OPA plugin
 # image:
 #   registry: byud8gih.c1.de1.container-registry.ovh.net
 #   repository: eoepca/keycloak-with-opa-plugin
@@ -7,8 +9,7 @@ global:
   # pullPolicy: Always
 auth:
   adminUser: $KEYCLOAK_ADMIN_USER
-  adminPassword: $KEYCLOAK_ADMIN_PASSWORD
-  # existingSecret: ""
+  existingSecret: keycloak-admin
 proxy: edge
 extraEnvVars:
   - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
