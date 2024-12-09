@@ -25,8 +25,7 @@ fi
 
 # Create secret for Keycloak admin credentials
 kubectl create secret generic keycloak-admin \
-  --from-literal=username="$KEYCLOAK_ADMIN_USER" \
-  --from-literal=password="$KEYCLOAK_ADMIN_PASSWORD" \
+  --from-literal=admin-password="$KEYCLOAK_ADMIN_PASSWORD" \
   --namespace iam --dry-run=client -o yaml | kubectl apply -f -
 
 # Create secret for Keycloak PostgreSQL credentials

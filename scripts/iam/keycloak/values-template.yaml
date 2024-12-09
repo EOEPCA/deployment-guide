@@ -9,8 +9,7 @@ global:
   # pullPolicy: Always
 auth:
   adminUser: $KEYCLOAK_ADMIN_USER
-  adminPassword: $KEYCLOAK_ADMIN_PASSWORD
-  # existingSecret: keycloak-admin
+  existingSecret: keycloak-admin
 proxy: edge
 extraEnvVars:
   - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
