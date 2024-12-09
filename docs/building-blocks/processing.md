@@ -111,7 +111,7 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 ---
 
-## Validation and Operation
+## Validation
 
 **Automated Validation:**
 
@@ -141,78 +141,6 @@ https://zoo.<INGRESS_HOST>/ogc-api/processes/
 
 ---
 
-**Get List of Processes:**
-
-Retrieve the list of available processes.
-
-```bash
-curl -X GET "https://zoo.<INGRESS_HOST>/ogc-api/processes" \
--H "Accept: application/json"
-```
-
----
-
-**Deploy a Simple Process**
-
-For this example, we will deploy a water bodies detection process.
-You can view the CWL file itself in `/examples/water-bodies.cwl`.
-
-```bash
-curl -X POST "https://zoo.<INGRESS_HOST>/ogc-api/processes" \
--H "Content-Type: application/json" \
--d '{
-  "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/water-bodies.cwl",
-    "type": "application/cwl"
-  }
-}'
-```
-
----
-
-**Execute the Process:**
-
-Once the process is deployed, you can execute it.
-
-```bash
-curl -X POST "https://zoo.<INGRESS_HOST>/ogc-api/processes/water-bodies/execution" \
--H "Content-Type: application/json" \
--H "Prefer: respond-async" \
--d '{
-  "inputs": {
-    "stac_items": [
-      "raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/stac-item.json",
-    ],
-    "aoi": "-6.059593683367105,53.123645037009204,-4.727280797333244,54.133792015262706",
-    "epsg": "EPSG:4326",
-    "bands": [
-      "green",
-      "nir"
-    ]
-  }
-}'
-```
-
----
-
-**Retrieve Execution Result:**
-
-The response will contain a `location` header with the URL to check the job status.
-
-```bash
-curl -X GET "https://zoo.<INGRESS_HOST>/ogc-api/jobs/<jobId>" \
--H "Accept: application/json"
-```
-
-Once the job is completed, retrieve the result:
-
-```bash
-curl -X GET "https://zoo.<INGRESS_HOST>/ogc-api/jobs/<jobId>/results" \
--H "Accept: application/json"
-```
-
----
-
 **Validating Kubernetes Resources**
 
 Ensure that all Kubernetes resources are running correctly.
@@ -228,7 +156,194 @@ kubectl get pods -n processing
 
 ---
 
-### Uninstallation
+## Validation via the OGC API
+
+Validate the operation of the `zoo` service via its OGC API Processes interfaces.
+
+NOTE that the following API requests assume use of the `eoepca` test user.
+
+### List Processes
+
+Retrieve the list of available processes.
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X GET "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -H "Accept: application/json" | jq
+```
+
+### Deploy Process
+
+For a quick smoke test then use the `convert` application which is very simple and quick to run, but is sufficient to validate the operation of the deployment.
+
+For a more real-world example then the `water-bodies` application can be used.
+
+#### Deploy - `convert`
+
+Deploy the `convert` app...
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d @- <<EOF | jq
+{
+  "executionUnit": {
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/convert-url-app.cwl",
+    "type": "application/cwl"
+  }
+}
+EOF
+```
+
+Check the `convert` application is deployed...
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X GET "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -H "Accept: application/json" | jq
+```
+
+#### Deploy - `water-bodies`
+
+Deploy the `water-bodies` app...
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d @- <<EOF | jq
+{
+  "executionUnit": {
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/water-bodies.cwl",
+    "type": "application/cwl"
+  }
+}
+EOF
+```
+
+Check the `water-bodies` application is deployed...
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X GET "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies" \
+  -H "Accept: application/json" | jq
+```
+
+### Execute Process
+
+Initiate the execution of the deployed application.
+
+Execute either `convert` or `water-bodies` - depending on your needs.
+
+In either case the `JOB ID` of the execution is retained for use in subsequent API calls.
+
+#### Execute - `convert`
+
+```bash
+source ~/.eoepca/state
+JOB_ID=$(
+  curl --silent --show-error \
+    -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Prefer: respond-async" \
+    -d @- <<EOF | jq -r '.jobID'
+  {
+    "inputs": {
+      "fn": "resize",
+      "url":  "https://eoepca.org/media_portal/images/logo6_med.original.png",
+      "size": "50%"
+    }
+  }
+EOF
+)
+```
+
+#### Execute - `water-bodies`
+
+```bash
+source ~/.eoepca/state
+JOB_ID=$(
+  curl --silent --show-error \
+    -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies/execution" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Prefer: respond-async" \
+    -d @- <<EOF | jq -r '.jobID'
+  {
+    "inputs": {
+      "stac_items": [
+        "raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/stac-item.json",
+      ],
+      "aoi": "-6.059593683367105,53.123645037009204,-4.727280797333244,54.133792015262706",
+      "epsg": "EPSG:4326",
+      "bands": [
+        "green",
+        "nir"
+      ]
+    }
+  }
+EOF
+)
+```
+
+### Check Execution Status
+
+The `JOB ID` is used to monitor the progress of the job execution - most notably the status field that indicates whether the job is in-progress (`running`), or its completion status (`successful` / `failed`). Note that the full URL for job monitoring is also returned in the `Location` header of the http response to the execution request.
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X GET "https://zoo.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}" \
+  -H "Accept: application/json" | jq
+```
+
+### Check Execution Results
+
+Similarly, once the job is completed successfully, then details of the results (outputs) can be retrieved.
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X GET "https://zoo.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}/results" \
+  -H "Accept: application/json" | jq
+```
+
+The STAC files and assets comprising the results are referenced as links to object storage. Access the object storage console to inspect these outputs - see the [Object Storage description](../infra/minio.md) for more details.
+
+### Undeploy Process
+
+The deployed application can be deleted (undeployed) once it is no longer needed.
+
+#### Undeploy - `convert`
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X DELETE "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -H "Accept: application/json" | jq
+```
+
+#### Undeploy - `water-bodies`
+
+```bash
+source ~/.eoepca/state
+curl --silent --show-error \
+  -X DELETE "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies" \
+  -H "Accept: application/json" | jq
+```
+
+---
+
+## Uninstallation
 
 To remove the Processing Building Block from your cluster:
 
@@ -236,7 +351,7 @@ To remove the Processing Building Block from your cluster:
 helm -n processing uninstall zoo-project-dru
 ```
 
-#### Additional Cleanup
+### Additional Cleanup
 
 - **Delete Persistent Volume Claims (PVCs):**
 
@@ -244,9 +359,8 @@ helm -n processing uninstall zoo-project-dru
   kubectl -n processing delete pvc -l app.kubernetes.io/instance=zoo-project-dru
   ```
 
-
 ---
-### Further Reading
+## Further Reading
 
 - [ZOO-Project DRU Helm Chart](https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru)
 - [EOEPCA+Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
