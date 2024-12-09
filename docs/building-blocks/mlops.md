@@ -45,6 +45,7 @@ Before deploying the MLOps Building Block, ensure you have the following:
 | Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/)                             |
 | MinIO            | S3-compatible storage                  | [Installation Guide](https://min.io/docs/minio/kubernetes/upstream/index.html)                |
+| OIDC             | OpenID Connect (OIDC) Provider (e.g., Keycloak) | Installation guide coming soon. |
 
 **Clone the Deployment Guide Repository:**
 
