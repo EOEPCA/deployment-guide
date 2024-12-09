@@ -8,6 +8,7 @@ ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
 configure_cert
 ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the Application Hub pods" "node-role.kubernetes.io/worker" is_non_empty
+ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "true" is_non_empty
 
 # OAuth2 configuration
 ask "APPHUB_CLIENT_SECRET" "Enter the Keycloak client secret for App Hub" "" is_non_empty
