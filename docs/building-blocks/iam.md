@@ -1,33 +1,93 @@
-# IAM
+# Identity and Access Management (IAM) Deployment Guide
 
-## Clone Repo
+The **Identity and Access Management (IAM)** Building Block provides authentication and authorisation services within the EOEPCA+ ecosystem. It ensures users can access resources and services safely across the platform by managing identities, roles and permissions.
+
+### Key Components
+
+- **Keycloak**: An open-source identity and access management solution that handles user authentication and authorisation. It supports standard protocols like OpenID Connect (OIDC), OAuth 2.0, and SAML and allows for identity federation with external identity providers (IdPs) such as Google and GitHub.
+    
+- **Open Policy Agent (OPA)**: A policy engine used for fine-grained policy decisions. OPA evaluates policies written in a declarative language called Rego.
+    
+- **Open Policy Administration Layer (OPAL)**: Acts as a management layer for OPA, synchronising policies and related data from a Git repository.
+
+- **Keycloak-OPA Adapter Plugin**: Integrates Keycloak with OPA, allowing Keycloak to delegate policy evaluations to OPA.
+    
+- **APISIX Ingress Controller**: Serves as the Policy Enforcement Point (PEP), acting as a reverse proxy to enforce authentication and authorisation policies before requests reach the services.
+
+
+---
+
+## Prerequisites
+
+| Component          | Requirement                            | Documentation Link                                                |
+| ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
+| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
+| kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
+| Ingress Controller   | Properly installed                     | [Installation Guide](../infra/ingress-controller.md)  |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
+
+**Clone the Deployment Guide Repository:**
 
 ```bash
 git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/iam
 ```
 
-## En Vars
+**Validate your environment:**
+
+Run the validation script to ensure all prerequisites are met:
 
 ```bash
-source ~/.eoepca/state
-# TODO - should come from eoepca state...
-# export KEYCLOAK_ADMIN_USER=admin
-# export KEYCLOAK_ADMIN_PASSWORD=changeme
-# export KEYCLOAK_POSTGRES_PASSWORD=changeme
-# export OPA_CLIENT_SECRET=changeme
-
-envsubst <keycloak/secrets/kustomization-template.yaml >keycloak/secrets/kustomization.yaml
-envsubst <keycloak/values-template.yaml >keycloak/generated-values.yaml
-envsubst <keycloak/ingress-template.yaml >keycloak/generated-ingress.yaml
-
-envsubst <opa/secrets/kustomization-template.yaml >opa/secrets/kustomization.yaml
-envsubst <opa/ingress-template.yaml >opa/generated-ingress.yaml
+bash check-prerequisites.sh
 ```
 
-## Keycloak
+---
 
-### Helm Chart
+## Deployment Steps
+
+
+### 1. Configure the IAM Deployment
+
+Run the configuration script to collect user inputs and generate the necessary configuration files.
+
+```bash
+bash configure-iam.sh
+```
+
+**Configuration Parameters**
+
+During the script execution, you will be prompted to provide:
+
+- **`INGRESS_HOST`**: Base domain for ingress hosts.
+    - _Example_: `example.com`
+- **`STORAGE_CLASS`**: Kubernetes storage class for persistent volumes.
+    - _Example_: `standard`
+
+The script will also generate secure passwords for:
+
+- **`KEYCLOAK_ADMIN_PASSWORD`**: Password for the Keycloak admin account.
+- **`KEYCLOAK_POSTGRES_PASSWORD`**: Password for the Keycloak PostgreSQL database.
+
+These credentials will be stored in a state file at `~/.eoepca/state`.
+
+### 2. Install APISIX Ingress Controller
+
+If you haven't installed the APISIX Ingress Controller, follow these steps to install it in your cluster.
+
+Refer to the [APISIX Ingress Controller Deployment Guide](../infra/ingress-controller.md#apisix-ingress-controller) for detailed instructions.
+
+### 3. Apply Secrets
+
+```bash
+bash apply-secrets.sh
+```
+
+This script reads credentials from the state file and creates the necessary Kubernetes secrets.
+
+### 4. Deploy Keycloak
+
+**Install Keycloak using Helm:**
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami && \
@@ -39,27 +99,37 @@ helm upgrade -i keycloak bitnami/keycloak \
   --create-namespace
 ```
 
-### Secret for Postgres
-
-```bash
-kubectl -n iam apply -k keycloak/secrets
-```
-
-### Ingress
+**Apply the ingress configuration for Keycloak:**
 
 ```bash
 kubectl -n iam apply -f keycloak/generated-ingress.yaml
 ```
 
-### Post-deployment Configuration
+**Custom Keycloak Image**
 
-#### Get access token for administration
+If you have a custom Keycloak image that includes the Keycloak-OPA adapter plugin, you can specify it in the `keycloak/values-template.yaml` file by uncommenting and modifying the `image` section:
+
+```yaml
+image:
+  registry: your.registry
+  repository: eoepca/keycloak-with-opa-plugin
+  tag: your-tag
+  pullPolicy: Always
+```
+
+Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with your registry, repository, and tag.
+
+---
+
+### 5. Keycloak Post-Deployment Configuration
+
+After deploying Keycloak, you need to perform some post-deployment configurations.
+
+#### a. Obtain an Access Token for Administration
 
 ```bash
 source ~/.eoepca/state
-# TODO - should come from eoepca state...
-# export KEYCLOAK_ADMIN_USER=admin
-# export KEYCLOAK_ADMIN_PASSWORD=changeme
+
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -72,7 +142,9 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-#### Create `eoepca` realm
+This retrieves an access token using the admin credentials.
+
+#### b. Create the `eoepca` Realm
 
 ```bash
 curl --silent --show-error \
@@ -88,7 +160,9 @@ curl --silent --show-error \
 EOF
 ```
 
-#### (optional) Create a dedicated `eoepca` user for the new realm
+This creates a new realm named `eoepca`.
+
+#### c. (Optional) Create a Dedicated `eoepca` User
 
 ```bash
 curl --silent --show-error \
@@ -109,36 +183,36 @@ curl --silent --show-error \
 EOF
 ```
 
-### Integrate GitHub as External IdP
+Replace `"changeme"` with a secure password of your choice.
 
-This comprises to two parts...
+---
 
-1. Creation of GitHub OAuth client
-2. Add GitHub as Kewycloak Identity Provider
+### 6. Integrate GitHub as External Identity Provider
 
-#### Create GitHub OAuth client
+This involves two main steps:
 
-Navigate to the GitHub [Register a new OAuth app](https://github.com/settings/applications/new) page to create a new client with the following settings (replacing the value for `${INGRESS_HOST}`)...
+1. **Create a GitHub OAuth Application**
+2. **Add GitHub as a Keycloak Identity Provider**
 
-* **_Application name_**: e.g. `eoepca` (something meaningful to you)
-* **_Homepage URL_**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca`
-* **_Authorization callback URL_**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint`
+#### a. Create a GitHub OAuth Application
 
-Select to `Generate a new client secret`.
+Navigate to the GitHub [Register a new OAuth application](https://github.com/settings/applications/new) page to create a new application with the following settings (replace `${INGRESS_HOST}` with your actual domain):
 
-Make note of the **_Client ID_** and **_Client Secret_** which are needed to configure the Identity Provider in Keycloak.
+- **Application Name**: e.g., `EOEPCA`
+- **Homepage URL**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca`
+- **Authorization Callback URL**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint`
 
-#### Add GitHub as a Keycloak Identity Provider
+Generate a new client secret.
 
-Integration of GitHub as a Keycloak Identity Provider can be achieved via the Keycloak API using the following steps.
+Make note of the **Client ID** and **Client Secret**; you will need them in the next step.
 
-Get access token...
+#### b. Add GitHub as a Keycloak Identity Provider
+
+Obtain an access token for administration (if not already done):
 
 ```bash
 source ~/.eoepca/state
-# TODO - should come from eoepca state...
-# export KEYCLOAK_ADMIN_USER=admin
-# export KEYCLOAK_ADMIN_PASSWORD=changeme
+
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -151,13 +225,16 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-Create the GitHub identity provider...
+Set your GitHub OAuth application credentials:
 
 ```bash
-source ~/.eoepca/state
-# TODO - should come from eoepca state...
-# export GITHUB_CLIENT_ID=<tbd>
-# export GITHUB_CLIENT_SECRET=<tbd>
+export GITHUB_CLIENT_ID=<your-github-client-id>
+export GITHUB_CLIENT_SECRET=<your-github-client-secret>
+```
+
+Create the GitHub identity provider:
+
+```bash
 curl --silent --show-error \
   -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -177,32 +254,29 @@ curl --silent --show-error \
 EOF
 ```
 
-#### Confirm Login via GitHub IdP
+#### c. Confirm Login via GitHub
 
-Using a fresh browser session navigate to the user Account endpoint - `https://auth-apx.$INGRESS_HOST/realms/eoepca/account`.
+Using a fresh browser session, navigate to the user account endpoint:
 
-On the `Sign-in` page select GitHub, and follow the flow to authorise Keycloak to access your GitHub profile, and so complete login.
-
-### Uninstall
-
-```bash
-kubectl -n iam delete -f keycloak/generated-ingress.yaml
-kubectl -n iam delete -k keycloak/secrets
-helm -n iam uninstall keycloak
+```text
+https://auth-apx.<your-ingress-host>/realms/eoepca/account
 ```
 
-## Open Policy Agent (OPA)
+On the **Sign-in** page, select **GitHub**, and follow the flow to authorize Keycloak to access your GitHub profile, completing the login process.
 
-### Create Keycloak client for OPA
+---
 
-#### Get access token for administration
+### 7. Deploy Open Policy Agent (OPA)
+
+#### a. Create Keycloak Client for OPA
+
+Before deploying OPA, you need to create a Keycloak client for it.
+
+**Obtain Access Token for Administration**
 
 ```bash
 source ~/.eoepca/state
-# TODO - should come from eoepca state...
-# export KEYCLOAK_ADMIN_USER=admin
-# export KEYCLOAK_ADMIN_PASSWORD=changeme
-# export OPA_CLIENT_SECRET=changeme
+
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -215,11 +289,16 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-#### Create the `opa` client
+**Create the `opa` Client**
+
+Create the `opa` client in Keycloak:
+
+> You should have ${OPA_CLIENT_SECRET} from the `configure-iam.sh` script.
+> Run `echo ${OPA_CLIENT_SECRET}` to ensure you have the secret set. 
+> If not, rerun the `configure-iam.sh` script and source the state file.
 
 ```bash
-# curl --silent --show-error \
-curl  \
+curl --silent --show-error \
   -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
@@ -246,7 +325,9 @@ curl  \
 EOF
 ```
 
-#### Check details of new `opa` client
+**Verify the `opa` Client**
+
+You can confirm the creation of the `opa` client:
 
 ```bash
 curl --silent --show-error \
@@ -257,11 +338,13 @@ curl --silent --show-error \
   | jq '.[] | select(.clientId == "opa")'
 ```
 
-### Helm Chart
+---
+
+#### b. Install OPA using Helm
 
 ```bash
-helm repo add opal https://permitio.github.io/opal-helm-chart && \
-helm repo update opal && \
+helm repo add opal https://permitio.github.io/opal-helm-chart
+helm repo update opal
 helm upgrade -i opa opal/opal \
   --values opa/values.yaml \
   --version 0.0.28 \
@@ -269,31 +352,122 @@ helm upgrade -i opa opal/opal \
   --create-namespace
 ```
 
-### Ingress
+#### c. Apply ingress configuration for OPA
 
 ```bash
-kubectl -n iam apply -k opa/secrets
 kubectl -n iam apply -f opa/generated-ingress.yaml
 ```
 
-### Uninstall
+---
+
+## Validation and Operation
+
+**Automated Validation:**
+
+Run the validation script to ensure the IAM components are deployed correctly.
 
 ```bash
-kubectl -n iam delete cm/opa-startup-data
+bash validation.sh
+```
+
+**Further Validation:**
+
+After deployment, the IAM exposes several endpoints for authentication, authorization, and administration. Replace `<INGRESS_HOST>` with your actual ingress host domain in the URLs below.
+
+### Keycloak
+
+**Keycloak Home Page:**
+
+- URL: `https://auth-apx.<INGRESS_HOST>/`
+
+**OpenID Connect Discovery Endpoint:**
+
+- URL: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/.well-known/openid-configuration`
+
+**OAuth 2.0 Authorization Endpoint:**
+
+- URL: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/auth`
+
+**OAuth 2.0 Token Endpoint:**
+
+- URL: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/token`
+
+**Administration Console:**
+
+- URL: `https://auth-apx.<INGRESS_HOST>/admin/`
+
+**Accessing the Administration Console:**
+
+1. **Retrieve Admin Credentials**
+    
+    The admin credentials are stored in the state file. Retrieve them using:
+    
+    ```bash
+    source ~/.eoepca/state
+    echo "Username: $KEYCLOAK_ADMIN_USER"
+    echo "Password: $KEYCLOAK_ADMIN_PASSWORD"
+    ```
+    
+2. **Login to the Console**
+    
+    Navigate to the Administration Console URL and log in with the retrieved credentials.
+    
+
+### Open Policy Agent (OPA)
+
+**OPA Endpoint:**
+
+- URL: `https://opa-apx.<INGRESS_HOST>/`
+
+You can test policy evaluations by sending requests to OPA's REST API. For example:
+
+```bash
+curl -X POST "https://opa-apx.<INGRESS_HOST>/v1/data/example/allow" \
+  -H "Content-Type: application/json" \
+  -d '{"input": {"user": "alice"}}'
+```
+
+---
+
+### Validating Kubernetes Resources
+
+Ensure that all Kubernetes resources are running correctly.
+
+```bash
+kubectl get pods -n iam
+```
+
+**Expected Output**:
+
+- All pods should be in the `Running` state.
+- No pods should be in `CrashLoopBackOff` or `Error` states.
+
+---
+
+## Uninstalling the IAM Components
+
+### Uninstall Keycloak
+
+```bash
+kubectl -n iam delete -f keycloak/generated-ingress.yaml
+bash delete-secrets.sh
+helm -n iam uninstall keycloak
+```
+
+### Uninstall OPA
+
+```bash
 kubectl -n iam delete -f opa/generated-ingress.yaml
-kubectl -n iam delete -k opa/secrets
 helm -n iam uninstall opa
 ```
 
-#### Delete the `opa` Keycloak client
+#### Delete the `opa` Keycloak Client
 
-Get the access token...
+Obtain the access token:
 
 ```bash
 source ~/.eoepca/state
-# TODO - should come from eoepca state...
-# export KEYCLOAK_ADMIN_USER=admin
-# export KEYCLOAK_ADMIN_PASSWORD=changeme
+
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -306,7 +480,7 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-Get the unique ID for the `opa` client...
+Get the unique ID for the `opa` client:
 
 ```bash
 OPA_CLIENT_ID="$( \
@@ -319,7 +493,7 @@ OPA_CLIENT_ID="$( \
 )"
 ```
 
-Delete the client...
+Delete the client:
 
 ```bash
 curl --silent --show-error \
@@ -327,3 +501,14 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${OPA_CLIENT_ID}"
 ```
+
+---
+
+## Further Reading
+
+For more detailed information, refer to the following resources:
+
+- [EOEPCA IAM Documentation](https://eoepca.readthedocs.io/projects/iam)
+- [Keycloak Official Documentation](https://www.keycloak.org/documentation)
+- [Open Policy Agent Documentation](https://www.openpolicyagent.org/docs/latest/)
+- [OPAL (Open Policy Administration Layer) Documentation](https://github.com/permitio/opal)

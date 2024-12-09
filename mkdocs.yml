@@ -37,7 +37,7 @@ nav:
     - Resource Health: building-blocks/resource-health.md
     - Application Hub: building-blocks/application-hub.md
     - Application Quality: building-blocks/application-quality.md
-    - Identity & Access (IAM): building-blocks/new-iam.md
+    - Identity & Access (IAM): building-blocks/iam.md
     
   - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
 
