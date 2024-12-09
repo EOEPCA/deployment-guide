@@ -159,7 +159,7 @@ You can view the CWL file itself in `/examples/water-bodies.cwl`.
 
 ```bash
 curl -X POST "https://zoo.<INGRESS_HOST>/ogc-api/processes" \
--H "Content-Type: application/json" \
+-H "Content-Type: application/ogcapppkg+json" \
 -d '{
   "executionUnit": {
     "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/water-bodies.cwl",
