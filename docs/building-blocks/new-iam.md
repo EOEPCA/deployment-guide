@@ -121,11 +121,11 @@ Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with 
 
 ---
 
-#### Post-Deployment Configuration of Keycloak
+### 5. Keycloak Post-Deployment Configuration
 
 After deploying Keycloak, you need to perform some post-deployment configurations.
 
-##### 1. Obtain an Access Token for Administration
+#### a. Obtain an Access Token for Administration
 
 ```bash
 source ~/.eoepca/state
@@ -144,7 +144,7 @@ ACCESS_TOKEN=$( \
 
 This retrieves an access token using the admin credentials.
 
-##### 2. Create the `eoepca` Realm
+#### b. Create the `eoepca` Realm
 
 ```bash
 curl --silent --show-error \
@@ -162,7 +162,7 @@ EOF
 
 This creates a new realm named `eoepca`.
 
-##### 3. (Optional) Create a Dedicated `eoepca` User
+#### c. (Optional) Create a Dedicated `eoepca` User
 
 ```bash
 curl --silent --show-error \
@@ -187,14 +187,14 @@ Replace `"changeme"` with a secure password of your choice.
 
 ---
 
-### Integrate GitHub as External Identity Provider
+### 6. Integrate GitHub as External Identity Provider
 
 This involves two main steps:
 
 1. **Create a GitHub OAuth Application**
 2. **Add GitHub as a Keycloak Identity Provider**
 
-#### 1. Create a GitHub OAuth Application
+#### a. Create a GitHub OAuth Application
 
 Navigate to the GitHub [Register a new OAuth application](https://github.com/settings/applications/new) page to create a new application with the following settings (replace `${INGRESS_HOST}` with your actual domain):
 
@@ -206,7 +206,7 @@ Generate a new client secret.
 
 Make note of the **Client ID** and **Client Secret**; you will need them in the next step.
 
-#### 2. Add GitHub as a Keycloak Identity Provider
+#### b. Add GitHub as a Keycloak Identity Provider
 
 Obtain an access token for administration (if not already done):
 
@@ -254,7 +254,7 @@ curl --silent --show-error \
 EOF
 ```
 
-#### 3. Confirm Login via GitHub Identity Provider
+#### c. Confirm Login via GitHub
 
 Using a fresh browser session, navigate to the user account endpoint:
 
@@ -266,13 +266,13 @@ On the **Sign-in** page, select **GitHub**, and follow the flow to authorize Key
 
 ---
 
-### 6. Deploy Open Policy Agent (OPA)
+### 7. Deploy Open Policy Agent (OPA)
 
-#### Create Keycloak Client for OPA
+#### a. Create Keycloak Client for OPA
 
 Before deploying OPA, you need to create a Keycloak client for it.
 
-##### 1. Obtain Access Token for Administration
+**Obtain Access Token for Administration**
 
 ```bash
 source ~/.eoepca/state
@@ -289,7 +289,7 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-##### 2. Create the `opa` Client
+**Create the `opa` Client**
 
 Create the `opa` client in Keycloak:
 
@@ -325,7 +325,7 @@ curl --silent --show-error \
 EOF
 ```
 
-##### 3. Verify the `opa` Client
+**Verify the `opa` Client**
 
 You can confirm the creation of the `opa` client:
 
@@ -340,7 +340,7 @@ curl --silent --show-error \
 
 ---
 
-#### Install OPA using Helm
+#### b. Install OPA using Helm
 
 ```bash
 helm repo add opal https://permitio.github.io/opal-helm-chart
@@ -352,7 +352,7 @@ helm upgrade -i opa opal/opal \
   --create-namespace
 ```
 
-#### Apply the ingress configuration for OPA
+#### c. Apply ingress configuration for OPA
 
 ```bash
 kubectl -n iam apply -f opa/generated-ingress.yaml
