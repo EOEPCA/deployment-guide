@@ -160,11 +160,18 @@ kubectl get pods -n processing
 
 Validate the operation of the `zoo` service via its OGC API Processes interfaces.
 
+Depending on your validation needs we offer two sample applications that can be used to exercise the deployed service...
+
+* `convert` - a very simple 'hello world' application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment
+* `water-bodies` - a more real-world application that performs processing of EO input data
+
+In the following sections select the path `convert` vs `water-bodies` that suits your needs.
+
 NOTE that the following API requests assume use of the `eoepca` test user.
 
 ### List Processes
 
-Retrieve the list of available processes.
+Retrieve the list of available (currently deployed) processes.
 
 ```bash
 source ~/.eoepca/state
@@ -175,9 +182,7 @@ curl --silent --show-error \
 
 ### Deploy Process
 
-For a quick smoke test then use the `convert` application which is very simple and quick to run, but is sufficient to validate the operation of the deployment.
-
-For a more real-world example then the `water-bodies` application can be used.
+Deploy the application that meets your validation needs.
 
 #### Deploy - `convert`
 
