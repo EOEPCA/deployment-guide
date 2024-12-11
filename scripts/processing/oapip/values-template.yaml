@@ -17,22 +17,22 @@ workflow:
     kubernetes.io/os: linux
   storageClass: ${STORAGE_CLASS}
 ingress:
-  enabled: true
-  hosturl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    ${CLUSTER_ISSUER_ANNOTATION}
-  hosts:
-  - host: zoo.${INGRESS_HOST}
-    paths:
-    - path: /
-      pathType: ImplementationSpecific
-  tls:
-  - hosts:
-    - zoo.${INGRESS_HOST}
-    secretName: zoo-tls
+  enabled: false
+  hosturl: ${HTTP_SCHEME}://zoo-apx.${INGRESS_HOST}
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   ingress.kubernetes.io/ssl-redirect: "true"
+  #   nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  #   ${CLUSTER_ISSUER_ANNOTATION}
+  # hosts:
+  # - host: zoo.${INGRESS_HOST}
+  #   paths:
+  #   - path: /
+  #     pathType: ImplementationSpecific
+  # tls:
+  # - hosts:
+  #   - zoo.${INGRESS_HOST}
+  #   secretName: zoo-tls
 persistence:
   procServicesStorageClass: ${STORAGE_CLASS}
   storageClass: ${STORAGE_CLASS}

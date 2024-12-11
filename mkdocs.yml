@@ -28,8 +28,11 @@ nav:
       - Application Deployment →: building-blocks/overview.md
   - Application Deployment:
     - Overview: building-blocks/overview.md
+    - Identity & Access (IAM): building-blocks/iam.md
     - Resource Catalogue: building-blocks/resource-catalogue.md
-    - Processing: building-blocks/processing.md
+    - Processing:
+        - Overview: building-blocks/processing.md
+        - OGC API Processes: building-blocks/oapip-engine.md
     - Data Access: building-blocks/data-access.md
     - Resource Registration: building-blocks/resource-registration.md
     - Workspace: building-blocks/workspace.md
@@ -37,7 +40,6 @@ nav:
     - Resource Health: building-blocks/resource-health.md
     - Application Hub: building-blocks/application-hub.md
     - Application Quality: building-blocks/application-quality.md
-    - Identity & Access (IAM): building-blocks/iam.md
     
   - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
 
@@ -76,7 +78,7 @@ theme:
   # highlightjs: true
   # hljs_languages:
   #   - yaml
-  navigation_depth: 4
+  navigation_depth: 5
 
   # For `material` theme...
   logo: img/favicon.ico
@@ -112,7 +114,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: ⚓︎
-      toc_depth: 4
+      toc_depth: 5
   - smarty
   - sane_lists
   - admonition
