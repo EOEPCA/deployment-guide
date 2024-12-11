@@ -17,6 +17,10 @@ ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 if [ -z "$WORKSPACE_UI_PASSWORD" ]; then
     add_to_state_file "WORKSPACE_UI_PASSWORD" $(generate_aes_key 32)
 fi
+if [ -z "$WORKSPACE_CLIENT_SECRET" ]; then
+    WORKSPACE_CLIENT_SECRET=$(generate_aes_key 32)
+    add_to_state_file "WORKSPACE_CLIENT_SECRET" "$WORKSPACE_CLIENT_SECRET"
+fi
 
 ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 
