@@ -10,7 +10,8 @@ image:
 persistence:
   enabled: true
   storageClassName: ${STORAGE_CLASS}
-  accessMode: ReadWriteOnce
+  accessMode:
+    - ReadWriteOnce
   size: 1Gi
 
 ingress:

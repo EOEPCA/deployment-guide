@@ -55,4 +55,4 @@ jupyterhub:
 
 nodeSelector:
   key: "${NODE_SELECTOR_KEY}"
-  value: "true"
+  value: "${NODE_SELECTOR_VALUE}"

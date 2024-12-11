@@ -115,6 +115,8 @@ bash configure-app-hub.sh
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
     - *Example*: `node-role.kubernetes.io/worker`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+- **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
+    - *Example*: `worker`
 - **`APPHUB_CLIENT_SECRET`**: Client secret for OAuth2
 
 **Important Notes:**

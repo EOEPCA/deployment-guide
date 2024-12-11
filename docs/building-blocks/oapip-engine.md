@@ -270,7 +270,7 @@ Deploy the `convert` app...
 source ~/.eoepca/state
 curl --silent --show-error \
   -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
-  -H "Content-Type: application/json" \
+  -H "Content-Type: application/ogcapppkg+json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
 {
@@ -301,7 +301,7 @@ Deploy the `water-bodies` app...
 source ~/.eoepca/state
 curl --silent --show-error \
   -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
-  -H "Content-Type: application/json" \
+  -H "Content-Type: application/ogcapppkg+json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
 {

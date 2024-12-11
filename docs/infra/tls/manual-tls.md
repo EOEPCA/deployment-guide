@@ -11,23 +11,23 @@ Throughout each Building Block component deployment, you will be instructed what
 
 1. **Obtain Certificates**:
 
-   - Generate certificates using your internal CA or a third-party service.
-   - Ensure the certificate's `Common Name` (CN) matches the domain name.
+- Generate certificates using your internal CA or a third-party service.
+- Ensure the certificate's `Common Name` (CN) matches the domain name.
 
 2. **Create a Kubernetes TLS Secret**:
 
-   For each required TLS secret, run:
-   ```bash
-   kubectl create secret tls <secret-name> \
-     --cert=path/to/tls.crt \
-     --key=path/to/tls.key \
-     -n <namespace>
-   ```
+For each required TLS secret, run:
+```bash
+kubectl create secret tls <secret-name> \
+   --cert=path/to/tls.crt \
+   --key=path/to/tls.key \
+   -n <namespace>
+```
 
 3. **Verify the Secrets:**
 
-   ```bash
-   kubectl get secrets -n <namespace>
-   ```
+```bash
+kubectl get secrets -n <namespace>
+```
 
-   Ensure that the secrets are listed and correctly created.
+Ensure that the secrets are listed and correctly created.
