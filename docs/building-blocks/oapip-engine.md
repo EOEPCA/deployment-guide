@@ -130,7 +130,6 @@ curl  \
   "baseUrl": "https://zoo-apx.${INGRESS_HOST}",
   "redirectUris": [
     "https://zoo-apx.${INGRESS_HOST}/*",
-    "https://zoo-swagger-apx.${INGRESS_HOST}/*",
     "/*"
   ],
   "webOrigins": ["/*"],
@@ -195,6 +194,182 @@ kubectl -n processing apply -f generated-ingress.yaml
 
 ---
 
+## Apply Resource Protection
+
+This section provides an example resource protection using Keycloak groups and policies.
+
+The example assumes protection for the `/eoepca` context within `zoo` - protected via the group `team-eoepca` that represents a team/project with common access.
+
+### Obtain an Access Token for Administration
+
+```bash
+source ~/.eoepca/state
+
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+```
+
+### Create the `Group`
+
+Create the group `team-eoepca`.
+
+```bash
+curl --silent --show-error \
+  -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/groups" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Accept: application/json" \
+  -d '
+{
+  "name": "team-eoepca"
+}'
+```
+
+Retrieve the unique Group ID.
+
+```bash
+group_id=$( \
+  curl --silent --show-error \
+    -X GET "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/groups" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Accept: application/json" \
+    | jq -r '.[] | select(.name == "team-eoepca") | .id' \
+)
+echo "Group ID: ${group_id}"
+```
+
+### Add user to group
+
+Retrieve the unique User ID for user `eoepca`.
+
+```bash
+user_id=$(
+  curl --silent --show-error \
+    -X GET "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/users?username=eoepca" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Accept: application/json" \
+    | jq -r '.[] | .id'
+)
+echo "User ID: ${user_id}"
+```
+
+Add user `eoepca` to group `team-eoepca`.
+
+```bash
+curl --silent --show-error \
+  -X PUT "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/users/${user_id}/groups/${group_id}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Accept: application/json"
+```
+
+### Create policy
+
+Create policy `eoepca-team-policy` that requires membership of the `team-eoepca` group. The policy is created in the `oapip-engine` client.
+
+Retrieve the unique Client ID.
+
+```bash
+client_id=$( \
+  curl --silent --show-error \
+    -X GET "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Accept: application/json" \
+    | jq -r '.[] | select (.clientId == "oapip-engine") | .id' \
+)
+echo "Client ID: ${client_id}"
+```
+
+Create the policy.
+
+```bash
+policy_id=$( \
+  curl --silent --show-error \
+    -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/policy/group" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Accept: application/json" \
+    -d @- <<EOF | jq -r '.id'
+{
+  "name": "eoepca-team-policy",
+  "logic": "POSITIVE",
+  "decisionStrategy": "UNANIMOUS",
+  "groups": ["${group_id}"]
+}
+EOF
+)
+echo "Policy ID: ${policy_id}"
+```
+
+### Create resource
+
+Create the resource `eoepca-context` for the `/eoepca` endpoint within `zoo`.
+
+```bash
+resource_id=$( \
+  curl --silent --show-error \
+    -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/resource" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Accept: application/json" \
+    -d @- <<EOF | jq -r '._id'
+{
+  "name": "eoepca-context",
+  "uris": ["/eoepca/*"],
+  "ownerManagedAccess": true
+}
+EOF
+)
+echo "Resource ID: ${resource_id}"
+```
+
+### Create permission
+
+Associate the policy `eoepca-team-policy` with the `eoepca-context` resource by creating a permission.
+
+The effect of this is to allow access to anyone in the `team-eoepca` group to access the path `/eoepca` within Zoo.
+
+```bash
+permission_id=$( \
+  curl --silent --show-error \
+    -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/policy/resource" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    -H "Accept: application/json" \
+    -d @- <<EOF | jq -r '.id'
+{
+  "name": "eoepca-context-access",
+  "description": "Group team-eoepca access to /eoepca",
+  "logic": "POSITIVE",
+  "decisionStrategy": "UNANIMOUS",
+  "resources": ["${resource_id}"],
+  "policies": ["${policy_id}"]
+}
+EOF
+)
+echo "Permission ID: ${permission_id}"
+```
+
+### ALTERNATIVE - Role-based Permission
+
+The previous steps protect the `/eoepca` zoo endpoint by directly referencing the `group` to which access is granted.
+
+Alternatively, the permission could be expressed with an additional indirection via a `role`. In this case, access to the `/eoepca` resource references a `role` rather than the `group`. The `team-eoepca` group can then be added to the role, and hence receive access.
+
+In Keycloak, a role can be created either at the level of a realm, or scoped to a specific client - using the API endpoints...
+
+* **realm** - `/admin/realms/eoepca/roles`
+* **client** - `/admin/realms/eoepca/clients/{client-id}/roles`
+
+See the [Keycloak Admin REST API](https://www.keycloak.org/docs-api/latest/rest-api/) for more details.
+
 ## Validation
 
 ### Automated Validation
@@ -211,8 +386,8 @@ bash validation.sh
 
 Check access to the service web endpoints:
 
-* **ZOO-Project Swagger UI** - `https://zoo.<INGRESS_HOST>/swagger-ui/oapip/`
-* **OGC API Processes Landing Page** - `https://zoo.<INGRESS_HOST>/ogc-api/processes/`
+* **ZOO-Project Swagger UI** - `https://zoo-apx.<INGRESS_HOST>/swagger-ui/oapip/`
+* **OGC API Processes Landing Page** - `https://zoo-apx.<INGRESS_HOST>/ogc-api/processes/`
 
 ---
 
@@ -246,6 +421,77 @@ NOTE that the following API requests assume use of the `eoepca` test user.
 
 ---
 
+#### Authenticate
+
+Assuming that the zoo service has been protected as described in section [Apply Resource Protection](#apply-resource-protection), then it is necessary to authenticate as the `eoepca` user to obtain an `access-token` for API requests.
+
+**Step 1 - Initiate the Device Auth Flow**
+
+```bash
+source ~/.eoepca/state
+
+response=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "client_id=oapip-engine" \
+    -d "client_secret=${OAPIP_CLIENT_SECRET}" \
+    -d "scope=openid profile email" \
+    "https://auth-apx.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/auth/device" \
+)
+device_code=$(echo $response | jq -r '.device_code')
+verification_uri_complete=$(echo $response | jq -r '.verification_uri_complete')
+echo -e "\nNavigate to the following URL in your browser: ${verification_uri_complete}"
+```
+
+**Step 2 - Authorize via the provided URL**
+
+Login as the `eoepca` user, that is a member of the `team-eoepca` group, and hence should receive zoo API access.
+
+```bash
+xdg-open "${verification_uri_complete}"
+```
+
+**Step 3 - Poll for token following user authorization**
+
+```bash
+response=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "client_id=oapip-engine" \
+    -d "client_secret=${OAPIP_CLIENT_SECRET}" \
+    -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
+    -d "device_code=${device_code}" \
+    "https://auth-apx.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+)
+access_token=$(echo $response | jq -r '.access_token')
+refresh_token=$(echo $response | jq -r '.refresh_token')
+id_token=$(echo $response | jq -r '.id_token')
+```
+
+The access token can then be used as `Authorization: Bearer` in requests to the `zoo` service APIs.
+
+**Step 4 - (as required) Refresh the access token**
+
+```bash
+response=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "client_id=oapip-engine" \
+    -d "client_secret=${OAPIP_CLIENT_SECRET}" \
+    -d "grant_type=refresh_token" \
+    -d "refresh_token=${refresh_token}" \
+    "https://auth-apx.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+)
+access_token=$(echo $response | jq -r '.access_token')
+refresh_token=$(echo $response | jq -r '.refresh_token')
+id_token=$(echo $response | jq -r '.id_token')
+```
+
+---
+
 #### List Processes
 
 Retrieve the list of available (currently deployed) processes.
@@ -253,7 +499,8 @@ Retrieve the list of available (currently deployed) processes.
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X GET "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -X GET "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 
@@ -272,7 +519,8 @@ Deploy the `convert` app...
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Content-Type: application/ogcapppkg+json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
@@ -290,7 +538,8 @@ Check the `convert` application is deployed...
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X GET "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -X GET "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 
@@ -303,7 +552,8 @@ Deploy the `water-bodies` app...
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Content-Type: application/ogcapppkg+json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
@@ -321,7 +571,8 @@ Check the `water-bodies` application is deployed...
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X GET "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies" \
+  -X GET "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 
@@ -343,7 +594,8 @@ In either case the `JOB ID` of the execution is retained for use in subsequent A
 source ~/.eoepca/state
 JOB_ID=$(
   curl --silent --show-error \
-    -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
+    -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
+    -H "Authorization: Bearer ${access_token}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -367,7 +619,8 @@ EOF
 source ~/.eoepca/state
 JOB_ID=$(
   curl --silent --show-error \
-    -X POST "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies/execution" \
+    -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies/execution" \
+    -H "Authorization: Bearer ${access_token}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -398,7 +651,8 @@ The `JOB ID` is used to monitor the progress of the job execution - most notably
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X GET "https://zoo.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}" \
+  -X GET "https://zoo-apx.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 
@@ -411,7 +665,8 @@ Similarly, once the job is completed successfully, then details of the results (
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X GET "https://zoo.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}/results" \
+  -X GET "https://zoo-apx.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}/results" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 
@@ -430,7 +685,8 @@ The deployed application can be deleted (undeployed) once it is no longer needed
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X DELETE "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -X DELETE "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 
@@ -441,7 +697,8 @@ curl --silent --show-error \
 ```bash
 source ~/.eoepca/state
 curl --silent --show-error \
-  -X DELETE "https://zoo.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies" \
+  -X DELETE "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/water-bodies" \
+  -H "Authorization: Bearer ${access_token}" \
   -H "Accept: application/json" | jq
 ```
 

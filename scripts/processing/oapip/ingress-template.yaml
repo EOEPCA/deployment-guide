@@ -19,13 +19,6 @@ spec:
         - serviceName: zoo-project-dru-service
           servicePort: 80
       plugins:
-        # Authenticate - to obtain JWT that supports API (Authz) requests
-        - name: openid-connect
-          enable: true
-          config:
-            access_token_in_authorization_header: true
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
-          secretRef: oapip-engine-client
         # Require authorization for access to API
         - name: authz-keycloak
           enable: true
