@@ -108,6 +108,9 @@ curl  \
   "clientAuthenticatorType": "client-secret",
   "secret": "${WORKSPACE_CLIENT_SECRET}",
   "directAccessGrantsEnabled": false,
+  "attributes": {
+    "oauth2.device.authorization.grant.enabled": true
+  },
   "serviceAccountsEnabled": true,
   "authorizationServicesEnabled": true,
   "frontchannelLogout": true

@@ -32,7 +32,13 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
     add_to_state_file "STAGEIN_S3_REGION" $S3_REGION
 fi
 
+if [ -z "$OAPIP_CLIENT_SECRET" ]; then
+    OAPIP_CLIENT_SECRET=$(generate_aes_key 32)
+    add_to_state_file "OAPIP_CLIENT_SECRET" "$OAPIP_CLIENT_SECRET"
+fi
+
 envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
+envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
 
 if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""

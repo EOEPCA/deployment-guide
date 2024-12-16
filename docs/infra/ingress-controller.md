@@ -149,7 +149,7 @@ helm upgrade -i apisix apisix/apisix \
 The following `ApisixGlobalRule` is used to configure Apisix to redirect all `http` traffic to `https`.
 
 ```bash
-cat - <<EOF | kubectl -n ingress-apisix apply -f -
+cat - <<'EOF' | kubectl -n ingress-apisix apply -f -
 apiVersion: apisix.apache.org/v2
 kind: ApisixGlobalRule
 metadata:
@@ -160,6 +160,10 @@ spec:
       enable: true
       config:
         http_to_https: true
+        _meta:
+          filter:
+            # Exclude paths used by letsencrypt http challenge
+            - [ 'request_uri', '!', '~*', '^/\.well-known/acme-challenge.*' ]
 EOF
 ```
 

@@ -19,7 +19,10 @@ if [ -z "$KEYCLOAK_POSTGRES_PASSWORD" ]; then
     add_to_state_file "KEYCLOAK_POSTGRES_PASSWORD" "$KEYCLOAK_POSTGRES_PASSWORD"
 fi
 add_to_state_file "KEYCLOAK_ADMIN_USER" "admin"
-add_to_state_file "OPA_CLIENT_SECRET" "$(generate_aes_key 32)"
+if [ -z "$OPA_CLIENT_SECRET" ]; then
+    OPA_CLIENT_SECRET=$(generate_aes_key 32)
+    add_to_state_file "OPA_CLIENT_SECRET" "$OPA_CLIENT_SECRET"
+fi
 
 # Generate configuration files
 echo "Generating configuration files..."
