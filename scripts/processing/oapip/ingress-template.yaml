@@ -19,6 +19,14 @@ spec:
         - serviceName: zoo-project-dru-service
           servicePort: 80
       plugins:
+        # Authenticate - expect JWT in `Authorization: Bearer` header
+        - name: openid-connect
+          enable: true
+          config:
+            realm: eoepca
+            bearer_only: true
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+          secretRef: oapip-engine-client
         # Require authorization for access to API
         - name: authz-keycloak
           enable: true

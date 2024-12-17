@@ -200,6 +200,8 @@ This section provides an example resource protection using Keycloak groups and p
 
 The example assumes protection for the `/eoepca` context within `zoo` - protected via the group `team-eoepca` that represents a team/project with common access.
 
+The user `eoepca` is added to the `team-eoepca` group - assuming that the user was created as described in section [Create `eoepca` user for testing](iam.md#6-create-eoepca-user-for-testing)
+
 ### Obtain an Access Token for Administration
 
 ```bash

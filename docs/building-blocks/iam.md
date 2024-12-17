@@ -121,11 +121,15 @@ Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with 
 
 ---
 
-### 5. Keycloak Post-Deployment Configuration
+### 5. Create `eoepca` Keycloak realm
 
-After deploying Keycloak, you need to perform some post-deployment configurations.
+Keycloak establishes an initial `master` realm which should be reserved for global adminsitration only. It is best practice to create a dedicated realm for platform identity and protection of BB resources.
 
-#### a. Obtain an Access Token for Administration
+Thus, we create a dedicated `eoepca` realm.
+
+**Obtain an Access Token for Administration**
+
+Retrieve an access token using the admin credentials.
 
 ```bash
 source ~/.eoepca/state
@@ -142,9 +146,9 @@ ACCESS_TOKEN=$( \
 )
 ```
 
-This retrieves an access token using the admin credentials.
+**Create the `eoepca` Realm**
 
-#### b. Create the `eoepca` Realm
+Creates a new realm named `eoepca`.
 
 ```bash
 curl --silent --show-error \
@@ -160,9 +164,11 @@ curl --silent --show-error \
 EOF
 ```
 
-This creates a new realm named `eoepca`.
+---
 
-#### c. (Optional) Create a Dedicated `eoepca` User
+### 6. Create `eoepca` user for testing
+
+For convenience we create an `eoepca` (test) user to support usage examples in this guide where a user must be assumed.
 
 ```bash
 curl --silent --show-error \
@@ -187,7 +193,7 @@ Replace `"changeme"` with a secure password of your choice.
 
 ---
 
-### 6. Integrate GitHub as External Identity Provider
+### 7. Integrate GitHub as External Identity Provider
 
 This involves two main steps:
 
@@ -266,7 +272,7 @@ On the **Sign-in** page, select **GitHub**, and follow the flow to authorize Key
 
 ---
 
-### 7. Deploy Open Policy Agent (OPA)
+### 8. Deploy Open Policy Agent (OPA)
 
 #### a. Create Keycloak Client for OPA
 
