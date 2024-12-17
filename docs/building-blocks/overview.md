@@ -18,55 +18,61 @@ To simplify and standardise the deployment process, each Building Block comes wi
 
 Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
-### 1. Resource Catalogue
+### 1. Identity & Access Management (IAM)
+
+The Identity and Access Management (IAM) Building Block provides authentication and authorisation services within the EOEPCA+ ecosystem. It ensures users can access resources and services safely across the platform by managing identities, roles and permissions.
+
+[Deploy IAM »](iam.md)
+
+### 2. Resource Catalogue
 
 The Resource Catalogue BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
 
 [Deploy Resource Catalogue »](resource-catalogue.md)
 
-### 2. Processing
+### 3. Processing
 
 The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
 
 [Deploy Processing »](processing.md)
 
-### 3. Data Access
+### 4. Data Access
 
 The Data Access BB provides efficient access to Earth Observation data. It provides data visualisation and retrieval services, enabling users and applications to interact with large datasets.
 
 [Deploy Data Access »](data-access.md)
 
-### 4. Resource Registration
+### 5. Resource Registration
 
 Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
 
 [Deploy Resource Registration »](resource-registration.md)
 
-### 5. Workspace
+### 6. Workspace
 
 The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
 
 [Deploy Workspace »](workspace.md)
 
-### 6. MLOps (Machine Learning Operations)
+### 7. MLOps (Machine Learning Operations)
 
 The MLOps BB faciliates the machine learning model development lifecycle - including model training, model version management and management of training data - and supports discovery of published models and training datasets.
 
 [Deploy MLOps »](mlops.md)
 
-### 7. Resource Health
+### 8. Resource Health
 
 The Resource Health BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
 
 [Deploy Resource Health »](resource-health.md)
 
-### 8. Application Hub
+### 9. Application Hub
 
 The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
 
 [Deploy Application Hub »](application-hub.md)
 
-### 9. Application Quality
+### 10. Application Quality
 
 The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
 
