@@ -114,7 +114,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: ⚓︎
-      toc_depth: 5
+      toc_depth: 4
   - smarty
   - sane_lists
   - admonition
