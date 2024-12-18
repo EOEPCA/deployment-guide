@@ -7,7 +7,7 @@ spec:
   http:
     - name: opa
       backends:
-        - serviceName: opal-client
+        - serviceName: opa-opal-client
           servicePort: 8181
       match:
         hosts:

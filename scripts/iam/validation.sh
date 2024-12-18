@@ -6,21 +6,23 @@ echo "🔍 Validating IAM deployment..."
 
 # Validate Keycloak
 check_pods_running "iam" "app.kubernetes.io/name=keycloak" 1
-check_deployment_ready "iam" "keycloak"
+check_statefulset_ready "iam" "keycloak"
 
 check_service_exists "iam" "keycloak"
 check_service_exists "iam" "keycloak-postgresql"
 
-check_url_status_code "$HTTP_SCHEME://auth.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://auth-apx.$INGRESS_HOST" "200"
 
 # Validate OPA
-check_pods_running "iam" "app=opal-client" 1
-check_deployment_ready "iam" "opa"
+check_pods_running "iam" "app.kubernetes.io/name=opa-opal-client" 1
+check_deployment_ready "iam" "opa-opal-client"
+check_service_exists "iam" "opa-opal-client"
 
-check_service_exists "iam" "opa"
-check_service_exists "iam" "opal-client"
+check_pods_running "iam" "app.kubernetes.io/name=opa-opal-server" 1
+check_deployment_ready "iam" "opa-opal-server"
+check_service_exists "iam" "opa-opal-server"
 
-check_url_status_code "$HTTP_SCHEME://opa.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://opa-apx.$INGRESS_HOST/healthcheck" "200"
 
 check_pvc_bound "iam" "data-keycloak-postgresql-0"
 
