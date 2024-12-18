@@ -602,6 +602,21 @@ The example assumes protection for the `/healthcheck` endpoint within the `opa-c
 
 The user `eoepca` is added to the `mygroup` group - assuming that the user was created as described in section [Create `eoepca` user for testing](#6-create-eoepca-user-for-testing).
 
+The steps comprise:
+
+* [**Create group**](#create-the-group)<br>
+  The set of users who will be granted access to the resource - e.g. team/project.
+* [**Add user to group**](#add-user-to-group)<br>
+  User is granted access by group membership.
+* [**Create policy**](#create-policy)<br>
+  The policy identifies the groups that will be granted access.
+* [**Create resource**](#create-resource)<br>
+  The resource identifies the subject of the protection - identified via its endpoint `/eoepca`.
+* [**Create permission**](#create-permission)<br>
+  The permission connects the policy to the resource, and so establishes the protection.
+* [**Create protected ingress**](#create-protected-ingress)<br>
+  Public-facing URL that routes service access via the client that enforces authorisation.
+
 ### Obtain an Access Token for Administration
 
 Note that the `ACCESS_TOKEN` is short-lived - so it becomes necessary to periodically repeat this call to refresh the access token.
