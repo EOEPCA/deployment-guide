@@ -192,15 +192,31 @@ Note the ingress for the OAPIP Engine is established using APISIX resources (Api
 kubectl -n processing apply -f generated-ingress.yaml
 ```
 
+The ingress definition introduces integration with Keycloak for request authorization - which is illustrated in the section [Apply Resource Protection](#apply-resource-protection).
+
 ---
 
 ## Apply Resource Protection
 
-This section provides an example resource protection using Keycloak groups and policies.
+This section provides an example resource protection using Keycloak groups and policies.<br>
+_For more general details see IAM section [Apply Resource Protection](iam.md#apply-resource-protection)._
 
 The example assumes protection for the `/eoepca` context within `zoo` - protected via the group `team-eoepca` that represents a team/project with common access.
 
-The user `eoepca` is added to the `team-eoepca` group - assuming that the user was created as described in section [Create `eoepca` user for testing](iam.md#6-create-eoepca-user-for-testing)
+The user `eoepca` is added to the `team-eoepca` group - assuming that the user was created as described in section [Create `eoepca` user for testing](iam.md#6-create-eoepca-user-for-testing).
+
+The steps comprise:
+
+* [**Create group**](#create-the-group)<br>
+  The set of users who will be granted access to the resource - e.g. team/project.
+* [**Add user to group**](#add-user-to-group)<br>
+  User is granted access by group membership.
+* [**Create policy**](#create-policy)<br>
+  The policy identifies the groups that will be granted access.
+* [**Create resource**](#create-resource)<br>
+  The resource identifies the subject of the protection - identified via its endpoint `/eoepca`.
+* [**Create permission**](#create-permission)<br>
+  The permission connects the policy to the resource, and so establishes the protection.
 
 ### Obtain an Access Token for Administration
 
@@ -358,19 +374,6 @@ EOF
 )
 echo "Permission ID: ${permission_id}"
 ```
-
-### ALTERNATIVE - Role-based Permission
-
-The previous steps protect the `/eoepca` zoo endpoint by directly referencing the `group` to which access is granted.
-
-Alternatively, the permission could be expressed with an additional indirection via a `role`. In this case, access to the `/eoepca` resource references a `role` rather than the `group`. The `team-eoepca` group can then be added to the role, and hence receive access.
-
-In Keycloak, a role can be created either at the level of a realm, or scoped to a specific client - using the API endpoints...
-
-* **realm** - `/admin/realms/eoepca/roles`
-* **client** - `/admin/realms/eoepca/clients/{client-id}/roles`
-
-See the [Keycloak Admin REST API](https://www.keycloak.org/docs-api/latest/rest-api/) for more details.
 
 ## Validation
 

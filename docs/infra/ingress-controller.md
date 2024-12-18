@@ -162,10 +162,20 @@ spec:
         http_to_https: true
         _meta:
           filter:
+            # With '!OR' all conditions must be false
+            - "!OR"
             # Exclude paths used by letsencrypt http challenge
-            - [ 'request_uri', '!', '~*', '^/\.well-known/acme-challenge.*' ]
+            - [ 'request_uri', '~*', '^/\.well-known/acme-challenge.*' ]
+            # Use header X-No-Force-Tls to override
+            - [ "http_x_no_force_tls", "==", "true" ]
 EOF
 ```
+
+For `filter` reference see:
+
+* [Plugin Common Configuration](https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration)
+* [Expression Syntax](https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators)
+* [Nginx Variable Reference](https://nginx.org/en/docs/varindex.html)
 
 Note that, in principle, this `redirect` plugin with `http_to_https` can be used on individual `ApisixRoute` resources - rather than globally as above. However, it has been found that use of `http_to_https` on a specific route interferes with the `openid-connect` plugin that is also used for authentication. Hence the use of global `http_to_https` redirection.
 

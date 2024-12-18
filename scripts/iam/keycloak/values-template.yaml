@@ -13,7 +13,7 @@ auth:
 proxy: edge
 extraEnvVars:
   - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
-    value: "http://opal-client:8181/v1/data/"
+    value: "http://opa-opal-client:8181/v1/data/"
   - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
     value: "/opt/bitnami/keycloak/conf/opa-policies"
   - name: KC_HOSTNAME_URL
