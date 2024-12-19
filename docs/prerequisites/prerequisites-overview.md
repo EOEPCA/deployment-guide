@@ -1,23 +1,19 @@
+# EOEPCA Infrastructure Prerequisites
 
-# EOEPCA+ Prerequisites
+This section outlines the infrastructure requirements for deploying EOEPCA. Rather than explaining how to build a Kubernetes cluster from scratch, we focus on what EOEPCA specifically needs from your existing environment. We assume you have a working Kubernetes cluster, or know how to create one by referring to standard guides (e.g. Rancher, Kubernetes.io), and that you simply want to ensure it meets EOEPCA’s particular prerequisites.
 
-This guide outlines the essential prerequisites for deploying the EOEPCA ecosystem. It focuses on the specific requirements unique to EOEPCA, ensuring that your infrastructure can support the deployment of EOEPCA Building Blocks (BBs) outlined in the [Application Deployment](../building-blocks/overview.md) section of the guide.
+**In essence, these prerequisites cover:**
 
-## Overview
+- Specific Kubernetes configuration (including the need to run certain containers as root).
+- A suitable storage solution offering `ReadWriteMany` capabilities for some EOEPCA Building Blocks.
+- Proper ingress and TLS configuration, including wildcard DNS and a certificate manager.
+- Object storage capabilities, such as S3 (though the details for these are covered elsewhere).
 
-EOEPCA+ requires certain infrastructure capabilities to function correctly. This guide details:
+Where relevant, we outline what’s ideal for production versus what’s sufficient for development, testing or demonstrations.
 
-- **Kubernetes Cluster Requirements**: Specific configurations your Kubernetes cluster must have.
-- **Storage Requirements**: Details on storage classes and persistent volumes needed by certain EOEPCA BBs.
-- **Ingress Controller Setup**: Guidance on ingress controllers suitable for EOEPCA.
-- **TLS Certificate Management**: Recommendations for securing your services.
-- **Docker Hub Credentials**: Recommended to set up Docker Hub credentials or a proxy registry in the cluster to overcome image pull limits due to the number of containers involved. (TODO)
+**Before deploying the EOEPCA Building Blocks, we recommend running the `check-prerequisite` script (once provided). This script will:**
 
-## Next Steps
-
-Proceed to the following sections to ensure your infrastructure meets EOEPCA's prerequisites:
-
-1. [Kubernetes Requirements](kubernetes.md)
-2. [Storage Requirements](storage.md)
-3. [Ingress Controller Setup](ingress-controller.md)
-4. [TLS Certificate Management](tls/overview.md)
+- Test if pods can run as root.
+- Verify that ingress is properly set up with wildcard DNS.
+- Check TLS certificate validity.
+- Confirm that storage requirements (e.g. `ReadWriteMany`) are met.

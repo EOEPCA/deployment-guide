@@ -1,36 +1,30 @@
 
 # Storage Requirements
 
-Certain EOEPCA Building Blocks (BBs) require persistent storage. This section outlines the storage needs and provides recommendations for both production and development environments.
+Some EOEPCA Building Blocks, particularly those involved in processing (e.g. the CWL Processing Engine), require shared storage with `ReadWriteMany` access. This allows multiple pods to read and write to the same volume concurrently.
 
-## General Requirements
+**Key Requirements:**
 
-- **Persistent Volumes with `ReadWriteMany` Access Mode**: Needed for specific EOEPCA BBs, such as the **Processing BB** (e.g., CWL Processing Engine).
-- **Storage Classes**: Should support dynamic provisioning of persistent volumes.
+- **ReadWriteMany Persistent Volumes**: Essential for components like the CWL Processing Engine.
+- **Appropriate StorageClass**: The cluster must have a StorageClass that can provision volumes suitable for EOEPCA’s workload.
 
-## Production Environment Recommendations
+**Storage Options for Production:**
 
-- **Recommended Storage Solutions**:
-    - **NFS (Network File System)**: Reliable shared storage.
-    - **OpenEBS**: Supports dynamic local PVs and `ReadWriteMany`.
-    - **Longhorn**: Provides highly available persistent storage.
-    - **GlusterFS**: Suitable for large-scale distributed storage.
+- Consider robust, distributed filesystems or managed storage solutions. Examples include:
+    - **GlusterFS** or IBM Spectrum Scale for large-scale distributed storage.
+    - **OpenEBS** or **Longhorn** for simpler deployments that still support `ReadWriteMany`.
+    - **NFS** with a proper HA setup can be a practical choice if carefully managed.
 
-## Development Environment Recommendations
+**Storage Options for Development or Testing:**
 
-- **HostPath Provisioner**:
-    - Suitable for single-node clusters.
-    - Not recommended for production or multi-node clusters.
-    - [HostPath Provisioner Setup](./hostpath-provisioner.md)
-- **Local NFS Server**:
-    - Easy to set up for development.
-    - Limited scalability.
+- **Longhorn** or **OpenEBS** set up on a single node, if you are seeking something quick and less complex.
+- **HostPath** or a simple NFS server for a local environment—straightforward but not for production use.
 
-## EOEPCA Building Blocks Requiring `ReadWriteMany` Storage
+**Which EOEPCA Blocks Require `ReadWriteMany`?**
 
-- **Processing BB**:
-    - **CWL Processing Engine**: Requires shared storage for job execution.
+- **Processing Building Blocks**: For instance, the CWL Processing Engine needs shared file access.
 
+Make sure to check which Building Blocks you plan to deploy and ensure the cluster’s StorageClass and volume provisioning match these requirements.
 
 ## Setting Up Storage Classes
 
@@ -41,5 +35,5 @@ Certain EOEPCA Building Blocks (BBs) require persistent storage. This section ou
 
 ## Additional Resources
 
-  - [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
-  - [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+- [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
+- [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)

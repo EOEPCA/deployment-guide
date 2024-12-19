@@ -15,12 +15,8 @@ nav:
       - Kubernetes Requirements: prerequisites/kubernetes.md
       - Storage Requirements: prerequisites/storage.md
       - Ingress Controller Setup: prerequisites/ingress-controller.md
-      - TLS Certificate Management:
-          - TLS Overview: prerequisites/tls/overview.md
-          - Using Cert-Manager: prerequisites/tls/cert-manager.md
-          - Manual TLS Management: prerequisites/tls/manual-tls.md
-          - Internal TLS Setup: prerequisites/tls/internal-tls.md
-      - Additional Components:
+      - TLS Management: prerequisites/tls.md
+      - Optional Components:
           - S3 Storage (MinIO): prerequisites/minio.md
           - Container Registry: prerequisites/container-registry.md
       - Application Deployment →: building-blocks/overview.md

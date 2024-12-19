@@ -1,15 +1,25 @@
-
 # Kubernetes Requirements
 
-To deploy EOEPCA+, your Kubernetes cluster must meet specific requirements.
+EOEPCA places a few special demands on your Kubernetes cluster. We do not detail how to install Kubernetes here—there are many fine guides available (e.g. [Rancher’s non-production quickstart](https://rancher.com/docs/rke/latest/en/) or [Kubernetes official docs](https://kubernetes.io/docs/setup/)). Instead, we focus on what EOEPCA expects from an already-installed cluster.
 
-## General Requirements
+**Requirements:**
 
-- **Kubernetes Version**: Compatible with Kubernetes version 1.28 or later.
-- **Run Containers as Root**: **Required**. Some EOEPCA components need to run as the root user.
-- **Ingress Controller with Wildcard DNS**: **Required** for dynamic host-based routing to services.
-- **Load Balancer with Ports 80/443 Open**: **Recommended** for external access to services.
-- **Cert-Manager Setup**: **Recommended** for simplified TLS certificate management.
+- **Run Containers as Root (Mandatory)**: Some EOEPCA components cannot run under non-root users.
+- **Wildcard DNS & Ingress Controller (Mandatory)**: The cluster must be accessible via a wildcard DNS entry, and you should have an ingress controller that can handle host-based routing.
+- **Load Balancer with Port 80/443 Exposure (Recommended)**: This ensures external traffic can reach the EOEPCA services.
+- **Cert-Manager or Equivalent (Recommended)**: Simplifies obtaining and managing TLS certificates.
+
+**Production vs Development:**
+
+- **Production**:  
+    - Consider a fully managed or production-hardened Kubernetes environment (e.g. a production Rancher setup or a managed Kubernetes service from a cloud provider).
+    - Use cert-manager with Let’s Encrypt for automatic certificate renewal.
+    - Ensure you have a stable load balancer and wildcard DNS properly configured.
+  
+- **Development / Internal Testing**:  
+    - A single-node Rancher or Minikube-like environment is often enough.  
+    - Manual certificates or self-signed TLS might suffice.  
+    - Simplified DNS settings can be used, such as a local DNS server or a host file override.
 
 ## Additional Notes
 

@@ -1,32 +1,22 @@
 
-# Ingress Controller Setup Guide
+# Ingress and DNS Requirements
 
-An ingress controller is required to manage external access to services within the EOEPCA+ Kubernetes cluster.
+EOEPCA requires that services be accessible via a wildcard DNS. The ingress controller should support host-based routing and be compatible with running containers as root. While there’s no strict requirement on which ingress controller to use, common choices include NGINX for development and APISIX or similar for production.
 
-## Requirements
+**Requirements:**
 
-- **Ingress Controller with Wildcard DNS Support**: **Required** for dynamic host-based routing.
-- **Supports Running Containers as Root**: Necessary for certain EOEPCA components.
+- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: `*.your-domain.com`.
+- **Ingress Controller**: NGINX is easy to install for testing; APISIX or another high-performance controller may be used in production.
 
-## Ingress Controller Options
+**Production vs Development:**
 
-### **APISIX Ingress Controller**
-
-**Recommended for Production**.
-
-For installation instructions follow the [APISIX Installation Guide](https://apisix.apache.org/docs/ingress-controller/getting-started/).
-
-### **NGINX Ingress Controller**
-
-**Suitable for Development and Testing**.
-
-Install NGINX Ingress Controller using Helm:
-
-```bash
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm install ingress-nginx ingress-nginx/ingress-nginx
-```
+- **Production**:  
+    - Ensure a stable and supported ingress controller (e.g. APISIX).  
+    - A fully functional wildcard DNS record.
+  
+- **Development / Testing**:  
+    - NGINX Ingress Controller installed via Helm.  
+    - Local or makeshift DNS solutions (e.g. nip.io) might be acceptable for internal demos.
 
 ## Additional Notes
 
