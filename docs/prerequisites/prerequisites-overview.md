@@ -11,9 +11,24 @@ This section outlines the infrastructure requirements for deploying EOEPCA. Rath
 
 Where relevant, we outline what’s ideal for production versus what’s sufficient for development, testing or demonstrations.
 
+---
+
 **Before deploying the EOEPCA Building Blocks, we recommend running the `check-prerequisite` script (once provided). This script will:**
 
 - Test if pods can run as root.
 - Verify that ingress is properly set up with wildcard DNS.
 - Check TLS certificate validity.
 - Confirm that storage requirements (e.g. `ReadWriteMany`) are met.
+
+**Clone the Deployment Guide Repository:**
+
+```bash
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+cd deployment-guide/scripts/infra-prereq
+```
+
+**Validate your environment:**
+
+```bash
+bash check-prerequisites.sh
+```
