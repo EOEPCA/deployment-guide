@@ -17,8 +17,8 @@ nav:
       - Ingress Controller Setup: prerequisites/ingress-controller.md
       - TLS Management: prerequisites/tls.md
       - Optional Components:
-          - S3 Storage (MinIO): prerequisites/minio.md
-          - Container Registry: prerequisites/container-registry.md
+          - S3 Storage (MinIO): infra/minio.md
+          - Container Registry: infra/container-registry.md
       - Application Deployment →: building-blocks/overview.md
   - Application Deployment:
     - Overview: building-blocks/overview.md
