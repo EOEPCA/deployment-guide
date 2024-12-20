@@ -6,7 +6,7 @@ schemas:
   - http://schema.org/version/9.0/schemaorg-current-http.rdf
 $graph:
   - class: Workflow
-    id: water-bodies
+    id: water_bodies
     label: Water bodies detection based on NDWI and otsu threshold
     doc: Water bodies detection based on NDWI and otsu threshold
     requirements:
@@ -21,7 +21,7 @@ $graph:
         label: EPSG code
         doc: EPSG code
         type: string
-        default: EPSG:4326
+        default: "EPSG:4326"
       stac_items:
         label: Sentinel-2 STAC items
         doc: list of Sentinel-2 COG STAC items
@@ -30,17 +30,15 @@ $graph:
         label: bands used for the NDWI
         doc: bands used for the NDWI
         type: string[]
-        default:
-          - green
-          - nir
+        default: ["green", "nir"]
     outputs:
-      - id: stac
+      - id: stac_catalog
         outputSource:
           - node_stac/stac_catalog
         type: Directory
     steps:
       node_water_bodies:
-        run: '#detect_water_body'
+        run: "#detect_water_body"
         in:
           item: stac_items
           aoi: aoi
@@ -51,7 +49,7 @@ $graph:
         scatter: item
         scatterMethod: dotproduct
       node_stac:
-        run: '#stac'
+        run: "#stac"
         in:
           item: stac_items
           rasters:
@@ -66,20 +64,16 @@ $graph:
       - class: ScatterFeatureRequirement
     inputs:
       aoi:
-        label: area of interest as a bounding box
         doc: area of interest as a bounding box
         type: string
       epsg:
-        label: EPSG code
         doc: EPSG code
         type: string
-        default: EPSG:4326
+        default: "EPSG:4326"
       bands:
-        label: bands used for the NDWI
         doc: bands used for the NDWI
         type: string[]
       item:
-        label: STAC item
         doc: STAC item
         type: string
     outputs:
@@ -89,7 +83,7 @@ $graph:
         type: File
     steps:
       node_crop:
-        run: '#crop'
+        run: "#crop"
         in:
           item: item
           aoi: aoi
@@ -100,14 +94,14 @@ $graph:
         scatter: band
         scatterMethod: dotproduct
       node_normalized_difference:
-        run: '#norm_diff'
+        run: "#norm_diff"
         in:
           rasters:
             source: node_crop/cropped
         out:
           - ndwi
       node_otsu:
-        run: '#otsu'
+        run: "#otsu"
         in:
           raster:
             source: node_normalized_difference/ndwi
@@ -127,28 +121,25 @@ $graph:
     hints:
       DockerRequirement:
         dockerPull: ghcr.io/terradue/ogc-eo-application-package-hands-on/crop:1.5.0
-    baseCommand:
-      - python
-      - '-m'
-      - app
+    baseCommand: ["python", "-m", "app"]
     arguments: []
     inputs:
       item:
         type: string
         inputBinding:
-          prefix: '--input-item'
+          prefix: --input-item
       aoi:
         type: string
         inputBinding:
-          prefix: '--aoi'
+          prefix: --aoi
       epsg:
         type: string
         inputBinding:
-          prefix: '--epsg'
+          prefix: --epsg
       band:
         type: string
         inputBinding:
-          prefix: '--band'
+          prefix: --band
     outputs:
       cropped:
         outputBinding:
@@ -168,10 +159,7 @@ $graph:
     hints:
       DockerRequirement:
         dockerPull: ghcr.io/terradue/ogc-eo-application-package-hands-on/norm_diff:1.5.0
-    baseCommand:
-      - python
-      - '-m'
-      - app
+    baseCommand: ["python", "-m", "app"]
     arguments: []
     inputs:
       rasters:
@@ -197,10 +185,7 @@ $graph:
     hints:
       DockerRequirement:
         dockerPull: ghcr.io/terradue/ogc-eo-application-package-hands-on/otsu:1.5.0
-    baseCommand:
-      - python
-      - '-m'
-      - app
+    baseCommand: ["python", "-m", "app"]
     arguments: []
     inputs:
       raster:
@@ -226,10 +211,7 @@ $graph:
     hints:
       DockerRequirement:
         dockerPull: ghcr.io/terradue/ogc-eo-application-package-hands-on/stac:1.5.0
-    baseCommand:
-      - python
-      - '-m'
-      - app
+    baseCommand: ["python", "-m", "app"]
     arguments: []
     inputs:
       item:
@@ -237,13 +219,13 @@ $graph:
           type: array
           items: string
           inputBinding:
-            prefix: '--input-item'
+            prefix: --input-item
       rasters:
         type:
           type: array
           items: File
           inputBinding:
-            prefix: '--water-body'
+            prefix: --water-body
     outputs:
       stac_catalog:
         outputBinding:
