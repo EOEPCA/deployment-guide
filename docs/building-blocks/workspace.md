@@ -216,50 +216,69 @@ If you wish to restrict access to certain Workspace endpoints or operations, you
 
 ---
 
-## Validation
+## Validation and Usage
 
-**Automated Validation:**
+After deploying the Workspace Building Block, you can validate and interact with it through a series of checks and tests described below.
+
+### Automated Validation
+
+To run automated checks:
 
 ```bash
 bash validation.sh
 ```
 
-**Further Validation:**
+If all checks pass, your Workspace BB deployment is functioning as expected.
 
-### 1. **Check Kubernetes Resources**
+---
+
+### Manual Validation Steps
+
+#### 1. Check Kubernetes Resources
+
+List all resources in the `workspace` namespace:
 
 ```bash
 kubectl get all -n workspace
 ```
 
-### 2. **Access Workspace API**
+Confirm that all pods are `Running` and no errors are reported.
 
-View the Swagger documentation for the Workspace API:
+#### 2. Access the Workspace API
+
+You can view the Workspace API’s Swagger documentation at:
 
 ```
 https://workspace-api.${INGRESS_HOST}/docs
 ```
 
-### 3. **Access Workspace UI**
+Replace `${INGRESS_HOST}` with your configured ingress host domain.
 
-To access the Workspace UI, you will need the password that was generated during the configuration script. 
+#### 3. Access the Workspace UI
 
-If you do not have the password, you can find it in the `generated-values.yaml` file. 
+The Workspace UI requires a password generated during the configuration script run. If you don’t have it handy, check the `generated-values.yaml` file.
+
+Access the UI:
 
 ```
 https://workspace-ui.${INGRESS_HOST}/
 ```
 
+#### 4. Access the Workspace Admin Dashboard
 
-### 4. **Access Workspace Admin Dashboard**
+The Workspace Admin Dashboard (if deployed) is accessible at:
 
 ```
 https://workspace-admin.${INGRESS_HOST}/
 ```
 
-### 6. **Create and check a new workspace**
+---
 
-Apply a `Workspace` resource...
+### Creating and Testing a Workspace
+
+#### 1. Create a New Workspace
+
+Apply a sample `Workspace` resource definition:
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -273,41 +292,47 @@ spec:
 EOF
 ```
 
-Check a new namespace is created for the workspace...
+Check that a new namespace was created:
 
 ```bash
 kubectl get ns ws-deploytest
 ```
 
-Check storage buckets (`ws-deploytest` and `ws-deploytest-stage`) are created for the workspace...
+#### 2. Verify Storage Buckets
+
+Confirm that the workspace’s storage buckets (`ws-deploytest` and `ws-deploytest-stage`) were created:
 
 ```bash
 kubectl -n ws-deploytest get bucket
 ```
 
-Get details for the new workspace via the workspace API...
+#### 3. Query the Workspace API
 
-_For simplicity, using port forward to bypass authorization (leave running in terminal)_
+Port-forward the Workspace API service:
+
 ```bash
 kubectl -n workspace port-forward svc/workspace-api 8080:8080
 ```
 
-Then call the API via localhost...
+From another terminal window, get details about the workspace:
 
 ```bash
 curl http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json'
 ```
 
-Use the S3 credentials (response `storage.credentials.secret`) to access the buckets...
+Record the secret from the response for S3 access:
 
 ```bash
 SECRET="$(curl -s http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
 ```
 
-List buckets...
+#### 4. Interacting with S3 Buckets
+
+Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate objects in the workspace’s S3 buckets.
+
+**List Buckets:**
 
 ```bash
-source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
@@ -315,7 +340,7 @@ s3cmd ls \
   --secret_key $SECRET
 ```
 
-Put a file...
+**Upload a Test File:**
 
 ```bash
 s3cmd put validation.sh s3://ws-deploytest \
@@ -325,7 +350,7 @@ s3cmd put validation.sh s3://ws-deploytest \
   --secret_key $SECRET
 ```
 
-Check the bucket...
+**Check the Uploaded File:**
 
 ```bash
 s3cmd ls s3://ws-deploytest \
@@ -335,7 +360,7 @@ s3cmd ls s3://ws-deploytest \
   --secret_key $SECRET
 ```
 
-Empty the bucket...
+**Delete the Test File:**
 
 ```bash
 s3cmd del s3://ws-deploytest/validation.sh \
@@ -345,7 +370,9 @@ s3cmd del s3://ws-deploytest/validation.sh \
   --secret_key $SECRET
 ```
 
-Delete the workspace...
+#### 5. Delete the Test Workspace
+
+To remove the test workspace:
 
 ```bash
 kubectl -n workspace delete workspaces ws-deploytest
