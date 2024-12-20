@@ -21,6 +21,11 @@ EOEPCA places a few special demands on your Kubernetes cluster. We do not detail
     - Manual certificates or self-signed TLS might suffice.  
     - Simplified DNS settings can be used, such as a local DNS server or a host file override.
 
+**Recommended Additional Steps:**
+
+- **Avoiding Docker Hub Pull Rate Limits**:  
+    Given the number of images pulled from Docker Hub during EOEPCA deployment, it’s recommended to authenticate to Docker Hub or configure a Docker Hub proxy registry. This reduces the chance of hitting the `Too Many Requests` rate limit and speeds up the overall deployment process. For detailed instructions, refer to Docker Hub’s [Rate Limit Documentation](https://docs.docker.com/docker-hub/download-rate-limit/).
+
 ## Additional Notes
 
 - **Kubernetes Installation**: For installing Kubernetes, refer to external guides:
