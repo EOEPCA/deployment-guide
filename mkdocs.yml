@@ -22,7 +22,10 @@ nav:
       - Application Deployment →: building-blocks/overview.md
   - Application Deployment:
     - Overview: building-blocks/overview.md
-    - Identity & Access (IAM): building-blocks/iam.md
+    - Identity & Access (IAM): 
+        - IAM Deployment: building-blocks/iam/main-iam.md
+        - IAM Advanced Configuration: building-blocks/iam/advanced-iam.md
+        - IAM Client Administration: building-blocks/iam/client-management.md
     - Resource Catalogue: building-blocks/resource-catalogue.md
     - Processing:
         - Overview: building-blocks/processing.md
