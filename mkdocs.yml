@@ -23,15 +23,17 @@ nav:
   - Application Deployment:
     - Overview: building-blocks/overview.md
     - Identity & Access (IAM): 
-        - IAM Deployment: building-blocks/iam/main-iam.md
-        - IAM Advanced Configuration: building-blocks/iam/advanced-iam.md
-        - IAM Client Administration: building-blocks/iam/client-management.md
-    - Resource Catalogue: building-blocks/resource-catalogue.md
+        - Deployment: building-blocks/iam/main-iam.md
+        - Advanced Configuration: building-blocks/iam/advanced-iam.md
+        - Client Administration: building-blocks/iam/client-management.md
+    - Data Management:
+      - Resource Catalogue: building-blocks/resource-catalogue.md
+      - Resource Registration: building-blocks/resource-registration.md
+      - Data Access: building-blocks/data-access.md
+
     - Processing:
         - Overview: building-blocks/processing.md
         - OGC API Processes: building-blocks/oapip-engine.md
-    - Data Access: building-blocks/data-access.md
-    - Resource Registration: building-blocks/resource-registration.md
     - Workspace: building-blocks/workspace.md
     - MLOps: building-blocks/mlops.md
     - Resource Health: building-blocks/resource-health.md
