@@ -8,8 +8,8 @@ The _Data Access_ is deployed via the `data-access` helm chart from the [EOEPCA 
 
 The chart is configured via values that are supplied with the instantiation of the helm release. The EOEPCA `data-access` chart provides a thin wrapper around the EOX View Server (`vs`) helm chart. The documentation for the View Server can be found here:
 
-* User Guide: [https://vs.pages.eox.at/documentation/user/main/](https://vs.pages.eox.at/documentation/user/main/)
-* Operator Guide: [https://vs.pages.eox.at/documentation/operator/main/](https://vs.pages.eox.at/documentation/operator/main/)
+* User Guide: [https://vs.pages.eox.at/vs/user/](https://vs.pages.eox.at/vs/user/)
+* Operator Guide: [https://vs.pages.eox.at/vs/operator/](https://vs.pages.eox.at/vs/operator/)
 
 ```bash
 helm install --version 1.4.0 --values data-access-values.yaml \
@@ -19,7 +19,7 @@ helm install --version 1.4.0 --values data-access-values.yaml \
 
 ## Values
 
-The Data Access supports many values to configure the service. These are documented in full in the [View Server - Operator Guide Configuration page](https://vs.pages.eox.at/documentation/operator/main/k8s.html#helm-configuration-reference).
+The Data Access supports many values to configure the service. These are documented in full in the [View Server - Operator Guide Configuration page](https://vs.pages.eox.at/vs/operator/k8s.html#helm-configuration-reference).
 
 ### Core Configuration
 
@@ -215,16 +215,16 @@ vs:
 
 ### Data-layer Configuration
 
-Configuration of the service data-layer - as described in the [View Server Operator Guide](https://vs.pages.eox.at/documentation/operator/main/configuration.html#helm-configuration-variables). 
+Configuration of the service data-layer - as described in the [View Server Operator Guide](https://vs.pages.eox.at/vs/operator/k8s.html#global-configuration) or [Step by Step Guide](https://vs.pages.eox.at/vs/operator/creating_new_collections.html). 
 
 
 The data-access service data handling is configured by definition of `productTypes`, `collections` and `layers`...
 
-* `productTypes` - [Product Types](https://vs.pages.eox.at/documentation/operator/main/configuration.html#product-types-producttypes)<br>
+* `productTypes` - [Product Types](https://vs.pages.eox.at/vs/operator/k8s.html#product-types-producttypes)<br>
   Identify the underlying file assets as WCS coverages and their visual representation
-* `collections` - [Data Collections](https://vs.pages.eox.at/documentation/operator/main/configuration.html#data-collections-collections)<br>
+* `collections` - [Data Collections](https://vs.pages.eox.at/vs/operator/k8s.html#data-collections-collections)<br>
   Provides groupings into which products are organised
-* `layers` - [Layers](https://vs.pages.eox.at/documentation/operator/main/configuration.html#layers-layers)<br>
+* `layers` - [Layers](https://vs.pages.eox.at/vs/operator/k8s.html#layers-layers)<br>
   Specifies the hoe the product visual representations are exposed through the WMS service
 
 For more information, see the worked example in section [Data Specification](../quickstart/creodias-deployment.md#data-specification) for the [example CREODIAS deployment](../quickstart/creodias-deployment.md).
@@ -663,6 +663,6 @@ Additional information regarding the _Data Access_ can be found at:
 
 * [Helm Chart](https://charts-public.hub.eox.at/charts/vs-x.y.z.tgz)
 * _Documentation:_
-    * [User Guide](https://vs.pages.eox.at/documentation/user/main/)
-    * [Operator Guide](https://vs.pages.eox.at/documentation/operator/main/)
+    * [User Guide](https://vs.pages.eox.at/vs/user/)
+    * [Operator Guide](https://vs.pages.eox.at/vs/operator/)
 * [Git Repository](https://gitlab.eox.at/vs/vs)
