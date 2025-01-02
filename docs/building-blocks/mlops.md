@@ -1,33 +1,21 @@
 # MLOps Deployment Guide
 
-
-> **Important Note**: While deployment will succeed, full operation is not available in this EOEPCA+ release due to the inability to configure Keycloak settings.
-
 The **MLOps Building Block** provides support services for training machine learning models within the cloud platform. It orchestrates the training of ML models across popular frameworks, maintains a history of training runs with associated metrics, and manages the associated training data. This guide provides step-by-step instructions to deploy the MLOps Building Block within your Kubernetes cluster.
 
 ---
 
 ## Introduction
 
-The MLOps Building Block enables users to develop, train, and manage machine learning models efficiently. It leverages **SharingHub**, a web application offering collaborative services for ML development, and **MLflow SharingHub**, a custom version of MLflow integrated with SharingHub for experiment tracking and model management.
+The **MLOps Building Block** provides integrated services for training and managing machine learning models within the EOEPCA+ environment. It leverages GitLab for code and data versioning, **SharingHub** for collaborative ML services, and **MLflow SharingHub** (a custom MLflow) for experiment tracking and model registry.
 
 ### Key Features
 
-- **Model Training**: Supports initiation and management of training runs across popular ML frameworks.
-- **Experiment Tracking**: Maintains a history of training runs, parameters, and performance metrics.
-- **Model Management**: Version control and management of ML models using interoperable formats like ONNX.
-- **Data Management**: Efficient storage, access, and versioning of training datasets.
-- **Discoverability**: Integrates with Resource Discovery for sharing models and datasets.
-- **Scalability**: Built on Kubernetes for flexible and scalable deployments.
-- **Security**: Integrates with Keycloak for authentication and authorization.
+- **End-to-End** ML Workflow: Data versioning, model training, experiment logging, model deployment or registry.  
+- **GitLab Integration**: Automatic linking of GitLab projects (public or private) into SharingHub for discoverability. Optional LFS or DVC for large files/datasets.  
+- **OIDC Authentication**: Via Keycloak or compatible OIDC provider (optional but highly recommended).  
+- **S3 / MinIO Storage**: Flexible object storage for large data and model artifacts.  
+- **STAC-Based Discoverability**: SharingHub implements a STAC API over GitLab projects for dataset/ML model catalogs.
 
-### Components
-
-The MLOps Building Block comprises the following components:
-
-- **SharingHub**: A web application offering collaborative services for ML development.
-- **MLflow SharingHub**: A custom version of MLflow integrated with SharingHub for tracking experiments and managing models.
-- **GitLab**: Used for version control, issue tracking, and CI/CD (can be an existing instance). This deployment is intended for evaluation purposes and is not recommended for production use.
 
 ---
 ## Prerequisites
@@ -44,8 +32,14 @@ Before deploying the MLOps Building Block, ensure you have the following:
 | OIDC             | OIDC                                   | TODO (GitLab uses this)                                                                       |
 | Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/)                             |
-| MinIO            | S3-compatible storage                  | [Installation Guide](https://min.io/docs/minio/kubernetes/upstream/index.html)                |
+| MinIO            | S3-compatible storage                  | [Installation Guide](../infra/minio.md)                |
 | OIDC             | OpenID Connect (OIDC) Provider (e.g., Keycloak) | Installation guide coming soon. |
+
+Additionally, you must have:
+
+- **Keycloak** (or another OIDC provider) set up *if* you want single sign-on through OIDC.  
+  - If you do not integrate OIDC, GitLab will use its default authentication method (username/password). However, SharingHub can still use GitLab for sign-in via an access token or GitLab OAuth app.
+
 
 **Clone the Deployment Guide Repository:**
 
@@ -61,6 +55,27 @@ Run the validation script to ensure all prerequisites are met:
 ```bash
 bash check-prerequisites.sh
 ```
+
+## Optional: Configure Keycloak for GitLab (OIDC)
+
+If you'd like GitLab to authenticate via Keycloak, follow these steps in Keycloak **before** continuing:
+
+1. **Create or use an existing Realm** (e.g., `eoepca`).
+2. **Create a new Client** for GitLab:
+
+   - **Client ID**: `gitlab` (or a name of your choosing)
+   - **Client Protocol**: `openid-connect`
+   - **Root URL**: `https://gitlab.<YOUR-DOMAIN>` (you'll confirm `<YOUR-DOMAIN>` shortly)
+   - **Redirect URIs**: Add `https://gitlab.<YOUR-DOMAIN>/users/auth/openid_connect/callback`
+   - **Web Origins**: `https://gitlab.<YOUR-DOMAIN>`  
+   - Ensure the client scopes `openid`, `profile`, `email` are included or default.
+3. **Obtain** the following from Keycloak:
+
+   - **OIDC_ISSUER_URL** (e.g., `https://auth.<YOUR-DOMAIN>/realms/eoepca`)
+   - **OIDC_CLIENT_ID** (e.g., `gitlab`)
+   - **OIDC_CLIENT_SECRET** (Keycloak-generated)
+
+This data will be used in the MLOps deployment scripts.
 
 ---
 
@@ -98,34 +113,29 @@ The S3 environment variables should be already set after successful deployment o
 - **`OIDC_CLIENT_ID`**: The client ID registered with your OIDC provider for GitLab.
 - **`OIDC_CLIENT_SECRET`**: The client secret associated with the client ID.
 
-**Important Notes:**
-
-- If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-  - The required TLS secret names are:
-    - `sharinghub-tls`
-    - `gitlab-tls`
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
 
 ### 2. Create Required Kubernetes Secrets
-
-**Note:** These secrets must be created before deploying GitLab, as they contain essential configurations.
-
-Run the script to create all the necessary Kubernetes secrets:
 
 ```bash
 bash apply-secrets.sh
 ```
 
-**Secrets Created:**
+This script:
 
-- `gitlab-storage-config`: Contains S3 configuration for GitLab backups.
-- `object-storage`: Contains S3 configuration for Git LFS and other storage needs.
-- `openid-connect`: Contains OIDC configuration for GitLab authentication.
-- `gitlab-secrets`: Contains the initial root password for GitLab.
+- Creates the `gitlab` and `sharinghub` namespaces.
+- Applies a sample PersistentVolumeClaim (`mlflow/generated-pvc.yaml`) for MLflow logs/artifacts (if you're storing them on a local volume rather than only S3).
+- Creates various secrets for GitLab (S3 backups, object storage, OIDC) and for SharingHub/MLflow.  
+  - `gitlab-storage-config`  
+  - `object-storage`  
+  - `openid-connect`  
+  - `sharinghub` (session secret)  
+  - `sharinghub-s3` (S3 creds)  
+  - `mlflow-sharinghub` (secret key)  
+  - `mlflow-sharinghub-s3` (S3 creds for MLflow)
 
 ### 3. Deploy GitLab
 
-Deploy GitLab using the generated configuration file.
+Deploy GitLab using the generated configuration file. This deployment can take up to 10 minutes, please be patient.
 
 ```bash
 helm repo add gitlab https://charts.gitlab.io/ && \
@@ -139,36 +149,37 @@ helm upgrade -i gitlab gitlab/gitlab \
 
 **Important Notice Regarding GitLab Deployment:**
 
-The provided Helm chart and configuration values for GitLab are intended for **evaluation and testing purposes only**. During deployment, you may encounter messages labeled as "CRITICAL," stating that certain components like **PostgreSQL**, **Redis**, and **Gitaly** are included for evaluation and are not supported by GitLab for production workloads. 
-
-For production instances, it's recommended to use GitLab's **Cloud Native Hybrid** deployment method. Refer to the [GitLab Production Deployment Documentation](https://docs.gitlab.com/charts/installation/index.html#use-the-reference-architectures) for more information.
+> **Note**: The provided GitLab deployment uses built-in PostgreSQL, Redis, and Gitaly. These are **evaluation-only** components. For production setups, reference GitLab's official docs on external databases, Redis clusters, etc.
 
 
-### 4. Set Up GitLab OAuth Application
+### 4. Set Up GitLab OAuth Application for SharingHub
 
-Retrieve the generated **GitLab Root Password**:
+If you wish to sign into SharingHub using GitLab accounts:
+
+1. Retrieve the **GitLab Root Password**:
+
 ```bash
 kubectl get secret gitlab-gitlab-initial-root-password --template={{.data.password}} -n gitlab | base64 -d
 ```
 
-- Open a web browser and navigate to `https://gitlab.<your-domain>`
-- Log in using:
-	  - Username: `root`
-	  - Password: *The generated password.*
-- Navigate to **Admin Area > Applications**.
-- Create a new application with the following settings:
-    - **Name**: `SharingHub`
-    - **Redirect URI**: `https://sharinghub.${INGRESS_HOST}/api/auth/login/callback`
-    - **Scopes**: `openid`, `read_user`, `read_api`
-- After creating the application, note the **Application ID** and **Secret**, you will be asked for these in the next step.
+2. Open `https://gitlab.<YOUR-DOMAIN>`.
+3. Log in as `root` with the above password.
+4. **Admin Area** → **Applications** → **New Application**:
 
-### 5. Apply Remaining Kubernetes Secrets
+   - **Name**: e.g., `SharingHub`
+   - **Redirect URI**: `https://sharinghub.<YOUR-DOMAIN>/api/auth/login/callback`
+   - **Scopes**: `openid`, `read_user`, `read_api`
 
-Now that we have the GitLab OAuth credentials, we can apply the remaining secrets for SharingHub and MLflow SharingHub.
+5. After creating the application, note the **Application ID** and **Secret**.
+
+
+### 5 Store the GitLab OAuth App Credentials
 
 ```bash
 bash utils/save-application-credentials-to-state.sh
 ```
+
+This script prompts you for `GITLAB_APP_ID` and `GITLAB_APP_SECRET` from the step above, then creates a Kubernetes secret (`sharinghub-oidc`) in the `sharinghub` namespace. This allows SharingHub to use GitLab-based OIDC sign-in.
 
 ### 6. Deploy SharingHub Using Helm
 
@@ -192,38 +203,136 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --values mlflow/generated-values.yaml
 ```
 
+> **Note**: This deployment uses a custom MLflow that integrates with SharingHub. By default, it stores metadata either in an embedded SQLite or a small Postgres. Artifacts can go into your S3 bucket. Check `mlflow/generated-values.yaml` for final config.
+
 ---
 
-## Validation
 
-**Automated Validation:**
+### 1. Validate the Deployment
 
+After the initial installation (GitLab, SharingHub, MLflow, secrets, etc.), run a few checks:
+
+1. **Check Pods**:
 ```bash
-bash validation.sh
+kubectl get pods -n gitlab
+kubectl get pods -n sharinghub
+```
+All pods should be in `Running` (or `Completed`) state.
+
+2. **Visit GitLab**:
+
+- `https://gitlab.<YOUR-DOMAIN>/`
+- Log in with `root` user or (if OIDC integrated) use the "Sign in with OpenID Connect" link.
+
+3. **Visit SharingHub**:
+
+- `https://sharinghub.<YOUR-DOMAIN>/`
+- If you set up GitLab OAuth for SharingHub, you should see a sign-in flow redirecting to GitLab.
+
+4. **Visit MLflow**:
+
+- `https://sharinghub.<YOUR-DOMAIN>/mlflow`
+- Confirm the MLflow UI loads. If you have an existing project or run, you'll see experiments or metrics.
+
+5. **Confirm S3 Access**:
+
+- If using MinIO, run a quick test from your local machine or from a pod:
+  ```bash
+  aws --endpoint-url https://minio.<YOUR-DOMAIN> s3 ls s3://mlops-bucket
+  ```
+- If credentials or bucket aren't set correctly, you'll see an error.
+
+
+---
+
+### 2. Basic Usage Walkthrough
+
+This section walks you through a minimal scenario of creating a project in GitLab, tagging it for discovery in SharingHub, and running a simple MLflow training job.
+
+#### 2.1 Create a New GitLab Project
+
+1. **Log into GitLab** at `https://gitlab.<INGRESS_HOST>/`.  
+2. Create a project named `mlops-test-project`.  
+3. Go to **Settings → General → Topics** and add the topic `sharinghub:aimodel` (or your chosen category from the `categories` config).  
+4. (Optional) Commit a small dataset to the project (`wine-quality.csv` or similar).
+
+#### 2.2 Verify that the Project Appears in SharingHub
+
+1. Go to `https://sharinghub.<INGRESS_HOST>/`.  
+2. Click "AI Models" category (or whichever category you used).  
+3. The new GitLab project (`mlops-test-project`) should appear in SharingHub's listing.
+
+If you do not see it, check:
+
+- That your GitLab project is **public** (or internal). If it's private, your user must be authenticated in SharingHub with a GitLab token or default token.  
+- That you used the correct GitLab topic matching your category configuration in `sharinghub/generated-values.yaml`.
+
+
+### 2.3 MLflow Setup & Training
+
+1. **Obtain the MLflow Tracking URI**
+    
+- Typically, you can browse to your project details in SharingHub and click an "MLflow" link in the top-right corner. This link will look something like:
+
+```
+https://sharinghub.<INGRESS_HOST>/mlflow/root/mlops-test-project/tracking/
 ```
 
-**Further Validation:**
 
-1. **Check Kubernetes Resources:**
+2. **Authenticate**
+    
+- If your MLflow is protected (likely), you must provide a token or other credentials.
+- **GitLab Personal Access Token**:
+
+    1. Create a token in GitLab with `api` scope.
+    2. Set it as an environment variable, e.g., `MLFLOW_TRACKING_TOKEN=<YOUR-TOKEN>`.
+
+- This token must correspond to a GitLab user who has Developer (or Maintainer) access in that project.
+
+3. **Run a Simple MLflow Experiment**  
+
+Below is an example training script that logs a model and its accuracy to MLflow. You can run this script locally or in a pod.
 
 ```bash
-kubectl get all -n sharinghub
+pip install mlflow scikit-learn
+
+# Create a Python script named main.py
+cat <<EOF > main.py
+import mlflow
+import mlflow.sklearn
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+# Start MLflow run
+with mlflow.start_run():
+    X, y = load_iris(return_X_y=True)
+    X_train, X_test, y_train, y_test = train_test_split(X, y)
+    model = RandomForestClassifier(n_estimators=10)
+    model.fit(X_train, y_train)
+    acc = model.score(X_test, y_test)
+    mlflow.log_metric("accuracy", acc)
+    mlflow.sklearn.log_model(model, "model")
+EOF
+
+# Execute the training script with MLflow environment variables
+MLFLOW_TRACKING_URI="https://sharinghub.<YOUR-INGRESS-HOST>/mlflow/root/mlops-test-project/tracking/" \
+MLFLOW_TRACKING_TOKEN="<YOUR-TOKEN>" \
+python main.py
 ```
 
-2. **Access SharingHub Web Interface**:
+**Expected**: MLflow logs the run and saves the model artifact. You should not encounter 401 (Unauthorized) if the token is valid and 403 (Forbidden) if your GitLab user has the correct role (`Developer` or `Maintainer`) in the `mlops-test-project`.
+    
+4. **Check the MLflow UI**
+    
+- Navigate to `https://sharinghub.<INGRESS_HOST>/mlflow`.
+- Look for your `mlops-test-project` in the left panel or under "Experiments."
+- You should see a new run listed, along with metrics (e.g., the `accuracy` you logged).
 
-   Open a web browser and navigate to: `https://sharinghub.<your-domain>/` and `https://sharinghub.<your-domain>/mlflow`
-   
-3. **Test API Endpoints**:
-
-    You can test the API using `curl`:
-
-    - **Get STAC Collections**:
-
-    ```bash
-    curl -X GET 'https://sharinghub.<your-domain>/api/stac/collections' \
-      -H 'Accept: application/json'
-    ```
+5. **Confirm the Model in SharingHub**
+    
+- Return to `https://sharinghub.<INGRESS_HOST>/` and open your project’s page.
+- You may see a "Model" or "Assets" section referencing your newly-logged model. Depending on your SharingHub configuration, it might also appear as a STAC item under "AI Models."
 
 ---
 
@@ -242,10 +351,10 @@ kubectl delete ns gitlab sharinghub
 
 - Delete any Persistent Volume Claims (PVCs) if used:
 
-    ```bash
-    kubectl delete pvc -n sharinghub ; \
-    kubectl delete pvc -n gitlab
-    ```
+```bash
+kubectl delete pvc -n sharinghub ; \
+kubectl delete pvc -n gitlab
+```
 
 ---
 

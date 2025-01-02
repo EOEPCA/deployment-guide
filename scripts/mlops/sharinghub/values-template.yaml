@@ -36,3 +36,98 @@ config: |-
   mlflow:
     type: mlflow-sharinghub
     url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow
+  docs:
+    url: /docs
+  mlflow:
+    type: mlflow-sharinghub
+    # url: https://sharinghub.develop.eoepca.org/mlflow
+    url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow
+  stac:
+    projects:
+      cache-timeout: 30
+    search:
+      cache-timeout: 30
+    extensions:
+      eo: https://stac-extensions.github.io/eo/v1.1.0/schema.json
+      label: https://stac-extensions.github.io/label/v1.0.1/schema.json
+      sci: https://stac-extensions.github.io/scientific/v1.0.0/schema.json
+      ml-model: https://stac-extensions.github.io/ml-model/v1.0.0/schema.json
+    root:
+      id: gitlab
+      title: SharingHub brings your data and models closer.
+      description: Your platform for collaborating on ML and NLP projects, integrated with [GitLab](https://gitlab.com).
+      locales:
+        fr:
+          title: SharingHub rapproche vos données et vos modèles.
+          description: Votre plateforme de collaboration sur les projets ML et NLP, intégré à [GitLab](https://gitlab.com).
+    categories:
+      - ai-model:
+          title: "AI Models"
+          description: "AI models are the core of our platform, go and browse them to discover our models."
+          gitlab_topic: sharinghub:aimodel
+          logo: https://data.web.p2.csgroup.space/sharinghub/ai-model.jpg
+          icon: https://img.icons8.com/material/24/artificial-intelligence.png
+          locales:
+            fr:
+              title: "Modèles IA"
+              description: "Les modèles d'IA sont au cœur de notre plateforme, allez les parcourir pour découvrir nos modèles."
+          features:
+            map-viewer: enable
+            store-s3: enable
+            mlflow: enable
+            jupyter: enable
+      - dataset:
+          title: "Datasets"
+          description: "Datasets are very important in the process of training an AI, discover those that we put at your disposal."
+          gitlab_topic: sharinghub:dataset
+          logo: https://data.web.p2.csgroup.space/sharinghub/datasets.jpg
+          icon: https://img.icons8.com/ios/50/data-backup.png
+          locales:
+            fr:
+              title: "Jeux de données"
+              description: "Les jeux de données sont très importants dans le processus de formation d'une IA, découvrez ceux que nous mettons à votre disposition."
+          features:
+            map-viewer: enable
+            store-s3: enable
+            mlflow: disable
+            jupyter: enable
+
+  tags:
+    gitlab:
+      minimum_count: 1
+    sections:
+      - name: "Computer Vision"
+        enabled_for:
+          - ai-model
+          - dataset
+        keywords:
+          - "Image qualification"
+          - "Object detection"
+          - "Image segmentation"
+          - "Mask generation"
+      - name: "Multimodal"
+        keywords:
+          - "Feature Extraction"
+          - "Text-to-Image"
+          - "Image-to-3D"
+          - "Text-to-3D"
+        enabled_for:
+          - ai-model
+          - dataset
+      - name: "Tabular"
+        keywords:
+          - "Tabular Classification"
+          - "Tabular Regression"
+        enabled_for:
+          - ai-model
+          - dataset
+
+  alerts:
+    timeout: 3
+    type: info
+    title: "Welcome to SharingHub"
+    message: "To see all projects and unlock all features, please login..."
+    locales:
+      fr:
+        title: "Bienvenue sur le SharingHub"
+        message: "Pour voir tous les projets et débloquer toutes les fonctionnalités, veuillez vous connecter..."

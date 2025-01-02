@@ -16,7 +16,7 @@ global:
 
   appConfig:
     omniauth:
-      enabled: true
+      enabled: ${OIDC_ENABLED}
       allowSingleSignOn: ["saml", "openid_connect"]
       blockAutoCreatedUsers: false
       providers:
