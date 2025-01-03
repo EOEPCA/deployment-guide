@@ -56,7 +56,7 @@ curl --silent --show-error \
   "config": {
     "clientId": "${GITHUB_CLIENT_ID}",
     "clientSecret": "${GITHUB_CLIENT_SECRET}",
-    "redirectUri": "https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/login"
+    "redirectUri": "https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint"
   }
 }
 EOF

@@ -19,7 +19,7 @@ The EOEPCA Identity and Access Management (IAM) Building Block provides secure a
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress Controller   | Properly installed                     | [Installation Guide](../infra/ingress-controller.md)  |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md) |
 
 **Clone the Deployment Guide Repository:**
 
