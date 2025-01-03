@@ -1,34 +1,25 @@
 # Application Hub Deployment Guide
 
-
-> **Important Note**: While deployment will succeed, full operation is not available in this EOEPCA+ release due to the inability to configure OIDC settings in EOEPCA+'s current version. This guide will be updated once OIDC settings are available.
-
-The **Application Hub** provides a suite of web-based tools, including JupyterLab for interactive analysis, Code Server for application development, and the capability to add user-defined interactive dashboards. It empowers users to manage and deliver work environments and tools for a wide range of tasks, such as developing, hosting, executing, and performing exploratory analysis of Earth Observation (EO) applications, all within a unified Cloud infrastructure.
+The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps
 
 ***
-## Introduction
-
-The **Application Hub** serves diverse users with different needs and workflows. It provides a collaborative environment for developing, deploying, and running EO applications, fostering innovation and efficiency in the EO community.
-
-***
-## Architecture Overview
-
-The Application Hub is architected to support various functionalities:
-
-- **Interactive Analysis**: Provides JupyterLab environments for data scientists and researchers to perform exploratory data analysis.
-- **Application Development**: Offers Code Server environments for developers to write, test, and debug code in languages like Python, R, or Java, with access to EO-specific libraries like SNAP and GDAL.
-- **Custom Dashboards**: Allows users to create and deploy interactive dashboards tailored to specific analytical needs.
-- **Unified Infrastructure**: Manages all tools and environments within a single Cloud infrastructure, ensuring consistency and scalability.
-
 
 ### Key Features
 
-- **Management**: Aggregates and retrieves EO metadata across multiple sources.
-- **Standards Compliance**: Integrates with existing systems using OGC CSW and STAC standards.
-- **Discoverability**: Facilitates data discovery with OpenSearch and API Records support.
-- **Scalability**: Built on PyCSW, allowing for flexible and scalable deployments.
+- **JupyterLab** for interactive analysis of EO data.
+- **Code Server** for browser-based coding environments.
+- **Custom Dashboards** for specialized visualizations or user-defined apps.
+- **Multi-User, Multi-Profile** environment—users can be grouped, assigned different resource quotas, and use different container images.
+
+### Architecture Overview
+
+1. **JupyterHub** at the core, spawning user-specific pods.
+2. **OIDC** for authentication & authorization.
+3. **Profiles** to define CPU/RAM limits, images, volumes, environment variables, etc.
+4. **Group-based Access** controlling which profiles are visible to which user groups.
 
 ***
+
 ## User Scenarios
 
 The Application Hub accommodates various user roles and scenarios:
@@ -76,7 +67,11 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/)                             |
-| OIDC             | OIDC                                   | TODO                                                                                          |
+| OIDC             | OIDC                                   | See below                                                                                          |
+
+Additionally:
+
+- You’ll need a client secret for OAuth2 if you want JupyterHub to authenticate via Keycloak or another IdP.
 
 **Clone the Deployment Guide Repository:**
 
@@ -93,16 +88,32 @@ Run the validation script to ensure all prerequisites are met:
 bash check-prerequisites.sh
 ```
 
-***
-## Deployment
+## OIDC Integration (Keycloak Example)
 
+To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider:
+
+1. **Create a Keycloak Client** for the Application Hub:
+    
+    - **Client ID**: e.g., `application-hub`
+    - **Protocol**: `openid-connect`
+    - **Redirect URIs**: `https://app-hub.<YOUR_DOMAIN>/hub/oauth_callback`
+        - (Or `https://app-hub.<YOUR_DOMAIN>/hub/*` if Keycloak requires wildcard for sub-routes.)
+    - **Web Origins**: `https://app-hub.<YOUR_DOMAIN>`
+    - Make sure `openid`, `profile`, `email` scopes are enabled.
+
+2. **Record** the following from Keycloak:
+    
+    - **CLIENT_SECRET**: from Keycloak’s Credentials tab.
+
+***
+
+## Deployment
 
 1. **Run the Setup Script**:
 
 ```bash
 bash configure-app-hub.sh
 ```
-
 
 2. **Key Configuration Parameters**:
 
@@ -117,14 +128,12 @@ bash configure-app-hub.sh
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
     - *Example*: `worker`
-- **`APPHUB_CLIENT_SECRET`**: Client secret for OAuth2
+- **`APPHUB_CLIENT_SECRET`**: The Keycloak OIDC client secret
 
 ---
 
 
-1. **Deploy the Application Hub Using Helm**
-
-	Run the Helm install command using the generated values file:
+3. **Deploy the Application Hub Using Helm**
 
 ```bash
 helm repo add eoepca https://eoepca.github.io/helm-charts && \
@@ -136,86 +145,126 @@ helm upgrade -i application-hub eoepca/application-hub \
 --create-namespace
 ```
 
-***
-## Validation
+---
 
-**Automated Validation:**
+4. **Access the Application Hub**
+
+By default, the `generated-values.yaml` file creates a **demo** admin user named `admin`. You can log into the Application Hub by signing into Keycloak with this `admin` user credentials.
+
+> **Note**: This default setup is primarily for **testing or demonstrations**. In production, we strongly recommend managing users and groups via Keycloak (or another OIDC provider) and assigning roles accordingly. This ensures a more secure and maintainable approach to user management. For more details, see the [Jupyter Hub Documentation](https://z2jh.jupyter.org/en/stable/administrator/authentication.html) section below on configuring additional users, groups, and profiles.
+
+***
+
+## 5. Validation
+
+### 5.1 Automated Validation
 
 ```bash
 bash validation.sh
 ```
 
+### 5.2 Manual Validation
 
-**Manual Validation:**
+1. **Check Kubernetes Resources**:
+    
+```bash
+kubectl get pods -n application-hub
+```
 
-1. **Check Kubernetes Resources:**
+Ensure the JupyterHub pod(s) and other components are in the `Running` state.
+    
+2. **Access the Hub**:
+    
+- Go to `https://app-hub.<YOUR_DOMAIN>/`.
+- You should be redirected to Keycloak (or your chosen OIDC provider) for login if OIDC is set up.
+- Upon successful login, you’ll land in the JupyterHub interface (the "spawn" page).
+
+3. **Spawn a Notebook**:
+    
+- If you have multiple **Profiles**, pick one.
+- Wait for the container to start. You should end up in a JupyterLab interface.
+
+If something fails (e.g., a 401 from Keycloak or a "profile list is empty" error), review the logs:
 
 ```bash
-kubectl get all -l release=application-hub --all-namespaces
-```
-
-2. **Access Dashboard:**
-
-```
-https://app-hub.<your-domain>
+kubectl logs -n application-hub <application-hub-pod-name>
 ```
 
 ---
-## Operation
 
-#### Configuring Groups and Users
+## 6. Usage
 
-1. **Access the Application Hub**:
-    - Navigate to its URL.
-    - Log in with administrative credentials.
+Below are some common tasks you might perform in the Application Hub. For advanced usage, see the [Jupyter Hub Docs](https://eoepca.readthedocs.io/projects/application-hub/en/latest/) and the included references.
 
-2. **Manage Groups and Users**:
-    - Go to the **Admin** menu.
-    - Add groups (e.g., `group-1`, `group-2`, `group-3`).
-    - Add users (`eric`, `bob`) to these groups as needed.
+### 6.1 Managing Groups & Users
 
-For detailed instructions, refer to the [Groups and Users Management Guide](https://eoepca.readthedocs.io/projects/deploy/en/stable/eoepca/application-hub/#groups-and-users).
+1. **Log In as Admin**:
+    
+- Typically, you designate one or more Keycloak accounts as "admin" in the JupyterHub configuration.
+- Once logged in, go to `https://app-hub.<YOUR_DOMAIN>/hub/admin`.
 
-### Configuring Application Profiles
+2. **Create Groups**:
+    
+- In the admin panel, create groups (e.g., `group-A`, `group-B`).
+- Or use the JupyterHub REST API to create groups programmatically.
 
-Application profiles define how users interact with tools and applications, determining resource limits and available environments.
+3. **Assign Users**:
+    
+- Add or remove users from groups in the admin UI or via the REST API.
+- Group membership controls which **Profiles** the user sees (see next section).
 
-#### Defining Profiles
+### 6.2 Defining Profiles for Different Tooling
 
-Define profiles in the `config.yml` under the Application Hub's Helm chart configurations:
+In `config.yml`, define one or more "profiles." Each profile corresponds to a specific container image and resource constraints. For instance:
 
 ```yaml
 profiles:
-  - id: profile_1
+  - id: profile_jupyter_python
     groups:
       - group-A
-      - group-B
     definition:
-      display_name: Profile 1
-      slug: profile_1_slug
-      default: False
+      display_name: "Jupyter Python Env"
+      slug: "python-env"
       kubespawner_override:
-        cpu_limit: 4
-        mem_limit: 8G
-        image: eoepca/iat-jupyterlab:main
-
+        cpu_limit: 2
+        mem_limit: 4G
+        image: "eoepca/iat-jupyterlab:latest"
 ```
-#### Using Profiles
 
-Profiles link to specific user groups, controlling access and resource usage based on roles.
+- **`id`**: Internal identifier for the profile.
+- **`groups`**: Which JupyterHub groups can see/spawn this profile.
+- **`kubespawner_override`**: Resource limits, container image, etc.
+- **`pod_env_vars`, `volumes`, `config_maps`**: Additional fields for environment variables, data volumes, or config maps.
 
-### Advanced Configuration
+Once you redeploy with the updated configuration, users in `group-A` can spawn notebooks using the "Jupyter Python Env" profile.
 
-You can define environment variables, volumes, and Kubernetes RBAC settings to fine-tune the Application Hub's operation and security.
+### 6.3 JupyterHub API
 
-For a comprehensive guide, visit the [Application-Hub Context Configuration](https://eoepca.github.io/application-hub-context/configuration).
+If you want to automate tasks—like adding groups, spinning up named servers, or managing pods—use the JupyterHub REST API.
+
+- Acquire an **API token** (admin or appropriate privileges).
+- Make HTTP requests to endpoints such as:
+    - `GET /hub/api/groups`
+    - `POST /hub/api/users/{username}/servers/{server_name}`
+
+### 6.4 Running Code Server or Custom Dashboards
+
+Besides JupyterLab, you can define profiles for other web-based apps (e.g., Code Server, RStudio, custom dashboards). Just specify their container images in the profile’s `kubespawner_override.image` field and any required environment variables or volumes.
+
+---
+
+## 7. Advanced Configuration
+
+Check the [JupyterHub Configuration Reference](https://eoepca.github.io/application-hub-context/configuration/) for more advanced settings and options.
 
 ***
 ## Uninstallation
 
 To uninstall the Application Hub and clean up associated resources:
 
-`helm uninstall application-hub -n application-hub`
+```
+helm uninstall application-hub -n application-hub
+```
 
 ***
 ## Further Reading
