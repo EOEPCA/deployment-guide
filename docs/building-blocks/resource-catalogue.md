@@ -73,13 +73,6 @@ During the script execution, you will be prompted to provide:
    - **`STORAGE_CLASS`**: Storage class for persistent volumes.
      - *Example*: `managed-nfs-storage-retain`
 
-**Important Notes:**
-
-- If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-  - The required TLS secret names are:
-    - `resource-catalogue-tls`
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
-
 
 2. **Deploy the Resource Catalogue Using Helm**
 

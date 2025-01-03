@@ -119,14 +119,6 @@ bash configure-app-hub.sh
     - *Example*: `worker`
 - **`APPHUB_CLIENT_SECRET`**: Client secret for OAuth2
 
-**Important Notes:**
-
-- **TLS Certificates**<br>
-  If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-    - The required TLS secret names are:
-      - `app-hub-tls`
-    - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
-
 ---
 
 

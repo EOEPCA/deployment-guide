@@ -97,14 +97,6 @@ During the script execution, you will be prompted to provide:
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage.
 - **`S3_SECRET_KEY`**: Secret key for S3 storage.
 
-**Important Notes:**
-
-- If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-  - The required TLS secret names are:
-    - `eoapi-tls`
-    - `data-access-stacture-tls`
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
-
 
 ### 2. Deploy PostgreSQL Operator (pgo) and eoAPI
 

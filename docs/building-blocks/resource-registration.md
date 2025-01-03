@@ -95,14 +95,6 @@ During the script execution, you will be prompted to provide:
 - **`FLOWABLE_ADMIN_PASSWORD`**: Admin password for Flowable.
     - *Default*: `eoepca`
 
-**Important Notes:**
-
-- If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-  - The required TLS secret names are:
-    - `registration-api-tls-secret`
-    - `flowable-tls`
-
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
 
 ### 2. Apply Kubernetes Secrets
 
