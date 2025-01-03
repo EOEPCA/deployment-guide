@@ -5,20 +5,23 @@ Some EOEPCA Building Blocks, particularly those involved in processing (e.g. the
 
 **Key Requirements:**
 
-- **ReadWriteMany Persistent Volumes**: Essential for components like the CWL Processing Engine.
-- **Appropriate StorageClass**: The cluster must have a StorageClass that can provision volumes suitable for EOEPCA’s workload.
+- **ReadWriteMany Volumes**  
+    - Mandatory for the CWL Processing Engine and potentially other BBs requiring concurrent file access.
+- **Appropriate StorageClass**  
+    - The cluster must have a default or specialized StorageClass that can dynamically provision `ReadWriteMany` volumes.
 
-**Storage Options for Production:**
+## Production vs. Development
 
-- Consider robust, distributed filesystems or managed storage solutions. Examples include:
-    - **GlusterFS** or IBM Spectrum Scale for large-scale distributed storage.
-    - **OpenEBS** or **Longhorn** for simpler deployments that still support `ReadWriteMany`.
-    - **NFS** with a proper HA setup can be a practical choice if carefully managed.
+- **Production**  
 
-**Storage Options for Development or Testing:**
+    - Use robust solutions like GlusterFS, IBM Spectrum Scale, or fully managed cloud file systems that support `ReadWriteMany`.
+    - Tools like OpenEBS or Longhorn can provide distributed block storage, but ensure they truly support multi-node RWX if your usage demands it.
+    - NFS can be used if carefully configured for high availability and reliability.
 
-- **Longhorn** or **OpenEBS** set up on a single node, if you are seeking something quick and less complex.
-- **HostPath** or a simple NFS server for a local environment—straightforward but not for production use.
+- **Development / Testing**  
+
+    - A simple NFS server or an OpenEBS/Longhorn single-node install might suffice for demos.
+    - HostPath or local volumes can be acceptable for quick tests, but not recommended for multi-node or production usage.
 
 **Which EOEPCA Blocks Require `ReadWriteMany`?**
 

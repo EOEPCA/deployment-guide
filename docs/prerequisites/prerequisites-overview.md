@@ -2,18 +2,24 @@
 
 This section outlines the infrastructure requirements for deploying EOEPCA. Rather than explaining how to build a Kubernetes cluster from scratch, we focus on what EOEPCA specifically needs from your existing environment. We assume you have a working Kubernetes cluster, or know how to create one by referring to standard guides (e.g. Rancher, Kubernetes.io), and that you simply want to ensure it meets EOEPCA’s particular prerequisites.
 
-**In essence, these prerequisites cover:**
 
-- Specific Kubernetes configuration (including the need to run certain containers as root).
-- A suitable storage solution offering `ReadWriteMany` capabilities for some EOEPCA Building Blocks.
-- Proper ingress and TLS configuration, including wildcard DNS and a certificate manager.
-- Object storage capabilities, such as S3 (though the details for these are covered elsewhere).
+## High-Level Requirements
 
-Where relevant, we outline what’s ideal for production versus what’s sufficient for development, testing or demonstrations.
+- **Kubernetes**: Must allow containers to run as root, have an ingress + wildcard DNS, etc.
+- **Storage**: Certain BBs need shared `ReadWriteMany` volumes.
+- **TLS**: For production, cert-manager or a similar mechanism is strongly recommended.
+- **(Optional) Object Storage**: E.g. MinIO or external S3.
+
+For more in-depth information about each requirement (including recommended solutions for production vs. development), see the respective pages:
+
+- [Kubernetes Requirements](kubernetes.md)
+- [Storage Requirements](storage.md)
+- [Ingress Controller Setup](ingress-controller.md)
+- [TLS Management](tls.md)
 
 ---
 
-**Before deploying the EOEPCA Building Blocks, we recommend running the `check-prerequisite` script (once provided). This script will:**
+**Before deploying the EOEPCA Building Blocks, we recommend running or referencing the `check-prerequisite` script (once provided). This script will:**
 
 - Test if pods can run as root.
 - Verify that ingress is properly set up with wildcard DNS.

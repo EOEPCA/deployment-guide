@@ -1,34 +1,46 @@
 # Kubernetes Requirements
 
-EOEPCA places a few special demands on your Kubernetes cluster. We do not detail how to install Kubernetes here—there are many fine guides available (e.g. [Rancher’s non-production quickstart](https://rancher.com/docs/rke/latest/en/) or [Kubernetes official docs](https://kubernetes.io/docs/setup/)). Instead, we focus on what EOEPCA expects from an already-installed cluster.
+EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **not** detail how to install Kubernetes—there are many official and third-party guides. Instead, we focus on specific **EOEPCA demands** you should verify in an existing cluster.
 
-**Requirements:**
+## Requirements
 
-- **Run Containers as Root (Mandatory)**: Some EOEPCA components cannot run under non-root users.
-- **Wildcard DNS & Ingress Controller (Mandatory)**: The cluster must be accessible via a wildcard DNS entry, and you should have an ingress controller that can handle host-based routing.
-- **Load Balancer with Port 80/443 Exposure (Recommended)**: This ensures external traffic can reach the EOEPCA services.
-- **Cert-Manager or Equivalent (Recommended)**: Simplifies obtaining and managing TLS certificates.
+1. **Run Containers as Root (Mandatory)**  
 
-**Production vs Development:**
+   Some EOEPCA components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster’s security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow `root` containers.
 
-- **Production**:  
-    - Consider a fully managed or production-hardened Kubernetes environment (e.g. a production Rancher setup or a managed Kubernetes service from a cloud provider).
-    - Use cert-manager with Let’s Encrypt for automatic certificate renewal.
-    - Ensure you have a stable load balancer and wildcard DNS properly configured.
-  
-- **Development / Internal Testing**:  
-    - A single-node Rancher or Minikube-like environment is often enough.  
-    - Manual certificates or self-signed TLS might suffice.  
-    - Simplified DNS settings can be used, such as a local DNS server or a host file override.
+2. **Ingress Controller + Wildcard DNS (Mandatory)**  
 
-**Recommended Additional Steps:**
+   - A cluster-level wildcard DNS record: `*.example.com → <Load Balancer IP>`.
+   - An ingress controller that supports host-based routing (NGINX, APISIX, etc.).
+   - This ensures that each EOEPCA Building Block can expose `service1.example.com`, `service2.example.com`, etc.
 
-- **Avoiding Docker Hub Pull Rate Limits**:  
-    Given the number of images pulled from Docker Hub during EOEPCA deployment, it’s recommended to authenticate to Docker Hub or configure a Docker Hub proxy registry. This reduces the chance of hitting the `Too Many Requests` rate limit and speeds up the overall deployment process. For detailed instructions, refer to Docker Hub’s [Rate Limit Documentation](https://docs.docker.com/docker-hub/download-rate-limit/).
+3. **Load Balancer with 80/443 (Recommended)**  
 
-## Additional Notes
+   - If your environment is on-prem or in a cloud, you should have a load balancer or external IP that listens on HTTP/HTTPS. 
+   - In a development scenario (e.g., Minikube or a single-node Rancher), you can rely on NodePort or port forwarding, but this is **not** recommended for production.
 
-- **Kubernetes Installation**: For installing Kubernetes, refer to external guides:
-    - [Kubernetes Setup](https://kubernetes.io/docs/setup/)
-    - [Rancher Kubernetes Engine](https://rancher.com/docs/rke/latest/en/)
-- **Container Runtime**: Ensure your cluster uses a compatible container runtime (e.g. containerd, Docker).
+4. **Cert-Manager or Equivalent (Recommended)**  
+
+   - We strongly recommend [cert-manager](https://cert-manager.io/) for TLS automation. 
+   - If you prefer manual certificates for dev or air-gapped setups, be prepared to manage rotation.
+
+## Production vs. Development
+
+- **Production**  
+
+    - Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider’s managed K8S).  
+    - Use cert-manager with Let’s Encrypt or your CA for auto-renewed certificates.  
+    - Keep your images in a Docker Hub authenticated registry or a private repository to avoid pull-rate issues.
+
+- **Development / Testing**
+
+    - A single-node cluster (Rancher, K3s, Minikube, Docker Desktop) can suffice.  
+    - You can manually manage TLS or skip it if everything is internal.  
+    - For DNS, you can use a local DNS trick like `nip.io` or edit your `/etc/hosts` as needed (less flexible, though).
+
+
+## Additional Guidance
+
+- Ensure your container runtime (containerd, Docker, etc.) is up to date and fully compatible with your K8S version.
+- Check [Kubernetes official docs](https://kubernetes.io/docs/setup/) or [Rancher docs](https://rancher.com/docs/rke/latest/en/) for installation references.
+- If you expect to run many EOEPCA components pulling images from Docker Hub, set up credentials or a proxy to avoid rate limits.

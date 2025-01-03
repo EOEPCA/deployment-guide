@@ -1,7 +1,7 @@
 
 # Ingress and DNS Requirements
 
-EOEPCA requires that services be accessible via a wildcard DNS. The ingress controller should support host-based routing and be compatible with running containers as root. While there’s no strict requirement on which ingress controller to use, common choices include NGINX for development and APISIX or similar for production.
+EOEPCA requires host-based routing via wildcard DNS (e.g., `*.example.com`). You should install an ingress controller that supports these features. 
 
 **Requirements:**
 
