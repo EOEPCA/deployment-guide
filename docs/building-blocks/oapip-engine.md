@@ -86,6 +86,24 @@ Follow the steps in [Client Administration](../iam/client-management) to create 
 
 Once the client is created, note its `clientId` and secret, as these are required by OAPIP for integrating with the IAM system.
 
+**Create Keycloak Resource for Zoo 'jobs' endpoint**
+
+Zoo provides a 'jobs' endpoint for monitoring of process executions and providing details of processing results. The details of each job is presented behind a unique Job ID (as a uuid) known only to the originating user. Thus, access to the `/ogc-api/jobs/` endpoint need not be protected explicitly for each user, as the random uuid job IDs provide protection through obscurity.
+
+To configure this policy, the Keycloak resource that represents this jobs endpoint is configured using the built-in 'default' resource type, which invokes the default policy that authorises access for any authenticated realm user.
+
+Follow the steps under **Create a Resource** in [Resource Protection with Keycloak Policies](iam/advanced-iam.md#resource-protection-with-keycloak-policies) to create the `jobs` resource in the `zoo` client with the `type` set as `urn:zoo:resources:default`.
+
+This is achieved with the following resource definition...
+
+```json
+{
+  "name": "jobs",
+  "type": "urn:zoo:resources:default",
+  "uris": ["/ogc-api/jobs/*"]
+}
+```
+
 ---
 
 ### Apply Kubernetes Secrets
