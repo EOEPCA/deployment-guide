@@ -104,6 +104,8 @@ This is achieved with the following resource definition...
 }
 ```
 
+Note that the type _urn:**zoo**:resources:default_ assumes the client name `zoo`, and so should be adjusted if a different client name is used.
+
 ---
 
 ### Apply Kubernetes Secrets
