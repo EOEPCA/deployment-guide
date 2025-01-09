@@ -5,11 +5,28 @@ metadata:
   name: zoo-api
 spec:
   http:
-    # Route for main API
-    # * Requires Authz
-    # * But do not include OIDC Authn flow, which cannot conveniently be followed for an API
-    #   * Instead assume that the JWT is obtained independently
-    - name: zoo-api
+    # Open access to zoo OpenAPI docs
+    - name: zoo-docs
+      match:
+        hosts:
+          - zoo-apx.$INGRESS_HOST
+        paths:
+          - /*
+        exprs:
+          - subject:
+              scope: Path
+            op: RegexMatch
+            value: "^/(ogc-api/api.*|swagger-ui.*)"
+      backends:
+        - serviceName: zoo-project-dru-service
+          servicePort: 80
+      plugins:
+        # Allow CORS access
+        - name: cors
+          enable: true
+
+    # Authorized access to zoo API
+    - name: zoo-protected
       match:
         hosts:
           - zoo-apx.$INGRESS_HOST
@@ -23,11 +40,11 @@ spec:
         - name: openid-connect
           enable: true
           config:
+            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
             realm: eoepca
             bearer_only: true
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
           secretRef: oapip-engine-client
-        # Require authorization for access to API
+        # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
           config:
