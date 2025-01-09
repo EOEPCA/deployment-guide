@@ -40,3 +40,21 @@ Make sure to check which Building Blocks you plan to deploy and ensure the clust
 
 - [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 - [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+
+## Quick Start
+
+For a development/testing environment such as the cluster established via the [Kubernetes Quick Start](kubernetes.md#quick-start), the HostPath provisioner can be used - noting that this can only be used for single node deployments. 
+
+1. Deploy the provisioner and its associated `standard` storage class.
+
+      ```bash
+      kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta-fixes/docs/prerequisites/hostpath-provisioner.yaml
+      ```
+
+2. Monitor the deployment
+
+      ```bash
+      kubectl get -n kube-system sc/standard deploy/hostpath-storage-provisioner
+      ```
+
+This provides a storage class called `standard` that can be used for deployment of the EOEPCA+ Building Blocks that require persistent storage.

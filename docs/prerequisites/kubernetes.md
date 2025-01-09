@@ -60,6 +60,7 @@ Follow the [Installation Instructions](https://k3d.io/stable/#releases) to insta
 Cluster creation is initiated by the following command.
 
 ```bash
+export KUBECONFIG="$PWD/kubeconfig.yaml"
 k3d cluster create eoepca \
   --image rancher/k3s:v1.28.7-k3s1 \
   --k3s-arg="--disable=traefik@server:0" \
@@ -69,8 +70,10 @@ k3d cluster create eoepca \
 ```
 
 The characteristics of the created cluster are:
+
+* KUBECONFIG file created in the file `kubeconfig.yaml` in the current directory
 * Cluster name is `eoepca`. Change as desired
-* Single node that provides all Kubernetes roles (master, worker, etc.)
+* Single node that provides all Kubernetes roles (control-place, master, worker, etc.)
 * No ingress controller (which is established elsewhere is this guide)
 * Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired
 
@@ -82,18 +85,4 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
 
 **Storage Provisioner**
 
-As described in the [EOEPCA+ Prerequisites](storage.md), a persistence solution providing `ReadWriteMany` storage is required by some BBs. For a development/testing environment, the HostPath provisioner can be used - noting that this can only be used for single node deployments. 
-
-1. Deploy the provisioner and its associated `standard` storage class.
-
-      ```bash
-      kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta-fixes/docs/prerequisites/hostpath-provisioner.yaml
-      ```
-
-2. Monitor the deployment
-
-      ```bash
-      kubectl get -n kube-system sc/standard deploy/hostpath-storage-provisioner
-      ```
-
-This provides a storage class called `standard` that can be used for deployment of the EOEPCA+ Building Blocks that require persistent storage.
+As described in the [EOEPCA+ Prerequisites](storage.md), a persistence solution providing `ReadWriteMany` storage is required by some BBs. For this development deployment the single node HostPath Provisioner can be used as described in the [Storage Quick Start](storage.md#quick-start).

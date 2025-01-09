@@ -10,3 +10,4 @@ gatekeeper-values.yaml
 generated-gatekeeper-values.yaml
 reference-repo/
 reference-repo*
+/kubeconfig.yaml
