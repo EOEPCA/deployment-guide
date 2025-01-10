@@ -6,15 +6,29 @@ ingress:
   host: resource-catalogue.$INGRESS_HOST
   tls_host: resource-catalogue.$INGRESS_HOST
   tls_secret_name: resource-catalogue-tls
-  class: nginx
-  className: nginx
   annotations:
     ${CLUSTER_ISSUER_ANNOTATION}
     ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: nginx
 
 db:
   volume_storage_type: $STORAGE_CLASS
 pycsw:
+  image:
+    tag: "eoepca-staging"
+    pullPolicy: Always
   config:
     server:
       url: $HTTP_SCHEME://resource-catalogue.$INGRESS_HOST
+    manager:
+      transactions: "true"
+      allowed_ips:
+        - '"*"'
+    metadata:
+      identification:
+        title: EOEPCA Resource Catalogue
+        description: pycsw is an OARec and OGC CSW server implementation written in Python
+      provider:
+        name: EOEPCA
+        url: https://eoepca.org/
