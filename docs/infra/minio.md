@@ -16,11 +16,11 @@ Before you begin, make sure you have the following:
 
 | Component        | Requirement                            | Documentation Link                                                |
 | ---------------- | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress          | Properly installed                     | [Ingress Controller Setup Guide](ingress-controller.md)     |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -63,7 +63,7 @@ bash configure-minio.sh
   - The required TLS secret names are:
     - `minio-tls`
     - `minio-console-tls`
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
+  - For instructions on creating TLS secrets manually, please refer to section [Manual TLS](../prerequisites/tls.md#manual-tls).
 
 ### 2. Deploy MinIO
 
