@@ -102,28 +102,28 @@ Most Resource Discovery endpoints can be accessed directly in a browser:
 - **Landing/Home Page**  
 
 ```bash
-https://resource-discovery.<INGRESS_HOST>/
+https://resource-catalogue.<INGRESS_HOST>/
 ```
 You should see an HTML landing page or a minimal JSON response with links to the various endpoints.
 
 - **Swagger UI (OpenAPI)**
 
 ```bash
-https://resource-discovery.<INGRESS_HOST>/openapi?f=html
+https://resource-catalogue.<INGRESS_HOST>/openapi?f=html
 ```  
 Opens a human-friendly UI showing available endpoints and interactive documentation.  
 
 - **OGC API - Records / STAC Collections**
 
 ```bash
-https://resource-discovery.<INGRESS_HOST>/collections
+https://resource-catalogue.<INGRESS_HOST>/collections
 ```  
 Should return a JSON or HTML response listing available collections.
 
 - **Conformance**
 
 ```bash
-https://resource-discovery.<INGRESS_HOST>/conformance
+https://resource-catalogue.<INGRESS_HOST>/conformance
 ```  
 Confirms which OGC API conformance classes and standards are supported by the server.
 
@@ -136,13 +136,13 @@ Using the command line can be a quick way to check endpoints and see raw respons
 #### 3.1. Basic Liveness Check
 
 ```bash
-curl -I "https://resource-discovery.<INGRESS_HOST>/"
+curl -I "https://resource-catalogue.<INGRESS_HOST>/"
 ```
 
 #### 3.2. Testing OGC CSW
 
 ```bash
-curl "https://resource-discovery.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&request=GetCapabilities"
+curl "https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&request=GetCapabilities"
 ```
 
 - A successful response should be an XML Capabilities document containing service metadata.  
@@ -150,7 +150,7 @@ curl "https://resource-discovery.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&re
 #### 3.3. Testing STAC API
 
 ```bash
-curl "https://resource-discovery.<INGRESS_HOST>/stac"
+curl "https://resource-catalogue.<INGRESS_HOST>/stac"
 ```
 
 - You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.
@@ -226,7 +226,7 @@ pycsw-admin.py load-records \
 Ensure all Kubernetes resources are running correctly:
 
 ```bash
-kubectl get pods -n resource-discovery
+kubectl get pods -n resource-catalogue
 ```
 
 - All pods should be in `Running` state.
