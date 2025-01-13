@@ -16,11 +16,11 @@ Before you begin, make sure you have the following:
 
 | Component        | Requirement                            | Documentation Link                                                |
 | ---------------- | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](kubernetes.md)             |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress          | Properly installed                     | [Ingress Controller Setup Guide](ingress-controller.md)     |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](tls.md) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -51,11 +51,11 @@ bash configure-minio.sh
 **During the script execution, you will be prompted for:**
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
-  - *Example*: `example.com`
+    - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-  - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
-  - *Example*: `default`
+    - *Example*: `standard`
 
 **Important Notes:**
 
@@ -63,7 +63,7 @@ bash configure-minio.sh
   - The required TLS secret names are:
     - `minio-tls`
     - `minio-console-tls`
-  - For instructions on creating TLS secrets manually, please refer to the [Manual TLS Certificate Management](../infra/tls/manual-tls.md) section in the TLS Certificate Management Guide.
+  - For instructions on creating TLS secrets manually, please refer to section [Manual TLS](tls.md#manual-tls).
 
 ### 2. Deploy MinIO
 
@@ -84,8 +84,8 @@ helm upgrade -i minio minio/minio \
 Access the MinIO Console to create access keys:
 
 1. Navigate to `https://console-minio.<your-domain>/access-keys/new-account`
-2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step.
-3. Click **Create** to generate new access keys.
+2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step - see file `~/.eoepca/state`.
+3. Under `Access Keys` select to `Create access key +`
 4. Note down or download the **Access Key** and **Secret Key**.
 
 Run the following script to save these keys to your EOEPCA+ state file:
@@ -95,19 +95,6 @@ bash ./apply-secrets.sh
 ```
 
 > By saving these keys to the *EOEPCA+ state file*, the credentials will be automatically set during the deployment of S3-integrated Building Blocks.
-
-### 4. Deploy MinIO Bucket API
-
-The MinIO Bucket API allows other components to create buckets programmatically.
-
-```bash
-helm repo add eoepca https://eoepca.github.io/helm-charts && \
-helm repo update eoepca && \
-helm upgrade -i minio-bucket-api eoepca/rm-minio-bucket-api \
-  --version 0.0.4 \
-  --values api/generated-values.yaml \
-  --namespace minio
-```
 
 ---
 

@@ -24,7 +24,7 @@ spec:
     - auth-apx.$INGRESS_HOST
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-prod-apx
+    name: ${CLUSTER_ISSUER}
   secretName: auth-apx-tls
   usages:
     - digital signature

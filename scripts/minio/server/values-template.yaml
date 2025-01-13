@@ -3,11 +3,10 @@ rootPassword: ${MINIO_PASSWORD}
 replicas: 2
 ingress:
   enabled: true
-  ingressClassName: nginx
+  ingressClassName: apisix
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+    k8s.apisix.apache.org/http-to-https: "true"
+    k8s.apisix.apache.org/upstream-read-timeout: "600s"
     ${CLUSTER_ISSUER_ANNOTATION}
   path: /
   hosts:
@@ -18,11 +17,10 @@ ingress:
         - minio.${INGRESS_HOST}
 consoleIngress:
   enabled: true
-  ingressClassName: nginx
+  ingressClassName: apisix
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+    k8s.apisix.apache.org/http-to-https: "true"
+    k8s.apisix.apache.org/upstream-read-timeout: "600s"
     ${CLUSTER_ISSUER_ANNOTATION}
   path: /
   hosts:

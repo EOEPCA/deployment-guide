@@ -184,6 +184,8 @@ echo "Policy ID: ${policy_id}"
 
 **Create a Resource (`test-resource` for `/healthcheck`):**
 
+Note that the `client_id` is the 'internal' unique identifier that is assigned by Keycloak - which can be retrieved as described above.
+
 ```bash
 resource_id=$( \
   curl --silent --show-error \

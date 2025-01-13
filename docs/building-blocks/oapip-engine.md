@@ -16,13 +16,13 @@ Before deploying the **OGC API Processes Engine**, ensure you have the following
 
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)                                         |
+| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/)                             |
-| Stage-In S3      | Accessible                             |             [MinIO Deployment Guide](../infra/minio.md)                                                                                  |
-| Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../infra/minio.md)                                                                      |
+| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
+| Stage-In S3      | Accessible                             |             [MinIO Deployment Guide](../prerequisites/minio.md)                                                                                  |
+| Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                                                      |
 
 **Clone the Deployment Guide Repository:**
 
@@ -54,13 +54,13 @@ bash configure-oapip.sh
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
-    - *Example*: `default`
+    - *Example*: `standard`
 
 **Stage-Out S3 Configuration:**
 
-Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the [MinIO Deployment Guide](../infra/minio.md). These values should already be in your EOEPCA+ state file if you followed the main deployment steps.
+Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the [MinIO Deployment Guide](../prerequisites/minio.md). These values should already be in your EOEPCA+ state file if you followed the main deployment steps.
 
 - **`S3_ENDPOINT`**, **`S3_ACCESS_KEY`**, **`S3_SECRET_KEY`**, **`S3_REGION`**: Credentials and location details for the S3 bucket used as Stage-Out storage.
 
@@ -85,6 +85,26 @@ Follow the steps in [Client Administration](../iam/client-management) to create 
 - **`authorizationServicesEnabled`**: `true` to enable Keycloak’s built-in authorisation features.
 
 Once the client is created, note its `clientId` and secret, as these are required by OAPIP for integrating with the IAM system.
+
+**Create Keycloak Resource for Zoo 'jobs' endpoint**
+
+Zoo provides a 'jobs' endpoint for monitoring of process executions and providing details of processing results. The details of each job is presented behind a unique Job ID (as a uuid) known only to the originating user. Thus, access to the `/ogc-api/jobs/` endpoint need not be protected explicitly for each user, as the random uuid job IDs provide protection through obscurity.
+
+To configure this policy, the Keycloak resource that represents this jobs endpoint is configured using the built-in 'default' resource type, which invokes the default policy that authorises access for any authenticated realm user.
+
+Follow the steps under **Create a Resource** in [Resource Protection with Keycloak Policies](iam/advanced-iam.md#resource-protection-with-keycloak-policies) to create the `jobs` resource in the `zoo` client with the `type` set as `urn:zoo:resources:default`.
+
+This is achieved with the following resource definition...
+
+```json
+{
+  "name": "jobs",
+  "type": "urn:zoo:resources:default",
+  "uris": ["/ogc-api/jobs/*"]
+}
+```
+
+Note that the type _urn:**zoo**:resources:default_ assumes the client name `zoo`, and so should be adjusted if a different client name is used.
 
 ---
 
@@ -364,7 +384,7 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-The STAC files and assets comprising the results are referenced as links to object storage. Access the object storage console to inspect these outputs - see the [Object Storage description](../infra/minio.md) for more details.
+The STAC files and assets comprising the results are referenced as links to object storage. Access the object storage console to inspect these outputs - see the [Object Storage description](../prerequisites/minio.md) for more details.
 
 ---
 

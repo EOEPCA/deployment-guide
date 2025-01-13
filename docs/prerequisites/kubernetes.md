@@ -44,3 +44,45 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 - Ensure your container runtime (containerd, Docker, etc.) is up to date and fully compatible with your K8S version.
 - Check [Kubernetes official docs](https://kubernetes.io/docs/setup/) or [Rancher docs](https://rancher.com/docs/rke/latest/en/) for installation references.
 - If you expect to run many EOEPCA components pulling images from Docker Hub, set up credentials or a proxy to avoid rate limits.
+
+## Quick Start
+
+For evaluation and/or development purposes a non-production single node local cluster can be established.
+
+This quick start provides some simple instructions to establish a local development cluster using [`k3d`](https://k3d.io/), which is part of the [Rancher](https://www.rancher.com/quick-start) Kubernetes offering.
+
+**Install `k3d`**
+
+Follow the [Installation Instructions](https://k3d.io/stable/#releases) to install the `k3d` binary.
+
+**Create Kubernetes Cluster**
+
+Cluster creation is initiated by the following command.
+
+```bash
+export KUBECONFIG="$PWD/kubeconfig.yaml"
+k3d cluster create eoepca \
+  --image rancher/k3s:v1.28.7-k3s1 \
+  --k3s-arg="--disable=traefik@server:0" \
+  --servers 1 --agents 0 \
+  --port 31080:31080@loadbalancer \
+  --port 31443:31443@loadbalancer
+```
+
+The characteristics of the created cluster are:
+
+* KUBECONFIG file created in the file `kubeconfig.yaml` in the current directory
+* Cluster name is `eoepca`. Change as desired
+* Single node that provides all Kubernetes roles (control-place, master, worker, etc.)
+* No ingress controller (which is established elsewhere is this guide)
+* Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired
+
+The Kubernetes version of the cluster can be selected via the `--image` option - taking account of:
+
+* **k3s images provided by rancher:** [https://hub.docker.com/r/rancher/k3s/tags](https://hub.docker.com/r/rancher/k3s/tags)
+* **Kubernetes Release History:** [https://kubernetes.io/releases/](https://kubernetes.io/releases/)
+* **Kubernetes API Deprecations:** [https://kubernetes.io/docs/reference/using-api/deprecation-guide/](https://kubernetes.io/docs/reference/using-api/deprecation-guide/)
+
+**Storage Provisioner**
+
+As described in the [EOEPCA+ Prerequisites](storage.md), a persistence solution providing `ReadWriteMany` storage is required by some BBs. For this development deployment the single node HostPath Provisioner can be used as described in the [Storage Quick Start](storage.md#quick-start).

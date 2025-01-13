@@ -40,13 +40,13 @@ Before deploying the Resource Health Building Block, ensure you have the followi
 
 | Component                   | Requirement                             | Documentation Link                                                |
 | --------------------------- | --------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes                  | Cluster (tested on v1.28)               | [Installation Guide](../infra/kubernetes-cluster-and-networking.md) |
+| Kubernetes                  | Cluster (tested on v1.28)               | [Installation Guide](../prerequisites/kubernetes.md) |
 | Git                         | Properly installed                      | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) |
 | Helm                        | Version 3.5 or newer                    | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | Helm plugins                | `helm-git`: Version 1.3.0 tested        | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install) |
 | kubectl                     | Configured for cluster access           | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../infra/ingress-controller.md)      |
-| Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../infra/tls/internal-tls.md) |
+| Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../prerequisites/ingress-controller.md)      |
+| Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -63,7 +63,7 @@ Run the validation script to ensure all prerequisites are met:
 bash check-prerequisites.sh
 ```
 
-**Important Note:** Ensure that you have internal TLS setup. Please refer to the [Internal TLS Deployment Guide](../infra/tls/internal-tls.md) for more information. 
+**Important Note:** Ensure that you have internal TLS setup. Please refer to the [Internal TLS Deployment Guide](../prerequisites/tls.md#internal-tls) for more information. 
 
 ---
 

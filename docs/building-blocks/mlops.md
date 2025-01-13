@@ -24,15 +24,15 @@ Before deploying the MLOps Building Block, ensure you have the following:
 
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)                                         |
+| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Git              | Properly installed                     | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)                                     |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | Helm plugins     | `helm-git`: Version 1.3.0 tested       | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | OIDC             | OIDC                                   | TODO (GitLab uses this)                                                                       |
-| Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/)                             |
-| MinIO            | S3-compatible storage                  | [Installation Guide](../infra/minio.md)                |
+| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
+| MinIO            | S3-compatible storage                  | [Installation Guide](../prerequisites/minio.md)                |
 | OIDC             | OpenID Connect (OIDC) Provider (e.g., Keycloak) | Installation guide coming soon. |
 
 Additionally, you must have:
@@ -96,7 +96,7 @@ During the script execution, you will be prompted to provide:
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
-    - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 
 The S3 environment variables should be already set after successful deployment of the [Minio Building Block]():
 

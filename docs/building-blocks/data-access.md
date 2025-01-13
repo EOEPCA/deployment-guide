@@ -47,12 +47,12 @@ Before deploying the Data Access Building Block, ensure you have the following:
 
 | Component          | Requirement                            | Documentation Link                                                |
 | ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller   | Properly installed                     | [Installation Guide](../infra/ingress-controller.md)  |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
-| Object Store                 | Accessible object store (i.e. MinIO)   | [MinIO Deployment Guide](../infra/minio.md)                                          |
+| Ingress Controller   | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md)  |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
+| Object Store                 | Accessible object store (i.e. MinIO)   | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
 
 
 **Clone the Deployment Guide Repository:**
@@ -89,9 +89,9 @@ During the script execution, you will be prompted to provide:
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
-    - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
-    - *Example*: `managed-nfs-storage-retain`
+    - *Example*: `standard`
 - **`S3_HOST`**: Host URL for MinIO or S3-compatible storage.
     - *Example*: `minio.example.com`
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage.

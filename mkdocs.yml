@@ -9,18 +9,18 @@ nav:
       - Introduction: index.md
       - Deployments:
         - EOEPCA+ Prerequisites: prerequisites/prerequisites-overview.md
-        - Application Deployment: building-blocks/overview.md
-  - EOEPCA Prerequisites:
+        - Building Blocks: building-blocks/overview.md
+  - EOEPCA+ Prerequisites:
       - Overview: prerequisites/prerequisites-overview.md
       - Kubernetes Requirements: prerequisites/kubernetes.md
       - Storage Requirements: prerequisites/storage.md
       - Ingress Controller Setup: prerequisites/ingress-controller.md
       - TLS Management: prerequisites/tls.md
       - Optional Components:
-          - S3 Storage (MinIO): infra/minio.md
-          - Container Registry: infra/container-registry.md
+          - S3 Storage (MinIO): prerequisites/minio.md
+          - Container Registry: prerequisites/container-registry.md
       - Application Deployment →: building-blocks/overview.md
-  - Application Deployment:
+  - Building Blocks:
     - Overview: building-blocks/overview.md
     - Identity & Access (IAM): 
         - Deployment: building-blocks/iam/main-iam.md

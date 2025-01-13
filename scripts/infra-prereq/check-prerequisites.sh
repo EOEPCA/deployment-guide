@@ -168,7 +168,7 @@ else
   echo "$cluster_issuers"
 fi
 
-# If you have a known ClusterIssuer (e.g. "letsencrypt-prod"), you could further test by deploying a test Certificate resource.
+# If you have a known ClusterIssuer (e.g. "letsencrypt-http01-apisix"), you could further test by deploying a test Certificate resource.
 # This is a more complex check and depends on your cluster configuration.
 # For now, we’ll just warn if none found.
 

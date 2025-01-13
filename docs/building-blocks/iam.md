@@ -21,11 +21,11 @@ The **Identity and Access Management (IAM)** Building Block provides authenticat
 
 | Component          | Requirement                            | Documentation Link                                                |
 | ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller   | Properly installed                     | [Installation Guide](../infra/ingress-controller.md)  |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
+| Ingress Controller   | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md)  |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -75,7 +75,7 @@ These credentials will be stored in a state file at `~/.eoepca/state`.
 
 If you haven't installed the APISIX Ingress Controller, follow these steps to install it in your cluster.
 
-Refer to the [APISIX Ingress Controller Deployment Guide](../infra/ingress-controller.md#apisix-ingress-controller) for detailed instructions.
+Refer to the [APISIX Ingress Controller Deployment Guide](../prerequisites/ingress-controller.md#apisix-ingress-controller) for detailed instructions.
 
 ### 3. Apply Secrets
 

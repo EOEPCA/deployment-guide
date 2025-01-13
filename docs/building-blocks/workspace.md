@@ -30,11 +30,11 @@ Before deploying the Workspace Building Block, ensure you have the following:
 
 | Component          | Requirement                                       | Documentation Link                                                |
 | ------------------ | ------------------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.28)                         | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes         | Cluster (tested on v1.28)                         | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.7 or newer                              | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
-| APISIX Ingress Controller | Properly installed                         | [Installation Guide](../infra/ingress-controller.md#apisix-ingress-controller)      |
+| TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../prerequisites/tls.md) |
+| APISIX Ingress Controller | Properly installed                         | [Installation Guide](../prerequisites/ingress-controller.md#apisix-ingress-controller)      |
 | Git Repository     | Access to a Git repository (e.g., GitHub, GitLab) | N/A                                                               |
 | Keycloak Client    | `workspace-bb` Keycloak client for IAM integration | [See Guide Below](#create-iam-client) |
 
@@ -89,7 +89,7 @@ During the script execution, you will be prompted to provide:
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
   - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
-  - *Example*: `letsencrypt-prod`
+  - *Example*: `letsencrypt-http01-apisix`
 - **S3 Credentials**: Endpoint, region, access key, and secret key for your S3-compatible storage.
 
 ### 2. Apply Kubernetes Secrets
@@ -137,7 +137,7 @@ helm upgrade -i workspace-api eoepca-dev/rm-workspace-api \
 
 **Workspace API Ingress**
 
-Note the ingress for the Workspace API is established using APISIX resources (ApisixRoute, ApisixTls). It is assumed that the `ClusterIssuer` dedicated to APISIX routes has been created (`letsencrypt-prod-apx`) - as described in section [Using Cert-Manager](../infra/tls/cert-manager.md).
+Note the ingress for the Workspace API is established using APISIX resources (ApisixRoute, ApisixTls). It is assumed that the `ClusterIssuer` dedicated to APISIX routes has been created (e.g. `letsencrypt-http01-apisix`) - as described in section [Using Cert-Manager](../prerequisites/ingress-controller.md#apisix-ingress-controller).
 
 ```bash
 kubectl -n workspace apply -f workspace-api/generated-ingress.yaml

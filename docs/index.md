@@ -1,9 +1,11 @@
 # EOEPCA+ Deployment Guide
 
-This guide provides steps to deploy the EOEPCA+ platform's components in your environment.
+This guide provides steps to deploy the EOEPCA+ platform's components (Building Blocks) in your environment.
 
-### **Getting Started:**
+* **EOEPCA+ Prerequisites**<br>
+  Set up the foundational infrastructure required for the EOEPCA+ platform.<br>
+  See [EOEPCA+ Prerequisites](prerequisites/prerequisites-overview.md).
 
-• **EOEPCA+ Prerequisites**: Set up the foundational infrastructure required for the EOEPCA+ platform. See the [Infrastructure Deployment Guide](infra/infrastructure-overview.md).
-
-• **Application Deployment**: Deploy EOEPCA+ Building Blocks. Begin with the [Application Deployment Overview](building-blocks/overview.md).
+* **Building Block Deployment**<br>
+  Deploy EOEPCA+ Building Blocks.<br>
+  Begin with the [Building Blocks Overview](building-blocks/overview.md).
