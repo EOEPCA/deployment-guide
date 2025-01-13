@@ -147,12 +147,12 @@ fi
 
 # Optional: try to curl the service (requires external reachability)
 # If you run this script within the cluster or from a machine that can access the ingress:
-# curl_output=$(curl -sk --max-time 10 "http://$TEST_HOST")
-# if [ -z "$curl_output" ]; then
-#   echo "WARNING: Could not reach the ingress endpoint. Ensure your load balancer and DNS are set up correctly."
-# else
-#   echo "Ingress responded successfully."
-# fi
+curl_output=$(curl -sk --max-time 10 "http://$TEST_HOST")
+if [ -z "$curl_output" ]; then
+  echo "WARNING: Could not reach the ingress endpoint. Ensure your load balancer and DNS are set up correctly."
+else
+  echo "Ingress responded successfully."
+fi
 
 ##################################
 # 3. Check TLS certificate validity
@@ -208,6 +208,7 @@ while true; do
   phase=$(kubectl get pvc test-rwx-pvc -n "$TEST_NAMESPACE" -o jsonpath='{.status.phase}')
   if [ "$phase" = "Bound" ]; then
     echo "PVC successfully bound with ReadWriteMany. Good!"
+    kubectl get pvc test-rwx-pvc -n "$TEST_NAMESPACE"
     break
   fi
   if [ $SECONDS -ge $end ]; then
