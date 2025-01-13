@@ -62,11 +62,11 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)                                         |
+| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| Ingress          | Properly installed                     | [Installation Guide](../infra/ingress-controller.md) |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/)                             |
+| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | OIDC             | OIDC                                   | See below                                                                                          |
 
 Additionally:
@@ -120,9 +120,9 @@ bash configure-app-hub.sh
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
-    - *Example*: `default`
+    - *Example*: `standard`
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
     - *Example*: `node-role.kubernetes.io/worker`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)

@@ -5,8 +5,8 @@ source ../common/utils.sh
 echo "Configuring the MLOps Building Block..."
 
 # Collect user inputs
-ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
+ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
+ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
 configure_cert
 
 # S3 configuration

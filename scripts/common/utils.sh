@@ -154,7 +154,7 @@ configure_cert() {
     fi
 
     if [ "$USE_CERT_MANAGER" == "yes" ]; then
-        ask "CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
+        ask "CLUSTER_ISSUER" "Specify the Cert Manager cluster issuer for TLS certificates" "letsencrypt-http01-apisix" is_non_empty
         add_to_state_file "CLUSTER_ISSUER_ANNOTATION" "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
     else
         add_to_state_file "CLUSTER_ISSUER_ANNOTATION" ""

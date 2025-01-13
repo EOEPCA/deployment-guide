@@ -5,7 +5,7 @@ source ../common/utils.sh
 echo "Configuring the Workspace Building Block..."
 
 # Collect user inputs
-ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
+ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 configure_cert
 
 # S3 configuration

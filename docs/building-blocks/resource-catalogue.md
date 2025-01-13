@@ -33,11 +33,11 @@ The Resource Discovery building block includes:
 
 | Component        | Requirement                   | Documentation Link                                                      |
 |------------------|-------------------------------|-------------------------------------------------------------------------|
-| Kubernetes       | Cluster (tested on v1.28)     | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)     |
+| Kubernetes       | Cluster (tested on v1.28)     | [Installation Guide](../prerequisites/kubernetes.md)     |
 | Helm             | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)               |
 | kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)           |
-| Ingress          | Properly installed            | [Installation Guide](../infra/ingress-controller.md)                    |
-| Cert Manager     | Properly installed            | [Installation Guide](../infra/tls/overview.md)                          |
+| Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress-controller.md)                    |
+| Cert Manager     | Properly installed            | [Installation Guide](../prerequisites/tls.md)                          |
 
 **Clone the Deployment Guide Repository:**
 
@@ -68,9 +68,9 @@ During the script execution, you will be prompted to provide:
 - **`INGRESS_HOST`**: Base domain for ingress hosts.  
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.  
-    - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.  
-    - *Example*: `managed-nfs-storage-retain`
+    - *Example*: `standard`
 
 
 2. **Deploy Resource Discovery Using Helm**

@@ -5,8 +5,8 @@ source ../common/utils.sh
 echo "Configuring the Data Access Building Block..."
 
 # Collect user inputs
-ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "default" is_non_empty
+ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
+ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
 configure_cert
 
 ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" is_non_empty

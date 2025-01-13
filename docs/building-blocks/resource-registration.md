@@ -48,11 +48,11 @@ Before deploying the Resource Registration Building Block, ensure you have the f
 
 | Component          | Requirement                            | Documentation Link                                                |
 | ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../infra/kubernetes-cluster-and-networking.md)             |
+| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.7 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../infra/tls/overview.md/) |
-| Ingress Controller | Properly installed (e.g., NGINX)       | [Installation Guide](../infra/ingress-controller.md)      |
+| TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
+| Ingress Controller | Properly installed (e.g., NGINX)       | [Installation Guide](../prerequisites/ingress-controller.md)      |
 
 
 **Clone the Deployment Guide Repository:**
@@ -89,7 +89,7 @@ During the script execution, you will be prompted to provide:
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
-    - *Example*: `letsencrypt-prod`
+    - *Example*: `letsencrypt-http01-apisix`
 - **`FLOWABLE_ADMIN_USER`**: Admin username for Flowable.
     - *Default*: `eoepca`
 - **`FLOWABLE_ADMIN_PASSWORD`**: Admin password for Flowable.
