@@ -16,7 +16,6 @@ check_pvc_bound "minio" "export-minio-1"
 
 echo
 
-# Ask user for confirmation to proceed
 read -p "Do you want to proceed with MinIO functionality tests? (y/n) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -24,89 +23,99 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo
-echo "Performing MinIO functionality tests..."
+echo "Performing MinIO functionality tests with s3cmd..."
 
-# Check if aws CLI is installed
-if ! command -v aws &> /dev/null
-then
-    echo "aws CLI could not be found. Please install aws CLI to proceed."
-    echo "Refer to https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html for installation instructions."
+# Check if s3cmd is installed
+if ! command -v s3cmd &>/dev/null; then
+    echo "s3cmd could not be found. Please install s3cmd to proceed."
+    echo "Refer to https://s3tools.org/download for installation instructions."
     exit 1
 fi
 
-# Configure aws CLI with creds from state
-AWS_CLI_PROFILE="minio-validation-profile"
-AWS_CONFIG_DIR="$(mktemp -d)"
-export AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY"
-export AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY"
-export AWS_DEFAULT_REGION="$S3_REGION"
-mkdir -p "$AWS_CONFIG_DIR"
-
-cat > "$AWS_CONFIG_DIR/config" <<EOF
-[default]
-region = $S3_REGION
-output = json
-EOF
-
-cat > "$AWS_CONFIG_DIR/credentials" <<EOF
-[default]
-aws_access_key_id = $S3_ACCESS_KEY
-aws_secret_access_key = $S3_SECRET_KEY
-EOF
-
-export AWS_CONFIG_FILE="$AWS_CONFIG_DIR/config"
-export AWS_SHARED_CREDENTIALS_FILE="$AWS_CONFIG_DIR/credentials"
-ENDPOINT_URL="$S3_ENDPOINT"
+# These must already be set in your ~/.eoepca/state, or set them here:
+# export S3_ACCESS_KEY="..."
+# export S3_SECRET_KEY="..."
+# export S3_ENDPOINT="https://minio.${INGRESS_HOST}"
+# export S3_REGION="eu-west-2"
 
 # Random name and date to avoid conflicts
 BUCKET_NAME="validation-bucket-$(date +%s)-$RANDOM"
-
-# Create a small text file
 TEST_FILE="minio-validation-testfile.txt"
-echo "This is a test file for MinIO validation." > "$TEST_FILE"
 
-# Create the bucket
+# We will create a small text file as a test object
+echo "This is a test file for MinIO validation (s3cmd version)." >"$TEST_FILE"
+
+echo
 echo "Creating bucket: $BUCKET_NAME"
-aws --endpoint-url="$ENDPOINT_URL" s3api create-bucket --bucket "$BUCKET_NAME" --region "$S3_REGION"
+s3cmd mb "s3://$BUCKET_NAME" \
+    --host "minio.${INGRESS_HOST}" \
+    --host-bucket "minio.${INGRESS_HOST}" \
+    --access_key "$S3_ACCESS_KEY" \
+    --secret_key "$S3_SECRET_KEY" \
+    --region="$S3_REGION"
 if [ $? -ne 0 ]; then
     echo "Failed to create bucket."
+    rm -f "$TEST_FILE"
     exit 1
 fi
 
-# Upload the test file
+echo
 echo "Uploading test file to bucket: $BUCKET_NAME"
-aws --endpoint-url="$ENDPOINT_URL" s3 cp "$TEST_FILE" "s3://$BUCKET_NAME/"
+s3cmd put "$TEST_FILE" "s3://$BUCKET_NAME/" \
+    --host "minio.${INGRESS_HOST}" \
+    --host-bucket "minio.${INGRESS_HOST}" \
+    --access_key "$S3_ACCESS_KEY" \
+    --secret_key "$S3_SECRET_KEY" \
+    --region="$S3_REGION"
 if [ $? -ne 0 ]; then
     echo "Failed to upload file."
+    rm -f "$TEST_FILE"
     exit 1
 fi
 
-# List objects in the bucket
+echo
 echo "Listing objects in bucket: $BUCKET_NAME"
-aws --endpoint-url="$ENDPOINT_URL" s3 ls "s3://$BUCKET_NAME/"
+s3cmd ls "s3://$BUCKET_NAME/" \
+    --host "minio.${INGRESS_HOST}" \
+    --host-bucket "minio.${INGRESS_HOST}" \
+    --access_key "$S3_ACCESS_KEY" \
+    --secret_key "$S3_SECRET_KEY" \
+    --region="$S3_REGION"
 if [ $? -ne 0 ]; then
     echo "Failed to list objects."
+    rm -f "$TEST_FILE"
     exit 1
 fi
 
-# Delete the test file from the bucket
+echo
 echo "Deleting test file from bucket: $BUCKET_NAME"
-aws --endpoint-url="$ENDPOINT_URL" s3 rm "s3://$BUCKET_NAME/$TEST_FILE"
+s3cmd del "s3://$BUCKET_NAME/$TEST_FILE" \
+    --host "minio.${INGRESS_HOST}" \
+    --host-bucket "minio.${INGRESS_HOST}" \
+    --access_key "$S3_ACCESS_KEY" \
+    --secret_key "$S3_SECRET_KEY" \
+    --region="$S3_REGION"
 if [ $? -ne 0 ]; then
     echo "Failed to delete test file."
+    rm -f "$TEST_FILE"
     exit 1
 fi
 
-# Delete the bucket
+echo
 echo "Deleting bucket: $BUCKET_NAME"
-aws --endpoint-url="$ENDPOINT_URL" s3api delete-bucket --bucket "$BUCKET_NAME" --region "$S3_REGION"
+s3cmd rb "s3://$BUCKET_NAME" \
+    --host "minio.${INGRESS_HOST}" \
+    --host-bucket "minio.${INGRESS_HOST}" \
+    --access_key "$S3_ACCESS_KEY" \
+    --secret_key "$S3_SECRET_KEY" \
+    --region="$S3_REGION"
 if [ $? -ne 0 ]; then
     echo "Failed to delete bucket."
+    rm -f "$TEST_FILE"
     exit 1
 fi
 
-# Clean up
-rm -f "$TEST_FILE"
-rm -rf "$AWS_CONFIG_DIR"
+rm "$TEST_FILE"
 
-echo "MinIO functionality tests completed successfully."
+echo
+echo "MinIO functionality tests (s3cmd) completed successfully."
