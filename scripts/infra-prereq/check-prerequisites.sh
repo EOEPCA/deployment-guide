@@ -1,37 +1,43 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
+# Exit immediately if a command fails
 set -euo pipefail
 
+source ../common/utils.sh
+# Example usage if your utils have "ask":
+ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
+
 # Configuration: update these to suit your environment
-EOEPCA_DOMAIN="${EOEPCA_DOMAIN:-develop.eoepca.org}"   # Your wildcard domain (e.g. *.example.com)
+EOEPCA_DOMAIN="${INGRESS_HOST}"
 TEST_NAMESPACE="eoepca-prereq-check"
 TEST_POD_NAME="test-root-pod"
 TEST_INGRESS_NAME="test-ingress"
 TEST_SERVICE_NAME="test-service"
 TEST_DEPLOYMENT_NAME="test-deployment"
-TEST_SC_ANNOTATION="volume.beta.kubernetes.io/storage-class" # Adjust if needed
 TEST_IMAGE="busybox:latest"
 TIMEOUT=60
 
 echo "=== EOEPCA Prerequisite Check Script ==="
+echo "Using EOEPCA_DOMAIN=$EOEPCA_DOMAIN"
+echo "Launching tests in namespace '$TEST_NAMESPACE'..."
 
 # Ensure we can talk to the cluster
-if ! kubectl version --client &> /dev/null; then
-  echo "ERROR: kubectl not found or not configured." >&2
+if ! kubectl version --client &>/dev/null; then
+  echo "ERROR: kubectl not found or not configured."
   exit 1
 fi
 
 # Create a temporary namespace for tests
 echo "Creating temporary namespace: $TEST_NAMESPACE"
-kubectl create namespace "$TEST_NAMESPACE" &> /dev/null || true
+kubectl create namespace "$TEST_NAMESPACE" &>/dev/null || true
 
 ###################################
 # 1. Test if pods can run as root #
 ###################################
-echo "Testing if we can run a pod as root..."
+echo "1) Testing if we can run a pod as root..."
 
-# Attempt to run a simple pod as root. Busybox should run as root by default.
-cat <<EOF | kubectl apply -n "$TEST_NAMESPACE" -f - 
+# Attempt to run a simple pod as root.
+cat <<EOF | kubectl apply -n "$TEST_NAMESPACE" -f -
 apiVersion: v1
 kind: Pod
 metadata:
@@ -47,10 +53,11 @@ spec:
 EOF
 
 # Wait for the pod to become Running
-end=$((SECONDS+$TIMEOUT))
+end=$((SECONDS + TIMEOUT))
 while true; do
-  phase=$(kubectl get pod "$TEST_POD_NAME" -n "$TEST_NAMESPACE" -o jsonpath='{.status.phase}')
+  phase=$(kubectl get pod "$TEST_POD_NAME" -n "$TEST_NAMESPACE" -o jsonpath='{.status.phase}' 2>/dev/null || true)
   if [ "$phase" = "Running" ]; then
+    echo "   Pod '$TEST_POD_NAME' is Running as root. Success!"
     break
   fi
   if [ $SECONDS -ge $end ]; then
@@ -61,12 +68,10 @@ while true; do
   sleep 2
 done
 
-echo "Pod is running as root. Success!"
-
 #########################################
 # 2. Verify ingress with wildcard DNS   #
 #########################################
-echo "Verifying ingress and wildcard DNS..."
+echo "2) Verifying ingress and wildcard DNS..."
 
 # Deploy a simple test application (e.g. a small HTTP echo server)
 cat <<EOF | kubectl apply -n "$TEST_NAMESPACE" -f -
@@ -88,7 +93,7 @@ spec:
         - name: test-app
           image: kennethreitz/httpbin
           ports:
-          - containerPort: 80
+            - containerPort: 80
 EOF
 
 cat <<EOF | kubectl apply -n "$TEST_NAMESPACE" -f -
@@ -129,60 +134,65 @@ spec:
                   number: 80
 EOF
 
-echo "Waiting for ingress to be available..."
-sleep 20 # give some time for ingress rules to propagate
+echo "   Waiting for ingress to be available..."
+sleep 30 # Give some time for ingress rules to propagate
 
-# Check DNS resolution
-if ! command -v dig &> /dev/null; then
+# Check DNS resolution using ANY record so that if there's a CNAME -> A chain, we still see it.
+if ! command -v dig &>/dev/null; then
   echo "WARNING: 'dig' command not found, skipping DNS check."
 else
-  dns_ip=$(dig +short "$TEST_HOST")
-  if [ -z "$dns_ip" ]; then
-    echo "ERROR: DNS lookup for $TEST_HOST returned no result. Check your wildcard DNS configuration."
+  dns_output=$(dig +short ANY "$TEST_HOST")
+  if [ -z "$dns_output" ]; then
+    echo "ERROR: DNS lookup for $TEST_HOST returned no result."
+    echo "       Check your wildcard DNS configuration (or create a DNS record if needed)."
     exit 1
   else
-    echo "DNS for $TEST_HOST resolves to: $dns_ip"
+    echo "   DNS resolution for $TEST_HOST returned:"
+    echo "$dns_output"
+    echo "   This indicates that $TEST_HOST does resolve (even if via CNAME)."
   fi
 fi
 
-# Optional: try to curl the service (requires external reachability)
-# If you run this script within the cluster or from a machine that can access the ingress:
-# curl_output=$(curl -sk --max-time 10 "http://$TEST_HOST")
-# if [ -z "$curl_output" ]; then
-#   echo "WARNING: Could not reach the ingress endpoint. Ensure your load balancer and DNS are set up correctly."
-# else
-#   echo "Ingress responded successfully."
-# fi
+# Try to curl the service (requires external reachability)
+echo "   Attempting to curl http://$TEST_HOST ..."
+curl_output=$(curl -sk --max-time 10 "http://$TEST_HOST" || true)
+if [ -z "$curl_output" ]; then
+  echo "WARNING: Could not reach the ingress endpoint. This can happen if:"
+  echo "  - Your load balancer and DNS aren't yet fully set up."
+  echo "  - The script is running from an environment without external routing to the cluster."
+  echo "  - The Ingress isn't properly exposed externally."
+else
+  echo "Ingress responded successfully (HTTP content received)."
+fi
 
 ##################################
 # 3. Check TLS certificate validity
 ##################################
-echo "Checking TLS certificate validity..."
+echo "3) Checking TLS certificate validity (ClusterIssuer presence)..."
 
 # Check if a ClusterIssuer is present
-cluster_issuers=$(kubectl get clusterissuers -o name || true)
+cluster_issuers=$(kubectl get clusterissuers -o name 2>/dev/null || true)
 if [ -z "$cluster_issuers" ]; then
   echo "WARNING: No ClusterIssuer found. For production, a ClusterIssuer (e.g. backed by Let's Encrypt) is recommended."
 else
-  echo "Found ClusterIssuer(s):"
+  echo "   Found ClusterIssuer(s):"
   echo "$cluster_issuers"
 fi
 
-# If you have a known ClusterIssuer (e.g. "letsencrypt-http01-apisix"), you could further test by deploying a test Certificate resource.
-# This is a more complex check and depends on your cluster configuration.
-# For now, we’ll just warn if none found.
+# (Optional) If you want to validate issuance further, you would create a Certificate
+# resource referencing the ClusterIssuer. This is cluster-specific, so we leave it out here.
 
 ##########################################
 # 4. Confirm storage requirements (RWX)  #
 ##########################################
-echo "Checking storage classes for ReadWriteMany support..."
+echo "4) Checking storage classes for ReadWriteMany support..."
 
 # Get storage classes
-scs=$(kubectl get storageclass -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.reclaimPolicy}{"\n"}{end}' || true)
+scs=$(kubectl get storageclass -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.reclaimPolicy}{"\n"}{end}' 2>/dev/null || true)
 if [ -z "$scs" ]; then
-  echo "WARNING: No storage classes found. You will need at least one that supports ReadWriteMany for certain EOEPCA components."
+  echo "WARNING: No storage classes found. You will need at least one that supports ReadWriteMany."
 else
-  echo "Available StorageClasses:"
+  echo "   Available StorageClasses:"
   echo "$scs"
 fi
 
@@ -198,20 +208,20 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  # Note: You may need to specify a particular StorageClass here if you have multiple and know which supports RWX.
+  # If you know which SC supports RWX, specify it:
   # storageClassName: <your-rwx-sc>
 EOF
 
 # Wait to see if it binds
-end=$((SECONDS+$TIMEOUT))
+end=$((SECONDS + TIMEOUT))
 while true; do
-  phase=$(kubectl get pvc test-rwx-pvc -n "$TEST_NAMESPACE" -o jsonpath='{.status.phase}')
+  phase=$(kubectl get pvc test-rwx-pvc -n "$TEST_NAMESPACE" -o jsonpath='{.status.phase}' 2>/dev/null || true)
   if [ "$phase" = "Bound" ]; then
-    echo "PVC successfully bound with ReadWriteMany. Good!"
+    echo "   PVC 'test-rwx-pvc' successfully bound with ReadWriteMany. Good!"
     break
   fi
   if [ $SECONDS -ge $end ]; then
-    echo "WARNING: PVC did not bind with RWX. Check if your storage supports ReadWriteMany."
+    echo "WARNING: PVC did not bind with RWX. Either there's no RWX support or it needs more time."
     break
   fi
   sleep 2
@@ -221,6 +231,6 @@ done
 # Cleanup (optional)
 ###################
 echo "Cleaning up test resources..."
-kubectl delete ns "$TEST_NAMESPACE" --ignore-not-found=true &> /dev/null || true
+kubectl delete ns "$TEST_NAMESPACE" --ignore-not-found=true &>/dev/null || true
 
 echo "All checks complete. Review any warnings or errors above."
