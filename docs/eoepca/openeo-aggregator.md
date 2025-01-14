@@ -2,6 +2,8 @@
 
 The openEO Aggregator is a software component to group multiple openEO back-ends together into a unified, federated openEO processing platform.
 
+For more details on the design and configuration, please read the [dedicated documentation](https://open-eo.github.io/openeo-aggregator/).
+
 ## Helm chart
 
 A Chart can be found at the [openeo-geotrellis-kubernetes](https://github.com/Open-EO/openeo-geotrellis-kubernetes/tree/master/kubernetes/charts/openeo-aggregator) repo.
