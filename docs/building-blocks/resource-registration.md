@@ -29,16 +29,16 @@ The BB integrates with other platform services to enable:
 
 ## Components Overview
 
-The Resource Registration BB comprises the following key components:
+The Resource Registration BB comprises three main components:
 
-1. **Registration API**:<br>
-   Provides core resource management services on the local platform, offering an OGC API Processes interface for resource creation, update, and deletion.
-
-1. **Harvester**:<br>
-   Implements workflows for harvesting and registering resources from external data sources using the Flowable BPMN platform.
-
-1. **Common Library**:<br>
-   A Python library that consolidates functionalities from various upstream packages, used to implement business logic in workflows and resource handling.
+1. **Registration API**  
+An OGC API Processes interface for registering, updating, or deleting resources on the local platform.
+    
+2. **Harvester**  
+Automates workflows (via Flowable BPMN) to harvest data from external sources and register them in the platform.
+    
+3. **Common Registration Library**  
+A Python library consolidating upstream packages (e.g. STAC tools, eometa tools) for business logic in workflows and resource handling.
 
 ---
 
@@ -202,10 +202,7 @@ https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
 
 ---
 
-**Testing the Registration API**
-
-You can test the Registration API by making requests to the `hello-world` process.
-
+### Testing a Simple Hello-World Process
 
 ```bash
 curl -X POST "https://registration-api.<INGRESS_HOST>/processes/hello-world/execution" \
@@ -218,24 +215,65 @@ curl -X POST "https://registration-api.<INGRESS_HOST>/processes/hello-world/exec
 }'
 ```
 
-**Registering a Resource**
+---
 
-You can register a new resource by making a `POST` request to the `/processes/register-resource/execution` endpoint.
+## Registering Resources
+
+Resource Registration relies on an **OGC API Processes** interface. To register a resource, send a `POST` request with a JSON payload to:
+
+```
+/processes/register/execution
+```
+
+A typical JSON request body might look like:
+
+```json5
+{
+  "inputs": {
+    "type": "...",         // e.g. "dataset", "item" etc.
+    "source": "...",       // URL to the resource's current location (e.g. Git repo, S3 bucket, etc.)
+    "target": "..."        // Endpoint or final location to publish the resource
+  }
+}
+```
+
+### Registering a Dataset (Example)
+
+> **Prerequisite**: You should have a running STAC server. For a quick setup, refer to the [Resource Discovery](resource-discovery.md) Building Block documentation.
+
+Use the following command to register a STAC Item with the platform:
 
 ```bash
 curl -X POST "https://registration-api.<INGRESS_HOST>/processes/register/execution" \
--H "Content-Type: application/json" \
--d '{
-      "inputs": {
-         "type": "dataset",
-         "source": "https://example.com/dataset",
-         "target": "https://example.com/dataset",
-         }
-   }'
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": {
+      "type": "dataset",
+      "source": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta/scripts/resource-registration/data/simple-item.json",
+      "target": "https://resource-catalogue.<INGRESS_HOST>/stac"
+    }
+}'
 ```
 
----
+- **type**: Use `"dataset"` for STAC EO data.
+- **source**: A valid STAC Item URL (in this example, hosted on GitHub).
+- **target**: Your STAC server endpoint where the resource is to be registered.
 
+### Validating the Registration
+
+Visit:
+
+```
+https://registration-api.<INGRESS_HOST>/jobs
+```
+
+You should see a new job with the status `COMPLETED`. The registered STAC Item will be available via:
+
+```
+https://resource-catalogue.<INGRESS_HOST>/stac/collections/metadata:main/items/20201211_223832_CS2
+```
+
+_(The item ID and collection path will vary based on your input.)_
 
 #### Using the Registration Harvester
 
