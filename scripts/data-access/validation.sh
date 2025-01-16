@@ -14,6 +14,9 @@ check_service_exists "data-access" "doc-server-eoapi"
 check_service_exists "data-access" "stacture"
 check_service_exists "data-access" "gateway-svc-tyk-oss-tyk-gateway"
 
+check_service_exists "data-access" "eoapi-support-prometheus-server" "Skipping: eoapi-support not found." || true
+check_service_exists "data-access" "eoapi-support-grafana" "Skipping: eoapi-support not found." || true
+
 # Check ingress
 check_url_status_code "$HTTP_SCHEME://eoapi.$INGRESS_HOST" "200"
 check_url_status_code "$HTTP_SCHEME://stacture.$INGRESS_HOST" "200"

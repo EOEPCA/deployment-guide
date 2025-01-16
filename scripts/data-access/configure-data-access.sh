@@ -19,10 +19,12 @@ envsubst <"stacture/values-template.yaml" >"stacture/generated-values.yaml"
 envsubst <"tyk-gateway/values-template.yaml" >"tyk-gateway/generated-values.yaml"
 envsubst <"tyk-gateway/redis-values-template.yaml" >"tyk-gateway/redis-generated-values.yaml"
 envsubst <"postgres/values-template.yaml" >"postgres/generated-values.yaml"
+envsubst <"eoapi-support/values-template.yaml" >"eoapi-support/generated-values.yaml" 2>/dev/null || true
 
 if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""
     echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
     echo "- eoapi-tls"
     echo "- data-access-stacture-tls"
+    echo "- eoapisupport-tls (if eoapi-support is used)"
 fi

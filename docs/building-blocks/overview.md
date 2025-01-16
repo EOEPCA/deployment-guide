@@ -1,5 +1,5 @@
 
-## Application Deployment Overview
+## Building Block Deployment Overview
 
 This section provides instructions on how to deploy the various Building Blocks (BBs) that make up the EOEPCA+ ecosystem. Each Building Block is a modular component designed to perform specific functions within a platform.
 
