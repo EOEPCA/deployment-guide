@@ -120,19 +120,6 @@ The S3 environment variables should be already set after successful deployment o
 bash apply-secrets.sh
 ```
 
-This script:
-
-- Creates the `gitlab` and `sharinghub` namespaces.
-- Applies a sample PersistentVolumeClaim (`mlflow/generated-pvc.yaml`) for MLflow logs/artifacts (if you're storing them on a local volume rather than only S3).
-- Creates various secrets for GitLab (S3 backups, object storage, OIDC) and for SharingHub/MLflow.  
-  - `gitlab-storage-config`  
-  - `object-storage`  
-  - `openid-connect`  
-  - `sharinghub` (session secret)  
-  - `sharinghub-s3` (S3 creds)  
-  - `mlflow-sharinghub` (secret key)  
-  - `mlflow-sharinghub-s3` (S3 creds for MLflow)
-
 ### 3. Deploy GitLab
 
 Deploy GitLab using the generated configuration file. This deployment can take up to 10 minutes, please be patient.
@@ -348,8 +335,6 @@ kubectl delete ns gitlab sharinghub
 ```
 
 **Additional Cleanup**:
-
-- Delete any Persistent Volume Claims (PVCs) if used:
 
 ```bash
 kubectl delete pvc -n sharinghub ; \
