@@ -8,6 +8,7 @@ generated-values.yaml
 generated-pvc.yaml
 gatekeeper-values.yaml
 generated-gatekeeper-values.yaml
+generated-ingress.yaml
 reference-repo/
 reference-repo*
 /kubeconfig.yaml

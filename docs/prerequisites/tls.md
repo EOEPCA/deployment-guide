@@ -146,3 +146,22 @@ spec:
     name: global-tls-certificate
     namespace: ingress-apisix
 ```
+
+---
+
+### Internal TLS
+
+**Clone the Deployment Guide Repository:**
+
+```bash
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+cd deployment-guide/scripts/internal-tls
+```
+
+**Run the Internal TLS Setup Script:**
+
+```bash
+bash setup-internal-tls.sh
+```
+
+> This may not work perfectly for all environments, please adjust the script as needed.
