@@ -24,17 +24,17 @@ The Identity and Access Management (IAM) Building Block provides authentication 
 
 [Deploy IAM »](iam.md)
 
-### 2. Resource Catalogue
+### 2. Resource Discovery
 
-The Resource Catalogue BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
+The Resource Discovery BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
 
-[Deploy Resource Catalogue »](resource-catalogue.md)
+[Deploy Resource Discovery »](resource-discovery.md)
 
-### 3. Processing
+### 3. Resource Registration
 
-The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
+Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
 
-[Deploy Processing »](processing.md)
+[Deploy Resource Registration »](resource-registration.md)
 
 ### 4. Data Access
 
@@ -42,11 +42,11 @@ The Data Access BB provides efficient access to Earth Observation data. It provi
 
 [Deploy Data Access »](data-access.md)
 
-### 5. Resource Registration
+### 5. Processing
 
-Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
+The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
 
-[Deploy Resource Registration »](resource-registration.md)
+[Deploy Processing »](processing.md)
 
 ### 6. Workspace
 

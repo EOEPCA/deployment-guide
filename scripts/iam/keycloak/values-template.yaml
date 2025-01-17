@@ -17,9 +17,9 @@ extraEnvVars:
   - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
     value: "/opt/bitnami/keycloak/conf/opa-policies"
   - name: KC_HOSTNAME_URL
-    value: "https://auth-apx.$INGRESS_HOST"
+    value: "https://auth.$INGRESS_HOST"
   - name: KC_HOSTNAME_ADMIN_URL
-    value: "https://auth-apx.$INGRESS_HOST"
+    value: "https://auth.$INGRESS_HOST"
 postgresql:
   auth:
     existingSecret: kc-postgres

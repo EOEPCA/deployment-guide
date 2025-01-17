@@ -11,36 +11,41 @@ spec:
           servicePort: 8181
       match:
         hosts:
-          - opa-apx.$INGRESS_HOST
+          - opa.$INGRESS_HOST
         paths:
           - /*
       plugins:
-        # TODO: Configure client secrets through secretRef
+        # Authenticate - expect JWT in `Authorization: Bearer` header
         - name: openid-connect
           enable: true
           config:
-            access_token_in_authorization_header: true
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+            discovery: "https://auth.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+            realm: eoepca
+            bearer_only: true
           secretRef: opa-keycloak-client
+        # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            discovery: "https://auth.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
           secretRef: opa-keycloak-client
+        # Allow CORS access
+        - name: cors
+          enable: true
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: opa-apx
+  name: opa
 spec:
   dnsNames:
-    - opa-apx.$INGRESS_HOST
+    - opa.$INGRESS_HOST
   issuerRef:
     kind: ClusterIssuer
     name: ${CLUSTER_ISSUER}
-  secretName: opa-apx-tls
+  secretName: opa-tls
   usages:
     - digital signature
     - key encipherment
@@ -52,7 +57,7 @@ metadata:
   name: opa
 spec:
   hosts:
-    - opa-apx.$INGRESS_HOST
+    - opa.$INGRESS_HOST
   secret:
-    name: opa-apx-tls
+    name: opa-tls
     namespace: iam
