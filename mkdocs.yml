@@ -21,7 +21,7 @@ nav:
           - Container Registry: prerequisites/container-registry.md
       - Application Deployment →: building-blocks/overview.md
   - Building Blocks:
-    - Overview: building-blocks/overview.md
+    - Deployment Overview: building-blocks/overview.md
     - Identity & Access (IAM): 
         - Deployment: building-blocks/iam/main-iam.md
         - Advanced Configuration: building-blocks/iam/advanced-iam.md
@@ -31,14 +31,18 @@ nav:
       - Resource Registration: building-blocks/resource-registration.md
       - Data Access: building-blocks/data-access.md
 
-    - Processing:
+    - Processing & Analysis:
         - Overview: building-blocks/processing.md
         - OGC API Processes: building-blocks/oapip-engine.md
-    - Workspace: building-blocks/workspace.md
-    - MLOps: building-blocks/mlops.md
-    - Resource Health: building-blocks/resource-health.md
-    - Application Hub: building-blocks/application-hub.md
-    - Application Quality: building-blocks/application-quality.md
+        - MLOps: building-blocks/mlops.md
+
+    - User Environments:
+      - Workspace: building-blocks/workspace.md
+      - Application Hub: building-blocks/application-hub.md
+
+    - Platform Monitoring & Quality:
+      - Resource Health: building-blocks/resource-health.md
+      - Application Quality: building-blocks/application-quality.md
     
   - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
 

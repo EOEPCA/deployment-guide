@@ -1,36 +1,49 @@
 # Resource Health Deployment Guide
 
-The **Resource Health** BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
+The **Resource Health** Building Block (BB) provides a flexible framework for monitoring the health and status of resources within the EOEPCA platform. This includes core platform services as well as derived or user-provided resources such as datasets, workflows, or user applications.
 
 ---
 
 ## Introduction
 
-The **Resource Health Building Block** allows users to:
+The **Resource Health BB** allows you to:
 
-- Specify and schedule health checks for resources.
-- Observe check outcomes and receive notifications.
-- Use a REST API, dashboard, or Git repository to specify checks.
-- Visualise status and performance statistics through a dashboard.
-- Access health check status via API for integration into portals.
+- **Define and schedule** automated health checks (e.g. daily, hourly).
+- **Observe and visualise** check outcomes via a web dashboard.
+- **Integrate with external services** (e.g. IAM for OIDC authentication, Data Access, Resource Catalogue).
+- **Store results** in OpenSearch, optionally visualizing them using OpenSearch Dashboards.
+- **Collect telemetry** via OpenTelemetry, enabling advanced monitoring and alerting.
 
 ---
 
 ## Components Overview
 
-The Resource Health BB comprises the following key components:
+1. **Resource Health Web**
+    
+- Dashboard and front-end for viewing health checks and results.
+- By default, can be secured with OIDC authentication (e.g. via Keycloak).
 
-1. **Resource Health Core**<br>
-   The main component responsible for orchestrating health checks and collecting results.
+2. **Resource Health API(s)**
+    
+- **Telemetry API** for gathering check results and metrics.
+- **Health Checks API** (Check Manager) for listing, scheduling, and managing checks.
 
-2. **OpenSearch and OpenSearch Dashboards**<br>
-   Used for storing and visualizing health check results.
+3. **Health Check Runner**
+    
+- A flexible engine that executes your custom health checks at scheduled intervals.
 
-3. **OpenTelemetry Collector**<br>
-   Collects telemetry data from health checks and forwards it to OpenSearch.
+4. **Mock API** (optional sample)
+    
+- An example test resource used in demonstration checks (e.g. an hourly check to a mock endpoint).
 
-4. **Health Check Runner**<br>
-   Executes the specified health checks according to the defined schedule.
+5. **OpenSearch & OpenSearch Dashboards**
+
+- Stores logs, results, and trace data from your checks.
+- Provides advanced visualisation and analytics features.
+
+6. **OpenTelemetry Collector**
+    
+- Receives telemetry from health checks and forward them to OpenSearch.
 
 ---
 
@@ -57,197 +70,135 @@ cd deployment-guide/scripts/resource-health
 
 **Validate your environment:**
 
-Run the validation script to ensure all prerequisites are met:
-
 ```bash
 bash check-prerequisites.sh
 ```
 
-**Important Note:** Ensure that you have internal TLS setup. Please refer to the [Internal TLS Deployment Guide](../prerequisites/tls.md#internal-tls) for more information. 
+This script checks common prerequisites, including your Kubernetes/Helm installation, Git, and any required Helm plugins.
 
 ---
 
 ## Deployment Steps
 
-1. **Run the Configuration Script:**
+### 1. Run the Configuration Script
 
-      ```bash
-      bash configure-resource-health.sh
-      ```
+The `configure-resource-health.sh` script gathers basic configuration inputs (such as your internal ClusterIssuer for TLS, storage class, etc.) and generates a `generated-values.yaml` that tailors the Resource Health deployment to your environment.
 
-2. **Deploy the Resource Health BB Using Helm:**
+```bash
+bash configure-resource-health.sh
+```
 
-      ```bash
-      helm repo add resource-health "git+https://github.com/EOEPCA/resource-health?ref=2.0-beta" && \
-      helm repo update resource-health && \
-      helm upgrade -i resource-health resource-health/resource-health-reference-deployment \
-      --namespace resource-health \
-      --create-namespace \
-      --values generated-values.yaml
-      ```
+During execution, you will be prompted for:
 
-3. **Monitor the Deployment:**
+- **`INGRESS_HOST`**: Hostname.
+- **`INTERNAL_CLUSTER_ISSUER`**: Name of the cert-manager ClusterIssuer for internal TLS. (Default: `eoepca-ca-clusterissuer`)
+- **`STORAGE_CLASS`**: Storage class for persistent volumes. (Default: `standard`)
 
-      ```bash
-      kubectl get all -n resource-health
-      ```
+---
 
-4. **Check creation of Certificates for Internal TLS:**
+### 2. Deploy the Resource Health BB (Helm)
 
-      ```bash
-      kubectl -n resource-health get certificate
-      ```
+1. **Install or upgrade Resource Health**
 
-      Confirm that all `Certificates` are marked `Ready`.
+> **Note**: While the Resource Health BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
+
+- Clone the Resource Health repository and update dependencies:
+```bash
+git clone -b 2.0.0-beta2 https://github.com/EOEPCA/resource-health.git reference-repo
+helm dependency build reference-repo/resource-health-reference-deployment
+```
+
+- Install or upgrade the Resource Health Helm chart:
+```bash
+helm upgrade -i resource-health reference-repo/resource-health-reference-deployment -f generated-values.yaml -n resource-health --create-namespace
+```
+
+---
+
+### 2. (Optional) Configure Ingress and OIDC
+
+By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.
+
+For the purpose of this guide, the configuration script created a sample Nginx Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment.
+
+```bash
+kubectl apply -f generated-ingress.yaml -n resource-health
+```
+
+---
+
+### 3. Monitor the Deployment
+
+After the Helm installation finishes, check that all pods are running in the **resource-health** namespace:
+
+```bash
+kubectl get all -n resource-health
+```
 
 ---
 
 ## Validation
 
-**Automated Validation:**
-
+1. **Run the validation script** (optional, included in `scripts/`):
+    
 ```bash
 bash validation.sh
 ```
 
-**Further Validation:**
-
-1. **Check Kubernetes Resources:**
-
-   ```bash
-   kubectl get all -n resource-health
-   ```
-
-2. **Test Resource Health Functionality:**
-
-   - Create sample health checks using the provided examples or your own scripts.
-   - Verify that health checks are executed according to the schedule.
-   - View health check results in OpenSearch Dashboards.
-
 ---
-
 
 ## Usage
 
-The Resource Health Building Block (BB) is designed to be flexible and can operate without publicly exposed endpoints by default. This ensures that, initially, only cluster operators with `kubectl` access can view and test resource health checks. Later, you can integrate authentication and external access as needed.
+### 1. Defining Health Checks
 
-### 1. Accessing the Resource Health Web Interface
+Health checks are typically defined in the Helm chart’s values under `resource-health.healthchecks.checks`. Each check has:
 
-By default, the Resource Health web interface is internal-only, so you must use `kubectl port-forward` to access it locally:
+- **name**
+- **schedule** (a cron expression like `"@hourly"` or `"0 8 * * *"`)
+- **requirements** (optional Python packages)
+- **script** (the actual test logic)
+- **env** (environment variables, e.g. references to external services)
 
-```bash
-kubectl -n resource-health port-forward service/resource-health-web 8080:80
-```
+## Defining Health Checks
 
-Once port-forwarding is active, open your browser at:
-
-- [http://127.0.0.1:8080/](http://127.0.0.1:8080/) to see a list of recent health check outcomes.
-- [http://127.0.0.1:8080/checks](http://127.0.0.1:8080/checks) to see a list of defined health checks.
-
-If the pages load and you see the default or sample checks, your deployment is running correctly.
-
-### 2. Defining and Scheduling Health Checks
-
-Health checks are defined via Helm values. When you deployed the Resource Health BB, a `generated-values.yaml` file was created. You can add or modify health checks in that file under `healthchecks.checks`. For example:
+**Helm-based** (preferred for GitOps or static config):
 
 ```yaml
-healthchecks:
-  checks:
-  - name: daily-trivial-check
-    image:
-      repository: docker.io/eoepca/healthcheck_runner
-      pullPolicy: IfNotPresent
-      tag: "v0.1.0-demo"
-    # Runs every day at 08:00
-    schedule: "0 8 * * *"
-    requirements: "https://example.com/requirements.txt"
-    script: "https://example.com/trivial_check.py"
-    userid: bob
-    env:
-      - name: OTEL_EXPORTER_OTLP_ENDPOINT
-        value: https://opentelemetry-collector:4317
+resource-health:
+  healthchecks:
+    checks:
+      - name: daily-trivial-check
+        schedule: "0 8 * * *"
+        requirements: "https://example.com/requirements.txt"
+        script: "https://example.com/trivial_check.py"
+        env:
+          - name: SOME_HOST
+            value: "https://some-endpoint.example.com"
 ```
 
-**Key Fields**:
-
-- **`name`**: Unique identifier for the health check.
-- **`schedule`**: Cron expression for when to run the check.
-- **`requirements`** & **`script`**: URLs from which to fetch additional Python dependencies and the test script.
-- **`userid`**: Logical identifier of who owns the check (if applicable).
-
-After updating `generated-values.yaml`, apply changes with:
+Apply with:
 
 ```bash
-helm upgrade resource-health resource-health/resource-health-reference-deployment \
-  --namespace resource-health \
-  --values generated-values.yaml
+helm upgrade resource-health \
+  ./resource-health-reference-deployment \
+  --values generated-values.yaml \
+  --namespace resource-health
 ```
 
-Check the `/checks` page again (via port-forward) to confirm that your new health check appears.
+---
 
-### 3. Verifying Health Check Execution
+### 3. Viewing Check Results
 
-Once defined and scheduled, the health checks run at the configured times. You can verify this by:
-
-- Visiting the main page ([http://127.0.0.1:8080/](http://127.0.0.1:8080/) after port-forwarding) to see recent outcomes.
-- Confirming that a scheduled check appears in the outcomes list after its run time.
-
-If the check fails or finds issues, it will report that within the outcome details. Successes and failures are both recorded as OpenTelemetry traces.
-
-### 4. Exploring Data in OpenSearch Dashboards
-
-The Resource Health BB uses OpenSearch to store health check telemetry. To access it directly:
-
-1. Forward OpenSearch Dashboards:
-
-```bash
-kubectl -n resource-health port-forward service/resource-health-opensearch-dashboards 5601:5601
-```
-
-2. Open [http://127.0.0.1:5601](http://127.0.0.1:5601) in your browser.
-
-**Note**: On some clusters, OpenSearch Dashboards may use HTTPS with a self-signed certificate. Be prepared to bypass browser warnings for self-signed certs.
-
-In the Dashboards interface, you can:
-
-- Search for indices containing health check data.
-- Visualise traces, errors, and performance metrics.
-- Explore root causes of failing checks by viewing logs and traces in detail.
-
-### 5. Running Ad-Hoc Checks (Optional)
-
-If you need to run a health check manually (ad-hoc):
-
-- Adjust the health check’s schedule to a known upcoming minute or run a one-off job by temporarily setting a schedule for a near-future time.
-- Reapply the Helm upgrade command.
-- Wait for the check to run and then refresh the web interface or OpenSearch Dashboards to see the results.
-
-### 6. Removing or Updating Health Checks
-
-To remove or change a health check:
-
-- Edit the corresponding entry in `generated-values.yaml`.
-- Remove it or adjust its `schedule`, `script`, and other parameters.
-- Run the Helm upgrade command again. Removed checks will no longer run, and updated checks will take on new schedules or scripts.
-
-### 7. Authentication and Integration
-
-Currently, the Resource Health BB may be running without public ingress or authentication. In a production environment, you would:
-
-- Integrate with your IAM Building Block to secure access via OIDC/OAuth2.
-- Provide ingress configurations to allow authorized external access.
-- Set up alerts or notifications in OpenSearch for critical failures.
-
-(Refer to the [Advanced Configuration and IAM docs](../iam/advanced-configuration.md) for guidance on authenticating and authorizing users or integrating into a broader EOEPCA ecosystem.)
+TODO.
 
 ---
 
 ## Uninstallation
 
-To uninstall the Resource Health Building Block and clean up associated resources:
+To remove all Resource Health components and the namespace:
 
 ```bash
-helm uninstall resource-health -n resource-health && \
+helm uninstall resource-health -n resource-health
 kubectl delete namespace resource-health
 ```
 
@@ -255,11 +206,8 @@ kubectl delete namespace resource-health
 
 ## Further Reading
 
-- [EOEPCA+ Resource Health GitHub Repository](https://github.com/EOEPCA/resource-health)
+- [EOEPCA+ Resource Health GitHub](https://github.com/EOEPCA/resource-health)
 - [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts)
+- [EOEPCA+ Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
 - [OpenSearch Documentation](https://opensearch.org/docs/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/)
-- [EOEPCA+Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
-
-
-

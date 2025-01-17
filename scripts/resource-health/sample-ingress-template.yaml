@@ -1,0 +1,84 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: resource-health-ingress
+  namespace: resource-health
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    ${CLUSTER_ISSUER_ANNOTATION}
+spec:
+  tls:
+    - hosts:
+      - resource-health.${INGRESS_HOST}
+      secretName: resource-health-tls
+
+  rules:
+    - host: resource-health.${INGRESS_HOST}
+      http:
+        paths:
+          # Web UI
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-health-web
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: resource-health-check-api-ingress
+  namespace: resource-health
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    ${CLUSTER_ISSUER_ANNOTATION}
+spec:
+  tls:
+    - hosts:
+      - resource-health-check-api.${INGRESS_HOST}
+      secretName: resource-health-check-api-tls
+
+  rules:
+    - host: resource-health-check-api.${INGRESS_HOST}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-health-check-api
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: resource-health-telemetry-api-ingress
+  namespace: resource-health
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    ${CLUSTER_ISSUER_ANNOTATION}
+spec:
+  tls:
+    - hosts:
+      - resource-health-telemetry-api.${INGRESS_HOST}
+      secretName: resource-health-telemetry-api-tls
+
+  rules:
+    - host: resource-health-telemetry-api.${INGRESS_HOST}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-health-telemetry-api
+                port:
+                  number: 8080

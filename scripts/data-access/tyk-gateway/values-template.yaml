@@ -13,7 +13,6 @@ gateway:
   service:
     type: ClusterIP
 
-  # TODO: Check this.
   ingress:
     enabled: true
     annotations:

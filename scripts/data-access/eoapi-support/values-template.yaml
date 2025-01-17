@@ -1,0 +1,56 @@
+prometheus-adapter:
+  prometheus:
+    url: 'http://eoapi-support-prometheus-server.data-access.svc.cluster.local'
+
+grafana:
+  service:
+    type: ClusterIP
+    annotations: {}
+  ingress:
+    enabled: true
+    hosts:
+      - eoapisupport.${INGRESS_HOST}
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      ${CLUSTER_ISSUER_ANNOTATION}
+    tls:
+      - secretName: eoapisupport-tls
+        hosts:
+          - eoapisupport.${INGRESS_HOST}
+  datasources:
+    datasources.yaml:
+      datasources:
+        - name: prometheus
+          orgId: 1
+          type: prometheus
+          url: http://eoapi-support-prometheus-server.data-access.svc.cluster.local
+          access: proxy
+          jsonData:
+            timeInterval: "5s"
+          isDefault: true
+          editable: true
+          version: 2
+
+prometheus:
+  server:
+    service:
+      annotations: {}
+      type: ClusterIP
+    persistentVolume:
+      enabled: true
+      storageClass: "${STORAGE_CLASS}"
+      accessModes:
+        - ReadWriteMany
+
+enableCaBundleFetch: true
+caBundleSecretName: "eoepca-ca-secret"
+
+metrics-server:
+  apiService:
+    create: true
+    insecureSkipTLSVerify: false
+  commonAnnotations:
+    cert-manager.io/inject-ca-from: cert-manager-ns/eoepca-ca
+  extraArgs:
+    - --kubelet-insecure-tls=true
+    - --kubelet-preferred-address-types=InternalIP
