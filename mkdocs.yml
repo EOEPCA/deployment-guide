@@ -27,7 +27,7 @@ nav:
         - Advanced Configuration: building-blocks/iam/advanced-iam.md
         - Client Administration: building-blocks/iam/client-management.md
     - Data:
-      - Resource Discovery: building-blocks/resource-catalogue.md
+      - Resource Discovery: building-blocks/resource-discovery.md
       - Resource Registration: building-blocks/resource-registration.md
       - Data Access: building-blocks/data-access.md
 

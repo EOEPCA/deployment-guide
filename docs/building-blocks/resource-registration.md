@@ -239,7 +239,7 @@ A typical JSON request body might look like:
 
 ### Registering a Dataset (Example)
 
-> **Prerequisite**: You should have a running STAC server. For a quick setup, refer to the [Resource Discovery](resource-catalogue.md) Building Block documentation.
+> **Prerequisite**: You should have a running STAC server. For a quick setup, refer to the [Resource Discovery](resource-discovery.md) Building Block documentation.
 
 Use the following command to register a STAC Item with the platform:
 
