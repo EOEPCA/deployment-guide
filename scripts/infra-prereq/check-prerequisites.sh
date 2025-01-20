@@ -218,6 +218,7 @@ while true; do
   phase=$(kubectl get pvc test-rwx-pvc -n "$TEST_NAMESPACE" -o jsonpath='{.status.phase}' 2>/dev/null || true)
   if [ "$phase" = "Bound" ]; then
     echo "   PVC 'test-rwx-pvc' successfully bound with ReadWriteMany. Good!"
+    kubectl get pvc test-rwx-pvc -n "$TEST_NAMESPACE"
     break
   fi
   if [ $SECONDS -ge $end ]; then

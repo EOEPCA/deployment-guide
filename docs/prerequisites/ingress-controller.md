@@ -33,7 +33,9 @@ The EOEPCA+ Identity and Access Management (IAM) solution advocates use of the A
 
 ## APISIX Ingress Controller
 
-The APISIX Ingress Controller can be deployed via helm chart...
+For full installation instructions for the APISIX Ingress Controller see the official [Installation Guide](https://apisix.apache.org/docs/apisix/installation-guide/).
+
+As a quick start, the steps included here can be followed to deploy the APISIX Ingress Controller via helm chart...
 
 ```bash
 helm repo add apisix https://charts.apiseven.com && \
@@ -47,6 +49,7 @@ helm upgrade -i apisix apisix/apisix \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \
+  --set apisix.pluginAttrs.redirect.https_port=443 \
   --set ingress-controller.enabled=true
 ```
 

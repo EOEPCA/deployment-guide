@@ -11,21 +11,21 @@ spec:
           servicePort: 80
       match:
         hosts:
-          - auth-apx.$INGRESS_HOST
+          - auth.$INGRESS_HOST
         paths:
           - /*
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: auth-apx
+  name: auth
 spec:
   dnsNames:
-    - auth-apx.$INGRESS_HOST
+    - auth.$INGRESS_HOST
   issuerRef:
     kind: ClusterIssuer
     name: ${CLUSTER_ISSUER}
-  secretName: auth-apx-tls
+  secretName: auth-tls
   usages:
     - digital signature
     - key encipherment
@@ -37,7 +37,7 @@ metadata:
   name: keycloak
 spec:
   hosts:
-    - auth-apx.$INGRESS_HOST
+    - auth.$INGRESS_HOST
   secret:
-    name: auth-apx-tls
+    name: auth-tls
     namespace: iam
