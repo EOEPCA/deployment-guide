@@ -133,7 +133,7 @@ This checks that the required pods/services/ingress exist and that the main endp
 
 1. Ensure your ingress is configured to route `application-quality.<INGRESS_HOST>` (or whichever domain) to the Application Quality front-end.
 2. Open a browser at `https://application-quality.<INGRESS_HOST>/`.
-3. If OIDC is enabled, you’ll see a **Login** link in the navigation bar. Unauthenticated users can only browse certain read-only features.
+3. If OIDC is enabled, you'll see a **Login** link in the navigation bar. Unauthenticated users can only browse certain read-only features.
 
 ### 2. Authenticating via EOEPCA IAM
 
@@ -143,7 +143,7 @@ This checks that the required pods/services/ingress exist and that the main endp
 
 ### 3. Defining & Executing Pipelines
 
-A pipeline is a sequence of analysis tools (CWL definitions) that can run on your application’s source code or container. Common examples include:
+A pipeline is a sequence of analysis tools (CWL definitions) that can run on your application's source code or container. Common examples include:
 
 - **Static code analysis** (e.g. flake8, bandit, ruff, SonarQube)
 - **Vulnerability scans** (e.g. Trivy, Docker image scanning)
@@ -157,38 +157,19 @@ A pipeline is a sequence of analysis tools (CWL definitions) that can run on you
 4. **Enter** Git repository URL/branch.
 5. Click **Execute**.
 
-View the pipeline’s progress under **Monitoring**, which shows each stage (tool) as it runs.
+View the pipeline's progress under **Monitoring**, which shows each stage (tool) as it runs.
 
 ### 4. Inspection of Analysis Tools & Pipelines
 
 1. **Analysis Tools** → Lists all available tools. Each tool can have a name, version, Docker container reference, etc.
 2. **Pipelines** → Each pipeline references one or more tools, plus any triggers or environment variables.
 
-Click the icon to see more details, including integrated tools.
-
 ### 5. Viewing Reports & Metrics
 
 Once a pipeline finishes, you can see:
 
 - **Reports**: Detailed findings from each tool (lint errors, vulnerabilities, performance metrics, coverage, etc.).
-- **Monitoring**: The pipeline’s timeline, success/failure, logs, etc.
-
-From the side menu:
-
-1. **Monitoring** → pick a pipeline → pick an execution
-2. **Reports** → filter by pipeline & execution → see a list of tool-specific results
-3. Click the icon on a specific tool’s result to see a detail page with logs or metrics.
-
-### 6. REST API Usage (Optional)
-
-The Application Quality service also exposes a REST API for programmatic access. For advanced users:
-
-1. **Port-forward** or expose the service’s backend via ingress.
-2. Check the [API usage docs] or the generated OpenAPI spec at `/docs` or `/openapi.json`.
-3. Common endpoints include:
-    - `POST /pipelines` to define pipelines
-    - `POST /pipelines/{id}/execute` to run a pipeline
-    - `GET /executions/{execId}` to retrieve results
+- **Monitoring**: The pipeline's timeline, success/failure, logs, etc.
 
 ---
 
