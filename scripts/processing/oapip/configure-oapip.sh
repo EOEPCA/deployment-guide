@@ -32,12 +32,26 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
     add_to_state_file "STAGEIN_S3_REGION" $S3_REGION
 fi
 
-if [ -z "$OAPIP_CLIENT_SECRET" ]; then
-    OAPIP_CLIENT_SECRET=$(generate_aes_key 32)
-    add_to_state_file "OAPIP_CLIENT_SECRET" "$OAPIP_CLIENT_SECRET"
+# OIDC
+ask "OIDC_OAPIP_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
+if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
+
+    if [ -z "$OAPIP_CLIENT_SECRET" ]; then
+        OAPIP_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "OAPIP_CLIENT_SECRET" "$OAPIP_CLIENT_SECRET"
+    fi
+
+    add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
+    add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo-apx.${INGRESS_HOST}"
+
+else
+
+    add_to_state_file "OAPIP_INGRESS_ENABLED" "true"
+    add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
+
 fi
 
-envsubst < "$TEMPLATE_PATH" > "$OUTPUT_PATH"
+envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
 envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
 
 if [ "$USE_CERT_MANAGER" == "no" ]; then

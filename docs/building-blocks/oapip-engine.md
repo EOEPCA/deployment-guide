@@ -70,9 +70,17 @@ If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), 
 
 - **`STAGEIN_S3_ENDPOINT`**, **`STAGEIN_S3_ACCESS_KEY`**, **`STAGEIN_S3_SECRET_KEY`**, **`STAGEIN_S3_REGION`**
 
+**OIDC Configuration:**
+
+You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, follow the steps in the [Optional OIDC Configuration](#optional-oidc-configuration) section below. Otherwise, skip to the [Deploy the OAPIP Engine](#deploy-the-oapip-engine-using-helm) section.
+
+For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
+
 ---
 
-### Configure IAM Integration for OAPIP
+### Optional OIDC Configuration
+
+> You only need to run this script if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
 **Creating a Keycloak Client for OAPIP:**
 
@@ -106,29 +114,49 @@ This is achieved with the following resource definition...
 
 Note that the type _urn:**zoo**:resources:default_ assumes the client name `zoo`, and so should be adjusted if a different client name is used.
 
----
+#### Apply Kubernetes Secrets
 
-### Apply Kubernetes Secrets
+> You only need to run this script if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
-Run the script to create the necessary Kubernetes secrets.
+This script creates a Kubernetes secret with the Keycloak client ID and secret for the OAPIP Engine.
 
 ```bash
 bash apply-secrets.sh
 ```
 
+---
+
 ### Deploy the OAPIP Engine Using Helm
+
+
+#### Create image pull secret (Optional)
+
+> We recommend this step if the `helm` deployment is returning `ImagePullBackOff` errors.
+
+```bash
+kubectl create secret docker-registry regcred \
+--docker-server="https://index.docker.io/v1/" \
+--docker-username="YOUR_DOCKER_USERNAME" \
+--docker-password="YOUR_DOCKER_PASSWORD_OR_TOKEN" \
+--docker-email="YOUR_EMAIL" \
+-n processing
+```
+
+#### Deploy the Helm Chart
 
 ```bash
 helm repo add zoo-project https://zoo-project.github.io/charts/ && \
 helm repo update zoo-project && \
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.3.6 \
+  --version 0.2.6 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace
 ```
 
-### OAPIP Engine Ingress
+### OAPIP Engine Ingress (Optional)
+
+> You only need to run this step if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
 Note the ingress for the OAPIP Engine is established using APISIX resources (ApisixRoute, ApisixTls). Ensure that you have the APISIX Ingress Controller installed and configured in your cluster, as described in the [APISIX Ingress Controller](../prerequisites/ingress-controller.md) section.
 
@@ -140,7 +168,9 @@ The ingress definition introduces integration with Keycloak for request authoriz
 
 ---
 
-## Apply Resource Protection
+## Apply Resource Protection (Optional)
+
+> You only need to run this step if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
 OAPIP endpoints can be protected by Keycloak policies e.g. limiting access to certain users or groups. Follow the steps in [Advanced Configuration](../iam/advanced-iam#resource-protection-with-keycloak-policies) to:
 
@@ -166,6 +196,8 @@ bash validation.sh
 ### Web Endpoints
 
 Check access to the service web endpoints:
+
+> If you have disabled OIDC, the subdomain will be `zoo.<INGRESS_HOST>` instead of `zoo-apx.<INGRESS_HOST>`.
 
 * **ZOO-Project Swagger UI** - `https://zoo-apx.<INGRESS_HOST>/swagger-ui/oapip/`
 * **OGC API Processes Landing Page** - `https://zoo-apx.<INGRESS_HOST>/ogc-api/processes/`
@@ -206,15 +238,28 @@ Please refer to the [IAM User Authentication](../iam/client-management#obtaining
 
 ---
 
+### Using the API
+
+To follow the below sections easily we recommend setting the `OAPIP_HOST` and `OAPIP_AUTH_HEADER` environment variables.
+
+`OAPIP_HOST` will have been set by the configuration script, but if not, set it to the correct host `http(s)://zoo[-apx].<INGRESS_HOST>`.
+
+Only set `OAPIP_AUTH_HEADER` if you have OIDC enabled.
+
+```bash
+source ~/.eoepca/state
+echo ${OAPIP_HOST}
+export OAPIP_AUTH_HEADER="-H \"Authorization: Bearer ${access_token}\""
+```
+
 #### List Processes
 
 Retrieve the list of available (currently deployed) processes.
 
 ```bash
-source ~/.eoepca/state
 curl --silent --show-error \
-  -X GET "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -231,11 +276,10 @@ Deploy the application that meets your validation needs.
 Deploy the `convert` app...
 
 ```bash
-source ~/.eoepca/state
-curl --silent --show-error \
-  -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes" \
-  -H "Authorization: Bearer ${access_token}" \
-  -H "Content-Type: application/ogcapppkg+json" \
+curl --show-error \
+  -X POST "${OAPIP_HOST}/ogc-api/processes" \
+  ${OAPIP_AUTH_HEADER} \
+  -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
 {
@@ -250,10 +294,10 @@ EOF
 Check the `convert` application is deployed...
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X GET "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -264,10 +308,10 @@ curl --silent --show-error \
 Deploy the `water_bodies` app...
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes" \
+  ${OAPIP_AUTH_HEADER}
   -H "Content-Type: application/ogcapppkg+json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
@@ -283,10 +327,10 @@ EOF
 Check the `water_bodies` application is deployed...
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X GET "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/water_bodies" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -305,11 +349,11 @@ In either case the `JOB ID` of the execution is retained for use in subsequent A
 ##### Execute - `convert`
 
 ```bash
-source ~/.eoepca/state
+
 JOB_ID=$(
   curl --silent --show-error \
-    -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
-    -H "Authorization: Bearer ${access_token}" \
+    -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
+    ${OAPIP_AUTH_HEADER}
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -330,11 +374,11 @@ EOF
 ##### Execute - `water_bodies`
 
 ```bash
-source ~/.eoepca/state
+
 JOB_ID=$(
   curl --silent --show-error \
-    -X POST "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/water_bodies/execution" \
-    -H "Authorization: Bearer ${access_token}" \
+    -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies/execution" \
+    ${OAPIP_AUTH_HEADER}
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -363,10 +407,10 @@ EOF
 The `JOB ID` is used to monitor the progress of the job execution - most notably the status field that indicates whether the job is in-progress (`running`), or its completion status (`successful` / `failed`). Note that the full URL for job monitoring is also returned in the `Location` header of the http response to the execution request.
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X GET "https://zoo-apx.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -377,10 +421,10 @@ curl --silent --show-error \
 Similarly, once the job is completed successfully, then details of the results (outputs) can be retrieved.
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X GET "https://zoo-apx.${INGRESS_HOST}/ogc-api/jobs/${JOB_ID}/results" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}/results" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -397,10 +441,10 @@ The deployed application can be deleted (undeployed) once it is no longer needed
 ##### Undeploy - `convert`
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X DELETE "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/convert-url" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X DELETE "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -409,10 +453,10 @@ curl --silent --show-error \
 ##### Undeploy - `water_bodies`
 
 ```bash
-source ~/.eoepca/state
+
 curl --silent --show-error \
-  -X DELETE "https://zoo-apx.${INGRESS_HOST}/eoepca/ogc-api/processes/water_bodies" \
-  -H "Authorization: Bearer ${access_token}" \
+  -X DELETE "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies" \
+  ${OAPIP_AUTH_HEADER}
   -H "Accept: application/json" | jq
 ```
 
@@ -438,8 +482,8 @@ helm -n processing uninstall zoo-project-dru
 ## Further Reading
 
 - [ZOO-Project DRU Helm Chart](https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru)
-- [EOEPCA+Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
-- [EOEPCA+Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
+- [EOEPCA+ Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
+- [EOEPCA+ Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
 - [OGC API Processes Standards](https://www.ogc.org/standards/ogcapi-processes)
 - [Common Workflow Language (CWL)](https://www.commonwl.org/)
 - [Calrissian Documentation](https://github.com/Duke-GCB/calrissian)

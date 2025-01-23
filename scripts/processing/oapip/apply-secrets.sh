@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Load utility functions and state file
-source ../common/utils.sh
 source "$HOME/.eoepca/state"
 
 echo "Applying Kubernetes secrets..."
