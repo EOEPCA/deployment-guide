@@ -100,10 +100,10 @@ git clone https://github.com/EOEPCA/application-quality.git reference-repo
 2. **Install** with Helm:
     
 ```bash
-helm dependency build reference-repo/application-quality-reference-deployment
+helm dependency build reference-repo/helm
 
 helm upgrade -i application-quality \
-  reference-repo/application-quality-reference-deployment \
+  reference-repo/helm \
   --namespace application-quality \
   --create-namespace \
   --values generated-values.yaml

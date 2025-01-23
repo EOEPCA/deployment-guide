@@ -35,7 +35,6 @@ if [ "$OIDC_APPLICATION_QUALITY_ENABLED" == "true" ]; then
     add_to_state_file "OSD_CONNECT_URL" "https://iam-auth.${INGRESS_HOST}/realms/eoepca/.well-known/openid-configuration"
 else
     echo "OIDC authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational."
-    exit 1
 fi
 
 # Generate configuration file
