@@ -45,6 +45,19 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 - Check [Kubernetes official docs](https://kubernetes.io/docs/setup/) or [Rancher docs](https://rancher.com/docs/rke/latest/en/) for installation references.
 - If you expect to run many EOEPCA components pulling images from Docker Hub, set up credentials or a proxy to avoid rate limits.
 
+#### Creating an image pull secret
+
+> We recommend this step if any `helm` deployment is returning `ImagePullBackOff` errors.
+
+```bash
+kubectl create secret docker-registry regcred \
+--docker-server="https://index.docker.io/v1/" \
+--docker-username="YOUR_DOCKER_USERNAME" \
+--docker-password="YOUR_DOCKER_PASSWORD_OR_TOKEN" \
+--docker-email="YOUR_EMAIL" \
+-n processing
+```
+
 ## Quick Start
 
 For evaluation and/or development purposes a non-production single node local cluster can be established.
