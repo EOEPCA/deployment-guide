@@ -5,7 +5,8 @@ This document details how to manage Keycloak clients programmatically, obtain to
 **Obtain Admin Token**:
 
 ```bash
-source ~/.eoepca/state
+source ~/.eoepca/state # This will set KEYCLOAK_ADMIN_USER and KEYCLOAK_ADMIN_PASSWORD into your environment
+
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -14,12 +15,14 @@ ACCESS_TOKEN=$( \
     -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
+    "https://auth.<YOUR DOMAIN>/realms/master/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 ```
 
-**Create a Client (`myclient`)**:
+**Create a Client**:
+
+> You can leave the "secret" field empty to have Keycloak generate a random secret. Just ensure you retrieve it for future use. If you do provide the secret, ensure it is formatted correctly.
 
 ```bash
 curl --silent --show-error \
@@ -27,20 +30,20 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" <<EOF
+  "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients" <<EOF
 {
-  "clientId": "myclient",
-  "name": "My Client",
-  "description": "Test client created for illustration",
+  "clientId": "<UPDATE TO CLIENT ID>",
+  "name": "<UPDATE TO CLIENT NAME>",
+  "description": "<A SENSIBLE DESCRIPTION>",
   "enabled": true,
   "protocol": "openid-connect",
-  "rootUrl": "https://myservice-apx.${INGRESS_HOST}",
-  "baseUrl": "https://myservice-apx.${INGRESS_HOST}",
-  "redirectUris": ["https://myservice-apx.${INGRESS_HOST}/*", "/*"],
+  "rootUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
+  "baseUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
+  "redirectUris": ["https://<UPDATE TO THE MAIN URL OF THE CLIENT>/*", "/*"],
   "webOrigins": ["/*"],
   "publicClient": false,
   "clientAuthenticatorType": "client-secret",
-  "secret": "changeme",
+  "secret": "<OPTIONAL SECRET, OR LEAVE EMPTY>",
   "directAccessGrantsEnabled": false,
   "attributes": {
     "oauth2.device.authorization.grant.enabled": true
@@ -58,8 +61,8 @@ EOF
 curl --silent --show-error \
   -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
-| jq '.[] | select(.clientId == "myclient")'
+  "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients" \
+| jq '.[] | select(.clientId == "<UPDATE TO CLIENT ID>")'
 ```
 
 ## Deleting a Client
@@ -71,8 +74,8 @@ myclient_id=$( \
   curl --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
-  | jq -r '.[] | select(.clientId == "myclient") | .id' \
+    "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients" \
+  | jq -r '.[] | select(.clientId == "<UPDATE TO CLIENT ID>") | .id' \
 )
 ```
 
@@ -82,7 +85,7 @@ Delete the client:
 curl --silent --show-error \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${myclient_id}"
+  "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients/${<UPDATE TO CLIENT ID>}"
 ```
 
 ## Obtaining Tokens via the Device Flow
@@ -98,10 +101,10 @@ response=$( \
   curl --silent --show-error \
     -X POST \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "client_id=myclient" \
-    -d "client_secret=changeme" \
+    -d "client_id=<UPDATE TO CLIENT ID>" \
+    -d "client_secret=<UPDATE TO CLIENT SECRET>" \
     -d "scope=openid profile email" \
-    "https://auth-apx.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/auth/device" \
+    "https://auth.<YOUR DOMAIN>/realms/eoepca/protocol/openid-connect/auth/device" \
 )
 device_code=$(echo $response | jq -r '.device_code')
 verification_uri_complete=$(echo $response | jq -r '.verification_uri_complete')
@@ -120,11 +123,11 @@ response=$( \
   curl --silent --show-error \
     -X POST \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "client_id=myclient" \
-    -d "client_secret=changeme" \
+    -d "client_id=<UPDATE TO CLIENT ID>" \
+    -d "client_secret=<UPDATE TO CLIENT SECRET>" \
     -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
     -d "device_code=${device_code}" \
-    "https://auth-apx.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+    "https://auth.<YOUR DOMAIN>/realms/eoepca/protocol/openid-connect/token" \
 )
 access_token=$(echo $response | jq -r '.access_token')
 refresh_token=$(echo $response | jq -r '.refresh_token')

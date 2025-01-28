@@ -69,10 +69,6 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | OIDC             | OIDC                                   | See below                                                                                          |
 
-Additionally:
-
-- You’ll need a client secret for OAuth2 if you want JupyterHub to authenticate via Keycloak or another IdP.
-
 **Clone the Deployment Guide Repository:**
 
 ```bash
@@ -99,12 +95,10 @@ To enable Jupyter notebooks and other interactive services to authenticate users
 Follow the steps in [Client Administration](../iam/client-management) to create a new Keycloak client for OAPIP. Use the following values when prompted:
 
 
-- **Client ID**: e.g., `application-hub`
-- **Protocol**: `openid-connect`
-- **Redirect URIs**: `https://app-hub.<YOUR_DOMAIN>/hub/oauth_callback`
-    - (Or `https://app-hub.<YOUR_DOMAIN>/hub/*` if Keycloak requires wildcard for sub-routes.)
-- **Web Origins**: `https://app-hub.<YOUR_DOMAIN>`
-- Make sure `openid`, `profile`, `email` scopes are enabled.
+- **`clientId`**: `application-hub`
+- **`rootUrl`** and **`baseUrl`**: `https://app-hub.${INGRESS_HOST}`
+- **`redirectUris`**: `https://app-hub.${INGRESS_HOST}/*` and `/*`
+- **`secret`**:  A secure secret for the OIDC client. Or leave it blank to generate one.
 
 > Ensure you have the **Client Secret** for the OIDC client. You’ll need it in the next step.
 
