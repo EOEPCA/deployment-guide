@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rc
+  namespace: resource-catalogue
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    ${CLUSTER_ISSUER_ANNOTATION}
+    apisix.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: resource-catalogue.$INGRESS_HOST
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-catalogue-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - resource-catalogue.$INGRESS_HOST
+      secretName: resource-catalogue-tls
