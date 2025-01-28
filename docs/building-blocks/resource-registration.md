@@ -122,6 +122,12 @@ helm upgrade -i registration-api eoepca-dev/registration-api \
   --values registration-api/generated-values.yaml
 ```
 
+Deploy the ingress for the Registration API:
+
+```bash
+kubectl apply -f registration-api/generated-ingress.yaml
+```
+
 ### 4. Deploy the Registration Harvester Using Helm
 
 **Deploy Flowable Engine:**
@@ -136,13 +142,19 @@ helm upgrade -i registration-harvester-api-engine flowable/flowable \
   --values registration-harvester/generated-values.yaml
 ```
 
+Deploy the ingress for the Flowable Engine:
+
+```bash
+kubectl apply -f registration-harvester/generated-ingress.yaml
+```
+
 **Deploy Registration Harvester Worker:**
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
 helm repo update eoepca-dev && \
 helm upgrade -i registration-harvester-worker eoepca-dev/registration-harvester \
-  --version 2.0.0-beta1 \
+  --version 2.0.0-beta2 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml

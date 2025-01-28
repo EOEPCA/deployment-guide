@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fl
+  namespace: resource-registration
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    apisix.ingress.kubernetes.io/use-regex: "true"
+    ${CLUSTER_ISSUER_ANNOTATION}
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: registration-harvester-api.${INGRESS_HOST}
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: registration-harvester-api-engine-flowable-rest
+                port:
+                  number: 8080
+
+  tls:
+    - hosts:
+        - registration-harvester-api.${INGRESS_HOST}
+      secretName: flowable-custom-tls

@@ -12,13 +12,8 @@ ask "FLOWABLE_ADMIN_PASSWORD" "Enter Flowable admin password" "eoepca" is_non_em
 
 # Generate configuration files
 envsubst <"registration-api/values-template.yaml" >"registration-api/generated-values.yaml"
+envsubst <"registration-api/$INGRESS_TEMPLATE_PATH" >"registration-api/$INGRESS_OUTPUT_PATH"
 envsubst <"registration-harvester/values-template.yaml" >"registration-harvester/generated-values.yaml"
+envsubst <"registration-harvester/$INGRESS_TEMPLATE_PATH" >"registration-harvester/$INGRESS_OUTPUT_PATH"
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
-
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- registration-api-tls-secret"
-    echo "- registration-harvester-tls-secret"
-fi

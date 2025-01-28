@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rr
+  namespace: resource-registration
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    ${CLUSTER_ISSUER_ANNOTATION}
+    apisix.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: registration-api.$INGRESS_HOST
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: registration-api-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - registration-api.$INGRESS_HOST
+      secretName: resource-registration-tls
