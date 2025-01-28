@@ -1,4 +1,8 @@
+> Ensure you have the EOEPCA IAM Building Block installed. For more information, refer to [this guide](./main-iam.md).
+
+
 This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with EOEPCA’s secured endpoints.
+
 
 ## Creating a Keycloak Client
 
