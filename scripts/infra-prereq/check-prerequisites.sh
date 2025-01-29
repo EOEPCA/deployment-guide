@@ -1,9 +1,10 @@
 #!/bin/bash
 
+source ../common/utils.sh
+
 # Exit immediately if a command fails
 set -euo pipefail
 
-source ../common/utils.sh
 # Example usage if your utils have "ask":
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
 
