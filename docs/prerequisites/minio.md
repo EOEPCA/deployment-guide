@@ -70,10 +70,10 @@ bash configure-minio.sh
 Install MinIO using Helm:
 
 ```bash
-helm repo add minio https://charts.min.io/ && \
-helm repo update minio && \
+helm repo add minio https://charts.min.io/
+helm repo update minio
 helm upgrade -i minio minio/minio \
-  --version 5.2.0 \
+  --version 5.4.0 \
   --values server/generated-values.yaml \
   --namespace minio \
   --create-namespace
