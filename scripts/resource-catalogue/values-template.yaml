@@ -1,16 +1,8 @@
 global:
   namespace: resource-catalogue
 ingress:
-  enabled: true
-  name: resource-catalogue
-  host: resource-catalogue.$INGRESS_HOST
-  tls_host: resource-catalogue.$INGRESS_HOST
-  tls_secret_name: resource-catalogue-tls
-  annotations:
-    ${CLUSTER_ISSUER_ANNOTATION}
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/ingress.class: nginx
+  enabled: false
+
 
 db:
   volume_storage_type: $STORAGE_CLASS

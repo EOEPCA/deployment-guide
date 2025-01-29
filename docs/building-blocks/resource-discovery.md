@@ -85,6 +85,12 @@ helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --create-namespace
 ```
 
+Deploy the ingress for the Resource Discovery service:
+
+```bash
+kubectl apply -f generated-ingress.yaml
+```
+
 ---
 
 ## Validation and Operation

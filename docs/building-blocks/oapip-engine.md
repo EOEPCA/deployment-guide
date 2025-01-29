@@ -72,15 +72,31 @@ If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), 
 
 **OIDC Configuration:**
 
-You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, follow the steps in the [Optional OIDC Configuration](#optional-oidc-configuration) section below. Otherwise, skip to the [Deploy the OAPIP Engine](#deploy-the-oapip-engine-using-helm) section.
+You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
 
 For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
 
 ---
 
+### Deploy the OAPIP Engine
+
+#### Deploy the Helm Chart
+
+```bash
+helm repo add zoo-project https://zoo-project.github.io/charts/ && \
+helm repo update zoo-project && \
+helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
+  --version 0.2.6 \
+  --values generated-values.yaml \
+  --namespace processing \
+  --create-namespace
+```
+
+---
+
 ### Optional OIDC Configuration
 
-> You only need to run this script if you have enabled OIDC authentication. Otherwise, you can skip this step.
+> You only need to run this script if you have enabled OIDC authentication. Otherwise, you can skip these steps and proceed to the [Validation](#validation) section.
 
 **Creating a Keycloak Client for OAPIP:**
 
@@ -100,23 +116,20 @@ Zoo provides a 'jobs' endpoint for monitoring of process executions and providin
 
 To configure this policy, the Keycloak resource that represents this jobs endpoint is configured using the built-in 'default' resource type, which invokes the default policy that authorises access for any authenticated realm user.
 
-Follow the steps under **Create a Resource** in [Resource Protection with Keycloak Policies](iam/advanced-iam.md#resource-protection-with-keycloak-policies) to create the `jobs` resource in the `zoo` client with the `type` set as `urn:zoo:resources:default`.
+Follow the steps under **Create a Resource** in [Resource Protection with Keycloak Policies](iam/advanced-iam.md#resource-protection-with-keycloak-policies) to create the `jobs` resource in the `oapip-engine` client with the `type` set as `urn:oapip-engine:resources:default`.
 
 This is achieved with the following resource definition...
 
 ```json
 {
   "name": "jobs",
-  "type": "urn:zoo:resources:default",
+  "type": "urn:oapip-engine:resources:default",
   "uris": ["/ogc-api/jobs/*"]
 }
 ```
 
-Note that the type _urn:**zoo**:resources:default_ assumes the client name `zoo`, and so should be adjusted if a different client name is used.
 
 #### Apply Kubernetes Secrets
-
-> You only need to run this script if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
 This script creates a Kubernetes secret with the Keycloak client ID and secret for the OAPIP Engine.
 
@@ -126,37 +139,8 @@ bash apply-secrets.sh
 
 ---
 
-### Deploy the OAPIP Engine Using Helm
-
-
-#### Create image pull secret (Optional)
-
-> We recommend this step if the `helm` deployment is returning `ImagePullBackOff` errors.
-
-```bash
-kubectl create secret docker-registry regcred \
---docker-server="https://index.docker.io/v1/" \
---docker-username="YOUR_DOCKER_USERNAME" \
---docker-password="YOUR_DOCKER_PASSWORD_OR_TOKEN" \
---docker-email="YOUR_EMAIL" \
--n processing
-```
-
-#### Deploy the Helm Chart
-
-```bash
-helm repo add zoo-project https://zoo-project.github.io/charts/ && \
-helm repo update zoo-project && \
-helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.2.6 \
-  --values generated-values.yaml \
-  --namespace processing \
-  --create-namespace
-```
 
 ### OAPIP Engine Ingress (Optional)
-
-> You only need to run this step if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
 Note the ingress for the OAPIP Engine is established using APISIX resources (ApisixRoute, ApisixTls). Ensure that you have the APISIX Ingress Controller installed and configured in your cluster, as described in the [APISIX Ingress Controller](../prerequisites/ingress-controller.md) section.
 
@@ -169,8 +153,6 @@ The ingress definition introduces integration with Keycloak for request authoriz
 ---
 
 ## Apply Resource Protection (Optional)
-
-> You only need to run this step if you have enabled OIDC authentication. Otherwise, you can skip this step.
 
 OAPIP endpoints can be protected by Keycloak policies e.g. limiting access to certain users or groups. Follow the steps in [Advanced Configuration](../iam/advanced-iam#resource-protection-with-keycloak-policies) to:
 
@@ -197,10 +179,8 @@ bash validation.sh
 
 Check access to the service web endpoints:
 
-> If you have disabled OIDC, the subdomain will be `zoo.<INGRESS_HOST>` instead of `zoo-apx.<INGRESS_HOST>`.
-
-* **ZOO-Project Swagger UI** - `https://zoo-apx.<INGRESS_HOST>/swagger-ui/oapip/`
-* **OGC API Processes Landing Page** - `https://zoo-apx.<INGRESS_HOST>/ogc-api/processes/`
+* **ZOO-Project Swagger UI** - `https://zoo.<INGRESS_HOST>/swagger-ui/oapip/`
+* **OGC API Processes Landing Page** - `https://zoo.<INGRESS_HOST>/ogc-api/processes/`
 
 
 ### Expected Kubernetes Resources
@@ -242,14 +222,12 @@ Please refer to the [IAM User Authentication](../iam/client-management#obtaining
 
 To follow the below sections easily we recommend setting the `OAPIP_HOST` and `OAPIP_AUTH_HEADER` environment variables.
 
-`OAPIP_HOST` will have been set by the configuration script, but if not, set it to the correct host `http(s)://zoo[-apx].<INGRESS_HOST>`.
-
 Only set `OAPIP_AUTH_HEADER` if you have OIDC enabled.
 
 ```bash
 source ~/.eoepca/state
 echo ${OAPIP_HOST}
-export OAPIP_AUTH_HEADER="-H \"Authorization: Bearer ${access_token}\""
+export OAPIP_AUTH_HEADER="-H \"Authorization: Bearer ${access_token}\"" # Only if OIDC is enabled
 ```
 
 #### List Processes
@@ -294,7 +272,6 @@ EOF
 Check the `convert` application is deployed...
 
 ```bash
-
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url" \
   ${OAPIP_AUTH_HEADER}
@@ -308,10 +285,9 @@ curl --silent --show-error \
 Deploy the `water_bodies` app...
 
 ```bash
-
 curl --silent --show-error \
   -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes" \
-  ${OAPIP_AUTH_HEADER}
+  ${OAPIP_AUTH_HEADER} \
   -H "Content-Type: application/ogcapppkg+json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
@@ -353,7 +329,7 @@ In either case the `JOB ID` of the execution is retained for use in subsequent A
 JOB_ID=$(
   curl --silent --show-error \
     -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
-    ${OAPIP_AUTH_HEADER}
+    ${OAPIP_AUTH_HEADER} \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -378,7 +354,7 @@ EOF
 JOB_ID=$(
   curl --silent --show-error \
     -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies/execution" \
-    ${OAPIP_AUTH_HEADER}
+    ${OAPIP_AUTH_HEADER} \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -407,10 +383,9 @@ EOF
 The `JOB ID` is used to monitor the progress of the job execution - most notably the status field that indicates whether the job is in-progress (`running`), or its completion status (`successful` / `failed`). Note that the full URL for job monitoring is also returned in the `Location` header of the http response to the execution request.
 
 ```bash
-
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}" \
-  ${OAPIP_AUTH_HEADER}
+  ${OAPIP_AUTH_HEADER} \
   -H "Accept: application/json" | jq
 ```
 
@@ -421,10 +396,9 @@ curl --silent --show-error \
 Similarly, once the job is completed successfully, then details of the results (outputs) can be retrieved.
 
 ```bash
-
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}/results" \
-  ${OAPIP_AUTH_HEADER}
+  ${OAPIP_AUTH_HEADER} \
   -H "Accept: application/json" | jq
 ```
 

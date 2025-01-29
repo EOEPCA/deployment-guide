@@ -30,20 +30,22 @@ workflow:
 ingress:
   enabled: ${OAPIP_INGRESS_ENABLED}
   hosturl: ${OAPIP_HOST}
+  ingressClassName: apisix
+  class: apisix
+  className: apisix
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: apisix
+    k8s.apisix.apache.org/use-regex: "true"
     ${CLUSTER_ISSUER_ANNOTATION}
   hosts:
   - host: zoo.${INGRESS_HOST}
     paths:
     - path: /
-      pathType: ImplementationSpecific
+      pathType: Prefix
   tls:
   - hosts:
     - zoo.${INGRESS_HOST}
     secretName: zoo-tls
-  ingressClassName: nginx
 persistence:
   procServicesStorageClass: ${STORAGE_CLASS}
   storageClass: ${STORAGE_CLASS}

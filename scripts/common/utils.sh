@@ -5,6 +5,8 @@
 # Template paths
 TEMPLATE_PATH="./values-template.yaml"
 OUTPUT_PATH="./generated-values.yaml"
+INGRESS_TEMPLATE_PATH="./ingress-template.yaml"
+INGRESS_OUTPUT_PATH="./generated-ingress.yaml"
 GATEKEEPER_TEMPLATE_PATH="./gatekeeper-template.yaml"
 GATEKEEPER_OUTPUT_PATH="./generated-gatekeeper-values.yaml"
 
@@ -112,7 +114,7 @@ generate_password() {
 }
 
 generate_aes_key() {
-    local key_length="$1"  # Desired key length: 16 or 32 characters
+    local key_length="$1" # Desired key length: 16 or 32 characters
 
     if [[ "$key_length" != "16" && "$key_length" != "32" ]]; then
         echo "Invalid key length: $key_length. Please specify 16 or 32." >&2

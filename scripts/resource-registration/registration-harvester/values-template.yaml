@@ -1,3 +1,4 @@
+# Flowable
 host:
   external: registration-harvester-api.${INGRESS_HOST}
 
@@ -6,12 +7,10 @@ rest:
     username: ${FLOWABLE_ADMIN_USER}
     password: ${FLOWABLE_ADMIN_PASSWORD}
 
-# Non standard, how will we deal with this?
 ingress:
-  useHost: "true"
-  sslRedirect: "true"
-  clusterIssuer: ${CLUSTER_ISSUER}
+  enabled: false
 
+# Harvester
 harvester:
   service:
     name: registration-harvester
@@ -20,17 +19,25 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: eoepca-2024.Q3.01
+    tag: 2.0.0-beta2
+  secret:
+    name: registration-harvester-secret
   container_port: 8080
   config:
     worker:
       log_level: INFO
       flowable:
-        host: $HTTP_SCHEME://registration-harvester-api.${INGRESS_HOST}/flowable-rest
-        rest_user: ${FLOWABLE_ADMIN_USER}
-        rest_password: ${FLOWABLE_ADMIN_PASSWORD}
-        use_tls: true
-
+        host: https://registration-harvester-api.${INGRESS_HOST}/flowable-rest
+        tls: true
+        cacert: ""
+      topics:
+        landsat_discover_data:
+          module: worker.landsat.tasks
+          handler: LandsatDiscoverHandler
+      handlers:
+        LandsatDiscoverHandler:
+          usgs_api_url: https://landsatlook.usgs.gov/stac-server
+          page_size: 100
 # Global storage class
 global:
   storageClass: ${STORAGE_CLASS}

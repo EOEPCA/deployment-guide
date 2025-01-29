@@ -42,7 +42,8 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
     fi
 
     add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
-    add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo-apx.${INGRESS_HOST}"
+    add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
+    envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
 
 else
 
@@ -52,7 +53,6 @@ else
 fi
 
 envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
-envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
 
 if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""
