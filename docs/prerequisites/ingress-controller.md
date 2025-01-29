@@ -38,8 +38,8 @@ For full installation instructions for the APISIX Ingress Controller see the off
 As a quick start, the steps included here can be followed to deploy the APISIX Ingress Controller via helm chart...
 
 ```bash
-helm repo add apisix https://charts.apiseven.com && \
-helm repo update apisix && \
+helm repo add apisix https://charts.apiseven.com
+helm repo update apisix
 helm upgrade -i apisix apisix/apisix \
   --version 2.9.0 \
   --namespace ingress-apisix --create-namespace \
@@ -91,6 +91,30 @@ For `filter` reference see:
 
 * [Plugin Common Configuration](https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration)
 * [Expression Syntax](https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators)
+
+**Forwarded Port Correction**
+
+By default, APISIX sets the `X-Forwarded-Port` header to its container port (`9443` by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is `443`.
+
+Thus, we apply a global rule that replaces the value `9443` with the value `443`.<br>
+_Actually the rule also replaces port `9080` with port `80` though this should be irrelevant due to prior HTTP-to-HTTPS redirection_
+
+```bash
+cat - <<'EOF' | kubectl -n ingress-apisix apply -f -
+apiVersion: apisix.apache.org/v2
+kind: ApisixGlobalRule
+metadata:
+  name: forwarded-port-correction
+spec:
+  plugins:
+    - name: serverless-pre-function
+      enable: true
+      config:
+        phase: "rewrite"
+        functions:
+          - "return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) > 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end"
+EOF
+```
 
 **APISIX Uninstallation**
 
