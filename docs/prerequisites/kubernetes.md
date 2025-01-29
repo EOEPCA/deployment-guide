@@ -6,23 +6,23 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 
 1. **Run Containers as Root (Mandatory)**  
 
-   Some EOEPCA components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster’s security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow `root` containers.
+    Some EOEPCA components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster’s security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow `root` containers.
 
-2. **Ingress Controller + Wildcard DNS (Mandatory)**  
+2. **Ingress Controller + Wildcard DNS (Mandatory)**
 
-   - A cluster-level wildcard DNS record: `*.example.com → <Load Balancer IP>`.
-   - An ingress controller that supports host-based routing (NGINX, APISIX, etc.).
-   - This ensures that each EOEPCA Building Block can expose `service1.example.com`, `service2.example.com`, etc.
+    - A cluster-level wildcard DNS record: `*.example.com → <Load Balancer IP>`.
+    - An ingress controller that supports host-based routing (NGINX, APISIX, etc.).
+    - This ensures that each EOEPCA Building Block can expose `service1.example.com`, `service2.example.com`, etc.
 
 3. **Load Balancer with 80/443 (Recommended)**  
 
-   - If your environment is on-prem or in a cloud, you should have a load balancer or external IP that listens on HTTP/HTTPS. 
-   - In a development scenario (e.g., Minikube or a single-node Rancher), you can rely on NodePort or port forwarding, but this is **not** recommended for production.
+    - If your environment is on-prem or in a cloud, you should have a load balancer or external IP that listens on HTTP/HTTPS. 
+    - In a development scenario (e.g., Minikube or a single-node Rancher), you can rely on NodePort or port forwarding, but this is **not** recommended for production.
 
 4. **Cert-Manager or Equivalent (Recommended)**  
 
-   - We strongly recommend [cert-manager](https://cert-manager.io/) for TLS automation. 
-   - If you prefer manual certificates for dev or air-gapped setups, be prepared to manage rotation.
+    - We strongly recommend [cert-manager](https://cert-manager.io/) for TLS automation. 
+    - If you prefer manual certificates for dev or air-gapped setups, be prepared to manage rotation.
 
 ## Production vs. Development
 
@@ -48,6 +48,8 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 #### Creating an image pull secret
 
 > We recommend this step if any `helm` deployment is returning `ImagePullBackOff` errors.
+
+For example, docker credentials in the `processing` namespace...
 
 ```bash
 kubectl create secret docker-registry regcred \
