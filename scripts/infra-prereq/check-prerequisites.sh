@@ -5,8 +5,19 @@ source ../common/utils.sh
 # Exit immediately if a command fails
 set -euo pipefail
 
-# Example usage if your utils have "ask":
+###################
+# Cleanup on exit
+###################
+cleanUp() {
+  echo "Cleaning up test resources..."
+  kubectl delete ns "$TEST_NAMESPACE" --ignore-not-found=true &>/dev/null || true
+  echo "All checks complete. Review any warnings or errors above."
+}
+trap cleanUp EXIT
+
+# Inputs needed for the checks
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
+ask "STORAGE_CLASS" "Specify the Kubernetes storage class for ReadWriteMany persistent volumes" "standard" is_non_empty
 
 # Configuration: update these to suit your environment
 EOEPCA_DOMAIN="${INGRESS_HOST}"
@@ -209,8 +220,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  # If you know which SC supports RWX, specify it:
-  # storageClassName: <your-rwx-sc>
+  storageClassName: $STORAGE_CLASS
 EOF
 
 # Wait to see if it binds
@@ -228,11 +238,3 @@ while true; do
   fi
   sleep 2
 done
-
-###################
-# Cleanup (optional)
-###################
-echo "Cleaning up test resources..."
-kubectl delete ns "$TEST_NAMESPACE" --ignore-not-found=true &>/dev/null || true
-
-echo "All checks complete. Review any warnings or errors above."
