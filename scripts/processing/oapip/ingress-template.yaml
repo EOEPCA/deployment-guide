@@ -9,7 +9,7 @@ spec:
     - name: zoo-docs
       match:
         hosts:
-          - zoo-apx.$INGRESS_HOST
+          - zoo.$INGRESS_HOST
         paths:
           - /*
         exprs:
@@ -29,7 +29,7 @@ spec:
     - name: zoo-protected
       match:
         hosts:
-          - zoo-apx.$INGRESS_HOST
+          - zoo.$INGRESS_HOST
         paths:
           - /*
       backends:
@@ -40,18 +40,20 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
+            discovery: "https://$KEYCLOAK_HOST/realms/eoepca/.well-known/openid-configuration"
             realm: eoepca
             bearer_only: true
-          secretRef: oapip-engine-client
+            client_id: ${OAPIP_CLIENT_ID}
+            client_secret: ${OAPIP_CLIENT_SECRET}
         # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            discovery: "https://$KEYCLOAK_HOST/realms/eoepca/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-          secretRef: oapip-engine-client
+            client_id: ${OAPIP_CLIENT_ID}
+            client_secret: ${OAPIP_CLIENT_SECRET}
         # Allow CORS access
         - name: cors
           enable: true
@@ -59,14 +61,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: zoo-apx
+  name: zoo
 spec:
   dnsNames:
-    - zoo-apx.$INGRESS_HOST
+    - zoo.$INGRESS_HOST
   issuerRef:
     kind: ClusterIssuer
-    name: ${CLUSTER_ISSUER}-apx
-  secretName: zoo-apx-tls
+    name: ${CLUSTER_ISSUER}
+  secretName: zoo-tls
   usages:
     - digital signature
     - key encipherment
@@ -75,10 +77,10 @@ spec:
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
 metadata:
-  name: zoo-apx
+  name: zoo
 spec:
   hosts:
-    - zoo-apx.$INGRESS_HOST
+    - zoo.$INGRESS_HOST
   secret:
-    name: zoo-apx-tls
+    name: zoo-tls
     namespace: processing

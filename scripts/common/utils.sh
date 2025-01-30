@@ -74,6 +74,39 @@ ask() {
     add_to_state_file "$variable" "$input"
 }
 
+ask_temp() {
+    local variable="$1"
+    local message="$2"
+    local default_value="$3"
+    local validation_function="$4"
+
+    while true; do
+        # Prompt for input
+        if [ -n "$default_value" ]; then
+            read -rp "$message [Default: $default_value]: " input
+        else
+            read -rp "$message: " input
+        fi
+        input="${input:-$default_value}"
+
+        # Validate input
+        if [ -n "$validation_function" ]; then
+            if "$validation_function" "$input"; then
+                break
+            else
+                echo "Invalid input. Please try again."
+            fi
+        elif [ -n "$input" ]; then
+            break
+        else
+            echo "Input cannot be empty. Please try again."
+        fi
+    done
+
+    # Export variable temporarily
+    export "$variable=$input"
+}
+
 add_to_state_file() {
     local variable="$1"
     local value="$2"

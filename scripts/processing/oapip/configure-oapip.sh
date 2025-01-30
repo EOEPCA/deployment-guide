@@ -36,10 +36,16 @@ fi
 ask "OIDC_OAPIP_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
 if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
 
+    ask "OAPIP_CLIENT_ID" "Enter the Client ID for the OAPIP" "oapip-engine" is_non_empty
+
     if [ -z "$OAPIP_CLIENT_SECRET" ]; then
         OAPIP_CLIENT_SECRET=$(generate_aes_key 32)
         add_to_state_file "OAPIP_CLIENT_SECRET" "$OAPIP_CLIENT_SECRET"
     fi
+    echo ""
+    echo "❗  Generated client secret for the OAPIP."
+    echo "   Please store this securely: $OAPIP_CLIENT_SECRET"
+    echo ""
 
     add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
