@@ -123,14 +123,15 @@ Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with 
 
 ### 5. Create the `eoepca` Realm and a Test User
 
-Instead of using `master`, create a dedicated `eoepca` realm. 
-For convenience we create an `eoepca` (test) user to support usage examples in this guide where a user must be assumed.
+Instead of using `master`, create a dedicated `eoepca` realm - using the Keycloak REST API.<br>
+For convenience we also create an `eoepca` (test) user to support usage examples in this guide where a user must be assumed.
 
 Run:
 
 ```bash
 source ~/.eoepca/state
 
+# Get access token for Keycloak admin user
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
@@ -139,28 +140,29 @@ ACCESS_TOKEN=$( \
     -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+    "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
 )
 
-
+# Create the `eoepca` realm
 curl --silent --show-error \
   -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth-apx.${INGRESS_HOST}/admin/realms" <<EOF
+  "https://auth.${INGRESS_HOST}/admin/realms" <<EOF
 {
   "realm": "eoepca",
   "enabled": true
 }
 EOF
 
+# Create the `eoepca` user in the `eoepca` realm
 curl --silent --show-error \
   -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/users" <<EOF
+  "https://auth.${INGRESS_HOST}/admin/realms/eoepca/users" <<EOF
 {
   "username": "eoepca",
   "enabled": true,
@@ -179,18 +181,27 @@ Replace `"changeme"` with a secure password of your choice.
 
 ### 6. (Optional) Integrate External Identity Providers
 
-If you wish to add GitHub or another IdP, see [Advanced Configuration](advanced-iam.md) for detailed instructions and examples.
+If you wish to add GitHub or another IdP, see [Advanced Configuration](advanced-iam.md#integrating-github-as-an-external-identity-provider) for detailed instructions and examples.
 
 ### 7. Create the `opa` Client
 
-Follow the steps in [Client Administration](client-management.md) to create the `opa` client in the `eoepca` realm. 
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
-You will need to: 
+```bash
+bash ../utils/create-client.sh
+```
 
-- Update the `clientId` to `opa`.
-- Update the `rootUrl` and `baseUrl` to `opa-apx.${INGRESS_HOST}`.
-- Update the `secret` to `${OPA_CLIENT_SECRET}` which was generated in the `configure-iam.sh` script.
+When prompted:
 
+- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user<br>_See `~/.eoepca/state`_
+- **Keycloak base domain**: e.g. `auth.<YOUR-DOMAIN>`
+- **Realm**: Typically `eoepca`.
+- **Client ID**: For OPA, you should use `opa`.
+- **Client name** and **description**: Provide any helpful text<br>_e.g. name=`OPA Client` and description=`Open Policy Agent`_
+- **Client secret**: Enter the OPA Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
+- **Subdomain**: Use `opa` for Open Policy Agent. 
+
+After it completes, you should see a JSON snippet confirming the newly created client.
 
 ### 8. Deploy OPA & OPAL
 
@@ -244,23 +255,23 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 **Keycloak Home Page:**
 
-- URL: `https://auth-apx.<INGRESS_HOST>/`
+- URL: `https://auth.<INGRESS_HOST>/`
 
 **OpenID Connect Discovery Endpoint:**
 
-- URL: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/.well-known/openid-configuration`
+- URL: `https://auth.<INGRESS_HOST>/realms/eoepca/.well-known/openid-configuration`
 
 **OAuth 2.0 Authorization Endpoint:**
 
-- URL: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/auth`
+- URL: `https://auth.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/auth`
 
 **OAuth 2.0 Token Endpoint:**
 
-- URL: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/token`
+- URL: `https://auth.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/token`
 
 **Administration Console:**
 
-- URL: `https://auth-apx.<INGRESS_HOST>/admin/`
+- URL: `https://auth.<INGRESS_HOST>/admin/`
 
 **Accessing the Administration Console:**
 
@@ -283,12 +294,13 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 **OPA Endpoint:**
 
-- URL: `https://opa-apx.<INGRESS_HOST>/`
+- URL: `https://opa.<INGRESS_HOST>/`
 
 You can test policy evaluations by sending requests to OPA's REST API. For example:
 
 ```bash
-curl -X POST "https://opa-apx.<INGRESS_HOST>/v1/data/example/allow" \
+source ~/.eoepca/state
+curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/allow" \
   -H "Content-Type: application/json" \
   -d '{"input": {"user": "alice"}}'
 ```
