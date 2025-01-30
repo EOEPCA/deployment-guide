@@ -1,0 +1,138 @@
+global:
+  storageClass: $STORAGE_CLASS
+
+iam:
+  keycloak:
+    enabled: &keycloakEnabled true
+    url: &kcurl https://auth.${INGRESS_HOST}
+    hosts:
+      - auth.${INGRESS_HOST}
+  opa:
+    enabled: &opaEnabled true
+    createRoute: true
+    hosts:
+      - opa.${INGRESS_HOST}
+    clientId: opa
+    clientSecret: "${OPA_CLIENT_SECRET}"
+  identityApi:
+    enabled: &identityApiEnabled true
+    createRoute: true
+    hosts:
+      - identity-api.${INGRESS_HOST}
+    clientId: identity-api
+    clientSecret: "${IDENTITY_API_CLIENT_SECRET}"
+  apisix:
+    enabled: &apisixEnabled false
+
+keycloak:
+  auth:
+    adminUser: $KEYCLOAK_ADMIN_USER
+    existingSecret: keycloak-admin
+  extraEnvVars:
+    # KC_SPI_POLICY_OPA_OPA_BASE_URI must point to the base URI of the OPA service.
+    # TODO - check - really the helm chart should default to this value
+    - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
+      value: "http://iam-opal-opal-client:8181/v1/data/"
+  postgresql:
+    auth:
+      existingSecret: kc-postgres
+  resourcesPreset: "large"
+
+opal:
+  enabled: *opaEnabled
+  server:
+    policyRepoUrl: https://github.com/EOEPCA/iam-policies.git
+    policyRepoMainBranch: main
+  client:
+    opaStartupData:
+      # TODO - check jwks := jwks_request("http://keycloak/realms/eoepca/protocol/openid-connect/certs").raw_body
+      policy.rego: |
+        # Simple example policy gives everyone read access to non-system documents
+        # and only gives a root user full access.
+        package system.authz
+        import rego.v1
+        jwks_request(url) := http.send({
+          "url": url,
+          "method": "GET",
+          "force_cache": true,
+          "force_cache_duration_seconds": 3600 # Cache response for an hour
+        })
+        jwks := jwks_request("http://keycloak/realms/eoepca/protocol/openid-connect/certs").raw_body
+        echo := input if {
+          print(input)
+        }
+        default allow_policy_evaluation := false
+        allow_policy_evaluation if {
+          # Generally allow GET and POST on /v1/data/**
+          #"GET" == input.method
+          input.method in ["GET", "POST"]
+          "v1" == input.path[0]
+          "data" == input.path[1]
+          "system" != input.path[2]
+        }
+        allow_policy_evaluation if {
+          # Generally allow POST on /v1/query
+          "POST" == input.method
+          ["v1", "query"] == input.path
+        }
+        allow_policy_evaluation if {
+          # Generally allow GET on /
+          "GET" == input.method
+          [""] == input.path
+          print("GET /, Input: ", input)
+        }
+        # Claims from JWT if JWT is present and can be verified; null otherwise 
+        default verified_claims = null
+        verified_claims := claims if {
+          [type, token] := split(input.headers["Authorization"][_], " ")
+          type == "Bearer"
+          io.jwt.verify_rs256(token, jwks) == true
+          claims := io.jwt.decode(token)[1]
+        }
+        default allow := false
+        allow if {
+          # Allow everything for "root" identity
+          "root$secret" == input.identity
+          print("Root identity, Input: ", input)
+        }
+        allow if {
+          # Preliminarily allow policy evaluation if Authorization header is unset,
+          # i.e., if the request is anonymous, but originates from within the cluster
+          print("Request data input: ", input)
+          not input.headers["Authorization"]
+          allow_policy_evaluation == true
+          print("AuthZ unset, Input: ", input)
+        }
+        allow if {
+          # Allow authenticated users to evaluate policies 
+          claims := verified_claims
+          claims != null
+          allow_policy_evaluation == true
+          print("External, Input: ", input, " Claims: ", claims)
+        }
+        allow if {
+          # Allow selected Werum users to GET arbitrary URLs 
+          claims := verified_claims
+          claims.email in ["w-scho@werum.de", "w-jfe@werum.de", "w-mwo@werum.de"]
+          input.method = "GET"
+          print("External, Input: ", input, " Claims: ", claims)
+        }
+
+identityApi:
+  enabled: *identityApiEnabled
+
+identity-service:
+  identity-api:
+    enabled: *identityApiEnabled
+    secrets: {}
+    deployment:
+      # Config values that can be passed via env vars
+      extraEnv:
+        - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
+          # Use internal Keycloak URL
+          value: http://iam-keycloak.iam.svc.cluster.local
+        - name: ADMIN_USERNAME
+          # Use dedicated identity-api user
+          value: identity-api
+        - name: REALM
+          value: "eoepca"

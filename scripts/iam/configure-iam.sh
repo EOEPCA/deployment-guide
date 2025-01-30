@@ -23,6 +23,10 @@ if [ -z "$OPA_CLIENT_SECRET" ]; then
     OPA_CLIENT_SECRET=$(generate_aes_key 32)
     add_to_state_file "OPA_CLIENT_SECRET" "$OPA_CLIENT_SECRET"
 fi
+if [ -z "$IDENTITY_API_CLIENT_SECRET" ]; then
+    IDENTITY_API_CLIENT_SECRET=$(generate_aes_key 32)
+    add_to_state_file "IDENTITY_API_CLIENT_SECRET" "$IDENTITY_API_CLIENT_SECRET"
+fi
 
 # Generate configuration files
 echo "Generating configuration files..."
