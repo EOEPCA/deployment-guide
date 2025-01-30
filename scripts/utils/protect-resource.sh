@@ -18,7 +18,7 @@ PERMISSION_NAME="${CLIENT_ID}-access"
 
 ask_temp "RESOURCE_TYPE" "Enter the type of the resource (e.g. urn:your-client-id:resources:default)" "path"
 ask_temp "RESOURCE_URI" "Enter the URI path to protect (e.g. /healthcheck)" "/healthcheck"
-ask_temp "USER_NAME" "Enter the username to add to the group" "eoepcauser"
+ask_temp "USER_NAME" "Enter the username to add to the group" "${KEYCLOAK_TEST_USER:-eoepcauser}"
 
 # Obtain Admin Token
 ACCESS_TOKEN=$(
