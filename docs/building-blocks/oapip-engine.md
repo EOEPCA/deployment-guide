@@ -210,14 +210,9 @@ kubectl get pods -n processing
 
 Validate the operation of the `zoo` service via its OGC API Processes interfaces.
 
-Depending on your validation needs we offer two sample applications that can be used to exercise the deployed service...
+Depending on your validation needs we offer a sample application that can be used to exercise the deployed service...
 
 * `convert` - a very simple 'hello world' application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment
-* `water_bodies` - a more real-world application that performs processing of EO input data
-
-In the following sections select the path `convert` vs `water_bodies` that suits your needs.
-
-NOTE that the following API requests assume use of the `eoepca` test user.
 
 
 #### Authenticate
@@ -288,45 +283,11 @@ curl --silent --show-error \
 
 ---
 
-##### Deploy - `water_bodies`
-
-Deploy the `water_bodies` app...
-
-```bash
-curl --silent --show-error \
-  -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes" \
-  ${OAPIP_AUTH_HEADER} \
-  -H "Content-Type: application/ogcapppkg+json" \
-  -H "Accept: application/json" \
-  -d @- <<EOF | jq
-{
-  "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/app-water-bodies-cloud-native.1.5.0.cwl",
-    "type": "application/cwl"
-  }
-}
-EOF
-```
-
-Check the `water_bodies` application is deployed...
-
-```bash
-
-curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies" \
-  ${OAPIP_AUTH_HEADER}
-  -H "Accept: application/json" | jq
-```
-
----
-
 #### Execute Process
 
 Initiate the execution of the deployed application.
 
-Execute either `convert` or `water_bodies` - depending on your needs.
-
-In either case the `JOB ID` of the execution is retained for use in subsequent API calls.
+Execute  `convert` and retrieve the `JOB ID` of the execution.
 
 ---
 
@@ -347,37 +308,6 @@ JOB_ID=$(
       "fn": "resize",
       "url":  "https://eoepca.org/media_portal/images/logo6_med.original.png",
       "size": "50%"
-    }
-  }
-EOF
-)
-```
-
----
-
-##### Execute - `water_bodies`
-
-```bash
-
-JOB_ID=$(
-  curl --silent --show-error \
-    -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies/execution" \
-    ${OAPIP_AUTH_HEADER} \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json" \
-    -H "Prefer: respond-async" \
-    -d @- <<EOF | jq -r '.jobID'
-  {
-    "inputs": {
-      "stac_items": [
-        "raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/stac-item.json",
-      ],
-      "aoi": "-6.059593683367105,53.123645037009204,-4.727280797333244,54.133792015262706",
-      "epsg": "EPSG:4326",
-      "bands": [
-        "green",
-        "nir"
-      ]
     }
   }
 EOF
@@ -430,17 +360,6 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
----
-
-##### Undeploy - `water_bodies`
-
-```bash
-
-curl --silent --show-error \
-  -X DELETE "${OAPIP_HOST}/eoepca/ogc-api/processes/water_bodies" \
-  ${OAPIP_AUTH_HEADER}
-  -H "Accept: application/json" | jq
-```
 
 ---
 
