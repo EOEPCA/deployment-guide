@@ -37,7 +37,7 @@ ask() {
     local validation_function="$4"
 
     # Check if the variable is already set
-    if [ -n "${!variable}" ]; then
+    if [ -n "${!variable+x}" ]; then
         echo "$variable is already set to '${!variable}'. Do you want to update it? (y/n)"
         read -r update
         if [[ "$update" != "y" ]]; then
@@ -146,7 +146,7 @@ if ! command_exists envsubst; then
 fi
 
 configure_cert() {
-    if [ -z "$USE_CERT_MANAGER" ]; then
+    if [ -z "${USE_CERT_MANAGER-}" ]; then
         ask_yes_no "Do you want to use automatic certificate issuance with cert-manager (yes/no)?"
         if [ "$?" == 1 ]; then
             add_to_state_file "USE_CERT_MANAGER" "no"
@@ -164,7 +164,7 @@ configure_cert() {
 }
 
 configure_http_scheme() {
-    if [ -z "$HTTP_SCHEME" ]; then
+    if [ -z "${HTTP_SCHEME-}" ]; then
         ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
     fi
 }

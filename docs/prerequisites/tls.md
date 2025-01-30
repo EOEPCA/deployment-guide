@@ -35,7 +35,7 @@ For services that are extrernally exposed via the ingress controller, there are 
 
 ### Using Cert Manager
 
-As a quick start we include instractions to bootstrap _Cert Manager_ into your cluster.
+As a quick start we include instructions to bootstrap _Cert Manager_ into your cluster.
 
 **Wildcard DNS**
 
@@ -51,8 +51,8 @@ your-domain.      300     IN      A       your-external-ip-addr
 Cert Manager is deployed via helm chart...
 
 ```bash
-helm repo add jetstack https://charts.jetstack.io && \
-helm repo update jetstack && \
+helm repo add jetstack https://charts.jetstack.io
+helm repo update jetstack
 helm upgrade -i cert-manager jetstack/cert-manager \
   --namespace cert-manager --create-namespace \
   --version v1.16.1 \
@@ -61,12 +61,12 @@ helm upgrade -i cert-manager jetstack/cert-manager \
 
 **Create a ClusterIssuer for Let’s Encrypt**
 
-1. Using **HTTP01 Challenge** via APISIX ingress [[ref]](https://letsencrypt.org/docs/challenge-types/#http-01-challenge)<br>
-<br>
-   Set your details for email.
+1. Using **HTTP01 Challenge** via APISIX ingress [[ref]](https://letsencrypt.org/docs/challenge-types/#http-01-challenge)
+
+    Set your details for email.
 
     ```bash
-    cat - <<'EOF' | kubectl -n ingress-proxy apply -f -
+    cat - <<'EOF' | kubectl apply -f -
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
@@ -84,14 +84,14 @@ helm upgrade -i cert-manager jetstack/cert-manager \
     EOF
     ```
 
-2. Using **DNS01 Challenge** [[ref]](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)<br>
-<br>
-   The following illustrates an example that uses Cloudflare DNS provider.<br>
-<br>
-   Set your details for email and Cloudflare API credentials (via secret).
+2. Using **DNS01 Challenge** [[ref]](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)
+
+    The following illustrates an example that uses Cloudflare DNS provider.
+
+    Set your details for email and Cloudflare API credentials (via secret).
 
     ```bash
-    cat - <<'EOF' | kubectl -n ingress-proxy apply -f -
+    cat - <<'EOF' | kubectl apply -f -
     apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
@@ -110,8 +110,8 @@ helm upgrade -i cert-manager jetstack/cert-manager \
                      name: cloudflare-api-token
     EOF
     ```
-<br>
-   For other supported DNS providers see the [Cert Manager DNS01 Documentation](https://cert-manager.io/docs/configuration/acme/dns01/).
+
+    For other supported DNS providers see the [Cert Manager DNS01 Documentation](https://cert-manager.io/docs/configuration/acme/dns01/).
 
 ### Global Wildcard Certificate
 
