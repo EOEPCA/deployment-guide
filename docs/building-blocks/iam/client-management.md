@@ -1,10 +1,34 @@
-> Ensure you have the EOEPCA IAM Building Block installed. For more information, refer to [this guide](./main-iam.md).
+> **Note:** If the EOEPCA IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you're using the EOEPCA IAM Building Block. Ensure the EOEPCA IAM Building Block is installed. For more information, refer to [this guide](./main-iam.md).
 
 
 This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with EOEPCA’s secured endpoints.
 
 
 ## Creating a Keycloak Client
+
+### Using the Script
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+
+```bash
+cd deployment-guide/scripts/utils
+bash create-client.sh
+```
+
+When prompted:
+
+- **Keycloak Admin Username and Password**: Provide the credentials for your Keycloak administrator account. These credentials are typically stored in `~/.eoepca/state` if configured.
+- **Keycloak Base Domain**: The domain where your Keycloak server is hosted, for example, `auth.example.com`.
+- **Realm**: The specific realm within Keycloak where the client will be created, such as `eoepca`.
+- **Client ID**: A unique identifier for your client application, for example, `my-client-app`.
+- **Client Name and Description**: Descriptive texts to identify your client application, like `My Client Application`.
+- **Client Secret**: A secret key associated with your client. During the Building Block installations, these will be set for you.
+- **Subdomain**: A designated subdomain for your client application, for instance, `app`.
+
+After it completes, you should see a JSON snippet confirming the newly created client.
+
+
+### Manually
 
 **Obtain Admin Token**:
 

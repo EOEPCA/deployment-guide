@@ -1,82 +1,34 @@
+> **Note:** If the EOEPCA IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you're using the EOEPCA IAM Building Block. Ensure the EOEPCA IAM Building Block is installed. For more information, refer to [this guide](./main-iam.md).
+
+
 This document covers advanced IAM configurations beyond the basic setup. Use these steps if you want to integrate external identity providers, protect resources with fine-grained policies, and leverage roles or OPA policies for authorisation.
-
-## Integrating GitHub as an External Identity Provider
-
-Integrating GitHub as an external IdP allows your users to sign in with their GitHub accounts. You must first register an OAuth application with GitHub.
-
-### 1. Create a GitHub OAuth Application
-
-Go to the [GitHub OAuth Apps page](https://github.com/settings/applications/new) and register a new application:
-
-- **Application Name**: e.g. `EOEPCA`
-- **Homepage URL**: `https://auth-apx.<INGRESS_HOST>/realms/eoepca`
-- **Authorization Callback URL**: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/broker/github/endpoint`
-
-Generate a Client Secret and note both the **Client ID** and **Client Secret**.
-
-### 2. Add GitHub to Keycloak as an Identity Provider
-
-Obtain an admin access token for Keycloak (replace `<INGRESS_HOST>` with your domain):
-
-```bash
-source ~/.eoepca/state
-ACCESS_TOKEN=$( \
-  curl --silent --show-error \
-    -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "username=${KEYCLOAK_ADMIN_USER}" \
-    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" \
-    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
-  | jq -r '.access_token' \
-)
-```
-
-Set your GitHub OAuth credentials:
-
-```bash
-export GITHUB_CLIENT_ID=<your-github-client-id>
-export GITHUB_CLIENT_SECRET=<your-github-client-secret>
-```
-
-Create the GitHub identity provider in the `eoepca` realm:
-
-```bash
-curl --silent --show-error \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d @- \
-  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/identity-provider/instances" <<EOF
-{
-  "alias": "github",
-  "providerId": "github",
-  "enabled": true,
-  "config": {
-    "clientId": "${GITHUB_CLIENT_ID}",
-    "clientSecret": "${GITHUB_CLIENT_SECRET}",
-    "redirectUri": "https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint"
-  }
-}
-EOF
-```
-
-Now navigate to:
-
-```
-https://auth-apx.<INGRESS_HOST>/realms/eoepca/account
-```
-
-Choose **GitHub** at the login prompt and complete the authorization flow.
 
 ---
 
 ## Resource Protection with Keycloak Policies
 
-This section shows how to protect endpoints by associating users, groups, and resources with Keycloak’s authorisation features. The example uses a user group (`mygroup`) and a resource (`/healthcheck`) that only group members can access.
 
-### Steps Overview
+
+#### Scripted Approach
+
+```bash
+cd deployment-guide/scripts/utils
+bash protect-resource.sh
+```
+        
+When prompted:
+
+- **Client ID**: `your-client-id` (the identifier for the client application you configured)
+- **Resource Type**: `urn:your-client:resources:default` (a unique URI representing the type of resource)
+- **Resource URI**: `/your-api-endpoint/*` (the path pattern for the protected resources)
+- **Username**: e.g., `username` (the user account you want to test with; create one in Keycloak if necessary)
+
+
+---
+
+#### Manual Approach
+
+If you choose to perform the steps manually, follow the instructions below.
 
 1. **Create a Group** (e.g. `mygroup`).
 2. **Add a User to the Group**.
@@ -86,7 +38,6 @@ This section shows how to protect endpoints by associating users, groups, and re
 6. **Configure Ingress** so APISIX + Keycloak enforce these policies.
 7. **Test Access** using a Device Flow token.
 
-### Detailed Steps
 
 **Obtain Access Token for Administration:**
 
@@ -294,3 +245,73 @@ Instead of relying solely on Keycloak’s policy engine, you can use OPA policie
 Refer to OPA documentation for writing Rego policies and OPAL docs for syncing policies from Git.
 
 
+
+## Integrating GitHub as an External Identity Provider
+
+Integrating GitHub as an external IdP allows your users to sign in with their GitHub accounts. You must first register an OAuth application with GitHub.
+
+### 1. Create a GitHub OAuth Application
+
+Go to the [GitHub OAuth Apps page](https://github.com/settings/applications/new) and register a new application:
+
+- **Application Name**: e.g. `EOEPCA`
+- **Homepage URL**: `https://auth-apx.<INGRESS_HOST>/realms/eoepca`
+- **Authorization Callback URL**: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/broker/github/endpoint`
+
+Generate a Client Secret and note both the **Client ID** and **Client Secret**.
+
+### 2. Add GitHub to Keycloak as an Identity Provider
+
+Obtain an admin access token for Keycloak (replace `<INGRESS_HOST>` with your domain):
+
+```bash
+source ~/.eoepca/state
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
+    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
+  | jq -r '.access_token' \
+)
+```
+
+Set your GitHub OAuth credentials:
+
+```bash
+export GITHUB_CLIENT_ID=<your-github-client-id>
+export GITHUB_CLIENT_SECRET=<your-github-client-secret>
+```
+
+Create the GitHub identity provider in the `eoepca` realm:
+
+```bash
+curl --silent --show-error \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- \
+  "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/identity-provider/instances" <<EOF
+{
+  "alias": "github",
+  "providerId": "github",
+  "enabled": true,
+  "config": {
+    "clientId": "${GITHUB_CLIENT_ID}",
+    "clientSecret": "${GITHUB_CLIENT_SECRET}",
+    "redirectUri": "https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint"
+  }
+}
+EOF
+```
+
+Now navigate to:
+
+```
+https://auth-apx.<INGRESS_HOST>/realms/eoepca/account
+```
+
+Choose **GitHub** at the login prompt and complete the authorization flow.
