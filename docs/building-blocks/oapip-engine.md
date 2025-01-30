@@ -143,7 +143,7 @@ When prompted:
 
 - **Client ID**: `oapip-engine` (the client you created in the previous step)
 - **Resource Type**: `urn:oapip-engine:resources:default`
-- **Resource URI**: `/ogc-api/jobs/*`
+- **Resource URI**: `/ogc-api/*`
 - **Username**: e.g., `eoepca` (or any user you want to test with, if you don't have a user, then create one in Keycloak)
 
 ---
@@ -210,28 +210,32 @@ kubectl get pods -n processing
 
 Validate the operation of the `zoo` service via its OGC API Processes interfaces.
 
-Depending on your validation needs we offer a sample application that can be used to exercise the deployed service...
+We offer a sample application that can be used to exercise the deployed service:
 
 * `convert` - a very simple 'hello world' application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment
 
-
-#### Authenticate
-
-Please refer to the [IAM User Authentication](../iam/client-management#obtaining-tokens-via-the-device-flow) section for details on how to authenticate as the `eoepca` user to obtain an `access_token`.
 
 ---
 
 ### Using the API
 
-To follow the below sections easily we recommend setting the `OAPIP_HOST` and `OAPIP_AUTH_HEADER` environment variables.
+To follow the below sections easily we recommend setting some environment variables.
 
-Only set `OAPIP_AUTH_HEADER` if you have OIDC enabled.
 
 ```bash
 source ~/.eoepca/state
 echo ${OAPIP_HOST}
-export OAPIP_AUTH_HEADER="-H \"Authorization: Bearer ${access_token}\"" # Only if OIDC is enabled
 ```
+
+If you have OIDC enabled, run the `oapip-utils.sh` to generate a valid OIDC token that will be temporarily stored in your environment variables.
+
+This will ask you for the username and password for the user you added to the group to generate an access token.
+
+```bash
+source oapip-utils.sh
+echo ${OAPIP_AUTH_HEADER}
+```
+
 
 #### List Processes
 
@@ -239,9 +243,9 @@ Retrieve the list of available (currently deployed) processes.
 
 ```bash
 curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes" \
-  ${OAPIP_AUTH_HEADER}
-  -H "Accept: application/json" | jq
+  -X GET "${OAPIP_HOST}/ogc-api/processes" \
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
+  -H "Accept: application/json"
 ```
 
 ---
@@ -259,7 +263,7 @@ Deploy the `convert` app...
 ```bash
 curl --show-error \
   -X POST "${OAPIP_HOST}/ogc-api/processes" \
-  ${OAPIP_AUTH_HEADER} \
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d @- <<EOF | jq
@@ -276,8 +280,8 @@ Check the `convert` application is deployed...
 
 ```bash
 curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url" \
-  ${OAPIP_AUTH_HEADER}
+  -X GET "${OAPIP_HOST}/ogc-api/processes/convert-url" \
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
 
@@ -297,8 +301,8 @@ Execute  `convert` and retrieve the `JOB ID` of the execution.
 
 JOB_ID=$(
   curl --silent --show-error \
-    -X POST "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url/execution" \
-    ${OAPIP_AUTH_HEADER} \
+    -X POST "${OAPIP_HOST}/ogc-api/processes/convert-url/execution" \
+    ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -H "Prefer: respond-async" \
@@ -323,7 +327,7 @@ The `JOB ID` is used to monitor the progress of the job execution - most notably
 ```bash
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}" \
-  ${OAPIP_AUTH_HEADER} \
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
 
@@ -336,7 +340,7 @@ Similarly, once the job is completed successfully, then details of the results (
 ```bash
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}/results" \
-  ${OAPIP_AUTH_HEADER} \
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
 
@@ -356,7 +360,7 @@ The deployed application can be deleted (undeployed) once it is no longer needed
 
 curl --silent --show-error \
   -X DELETE "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url" \
-  ${OAPIP_AUTH_HEADER}
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
 
