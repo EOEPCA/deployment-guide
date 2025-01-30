@@ -98,7 +98,7 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
-If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.), follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
+If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
@@ -137,9 +137,11 @@ cd deployment-guide/scripts/utils
 bash create-user.sh
 ```
 
-#### Protect the `/ogc-api/jobs/*` Endpoint
+---
 
-1. **Use the `protect-resource.sh`**:
+#### Protect the `/ogc-api/*` Endpoint
+
+1. Use the `protect-resource.sh`:
         
 ```bash
 cd deployment-guide/scripts/utils
