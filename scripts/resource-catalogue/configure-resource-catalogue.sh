@@ -13,3 +13,4 @@ envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
 envsubst <"$INGRESS_TEMPLATE_PATH" >"$INGRESS_OUTPUT_PATH"
 
 echo "✅ Configuration file generated: $OUTPUT_PATH"
+echo "✅ Configuration file generated: $INGRESS_OUTPUT_PATH"
