@@ -98,7 +98,7 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
-If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.), follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
+If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
@@ -107,7 +107,7 @@ If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Ke
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-cd /scripts/utils
+cd deployment-guide/scripts/utils
 bash create-client.sh
 ```
 
@@ -130,12 +130,21 @@ After it completes, you should see a JSON snippet confirming the newly created c
 
 By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to **restrict** or **fine-tune** access to certain endpoints (like `/ogc-api/jobs/`).
 
-#### Protect the `/ogc-api/jobs/*` Endpoint
+Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
-1. **Use the `protect-resource.sh`**:
+```bash
+cd deployment-guide/scripts/utils
+bash create-user.sh
+```
+
+---
+
+#### Protect the `/ogc-api/*` Endpoint
+
+1. Use the `protect-resource.sh`:
         
 ```bash
-cd /scripts/utils
+cd deployment-guide/scripts/utils
 bash protect-resource.sh
 ```
         
@@ -236,6 +245,7 @@ source oapip-utils.sh
 echo ${OAPIP_AUTH_HEADER}
 ```
 
+---
 
 #### List Processes
 
@@ -248,15 +258,11 @@ curl --silent --show-error \
   -H "Accept: application/json"
 ```
 
----
-
-#### Deploy Process
-
-Deploy the application that meets your validation needs.
+> This command will omit the `Authorization` header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the `source oapip-utils.sh` script to generate the `OAPIP_AUTH_HEADER` variable.
 
 ---
 
-##### Deploy - `convert`
+#### Deploy Process `convert`
 
 Deploy the `convert` app...
 
@@ -287,18 +293,9 @@ curl --silent --show-error \
 
 ---
 
-#### Execute Process
-
-Initiate the execution of the deployed application.
-
-Execute  `convert` and retrieve the `JOB ID` of the execution.
-
----
-
-##### Execute - `convert`
+#### Execute Process `convert`
 
 ```bash
-
 JOB_ID=$(
   curl --silent --show-error \
     -X POST "${OAPIP_HOST}/ogc-api/processes/convert-url/execution" \
@@ -344,17 +341,9 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-The STAC files and assets comprising the results are referenced as links to object storage. Access the object storage console to inspect these outputs - see the [Object Storage description](../prerequisites/minio.md) for more details.
-
 ---
 
-#### Undeploy Process
-
-The deployed application can be deleted (undeployed) once it is no longer needed.
-
----
-
-##### Undeploy - `convert`
+#### Undeploy Process `convert`
 
 ```bash
 
