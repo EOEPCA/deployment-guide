@@ -51,7 +51,7 @@ ACCESS_TOKEN=$( \
     -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth-apx.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
+    "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 ```
@@ -60,7 +60,7 @@ ACCESS_TOKEN=$( \
 
 ```bash
 curl --silent --show-error \
-  -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/groups" \
+  -X POST "https://auth.${INGRESS_HOST}/admin/realms/eoepca/groups" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{"name": "mygroup"}'
@@ -71,7 +71,7 @@ Retrieve the group ID:
 ```bash
 group_id=$( \
   curl --silent --show-error \
-    -X GET "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/groups" \
+    -X GET "https://auth.${INGRESS_HOST}/admin/realms/eoepca/groups" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.[] | select(.name == "mygroup") | .id' \
 )
@@ -85,7 +85,7 @@ Obtain the user’s ID (e.g., the `eoepca` user created previously):
 ```bash
 user_id=$( \
   curl --silent --show-error \
-    -X GET "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/users?username=eoepca" \
+    -X GET "https://auth.${INGRESS_HOST}/admin/realms/eoepca/users?username=eoepca" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.[0].id'
 )
@@ -96,7 +96,7 @@ Add the user to `mygroup`:
 
 ```bash
 curl --silent --show-error \
-  -X PUT "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/users/${user_id}/groups/${group_id}" \
+  -X PUT "https://auth.${INGRESS_HOST}/admin/realms/eoepca/users/${user_id}/groups/${group_id}" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -107,7 +107,7 @@ First, find the client ID for the client (e.g., `myclient` or another service cl
 ```bash
 client_id=$( \
   curl --silent --show-error \
-    -X GET "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients" \
+    -X GET "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.[] | select(.clientId == "myclient") | .id' \
 )
@@ -118,7 +118,7 @@ Create the policy:
 ```bash
 policy_id=$( \
   curl --silent --show-error \
-    -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/policy/group" \
+    -X POST "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/policy/group" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF | jq -r '.id'
@@ -140,7 +140,7 @@ Note that the `client_id` is the 'internal' unique identifier that is assigned b
 ```bash
 resource_id=$( \
   curl --silent --show-error \
-    -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/resource" \
+    -X POST "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/resource" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF | jq -r '._id'
@@ -163,7 +163,7 @@ The effect of this is to allow access to anyone in the `mygroup` group to access
 ```bash
 permission_id=$( \
   curl --silent --show-error \
-    -X POST "https://auth-apx.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/policy/resource" \
+    -X POST "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients/${client_id}/authz/resource-server/policy/resource" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF | jq -r '.id'
@@ -195,7 +195,7 @@ spec:
     - name: test-resource
       match:
         hosts:
-          - myservice-apx.$INGRESS_HOST
+          - myservice.$INGRESS_HOST
         paths:
           - /*
       backends:
@@ -207,7 +207,7 @@ spec:
           config:
             client_id: myclient
             client_secret: changeme
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            discovery: "https://auth.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
             ssl_verify: false
 EOF
 ```
@@ -219,7 +219,7 @@ Note that, for convenience, the `client_id` and `client_secret` have been includ
 Obtain a token using the device flow (see [client-management.md](client-management.md) for details), then access the protected endpoint:
 
 ```bash
-curl myservice-apx.$INGRESS_HOST/healthcheck \
+curl myservice.$INGRESS_HOST/healthcheck \
   -H "Authorization: Bearer ${access_token}" \
   -H "X-No-Force-Tls: true"
 ```

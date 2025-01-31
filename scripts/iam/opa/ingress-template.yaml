@@ -5,6 +5,15 @@ metadata:
   name: opa
 spec:
   http:
+    - name: opa-healthcheck
+      backends:
+        - serviceName: opa-opal-client
+          servicePort: 7000
+      match:
+        hosts:
+          - opa.$INGRESS_HOST
+        paths:
+          - /healthcheck
     - name: opa
       backends:
         - serviceName: opa-opal-client

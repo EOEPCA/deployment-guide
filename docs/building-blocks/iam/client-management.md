@@ -58,7 +58,7 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients" <<EOF
+  "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients" <<EOF
 {
   "clientId": "<UPDATE TO CLIENT ID>",
   "name": "<UPDATE TO CLIENT NAME>",
