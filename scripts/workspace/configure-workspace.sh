@@ -13,16 +13,28 @@ ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HO
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
+ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 
 if [ -z "$WORKSPACE_UI_PASSWORD" ]; then
     add_to_state_file "WORKSPACE_UI_PASSWORD" $(generate_aes_key 32)
 fi
-if [ -z "$WORKSPACE_CLIENT_SECRET" ]; then
-    WORKSPACE_CLIENT_SECRET=$(generate_aes_key 32)
-    add_to_state_file "WORKSPACE_CLIENT_SECRET" "$WORKSPACE_CLIENT_SECRET"
-fi
 
-ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
+# OIDC
+ask "OIDC_WORKSPACE_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
+if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
+
+    ask "WORKSPACE_CLIENT_ID" "Enter the Client ID for the Workspace" "workspace" is_non_empty
+
+    if [ -z "$WORKSPACE_CLIENT_SECRET" ]; then
+        WORKSPACE_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "WORKSPACE_CLIENT_SECRET" "$WORKSPACE_CLIENT_SECRET"
+    fi
+    echo ""
+    echo "❗  Generated client secret for the Workspace."
+    echo "   Please store this securely: $WORKSPACE_CLIENT_SECRET"
+    echo ""
+
+fi
 
 # Generate configuration files
 envsubst <"workspace-api/values-template.yaml" >"workspace-api/generated-values.yaml"
@@ -32,7 +44,6 @@ envsubst <"workspace-admin/values-template.yaml" >"workspace-admin/generated-val
 envsubst <"workspace-pipelines/kustomization-template.yaml" >"workspace-pipelines/kustomization.yaml"
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
-
 
 echo ""
 echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"

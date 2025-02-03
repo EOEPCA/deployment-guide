@@ -16,7 +16,7 @@ fi
 
 kubectl create secret generic harbor-admin-password \
   --from-literal=HARBOR_ADMIN_PASSWORD="$HARBOR_ADMIN_PASSWORD" \
-  --namespace workspace 
+  --namespace workspace
 
 kubectl create secret generic minio-secret \
   --from-literal=AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY" \
@@ -25,9 +25,11 @@ kubectl create secret generic minio-secret \
   --from-literal=AWS_REGION="$S3_REGION" \
   --namespace workspace
 
-kubectl create secret generic workspace-api-client \
-  --from-literal=client_id="workspace-bb" \
-  --from-literal=client_secret="$WORKSPACE_CLIENT_SECRET" \
-  --namespace workspace
+if [ -z "$OIDC_WORKSPACE_ENABLED" ]; then
+  kubectl create secret generic workspace-api-client \
+    --from-literal=client_id="$WORKSPACE_CLIENT_ID" \
+    --from-literal=client_secret="$WORKSPACE_CLIENT_SECRET" \
+    --namespace workspace
+fi
 
 echo "✅ Secrets applied."

@@ -1,15 +1,4 @@
 fullnameOverride: workspace-admin
 app:
   ingress:
-    enabled: true
-    ingressClassName: nginx
-    issuer:
-      scope: cluster
-      name: ${CLUSTER_ISSUER}
-    annotations:
-      nginx.ingress.kubernetes.io/enable-cors: "true"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    hosts:
-      - workspace-admin.${INGRESS_HOST}
-    tls:
-      secretName: workspace-admin-tls
+    enabled: false

@@ -99,7 +99,7 @@ ask_temp() {
         elif [ -n "$input" ]; then
             break
         else
-            echo "Input cannot be empty. Please try again."
+            break
         fi
     done
 
