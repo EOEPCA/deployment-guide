@@ -40,7 +40,6 @@ config: |-
     url: /docs
   mlflow:
     type: mlflow-sharinghub
-    # url: https://sharinghub.develop.eoepca.org/mlflow
     url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow
   stac:
     projects:

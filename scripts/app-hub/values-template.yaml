@@ -15,6 +15,7 @@ jupyterhub:
 
       OAUTH_CALLBACK_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/oauth_callback
       OAUTH_LOGOUT_REDIRECT_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/home
+      OAUTH2_USERNAME_KEY: "preferred_username"
 
       OAUTH2_USERDATA_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/userinfo
       OAUTH2_TOKEN_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token
