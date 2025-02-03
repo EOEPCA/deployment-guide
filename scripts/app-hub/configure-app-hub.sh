@@ -10,6 +10,7 @@ configure_cert
 ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the Application Hub pods" "node-role.kubernetes.io/worker" is_non_empty
 ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "true" is_non_empty
 ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+ask "APPHUB_ALLOWED_USER" "Enter the username of the user allowed to access the App Hub" "eoepcauser" is_non_empty
 
 # OAuth2 configuration
 ask "APPHUB_CLIENT_ID" "Enter the Client ID for the OAPIP" "application-hub" is_non_empty

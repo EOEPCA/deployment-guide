@@ -109,6 +109,13 @@ bash configure-app-hub.sh
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
     - *Example*: `worker`
 
+**OIDC Configuration**:
+
+- **`KEYCLOAK_HOST`**: OIDC provider base domain. JupyterHub requires an OIDC provider for authentication.
+    - *Example*: `auth.example.com` 
+- **`APPHUB_ALLOWED_USER`**: A Keycloak user that will be given full admin rights in the Application Hub. You can use the `deployment-guide/scripts/utils/create-user.sh` script to create a user if you don't have one.
+    - *Example*: `eoepcauser`
+
 ---
 
 2. **Configure OIDC Provider**:
