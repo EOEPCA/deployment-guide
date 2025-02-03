@@ -12,7 +12,7 @@ ask_temp "CLIENT_ID" "Enter the new Client ID" "myclient"
 ask_temp "CLIENT_NAME" "Enter a name for this client" "My Client"
 ask_temp "CLIENT_DESCRIPTION" "Enter a description for this client" "A sample OIDC client"
 ask_temp "CLIENT_SECRET" "Enter the client secret (leave blank to let Keycloak generate one)"
-ask "CLIENT_SUBDOMAIN" "Enter the subdomain for the client (e.g., myclient)" "myclient"
+ask_temp "CLIENT_SUBDOMAIN" "Enter the subdomain for the client (e.g., myclient)" "myclient"
 
 ROOT_URL="https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}"
 REDIRECT_URIS=("https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*" "/*")
