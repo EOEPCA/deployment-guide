@@ -115,11 +115,11 @@ helm upgrade -i resource-health reference-repo/resource-health-reference-deploym
 
 ---
 
-### 2. (Optional) Configure Ingress and OIDC
+### 2. Configure Ingress
 
 By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.
 
-For the purpose of this guide, the configuration script created a sample Nginx Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment.
+For the purpose of this guide, the configuration script created a sample APISIX Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment.
 
 ```bash
 kubectl apply -f generated-ingress.yaml -n resource-health
@@ -139,11 +139,25 @@ kubectl get all -n resource-health
 
 ## Validation
 
-1. **Run the validation script** (optional, included in `scripts/`):
+1. **Run the validation script**:
     
 ```bash
 bash validation.sh
 ```
+
+2. **Access the Resource Health Web**:
+
+Access the Resource Health Web dashboard at: 
+
+`https://resource-health.<INGRESS_HOST>`
+
+Access the Health Checks at:
+
+`https://resource-health.<INGRESS_HOST>/api/healthchecks/checks/`
+
+Check the Telemetry service status at:
+
+`https://resource-health.<INGRESS_HOST>/api/telemetry/healthz`
 
 ---
 
@@ -179,17 +193,8 @@ resource-health:
 Apply with:
 
 ```bash
-helm upgrade resource-health \
-  ./resource-health-reference-deployment \
-  --values generated-values.yaml \
-  --namespace resource-health
+helm upgrade -i resource-health reference-repo/resource-health-reference-deployment -f generated-values.yaml -n resource-health
 ```
-
----
-
-### 3. Viewing Check Results
-
-TODO.
 
 ---
 
