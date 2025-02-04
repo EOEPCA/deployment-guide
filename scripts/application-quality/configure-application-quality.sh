@@ -19,20 +19,22 @@ fi
 ask "OIDC_APPLICATION_QUALITY_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
 
 if [ "$OIDC_APPLICATION_QUALITY_ENABLED" == "true" ]; then
-    echo ""
-    echo "Please ensure that you have configured the Identity and Access Management Building Block guide."
-    echo ""
 
     # OIDC Configuration
-    ask "OIDC_RP_CLIENT_ID" "Enter the OIDC client ID for the Application Quality Building Block" "application-quality-bb" is_non_empty
-    ask "OIDC_RP_CLIENT_SECRET" "Enter the OIDC client secret for the Application Quality Building Block" "changeme" is_non_empty
+    ask "OIDC_RP_CLIENT_ID" "Enter the OIDC client ID for the Application Quality Building Block" "application-quality" is_non_empty
 
-    # OSD Configuration
-    ask "OSD_CLIENT_ID" "Enter the OpenSearch Dashboards client ID" "os-dash-client" is_non_empty
-    ask "OSD_CLIENT_SECRET" "Enter the OpenSearch Dashboards client secret" "changeme" is_non_empty
+    if [ -z "$OIDC_RP_CLIENT_SECRET" ]; then
+        OIDC_RP_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "OIDC_RP_CLIENT_SECRET" "$OIDC_RP_CLIENT_SECRET"
+    fi
 
-    add_to_state_file "OSD_BASE_REDIRECT" "https://application-quality.${INGRESS_HOST}/dashboards"
-    add_to_state_file "OSD_CONNECT_URL" "https://iam-auth.${INGRESS_HOST}/realms/eoepca/.well-known/openid-configuration"
+    echo ""
+    echo "❗  Generated client secret for the Application Quality."
+    echo "   Application Quality Client Secret: $OIDC_RP_CLIENT_SECRET"
+    echo ""
+
+    add_to_state_file "OSD_BASE_REDIRECT" "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/dashboards"
+    add_to_state_file "OSD_CONNECT_URL" "${HTTP_SCHEME}://{KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
 else
     echo "OIDC authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational."
 fi
