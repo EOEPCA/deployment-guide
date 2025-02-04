@@ -178,7 +178,7 @@ bash resource-protection-validation.sh
 
 
 
-For more detailed Keycloak testing (device flow, tokens, etc.), refer to [Resource Protection with Keycloak Policies](../iam/advanced-iam.md#resource-protection-with-keycloak-policies).
+For more detailed Keycloak testing (device flow, tokens, etc.), refer to [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
 
 ---
 
