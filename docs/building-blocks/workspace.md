@@ -244,20 +244,6 @@ kubectl apply -f generated-ingress.yaml
 
 ---
 
-
-### 7.4 Confirm Protection
-
-With the resource and permission created, attempts to access the protected endpoint (`/ogc-api/jobs/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
-
-```
-bash resource-protection-validation.sh
-```
-
-For more detailed Keycloak testing (device flow, tokens, etc.), refer to [Resource Protection with Keycloak Policies](../iam/advanced-iam.md#resource-protection-with-keycloak-policies).
-
-
----
-
 ## Validation and Usage
 
 After deploying the Workspace Building Block, you can validate and interact with it through a series of checks and tests described below.
