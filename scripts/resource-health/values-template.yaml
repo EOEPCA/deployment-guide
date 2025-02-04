@@ -3,21 +3,21 @@ global:
     name: ${INTERNAL_CLUSTER_ISSUER}
 
 resource-health:
-  # telemetry_api:
-  #   environmentFixed:
-  #     - name: FAST_API_ROOT_PATH
-  #       value: "/api/telemetry"
+  telemetry_api:
+    environmentFixed:
+      - name: FAST_API_ROOT_PATH
+        value: "/api/telemetry"
 
-  # check_api:
-  #   environmentFixed:
-  #     - name: FAST_API_ROOT_PATH
-  #       value: "/api/healthchecks"
+  check_api:
+    environmentFixed:
+      - name: FAST_API_ROOT_PATH
+        value: "/api/healthchecks"
   web:
     environmentFixed:
       - name: NEXT_PUBLIC_CHECK_MANAGER_ENDPOINT
-        value: "https://resource-health-check-api.${INGRESS_HOST}"
+        value: "https://resource-health.${INGRESS_HOST}/api/healthchecks"
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
-        value: "https://resource-health-telemetry-api.${INGRESS_HOST}"
+        value: "https://resource-health.${INGRESS_HOST}/api/telemetry"
   healthchecks:
     checks:
       - name: hourly-mockapi-check
