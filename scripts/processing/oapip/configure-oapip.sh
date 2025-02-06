@@ -47,6 +47,10 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
     echo "   Please store this securely: $OAPIP_CLIENT_SECRET"
     echo ""
 
+    if [ -z "$KEYCLOAK_HOST" ]; then
+        ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+    fi
+
     add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
     envsubst <"ingress-template.yaml" >"generated-ingress.yaml"

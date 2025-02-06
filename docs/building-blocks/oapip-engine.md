@@ -173,13 +173,13 @@ kubectl apply -f generated-ingress.yaml
 
 ### 2.4 Confirm Protection
 
-With the resource and permission created, attempts to access the protected endpoint (`/ogc-api/jobs/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
+With the resource and permission created, attempts to access the protected endpoint (`/ogc-api/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
 
 ```
 bash resource-protection-validation.sh
 ```
 
-
+If this script shows 401 Authorization errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.
 
 For more detailed Keycloak testing (device flow, tokens, etc.), refer to [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
 
