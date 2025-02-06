@@ -74,6 +74,8 @@ If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), 
 
 You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
 
+When prompted for the `Client ID` we recommend setting it to `oapip-engine`.
+
 For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
 
 ---
@@ -121,6 +123,7 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text (e.g., `OAPIP Engine Client`).
 - **Client secret**: Enter the OAPIP Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `zoo` for the OAPIP engine. 
+- **Additional Subdomains**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 

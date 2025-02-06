@@ -3,6 +3,7 @@ apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
   name: zoo-api
+  namespace: processing
 spec:
   http:
     # Open access to zoo OpenAPI docs
@@ -62,6 +63,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: zoo
+  namespace: processing
 spec:
   dnsNames:
     - zoo.$INGRESS_HOST
@@ -78,6 +80,7 @@ apiVersion: apisix.apache.org/v2
 kind: ApisixTls
 metadata:
   name: zoo
+  namespace: processing
 spec:
   hosts:
     - zoo.$INGRESS_HOST
