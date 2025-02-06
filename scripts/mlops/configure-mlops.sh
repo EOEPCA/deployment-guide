@@ -26,7 +26,7 @@ if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
 
     if [ -z "$MLOPS_OIDC_CLIENT_SECRET" ]; then
         MLOPS_OIDC_CLIENT_SECRET=$(generate_aes_key 32)
-        add_to_state_file "MLOPS_OIDC_CLIENT_SECRET" "$OAPIP_CLIENT_SMLOPS_OIDC_CLIENT_SECRETECRET"
+        add_to_state_file "MLOPS_OIDC_CLIENT_SECRET" "$MLOPS_OIDC_CLIENT_SECRET"
     fi
     echo ""
     echo "❗  Generated client secret for the MLOps."
@@ -53,4 +53,6 @@ envsubst <"gitlab/storage.config.template" >"gitlab/storage.config"
 envsubst <"gitlab/lfs-s3.yaml.template" >"gitlab/lfs-s3.yaml"
 envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
 
-echo "Please proceed to create the required Kubernetes secrets before deploying GitLab."
+# Ingress
+envsubst <"sharinghub/$INGRESS_TEMPLATE_PATH" >"sharinghub/$INGRESS_OUTPUT_PATH"
+envsubst <"mlflow/$INGRESS_TEMPLATE_PATH" >"mlflow/$INGRESS_OUTPUT_PATH"

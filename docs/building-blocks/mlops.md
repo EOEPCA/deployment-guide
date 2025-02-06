@@ -191,6 +191,12 @@ helm upgrade -i sharinghub sharinghub/sharinghub \
   --values sharinghub/generated-values.yaml
 ```
 
+Deploy Ingress for the SharingHub
+
+```
+kubectl apply -f sharinghub/generated-ingress.yaml
+```
+
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
@@ -202,7 +208,11 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --values mlflow/generated-values.yaml
 ```
 
-> **Note**: This deployment uses a custom MLflow that integrates with SharingHub. By default, it stores metadata either in an embedded SQLite or a small Postgres. Artifacts can go into your S3 bucket. Check `mlflow/generated-values.yaml` for final config.
+Deploy Ingress for the MLFlow
+
+```
+kubectl apply -f mlflow/generated-ingress.yaml
+```
 
 ---
 

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sh
+  namespace: sharinghub
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    ${CLUSTER_ISSUER_ANNOTATION}
+    apisix.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: sharinghub.$INGRESS_HOST
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: sharinghub
+                port:
+                  number: 8000
+  tls:
+    - hosts:
+        - sharinghub.$INGRESS_HOST
+      secretName: sh-tls

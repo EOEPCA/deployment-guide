@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mlf
+  namespace: sharinghub
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    k8s.apisix.apache.org/rewrite-target-regex: "/mlflow/(.*)"
+    k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
+    ${CLUSTER_ISSUER_ANNOTATION}
+spec:
+  ingressClassName: apisix
+  tls:
+    - hosts:
+        - sharinghub.$INGRESS_HOST
+      secretName: sh-tls
+  rules:
+    - host: sharinghub.$INGRESS_HOST
+      http:
+        paths:
+          - path: "/mlflow"
+            pathType: Prefix
+            backend:
+              service:
+                name: mlflow-sharinghub
+                port:
+                  number: 5000
