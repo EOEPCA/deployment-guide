@@ -255,14 +255,14 @@ Integrating GitHub as an external IdP allows your users to sign in with their Gi
 Go to the [GitHub OAuth Apps page](https://github.com/settings/applications/new) and register a new application:
 
 - **Application Name**: e.g. `EOEPCA`
-- **Homepage URL**: `https://auth-apx.<INGRESS_HOST>/realms/eoepca`
-- **Authorization Callback URL**: `https://auth-apx.<INGRESS_HOST>/realms/eoepca/broker/github/endpoint`
+- **Homepage URL**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca`
+- **Authorization Callback URL**: `https://auth-apx.${INGRESS_HOST}/realms/eoepca/broker/github/endpoint`
 
 Generate a Client Secret and note both the **Client ID** and **Client Secret**.
 
 ### 2. Add GitHub to Keycloak as an Identity Provider
 
-Obtain an admin access token for Keycloak (replace `<INGRESS_HOST>` with your domain):
+Obtain an admin access token for Keycloak (replace `${INGRESS_HOST}` with your domain):
 
 ```bash
 source ~/.eoepca/state
@@ -311,7 +311,7 @@ EOF
 Now navigate to:
 
 ```
-https://auth-apx.<INGRESS_HOST>/realms/eoepca/account
+https://auth-apx.${INGRESS_HOST}/realms/eoepca/account
 ```
 
 Choose **GitHub** at the login prompt and complete the authorization flow.

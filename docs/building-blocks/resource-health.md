@@ -149,15 +149,15 @@ bash validation.sh
 
 Access the Resource Health Web dashboard at: 
 
-`https://resource-health.<INGRESS_HOST>`
+`https://resource-health.${INGRESS_HOST}`
 
 Access the Health Checks at:
 
-`https://resource-health.<INGRESS_HOST>/api/healthchecks/checks/`
+`https://resource-health.${INGRESS_HOST}/api/healthchecks/checks/`
 
 Check the Telemetry service status at:
 
-`https://resource-health.<INGRESS_HOST>/api/telemetry/healthz`
+`https://resource-health.${INGRESS_HOST}/api/telemetry/healthz`
 
 ---
 

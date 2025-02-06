@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: resource-catalogue
-  namespace: resource-catalogue
+  name: rc
+  namespace: resource-discovery
   annotations:
     kubernetes.io/ingress.class: apisix
     ${CLUSTER_ISSUER_ANNOTATION}

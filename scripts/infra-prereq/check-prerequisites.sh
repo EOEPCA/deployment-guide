@@ -29,9 +29,11 @@ TEST_DEPLOYMENT_NAME="test-deployment"
 TEST_IMAGE="busybox:latest"
 TIMEOUT=60
 
+echo ""
 echo "=== EOEPCA Prerequisite Check Script ==="
 echo "Using EOEPCA_DOMAIN=$EOEPCA_DOMAIN"
 echo "Launching tests in namespace '$TEST_NAMESPACE'..."
+echo ""
 
 # Ensure we can talk to the cluster
 if ! kubectl version --client &>/dev/null; then

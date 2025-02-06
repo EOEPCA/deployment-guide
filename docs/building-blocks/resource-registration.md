@@ -190,7 +190,7 @@ bash validation.sh
 This page provides basic information about the Registration API.
 
 ```
-https://registration-api.<INGRESS_HOST>/
+https://registration-api.${INGRESS_HOST}/
 ```
  
 
@@ -199,7 +199,7 @@ https://registration-api.<INGRESS_HOST>/
 Interactive API documentation allowing you to explore and test the Registration API endpoints.
 
 ```
-https://registration-api.<INGRESS_HOST>/openapi?f=html
+https://registration-api.${INGRESS_HOST}/openapi?f=html
 ``` 
 
 **Flowable REST API Swagger UI:**
@@ -207,12 +207,12 @@ https://registration-api.<INGRESS_HOST>/openapi?f=html
 Provides Swagger UI documentation for the Flowable REST API.
 
 ```
-https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
+https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
 ```
 
 **Note:**
 
-- Replace `<INGRESS_HOST>` with your actual ingress host domain.
+- Replace `${INGRESS_HOST}` with your actual ingress host domain.
 
 ---
 
@@ -280,13 +280,13 @@ EOF
 ### Validating the Registration
 
 ```
-https://registration-api.<INGRESS_HOST>/jobs
+https://registration-api.${INGRESS_HOST}/jobs
 ```
 
 You should see a new job with the status `COMPLETED`. The registered STAC Item will be available via:
 
 ```
-https://resource-catalogue.<INGRESS_HOST>/stac/collections/metadata:main/items/20201211_223832_CS2
+https://resource-catalogue.${INGRESS_HOST}/stac/collections/metadata:main/items/20201211_223832_CS2
 ```
 
 _(The item ID and collection path will vary based on your input.)_
@@ -298,7 +298,7 @@ The Registration Harvester leverages Flowable to automate resource harvesting wo
 **Access the Flowable REST API Swagger UI:**
 
 ```url
-https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
+https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
 ```
 
 **List Deployed Processes**

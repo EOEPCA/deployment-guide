@@ -1,5 +1,5 @@
 global:
-  namespace: resource-catalogue
+  namespace: resource-discovery
 ingress:
   enabled: false
 db:

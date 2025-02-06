@@ -43,7 +43,7 @@ The Resource Discovery building block includes:
 
 ```bash
 git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
-cd deployment-guide/scripts/resource-catalogue
+cd deployment-guide/scripts/resource-discovery
 ```
 
 **Validate your environment:**
@@ -59,7 +59,7 @@ bash check-prerequisites.sh
 1. **Run the Configuration Script**
 
 ```bash
-bash configure-resource-catalogue.sh
+bash configure-resource-discovery.sh
 ```
 
 **Configuration Parameters**  
@@ -81,7 +81,7 @@ helm repo update eoepca-dev
 helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
   --version 2.0.0-beta2 \
-  --namespace resource-catalogue \
+  --namespace resource-discovery \
   --create-namespace
 ```
 
@@ -108,28 +108,28 @@ Most Resource Discovery endpoints can be accessed directly in a browser:
 - **Landing/Home Page**  
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/
+https://resource-catalogue.${INGRESS_HOST}/
 ```
 You should see an HTML landing page or a minimal JSON response with links to the various endpoints.
 
 - **Swagger UI (OpenAPI)**
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/openapi?f=html
+https://resource-catalogue.${INGRESS_HOST}/openapi?f=html
 ```  
 Opens a human-friendly UI showing available endpoints and interactive documentation.  
 
 - **OGC API - Records / STAC Collections**
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/collections
+https://resource-catalogue.${INGRESS_HOST}/collections
 ```  
 Should return a JSON or HTML response listing available collections.
 
 - **Conformance**
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/conformance
+https://resource-catalogue.${INGRESS_HOST}/conformance
 ```  
 Confirms which OGC API conformance classes and standards are supported by the server.
 
@@ -142,13 +142,13 @@ Using the command line can be a quick way to check endpoints and see raw respons
 #### 3.1. Basic Liveness Check
 
 ```bash
-curl -I "https://resource-catalogue.<INGRESS_HOST>/"
+curl -I "https://resource-catalogue.${INGRESS_HOST}/"
 ```
 
 #### 3.2. Testing OGC CSW
 
 ```bash
-curl "https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&request=GetCapabilities"
+curl "https://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&request=GetCapabilities"
 ```
 
 - A successful response should be an XML Capabilities document containing service metadata.  
@@ -156,7 +156,7 @@ curl "https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&re
 #### 3.3. Testing STAC API
 
 ```bash
-curl "https://resource-catalogue.<INGRESS_HOST>/stac"
+curl "https://resource-catalogue.${INGRESS_HOST}/stac"
 ```
 
 - You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.
@@ -184,23 +184,23 @@ You should receive a JSON response listing zero or more STAC items that match th
 **Find the Resource Catalogue Pod**:
         
 ```bash
-kubectl get pods -n resource-catalogue
+kubectl get pods -n resource-discovery
 ```
 
 Look for a pod name similar to `resource-catalogue-service-abcd1234-efgh5678`.
         
 **Copy the Sample File** (`sample_record.xml`) to the pod.
-> The sample record is provided in the `scripts/resource-catalogue` directory of the deployment guide repository.
+> The sample record is provided in the `scripts/resource-discovery` directory of the deployment guide repository.
         
 ```bash
 kubectl cp sample_record.xml \
-  resource-catalogue/<YOUR-RESOURCE-CATALOGUE-POD>:/tmp/sample_record.xml
+  resource-discovery/<YOUR-RESOURCE-CATALOGUE-POD>:/tmp/sample_record.xml
 ```
         
 3. **Access the Pod**:
         
 ```bash
-kubectl exec -it <YOUR-RESOURCE-CATALOGUE-POD> -n resource-catalogue -- /bin/bash
+kubectl exec -it <YOUR-RESOURCE-CATALOGUE-POD> -n resource-discovery -- /bin/bash
 ```
         
 2. **Load the Sample Record using pycsw**
@@ -219,7 +219,7 @@ pycsw-admin.py load-records \
     Navigate to:
     
     ```
-    https://resource-catalogue.<YOUR-INGRESS-HOST>/collections/metadata:main/items
+    https://resource-catalogue.<INGRESS_HOST>/collections/metadata:main/items
     ```
     
     Confirm that the newly ingested record (titled `EOEPCA Sample Record`) appears in the search results.
@@ -234,7 +234,7 @@ pycsw-admin.py load-records \
 Ensure all Kubernetes resources are running correctly:
 
 ```bash
-kubectl get pods -n resource-catalogue
+kubectl get pods -n resource-discovery
 ```
 
 - All pods should be in `Running` state.

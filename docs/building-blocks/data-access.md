@@ -229,19 +229,19 @@ Below are some quick ways to test and validate the Data Access services.
 The Data Access Building Block provides Swagger UI documentation for its APIs, allowing you to interact with the APIs directly from your browser.
 
 - **eoAPI STAC API Swagger UI**:  
-    `https://eoapi.<INGRESS_HOST>/stac/api.html`
+    `https://eoapi.${INGRESS_HOST}/stac/api.html`
     
 - **eoAPI Raster API Swagger UI**:  
-    `https://eoapi.<INGRESS_HOST>/raster/api.html`
+    `https://eoapi.${INGRESS_HOST}/raster/api.html`
     
 - **eoAPI Vector API Swagger UI**:  
-    `https://eoapi.<INGRESS_HOST>/vector/api.html`
+    `https://eoapi.${INGRESS_HOST}/vector/api.html`
     
 - **Stacture API Swagger UI**:  
-    `https://stacture.<INGRESS_HOST>/`
+    `https://stacture.${INGRESS_HOST}/`
     
 
-Replace `<INGRESS_HOST>` with your actual ingress host domain.
+Replace `${INGRESS_HOST}` with your actual ingress host domain.
 
 ### 2. Run Demo Jupyter Notebooks
 
@@ -252,7 +252,7 @@ The [EOEPCA/demo](https://github.com/EOEPCA/demo) Jupyter Notebooks showcase how
 - In the notebooks, set the `base_domain` variable to reflect your endpoint:
     
 ```python
-base_domain = "<INGRESS_HOST>"
+base_domain = "${INGRESS_HOST}"
 ```
 
 For more information on how to run the demo Jupyter Notebooks, please visit the [EOEPCA/demo Readme](https://github.com/EOEPCA/demo/blob/main/README.md).
@@ -264,13 +264,13 @@ You can perform basic tests using tools like `curl` or directly through the Swag
 **Example: Retrieve STAC API Landing Page**
 
 ```bash
-curl -X GET "https://eoapi.<INGRESS_HOST>/stac/" -H "accept: application/json"
+curl -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json"
 ```
 
 **Example: Search STAC Items**
 
 ```bash
-curl -X POST "https://eoapi.<INGRESS_HOST>/stac/search" \
+curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
     "bbox": [-10, 35, 0, 45],
