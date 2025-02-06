@@ -43,7 +43,7 @@ The Resource Discovery building block includes:
 
 ```bash
 git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
-cd deployment-guide/scripts/resource-catalogue
+cd deployment-guide/scripts/resource-discovery
 ```
 
 **Validate your environment:**
@@ -59,7 +59,7 @@ bash check-prerequisites.sh
 1. **Run the Configuration Script**
 
 ```bash
-bash configure-resource-catalogue.sh
+bash configure-resource-discovery.sh
 ```
 
 **Configuration Parameters**  
@@ -81,7 +81,7 @@ helm repo update eoepca-dev && \
 helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
   --version 2.0.0-beta1 \
-  --namespace resource-catalogue \
+  --namespace resource-discovery \
   --create-namespace
 ```
 
@@ -182,23 +182,23 @@ You should receive a JSON response listing zero or more STAC items that match th
 **Find the Resource Catalogue Pod**:
         
 ```bash
-kubectl get pods -n resource-catalogue
+kubectl get pods -n resource-discovery
 ```
 
 Look for a pod name similar to `resource-catalogue-service-abcd1234-efgh5678`.
         
 **Copy the Sample File** (`sample_record.xml`) to the pod.
-> The sample record is provided in the `scripts/resource-catalogue` directory of the deployment guide repository.
+> The sample record is provided in the `scripts/resource-discovery` directory of the deployment guide repository.
         
 ```bash
 kubectl cp sample_record.xml \
-  resource-catalogue/<YOUR-RESOURCE-CATALOGUE-POD>:/tmp/sample_record.xml
+  resource-discovery/<YOUR-RESOURCE-CATALOGUE-POD>:/tmp/sample_record.xml
 ```
         
 3. **Access the Pod**:
         
 ```bash
-kubectl exec -it <YOUR-RESOURCE-CATALOGUE-POD> -n resource-catalogue -- /bin/bash
+kubectl exec -it <YOUR-RESOURCE-CATALOGUE-POD> -n resource-discovery -- /bin/bash
 ```
         
 2. **Load the Sample Record using pycsw**
@@ -232,7 +232,7 @@ pycsw-admin.py load-records \
 Ensure all Kubernetes resources are running correctly:
 
 ```bash
-kubectl get pods -n resource-catalogue
+kubectl get pods -n resource-discovery
 ```
 
 - All pods should be in `Running` state.

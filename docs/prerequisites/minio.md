@@ -1,10 +1,9 @@
 # EOEPCA+ MinIO Deployment Guide
 
-MinIO is a high-performance object storage system that's compatible with the Amazon S3 API. In the EOEPCA+ ecosystem, MinIO can serve as the object storage backend for various services, including user workspaces, MLOps and other data storage needs. This does not preclude the possibility to configure an alternaive S3-compatible object storage solution.
-
-This guide provides instructions to deploy MinIO in your Kubernetes cluster.
+MinIO is a high-performance object storage system that's compatible with the Amazon S3 API. In the EOEPCA+ ecosystem, MinIO can serve as the object storage backend for various services, including user workspaces, MLOps and other data storage needs. This does not preclude the possibility to configure an alternative S3-compatible object storage solution instead of MinIO.
 
 ---
+
 ## Introduction
 
 MinIO provides a scalable and high-performance object storage solution that's compatible with AWS S3 APIs. It's used within the EOEPCA+ platform to store and manage data securely.
@@ -57,14 +56,6 @@ bash configure-minio.sh
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 
-**Important Notes:**
-
-- If you choose **not** to use `cert-manager`, you will need to create the TLS secrets manually before deploying.
-  - The required TLS secret names are:
-    - `minio-tls`
-    - `minio-console-tls`
-  - For instructions on creating TLS secrets manually, please refer to section [Manual TLS](tls.md#manual-tls).
-
 ### 2. Deploy MinIO
 
 Install MinIO using Helm:
@@ -87,6 +78,7 @@ Access the MinIO Console to create access keys:
 2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step - see file `~/.eoepca/state`.
 3. Under `Access Keys` select to `Create access key +`
 4. Note down or download the **Access Key** and **Secret Key**.
+5. Click `Create`.
 
 Run the following script to save these keys to your EOEPCA+ state file:
 

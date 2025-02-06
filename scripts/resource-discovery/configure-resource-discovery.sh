@@ -2,7 +2,7 @@
 
 # Load utility functions
 source ../common/utils.sh
-echo "Configuring the Resource Catalogue..."
+echo "Configuring the Resource Discovery..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
