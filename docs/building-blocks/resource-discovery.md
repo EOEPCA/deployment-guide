@@ -108,28 +108,28 @@ Most Resource Discovery endpoints can be accessed directly in a browser:
 - **Landing/Home Page**  
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/
+https://resource-catalogue.${INGRESS_HOST}/
 ```
 You should see an HTML landing page or a minimal JSON response with links to the various endpoints.
 
 - **Swagger UI (OpenAPI)**
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/openapi?f=html
+https://resource-catalogue.${INGRESS_HOST}/openapi?f=html
 ```  
 Opens a human-friendly UI showing available endpoints and interactive documentation.  
 
 - **OGC API - Records / STAC Collections**
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/collections
+https://resource-catalogue.${INGRESS_HOST}/collections
 ```  
 Should return a JSON or HTML response listing available collections.
 
 - **Conformance**
 
 ```bash
-https://resource-catalogue.<INGRESS_HOST>/conformance
+https://resource-catalogue.${INGRESS_HOST}/conformance
 ```  
 Confirms which OGC API conformance classes and standards are supported by the server.
 
@@ -142,13 +142,13 @@ Using the command line can be a quick way to check endpoints and see raw respons
 #### 3.1. Basic Liveness Check
 
 ```bash
-curl -I "https://resource-catalogue.<INGRESS_HOST>/"
+curl -I "https://resource-catalogue.${INGRESS_HOST}/"
 ```
 
 #### 3.2. Testing OGC CSW
 
 ```bash
-curl "https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&request=GetCapabilities"
+curl "https://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&request=GetCapabilities"
 ```
 
 - A successful response should be an XML Capabilities document containing service metadata.  
@@ -156,7 +156,7 @@ curl "https://resource-catalogue.<INGRESS_HOST>/csw?service=CSW&version=2.0.2&re
 #### 3.3. Testing STAC API
 
 ```bash
-curl "https://resource-catalogue.<INGRESS_HOST>/stac"
+curl "https://resource-catalogue.${INGRESS_HOST}/stac"
 ```
 
 - You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.
@@ -164,7 +164,7 @@ curl "https://resource-catalogue.<INGRESS_HOST>/stac"
 #### 3.4. Searching STAC Items
 
 ```bash
-curl -X POST "https://resource-catalogue.<YOUR-INGRESS-HOST>/stac/search" \
+curl -X POST "https://resource-catalogue.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
         "bbox": [-180, -90, 180, 90],
@@ -214,14 +214,13 @@ pycsw-admin.py load-records \
 3. **Verify the Ingested Record**
     
 - **Via Web Browser / UI**  
-    Navigate to:
-    
-    ```
-    https://resource-catalogue.<YOUR-INGRESS-HOST>/collections/metadata:main/items
-    ```
-    
-    Confirm that the newly ingested record appears in the search results.
-    
+
+```
+https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items
+```
+
+Confirm that the newly ingested record appears in the search results.
+
 - **Via Command Line**  
     You can also use `curl` or other OGC-compliant requests to verify that the sample record is now discoverable.
 

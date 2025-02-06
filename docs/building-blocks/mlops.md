@@ -260,14 +260,14 @@ This section walks you through a minimal scenario of creating a project in GitLa
 
 #### 2.1 Create a New GitLab Project
 
-1. **Log into GitLab** at `https://gitlab.<INGRESS_HOST>/`.  
+1. **Log into GitLab** at `https://gitlab.${INGRESS_HOST}/`.  
 2. Create a project named `mlops-test-project`.  
 3. Go to **Settings → General → Topics** and add the topic `sharinghub:aimodel` (or your chosen category from the `categories` config).  
 4. (Optional) Commit a small dataset to the project (`wine-quality.csv` or similar).
 
 #### 2.2 Verify that the Project Appears in SharingHub
 
-1. Go to `https://sharinghub.<INGRESS_HOST>/`.  
+1. Go to `https://sharinghub.${INGRESS_HOST}/`.  
 2. Click "AI Models" category (or whichever category you used).  
 3. The new GitLab project (`mlops-test-project`) should appear in SharingHub's listing.
 
@@ -284,7 +284,7 @@ If you do not see it, check:
 - Typically, you can browse to your project details in SharingHub and click an "MLflow" link in the top-right corner. This link will look something like:
 
 ```
-https://sharinghub.<INGRESS_HOST>/mlflow/root/mlops-test-project/tracking/
+https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
 ```
 
 
@@ -325,7 +325,7 @@ with mlflow.start_run():
 EOF
 
 # Execute the training script with MLflow environment variables
-MLFLOW_TRACKING_URI="https://sharinghub.<YOUR-INGRESS-HOST>/mlflow/root/mlops-test-project/tracking/" \
+MLFLOW_TRACKING_URI="https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/" \
 MLFLOW_TRACKING_TOKEN="<YOUR-TOKEN>" \
 python main.py
 ```
@@ -334,13 +334,13 @@ python main.py
     
 4. **Check the MLflow UI**
     
-- Navigate to `https://sharinghub.<INGRESS_HOST>/mlflow`.
+- Navigate to `https://sharinghub.${INGRESS_HOST}/mlflow`.
 - Look for your `mlops-test-project` in the left panel or under "Experiments."
 - You should see a new run listed, along with metrics (e.g., the `accuracy` you logged).
 
 5. **Confirm the Model in SharingHub**
     
-- Return to `https://sharinghub.<INGRESS_HOST>/` and open your project’s page.
+- Return to `https://sharinghub.${INGRESS_HOST}/` and open your project’s page.
 - You may see a "Model" or "Assets" section referencing your newly-logged model. Depending on your SharingHub configuration, it might also appear as a STAC item under "AI Models."
 
 ---

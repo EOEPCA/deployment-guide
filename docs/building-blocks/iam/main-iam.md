@@ -249,29 +249,29 @@ For detailed steps on:
 Refer to the [Client Administration](client-management.md) and [Advanced Configuration](advanced-iam.md).
 
 
-After deployment, the IAM exposes several endpoints for authentication, authorization, and administration. Replace `<INGRESS_HOST>` with your actual ingress host domain in the URLs below.
+After deployment, the IAM exposes several endpoints for authentication, authorization, and administration. Replace `${INGRESS_HOST}` with your actual ingress host domain in the URLs below.
 
 ### Keycloak
 
 **Keycloak Home Page:**
 
-- URL: `https://auth.<INGRESS_HOST>/`
+- URL: `https://auth.${INGRESS_HOST}/`
 
 **OpenID Connect Discovery Endpoint:**
 
-- URL: `https://auth.<INGRESS_HOST>/realms/eoepca/.well-known/openid-configuration`
+- URL: `https://auth.${INGRESS_HOST}/realms/eoepca/.well-known/openid-configuration`
 
 **OAuth 2.0 Authorization Endpoint:**
 
-- URL: `https://auth.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/auth`
+- URL: `https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/auth`
 
 **OAuth 2.0 Token Endpoint:**
 
-- URL: `https://auth.<INGRESS_HOST>/realms/eoepca/protocol/openid-connect/token`
+- URL: `https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token`
 
 **Administration Console:**
 
-- URL: `https://auth.<INGRESS_HOST>/admin/`
+- URL: `https://auth.${INGRESS_HOST}/admin/`
 
 **Accessing the Administration Console:**
 
@@ -294,7 +294,7 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 **OPA Endpoint:**
 
-- URL: `https://opa.<INGRESS_HOST>/`
+- URL: `https://opa.${INGRESS_HOST}/`
 
 You can test policy evaluations by sending requests to OPA's REST API. For example:
 

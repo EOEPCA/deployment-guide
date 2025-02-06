@@ -191,7 +191,7 @@ Ensure the JupyterHub pod(s) and other components are in the `Running` state.
     
 2. **Access the Hub**:
     
-- Go to `https://app-hub.<YOUR_DOMAIN>/`.
+- Go to `https://app-hub.${INGRESS_HOST}/`.
 - You should be redirected to Keycloak (or your chosen OIDC provider) for login if OIDC is set up.
 - Upon successful login, you’ll land in the JupyterHub interface (the "spawn" page).
 
@@ -217,7 +217,7 @@ Below are some common tasks you might perform in the Application Hub. For advanc
 1. **Log In as Admin**:
     
 - Typically, you designate one or more Keycloak accounts as "admin" in the JupyterHub configuration.
-- Once logged in, go to `https://app-hub.<YOUR_DOMAIN>/hub/admin`.
+- Once logged in, go to `https://app-hub.${INGRESS_HOST}/hub/admin`.
 
 2. **Create Groups**:
     

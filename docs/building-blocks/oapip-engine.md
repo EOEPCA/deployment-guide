@@ -196,8 +196,8 @@ bash validation.sh
 
 Check access to the service web endpoints:
 
-* **ZOO-Project Swagger UI** - `https://zoo.<INGRESS_HOST>/swagger-ui/oapip/`
-* **OGC API Processes Landing Page** - `https://zoo.<INGRESS_HOST>/ogc-api/processes/`
+* **ZOO-Project Swagger UI** - `https://zoo.${INGRESS_HOST}/swagger-ui/oapip/`
+* **OGC API Processes Landing Page** - `https://zoo.${INGRESS_HOST}/ogc-api/processes/`
 
 
 ### Expected Kubernetes Resources

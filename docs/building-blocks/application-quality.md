@@ -160,8 +160,8 @@ This checks that the required pods/services/ingress exist and that the main endp
 
 ### 1. Accessing the Web Portal
 
-1. Ensure your ingress is configured to route `application-quality.<INGRESS_HOST>` (or whichever domain) to the Application Quality front-end.
-2. Open a browser at `https://application-quality.<INGRESS_HOST>/`.
+1. Ensure your ingress is configured to route `application-quality.${INGRESS_HOST}` (or whichever domain) to the Application Quality front-end.
+2. Open a browser at `https://application-quality.${INGRESS_HOST}/`.
 3. If OIDC is enabled, you'll see a **Login** link in the navigation bar. Unauthenticated users can only browse certain read-only features.
 
 ### 2. Authenticating via EOEPCA IAM
