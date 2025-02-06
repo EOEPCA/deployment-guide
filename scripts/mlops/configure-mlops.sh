@@ -17,15 +17,22 @@ ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 
 # OIDC configuration
-ask "OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
+ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
 
-if [ "$OIDC_ENABLED" == "true" ]; then
+if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
     echo "OIDC is enabled. Please provide the following details:"
-    ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master" is_non_empty
-    ask "OIDC_CLIENT_ID" "Enter the OIDC client ID for GitLab" "" is_non_empty
-    ask "OIDC_CLIENT_SECRET" "Enter the OIDC client secret for GitLab" "" is_non_empty
-fi
+    ask "MLOPS_OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}" is_non_empty
+    ask "MLOPS_OIDC_CLIENT_ID" "Enter the OIDC client ID for GitLab" "gitlab" is_non_empty
 
+    if [ -z "$MLOPS_OIDC_CLIENT_SECRET" ]; then
+        MLOPS_OIDC_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "MLOPS_OIDC_CLIENT_SECRET" "$MLOPS_OIDC_CLIENT_SECRET"
+    fi
+    echo ""
+    echo "❗  Generated client secret for the MLOps."
+    echo "   Please store this securely: $MLOPS_OIDC_CLIENT_SECRET"
+    echo ""
+fi
 
 # Generate secret keys and store them in the state file
 if [ -z "$SHARINGHUB_SESSION_SECRET" ]; then
@@ -46,18 +53,6 @@ envsubst <"gitlab/storage.config.template" >"gitlab/storage.config"
 envsubst <"gitlab/lfs-s3.yaml.template" >"gitlab/lfs-s3.yaml"
 envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
 
-echo ""
-echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"
-echo "SharingHub Session Secret: $SHARINGHUB_SESSION_SECRET"
-echo "MLflow Secret Key: $MLFLOW_SECRET_KEY"
-echo ""
-
-echo "Please proceed to create the required Kubernetes secrets before deploying GitLab."
-
-# find what happens to the gitlab one?
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- sharinghub-tls (for SharingHub and MLflow)"
-    echo "- gitlab-tls (for GitLab)"
-fi
+# Ingress
+envsubst <"sharinghub/$INGRESS_TEMPLATE_PATH" >"sharinghub/$INGRESS_OUTPUT_PATH"
+envsubst <"mlflow/$INGRESS_TEMPLATE_PATH" >"mlflow/$INGRESS_OUTPUT_PATH"

@@ -1,53 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: resource-health-ingress
+  name: rhc
   namespace: resource-health
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: apisix
+    k8s.apisix.apache.org/rewrite-target-regex: "/api/healthchecks/(.*)"
+    k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
     ${CLUSTER_ISSUER_ANNOTATION}
 spec:
+  ingressClassName: apisix
   tls:
     - hosts:
-      - resource-health.${INGRESS_HOST}
+        - resource-health.${INGRESS_HOST}
       secretName: resource-health-tls
-
   rules:
     - host: resource-health.${INGRESS_HOST}
       http:
         paths:
-          # Web UI
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: resource-health-web
-                port:
-                  number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: resource-health-check-api-ingress
-  namespace: resource-health
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    ${CLUSTER_ISSUER_ANNOTATION}
-spec:
-  tls:
-    - hosts:
-      - resource-health-check-api.${INGRESS_HOST}
-      secretName: resource-health-check-api-tls
-
-  rules:
-    - host: resource-health-check-api.${INGRESS_HOST}
-      http:
-        paths:
-          - path: /
+          - path: /api/healthchecks
             pathType: Prefix
             backend:
               service:
@@ -58,27 +29,53 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: resource-health-telemetry-api-ingress
+  name: rht
   namespace: resource-health
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: apisix
+    k8s.apisix.apache.org/rewrite-target-regex: "/api/telemetry/(.*)"
+    k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
     ${CLUSTER_ISSUER_ANNOTATION}
 spec:
+  ingressClassName: apisix
   tls:
     - hosts:
-      - resource-health-telemetry-api.${INGRESS_HOST}
-      secretName: resource-health-telemetry-api-tls
-
+        - resource-health.${INGRESS_HOST}
+      secretName: resource-health-tls
   rules:
-    - host: resource-health-telemetry-api.${INGRESS_HOST}
+    - host: resource-health.${INGRESS_HOST}
       http:
         paths:
-          - path: /
+          - path: /api/telemetry
             pathType: Prefix
             backend:
               service:
                 name: resource-health-telemetry-api
                 port:
                   number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rhw
+  namespace: resource-health
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    ${CLUSTER_ISSUER_ANNOTATION}
+spec:
+  ingressClassName: apisix
+  tls:
+    - hosts:
+        - resource-health.${INGRESS_HOST}
+      secretName: resource-health-tls
+  rules:
+    - host: resource-health.${INGRESS_HOST}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-health-web
+                port:
+                  number: 80

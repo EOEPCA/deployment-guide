@@ -72,13 +72,11 @@ bash configure-application-quality.sh
 
 > OIDC authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational.
 
-If you choose to enable OIDC authentication, you will be asked to provide:
+If you choose to enable OIDC authentication, you will be asked to provide.
+We will configure the clients in a later step, just provide the names for now.
 
-- **`OIDC_RP_CLIENT_ID`**: OIDC client ID for the Application Quality Building Block.
-- **`OIDC_RP_CLIENT_SECRET`**: OIDC client secret for the Application Quality Building Block.
+- **`OIDC_RP_CLIENT_ID`**: OIDC client ID for the Application Quality Building Block. (use `application-quality`)
 
-- **`OSD_CLIENT_ID`**: OpenSearch Dashboards client ID.
-- **`OSD_CLIENT_SECRET`**: OpenSearch Dashboards client secret.
 
 ### 2. Apply Secrets
 
@@ -91,10 +89,10 @@ bash apply-secrets.sh
 
 > **Note**: While the Application Quality BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
 
-1. **Clone the reference repository** (if not using a Helm repo):
+1. **Clone the reference repository**:
     
 ```bash
-git clone https://github.com/EOEPCA/application-quality.git reference-repo
+git clone -b reference-deployment https://github.com/EOEPCA/application-quality.git reference-repo
 ```
     
 2. **Install** with Helm:
@@ -108,7 +106,38 @@ helm upgrade -i application-quality \
   --create-namespace \
   --values generated-values.yaml
 ```
-    
+
+## Optional: Enable OIDC with Keycloak
+
+If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
+
+If you **do** want to protect the endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak.
+
+> Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
+
+### 2.1 Create a Keycloak Client
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+
+```bash
+cd deployment-guide/scripts/utils
+bash create-client.sh
+```
+
+When prompted:
+
+- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
+- **Keycloak base domain**: e.g. `auth.example.com`
+- **Realm**: Typically `eoepca`.
+
+- **Client ID**: You should use the client ID you inputted in the configuration script (`application-quality`).
+- **Client name** and **description**: Provide any helpful text (e.g. Application Quality)
+- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
+- **Subdomain**: Use `application-quality`.
+- **Additional Subdomains**: Leave blank.
+
+After it completes, you should see a JSON snippet confirming the newly created client.
+
 ---
 
 ## Validation

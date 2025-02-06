@@ -88,23 +88,8 @@ bash check-prerequisites.sh
 
 ## Deployment
 
-1. **Configure OIDC Provider**:
 
-To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider:
-
-Follow the steps in [Client Administration](../iam/client-management) to create a new Keycloak client for OAPIP. Use the following values when prompted:
-
-
-- **`clientId`**: `application-hub`
-- **`rootUrl`** and **`baseUrl`**: `https://app-hub.${INGRESS_HOST}`
-- **`redirectUris`**: `https://app-hub.${INGRESS_HOST}/*` and `/*`
-- **`secret`**:  A secure secret for the OIDC client. Or leave it blank to generate one.
-
-> Ensure you have the **Client Secret** for the OIDC client. You’ll need it in the next step.
-
----
-
-2. **Run the Setup Script**:
+1. **Run the Setup Script**:
 
 ```bash
 bash configure-app-hub.sh
@@ -123,12 +108,44 @@ bash configure-app-hub.sh
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
     - *Example*: `worker`
-- **`APPHUB_CLIENT_SECRET`**: The Keycloak OIDC client secret
+
+**OIDC Configuration**:
+
+- **`KEYCLOAK_HOST`**: OIDC provider base domain. JupyterHub requires an OIDC provider for authentication.
+    - *Example*: `auth.example.com` 
+- **`APPHUB_ALLOWED_USER`**: A Keycloak user that will be given full admin rights in the Application Hub. You can use the `deployment-guide/scripts/utils/create-user.sh` script to create a user if you don't have one.
+    - *Example*: `eoepcauser`
 
 ---
 
+2. **Configure OIDC Provider**:
+
+To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider:
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+
+```bash
+cd deployment-guide/scripts/utils
+bash create-client.sh
+```
+
+When prompted:
+
+- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
+- **Keycloak base domain**: e.g. `auth.example.com` or `auth-apx.example.com`
+- **Realm**: Typically `eoepca`.
+
+- **Client ID**: `application-hub`.
+- **Client name** and **description**: Provide any helpful text (e.g., `Application Hub Client`).
+- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
+- **Subdomain**: Use `app-hub` for the OAPIP engine. 
+
+After it completes, you should see a JSON snippet confirming the newly created client.
+
 
 3. **Deploy the Application Hub Using Helm**
+
+Return to the `deployment-guide/scripts/app-hub` directory and deploy the Application Hub using Helm:
 
 ```bash
 helm repo add eoepca https://eoepca.github.io/helm-charts && \
@@ -140,7 +157,11 @@ helm upgrade -i application-hub eoepca/application-hub \
 --create-namespace
 ```
 
----
+Deploy the ingress:
+
+```bash
+kubectl apply -f generated-ingress.yaml
+```
 
 4. **Access the Application Hub**
 

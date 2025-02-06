@@ -1,15 +1,10 @@
-# Default values for Application Quality Building Block.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 ingress:
   enabled: true
-  className: nginx
+  className: apisix
   domain: application-quality.${INGRESS_HOST}
   annotations:
     ${CLUSTER_ISSUER_ANNOTATION}
-    ingress.kubernetes.io/ssl-redirect: 'true'
-    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    kubernetes.io/ingress.class: apisix
   tls:
     - hosts:
       - application-quality.${INGRESS_HOST}
@@ -104,19 +99,19 @@ external_tools:
 nodeSelector: {}
 
 oidc:
-  enabled: false
-  realmBaseUrl: ".../realms/master"
+  enabled: ${OIDC_APPLICATION_QUALITY_ENABLED}
+  realmBaseUrl: ${HTTP_SCHEME}://${KEYCLOAK_HOST}/auth/realms/${REALM}
   # Client ID and Secret set in SealedSecret
-  clientId: ""
-  clientSecret: ""
+  clientId: ${OIDC_RP_CLIENT_ID}
+  clientSecret: ${OIDC_RP_CLIENT_SECRET}
   preferredUsernameClaimField: "preferred_username"
   logoutEndpointPath: "end_session"
   logoutRedirectUrlParameterName: "post_logout_redirect_url"
-  postLogoutRedirectUrl: ""
+  postLogoutRedirectUrl: "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/"
   loginUrl: "/oidc/authenticate"
-  loginRedirectUrl: ""
+  loginRedirectUrl:  "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/"
   logoutRedirectUrl: "/"
-  rpRedirectUri: ""
+  rpRedirectUri:  "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/"
   rpSignAlgo: "RS256"
 
 sonarqube:

@@ -22,7 +22,7 @@ Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
 The Identity and Access Management (IAM) Building Block provides authentication and authorisation services within the EOEPCA+ ecosystem. It ensures users can access resources and services safely across the platform by managing identities, roles and permissions.
 
-[Deploy IAM »](iam.md)
+[Deploy IAM »](iam/main-iam.md)
 
 ### 2. Resource Discovery
 

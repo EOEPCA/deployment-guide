@@ -12,7 +12,7 @@ spec:
     - name: workspace-api
       match:
         hosts:
-          - workspace-api-apx.$INGRESS_HOST
+          - workspace-api.$INGRESS_HOST
         paths:
           - /*
       backends:
@@ -23,10 +23,11 @@ spec:
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            discovery: "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/${REALM}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-          secretRef: workspace-api-client
+            client_id: ${WORKSPACE_CLIENT_ID}
+            client_secret: ${WORKSPACE_CLIENT_SECRET}
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
@@ -39,7 +40,7 @@ spec:
     - name: workspace-api-swagger
       match:
         hosts:
-          - workspace-swagger-apx.$INGRESS_HOST
+          - workspace-swagger.$INGRESS_HOST
         paths:
           - /*
       backends:
@@ -56,29 +57,31 @@ spec:
           enable: true
           config:
             access_token_in_authorization_header: true
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/openid-configuration"
-          secretRef: workspace-api-client
+            discovery: "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/${REALM}/.well-known/openid-configuration"
+            client_id: ${WORKSPACE_CLIENT_ID}
+            client_secret: ${WORKSPACE_CLIENT_SECRET}
         # Require authorization for access to API
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "https://auth-apx.$INGRESS_HOST/realms/eoepca/.well-known/uma2-configuration"
+            discovery: "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/${REALM}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-          secretRef: workspace-api-client
+            client_id: ${WORKSPACE_CLIENT_ID}
+            client_secret: ${WORKSPACE_CLIENT_SECRET}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: workspace-api-apx
+  name: workspace-api
 spec:
   dnsNames:
-    - workspace-api-apx.$INGRESS_HOST
-    - workspace-swagger-apx.$INGRESS_HOST
+    - workspace-api.$INGRESS_HOST
+    - workspace-swagger.$INGRESS_HOST
   issuerRef:
     kind: ClusterIssuer
-    name: ${CLUSTER_ISSUER}-apx
-  secretName: workspace-api-apx-tls
+    name: ${CLUSTER_ISSUER}
+  secretName: workspace-api-tls
   usages:
     - digital signature
     - key encipherment
@@ -87,11 +90,11 @@ spec:
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
 metadata:
-  name: workspace-api-apx
+  name: workspace-api
 spec:
   hosts:
-    - workspace-api-apx.$INGRESS_HOST
-    - workspace-swagger-apx.$INGRESS_HOST
+    - workspace-api.$INGRESS_HOST
+    - workspace-swagger.$INGRESS_HOST
   secret:
-    name: workspace-api-apx-tls
+    name: workspace-api-tls
     namespace: workspace

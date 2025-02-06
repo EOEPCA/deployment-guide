@@ -56,30 +56,10 @@ Run the validation script to ensure all prerequisites are met:
 bash check-prerequisites.sh
 ```
 
-## Optional: Configure Keycloak for GitLab (OIDC)
-
-If you'd like GitLab to authenticate via Keycloak, follow these steps in Keycloak **before** continuing:
-
-1. **Create or use an existing Realm** (e.g., `eoepca`).
-2. **Create a new Client** for GitLab:
-
-   - **Client ID**: `gitlab` (or a name of your choosing)
-   - **Client Protocol**: `openid-connect`
-   - **Root URL**: `https://gitlab.<YOUR-DOMAIN>` (you'll confirm `<YOUR-DOMAIN>` shortly)
-   - **Redirect URIs**: Add `https://gitlab.<YOUR-DOMAIN>/users/auth/openid_connect/callback`
-   - **Web Origins**: `https://gitlab.<YOUR-DOMAIN>`  
-   - Ensure the client scopes `openid`, `profile`, `email` are included or default.
-3. **Obtain** the following from Keycloak:
-
-   - **OIDC_ISSUER_URL** (e.g., `https://auth.<YOUR-DOMAIN>/realms/eoepca`)
-   - **OIDC_CLIENT_ID** (e.g., `gitlab`)
-   - **OIDC_CLIENT_SECRET** (Keycloak-generated)
-
-This data will be used in the MLOps deployment scripts.
-
 ---
 
 ## Deployment Steps
+
 
 ### 1. Run the Configuration Script
 
@@ -108,19 +88,51 @@ The S3 environment variables should be already set after successful deployment o
     - *Example*: `us-east-1`
 - **`S3_ACCESS_KEY`**: Access key for your MinIO or S3 storage.
 - **`S3_SECRET_KEY`**: Secret key for your MinIO or S3 storage.
+
+
+**OIDC Configuration:**
+
+You will be prompted to provide whether you wish to enable OIDC authentication. For now, you must enable it as GitLab uses OIDC for authentication.
+
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
     - *Example*: `https://keycloak.example.com/realms/master`
-- **`OIDC_CLIENT_ID`**: The client ID registered with your OIDC provider for GitLab.
-- **`OIDC_CLIENT_SECRET`**: The client secret associated with the client ID.
+- **`Client ID`**: Use `gitlab`.
+
+For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
+
+### 2. Create a Keycloak Client for GitLab
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+
+```bash
+cd deployment-guide/scripts/utils
+bash create-client.sh
+```
+
+When prompted:
+
+- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
+- **Keycloak base domain**: e.g. `auth.example.com` or `auth-apx.example.com`
+- **Realm**: Typically `eoepca`.
+
+- **Client ID**: You should use `gitlab`.
+- **Client name** and **description**: Provide any helpful text (e.g., `GitLab OIDC Client`).
+- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
+- **Subdomain**: Use `gitlab`
+- **Additional Subdomains**: Leave empty.
+
+After it completes, you should see a JSON snippet confirming the newly created client.
 
 
-### 2. Create Required Kubernetes Secrets
+### 3. Create Required Kubernetes Secrets
+
+Navigate back to the `deployment-guide/scripts/mlops` directory and apply the generated secrets:
 
 ```bash
 bash apply-secrets.sh
 ```
 
-### 3. Deploy GitLab
+### 4. Deploy GitLab
 
 Deploy GitLab using the generated configuration file. This deployment can take up to 10 minutes, please be patient.
 
@@ -179,6 +191,12 @@ helm upgrade -i sharinghub sharinghub/sharinghub \
   --values sharinghub/generated-values.yaml
 ```
 
+Deploy Ingress for the SharingHub
+
+```
+kubectl apply -f sharinghub/generated-ingress.yaml
+```
+
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
@@ -190,7 +208,11 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --values mlflow/generated-values.yaml
 ```
 
-> **Note**: This deployment uses a custom MLflow that integrates with SharingHub. By default, it stores metadata either in an embedded SQLite or a small Postgres. Artifacts can go into your S3 bucket. Check `mlflow/generated-values.yaml` for final config.
+Deploy Ingress for the MLFlow
+
+```
+kubectl apply -f mlflow/generated-ingress.yaml
+```
 
 ---
 

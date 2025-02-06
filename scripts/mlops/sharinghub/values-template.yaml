@@ -3,21 +3,7 @@ image:
   pullPolicy: IfNotPresent
 
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    ${CLUSTER_ISSUER_ANNOTATION}
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: 10g
-  hosts:
-    - host: sharinghub.${INGRESS_HOST}
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: sharinghub-tls
-      hosts:
-        - sharinghub.${INGRESS_HOST}
+  enabled: false
 
 config: |-
   server:
@@ -40,7 +26,6 @@ config: |-
     url: /docs
   mlflow:
     type: mlflow-sharinghub
-    # url: https://sharinghub.develop.eoepca.org/mlflow
     url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow
   stac:
     projects:

@@ -1,17 +1,5 @@
 ingress:
-  enabled: true
-  className: nginx
-  annotations: {}
-  hosts:
-    - host: app-hub.${INGRESS_HOST}
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: app-hub-tls
-      hosts:
-      - app-hub.${INGRESS_HOST}
-  clusterIssuer: ${CLUSTER_ISSUER}
+  enabled: false
 
 jupyterhub:
   fullnameOverride: "application-hub"
@@ -27,12 +15,13 @@ jupyterhub:
 
       OAUTH_CALLBACK_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/oauth_callback
       OAUTH_LOGOUT_REDIRECT_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/home
+      OAUTH2_USERNAME_KEY: "preferred_username"
 
-      OAUTH2_USERDATA_URL: $HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/userinfo
-      OAUTH2_TOKEN_URL: $HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token
-      OAUTH2_AUTHORIZE_URL: $HTTP_SCHEME://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/auth
+      OAUTH2_USERDATA_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/userinfo
+      OAUTH2_TOKEN_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token
+      OAUTH2_AUTHORIZE_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth
 
-      OAUTH_CLIENT_ID: application-hub
+      OAUTH_CLIENT_ID: ${APPHUB_CLIENT_ID}
       OAUTH_CLIENT_SECRET: "${APPHUB_CLIENT_SECRET}"
 
     image:
@@ -48,10 +37,12 @@ jupyterhub:
 
       Authenticator:
         admin_users:
-          - "admin"               
+          - "admin"
+          - "${APPHUB_ALLOWED_USER}"              
         allowed_users: 
           - "admin"               
           - "user"
+          - "${APPHUB_ALLOWED_USER}"
 
   singleuser:
     image:

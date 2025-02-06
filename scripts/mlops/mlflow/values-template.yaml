@@ -13,21 +13,4 @@ s3:
   endpointUrl: ${S3_ENDPOINT}
 
 ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    ${CLUSTER_ISSUER_ANNOTATION}
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: 10g
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header X-Script-Name /mlflow;
-      rewrite ^/mlflow/(.*)$ /$1 break;
-  hosts:
-    - host: sharinghub.${INGRESS_HOST}
-      paths:
-        - path: /mlflow/
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: sharinghub-tls
-      hosts:
-        - sharinghub.${INGRESS_HOST}
+  enabled: false
