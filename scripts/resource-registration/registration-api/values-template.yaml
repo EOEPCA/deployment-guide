@@ -5,12 +5,11 @@ global:
 ingress:
   enabled: false
 
-
 pygeoapi:
   image:
     repository: eoepca/registration-api
     pullPolicy: Always
-    tag: "2.0.0-beta1"
+    tag: "2.0.0-beta2"
   config:
     server:
       url: $HTTP_SCHEME://registration-api.${INGRESS_HOST}

@@ -113,10 +113,10 @@ bash apply-secrets.sh
 Deploy the Registration API using the generated values file.
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update eoepca-dev && \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-beta1 \
+  --version 2.0.0-beta2 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -133,8 +133,8 @@ kubectl apply -f registration-api/generated-ingress.yaml
 **Deploy Flowable Engine:**
 
 ```bash
-helm repo add flowable https://flowable.github.io/helm/ && \
-helm repo update flowable && \
+helm repo add flowable https://flowable.github.io/helm/
+helm repo update flowable
 helm upgrade -i registration-harvester-api-engine flowable/flowable \
   --version 7.0.0 \
   --namespace resource-registration \
@@ -150,9 +150,11 @@ kubectl apply -f registration-harvester/generated-ingress.yaml
 
 **Deploy Registration Harvester Worker:**
 
+By way of example, a `worker` is deployed that harvests `Landast` data from [USGS](https://landsatlook.usgs.gov/stac-server).
+
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update eoepca-dev && \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
 helm upgrade -i registration-harvester-worker eoepca-dev/registration-harvester \
   --version 2.0.0-beta2 \
   --namespace resource-registration \
@@ -217,7 +219,8 @@ https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
 ### Testing a Simple Hello-World Process
 
 ```bash
-curl -X POST "https://registration-api.<INGRESS_HOST>/processes/hello-world/execution" \
+source ~/.eoepca/state
+curl -X POST "https://registration-api.${INGRESS_HOST}/processes/hello-world/execution" \
 -H "Content-Type: application/json" \
 -d '{
    "inputs": {
@@ -256,15 +259,18 @@ A typical JSON request body might look like:
 Use the following command to register a STAC Item with the platform:
 
 ```bash
-curl -X POST "https://registration-api.<INGRESS_HOST>/processes/register/execution" \
+source ~/.eoepca/state
+curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
   -H "Content-Type: application/json" \
-  -d '{
-    "inputs": {
-      "type": "dataset",
-      "source": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta/scripts/resource-registration/data/simple-item.json",
-      "target": "https://resource-catalogue.<INGRESS_HOST>/stac"
-    }
-}'
+  -d @- <<EOF
+{
+  "inputs": {
+    "type": "dataset",
+    "source": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta/scripts/resource-registration/data/simple-item.json",
+    "target": "https://resource-catalogue.${INGRESS_HOST}/stac"
+  }
+}
+EOF
 ```
 
 - **type**: Use `"dataset"` for STAC EO data.
@@ -300,8 +306,9 @@ https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/docs/
 Retrieve a list of deployed processes:
 
 ```bash
-curl -u <FLOWABLE_ADMIN_USER>:<FLOWABLE_ADMIN_PASSWORD> \
-     "https://registration-harvester-api.<INGRESS_HOST>/flowable-rest/service/repository/process-definitions"
+source ~/.eoepca/state
+curl -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+     "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions"
 ```
 
 ---
