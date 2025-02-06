@@ -76,11 +76,11 @@ During the script execution, you will be prompted to provide:
 2. **Deploy Resource Discovery Using Helm**
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update eoepca-dev && \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
 helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 2.0.0-beta1 \
+  --version 2.0.0-beta2 \
   --namespace resource-discovery \
   --create-namespace
 ```
@@ -164,7 +164,9 @@ curl "https://resource-catalogue.${INGRESS_HOST}/stac"
 #### 3.4. Searching STAC Items
 
 ```bash
+source ~/.eoepca/state
 curl -X POST "https://resource-catalogue.${INGRESS_HOST}/stac/search" \
+   --silent --show-error \
   -H "Content-Type: application/json" \
   -d '{
         "bbox": [-180, -90, 180, 90],
@@ -214,13 +216,14 @@ pycsw-admin.py load-records \
 3. **Verify the Ingested Record**
     
 - **Via Web Browser / UI**  
-
-```
-https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items
-```
-
-Confirm that the newly ingested record appears in the search results.
-
+    Navigate to:
+    
+    ```
+    https://resource-catalogue.<INGRESS_HOST>/collections/metadata:main/items
+    ```
+    
+    Confirm that the newly ingested record (titled `EOEPCA Sample Record`) appears in the search results.
+    
 - **Via Command Line**  
     You can also use `curl` or other OGC-compliant requests to verify that the sample record is now discoverable.
 

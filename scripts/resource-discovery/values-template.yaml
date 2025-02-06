@@ -2,14 +2,9 @@ global:
   namespace: resource-discovery
 ingress:
   enabled: false
-
-
 db:
   volume_storage_type: $STORAGE_CLASS
 pycsw:
-  image:
-    tag: "eoepca-staging"
-    pullPolicy: Always
   config:
     server:
       url: $HTTP_SCHEME://resource-catalogue.$INGRESS_HOST
