@@ -17,7 +17,7 @@ resource-health:
       - name: NEXT_PUBLIC_CHECK_MANAGER_ENDPOINT
         value: "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks"
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
-        value: "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/telemetry"
+        value: "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/telemetry/v1"
   healthchecks:
     checks:
       - name: hourly-mockapi-check
