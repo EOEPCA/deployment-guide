@@ -10,17 +10,16 @@ stacture:
 
   ingress:
     enabled: true
-    className: "nginx"
+    className: "apisix"
     annotations:
-      kubernetes.io/ingress.class: nginx
-      ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      kubernetes.io/ingress.class: apisix
       ${CLUSTER_ISSUER_ANNOTATION}
+      k8s.apisix.apache.org/http-to-https: "true"
     hosts:
       - host: stacture.${INGRESS_HOST}
         paths:
           - path: /
-            pathType: ImplementationSpecific
+            pathType: Prefix
     tls:
       - hosts:
           - stacture.${INGRESS_HOST}

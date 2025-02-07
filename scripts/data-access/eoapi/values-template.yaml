@@ -1,16 +1,5 @@
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    ${CLUSTER_ISSUER_ANNOTATION}
-  host: eoapi.${INGRESS_HOST}
-  tls:
-    enabled: true
-    certManager: false
-    secretName: eoapi-tls
+  enabled: false
 
 db:
   enabled: false

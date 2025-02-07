@@ -119,14 +119,19 @@ helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 ```bash
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
-
 helm upgrade -i eoapi eoapi/eoapi \
   --version 0.5.2 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
 ```
 
-3. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
+3. **Deploy the ingress:**
+
+```bash
+kubectl apply -f eoapi/generated-ingress.yaml
+```
+
+4. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
     
 ```bash
 helm upgrade -i eoapi-support eoapi/eoapi-support \
@@ -147,7 +152,6 @@ Stacture bridges the STAC API with OGC API Coverages and WCS. It also handles ad
 ```bash
 helm repo add eox https://charts-public.hub.eox.at/
 helm repo update eox
-
 helm upgrade -i stacture eox/stacture \
   --version 0.0.0 \
   --namespace data-access \
@@ -165,7 +169,6 @@ helm upgrade -i stacture eox/stacture \
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update bitnami
-
 helm upgrade -i tyk-redis bitnami/redis \
   --version 20.1.0 \
   --namespace data-access \
@@ -177,7 +180,6 @@ helm upgrade -i tyk-redis bitnami/redis \
 ```bash
 helm repo add tyk-oss https://helm.tyk.io/public/helm/charts/
 helm repo update tyk-oss
-
 helm upgrade -i tyk-oss tyk-oss/tyk-oss \
   --version 1.6.0 \
   --namespace data-access \
@@ -264,12 +266,14 @@ You can perform basic tests using tools like `curl` or directly through the Swag
 **Example: Retrieve STAC API Landing Page**
 
 ```bash
+source ~/.eoepca/state
 curl -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json"
 ```
 
 **Example: Search STAC Items**
 
 ```bash
+source ~/.eoepca/state
 curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
