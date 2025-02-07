@@ -8,10 +8,11 @@ grafana:
     annotations: {}
   ingress:
     enabled: true
+    ingressClassName: apisix
     hosts:
       - eoapisupport.${INGRESS_HOST}
     annotations:
-      kubernetes.io/ingress.class: nginx
+      kubernetes.io/ingress.class: apisix
       ${CLUSTER_ISSUER_ANNOTATION}
     tls:
       - secretName: eoapisupport-tls
@@ -47,10 +48,10 @@ caBundleSecretName: "eoepca-ca-secret"
 
 metrics-server:
   apiService:
-    create: true
+    create: false
     insecureSkipTLSVerify: false
   commonAnnotations:
-    cert-manager.io/inject-ca-from: cert-manager-ns/eoepca-ca
+    cert-manager.io/inject-ca-from: cert-manager/eoepca-ca
   extraArgs:
     - --kubelet-insecure-tls=true
     - --kubelet-preferred-address-types=InternalIP

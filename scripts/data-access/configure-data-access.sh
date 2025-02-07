@@ -15,6 +15,7 @@ ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
 
 # Generate configuration files
 envsubst <"eoapi/values-template.yaml" >"eoapi/generated-values.yaml"
+envsubst <"eoapi/ingress-template.yaml" >"eoapi/generated-ingress.yaml"
 envsubst <"stacture/values-template.yaml" >"stacture/generated-values.yaml"
 envsubst <"tyk-gateway/values-template.yaml" >"tyk-gateway/generated-values.yaml"
 envsubst <"tyk-gateway/redis-values-template.yaml" >"tyk-gateway/redis-generated-values.yaml"
