@@ -100,7 +100,7 @@ nodeSelector: {}
 
 oidc:
   enabled: ${OIDC_APPLICATION_QUALITY_ENABLED}
-  realmBaseUrl: ${HTTP_SCHEME}://${KEYCLOAK_HOST}/auth/realms/${REALM}
+  realmBaseUrl: ${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}
   # Client ID and Secret set in SealedSecret
   clientId: ${OIDC_RP_CLIENT_ID}
   clientSecret: ${OIDC_RP_CLIENT_SECRET}
