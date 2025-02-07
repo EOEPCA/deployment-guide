@@ -172,7 +172,19 @@ function check_oidc_provider_accessible() {
 }
 
 function check_internal_certificates() {
-    echo "🛠️  TODO (check_internal_certificates)"
+    # check if internal TLS has been enabled
+    if [ -z "$INTERNAL_TLS_ENABLED" ] || [ "$INTERNAL_TLS_ENABLED" != "true" ]; then
+        ask "INTERNAL_TLS_ENABLED" "Do you have internal TLS enabled with a valid Cluster Issuer?" "true" is_boolean
+
+        if [ "$INTERNAL_TLS_ENABLED" == "false" ]; then
+            echo "⚠️  Internal TLS is not enabled."
+            echo "   Please enable internal TLS with a valid Cluster Issuer."
+            echo "   You can check the /deployment-guide/scripts/internal-tls for guidance."
+            return 1
+        fi
+    fi
+
+    echo "✅ Internal TLS is enabled."
 }
 
 function run_validation() {

@@ -139,6 +139,7 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text (e.g., `Application Hub Client`).
 - **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `app-hub` for the OAPIP engine. 
+- **Additional Subdomains**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
@@ -167,7 +168,7 @@ kubectl apply -f generated-ingress.yaml
 
 By default, the `generated-values.yaml` file creates a **demo** admin user named `admin`. You can log into the Application Hub by signing into Keycloak with this `admin` user credentials.
 
-> **Note**: This default setup is primarily for **testing or demonstrations**. In production, we strongly recommend managing users and groups via Keycloak (or another OIDC provider) and assigning roles accordingly. This ensures a more secure and maintainable approach to user management. For more details, see the [Jupyter Hub Documentation](https://z2jh.jupyter.org/en/stable/administrator/authentication.html) section below on configuring additional users, groups, and profiles.
+> **Note**: This default setup is primarily for **testing or demonstrations**. In production, we strongly recommend managing users and groups via Keycloak (or another OIDC provider) and assigning roles accordingly. This ensures a more secure and maintainable approach to user management. For more details, see the [Jupyter Hub Documentation](https://eoepca.github.io/application-hub-context/configuration/) section below on configuring additional users, groups, and profiles.
 
 ***
 
@@ -196,7 +197,9 @@ Ensure the JupyterHub pod(s) and other components are in the `Running` state.
 - Upon successful login, you’ll land in the JupyterHub interface (the "spawn" page).
 
 3. **Spawn a Notebook**:
-    
+
+> While this Building Block is still in development, the following steps may not work as expected. This section will be updated in the future.
+
 - If you have multiple **Profiles**, pick one.
 - Wait for the container to start. You should end up in a JupyterLab interface.
 

@@ -18,17 +18,17 @@ ask "APPHUB_CLIENT_ID" "Enter the Client ID for the OAPIP" "application-hub" is_
 if [ -z "$APPHUB_CLIENT_SECRET" ]; then
     APPHUB_CLIENT_SECRET=$(generate_aes_key 32)
     add_to_state_file "APPHUB_CLIENT_SECRET" "$APPHUB_CLIENT_SECRET"
-
-    echo ""
-    echo "❗  Generated client secret for the App Hub."
-    echo "   Please store this securely: $APPHUB_CLIENT_SECRET"
-    echo ""
 fi
 
 if [ -z "$APPHUB_JUPYTERHUB_CRYPT_KEY" ]; then
     export APPHUB_JUPYTERHUB_CRYPT_KEY=$(openssl rand -base64 32)
     add_to_state_file "APPHUB_JUPYTERHUB_CRYPT_KEY" $APPHUB_JUPYTERHUB_CRYPT_KEY
 fi
+
+echo ""
+echo "❗  Generated client secret for the App Hub."
+echo "   Please store this securely: $APPHUB_CLIENT_SECRET"
+echo ""
 
 envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
 envsubst <"$INGRESS_TEMPLATE_PATH" >"$INGRESS_OUTPUT_PATH"

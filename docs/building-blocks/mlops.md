@@ -98,7 +98,7 @@ You will be prompted to provide whether you wish to enable OIDC authentication. 
     - *Example*: `https://keycloak.example.com/realms/master`
 - **`Client ID`**: Use `gitlab`.
 
-For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
+For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide. You will create a client in the next step.
 
 ### 2. Create a Keycloak Client for GitLab
 
@@ -153,7 +153,7 @@ helm upgrade -i gitlab gitlab/gitlab \
 
 ### 4. Set Up GitLab OAuth Application for SharingHub
 
-If you wish to sign into SharingHub using GitLab accounts:
+Once GitLab is deployed (may take 5 minutes) and accessible:
 
 1. Retrieve the **GitLab Root Password**:
 
@@ -167,7 +167,7 @@ kubectl get secret gitlab-gitlab-initial-root-password --template={{.data.passwo
 
    - **Name**: e.g., `SharingHub`
    - **Redirect URI**: `https://sharinghub.<YOUR-DOMAIN>/api/auth/login/callback`
-   - **Scopes**: `openid`, `read_user`, `read_api`
+   - **Scopes**: `openid`, `read_user`, `read_api`, `read_repository`, `write_repository`, `email`, `profile`, `api`
 
 5. After creating the application, note the **Application ID** and **Secret**.
 
@@ -237,10 +237,9 @@ All pods should be in `Running` (or `Completed`) state.
 
 - `https://sharinghub.<YOUR-DOMAIN>/`
 - If you set up GitLab OAuth for SharingHub, you should see a sign-in flow redirecting to GitLab.
-
 4. **Visit MLflow**:
 
-- `https://sharinghub.<YOUR-DOMAIN>/mlflow`
+- `https://sharinghub.<YOUR-DOMAIN>/mlflow/`
 - Confirm the MLflow UI loads. If you have an existing project or run, you'll see experiments or metrics.
 
 5. **Confirm S3 Access**:
