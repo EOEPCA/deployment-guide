@@ -23,7 +23,7 @@ resource-health:
       - name: hourly-mockapi-check
         schedule: "@hourly"
         script: "https://raw.githubusercontent.com/EOEPCA/resource-health/refs/tags/v0.1.0-demo/pytest-health/instrumentation/examples/mock_api_check.py"
-        requirements: "https://gist.githubusercontent.com/tilowiklundSensmetry/a9fefe2873b731b483f554607a82deaa/raw/requirements.txt"
+        requirements: "https://gist.githubusercontent.com/tilowiklundSensmetry/a9fefe2873b731b483f554607a82deaa/raw/1136a82ca3c8f28b1ad4d895871514185927dd1c/requirements.txt"
         env:
           - name: MOCK_API_HOST
             value: http://resource-health-mockapi:5000
