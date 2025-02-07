@@ -196,6 +196,12 @@ Apply with:
 helm upgrade -i resource-health reference-repo/resource-health-reference-deployment -f generated-values.yaml -n resource-health
 ```
 
+**UI-based** (via the Resource Health Web):
+
+Visit the Resource Health Web dashboard and select the **Create new check** dropdown to define a new health check.
+
+Fill in the form similarly to the Helm-based approach, including the template, schedule, name, script and requirements.
+
 ---
 
 ## Uninstallation
