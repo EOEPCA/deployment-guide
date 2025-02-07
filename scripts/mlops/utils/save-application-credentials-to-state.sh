@@ -9,4 +9,4 @@ kubectl create secret generic sharinghub-oidc \
   --from-literal=client-secret="$GITLAB_APP_SECRET" \
   --namespace sharinghub
 
-echo "Successfully saved variables to state"
+echo "Successfully saved variables to state and created the secret in the sharinghub namespace"
