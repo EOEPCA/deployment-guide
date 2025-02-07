@@ -17,9 +17,8 @@ check_service_exists "processing" "zoo-project-dru-service"
 check_service_exists "processing" "zoo-project-dru-postgresql"
 check_service_exists "processing" "zoo-project-dru-rabbitmq"
 
-check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
-check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
-check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "200"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "401"
+check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "401"
 check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
 
 echo

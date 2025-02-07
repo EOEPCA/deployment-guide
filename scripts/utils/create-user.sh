@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Set working directory for relative paths
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+trap "cd '${ORIG_DIR}'" EXIT
+
 source '../common/utils.sh'
 
 # Ask the user for Keycloak and realm details
