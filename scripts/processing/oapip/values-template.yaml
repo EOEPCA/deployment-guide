@@ -11,8 +11,10 @@ customConfig:
   main:
     eoepca: |-
       domain=${INGRESS_HOST}
-imagePullSecrets:
-  - name: regcred
+# Uncomment if docker registry credentials have been defined
+# Ref.  https://eoepca.readthedocs.io/projects/deploy/en/2.0-beta/prerequisites/kubernetes/#creating-an-image-pull-secret
+# imagePullSecrets:
+#   - name: regcred
 workflow:
   inputs:
     STAGEIN_AWS_SERVICEURL: ${STAGEIN_S3_ENDPOINT}
