@@ -20,5 +20,6 @@ ACCESS_TOKEN=$(
 echo ""
 echo "Got access token: ${ACCESS_TOKEN:0:10}...${ACCESS_TOKEN: -10}"
 
+export OAPIP_USER="${USER_NAME}"
 export ACCESS_TOKEN=$ACCESS_TOKEN
 export OAPIP_AUTH_HEADER="Authorization: Bearer ${ACCESS_TOKEN}"
