@@ -235,8 +235,15 @@ We offer a sample application that can be used to exercise the deployed service:
 
 ### Using the API
 
-To follow the below sections easily we recommend setting some environment variables.
+#### Initialise Environment
 
+The following example commands assume use of `bash` shell.
+
+```bash
+bash -l
+```
+
+Initialise environment variables used by the example commands.
 
 ```bash
 source ~/.eoepca/state
@@ -260,9 +267,9 @@ Retrieve the list of available (currently deployed) processes.
 
 ```bash
 curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/ogc-api/processes" \
+  -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
-  -H "Accept: application/json"
+  -H "Accept: application/json" | jq
 ```
 
 > This command will omit the `Authorization` header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the `source oapip-utils.sh` script to generate the `OAPIP_AUTH_HEADER` variable.
@@ -274,8 +281,8 @@ curl --silent --show-error \
 Deploy the `convert` app...
 
 ```bash
-curl --show-error \
-  -X POST "${OAPIP_HOST}/ogc-api/processes" \
+curl --silent --show-error \
+  -X POST "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -293,7 +300,7 @@ Check the `convert` application is deployed...
 
 ```bash
 curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/ogc-api/processes/convert-url" \
+  -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
@@ -305,7 +312,7 @@ curl --silent --show-error \
 ```bash
 JOB_ID=$(
   curl --silent --show-error \
-    -X POST "${OAPIP_HOST}/ogc-api/processes/convert-url/execution" \
+    -X POST "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url/execution" \
     ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
@@ -355,7 +362,7 @@ curl --silent --show-error \
 ```bash
 
 curl --silent --show-error \
-  -X DELETE "${OAPIP_HOST}/eoepca/ogc-api/processes/convert-url" \
+  -X DELETE "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
