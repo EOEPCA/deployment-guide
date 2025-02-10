@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Set working directory for relative paths
+ORIG_DIR="$(pwd)"
+cd "$(dirname "$0")"
+BIN_DIR="$(pwd)"
+trap "cd '${ORIG_DIR}'" EXIT
+
 source '../common/utils.sh'
 
 # Ask for Keycloak details
@@ -8,17 +14,18 @@ ask "KEYCLOAK_ADMIN_PASSWORD" "Keycloak Admin Password" "${KEYCLOAK_ADMIN_PASSWO
 ask "KEYCLOAK_HOST" "Enter the Keycloak base domain (e.g. auth-apx.example.com)" "auth-apx.example.com" is_valid_domain
 ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 
-# Ask for group, user details and Resource & policy details
-
+# Ask for details of the required protection
 ask_temp "CLIENT_ID" "Enter the Client ID that needs resource protection (e.g. myclient)" "myclient"
-GROUP_NAME="${CLIENT_ID}-group"
-POLICY_NAME="${CLIENT_ID}-policy"
-RESOURCE_NAME="${CLIENT_ID}-resource"
-PERMISSION_NAME="${CLIENT_ID}-access"
+ask_temp "USER_NAME" "Enter the username to receive access" "${KEYCLOAK_TEST_USER:-eoepcauser}"
+ask_temp "DISPLAY_NAME" "Enter a display name for the protection (e.g. protection summary)" "${USER_NAME}"
+ask_temp "RESOURCE_TYPE" "Enter the type of the resource (e.g. urn:your-client-id:resources:default)" "urn:${CLIENT_ID}:resources:${DISPLAY_NAME}"
+ask_temp "RESOURCE_URI" "Enter the URI path to protect (e.g. /healthcheck)" "/${USER_NAME}/*"
 
-ask_temp "RESOURCE_TYPE" "Enter the type of the resource (e.g. urn:your-client-id:resources:default)" "path"
-ask_temp "RESOURCE_URI" "Enter the URI path to protect (e.g. /healthcheck)" "/healthcheck"
-ask_temp "USER_NAME" "Enter the username to add to the group" "${KEYCLOAK_TEST_USER:-eoepcauser}"
+# Deduce names of Keycloak artifacts to be created
+GROUP_NAME="${DISPLAY_NAME}-group"
+POLICY_NAME="${DISPLAY_NAME}-policy"
+RESOURCE_NAME="${DISPLAY_NAME}-resource"
+PERMISSION_NAME="${DISPLAY_NAME}-access"
 
 # Obtain Admin Token
 ACCESS_TOKEN=$(

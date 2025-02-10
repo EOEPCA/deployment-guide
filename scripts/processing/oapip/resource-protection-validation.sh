@@ -2,14 +2,16 @@ source ./oapip-utils.sh
 
 echo ""
 echo "❌ Request sent without token:"
-curl "https://zoo.${INGRESS_HOST}/ogc-api/processes"
+curl "https://zoo.${INGRESS_HOST}/${USER_NAME}/ogc-api/processes"
 
 echo ""
 echo "✅ Request sent with token:"
 curl -H "Authorization: Bearer $ACCESS_TOKEN" \
-    "https://zoo.${INGRESS_HOST}/ogc-api/processes"
+    -H "Accept: application/json" \
+    "https://zoo.${INGRESS_HOST}/${USER_NAME}/ogc-api/processes"
 
 echo ""
 echo "✅ Request sent with token:"
 curl -H "Authorization: Bearer $ACCESS_TOKEN" \
-    "https://zoo.${INGRESS_HOST}/ogc-api/jobs"
+    -H "Accept: application/json" \
+    "https://zoo.${INGRESS_HOST}/${USER_NAME}/ogc-api/jobs"

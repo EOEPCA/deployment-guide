@@ -1,4 +1,6 @@
 global:
+  addrs:
+    - tyk-redis-master:6379
   redis:
     passSecret:
       name: tyk-redis

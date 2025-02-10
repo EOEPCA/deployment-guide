@@ -2,8 +2,8 @@
 
 source ../../common/utils.sh
 
-ask_temp "USER_NAME" "Enter the username" "username"
-ask_temp "USER_PASSWORD" "Enter the password for the user" "password"
+ask_temp "USER_NAME" "Enter the username" "eoepcauser"
+ask_temp "USER_PASSWORD" "Enter the password for the user" "eoepcapassword"
 
 ACCESS_TOKEN=$(
     curl --silent --show-error \

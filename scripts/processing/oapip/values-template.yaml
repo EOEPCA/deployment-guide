@@ -35,7 +35,6 @@ ingress:
   className: apisix
   annotations:
     kubernetes.io/ingress.class: apisix
-    k8s.apisix.apache.org/use-regex: "true"
     ${CLUSTER_ISSUER_ANNOTATION}
   hosts:
   - host: zoo.${INGRESS_HOST}

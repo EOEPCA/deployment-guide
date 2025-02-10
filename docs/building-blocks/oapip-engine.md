@@ -85,8 +85,8 @@ For instructions on how to set up IAM, you can follow the [IAM Building Block](.
 #### Deploy the Helm Chart
 
 ```bash
-helm repo add zoo-project https://zoo-project.github.io/charts/ && \
-helm repo update zoo-project && \
+helm repo add zoo-project https://zoo-project.github.io/charts/
+helm repo update zoo-project
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
   --version 0.2.6 \
   --values generated-values.yaml \
@@ -109,18 +109,17 @@ If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Ke
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-client.sh
+bash ../../../scripts/utils/create-client.sh
 ```
 
 When prompted:
 
 - **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com` or `auth-apx.example.com`
+- **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
 - **Client ID**: For the OAPIP engine, you should use `oapip-engine`.
-- **Client name** and **description**: Provide any helpful text (e.g., `OAPIP Engine Client`).
+- **Client name** and **description**: Provide any helpful text (e.g. `OAPIP Engine Client`).
 - **Client secret**: Enter the OAPIP Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `zoo` for the OAPIP engine. 
 - **Additional Subdomains**: Leave blank.
@@ -136,33 +135,38 @@ By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC t
 Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-user.sh
+bash ../../../scripts/utils/create-user.sh
 ```
 
 ---
 
-#### Protect the `/ogc-api/*` Endpoint
+#### Protect the user's zoo context
+
+Zoo uses a path prefix to establish a context within the processing service - such as `/<username>` or `/<project>`.
+
+Protection can be applied so that the context is accessible only by the owning user(s).
+
+For the purposes of this example we will assume the user `eoepcauser` - adjust for your own purposes.
 
 1. Use the `protect-resource.sh`:
         
 ```bash
-cd deployment-guide/scripts/utils
-bash protect-resource.sh
+bash ../../../scripts/utils/protect-resource.sh
 ```
         
-When prompted:
+When prompted (adjust values for your needs):
 
 - **Client ID**: `oapip-engine` (the client you created in the previous step)
-- **Resource Type**: `urn:oapip-engine:resources:default`
-- **Resource URI**: `/ogc-api/*`
-- **Username**: e.g., `eoepca` (or any user you want to test with, if you don't have a user, then create one in Keycloak)
+- **Username**: e.g. `eoepcauser` 
+- **Display Name**: `eoepcauser`
+- **Resource Type**: `urn:oapip-engine:resources:context`
+- **Resource URI**: `/eoepcauser/*` 
 
 ---
 
 ### 2.3 Create APISIX Route Ingress
 
-Back in the `scripts/processing/oapip` directory, apply the APISIX route ingress:
+Apply the APISIX route ingress:
 
 ```bash
 kubectl apply -f generated-ingress.yaml
