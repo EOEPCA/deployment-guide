@@ -1,12 +1,6 @@
 cookiecutter:
   templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
-  templateBranch: master
-zoofpm:
-  image:
-    tag: eoepca-092ea7a2c6823dba9c6d52c383a73f5ff92d0762
-zookernel:
-  image:
-    tag: eoepca-092ea7a2c6823dba9c6d52c383a73f5ff92d0762
+  # templateBranch: feature/python3.8
 customConfig:
   main:
     eoepca: |-
