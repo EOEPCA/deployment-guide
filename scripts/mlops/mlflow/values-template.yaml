@@ -6,7 +6,7 @@ mlflowSharinghub:
   sharinghubUrl: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}
   sharinghubStacCollection: ai-model
   sharinghubAuthDefaultToken: false
-  artifactsDestination: s3://${S3_BUCKET}
+  artifactsDestination: s3://${S3_BUCKET_MLFLOW}
 
 s3:
   enabled: true

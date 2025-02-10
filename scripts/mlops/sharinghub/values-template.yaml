@@ -16,7 +16,7 @@ config: |-
     allow-public: true
   s3:
     enable: true
-    bucket: ${S3_BUCKET}
+    bucket: ${S3_BUCKET_SHARINGHUB}
     region: us-east-1
     endpoint: ${S3_ENDPOINT}
   mlflow:

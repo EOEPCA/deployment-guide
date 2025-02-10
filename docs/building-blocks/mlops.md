@@ -82,12 +82,14 @@ The S3 environment variables should be already set after successful deployment o
 
 - **`S3_ENDPOINT`**: Endpoint URL for MinIO or S3-compatible storage.
     - *Example*: `https://minio.example.com`
-- **`S3_BUCKET`**: Name of the S3 bucket to be used.
-    - *Example*: `mlops-bucket`
 - **`S3_REGION`**: Region of your S3 storage.
     - *Example*: `us-east-1`
 - **`S3_ACCESS_KEY`**: Access key for your MinIO or S3 storage.
 - **`S3_SECRET_KEY`**: Secret key for your MinIO or S3 storage.
+- **`S3_BUCKET_SHARINGHUB`**: Name of the S3 bucket to be used by SharingHub.
+    - *Example*: `mlopbb-sharinghub`
+- **`S3_BUCKET_MLFLOW`**: Name of the S3 bucket to be used by MLFlow.
+    - *Example*: `mlopbb-mlflow-sharinghub`
 
 
 **OIDC Configuration:**
@@ -137,8 +139,8 @@ bash apply-secrets.sh
 Deploy GitLab using the generated configuration file. This deployment can take up to 10 minutes, please be patient.
 
 ```bash
-helm repo add gitlab https://charts.gitlab.io/ && \
-helm repo update gitlab && \
+helm repo add gitlab https://charts.gitlab.io/
+helm repo update gitlab
 helm upgrade -i gitlab gitlab/gitlab \
   --version 8.1.8 \
   --namespace gitlab \
@@ -183,8 +185,8 @@ This script prompts you for `GITLAB_APP_ID` and `GITLAB_APP_SECRET` from the ste
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.3.0" && \
-helm repo update sharinghub && \
+helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.3.0"
+helm repo update sharinghub
 helm upgrade -i sharinghub sharinghub/sharinghub \
   --namespace sharinghub \
   --create-namespace \
@@ -200,8 +202,8 @@ kubectl apply -f sharinghub/generated-ingress.yaml
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
-helm repo add mlflow-sharinghub "git+https://github.com/csgroup-oss/mlflow-sharinghub@deploy/helm?ref=0.2.0" && \
-helm repo update mlflow-sharinghub && \
+helm repo add mlflow-sharinghub "git+https://github.com/csgroup-oss/mlflow-sharinghub@deploy/helm?ref=0.2.0"
+helm repo update mlflow-sharinghub
 helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --namespace sharinghub \
   --create-namespace \
@@ -244,12 +246,19 @@ All pods should be in `Running` (or `Completed`) state.
 
 5. **Confirm S3 Access**:
 
-- If using MinIO, run a quick test from your local machine or from a pod:
-  ```bash
-  aws --endpoint-url https://minio.<YOUR-DOMAIN> s3 ls s3://mlops-bucket
-  ```
-- If credentials or bucket aren't set correctly, you'll see an error.
+Using `s3cmd` CLI...<br>
+_If credentials or bucket aren't set correctly, then you'll see an error_
 
+```bash
+source ~/.eoepca/state
+s3cmd ls s3://mlopbb-sharinghub \
+  --host minio.${INGRESS_HOST} \
+  --host-bucket minio.${INGRESS_HOST} \
+  --access_key "${MINIO_USER}" \
+  --secret_key "${MINIO_PASSWORD}"
+```
+
+Repeat for bucket `s3://mlopbb-mlflow-sharinghub`.
 
 ---
 
@@ -349,17 +358,10 @@ python main.py
 To uninstall the MLOps Building Block and clean up associated resources:
 
 ```bash
-helm uninstall gitlab -n gitlab ; \
-helm uninstall sharinghub mlflow-sharinghub -n sharinghub ; \
-bash utils/uninstallation-cleanup.sh ; \
+helm uninstall gitlab -n gitlab
+helm uninstall sharinghub mlflow-sharinghub -n sharinghub
+bash utils/uninstallation-cleanup.sh
 kubectl delete ns gitlab sharinghub
-```
-
-**Additional Cleanup**:
-
-```bash
-kubectl delete pvc -n sharinghub ; \
-kubectl delete pvc -n gitlab
 ```
 
 ---
