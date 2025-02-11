@@ -18,15 +18,17 @@ kubectl create secret generic object-storage \
   --from-file=connection=gitlab/lfs-s3.yaml \
   --namespace gitlab
 
-kubectl create secret generic openid-connect \
-  --from-file=provider=gitlab/provider.yaml \
-  --namespace gitlab
+# OIDC secrets
+if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
+  kubectl create secret generic openid-connect \
+    --from-file=provider=gitlab/provider.yaml \
+    --namespace gitlab
+fi
 
 # SharingHub secrets
 kubectl create secret generic sharinghub \
   --from-literal=session-secret-key="$SHARINGHUB_SESSION_SECRET" \
   --namespace sharinghub
-
 
 kubectl create secret generic sharinghub-s3 \
   --from-literal access-key="$S3_ACCESS_KEY" \

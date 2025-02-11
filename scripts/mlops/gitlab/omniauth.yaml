@@ -1,0 +1,6 @@
+omniauth:
+      enabled: true
+      allowSingleSignOn: ["saml", "openid_connect"]
+      blockAutoCreatedUsers: false
+      providers:
+        - secret: openid-connect

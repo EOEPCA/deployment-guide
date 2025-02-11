@@ -29,10 +29,15 @@ if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
         MLOPS_OIDC_CLIENT_SECRET=$(generate_aes_key 32)
         add_to_state_file "MLOPS_OIDC_CLIENT_SECRET" "$MLOPS_OIDC_CLIENT_SECRET"
     fi
+
+    export MLOPS_OIDC_OMNIAUTH_CONFIG=$(cat gitlab/omniauth.yaml)
+
     echo ""
     echo "❗  Generated client secret for the MLOps."
     echo "   Please store this securely: $MLOPS_OIDC_CLIENT_SECRET"
     echo ""
+else
+    export "MLOPS_OIDC_OMNIAUTH_CONFIG" ""
 fi
 
 # Generate secret keys and store them in the state file
@@ -52,7 +57,10 @@ envsubst <"mlflow/pvc-template.yaml" >"mlflow/generated-pvc.yaml"
 # Generate configuration files for secrets
 envsubst <"gitlab/storage.config.template" >"gitlab/storage.config"
 envsubst <"gitlab/lfs-s3.yaml.template" >"gitlab/lfs-s3.yaml"
-envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
+
+if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
+    envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
+fi
 
 # Ingress
 envsubst <"sharinghub/$INGRESS_TEMPLATE_PATH" >"sharinghub/$INGRESS_OUTPUT_PATH"

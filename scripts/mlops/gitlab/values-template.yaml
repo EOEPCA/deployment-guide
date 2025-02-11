@@ -17,12 +17,7 @@ global:
     enabled: false
 
   appConfig:
-    omniauth:
-      enabled: ${OIDC_ENABLED}
-      allowSingleSignOn: ["saml", "openid_connect"]
-      blockAutoCreatedUsers: false
-      providers:
-        - secret: openid-connect
+    ${MLOPS_OIDC_OMNIAUTH_CONFIG}
     lfs:
       enabled: true
       bucket: gitlab-lfs-storage

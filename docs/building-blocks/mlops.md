@@ -33,7 +33,7 @@ Before deploying the MLOps Building Block, ensure you have the following:
 | Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | MinIO            | S3-compatible storage                  | [Installation Guide](../prerequisites/minio.md)                |
-| OIDC             | OpenID Connect (OIDC) Provider (e.g., Keycloak) | Installation guide coming soon. |
+| OIDC (Optional)             | OpenID Connect (OIDC) Provider (e.g., Keycloak) | Installation guide coming soon. |
 
 Additionally, you must have:
 
@@ -92,9 +92,9 @@ The S3 environment variables should be already set after successful deployment o
     - *Example*: `mlopbb-mlflow-sharinghub`
 
 
-**OIDC Configuration:**
+**OIDC Configuration (Optional):**
 
-You will be prompted to provide whether you wish to enable OIDC authentication. For now, you must enable it as GitLab uses OIDC for authentication.
+You will be prompted to provide whether you wish to enable OIDC authentication. If you **don't** want to enable OIDC, enter `false` when prompted.
 
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
     - *Example*: `https://keycloak.example.com/realms/master`
@@ -102,7 +102,9 @@ You will be prompted to provide whether you wish to enable OIDC authentication. 
 
 For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide. You will create a client in the next step.
 
-### 2. Create a Keycloak Client for GitLab
+### 2. Create a Keycloak Client for GitLab (Optional)
+
+If you **don't** want to enable OIDC, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -264,92 +266,128 @@ Repeat for bucket `s3://mlopbb-mlflow-sharinghub`.
 
 ### 2. Basic Usage Walkthrough
 
-This section walks you through a minimal scenario of creating a project in GitLab, tagging it for discovery in SharingHub, and running a simple MLflow training job.
+This section walks you through a minimal scenario of creating a GitLab project, tagging it for discovery in SharingHub, and running a simple MLflow training job.
 
 #### 2.1 Create a New GitLab Project
 
-1. **Log into GitLab** at `https://gitlab.${INGRESS_HOST}/`.  
-2. Create a project named `mlops-test-project`.  
-3. Go to **Settings → General → Topics** and add the topic `sharinghub:aimodel` (or your chosen category from the `categories` config).  
-4. (Optional) Commit a small dataset to the project (`wine-quality.csv` or similar).
+1. **Log into GitLab**
+
+    > You should have your credentials in the `~/.eoepca/state` file.
+
+    `https://gitlab.${INGRESS_HOST}/`
+    
+2. **Create the Project**
+    
+    - Click **New Project** and enter the name: `mlops-test-project`.
+    - Set the project visibility to **Public**.
+    - Click **Create project**.
+
+3. **Add the SharingHub Topic**
+    
+    - In your project’s sidebar, go to **Settings → General**.
+    - Locate the **Topics** section and add the topic:  
+        `sharinghub:aimodel`  
+    - Click **Save changes**.
 
 #### 2.2 Verify that the Project Appears in SharingHub
 
-1. Go to `https://sharinghub.${INGRESS_HOST}/`.  
-2. Click "AI Models" category (or whichever category you used).  
-3. The new GitLab project (`mlops-test-project`) should appear in SharingHub's listing.
-
-If you do not see it, check:
-
-- That your GitLab project is **public** (or internal). If it's private, your user must be authenticated in SharingHub with a GitLab token or default token.  
-- That you used the correct GitLab topic matching your category configuration in `sharinghub/generated-values.yaml`.
-
-
-### 2.3 MLflow Setup & Training
-
-1. **Obtain the MLflow Tracking URI**
+4. **Open SharingHub**  
+    `https://sharinghub.${INGRESS_HOST}/`
     
-- Typically, you can browse to your project details in SharingHub and click an "MLflow" link in the top-right corner. This link will look something like:
-
-```
-https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
-```
-
-
-2. **Authenticate**
+5. **Sign in with GitLab**
     
-- If your MLflow is protected (likely), you must provide a token or other credentials.
-- **GitLab Personal Access Token**:
+    - Click the login button in the top-right corner.
+    - Sign in using your GitLab credentials.
 
-    1. Create a token in GitLab with `api` scope.
-    2. Set it as an environment variable, e.g., `MLFLOW_TRACKING_TOKEN=<YOUR-TOKEN>`.
-
-- This token must correspond to a GitLab user who has Developer (or Maintainer) access in that project.
-
-3. **Run a Simple MLflow Experiment**  
-
-Below is an example training script that logs a model and its accuracy to MLflow. You can run this script locally or in a pod.
-
-```bash
-pip install mlflow scikit-learn
-
-# Create a Python script named main.py
-cat <<EOF > main.py
-import mlflow
-import mlflow.sklearn
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-
-# Start MLflow run
-with mlflow.start_run():
-    X, y = load_iris(return_X_y=True)
-    X_train, X_test, y_train, y_test = train_test_split(X, y)
-    model = RandomForestClassifier(n_estimators=10)
-    model.fit(X_train, y_train)
-    acc = model.score(X_test, y_test)
-    mlflow.log_metric("accuracy", acc)
-    mlflow.sklearn.log_model(model, "model")
-EOF
-
-# Execute the training script with MLflow environment variables
-MLFLOW_TRACKING_URI="https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/" \
-MLFLOW_TRACKING_TOKEN="<YOUR-TOKEN>" \
-python main.py
-```
-
-**Expected**: MLflow logs the run and saves the model artifact. You should not encounter 401 (Unauthorized) if the token is valid and 403 (Forbidden) if your GitLab user has the correct role (`Developer` or `Maintainer`) in the `mlops-test-project`.
+6. **Locate Your Project**
     
-4. **Check the MLflow UI**
-    
-- Navigate to `https://sharinghub.${INGRESS_HOST}/mlflow`.
-- Look for your `mlops-test-project` in the left panel or under "Experiments."
-- You should see a new run listed, along with metrics (e.g., the `accuracy` you logged).
+    - Click the **AI Models** category (or the category you used), or visit:  
+        `https://sharinghub.${INGRESS_HOST}/ui/#/ai-model`
 
-5. **Confirm the Model in SharingHub**
+    ![SharingHub Models](../../img/mlops/models.jpeg)  
+
+
+    - After clicking the **AI Models** card, You should see the new project (`mlops-test-project`) in the listing.
     
-- Return to `https://sharinghub.${INGRESS_HOST}/` and open your project’s page.
-- You may see a "Model" or "Assets" section referencing your newly-logged model. Depending on your SharingHub configuration, it might also appear as a STAC item under "AI Models."
+    ![SharingHub Project Detail](../../img/mlops/model.jpeg)
+    
+    _If you do not see your project, double-check that the GitLab topic matches the configuration in `sharinghub/generated-values.yaml` (under `config.stac.categories.ai-model.gitlab_topic`)._
+    
+
+#### 2.3 MLflow Setup & Training
+
+7. **Obtain the MLflow Tracking URI**
+    
+    - In SharingHub, open your project details.
+        
+    - Click the **MLflow** link in the top-right corner.
+        
+        ![MLFlow Button](../../img/mlops/mlflow-button.jpeg)
+        
+    - The link will resemble:
+        
+        ```
+        https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
+        ```
+        
+    - Set this as an environment variable:
+        
+        ```bash
+        export MLFLOW_TRACKING_URI="https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/"
+        ```
+        
+8. **Authenticate and Retrieve a Token**
+    
+    - In GitLab, navigate to your project’s Access Tokens page:  
+        `https://gitlab.${INGRESS_HOST}/mlops-test-project/-/settings/access_tokens`
+        
+    - Click **Add new token**.
+        
+    - Create a token with the **Developer** role and the scopes `read_api, api`.
+        
+        ![Token](../../img/mlops/token.jpeg)
+        
+    - Set the token as an environment variable:
+        
+        ```bash
+        export MLFLOW_TRACKING_TOKEN="<YOUR-TOKEN>"
+        ```
+        
+9. **Run a Simple MLflow Experiment**
+    
+    - Ensure you have the required packages:
+        
+        ```bash
+        pip install mlflow scikit-learn
+        ```
+        
+    - Run the provided example script:
+        
+        ```bash
+        python example-script.py
+        ```
+        
+    - This script will:
+        - Load the `data/wine-quality.csv` dataset.
+        - Train a simple model.
+        - Log parameters, metrics, and the model into MLflow.
+
+10. **Check the MLflow UI**
+    
+    - Open your browser and navigate to:  
+        `https://sharinghub.${INGRESS_HOST}/mlflow`
+        
+    - In the left panel under **Experiments**, look for your project.
+        
+    - You should see a new run:
+        
+        ![Table](../../img/mlops/accuracy.jpeg)  
+
+    - Click the run to see the logged metrics and artifacts.
+
+        ![Metrics](../../img/mlops/metrics.jpeg)
+
+    > If you don't see the run, but the script ran successfully, check that you are logged into the SharingHub via Gitlab and that the project is correctly tagged.
 
 ---
 
