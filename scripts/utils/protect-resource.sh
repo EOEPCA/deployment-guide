@@ -18,7 +18,7 @@ ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 ask_temp "CLIENT_ID" "Enter the Client ID that needs resource protection (e.g. myclient)" "myclient"
 ask_temp "USER_NAME" "Enter the username to receive access" "${KEYCLOAK_TEST_USER:-eoepcauser}"
 ask_temp "DISPLAY_NAME" "Enter a display name for the protection (e.g. protection summary)" "${USER_NAME}"
-ask_temp "RESOURCE_TYPE" "Enter the type of the resource (e.g. urn:your-client-id:resources:default)" "urn:${CLIENT_ID}:resources:${DISPLAY_NAME}"
+ask_temp "RESOURCE_TYPE" "Enter the type of the resource (e.g. urn:your-client-id:resources:default)" "urn:${CLIENT_ID}:resources:default"
 ask_temp "RESOURCE_URI" "Enter the URI path to protect (e.g. /healthcheck)" "/${USER_NAME}/*"
 
 # Deduce names of Keycloak artifacts to be created

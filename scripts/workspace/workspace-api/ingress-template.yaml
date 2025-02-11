@@ -3,6 +3,7 @@ apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
   name: workspace-api
+  namespace: workspace
 spec:
   http:
     # Route for main API
@@ -33,6 +34,7 @@ apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
   name: workspace-api-swagger
+  namespace: workspace
 spec:
   http:
     # Route for use of API via swagger docs
@@ -74,6 +76,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: workspace-api
+  namespace: workspace
 spec:
   dnsNames:
     - workspace-api.$INGRESS_HOST
@@ -91,6 +94,7 @@ apiVersion: apisix.apache.org/v2
 kind: ApisixTls
 metadata:
   name: workspace-api
+  namespace: workspace
 spec:
   hosts:
     - workspace-api.$INGRESS_HOST

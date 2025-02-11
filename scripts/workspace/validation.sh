@@ -12,7 +12,6 @@ check_service_exists "workspace" "provider-minio"
 check_service_exists "workspace" "workspace-api"
 check_service_exists "workspace" "provider-kubernetes"
 check_service_exists "workspace" "function-patch-and-transform"
-check_service_exists "workspace" "workspace-admin-kong-manager"
 check_service_exists "workspace" "workspace-admin-kong-proxy"
 check_service_exists "workspace" "workspace-admin-api"
 check_service_exists "workspace" "workspace-admin-auth"
@@ -21,9 +20,8 @@ check_service_exists "workspace" "workspace-admin-web"
 check_service_exists "workspace" "workspace-ui"
 
 # Check ingress
-check_url_status_code "$HTTP_SCHEME://workspace-api-apx.$INGRESS_HOST/docs" "200"
-check_url_status_code "$HTTP_SCHEME://workspace-ui.$INGRESS_HOST" "200"
-check_url_status_code "$HTTP_SCHEME://workspace-admin.$INGRESS_HOST" "200"
+check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "401"
+check_url_status_code "$HTTP_SCHEME://workspace-swagger.$INGRESS_HOST/docs" "200"
 
 echo
 echo "All Resources in 'workspace' namespace:"
