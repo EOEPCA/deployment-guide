@@ -256,7 +256,6 @@ This will ask you for the username and password for the user you added to the gr
 
 ```bash
 source oapip-utils.sh
-echo ${OAPIP_AUTH_HEADER}
 ```
 
 > **_NOTE that the token is short-lived - so it may be necessary to repeat this step to refresh the token - in the case that the following commands fail unexpectedly_**
@@ -271,7 +270,7 @@ Retrieve the list of available (currently deployed) processes.
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
-  -H "Accept: application/json" | jq '.processes.[].id'
+  -H "Accept: application/json" 
 ```
 
 > This command will omit the `Authorization` header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the `source oapip-utils.sh` script to generate the `OAPIP_AUTH_HEADER` variable.
@@ -329,6 +328,8 @@ JOB_ID=$(
   }
 EOF
 )
+
+echo "JOB ID: ${JOB_ID}"
 ```
 
 ---
