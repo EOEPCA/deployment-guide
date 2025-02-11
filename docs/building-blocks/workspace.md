@@ -100,8 +100,8 @@ bash apply-secrets.sh
 Crossplane is used for managing cloud resources within Kubernetes.
 
 ```bash
-helm repo add crossplane https://charts.crossplane.io/stable && \
-helm repo update crossplane && \
+helm repo add crossplane https://charts.crossplane.io/stable
+helm repo update crossplane
 helm upgrade -i workspace-crossplane crossplane/crossplane \
   --version v1.17.1 \
   --namespace workspace \
@@ -111,8 +111,8 @@ helm upgrade -i workspace-crossplane crossplane/crossplane \
 ### 4. Deploy the Workspace API
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update eoepca-dev && \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
 helm upgrade -i workspace-api eoepca-dev/rm-workspace-api \
   --version 2.0.0 \
   --namespace workspace \
@@ -135,10 +135,10 @@ These example pipelines are deployed here using `kustomize` (`kubectl -k`) with 
 _NOTE that due to a race condition regarding the deployment of the Crossplane CRDs, it is necessary to run the apply command twice._
 
 ```bash
-kubectl -n workspace apply -k workspace-pipelines 2>/dev/null ; \
+kubectl -n workspace apply -k workspace-pipelines 2>/dev/null
 while ! kubectl get crd providerconfigs.kubernetes.crossplane.io >/dev/null 2>&1 || \
       ! kubectl get crd providerconfigs.minio.crossplane.io >/dev/null 2>&1; \
-      do sleep 1; done ; \
+      do sleep 1; done
 kubectl -n workspace apply -k workspace-pipelines
 ```
 
@@ -147,8 +147,8 @@ kubectl -n workspace apply -k workspace-pipelines
 **Install the Workspace Admin Dashboard:**
 
 ```bash
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/ && \
-helm repo update kubernetes-dashboard && \
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo update kubernetes-dashboard
 helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
   --version 7.10.1 \
   --namespace workspace \
@@ -162,8 +162,8 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
 **Install the Workspace UI:**
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev && \
-helm repo update eoepca-dev && \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
 helm upgrade -i workspace-ui eoepca-dev/workspace-ui \
   --version 0.0.3 \
   --namespace workspace \
@@ -186,8 +186,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-client.sh
+bash ../../scripts/utils/create-client.sh
 ```
 
 When prompted:
@@ -210,8 +209,7 @@ After it completes, you should see a JSON snippet confirming the newly created c
 Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-user.sh
+bash ../../scripts/utils/create-user.sh
 ```
 
 ---
@@ -221,25 +219,25 @@ bash create-user.sh
 1. Use the `protect-resource.sh`:
         
 ```bash
-cd deployment-guide/scripts/utils
-bash protect-resource.sh
+bash ../../scripts/utils/protect-resource.sh
 ```
         
 When prompted:
 
 - **Client ID**: `workspace` (the client you created in the previous step)
+- **Username**: e.g. `eoepcauser` (or any user you want to test with, if you don't have a user, then create one in Keycloak)
+- **Display Name**: `eoepcauser`
 - **Resource Type**: `urn:workspace:resources:default`
 - **Resource URI**: `/workspaces/*`
-- **Username**: e.g. `eoepcauser` (or any user you want to test with, if you don't have a user, then create one in Keycloak)
 
 ---
 
 ### 7.3 Create APISIX Route Ingress
 
-Back in the `scripts/workspace/workspace-api` directory, apply the APISIX route ingress:
+Apply the APISIX route ingress:
 
 ```bash
-kubectl apply -f generated-ingress.yaml
+kubectl apply -f workspace-api/generated-ingress.yaml
 ```
 
 ---
@@ -272,33 +270,17 @@ kubectl get all -n workspace
 
 Confirm that all pods are `Running` and no errors are reported.
 
-#### 2. Access the Workspace API
+#### 2. Access the Workspace API Swagger Documentation
 
 You can view the Workspace API’s Swagger documentation at:
 
 ```
-https://workspace-api.${INGRESS_HOST}/docs
+https://workspace-swagger.${INGRESS_HOST}/docs
 ```
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
 
-#### 3. Access the Workspace UI
-
-The Workspace UI requires a password generated during the configuration script run. If you don’t have it handy, check the `generated-values.yaml` file.
-
-Access the UI:
-
-```
-https://workspace-ui.${INGRESS_HOST}/
-```
-
-#### 4. Access the Workspace Admin Dashboard
-
-The Workspace Admin Dashboard (if deployed) is accessible at:
-
-```
-https://workspace-admin.${INGRESS_HOST}/
-```
+> NOTE that the ingress integrates with IAM via OIDC, and so expects an authenticated user - for example `eoepcauser` created earlier.
 
 ---
 
@@ -342,7 +324,7 @@ Port-forward the Workspace API service:
 kubectl -n workspace port-forward svc/workspace-api 8080:8080
 ```
 
-From another terminal window, get details about the workspace:
+From another terminal window, call the Workspace API to get details for the newly created workspace:
 
 ```bash
 curl http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json'
@@ -361,6 +343,7 @@ Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate obj
 **List Buckets:**
 
 ```bash
+source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
@@ -370,7 +353,10 @@ s3cmd ls \
 
 **Upload a Test File:**
 
+> Ensure you are in the directory `scripts/workspace` for access to the test file `validation.sh`.
+
 ```bash
+source ~/.eoepca/state
 s3cmd put validation.sh s3://ws-deploytest \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
@@ -381,6 +367,7 @@ s3cmd put validation.sh s3://ws-deploytest \
 **Check the Uploaded File:**
 
 ```bash
+source ~/.eoepca/state
 s3cmd ls s3://ws-deploytest \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
@@ -391,6 +378,7 @@ s3cmd ls s3://ws-deploytest \
 **Delete the Test File:**
 
 ```bash
+source ~/.eoepca/state
 s3cmd del s3://ws-deploytest/validation.sh \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
