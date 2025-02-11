@@ -336,6 +336,8 @@ Record the secret from the response for S3 access:
 SECRET="$(curl -s http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
 ```
 
+Now the `port-forward` to the Workspace API service can be stopped - `Ctrl-C` in original terminal window.
+
 #### 4. Interacting with S3 Buckets
 
 Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate objects in the workspace’s S3 buckets.
