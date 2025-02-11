@@ -375,7 +375,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 10. **Check the MLflow UI**
     
     - Open your browser and navigate to:  
-        `https://sharinghub.${INGRESS_HOST}/mlflow`
+        `https://sharinghub.${INGRESS_HOST}/mlflow/`
         
     - In the left panel under **Experiments**, look for your project.
         
