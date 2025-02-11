@@ -35,8 +35,6 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 | APISIX Ingress Controller | Properly installed                         | [Installation Guide](../prerequisites/ingress-controller.md#apisix-ingress-controller)      |
-| Git Repository     | Access to a Git repository (e.g., GitHub, GitLab) | N/A                                                               |
-| Keycloak Client    | `workspace-bb` Keycloak client for IAM integration | [See Guide Below](#create-iam-client) |
 
 **Clone the Deployment Guide Repository:**
 
