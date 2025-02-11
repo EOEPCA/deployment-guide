@@ -2,3 +2,7 @@ fullnameOverride: workspace-admin
 app:
   ingress:
     enabled: false
+kong:
+  admin:
+    tls:
+      enabled: false
