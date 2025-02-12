@@ -12,6 +12,6 @@ configure_cert
 
 # Generate configuration files
 envsubst <"values-template.yaml" >"generated-values.yaml"
-envsubst <"sample-ingress-template.yaml" >"generated-ingress.yaml"
+envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
 
 echo "You can now proceed to deploy the Resource Health BB using Helm."
