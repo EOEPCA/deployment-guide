@@ -125,8 +125,7 @@ To enable Jupyter notebooks and other interactive services to authenticate users
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-client.sh
+bash ../../scripts/utils/create-client.sh
 ```
 
 When prompted:
@@ -149,8 +148,8 @@ After it completes, you should see a JSON snippet confirming the newly created c
 Return to the `deployment-guide/scripts/app-hub` directory and deploy the Application Hub using Helm:
 
 ```bash
-helm repo add eoepca https://eoepca.github.io/helm-charts && \
-helm repo update eoepca && \
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
 helm upgrade -i application-hub eoepca/application-hub \
 --version 2.1.0 \
 --values generated-values.yaml \
