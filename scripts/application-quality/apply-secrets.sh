@@ -7,8 +7,8 @@ echo "Applying secrets to namespace: $NAMESPACE"
 kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl create secret generic application-quality-auth-client \
-    --from-literal=OIDC_RP_CLIENT_ID="$OIDC_RP_CLIENT_ID" \
-    --from-literal=OIDC_RP_CLIENT_SECRET="$OIDC_RP_CLIENT_SECRET" \
+    --from-literal=OIDC_RP_CLIENT_ID="$APP_QUALITY_CLIENT_ID" \
+    --from-literal=OIDC_RP_CLIENT_SECRET="$APP_QUALITY_CLIENT_SECRET" \
     --namespace "$NAMESPACE" \
     --dry-run=client -o yaml | kubectl apply -f -
 

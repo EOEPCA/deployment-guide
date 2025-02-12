@@ -10,27 +10,22 @@ ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes
 configure_cert
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
 
-# Generate secret key for the application (if not already set)
-if [ -z "$APPLICATION_QUALITY_SECRET_KEY" ]; then
-    add_to_state_file "APPLICATION_QUALITY_SECRET_KEY" "$(generate_aes_key 32)"
-fi
-
 # OIDC configuration
 ask "OIDC_APPLICATION_QUALITY_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
 
 if [ "$OIDC_APPLICATION_QUALITY_ENABLED" == "true" ]; then
 
     # OIDC Configuration
-    ask "OIDC_RP_CLIENT_ID" "Enter the OIDC client ID for the Application Quality Building Block" "application-quality" is_non_empty
+    ask "APP_QUALITY_CLIENT_ID" "Enter the OIDC client ID for the Application Quality Building Block" "application-quality" is_non_empty
 
-    if [ -z "$OIDC_RP_CLIENT_SECRET" ]; then
-        OIDC_RP_CLIENT_SECRET=$(generate_aes_key 32)
-        add_to_state_file "OIDC_RP_CLIENT_SECRET" "$OIDC_RP_CLIENT_SECRET"
+    if [ -z "$APP_QUALITY_CLIENT_SECRET" ]; then
+        APP_QUALITY_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "APP_QUALITY_CLIENT_SECRET" "$APP_QUALITY_CLIENT_SECRET"
     fi
 
     echo ""
     echo "❗  Generated client secret for the Application Quality."
-    echo "   Application Quality Client Secret: $OIDC_RP_CLIENT_SECRET"
+    echo "   Application Quality Client Secret: $APP_QUALITY_CLIENT_SECRET"
     echo ""
 
     add_to_state_file "OSD_BASE_REDIRECT" "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/dashboards"

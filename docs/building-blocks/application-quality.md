@@ -75,7 +75,7 @@ bash configure-application-quality.sh
 If you choose to enable OIDC authentication, you will be asked to provide.
 We will configure the clients in a later step, just provide the names for now.
 
-- **`OIDC_RP_CLIENT_ID`**: OIDC client ID for the Application Quality Building Block. (use `application-quality`)
+- **`APP_QUALITY_CLIENT_ID`**: OIDC client ID for the Application Quality Building Block. (use `application-quality`)
 
 
 ### 2. Apply Secrets
@@ -92,16 +92,16 @@ bash apply-secrets.sh
 1. **Clone the reference repository**:
     
 ```bash
-git clone -b reference-deployment https://github.com/EOEPCA/application-quality.git reference-repo
+git clone https://github.com/EOEPCA/application-quality.git reference-repo \
+  -b reference-deployment
 ```
     
 2. **Install** with Helm:
     
 ```bash
-helm dependency build reference-repo/helm
+helm dependency update reference-repo/helm
 
-helm upgrade -i application-quality \
-  reference-repo/helm \
+helm upgrade -i application-quality reference-repo/helm \
   --namespace application-quality \
   --create-namespace \
   --values generated-values.yaml
@@ -120,8 +120,7 @@ If you **do** want to protect the endpoints with IAM policies (i.e. require Keyc
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-client.sh
+bash ../../scripts/utils/create-client.sh
 ```
 
 When prompted:
