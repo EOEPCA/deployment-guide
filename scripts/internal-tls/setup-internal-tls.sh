@@ -6,13 +6,17 @@ source ../common/utils.sh
 echo "Setting up internal TLS..."
 
 # Install Cert-Manager
-echo "Installing Cert-Manager..."
-helm repo add jetstack https://charts.jetstack.io &&
-  helm repo update jetstack &&
-  helm upgrade -i cert-manager jetstack/cert-manager \
-    --namespace cert-manager --create-namespace \
-    --version v1.16.1 \
-    --set crds.enabled=true
+if ! kubectl rollout status deployment cert-manager -n cert-manager --timeout=120s >/dev/null 2>&1; then
+  echo "Installing Cert-Manager..."
+  helm repo add jetstack https://charts.jetstack.io &&
+    helm repo update jetstack &&
+    helm upgrade -i cert-manager jetstack/cert-manager \
+      --namespace cert-manager --create-namespace \
+      --version v1.16.1 \
+      --set crds.enabled=true
+else
+  echo "Cert-Manager already installed"
+fi
 
 # Wait for Cert-Manager to be ready
 echo "Waiting for Cert-Manager to be ready..."

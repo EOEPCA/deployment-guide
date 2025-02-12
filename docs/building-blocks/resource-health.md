@@ -105,12 +105,14 @@ During execution, you will be prompted for:
 - Clone the Resource Health repository and update dependencies:
 ```bash
 git clone -b 2.0.0-beta2 https://github.com/EOEPCA/resource-health.git reference-repo
-helm dependency build reference-repo/resource-health-reference-deployment
+helm dependency update reference-repo/resource-health-reference-deployment
 ```
 
 - Install or upgrade the Resource Health Helm chart:
 ```bash
-helm upgrade -i resource-health reference-repo/resource-health-reference-deployment -f generated-values.yaml -n resource-health --create-namespace
+helm upgrade -i resource-health reference-repo/resource-health-reference-deployment \
+  -f generated-values.yaml \
+  -n resource-health --create-namespace
 ```
 
 ---

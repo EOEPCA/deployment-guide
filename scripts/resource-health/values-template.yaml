@@ -26,7 +26,7 @@ resource-health:
         requirements: "https://gist.githubusercontent.com/tilowiklundSensmetry/a9fefe2873b731b483f554607a82deaa/raw/1136a82ca3c8f28b1ad4d895871514185927dd1c/requirements.txt"
         env:
           - name: MOCK_API_HOST
-            value: http://resource-health-mockapi:5000
+            value: http://resource-health-mock-api:5000
 
 opensearch:
   persistence:
