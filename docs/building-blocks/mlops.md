@@ -304,12 +304,12 @@ This section walks you through a minimal scenario of creating a GitLab project, 
     - Click the **AI Models** category (or the category you used), or visit:  
         `https://sharinghub.${INGRESS_HOST}/ui/#/ai-model`
 
-    ![SharingHub Models](../../img/mlops/models.jpeg)  
+    ![SharingHub Models](../img/mlops/models.jpeg)  
 
 
     - After clicking the **AI Models** card, You should see the new project (`mlops-test-project`) in the listing.
     
-    ![SharingHub Project Detail](../../img/mlops/model.jpeg)
+    ![SharingHub Project Detail](../img/mlops/model.jpeg)
     
     _If you do not see your project, double-check that the GitLab topic matches the configuration in `sharinghub/generated-values.yaml` (under `config.stac.categories.ai-model.gitlab_topic`)._
     
@@ -322,7 +322,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         
     - Click the **MLflow** link in the top-right corner.
         
-        ![MLFlow Button](../../img/mlops/mlflow-button.jpeg)
+        ![MLFlow Button](../img/mlops/mlflow-button.jpeg)
         
     - The link will resemble:
         
@@ -345,7 +345,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         
     - Create a token with the **Developer** role and the scopes `read_api, api`.
         
-        ![Token](../../img/mlops/token.jpeg)
+        ![Token](../img/mlops/token.jpeg)
         
     - Set the token as an environment variable:
         
@@ -381,11 +381,11 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         
     - You should see a new run:
         
-        ![Table](../../img/mlops/accuracy.jpeg)  
+        ![Table](../img/mlops/accuracy.jpeg)  
 
     - Click the run to see the logged metrics and artifacts.
 
-        ![Metrics](../../img/mlops/metrics.jpeg)
+        ![Metrics](../img/mlops/metrics.jpeg)
 
     > If you don't see the run, but the script ran successfully, check that you are logged into the SharingHub via Gitlab and that the project is correctly tagged.
 
