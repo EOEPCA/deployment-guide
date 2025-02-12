@@ -38,11 +38,9 @@ jupyterhub:
       Authenticator:
         admin_users:
           - "admin"
-          - "${APPHUB_ALLOWED_USER}"              
         allowed_users: 
           - "admin"               
           - "user"
-          - "${APPHUB_ALLOWED_USER}"
 
   singleuser:
     image:

@@ -7,10 +7,8 @@ source ../common/utils.sh
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
 configure_cert
-ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the Application Hub pods" "node-role.kubernetes.io/worker" is_non_empty
-ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "true" is_non_empty
-ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
-ask "APPHUB_ALLOWED_USER" "Enter the username of the user allowed to access the App Hub" "eoepcauser" is_non_empty
+ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the Application Hub pods" "kubernetes.io/os" is_non_empty
+ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 
 # OAuth2 configuration
 ask "APPHUB_CLIENT_ID" "Enter the Client ID for the OAPIP" "application-hub" is_non_empty
@@ -23,6 +21,14 @@ fi
 if [ -z "$APPHUB_JUPYTERHUB_CRYPT_KEY" ]; then
     export APPHUB_JUPYTERHUB_CRYPT_KEY=$(openssl rand -base64 32)
     add_to_state_file "APPHUB_JUPYTERHUB_CRYPT_KEY" $APPHUB_JUPYTERHUB_CRYPT_KEY
+fi
+
+if [ -z "KEYCLOAK_HOST" ]; then
+    ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+fi
+
+if [ -z "REALM" ]; then
+    ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
 fi
 
 echo ""

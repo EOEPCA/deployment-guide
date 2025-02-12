@@ -104,17 +104,16 @@ bash configure-app-hub.sh
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
-    - *Example*: `node-role.kubernetes.io/worker`
+    - *Example*: `kubernetes.io/os`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
-    - *Example*: `worker`
+    - *Example*: `linux`
 
 **OIDC Configuration**:
 
 - **`KEYCLOAK_HOST`**: OIDC provider base domain. JupyterHub requires an OIDC provider for authentication.
     - *Example*: `auth.example.com` 
-- **`APPHUB_ALLOWED_USER`**: A Keycloak user that will be given full admin rights in the Application Hub. You can use the `deployment-guide/scripts/utils/create-user.sh` script to create a user if you don't have one.
-    - *Example*: `eoepcauser`
+
 
 ---
 
@@ -142,6 +141,7 @@ When prompted:
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
+---
 
 3. **Deploy the Application Hub Using Helm**
 
@@ -163,11 +163,59 @@ Deploy the ingress:
 kubectl apply -f generated-ingress.yaml
 ```
 
-4. **Access the Application Hub**
+---
 
-By default, the `generated-values.yaml` file creates a **demo** admin user named `admin`. You can log into the Application Hub by signing into Keycloak with this `admin` user credentials.
+4. **Create an admin user**
+
+By default, the Application Hub has a **demo** admin user named `eric`. You will need to create this user in Keycloak (or your OIDC provider) to access the Application Hub admin.
+
+```
+bash ../../scripts/utils/create-user.sh
+```
+
+When prompted, fill out the general Keycloak authentication details (if not already set) and then:
+
+- **Username**: `eric`
+- **Password**: Choose a secure password.
+
+Alternatively you can create this user through the Keycloak admin interface.
+
+
+5. **Create Groups**
+
+Once `eric` has been created, navigate to the Application Hub admin panel (`https://app-hub.${INGRESS_HOST}/hub/admin`).
+
+Select **> Manage Groups** and create the following groups with this exact naming:
+
+- `group-1`
+- `group-2`
+- `group-3`
+
+![Create Groups](../img/apphub/groups.jpeg)
+
+6. **Assign Users to Groups**
+
+Individually assign the `eric` user to each group and hit **Apply**.
+
+![Assign Users to Groups](../img/apphub/assign-users.jpeg)
+
+
+7. **Select a Profile**
+
+Return to the primary Application Hub interface (`https://app-hub.${INGRESS_HOST}/`) and log in as `eric`.
+
+You should now see a list of the preconfigured profiles. Select one to spawn an application profile.
+
+![Select a Profile](../img/apphub/profiles.jpeg)
+
+8. **Launch a Profile**
+
+Select one of the profiles to launch a profile. You will then be redirected to the relevant tooling environment.
+
+![Launch a Profile](../img/apphub/launch.jpeg)
 
 > **Note**: This default setup is primarily for **testing or demonstrations**. In production, we strongly recommend managing users and groups via Keycloak (or another OIDC provider) and assigning roles accordingly. This ensures a more secure and maintainable approach to user management. For more details, see the [Jupyter Hub Documentation](https://eoepca.github.io/application-hub-context/configuration/) section below on configuring additional users, groups, and profiles.
+
 
 ***
 
@@ -210,68 +258,7 @@ kubectl logs -n application-hub <application-hub-pod-name>
 
 ---
 
-## 6. Usage
-
-Below are some common tasks you might perform in the Application Hub. For advanced usage, see the [Jupyter Hub Docs](https://eoepca.readthedocs.io/projects/application-hub/en/latest/) and the included references.
-
-### 6.1 Managing Groups & Users
-
-1. **Log In as Admin**:
-    
-- Typically, you designate one or more Keycloak accounts as "admin" in the JupyterHub configuration.
-- Once logged in, go to `https://app-hub.${INGRESS_HOST}/hub/admin`.
-
-2. **Create Groups**:
-    
-- In the admin panel, create groups (e.g., `group-A`, `group-B`).
-- Or use the JupyterHub REST API to create groups programmatically.
-
-3. **Assign Users**:
-    
-- Add or remove users from groups in the admin UI or via the REST API.
-- Group membership controls which **Profiles** the user sees (see next section).
-
-### 6.2 Defining Profiles for Different Tooling
-
-In `config.yml`, define one or more "profiles." Each profile corresponds to a specific container image and resource constraints. For instance:
-
-```yaml
-profiles:
-  - id: profile_jupyter_python
-    groups:
-      - group-A
-    definition:
-      display_name: "Jupyter Python Env"
-      slug: "python-env"
-      kubespawner_override:
-        cpu_limit: 2
-        mem_limit: 4G
-        image: "eoepca/iat-jupyterlab:latest"
-```
-
-- **`id`**: Internal identifier for the profile.
-- **`groups`**: Which JupyterHub groups can see/spawn this profile.
-- **`kubespawner_override`**: Resource limits, container image, etc.
-- **`pod_env_vars`, `volumes`, `config_maps`**: Additional fields for environment variables, data volumes, or config maps.
-
-Once you redeploy with the updated configuration, users in `group-A` can spawn notebooks using the "Jupyter Python Env" profile.
-
-### 6.3 JupyterHub API
-
-If you want to automate tasks—like adding groups, spinning up named servers, or managing pods—use the JupyterHub REST API.
-
-- Acquire an **API token** (admin or appropriate privileges).
-- Make HTTP requests to endpoints such as:
-    - `GET /hub/api/groups`
-    - `POST /hub/api/users/{username}/servers/{server_name}`
-
-### 6.4 Running Code Server or Custom Dashboards
-
-Besides JupyterLab, you can define profiles for other web-based apps (e.g., Code Server, RStudio, custom dashboards). Just specify their container images in the profile’s `kubespawner_override.image` field and any required environment variables or volumes.
-
----
-
-## 7. Advanced Configuration
+## 6. Advanced Configuration
 
 Check the [JupyterHub Configuration Reference](https://eoepca.github.io/application-hub-context/configuration/) for more advanced settings and options.
 
