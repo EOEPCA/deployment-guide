@@ -6,6 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: apisix
     ${CLUSTER_ISSUER_ANNOTATION}
+    k8s.apisix.apache.org/enable-websocket: "true"
 spec:
   ingressClassName: apisix
   rules:
