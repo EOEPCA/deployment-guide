@@ -15,6 +15,10 @@ Key features of Harbor include:
 - **Audit Logs**: Track operations for compliance.
 - **Replication**: Sync images across multiple Harbor instances.
 
+### Scripted Deployment
+
+The Harbor deployment in this guide follows the same [Scripted Deployment Approach](../building-blocks/overview.md#scripted-deployment-approach), as for the EOEPCA building blocks.
+
 ***
 ## Architecture Overview
 

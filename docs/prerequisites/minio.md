@@ -8,6 +8,10 @@ MinIO is a high-performance object storage system that's compatible with the Ama
 
 MinIO provides a scalable and high-performance object storage solution that's compatible with AWS S3 APIs. It's used within the EOEPCA+ platform to store and manage data securely.
 
+### Scripted Deployment
+
+The Minio deployment in this guide follows the same [Scripted Deployment Approach](../building-blocks/overview.md#scripted-deployment-approach), as for the EOEPCA building blocks.
+
 ---
 ## Prerequisites
 
