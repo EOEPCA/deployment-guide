@@ -48,7 +48,7 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
     echo ""
 
     if [ -z "$KEYCLOAK_HOST" ]; then
-        ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+        ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     fi
 
     add_to_state_file "OAPIP_INGRESS_ENABLED" "false"

@@ -11,7 +11,7 @@ source '../common/utils.sh'
 # Ask for Keycloak details
 ask "KEYCLOAK_ADMIN_USER" "Keycloak Admin Username" "${KEYCLOAK_ADMIN_USER}"
 ask "KEYCLOAK_ADMIN_PASSWORD" "Keycloak Admin Password" "${KEYCLOAK_ADMIN_PASSWORD}"
-ask "KEYCLOAK_HOST" "Enter the Keycloak base domain (e.g. auth-apx.example.com)" "auth-apx.example.com" is_valid_domain
+ask "KEYCLOAK_HOST" "Enter the Keycloak base domain (e.g. auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
 ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 
 # Ask for details of the required protection
@@ -31,9 +31,8 @@ PERMISSION_NAME="${DISPLAY_NAME}-access"
 ACCESS_TOKEN=$(
     curl --silent --show-error \
         -X POST \
-        -H "Content-Type: application/x-www-form-urlencoded" \
         -d "username=${KEYCLOAK_ADMIN_USER}" \
-        -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+        --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
         -d "grant_type=password" \
         -d "client_id=admin-cli" \
         "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |

@@ -116,7 +116,7 @@ bash create-client.sh
 When prompted:
 
 - **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com` or `auth-apx.example.com`
+- **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
 - **Client ID**: You should use `gitlab`.

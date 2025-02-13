@@ -37,9 +37,8 @@ echo "Redirect URIs: ${REDIRECT_URIS[@]}"
 ACCESS_TOKEN=$(
     curl --silent --show-error \
         -X POST \
-        -H "Content-Type: application/x-www-form-urlencoded" \
         -d "username=${KEYCLOAK_ADMIN_USER}" \
-        -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+        --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
         -d "grant_type=password" \
         -d "client_id=admin-cli" \
         "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |

@@ -38,9 +38,8 @@ source ~/.eoepca/state # This will set KEYCLOAK_ADMIN_USER and KEYCLOAK_ADMIN_PA
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
     -d "username=${KEYCLOAK_ADMIN_USER}" \
-    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     "https://auth.<YOUR DOMAIN>/realms/master/protocol/openid-connect/token" \
@@ -58,7 +57,7 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients" <<EOF
+  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" <<EOF
 {
   "clientId": "<UPDATE TO CLIENT ID>",
   "name": "<UPDATE TO CLIENT NAME>",
@@ -89,7 +88,7 @@ EOF
 curl --silent --show-error \
   -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients" \
+  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
 | jq '.[] | select(.clientId == "<UPDATE TO CLIENT ID>")'
 ```
 
@@ -102,7 +101,7 @@ myclient_id=$( \
   curl --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients" \
+    "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
   | jq -r '.[] | select(.clientId == "<UPDATE TO CLIENT ID>") | .id' \
 )
 ```
@@ -113,7 +112,7 @@ Delete the client:
 curl --silent --show-error \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth.<YOUR DOMAIN>/admin/realms/eoepca/clients/${<UPDATE TO CLIENT ID>}"
+  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients/${<UPDATE TO CLIENT ID>}"
 ```
 
 ## Obtaining Tokens via the Device Flow
@@ -128,11 +127,10 @@ source ~/.eoepca/state
 response=$( \
   curl --silent --show-error \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
     -d "client_id=<UPDATE TO CLIENT ID>" \
-    -d "client_secret=<UPDATE TO CLIENT SECRET>" \
+    --data-urlencode "client_secret=<UPDATE TO CLIENT SECRET>" \
     -d "scope=openid profile email" \
-    "https://auth.<YOUR DOMAIN>/realms/eoepca/protocol/openid-connect/auth/device" \
+    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
 )
 device_code=$(echo $response | jq -r '.device_code')
 verification_uri_complete=$(echo $response | jq -r '.verification_uri_complete')
@@ -150,12 +148,11 @@ Navigate to the `verification_uri_complete` URL. Log in as the required user.
 response=$( \
   curl --silent --show-error \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
     -d "client_id=<UPDATE TO CLIENT ID>" \
-    -d "client_secret=<UPDATE TO CLIENT SECRET>" \
+    --data-urlencode "client_secret=<UPDATE TO CLIENT SECRET>" \
     -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
     -d "device_code=${device_code}" \
-    "https://auth.<YOUR DOMAIN>/realms/eoepca/protocol/openid-connect/token" \
+    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
 )
 access_token=$(echo $response | jq -r '.access_token')
 refresh_token=$(echo $response | jq -r '.refresh_token')

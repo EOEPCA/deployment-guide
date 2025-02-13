@@ -32,9 +32,8 @@ echo "Validating Keycloak realm 'eoepca' exists..."
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
     -d "username=${KEYCLOAK_ADMIN_USER}" \
-    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
@@ -43,7 +42,7 @@ ACCESS_TOKEN=$( \
 REALM_EXISTS=$(curl --silent --show-error \
   -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth.${INGRESS_HOST}/admin/realms/eoepca" \
+  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}" \
   -o /dev/null -w '%{http_code}')
 
 if [ "$REALM_EXISTS" -eq 200 ]; then
@@ -58,7 +57,7 @@ OPA_CLIENT_ID="$( \
   curl --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://auth.${INGRESS_HOST}/admin/realms/eoepca/clients" \
+    "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
     | jq -r '.[] | select(.clientId == "opa") | .id' \
 )"
 

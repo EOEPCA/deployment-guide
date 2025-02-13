@@ -10,9 +10,8 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
     ACCESS_TOKEN=$(
         curl --silent --show-error \
             -X POST \
-            -H "Content-Type: application/x-www-form-urlencoded" \
             -d "username=${USER_NAME}" \
-            -d "password=${USER_PASSWORD}" \
+            --data-urlencode "password=${USER_PASSWORD}" \
             -d "grant_type=password" \
             -d "client_id=admin-cli" \
             "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |

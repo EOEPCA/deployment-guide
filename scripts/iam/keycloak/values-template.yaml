@@ -23,4 +23,14 @@ extraEnvVars:
 postgresql:
   auth:
     existingSecret: kc-postgres
-resourcesPreset: "large"
+
+# Resources
+#
+# Either using a preset
+# resourcesPreset: "large"
+#
+# Or for a small (resource limited) deployment
+resources:
+  requests:
+    cpu: 200m
+    memory: 2048Mi

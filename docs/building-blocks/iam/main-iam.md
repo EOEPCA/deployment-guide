@@ -69,11 +69,14 @@ During the script execution, you will be prompted to provide:
     - _Example_: `example.com`
 - **`STORAGE_CLASS`**: Kubernetes storage class for persistent volumes.
     - _Example_: `standard`
+- **`CLUSTER_ISSUER`**: Issuer for TLS certificates
+    - _Example_: `letsencrypt-http01-apisix`
 
 The script will also generate secure passwords for:
 
 - **`KEYCLOAK_ADMIN_PASSWORD`**: Password for the Keycloak admin account.
 - **`KEYCLOAK_POSTGRES_PASSWORD`**: Password for the Keycloak PostgreSQL database.
+- **`OPA_CLIENT_SECRET`**: Secret for the `opa` (Open Policy Agent) client in Keycloak
 
 These credentials will be stored in a state file at `~/.eoepca/state`.
 
@@ -124,9 +127,9 @@ Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with 
 ### 5. Create the `eoepca` Realm and a Test User
 
 Instead of using `master`, create a dedicated `eoepca` realm - using the Keycloak REST API.<br>
-For convenience we also create an `eoepca` (test) user to support usage examples in this guide where a user must be assumed.
+For convenience we also create an `eoepcauser` (test) user to support usage examples in this guide where a user must be assumed.
 
-Run:
+**Create the `eoepca` realm...**
 
 ```bash
 source ~/.eoepca/state
@@ -135,9 +138,8 @@ source ~/.eoepca/state
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
     -d "username=${KEYCLOAK_ADMIN_USER}" \
-    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
@@ -155,28 +157,14 @@ curl --silent --show-error \
   "enabled": true
 }
 EOF
-
-# Create the `eoepca` user in the `eoepca` realm
-curl --silent --show-error \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d @- \
-  "https://auth.${INGRESS_HOST}/admin/realms/eoepca/users" <<EOF
-{
-  "username": "eoepca",
-  "enabled": true,
-  "credentials": [{
-    "type": "password",
-    "value": "changeme",
-    "temporary": false
-  }]
-}
-EOF
 ```
 
-Replace `"changeme"` with a secure password of your choice.
+**Create the `eoepcauser` user in the `eoepca` realm...**<br>
+_Set the user/password according to your needs_
 
+```bash
+bash ../utils/create-user.sh
+```
 
 
 ### 6. (Optional) Integrate External Identity Providers
@@ -259,15 +247,15 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 **OpenID Connect Discovery Endpoint:**
 
-- URL: `https://auth.${INGRESS_HOST}/realms/eoepca/.well-known/openid-configuration`
+- URL: `https://auth.${INGRESS_HOST}/realms/${REALM}/.well-known/openid-configuration`
 
 **OAuth 2.0 Authorization Endpoint:**
 
-- URL: `https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/auth`
+- URL: `https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/auth`
 
 **OAuth 2.0 Token Endpoint:**
 
-- URL: `https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token`
+- URL: `https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token`
 
 **Administration Console:**
 
@@ -300,7 +288,19 @@ You can test policy evaluations by sending requests to OPA's REST API. For examp
 
 ```bash
 source ~/.eoepca/state
+# Authenticate as test user `eoepcauser`
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -d "username=${KEYCLOAK_TEST_USER=}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+# Interogate OPA using the access token for `eoepcauser`
 curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/allow" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"input": {"user": "alice"}}'
 ```

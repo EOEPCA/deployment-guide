@@ -20,9 +20,8 @@ ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the example user" "eoepcapa
 # Obtain Admin Token (from 'master' realm)
 ACCESS_TOKEN=$(curl --silent --show-error \
     -X POST \
-    -H "Content-Type: application/x-www-form-urlencoded" \
     -d "username=${KEYCLOAK_ADMIN_USER}" \
-    -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
@@ -43,7 +42,10 @@ create_user_payload=$(
 {
   "username": "${KEYCLOAK_TEST_USER}",
   "enabled": true,
-  "emailVerified": true
+  "emailVerified": true,
+  "email": "${KEYCLOAK_TEST_USER}@${INGRESS_HOST}",
+  "firstName": "Eoepca",
+  "lastName": "User"
 }
 EOF
 )
