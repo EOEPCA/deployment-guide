@@ -19,12 +19,10 @@ add_to_state_file "S3_ENDPOINT" "$HTTP_SCHEME://minio.$INGRESS_HOST"
 add_to_state_file "S3_REGION" "us-east-1"
 
 # Generate configuration files
-envsubst <"api/values-template.yaml" >"api/generated-values.yaml"
-envsubst <"server/values-template.yaml" >"server/generated-values.yaml"
+envsubst <"values-template.yaml" >"generated-values.yaml"
 
 echo "✅ Configuration files generated:"
-echo "- server/generated-values.yaml"
-echo "- api/generated-values.yaml"
+echo "- generated-values.yaml"
 
 echo ""
 echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"

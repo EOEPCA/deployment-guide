@@ -65,7 +65,7 @@ helm repo add minio https://charts.min.io/
 helm repo update minio
 helm upgrade -i minio minio/minio \
   --version 5.4.0 \
-  --values server/generated-values.yaml \
+  --values generated-values.yaml \
   --namespace minio \
   --create-namespace
 ```
@@ -111,7 +111,7 @@ This script performs several checks to validate your MinIO deployment:
   - Deletes the test file.
   - Deletes the test bucket.
 
-> **Note**: The script uses the AWS CLI to interact with MinIO. Ensure that the AWS CLI is installed and configured on your machine. Please refer to the [Official AWS Documentation](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) for installation instructions.
+> **Note**: The script uses `s3cmd` to interact with MinIO. Ensure that `s3cmd` is installed and configured on your machine. Please refer to the [`s3cmd` Installation Guide](https://s3tools.org/s3cmd).
 
 ---
 

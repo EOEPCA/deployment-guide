@@ -1,4 +1,0 @@
-fullnameOverride: minio-bucket-api
-minIOServerEndpoint: $HTTP_SCHEME://minio.${INGRESS_HOST}
-accessCredentials:
-  secretName: minio-auth
