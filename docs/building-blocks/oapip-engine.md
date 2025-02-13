@@ -57,6 +57,11 @@ bash configure-oapip.sh
     - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
+- **`NODE_SELECTOR_KEY`**: Determine which nodes will run the processing workflows.
+    - *Example*: `kubernetes.io/os`
+    - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+- **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
+    - *Example*: `linux`
 
 **Stage-Out S3 Configuration:**
 

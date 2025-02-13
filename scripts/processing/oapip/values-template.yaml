@@ -21,7 +21,7 @@ workflow:
     STAGEOUT_AWS_REGION: ${S3_REGION}
     STAGEOUT_OUTPUT: eoepca
   nodeSelector:
-    kubernetes.io/os: linux
+    ${NODE_SELECTOR_KEY}: "${NODE_SELECTOR_VALUE}"
   storageClass: ${STORAGE_CLASS}
 ingress:
   enabled: ${OAPIP_INGRESS_ENABLED}
