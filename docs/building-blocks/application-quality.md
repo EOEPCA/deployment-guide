@@ -120,7 +120,7 @@ If you **do** want to protect the endpoints with IAM policies (i.e. require Keyc
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-bash ../../scripts/utils/create-client.sh
+bash ../utils/create-client.sh
 ```
 
 When prompted:

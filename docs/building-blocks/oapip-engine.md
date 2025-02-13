@@ -114,7 +114,7 @@ If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Ke
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-bash ../../../scripts/utils/create-client.sh
+bash ../../utils/create-client.sh
 ```
 
 When prompted:
@@ -140,7 +140,7 @@ By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC t
 Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
 ```bash
-bash ../../../scripts/utils/create-user.sh
+bash ../../utils/create-user.sh
 ```
 
 ---
@@ -156,7 +156,7 @@ For the purposes of this example we will assume the user `eoepcauser` - adjust f
 1. Use the `protect-resource.sh`:
         
 ```bash
-bash ../../../scripts/utils/protect-resource.sh
+bash ../../utils/protect-resource.sh
 ```
         
 When prompted (adjust values for your needs):

@@ -124,7 +124,7 @@ To enable Jupyter notebooks and other interactive services to authenticate users
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-bash ../../scripts/utils/create-client.sh
+bash ../utils/create-client.sh
 ```
 
 When prompted:
@@ -170,7 +170,7 @@ kubectl apply -f generated-ingress.yaml
 By default, the Application Hub has a **demo** admin user named `eric`. You will need to create this user in Keycloak (or your OIDC provider) to access the Application Hub admin.
 
 ```
-bash ../../scripts/utils/create-user.sh
+bash ../utils/create-user.sh
 ```
 
 When prompted, fill out the general Keycloak authentication details (if not already set) and then:

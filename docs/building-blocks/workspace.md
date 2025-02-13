@@ -186,7 +186,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-bash ../../scripts/utils/create-client.sh
+bash ../utils/create-client.sh
 ```
 
 When prompted:
@@ -209,7 +209,7 @@ After it completes, you should see a JSON snippet confirming the newly created c
 Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
 ```bash
-bash ../../scripts/utils/create-user.sh
+bash ../utils/create-user.sh
 ```
 
 ---
@@ -219,7 +219,7 @@ bash ../../scripts/utils/create-user.sh
 1. Use the `protect-resource.sh`:
         
 ```bash
-bash ../../scripts/utils/protect-resource.sh
+bash ../utils/protect-resource.sh
 ```
         
 When prompted:
