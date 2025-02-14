@@ -157,24 +157,62 @@ helm upgrade -i gitlab gitlab/gitlab \
 
 ### 4. Set Up GitLab OAuth Application for SharingHub
 
-Once GitLab is deployed (may take 5 minutes) and accessible:
+Once GitLab is deployed and accessible (this may take about 5 minutes), follow these steps to configure an OAuth application for SharingHub authentication.
 
-1. Retrieve the **GitLab Root Password**:
+#### 4.1 Retrieve the GitLab Root Password
+
+Before logging in, fetch the GitLab root password:
 
 ```bash
 kubectl get secret gitlab-gitlab-initial-root-password --template={{.data.password}} -n gitlab | base64 -d
 ```
 
-2. Open `https://gitlab.<YOUR-DOMAIN>`.
-3. Log in as `root` with the above password.
-4. **Admin Area** → **Applications** → **New Application**:
+Save this password securely for the next step.
 
-   - **Name**: e.g., `SharingHub`
-   - **Redirect URI**: `https://sharinghub.<YOUR-DOMAIN>/api/auth/login/callback`
-   - **Scopes**: `openid`, `read_user`, `read_api`, `read_repository`, `write_repository`, `email`, `profile`, `api`
+#### 4.2 Log In to GitLab
 
-5. After creating the application, note the **Application ID** and **Secret**.
+1. Open your browser and navigate to:  
+    `https://gitlab.${INGRESS_HOST}`
+2. Log in using the username `root` and the retrieved password.
 
+#### 4.3 Access the OAuth Application Settings
+
+1. In the bottom-left corner of GitLab, select **Admin Area**.
+2. In the Admin Area sidebar, click on **Applications**.
+3. Then click **New Application** to create a new OAuth app.
+
+> **Note:** The GitLab interface may vary slightly depending on your version. For the latest guidance, consult [GitLab's OAuth Provider documentation](https://docs.gitlab.com/ee/integration/oauth_provider.html).
+
+#### 4.4 Configure the OAuth Application
+
+Fill out the new application form with the following details:
+
+- **Name**:  
+    Enter a descriptive name, e.g., `SharingHub`.
+    
+- **Redirect URI**:
+    
+    ```
+    https://sharinghub.${INGRESS_HOST}/api/auth/login/callback
+    ```
+    
+- **Scopes**:  
+    Select all of the following:
+    
+    - `api`
+    - `read_api`
+    - `read_user`
+    - `read_repository`
+    - `write_repository`
+    - `openid`
+    - `profile`
+    - `email`
+
+After confirming all details, click **Save Application**.
+
+#### 4.5 Save the Application Credentials
+
+Once the application is created, GitLab will display the **Application ID** and **Secret**. **Record these credentials securely**, as they are required later to configure SharingHub's OAuth integration.
 
 ### 5 Store the GitLab OAuth App Credentials
 
@@ -223,7 +261,7 @@ kubectl apply -f mlflow/generated-ingress.yaml
 
 ### 1. Validate the Deployment
 
-After the initial installation (GitLab, SharingHub, MLflow, secrets, etc.), run a few checks:
+Before contiuning to the **Basic Usage Walkthrough**, run a few checks:
 
 1. **Check Pods**:
 ```bash
@@ -234,33 +272,34 @@ All pods should be in `Running` (or `Completed`) state.
 
 2. **Visit GitLab**:
 
-- `https://gitlab.<YOUR-DOMAIN>/`
-- Log in with `root` user or (if OIDC integrated) use the "Sign in with OpenID Connect" link.
+- `https://gitlab.${INGRESS_HOST}/`
+- Log in with `root` user.
 
 3. **Visit SharingHub**:
 
-- `https://sharinghub.<YOUR-DOMAIN>/`
+- `https://sharinghub.${INGRESS_HOST}/`
 - If you set up GitLab OAuth for SharingHub, you should see a sign-in flow redirecting to GitLab.
+
 4. **Visit MLflow**:
 
-- `https://sharinghub.<YOUR-DOMAIN>/mlflow/`
-- Confirm the MLflow UI loads. If you have an existing project or run, you'll see experiments or metrics.
+- `https://sharinghub.${INGRESS_HOST}/mlflow/`
+- Confirm the MLflow UI loads.
 
 5. **Confirm S3 Access**:
 
-Using `s3cmd` CLI...<br>
-_If credentials or bucket aren't set correctly, then you'll see an error_
+    Using `s3cmd` CLI...<br>
+    _If credentials or bucket aren't set correctly, then you'll see an error_
 
-```bash
-source ~/.eoepca/state
-s3cmd ls s3://mlopbb-sharinghub \
-  --host minio.${INGRESS_HOST} \
-  --host-bucket minio.${INGRESS_HOST} \
-  --access_key "${MINIO_USER}" \
-  --secret_key "${MINIO_PASSWORD}"
-```
+    ```bash
+    source ~/.eoepca/state
+    s3cmd ls s3://mlopbb-sharinghub \
+    --host minio.${INGRESS_HOST} \
+    --host-bucket minio.${INGRESS_HOST} \
+    --access_key "${MINIO_USER}" \
+    --secret_key "${MINIO_PASSWORD}"
+    ```
 
-Repeat for bucket `s3://mlopbb-mlflow-sharinghub`.
+    Repeat for bucket `s3://mlopbb-mlflow-sharinghub`.
 
 ---
 
