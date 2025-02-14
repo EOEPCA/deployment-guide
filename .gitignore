@@ -13,4 +13,3 @@ generated-ingress.yaml
 reference-repo/
 reference-repo*
 /kubeconfig.yaml
-registries.yaml

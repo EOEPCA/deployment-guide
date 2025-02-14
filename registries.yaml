@@ -1,0 +1,9 @@
+mirrors:
+  "docker.io":
+    endpoint:
+      - https://registry-1.docker.io
+configs:
+  "docker.io":
+    auth:
+      username: <dockerhub-username>
+      password: <dockerhub-password>
