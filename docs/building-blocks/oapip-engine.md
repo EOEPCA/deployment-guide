@@ -164,7 +164,7 @@ When prompted (adjust values for your needs):
 - **Client ID**: `oapip-engine` (the client you created in the previous step)
 - **Username**: e.g. `eoepcauser` 
 - **Display Name**: `eoepcauser`
-- **Resource Type**: `urn:oapip-engine:resources:context`
+- **Resource Type**: `urn:oapip-engine:resources:default`
 - **Resource URI**: `/eoepcauser/*` 
 
 ---
@@ -182,7 +182,7 @@ kubectl apply -f generated-ingress.yaml
 
 ### 2.4 Confirm Protection
 
-With the resource and permission created, attempts to access the protected endpoint (`/ogc-api/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
+With the resource and permission created, attempts to access the protected endpoint (`/eoepcauser/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
 
 ```
 bash resource-protection-validation.sh
@@ -345,7 +345,7 @@ The `JOB ID` is used to monitor the progress of the job execution - most notably
 
 ```bash
 curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}" \
+  -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/jobs/${JOB_ID}" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
@@ -358,7 +358,7 @@ Similarly, once the job is completed successfully, then details of the results (
 
 ```bash
 curl --silent --show-error \
-  -X GET "${OAPIP_HOST}/ogc-api/jobs/${JOB_ID}/results" \
+  -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/jobs/${JOB_ID}/results" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
