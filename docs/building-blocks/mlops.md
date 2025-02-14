@@ -317,7 +317,8 @@ This section walks you through a minimal scenario of creating a GitLab project, 
     
 2. **Create the Project**
     
-    - Click **New Project** and enter the name: `mlops-test-project`.
+    - Click **Create a Project** → **Create blank project** and enter the name: `mlops-test-project`.
+    - Set the project URL to the user `root`.
     - Set the project visibility to **Public**.
     - Click **Create project**.
 
@@ -400,9 +401,10 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         pip install mlflow scikit-learn
         ```
         
-    - Run the provided example script:
+    - Run the provided example script located in the `data/` directory of `deployment-guide/scripts/mlops`:
         
         ```bash
+        cd data/
         python example-script.py
         ```
         
