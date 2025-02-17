@@ -115,6 +115,8 @@ helm upgrade -i resource-health reference-repo/resource-health-reference-deploym
   -n resource-health --create-namespace
 ```
 
+> As part of this deployment, you will have a preconfigured healthcheck that runs every minute. 
+
 ---
 
 ### 2. Configure Ingress
@@ -152,6 +154,8 @@ bash validation.sh
 Access the Resource Health Web dashboard at: 
 
 `https://resource-health.${INGRESS_HOST}`
+
+![Dashboard](../img/resource-health/dashboard.jpeg)
 
 Access the Health Checks at:
 
@@ -203,6 +207,8 @@ helm upgrade -i resource-health reference-repo/resource-health-reference-deploym
 Visit the Resource Health Web dashboard and select the **Create new check** dropdown to define a new health check.
 
 Fill in the form similarly to the Helm-based approach, including the template, schedule, name, script and requirements.
+
+![New Check](../img/resource-health/new-check.jpeg)
 
 ---
 
