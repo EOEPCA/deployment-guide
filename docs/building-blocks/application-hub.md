@@ -67,7 +67,7 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
-| OIDC             | OIDC                                   | See below                                                                                          |
+| IAM             | IAM must be installed for this                                   | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
 
 **Clone the Deployment Guide Repository:**
 
@@ -178,18 +178,24 @@ When prompted, fill out the general Keycloak authentication details (if not alre
 - **Username**: `eric`
 - **Password**: Choose a secure password.
 
-Alternatively you can create this user through the Keycloak admin interface.
+> Alternatively you can create this user through the Keycloak admin interface.
 
 
-5. **Create Groups**
+5. **Create Groups in AppHub**
 
-Once `eric` has been created, navigate to the Application Hub admin panel (`https://app-hub.${INGRESS_HOST}/hub/admin`).
+Once `eric` has been created, navigate to the Application Hub admin panel: 
 
-Select **> Manage Groups** and create the following groups with this exact naming:
+```
+https://app-hub.${INGRESS_HOST}/hub/admin
+```
 
-- `group-1`
-- `group-2`
-- `group-3`
+- **Log in** with the `eric` user.
+
+- Select **> Manage Groups** and create the following groups with this exact naming:
+
+    - `group-1`
+    - `group-2`
+    - `group-3`
 
 ![Create Groups](../img/apphub/groups.jpeg)
 

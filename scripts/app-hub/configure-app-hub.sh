@@ -19,7 +19,7 @@ if [ -z "$APPHUB_CLIENT_SECRET" ]; then
 fi
 
 if [ -z "$APPHUB_JUPYTERHUB_CRYPT_KEY" ]; then
-    export APPHUB_JUPYTERHUB_CRYPT_KEY=$(openssl rand -base64 32)
+    export APPHUB_JUPYTERHUB_CRYPT_KEY=$(generate_aes_key 32)
     add_to_state_file "APPHUB_JUPYTERHUB_CRYPT_KEY" $APPHUB_JUPYTERHUB_CRYPT_KEY
 fi
 
