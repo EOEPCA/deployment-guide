@@ -48,6 +48,12 @@ gitlab:
     ingress:
       tls:
         secretName: gitlab-tls
+    # Limit resources for a small (resource limited) deployment
+    # resources:
+    #   requests:
+    #     cpu: 200m
+    #     memory: 2G
+    # minReplicas: 1
 
   kas:
     ingress:
@@ -62,6 +68,10 @@ gitlab:
           key: config
   sidekiq:
     enabled: true
+    # Limit resources for a small (resource limited) deployment
+    # resources:
+    #   requests:
+    #     cpu: 500m
 
 registry:
   enabled: false

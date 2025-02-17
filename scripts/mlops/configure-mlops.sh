@@ -22,7 +22,7 @@ ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "t
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
     echo "OIDC is enabled. Please provide the following details:"
-    ask "MLOPS_OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}" is_non_empty
+    ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "$HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}" is_non_empty
     ask "MLOPS_OIDC_CLIENT_ID" "Enter the OIDC client ID for GitLab" "gitlab" is_non_empty
 
     if [ -z "$MLOPS_OIDC_CLIENT_SECRET" ]; then
