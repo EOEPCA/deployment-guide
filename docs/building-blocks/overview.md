@@ -5,7 +5,12 @@ This section provides instructions on how to deploy the various Building Blocks 
 
 ## Scripted Deployment Approach
 
-To simplify and standardise the deployment process, each Building Block comes with a set of scripts that automate configuration and installation tasks. 
+Each Building Block is designed for deployment via one or more **helm charts** - customised via helm `values` that configure the helm chart at deployment time. To simplify and standardise the deployment process, each Building Block comes with a set of scripts that automate configuration and installation tasks:
+
+* The scripts help to generate the `values.yaml` files that configure each BB instance
+* The scripted approach aids the integration amongst BBs by ensuring they are configured consistently.
+
+The approach comprises the following broad steps:
 
 1. **Prerequisites**: Each Building Block includes a list of prerequisites that must be met before deployment. These typically include Kubernetes, Helm, and other dependencies.
 2.	**Configuration Script**: Each Building Block includes a `configure-<component>.sh` script that collects necessary configuration parameters from the user, such as domain names, storage classes, and TLS settings. It generates helm values and other configuration files based on your inputs. There is sometimes an `apply-secrets.sh` script too that applies additional resources to the cluster.
