@@ -106,7 +106,8 @@ bash apply-secrets.sh
 
 **Secrets Created:**
 
-- `flowable-admin-credentials`: Contains Flowable admin username and password.
+- `flowable-admin-credentials` / `registration-harvester-secret`:<br>
+  _Contains Flowable admin username and password_
 
 ### 3. Deploy the Registration API Using Helm
 
