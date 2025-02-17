@@ -53,6 +53,10 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
         ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     fi
 
+    if [ -z "$REALM" ]; then
+        ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
+    fi
+
     add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
     envsubst <"ingress-template.yaml" >"generated-ingress.yaml"

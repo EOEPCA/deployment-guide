@@ -212,7 +212,7 @@ https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
 
 **Note:**
 
-- Replace `${INGRESS_HOST}` with your actual ingress host domain.
+- You can use `xdg-open` to open these URLs in your default browser after setting the `INGRESS_HOST` variable (`source ~/.eoepca/state`)
 
 ---
 

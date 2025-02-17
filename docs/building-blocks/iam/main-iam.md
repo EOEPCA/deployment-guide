@@ -182,7 +182,7 @@ bash ../utils/create-client.sh
 When prompted:
 
 - **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user<br>_See `~/.eoepca/state`_
-- **Keycloak base domain**: e.g. `auth.<YOUR-DOMAIN>`
+- **Keycloak base domain**: e.g. `auth.${INGRESS_HOST}`
 - **Realm**: Typically `eoepca`.
 - **Client ID**: For OPA, you should use `opa`.
 - **Client name** and **description**: Provide any helpful text<br>_e.g. name=`OPA Client` and description=`Open Policy Agent`_

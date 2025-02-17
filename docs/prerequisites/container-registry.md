@@ -154,7 +154,7 @@ bash validation.sh
 2. **Access Container Registry Dashboard:**
 
 ```
-https://harbor.<your-domain>
+https://harbor.${INGRESS_HOST}
 ```
 
  3. **Log In:**
@@ -178,7 +178,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 1. **Login to Harbor**:
 
     ```
-    docker login harbor.<your-domain>
+    docker login harbor.${INGRESS_HOST}
     ```
 
    Enter the admin username and password when prompted.
@@ -189,14 +189,14 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 
     ```
     docker pull alpine:latest
-    docker tag alpine:latest harbor.<your-domain>/library/alpine:latest
-    docker push harbor.<your-domain>/library/alpine:latest
+    docker tag alpine:latest harbor.${INGRESS_HOST}/library/alpine:latest
+    docker push harbor.${INGRESS_HOST}/library/alpine:latest
     ```
 
 3. **Pull an Image**:
 
     ```
-    docker pull harbor.<your-domain>/library/alpine:latest
+    docker pull harbor.${INGRESS_HOST}/library/alpine:latest
     ```
 
     **Note**: If you're using self-signed certificates or an untrusted CA, you may need to configure Docker to trust the registry's certificate.
@@ -207,7 +207,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 
     ```bash
     kubectl create secret docker-registry harbor-registry \
-      --docker-server=harbor.<your-domain> \
+      --docker-server=harbor.${INGRESS_HOST} \
       --docker-username=admin \
       --docker-password=<your-harbor-admin-password> \
       --docker-email=<your-email> \
@@ -220,7 +220,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
     spec:
       containers:
         - name: my-app
-          image: harbor.<your-domain>/my-project/my-app:latest
+          image: harbor.${INGRESS_HOST}/my-project/my-app:latest
       imagePullSecrets:
         - name: harbor-registry
     ```
