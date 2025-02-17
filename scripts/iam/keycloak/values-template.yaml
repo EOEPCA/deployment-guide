@@ -27,10 +27,10 @@ postgresql:
 # Resources
 #
 # Either using a preset
-# resourcesPreset: "large"
+resourcesPreset: "large"
 #
 # Or for a small (resource limited) deployment
-resources:
-  requests:
-    cpu: 200m
-    memory: 2048Mi
+# resources:
+#   requests:
+#     cpu: 200m
+#     memory: 2048Mi
