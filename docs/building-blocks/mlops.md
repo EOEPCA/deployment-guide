@@ -109,8 +109,7 @@ If you **don't** want to enable OIDC, you can skip directly to [Create Required 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
 ```bash
-cd deployment-guide/scripts/utils
-bash create-client.sh
+bash ../utils/create-client.sh
 ```
 
 When prompted:
@@ -395,6 +394,13 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         
 9. **Run a Simple MLflow Experiment**
     
+    > It is assumed that a python virtual environment is established for the following steps.<br>
+    > For example, using the `venv` module...
+    > ```bash
+    > python -m venv venv
+    > source venv/bin/activate
+    > ```
+
     - Ensure you have the required packages:
         
         ```bash
@@ -428,7 +434,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 
         ![Metrics](../img/mlops/metrics.jpeg)
 
-    > If you don't see the run, but the script ran successfully, check that you are logged into the SharingHub via Gitlab and that the project is correctly tagged.
+    > If you don't see the run, but the script ran successfully, check that you are logged into the SharingHub via Gitlab and that the project is correctly tagged.<br>Refresh the browser view if necessary.
 
 ---
 
