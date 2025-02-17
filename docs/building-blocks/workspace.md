@@ -181,7 +181,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-### 7.1 Create a Keycloak Client
+### 8.1 Create a Keycloak Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -204,7 +204,7 @@ When prompted:
 After it completes, you should see a JSON snippet confirming the newly created client.
 
 
-### 7.2 Define Resource Protection
+### 8.2 Define Resource Protection
 
 Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
@@ -232,7 +232,7 @@ When prompted:
 
 ---
 
-### 7.3 Create APISIX Route Ingress
+### 8.3 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 
