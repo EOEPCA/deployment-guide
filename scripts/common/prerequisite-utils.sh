@@ -162,13 +162,48 @@ function check_object_store_accessible() {
 
 function check_oidc_provider_accessible() {
     if [ -z "$OIDC_ISSUER_URL" ]; then
-        echo "⚠️  OIDC_ISSUER_URL environment variable is not set."
-        echo "   Please ensure that you have an accessible OIDC provider (e.g., Keycloak)"
-        echo "   You will be prompted to set this variable during the configuration script setup"
-        return 1
+
+        if [ -z "$KEYCLOAK_HOST" ]; then
+            ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+        fi
+
+        if [ -z "$REALM" ]; then
+            ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
+        fi
+
+        if [ -n "$KEYCLOAK_HOST" ] && [ -n "$REALM" ]; then
+            OIDC_ISSUER_URL="$HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}"
+            add_to_state_file "OIDC_ISSUER_URL" "$OIDC_ISSUER_URL"
+            validate_url "$OIDC_ISSUER_URL"
+
+            echo "✅ OIDC_ISSUER_URL is set to $OIDC_ISSUER_URL"
+            return 0
+        fi
+
+        echo "⚠️ OIDC_ISSUER_URL environment variable is not set."
+        ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "https://keycloak.com/realms/eoepca" is_non_empty
+
+        if [ -z "$OIDC_ISSUER_URL" ]; then
+            echo "❌ OIDC_ISSUER_URL is not set."
+            echo "   Please set the OIDC_ISSUER_URL environment variable."
+            return 1
+        fi
+
     fi
 
+    validate_url "$OIDC_ISSUER_URL"
     echo "✅ You have set the OIDC_ISSUER_URL environment variable."
+}
+
+function validate_url() {
+    local url="$1"
+    if curl -s -o /dev/null -w "%{http_code}" "$url" | grep -qE "200"; then
+        echo "✅ URL $url is accessible."
+        return 0
+    else
+        echo "❌ URL $url is not accessible."
+        return 1
+    fi
 }
 
 function check_internal_certificates() {
