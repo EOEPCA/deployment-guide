@@ -30,7 +30,9 @@ The Data Access BB consists of the following main components:
     - **stac**: STAC API for accessing geospatial metadata.
     - **raster**: Access to raster data via OGC APIs.
     - **vector**: Access to vector data via OGC APIs.
-2. **PostgreSQL with PostGIS and pgSTAC**: Database for storing geospatial metadata and data managed by the [Crunchy Data Postgres Operator (pgo)](https://access.crunchydata.com/documentation/postgres-operator).
+
+2. **PostgreSQL with PostGIS and pgSTAC**<br>
+   Database for storing geospatial metadata and data managed by the [Crunchy Data Postgres Operator (pgo)](https://access.crunchydata.com/documentation/postgres-operator).
     
 3. **Stacture and Terravis**: Components from EOX View Server providing:
     
@@ -40,7 +42,8 @@ The Data Access BB consists of the following main components:
     
 5. **Redis**: In-memory data structure store used by Tyk.
     
-6. **eoapi-support**: Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.
+6. **eoapi-support**<br>
+   Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.
     
 
 ---
