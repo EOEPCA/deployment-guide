@@ -24,7 +24,7 @@ As openEO runs on Apache Spark, we need a way to run this in a Kubernetes cluste
 
 ```bash
 helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
-    --repo https://kubeflow.github.io/spark-operator \
+    --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
     --version 2.0.2 \
     --namespace openeo-geotrellis \
     --create-namespace \
