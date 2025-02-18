@@ -226,7 +226,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
         - name: harbor-registry
     ```
 
-Alternatively, you may configure cluster-wide registry credentials - as mentioned under [Kubernetes Additional Guidance](http://0.0.0.0:8000/projects/deploy/en/latest/prerequisites/kubernetes/#creating-an-image-pull-secret-for-dockerhub).
+Alternatively, you may configure cluster-wide registry credentials - as mentioned under [Kubernetes Additional Guidance](kubernetes.md#creating-an-image-pull-secret-for-dockerhub).
 
 ***
 ## Uninstallation
