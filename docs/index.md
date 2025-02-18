@@ -2,9 +2,9 @@
 
 !!! ChangeLog
     
-    This `current` version of the Deployment Guide represents the development tip that goes beyond the [latest release version v1.4](../1.4).
+    This version of the Deployment Guide represents the stable tip of the `v1.x` release series - which goes beyond the [last formal release version v1.4](../1.4).
 
-    The following provides a summary of changes since the last release (v1.4)...
+    The following provides a summary of changes since the release (v1.4)...
 
     * **08/04/2023** - Correction to example usage of the data-access `harvester` CLI - in particular use of `-co, --config-override` for values override
     * **03/04/2024** - Update Identity Gatekeeper to chart version `1.0.12` with an alternative approach to establishing 'open' access to select request paths (e.g. for docs etc.), to simplify proxying to the backend resource server.
