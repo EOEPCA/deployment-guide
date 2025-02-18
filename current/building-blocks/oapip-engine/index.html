@@ -1,0 +1,2450 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/oapip-engine/">
+      
+      
+        <link rel="prev" href="../processing/">
+      
+      
+        <link rel="next" href="../openeo-engine/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>OGC API Processes - EOEPCA Deployment Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/eoepca.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#processing-ogc-api-processes-engine" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="EOEPCA Deployment Guide" class="md-header__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+      
+  <img src="../../img/favicon.ico" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            EOEPCA Deployment Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OGC API Processes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  Introduction
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../prerequisites/prerequisites-overview/" class="md-tabs__link">
+          
+  
+  EOEPCA+ Prerequisites
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../overview/" class="md-tabs__link">
+          
+  
+  Building Blocks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://eoepca.readthedocs.io/" class="md-tabs__link">
+        
+  
+    
+  
+  Further EOEPCA+ Documentation
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="EOEPCA Deployment Guide" class="md-nav__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+      
+  <img src="../../img/favicon.ico" alt="logo">
+
+    </a>
+    EOEPCA Deployment Guide
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/EOEPCA/deployment-guide" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Introduction
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Deployments
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Deployments
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/prerequisites-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    EOEPCA+ Prerequisites
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building Blocks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    EOEPCA+ Prerequisites
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            EOEPCA+ Prerequisites
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/prerequisites-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/kubernetes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kubernetes Requirements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Storage Requirements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/tls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TLS Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Optional Components
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Optional Components
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/minio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    S3 Storage (MinIO)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/container-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Container Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Deployment →
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Building Blocks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Building Blocks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deployment Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Identity & Access (IAM)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Identity & Access (IAM)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/main-iam/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/client-management/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client Administration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/advanced-iam/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Data
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-discovery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Discovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Registration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Processing & Analysis
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Processing & Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../processing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    OGC API Processes
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    OGC API Processes
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-configuration-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the Configuration Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-oapip-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy the OAPIP Engine
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy the OAPIP Engine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-helm-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy the Helm Chart
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-enable-oidc-with-keycloak" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optional: Enable OIDC with Keycloak
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional: Enable OIDC with Keycloak">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-create-a-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Create a Keycloak Client
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-define-resource-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Define Resource Protection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Define Resource Protection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protect-the-users-zoo-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Protect the user&rsquo;s zoo context
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-create-apisix-route-ingress" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Create APISIX Route Ingress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-confirm-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Confirm Protection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automated-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#web-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web Endpoints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-kubernetes-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Kubernetes Resources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-ogc-api-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via OGC API Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using the API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialise-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialise Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-process-convert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy Process convert
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execute-process-convert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execute Process convert
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-execution-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check Execution Status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-execution-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check Execution Results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#undeploy-process-convert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Undeploy Process convert
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uninstallation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#additional-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Cleanup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openeo-engine/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    openEO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mlops/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MLOps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    User Environments
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            User Environments
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workspace/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workspace
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-hub/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Hub
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Platform Monitoring & Quality
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Platform Monitoring & Quality
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-health/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Health
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-quality/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Quality
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://eoepca.readthedocs.io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Further EOEPCA+ Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-the-configuration-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the Configuration Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-oapip-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy the OAPIP Engine
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy the OAPIP Engine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-helm-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy the Helm Chart
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-enable-oidc-with-keycloak" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optional: Enable OIDC with Keycloak
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional: Enable OIDC with Keycloak">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-create-a-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Create a Keycloak Client
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-define-resource-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Define Resource Protection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Define Resource Protection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protect-the-users-zoo-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Protect the user&rsquo;s zoo context
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-create-apisix-route-ingress" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Create APISIX Route Ingress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-confirm-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Confirm Protection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automated-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#web-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web Endpoints
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-kubernetes-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Kubernetes Resources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-ogc-api-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via OGC API Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using the API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialise-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialise Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-process-convert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy Process convert
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execute-process-convert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execute Process convert
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-execution-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check Execution Status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-execution-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check Execution Results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#undeploy-process-convert" class="md-nav__link">
+    <span class="md-ellipsis">
+      Undeploy Process convert
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uninstallation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#additional-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Cleanup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/oapip-engine.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="processing-ogc-api-processes-engine">Processing - OGC API Processes Engine<a class="headerlink" href="#processing-ogc-api-processes-engine" title="Permanent link">⚓︎</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
+<p>The <strong>OGC API Processes Engine</strong> provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the <a href="https://zoo-project.github.io/docs/intro.html#what-is-zoo-project">ZOO-Project</a> <code>zoo-project-dru</code> implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 &amp; 2.</p>
+<ul>
+<li><strong>Standardised Interfaces</strong>: Implements OGC API Processes standards for interoperability.</li>
+<li><strong>Application Deployment</strong>: Supports deployment, replacement, and undeployment of applications.</li>
+<li><strong>Execution Engine</strong>: Executes applications using Kubernetes and Calrissian for CWL workflows.</li>
+</ul>
+<hr />
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
+<p>Before deploying the <strong>OGC API Processes Engine</strong>, ensure you have the following:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Requirement</th>
+<th>Documentation Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kubernetes</td>
+<td>Cluster (tested on v1.28)</td>
+<td><a href="../../prerequisites/kubernetes/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>Helm</td>
+<td>Version 3.5 or newer</td>
+<td><a href="https://helm.sh/docs/intro/install/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>kubectl</td>
+<td>Configured for cluster access</td>
+<td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>Ingress</td>
+<td>Properly installed</td>
+<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>TLS Certificates</td>
+<td>Managed via <code>cert-manager</code> or manually</td>
+<td><a href="../../prerequisites/tls/">TLS Certificate Management Guide</a></td>
+</tr>
+<tr>
+<td>Stage-In S3</td>
+<td>Accessible</td>
+<td><a href="../../prerequisites/minio/">MinIO Deployment Guide</a></td>
+</tr>
+<tr>
+<td>Stage-Out S3</td>
+<td>Accessible</td>
+<td><a href="../../prerequisites/minio/">MinIO Deployment Guide</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Clone the Deployment Guide Repository:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cd deployment-guide/scripts/processing/oapip
+</span></code></pre></div>
+<p><strong>Validate your environment:</strong></p>
+<p>Run the validation script to ensure all prerequisites are met:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash check-prerequisites.sh
+</span></code></pre></div>
+<hr />
+<h2 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Permanent link">⚓︎</a></h2>
+<h3 id="run-the-configuration-script">Run the Configuration Script<a class="headerlink" href="#run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-oapip.sh
+</span></code></pre></div>
+<p><strong>Configuration Parameters</strong></p>
+<ul>
+<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.<ul>
+<li><em>Example</em>: <code>example.com</code></li>
+</ul>
+</li>
+<li><strong><code>CLUSTER_ISSUER</code></strong> (if using <code>cert-manager</code>): Name of the ClusterIssuer.<ul>
+<li><em>Example</em>: <code>letsencrypt-http01-apisix</code></li>
+</ul>
+</li>
+<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.<ul>
+<li><em>Example</em>: <code>standard</code></li>
+</ul>
+</li>
+<li><strong><code>NODE_SELECTOR_KEY</code></strong>: Determine which nodes will run the processing workflows.<ul>
+<li><em>Example</em>: <code>kubernetes.io/os</code></li>
+<li><em>Read more</em>: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">Node Selector Documentation</a></li>
+</ul>
+</li>
+<li><strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector key.<ul>
+<li><em>Example</em>: <code>linux</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Stage-Out S3 Configuration:</strong></p>
+<p>Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the <a href="../../prerequisites/minio/">MinIO Deployment Guide</a>. These values should already be in your <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file if you followed the main deployment steps.</p>
+<ul>
+<li><strong><code>S3_ENDPOINT</code></strong>, <strong><code>S3_ACCESS_KEY</code></strong>, <strong><code>S3_SECRET_KEY</code></strong>, <strong><code>S3_REGION</code></strong>: Credentials and location details for the S3 bucket used as Stage-Out storage.</li>
+</ul>
+<p><strong>Stage-In S3 Configuration:</strong></p>
+<p>If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), specify these separately:</p>
+<ul>
+<li><strong><code>STAGEIN_S3_ENDPOINT</code></strong>, <strong><code>STAGEIN_S3_ACCESS_KEY</code></strong>, <strong><code>STAGEIN_S3_SECRET_KEY</code></strong>, <strong><code>STAGEIN_S3_REGION</code></strong></li>
+</ul>
+<p><strong>OIDC Configuration:</strong></p>
+<p>You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the <a href="#optional-oidc-configuration">OIDC Configuration</a> section after deployment.</p>
+<p>When prompted for the <code>Client ID</code> we recommend setting it to <code>oapip-engine</code>.</p>
+<p>For instructions on how to set up IAM, you can follow the <a href="../iam/main-iam/">IAM Building Block</a> guide.</p>
+<hr />
+<h3 id="deploy-the-oapip-engine">Deploy the OAPIP Engine<a class="headerlink" href="#deploy-the-oapip-engine" title="Permanent link">⚓︎</a></h3>
+<h4 id="deploy-the-helm-chart">Deploy the Helm Chart<a class="headerlink" href="#deploy-the-helm-chart" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>zoo-project<span class="w"> </span>https://zoo-project.github.io/charts/
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>zoo-project
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>zoo-project-dru<span class="w"> </span>zoo-project/zoo-project-dru<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.3.22<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>processing<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
+</span></code></pre></div>
+<hr />
+<h2 id="optional-enable-oidc-with-keycloak">Optional: Enable OIDC with Keycloak<a class="headerlink" href="#optional-enable-oidc-with-keycloak" title="Permanent link">⚓︎</a></h2>
+<p>If you <strong>do not</strong> wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the <a href="#validation">Validation</a> section.</p>
+<p>If you <strong>do</strong> want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) <strong>and</strong> you enabled <code>OIDC</code> in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).</p>
+<blockquote>
+<p>Before starting this please ensure that you have followed our <a href="../iam/main-iam/">IAM Deployment Guide</a> and have a Keycloak instance running.</p>
+</blockquote>
+<h3 id="21-create-a-keycloak-client">2.1 Create a Keycloak Client<a class="headerlink" href="#21-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
+<p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>../../utils/create-client.sh
+</span></code></pre></div>
+<p>When prompted:</p>
+<ul>
+<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set).</li>
+<li><strong>Keycloak base domain</strong>: e.g. <code>auth.example.com</code></li>
+<li>
+<p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
+</li>
+<li>
+<p><strong>Client ID</strong>: For the OAPIP engine, you should use <code>oapip-engine</code>.</p>
+</li>
+<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g. <code>OAPIP Engine Client</code>).</li>
+<li><strong>Client secret</strong>: Enter the OAPIP Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
+<li><strong>Subdomain</strong>: Use <code>zoo</code> for the OAPIP engine. </li>
+<li><strong>Additional Subdomains</strong>: Leave blank.</li>
+</ul>
+<p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
+<hr />
+<h3 id="22-define-resource-protection">2.2 Define Resource Protection<a class="headerlink" href="#22-define-resource-protection" title="Permanent link">⚓︎</a></h3>
+<p>By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to <strong>restrict</strong> or <strong>fine-tune</strong> access to certain endpoints (like <code>/ogc-api/jobs/</code>).</p>
+<p>Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don&rsquo;t have a user, you can create one using:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>../../utils/create-user.sh
+</span></code></pre></div>
+<hr />
+<h4 id="protect-the-users-zoo-context">Protect the user&rsquo;s zoo context<a class="headerlink" href="#protect-the-users-zoo-context" title="Permanent link">⚓︎</a></h4>
+<p>Zoo uses a path prefix to establish a context within the processing service - such as <code>/&lt;username&gt;</code> or <code>/&lt;project&gt;</code>.</p>
+<p>Protection can be applied so that the context is accessible only by the owning user(s).</p>
+<p>For the purposes of this example we will assume the user <code>eoepcauser</code> - adjust for your own purposes.</p>
+<ol>
+<li>Use the <code>protect-resource.sh</code>:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>../../utils/protect-resource.sh
+</span></code></pre></div>
+<p>When prompted (adjust values for your needs):</p>
+<ul>
+<li><strong>Client ID</strong>: <code>oapip-engine</code> (the client you created in the previous step)</li>
+<li><strong>Username</strong>: e.g. <code>eoepcauser</code> </li>
+<li><strong>Display Name</strong>: <code>eoepcauser</code></li>
+<li><strong>Resource Type</strong>: <code>urn:oapip-engine:resources:default</code></li>
+<li><strong>Resource URI</strong>: <code>/eoepcauser/*</code> </li>
+</ul>
+<hr />
+<h3 id="23-create-apisix-route-ingress">2.3 Create APISIX Route Ingress<a class="headerlink" href="#23-create-apisix-route-ingress" title="Permanent link">⚓︎</a></h3>
+<p>Apply the APISIX route ingress:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span></code></pre></div>
+<hr />
+<h3 id="24-confirm-protection">2.4 Confirm Protection<a class="headerlink" href="#24-confirm-protection" title="Permanent link">⚓︎</a></h3>
+<p>With the resource and permission created, attempts to access the protected endpoint (<code>/eoepcauser/*</code>) without a valid token or with insufficient privileges should be denied. You can test it by:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash resource-protection-validation.sh
+</span></code></pre></div>
+<p>If this script shows 401 Authorization errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.</p>
+<p>For more detailed Keycloak testing (device flow, tokens, etc.), refer to <a href="../iam/advanced-iam/#resource-protection-with-keycloak-policies">Resource Protection with Keycloak Policies</a>.</p>
+<hr />
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
+<h3 id="automated-validation">Automated Validation<a class="headerlink" href="#automated-validation" title="Permanent link">⚓︎</a></h3>
+<p>This script performs a series of automated tests to validate the deployment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bash<span class="w"> </span>validation.sh
+</span></code></pre></div>
+<h3 id="web-endpoints">Web Endpoints<a class="headerlink" href="#web-endpoints" title="Permanent link">⚓︎</a></h3>
+<p>Check access to the service web endpoints:</p>
+<ul>
+<li><strong>ZOO-Project Swagger UI</strong> - <code>https://zoo.${INGRESS_HOST}/swagger-ui/oapip/</code></li>
+<li><strong>OGC API Processes Landing Page</strong> - <code>https://zoo.${INGRESS_HOST}/ogc-api/processes/</code></li>
+</ul>
+<h3 id="expected-kubernetes-resources">Expected Kubernetes Resources<a class="headerlink" href="#expected-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
+<p>Ensure that all Kubernetes resources are running correctly.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>processing
+</span></code></pre></div>
+<p><strong>Expected Output:</strong></p>
+<ul>
+<li>All pods should be in the <code>Running</code> state.</li>
+<li>No pods should be in <code>CrashLoopBackOff</code> or <code>Error</code> states.</li>
+</ul>
+<hr />
+<h3 id="via-ogc-api-processes">Via OGC API Processes<a class="headerlink" href="#via-ogc-api-processes" title="Permanent link">⚓︎</a></h3>
+<p>Validate the operation of the <code>zoo</code> service via its OGC API Processes interfaces.</p>
+<p>We offer a sample application that can be used to exercise the deployed service:</p>
+<ul>
+<li><code>convert</code> - a very simple &lsquo;hello world&rsquo; application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment</li>
+</ul>
+<hr />
+<h3 id="using-the-api">Using the API<a class="headerlink" href="#using-the-api" title="Permanent link">⚓︎</a></h3>
+<h4 id="initialise-environment">Initialise Environment<a class="headerlink" href="#initialise-environment" title="Permanent link">⚓︎</a></h4>
+<p>The following example commands assume use of <code>bash</code> shell.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>bash<span class="w"> </span>-l
+</span></code></pre></div>
+<p>Initialise environment variables used by the example commands.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span>
+</span></code></pre></div>
+<p>If you have OIDC enabled, run the <code>oapip-utils.sh</code> to generate a valid OIDC token that will be temporarily stored in your environment variables.</p>
+<p>This will ask you for the username and password for the user you added to the group to generate an access token.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>oapip-utils.sh
+</span></code></pre></div>
+<blockquote>
+<p><strong><em>NOTE that the token is short-lived - so it may be necessary to repeat this step to refresh the token - in the case that the following commands fail unexpectedly</em></strong></p>
+</blockquote>
+<hr />
+<h4 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h4>
+<p>Retrieve the list of available (currently deployed) processes.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span>
+</span></code></pre></div>
+<blockquote>
+<p>This command will omit the <code>Authorization</code> header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the <code>source oapip-utils.sh</code> script to generate the <code>OAPIP_AUTH_HEADER</code> variable.</p>
+</blockquote>
+<hr />
+<h4 id="deploy-process-convert">Deploy Process <code>convert</code><a class="headerlink" href="#deploy-process-convert" title="Permanent link">⚓︎</a></h4>
+<p>Deploy the <code>convert</code> app&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s">{</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="s">  &quot;executionUnit&quot;: {</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s">    &quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/convert-url-app.cwl&quot;,</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="s">    &quot;type&quot;: &quot;application/cwl&quot;</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="s">  }</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="s">}</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<p>Check the <code>convert</code> application is deployed&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<hr />
+<h4 id="execute-process-convert">Execute Process <code>convert</code><a class="headerlink" href="#execute-process-convert" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nv">JOB_ID</span><span class="o">=</span><span class="k">$(</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url/execution&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Prefer: respond-async&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq -r &#39;.jobID&#39;</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">  {</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">    &quot;inputs&quot;: {</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s">      &quot;fn&quot;: &quot;resize&quot;,</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="s">      &quot;url&quot;:  &quot;https://eoepca.org/media_portal/images/logo6_med.original.png&quot;,</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="s">      &quot;size&quot;: &quot;50%&quot;</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="s">    }</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="s">  }</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="s">EOF</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="k">)</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;JOB ID: </span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<hr />
+<h4 id="check-execution-status">Check Execution Status<a class="headerlink" href="#check-execution-status" title="Permanent link">⚓︎</a></h4>
+<p>The <code>JOB ID</code> is used to monitor the progress of the job execution - most notably the status field that indicates whether the job is in-progress (<code>running</code>), or its completion status (<code>successful</code> / <code>failed</code>). Note that the full URL for job monitoring is also returned in the <code>Location</code> header of the http response to the execution request.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/jobs/</span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<hr />
+<h4 id="check-execution-results">Check Execution Results<a class="headerlink" href="#check-execution-results" title="Permanent link">⚓︎</a></h4>
+<p>Similarly, once the job is completed successfully, then details of the results (outputs) can be retrieved.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/jobs/</span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">/results&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<hr />
+<h4 id="undeploy-process-convert">Undeploy Process <code>convert</code><a class="headerlink" href="#undeploy-process-convert" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<hr />
+<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
+<p>To remove the Processing Building Block from your cluster:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
+</span></code></pre></div>
+<h3 id="additional-cleanup">Additional Cleanup<a class="headerlink" href="#additional-cleanup" title="Permanent link">⚓︎</a></h3>
+<ul>
+<li><strong>Delete Persistent Volume Claims (PVCs):</strong></li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>-l<span class="w"> </span>app.kubernetes.io/instance<span class="o">=</span>zoo-project-dru
+</span></code></pre></div>
+<hr />
+<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
+<ul>
+<li><a href="https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru">ZOO-Project DRU Helm Chart</a></li>
+<li><a href="https://github.com/EOEPCA/eoepca-proc-service-template"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Cookiecutter Template</a></li>
+<li><a href="https://github.com/EOEPCA/deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide Repository</a></li>
+<li><a href="https://www.ogc.org/standards/ogcapi-processes">OGC API Processes Standards</a></li>
+<li><a href="https://www.commonwl.org/">Common Workflow Language (CWL)</a></li>
+<li><a href="https://github.com/Duke-GCB/calrissian">Calrissian Documentation</a></li>
+</ul>
+<hr />
+<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">⚓︎</a></h2>
+<p>If you have any issues or suggestions, please open an issue on the <a href="https://github.com/EOEPCA/deployment-guide/issues"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+Deployment Guide GitHub Repository</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../processing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Overview
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../openeo-engine/" class="md-footer__link md-footer__link--next" aria-label="Next: openEO">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                openEO
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

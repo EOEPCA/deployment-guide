@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/data-access/">
+        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-discovery/">
       
       
-        <link rel="prev" href="../resource-registration/">
+        <link rel="prev" href="../iam/advanced-iam/">
       
       
-        <link rel="next" href="../processing/">
+        <link rel="next" href="../resource-registration/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data Access - EOEPCA Deployment Guide</title>
+        <title>Resource Discovery - EOEPCA Deployment Guide</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-access-deployment-guide" class="md-skip">
+        <a href="#resource-discovery-deployment-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -101,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Access
+              Resource Discovery
             
           </span>
         </div>
@@ -907,10 +907,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../resource-discovery/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Resource Discovery
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -919,6 +939,188 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interfaces
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-and-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation and Operation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation and Operation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-automated-validation-optional-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Automated Validation (Optional Script)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-manual-validation-via-web-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Manual Validation via Web Browser
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-manual-validation-via-curl-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Manual Validation via cURL / Command Line
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Manual Validation via cURL / Command Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-basic-liveness-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Basic Liveness Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-testing-ogc-csw" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Testing OGC CSW
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-testing-stac-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Testing STAC API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-searching-stac-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Searching STAC Items
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ingesting-sample-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Ingesting Sample Records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validating-kubernetes-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validating Kubernetes Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading-official-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading &amp; Official Docs
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -949,30 +1151,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Data Access
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../data-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -981,182 +1163,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#components-overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Components Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deployment-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deployment Steps
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Deployment Steps">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-run-the-configuration-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Run the Configuration Script
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-deploy-postgresql-operator-and-eoapi" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Deploy PostgreSQL Operator and eoAPI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-deploy-stacture" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Deploy Stacture
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-deploy-tyk-gateway-and-redis" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Deploy Tyk Gateway and Redis
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-monitoring-the-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      5. Monitoring the Deployment
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#6-accessing-the-data-access-services" class="md-nav__link">
-    <span class="md-ellipsis">
-      6. Accessing the Data Access Services
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-and-validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing and Validation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Testing and Validation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-access-the-swagger-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Access the Swagger UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-run-demo-jupyter-notebooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Run Demo Jupyter Notebooks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-perform-basic-api-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Perform Basic API Tests
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1551,14 +1557,29 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#components-overview" class="md-nav__link">
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Components Overview
+      Key Features
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interfaces
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1578,58 +1599,100 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Deployment Steps">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-and-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation and Operation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation and Operation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-run-the-configuration-script" class="md-nav__link">
+  <a href="#1-automated-validation-optional-script" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Run the Configuration Script
+      1. Automated Validation (Optional Script)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-deploy-postgresql-operator-and-eoapi" class="md-nav__link">
+  <a href="#2-manual-validation-via-web-browser" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Deploy PostgreSQL Operator and eoAPI
+      2. Manual Validation via Web Browser
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-deploy-stacture" class="md-nav__link">
+  <a href="#3-manual-validation-via-curl-command-line" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Deploy Stacture
+      3. Manual Validation via cURL / Command Line
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Manual Validation via cURL / Command Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-basic-liveness-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Basic Liveness Check
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-deploy-tyk-gateway-and-redis" class="md-nav__link">
+  <a href="#32-testing-ogc-csw" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Deploy Tyk Gateway and Redis
+      3.2. Testing OGC CSW
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-monitoring-the-deployment" class="md-nav__link">
+  <a href="#33-testing-stac-api" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Monitoring the Deployment
+      3.3. Testing STAC API
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#6-accessing-the-data-access-services" class="md-nav__link">
+  <a href="#34-searching-stac-items" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Accessing the Data Access Services
+      3.4. Searching STAC Items
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ingesting-sample-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Ingesting Sample Records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validating-kubernetes-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validating Kubernetes Resources
     </span>
   </a>
   
@@ -1641,60 +1704,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing-and-validation" class="md-nav__link">
+  <a href="#further-reading-official-docs" class="md-nav__link">
     <span class="md-ellipsis">
-      Testing and Validation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Testing and Validation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-access-the-swagger-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Access the Swagger UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-run-demo-jupyter-notebooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Run Demo Jupyter Notebooks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-perform-basic-api-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Perform Basic API Tests
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
+      Further Reading &amp; Official Docs
     </span>
   </a>
   
@@ -1715,7 +1727,7 @@
                   
 
   
-    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/data-access.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/resource-discovery.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1723,57 +1735,31 @@
   
 
 
-<h1 id="data-access-deployment-guide">Data Access Deployment Guide<a class="headerlink" href="#data-access-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p>The <strong>Data Access</strong> Building Block provides feature-rich and reliable interfaces to geospatial data assets stored in the platform, addressing both human and machine users. This guide provides step-by-step instructions to deploy the Data Access BB in your Kubernetes cluster.</p>
+<h1 id="resource-discovery-deployment-guide">Resource Discovery Deployment Guide<a class="headerlink" href="#resource-discovery-deployment-guide" title="Permanent link">⚓︎</a></h1>
+<p>The <strong>Resource Discovery</strong> building block provides a standards-based Earth Observation (<abbr title="Earth Observation">EO</abbr>) metadata catalogue, supporting OGC CSW, OGC API Records, STAC, and OpenSearch. It combines and extends the functionality previously known as the &ldquo;Resource Catalogue,&rdquo; but has now evolved to handle additional resource types and deeper integration with data-catalogue components like <strong>eoAPI</strong>. Under the hood it still leverages <strong>pycsw</strong> for OGC compliance and can also integrate with <strong>pgSTAC</strong> (via eoAPI) for large-scale STAC metadata handling. This guide provides step-by-step instructions to deploy Resource Discovery in your Kubernetes cluster.</p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The Data Access Building Block combines capabilities from two complementary libraries:</p>
+<p>The Resource Discovery building block is a key component of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ ecosystem. It enables users to aggregate, manage, and retrieve <abbr title="Earth Observation">EO</abbr> metadata from multiple sources. By adhering to open standards, it ensures discoverability and interoperability, facilitating integration with existing systems and enhancing scalability.</p>
+<h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓︎</a></h3>
 <ul>
-<li><strong>eoAPI</strong>: Provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.</li>
-<li><strong>EOX View Server (Stacture and Terravis)</strong>: Adds support for OGC API Coverages, OGC WCS, and advanced rendering mechanisms.</li>
+<li><strong>Metadata Management</strong>: Aggregate and retrieve <abbr title="Earth Observation">EO</abbr> metadata efficiently across multiple resource types.  </li>
+<li><strong>Standards Compliance</strong>: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.  </li>
+<li><strong>Discoverability</strong>: Advanced search capabilities—supporting bounding boxes, time intervals, free-text, and more.  </li>
+<li><strong>Scalability</strong>: Built on <strong>pycsw</strong> and optionally on <strong>pgSTAC</strong>, enabling flexible, scalable deployments.  </li>
+<li><strong>Federation</strong>: Supports platform federation by maintaining references to remote platforms.  </li>
+<li><strong>Transactional Support</strong>: Endpoints for creating, updating, and deleting resources where permitted.</li>
 </ul>
-<p>The building block offers:</p>
+<h3 id="interfaces">Interfaces<a class="headerlink" href="#interfaces" title="Permanent link">⚓︎</a></h3>
+<p>The Resource Discovery building block includes:</p>
 <ul>
-<li>STAC API for data discovery</li>
-<li>Support for retrieval and visualisation of features and coverages via standard OGC APIs</li>
-<li>Dynamic specification of which datasets should be delivered with which data access services</li>
-<li>Integration with other building blocks through shared databases (e.g., pgSTAC)</li>
+<li><strong>OGC CSW (2.0.2 and 3.0)</strong>  </li>
+<li><strong>OGC API - Records (Part 1: Core)</strong>  </li>
+<li><strong>STAC API 1.0.0</strong>  </li>
+<li><strong>OpenSearch</strong> with OGC <abbr title="Earth Observation">EO</abbr>, Geo, and Time extensions  </li>
+<li><strong>Optional Dataset Catalogue</strong> via <strong>eoAPI</strong> for STAC-based ingestion of granule-level data  </li>
 </ul>
-<hr />
-<h2 id="components-overview">Components Overview<a class="headerlink" href="#components-overview" title="Permanent link">⚓︎</a></h2>
-<p>The Data Access BB consists of the following main components:</p>
-<ol>
-<li>
-<p><strong>eoAPI</strong>: A set of microservices for geospatial data access, including:</p>
-<ul>
-<li><strong>stac</strong>: STAC API for accessing geospatial metadata.</li>
-<li><strong>raster</strong>: Access to raster data via OGC APIs.</li>
-<li><strong>vector</strong>: Access to vector data via OGC APIs.</li>
-</ul>
-</li>
-<li>
-<p><strong>PostgreSQL with PostGIS and pgSTAC</strong><br>
-   Database for storing geospatial metadata and data managed by the <a href="https://access.crunchydata.com/documentation/postgres-operator">Crunchy Data Postgres Operator (pgo)</a>.</p>
-</li>
-<li>
-<p><strong>Stacture and Terravis</strong>: Components from EOX View Server providing:</p>
-<ul>
-<li><strong>Stacture</strong>: Bridges STAC API with OGC API Coverages and OGC WCS.</li>
-<li><strong>Terravis</strong>: Provides advanced rendering and processing capabilities.
-4. <strong>Tyk Gateway</strong>: API Gateway for authentication, authorization, rate-limiting, and caching, integrated with the Identity Management BB.</li>
-</ul>
-</li>
-<li>
-<p><strong>Redis</strong>: In-memory data structure store used by Tyk.</p>
-</li>
-<li>
-<p><strong>eoapi-support</strong><br>
-   Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.</p>
-</li>
-</ol>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
-<p>Before deploying the Data Access Building Block, ensure you have the following:</p>
 <table>
 <thead>
 <tr>
@@ -1799,234 +1785,179 @@
 <td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>Ingress Controller</td>
+<td>Ingress</td>
 <td>Properly installed</td>
 <td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>TLS Certificates</td>
-<td>Managed via <code>cert-manager</code> or manually</td>
-<td><a href="../../prerequisites/tls/">TLS Certificate Management Guide</a></td>
-</tr>
-<tr>
-<td>Object Store</td>
-<td>Accessible object store (i.e. MinIO)</td>
-<td><a href="../../prerequisites/minio/">MinIO Deployment Guide</a></td>
+<td>Cert Manager</td>
+<td>Properly installed</td>
+<td><a href="../../prerequisites/tls/">Installation Guide</a></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Clone the Deployment Guide Repository:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.0-beta<span class="w"> </span>https://github.com/EOEPCA/deployment-guide
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/data-access
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/resource-discovery
 </span></code></pre></div>
 <p><strong>Validate your environment:</strong></p>
-<p>Run the validation script to ensure all prerequisites are met:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>check-prerequisites.sh
 </span></code></pre></div>
 <hr />
 <h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">⚓︎</a></h2>
-<h3 id="1-run-the-configuration-script">1. Run the Configuration Script<a class="headerlink" href="#1-run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
-<p>The configuration script will prompt you for necessary configuration values, generate configuration files, and prepare for deployment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-data-access.sh
+<ol>
+<li><strong>Run the Configuration Script</strong></li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-resource-discovery.sh
 </span></code></pre></div>
-<p><strong>Configuration Parameters</strong></p>
-<p>During the script execution, you will be prompted to provide:</p>
+<p><strong>Configuration Parameters</strong><br />
+During the script execution, you will be prompted to provide:</p>
 <ul>
-<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.<ul>
+<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.  <ul>
 <li><em>Example</em>: <code>example.com</code></li>
 </ul>
 </li>
-<li><strong><code>CLUSTER_ISSUER</code></strong> (optional): Cert-manager Cluster Issuer for TLS certificates.<ul>
-<li><em>Example</em>: <code>letsencrypt-prod</code></li>
+<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager Cluster Issuer for TLS certificates.  <ul>
+<li><em>Example</em>: <code>letsencrypt-http01-apisix</code></li>
 </ul>
 </li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.<ul>
+<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.  <ul>
 <li><em>Example</em>: <code>standard</code></li>
 </ul>
 </li>
-<li><strong><code>S3_HOST</code></strong>: Host URL for MinIO or S3-compatible storage.<ul>
-<li><em>Example</em>: <code>minio.example.com</code></li>
 </ul>
-</li>
-<li><strong><code>S3_ACCESS_KEY</code></strong>: Access key for your S3 storage.</li>
-<li><strong><code>S3_SECRET_KEY</code></strong>: Secret key for S3 storage.</li>
-</ul>
-<h3 id="2-deploy-postgresql-operator-and-eoapi">2. Deploy PostgreSQL Operator and eoAPI<a class="headerlink" href="#2-deploy-postgresql-operator-and-eoapi" title="Permanent link">⚓︎</a></h3>
-<ol>
-<li><strong>Install the PostgreSQL Operator (pgo) from the Crunchy Data OCI registry:</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>pgo<span class="w"> </span>oci://registry.developers.crunchydata.com/crunchydata/pgo<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">5</span>.6.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--values<span class="w"> </span>postgres/generated-values.yaml
-</span></code></pre></div>
 <ol start="2">
-<li><strong>Install <code>eoAPI</code>:</strong></li>
+<li><strong>Deploy Resource Discovery Using Helm</strong></li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoapi<span class="w"> </span>https://devseed.com/eoapi-k8s/
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoapi
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi<span class="w"> </span>eoapi/eoapi<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.5.2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-discovery<span class="w"> </span>eoepca-dev/rm-resource-catalogue<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-beta2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-discovery<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
+</span></code></pre></div>
+<p>Deploy the ingress for the Resource Discovery service:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span></code></pre></div>
+<hr />
+<h2 id="validation-and-operation">Validation and Operation<a class="headerlink" href="#validation-and-operation" title="Permanent link">⚓︎</a></h2>
+<h3 id="1-automated-validation-optional-script">1. Automated Validation (Optional Script)<a class="headerlink" href="#1-automated-validation-optional-script" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>validation.sh
+</span></code></pre></div>
+<h3 id="2-manual-validation-via-web-browser">2. Manual Validation via Web Browser<a class="headerlink" href="#2-manual-validation-via-web-browser" title="Permanent link">⚓︎</a></h3>
+<p>Most Resource Discovery endpoints can be accessed directly in a browser:</p>
+<ul>
+<li><strong>Landing/Home Page</strong>  </li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/
+</span></code></pre></div>
+You should see an HTML landing page or a minimal JSON response with links to the various endpoints.</p>
+<ul>
+<li><strong>Swagger UI (OpenAPI)</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openapi?f<span class="o">=</span>html
+</span></code></pre></div>
+Opens a human-friendly UI showing available endpoints and interactive documentation.  </p>
+<ul>
+<li><strong>OGC API - Records / STAC Collections</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/collections
+</span></code></pre></div>
+Should return a JSON or HTML response listing available collections.</p>
+<ul>
+<li><strong>Conformance</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/conformance
+</span></code></pre></div>
+Confirms which OGC API conformance classes and standards are supported by the server.</p>
+<p>If these return meaningful responses (especially HTTP 200 with JSON or HTML data), it indicates that your Resource Discovery instance is operational.</p>
+<h3 id="3-manual-validation-via-curl-command-line">3. Manual Validation via cURL / Command Line<a class="headerlink" href="#3-manual-validation-via-curl-command-line" title="Permanent link">⚓︎</a></h3>
+<p>Using the command line can be a quick way to check endpoints and see raw responses. Below are some example commands.</p>
+<h4 id="31-basic-liveness-check">3.1. Basic Liveness Check<a class="headerlink" href="#31-basic-liveness-check" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-I<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
+</span></code></pre></div>
+<h4 id="32-testing-ogc-csw">3.2. Testing OGC CSW<a class="headerlink" href="#32-testing-ogc-csw" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/csw?service=CSW&amp;version=2.0.2&amp;request=GetCapabilities&quot;</span>
+</span></code></pre></div>
+<ul>
+<li>A successful response should be an XML Capabilities document containing service metadata.  </li>
+</ul>
+<h4 id="33-testing-stac-api">3.3. Testing STAC API<a class="headerlink" href="#33-testing-stac-api" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac&quot;</span>
+</span></code></pre></div>
+<ul>
+<li>You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.</li>
+</ul>
+<h4 id="34-searching-stac-items">3.4. Searching STAC Items<a class="headerlink" href="#34-searching-stac-items" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">   </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">        &quot;bbox&quot;: [-180, -90, 180, 90],</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">        &quot;datetime&quot;: &quot;2010-01-01T00:00:00Z/2025-12-31T23:59:59Z&quot;,</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">        &quot;limit&quot;: 5</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="s1">      }&#39;</span>
+</span></code></pre></div>
+<p>You should receive a JSON response listing zero or more STAC items that match the query. If you have not yet ingested any items, you may get an empty result array (<code>"features": []</code>).  </p>
+<h3 id="4-ingesting-sample-records">4. Ingesting Sample Records<a class="headerlink" href="#4-ingesting-sample-records" title="Permanent link">⚓︎</a></h3>
+<p><strong>Find the Resource Catalogue Pod</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-discovery
+</span></code></pre></div>
+<p>Look for a pod name similar to <code>resource-catalogue-service-abcd1234-efgh5678</code>.</p>
+<p><strong>Copy the Sample File</strong> (<code>sample_record.xml</code>) to the pod.</p>
+<blockquote>
+<p>The sample record is provided in the <code>scripts/resource-discovery</code> directory of the deployment guide repository.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w"> </span>cp<span class="w"> </span>sample_record.xml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>resource-discovery/&lt;YOUR-RESOURCE-CATALOGUE-POD&gt;:/tmp/sample_record.xml
 </span></code></pre></div>
 <ol start="3">
-<li><strong>Deploy the ingress:</strong></li>
+<li><strong>Access the Pod</strong>:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
-</span></code></pre></div>
-<ol start="4">
-<li><strong>(Optional) Install <code>eoapi-support</code></strong> for Grafana, Prometheus, and the metrics server:</li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-support<span class="w"> </span>eoapi/eoapi-support<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.1.7<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-support/generated-values.yaml
-</span></code></pre></div>
-<blockquote>
-<p><strong>Note</strong>: If you prefer to monitor Data Access with your own monitoring solution, you can skip this step.</p>
-</blockquote>
-<hr />
-<h3 id="3-deploy-stacture">3. Deploy Stacture<a class="headerlink" href="#3-deploy-stacture" title="Permanent link">⚓︎</a></h3>
-<p>Stacture bridges the STAC API with OGC API Coverages and WCS. It also handles advanced rendering through Terravis.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eox<span class="w"> </span>https://charts-public.hub.eox.at/
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eox
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>stacture<span class="w"> </span>eox/stacture<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span>--values<span class="w"> </span>stacture/generated-values.yaml
-</span></code></pre></div>
-<blockquote>
-<p>This deploys <strong>Stacture</strong> and <strong>Terravis</strong> with images tagged at <code>v0.0.8</code> (configured in your <code>stacture/generated-values.yaml</code>).</p>
-</blockquote>
-<hr />
-<h3 id="4-deploy-tyk-gateway-and-redis">4. Deploy Tyk Gateway and Redis<a class="headerlink" href="#4-deploy-tyk-gateway-and-redis" title="Permanent link">⚓︎</a></h3>
-<ol>
-<li><strong>Install Redis for Tyk Gateway:</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>bitnami<span class="w"> </span>https://charts.bitnami.com/bitnami
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>bitnami
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>tyk-redis<span class="w"> </span>bitnami/redis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">20</span>.1.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--values<span class="w"> </span>tyk-gateway/redis-generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;YOUR-RESOURCE-CATALOGUE-POD&gt;<span class="w"> </span>-n<span class="w"> </span>resource-discovery<span class="w"> </span>--<span class="w"> </span>/bin/bash
 </span></code></pre></div>
 <ol start="2">
-<li><strong>Install Tyk Gateway:</strong></li>
+<li><strong>Load the Sample Record using pycsw</strong></li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>tyk-oss<span class="w"> </span>https://helm.tyk.io/public/helm/charts/
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>tyk-oss
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>tyk-oss<span class="w"> </span>tyk-oss/tyk-oss<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">1</span>.6.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span>--values<span class="w"> </span>tyk-gateway/generated-values.yaml
+<p>From within the container, run:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>pycsw-admin.py<span class="w"> </span>load-records<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>--config<span class="w"> </span>/etc/pycsw/pycsw.yml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>--path<span class="w"> </span>/tmp/sample_record.xml
 </span></code></pre></div>
-<p>Tyk integrates with Identity Management for secure access and additional capabilities such as rate limiting or caching.</p>
-<hr />
-<h3 id="5-monitoring-the-deployment">5. Monitoring the Deployment<a class="headerlink" href="#5-monitoring-the-deployment" title="Permanent link">⚓︎</a></h3>
-<p>After deploying, you can monitor the status of the deployments:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
-</span></code></pre></div>
-<p>Check that all pods are in the <code>Running</code> state and that services/ingresses are properly exposed.</p>
-<hr />
-<h3 id="6-accessing-the-data-access-services">6. Accessing the Data Access Services<a class="headerlink" href="#6-accessing-the-data-access-services" title="Permanent link">⚓︎</a></h3>
-<p>Once the deployment is complete and all pods are running, you can access the services:</p>
+<ol start="3">
+<li><strong>Verify the Ingested Record</strong></li>
+</ol>
 <ul>
 <li>
-<p><strong>eoAPI STAC API:</strong><br />
-<code>https://eoapi.${INGRESS_HOST}/stac/</code></p>
+<p><strong>Via Web Browser / UI</strong><br />
+    Navigate to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://resource-catalogue.&lt;INGRESS_HOST&gt;/collections/metadata:main/items
+</span></code></pre></div>
+<p>Confirm that the newly ingested record (titled <code>EOEPCA Sample Record</code>) appears in the search results.</p>
 </li>
 <li>
-<p><strong>Stacture API (coverages, WCS, etc.):</strong><br />
-<code>https://stacture.${INGRESS_HOST}/</code></p>
+<p><strong>Via Command Line</strong><br />
+    You can also use <code>curl</code> or other OGC-compliant requests to verify that the sample record is now discoverable.</p>
 </li>
 </ul>
-<!-- currently ingress issues -->
-<ul>
-<li>
-<p><strong>Tyk Gateway Dashboard</strong> (if exposed via ingress):<br />
-<code>https://tyk-gateway.${INGRESS_HOST}/</code></p>
-</li>
-<li>
-<p><strong>Grafana</strong> (if <code>eoapi-support</code> is installed and ingress is enabled):<br />
-<code>https://eoapisupport.${INGRESS_HOST}/</code></p>
-</li>
-</ul>
-<!-- add default credentials -->
-
 <hr />
-<h2 id="testing-and-validation">Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Permanent link">⚓︎</a></h2>
-<p>Below are some quick ways to test and validate the Data Access services.</p>
-<h3 id="1-access-the-swagger-ui">1. Access the Swagger UI<a class="headerlink" href="#1-access-the-swagger-ui" title="Permanent link">⚓︎</a></h3>
-<p>The Data Access Building Block provides Swagger UI documentation for its APIs, allowing you to interact with the APIs directly from your browser.</p>
+<h3 id="validating-kubernetes-resources">Validating Kubernetes Resources<a class="headerlink" href="#validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
+<p>Ensure all Kubernetes resources are running correctly:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-discovery
+</span></code></pre></div>
 <ul>
-<li>
-<p><strong>eoAPI STAC API Swagger UI</strong>:<br />
-<code>https://eoapi.${INGRESS_HOST}/stac/api.html</code></p>
-</li>
-<li>
-<p><strong>eoAPI Raster API Swagger UI</strong>:<br />
-<code>https://eoapi.${INGRESS_HOST}/raster/api.html</code></p>
-</li>
-<li>
-<p><strong>eoAPI Vector API Swagger UI</strong>:<br />
-<code>https://eoapi.${INGRESS_HOST}/vector/api.html</code></p>
-</li>
-<li>
-<p><strong>Stacture API Swagger UI</strong>:<br />
-<code>https://stacture.${INGRESS_HOST}/</code></p>
-</li>
+<li>All pods should be in <code>Running</code> state.</li>
+<li>No pods should be stuck in <code>CrashLoopBackOff</code> or <code>Error</code>.</li>
 </ul>
-<p>Replace <code>${INGRESS_HOST}</code> with your actual ingress host domain.</p>
-<h3 id="2-run-demo-jupyter-notebooks">2. Run Demo Jupyter Notebooks<a class="headerlink" href="#2-run-demo-jupyter-notebooks" title="Permanent link">⚓︎</a></h3>
-<p>The <a href="https://github.com/EOEPCA/demo"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo</a> Jupyter Notebooks showcase how to interact with the Data Access services programmatically, including examples for data discovery, visualization, and data download using the Data Access APIs. See the <a href="https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb">04 Data Access Notebook</a> for usage examples.</p>
-<ul>
-<li>
-<p>Before running the notebooks, ensure that sample data is registered into the Data Access component. Follow the <a href="../resource-registration/">Resource Registration Guide</a>.</p>
-</li>
-<li>
-<p>In the notebooks, set the <code>base_domain</code> variable to reflect your endpoint:</p>
-</li>
-</ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">base_domain</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{INGRESS_HOST}</span><span class="s2">&quot;</span>
-</span></code></pre></div>
-<p>For more information on how to run the demo Jupyter Notebooks, please visit the <a href="https://github.com/EOEPCA/demo/blob/main/README.md"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo Readme</a>.</p>
-<h3 id="3-perform-basic-api-tests">3. Perform Basic API Tests<a class="headerlink" href="#3-perform-basic-api-tests" title="Permanent link">⚓︎</a></h3>
-<p>You can perform basic tests using tools like <code>curl</code> or directly through the Swagger UI.</p>
-<p><strong>Example: Retrieve STAC API Landing Page</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
-</span></code></pre></div>
-<p><strong>Example: Search STAC Items</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s1">    &quot;bbox&quot;: [-10, 35, 0, 45],</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">    &quot;datetime&quot;: &quot;2021-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">    &quot;limit&quot;: 10</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">  }&#39;</span>
-</span></code></pre></div>
 <hr />
-<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
-<p>To uninstall the Data Access Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>tyk-oss<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>tyk-redis<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>stacture<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>pgo<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
-</span></code></pre></div>
-<hr />
-<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
+<h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
 <ul>
-<li><a href="https://github.com/EOEPCA/data-access"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Data Access GitHub Repository</a></li>
-<li><a href="https://github.com/developmentseed/eoAPI">eoAPI Documentation</a></li>
-<li><a href="https://tyk.io/docs/">Tyk Gateway Documentation</a></li>
-<li><a href="https://access.crunchydata.com/documentation/postgres-operator/">Crunchy Data Postgres Operator Documentation</a></li>
+<li><a href="https://eoepca.readthedocs.io/projects/resource-discovery"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Resource Discovery Documentation</a>  </li>
+<li><a href="https://docs.pycsw.org/en/latest/">pycsw Official Documentation</a>  </li>
+<li><a href="https://github.com/geopython/pycsw">pycsw GitHub Repository</a>  </li>
+<li><a href="https://github.com/developmentseed/eoapi-k8s/blob/main/docs">eoAPI-k8s Documentation</a> (if using eoAPI for dataset-level STAC ingestion)</li>
 </ul>
 
 
@@ -2063,7 +1994,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../resource-registration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Resource Registration">
+          <a href="../iam/advanced-iam/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Advanced Configuration">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -2073,20 +2004,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Resource Registration
+                Advanced Configuration
               </div>
             </div>
           </a>
         
         
           
-          <a href="../processing/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
+          <a href="../resource-registration/" class="md-footer__link md-footer__link--next" aria-label="Next: Resource Registration">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Overview
+                Resource Registration
               </div>
             </div>
             <div class="md-footer__button md-icon">

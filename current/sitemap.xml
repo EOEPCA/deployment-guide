@@ -2,262 +2,117 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/application-hub/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/application-quality/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/data-access/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/mlops/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/oapip-engine/</loc>
+         <lastmod>2025-02-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/openeo-engine/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/overview/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/processing/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-catalogue/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-discovery/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-health/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-registration/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/workspace/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/cluster/cluster-prerequisites/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/iam/advanced-iam/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/cluster/helm-repositories/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/iam/client-management/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/cluster/kubernetes/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/iam/main-iam/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/cluster/prerequisite-tooling/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/container-registry/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/ades-zoo/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress-controller/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/application-hub/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/kubernetes/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/container-registry/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/minio/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/data-access/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/prerequisites-overview/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/iam-overview/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/storage/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/identity-service/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/login-service/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/pdp/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/persistence/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/registration-api/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/resource-catalogue/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/resource-protection-gluu/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/resource-protection-keycloak/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/user-profile/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/eoepca/workspace/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/container-registry/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/infrastructure-overview/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/ingress-controller/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/internal-tls/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/kubernetes-cluster-and-networking/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/minio/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/networking-loadbalancing/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/storage-provisioner/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/storage/storage-classes/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/tls/cert-manager/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/tls/internal-tls/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/tls/manual-tls/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/infra/tls/overview/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/application-hub-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/creodias-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/data-access-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/exploitation-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/processing-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/quickstart/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/scripted-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/simple-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/quickstart/userman-deployment/</loc>
-         <lastmod>2024-10-21</lastmod>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/tls/</loc>
+         <lastmod>2025-02-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

@@ -14,7 +14,7 @@
         <link rel="prev" href="../data-access/">
       
       
-        <link rel="next" href="../resource-health/">
+        <link rel="next" href="../oapip-engine/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Processing - EOEPCA Deployment Guide</title>
+        <title>Overview - EOEPCA Deployment Guide</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#processing-building-block-deployment-guide" class="md-skip">
+        <a href="#processing-ogc-api-processes-engine" class="md-skip">
           Skip to content
         </a>
       
@@ -74,22 +74,6 @@
     <div data-md-component="announce">
       
     </div>
-    
-      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
-        
-          <aside class="md-banner md-banner--warning">
-            <div class="md-banner__inner md-grid md-typeset">
-              
-  You're not viewing the latest release version.
-  <a href="../../..">
-    <strong>Click here to go to the latest release.</strong>
-  </a>
-
-            </div>
-            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
-          </aside>
-        
-      </div>
     
     
       
@@ -117,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Processing
+              Overview
             
           </span>
         </div>
@@ -175,10 +159,10 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../infra/infrastructure-overview/" class="md-tabs__link">
+        <a href="../../prerequisites/prerequisites-overview/" class="md-tabs__link">
           
   
-  Infrastructure Deployment
+  EOEPCA+ Prerequisites
 
         </a>
       </li>
@@ -198,7 +182,7 @@
         <a href="../overview/" class="md-tabs__link">
           
   
-  Application Deployment
+  Building Blocks
 
         </a>
       </li>
@@ -381,11 +365,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/infrastructure-overview/" class="md-nav__link">
+      <a href="../../prerequisites/prerequisites-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Infrastructure Deployment
+    EOEPCA+ Prerequisites
   </span>
   
 
@@ -406,7 +390,7 @@
         
   
   <span class="md-ellipsis">
-    Application Deployment
+    Building Blocks
   </span>
   
 
@@ -457,7 +441,7 @@
             
   
   <span class="md-ellipsis">
-    Infrastructure Deployment
+    EOEPCA+ Prerequisites
   </span>
   
 
@@ -467,7 +451,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Infrastructure Deployment
+            EOEPCA+ Prerequisites
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -478,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/infrastructure-overview/" class="md-nav__link">
+      <a href="../../prerequisites/prerequisites-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -499,11 +483,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/kubernetes-cluster-and-networking/" class="md-nav__link">
+      <a href="../../prerequisites/kubernetes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Cluster Setup
+    Kubernetes Requirements
   </span>
   
 
@@ -520,7 +504,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/ingress-controller/" class="md-nav__link">
+      <a href="../../prerequisites/storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Storage Requirements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -540,175 +545,16 @@
   
   
   
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    TLS Certificate Management
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4">
-            <span class="md-nav__icon md-icon"></span>
-            TLS Certificate Management
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../../infra/tls/overview/" class="md-nav__link">
+      <a href="../../prerequisites/tls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Overview
+    TLS Management
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../infra/tls/cert-manager/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Using Cert-Manager
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../infra/tls/manual-tls/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Manual TLS Management
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Storage Provisioning
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_5">
-            <span class="md-nav__icon md-icon"></span>
-            Storage Provisioning
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../infra/storage/storage-classes/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Storage Classes
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -740,7 +586,7 @@
             
   
   <span class="md-ellipsis">
-    Additional Infrastructure Components
+    Optional Components
   </span>
   
 
@@ -750,7 +596,7 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_6">
             <span class="md-nav__icon md-icon"></span>
-            Additional Infrastructure Components
+            Optional Components
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -761,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/minio/" class="md-nav__link">
+      <a href="../../prerequisites/minio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -782,7 +628,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../infra/container-registry/" class="md-nav__link">
+      <a href="../../prerequisites/container-registry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -863,7 +709,7 @@
             
   
   <span class="md-ellipsis">
-    Application Deployment
+    Building Blocks
   </span>
   
 
@@ -873,7 +719,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
-            Application Deployment
+            Building Blocks
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -888,7 +734,7 @@
         
   
   <span class="md-ellipsis">
-    Overview
+    Deployment Overview
   </span>
   
 
@@ -902,223 +748,61 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../application-quality/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Quality
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../resource-catalogue/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Resource Catalogue
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../data-access/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Data Access
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
   
   
     
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+    
+    
       
       
         
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
           
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
   
   <span class="md-ellipsis">
-    Processing
+    Identity & Access (IAM)
   </span>
   
 
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Identity & Access (IAM)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/main-iam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Processing
+    Deployment
   </span>
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#table-of-contents" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table of Contents
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Introduction">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architecture-overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Architecture Overview
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deployment-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deployment Steps
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation-and-operation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validation and Operation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Uninstallation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#additional-cleanup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Cleanup
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Feedback
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1131,11 +815,104 @@
   
   
     <li class="md-nav__item">
-      <a href="../resource-health/" class="md-nav__link">
+      <a href="../iam/client-management/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Resource Health
+    Client Administration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iam/advanced-iam/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Data
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-discovery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Discovery
   </span>
   
 
@@ -1173,6 +950,153 @@
   
   
     <li class="md-nav__item">
+      <a href="../data-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Processing & Analysis
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Processing & Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../oapip-engine/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OGC API Processes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openeo-engine/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    openEO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mlops/" class="md-nav__link">
         
   
@@ -1186,6 +1110,57 @@
   
 
               
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    User Environments
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            User Environments
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1224,6 +1199,107 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Platform Monitoring & Quality
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Platform Monitoring & Quality
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-health/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource Health
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application-quality/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Quality
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1276,116 +1352,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#table-of-contents" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table of Contents
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Introduction">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#architecture-overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Architecture Overview
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deployment-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deployment Steps
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation-and-operation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validation and Operation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Uninstallation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#additional-cleanup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Cleanup
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Feedback
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1407,208 +1373,14 @@
   
 
 
-<h1 id="processing-building-block-deployment-guide">Processing Building Block Deployment Guide<a class="headerlink" href="#processing-building-block-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p>The <strong>Processing Building Block</strong> provides a platform-hosted execution engine through which users can deploy, manage, and execute Earth Observation applications using the OGC API Processes standards. The Processing Building Block aligns with the <a href="https://zoo-project.github.io/docs/intro.html#what-is-zoo-project">Zoo Project</a> which is a WPS (Web Processing Service) implementation written in C, Python and JavaScript. It is an open source platform which implements the WPS 1.0.0 and WPS 2.0.0 standards edited by the Open Geospatial Consortium (OGC).</p>
-<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">⚓︎</a></h2>
-<ol>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#architecture-overview">Architecture Overview</a></li>
-<li><a href="#prerequisites">Prerequisites</a></li>
-<li><a href="#deployment">Deployment</a></li>
-<li><a href="#validation-and-operation">Validation and Operation</a></li>
-<li><a href="#uninstallation">Uninstallation</a></li>
-<li><a href="#further-reading">Further Reading</a></li>
-<li><a href="#feedback">Feedback</a></li>
-</ol>
-<hr />
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The Processing Building Block is made up of the following components:</p>
+<h1 id="processing-ogc-api-processes-engine">Processing - OGC API Processes Engine<a class="headerlink" href="#processing-ogc-api-processes-engine" title="Permanent link">⚓︎</a></h1>
+<p>The <strong>Processing Building Block</strong> provides deployment and execution of user-defined processing workflows within the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ platform - with support for OGC API Processes, OGC Application Packages and openEO. The Processing BB is deployed in the form of a number of <em>Processing Engine</em> variants that implements different workflow approaches:</p>
 <ul>
-<li><a href="https://zoo-project.github.io/docs/kernel/index.html#kernel-index">ZOO-Kernel</a>: A WPS compliant implementation written in C offering a powerful WPS server able to manage and chain WPS services. by loading dynamic libraries and code written in different languages.</li>
-<li><a href="https://zoo-project.github.io/docs/services/index.html#services-index">ZOO-Services</a>: A growing collection of ready to use Web Processing Services built on top of reliable open source libraries such as GDAL, GRASS GIS, OrfeoToolbox, CGAL and SAGA GIS.</li>
-<li><a href="https://zoo-project.github.io/docs/api/index.html#api-index">ZOO-API</a>: A server-side JavaScript API for creating, chaining and orchestrating the available WPS Services.</li>
-<li><a href="https://zoo-project.github.io/docs/client/index.html#client-index">ZOO-Client</a>: A client side JavaScript API for interacting with WPS servers and executing standard requests from web applications.</li>
+<li><a href="../oapip-engine/"><strong>OGC API Processes Engine</strong></a><br>
+  The <strong>OGC API Processes Engine</strong> provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the <a href="https://zoo-project.github.io/docs/intro.html#what-is-zoo-project">ZOO-Project</a> <code>zoo-project-dru</code> implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 &amp; 2.</li>
+<li><a href="../openeo-engine/"><strong>openEO Engine</strong></a><br>
+  The openEO engine provides an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The openEO engine is provided by the <a href="https://github.com/Open-EO/openeo-geopyspark-driver">OpenEO Geopyspark Driver</a>.</li>
 </ul>
-<h3 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">⚓︎</a></h3>
-<ul>
-<li><strong>Standardised Interfaces</strong>: Implements OGC API Processes standards for interoperability.</li>
-<li><strong>Application Deployment</strong>: Supports deployment, replacement, and undeployment of applications.</li>
-<li><strong>Execution Engine</strong>: Executes applications using Kubernetes and Calrissian for CWL workflows.</li>
-<li><strong>Integration</strong>: Works seamlessly with other <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+building blocks like Identity Management.</li>
-</ul>
-<p>![[processing-ADES-execute.png]]</p>
-<hr />
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
-<p>Before deploying the <strong>Processing Building Block</strong>, ensure you have the following:</p>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Requirement</th>
-<th>Documentation Link</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Kubernetes</td>
-<td>Cluster (tested on v1.28)</td>
-<td><a href="../../infra/kubernetes-cluster-and-networking/">Installation Guide</a></td>
-</tr>
-<tr>
-<td>Helm</td>
-<td>Version 3.5 or newer</td>
-<td><a href="https://helm.sh/docs/intro/install/">Installation Guide</a></td>
-</tr>
-<tr>
-<td>kubectl</td>
-<td>Configured for cluster access</td>
-<td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
-</tr>
-<tr>
-<td>Ingress</td>
-<td>Properly installed</td>
-<td><a href="../../infra/ingress-controller/">Installation Guide</a></td>
-</tr>
-<tr>
-<td>TLS Certificates</td>
-<td>Managed via <code>cert-manager</code> or manually</td>
-<td><a href="../../infra/tls/overview/">TLS Certificate Management Guide</a></td>
-</tr>
-<tr>
-<td>Stage-In S3</td>
-<td>Accessible</td>
-<td><a href="../../infra/minio/">MinIO Deployment Guide</a></td>
-</tr>
-<tr>
-<td>Stage-Out S3</td>
-<td>Accessible</td>
-<td><a href="../../infra/minio/">MinIO Deployment Guide</a></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Clone the Deployment Guide Repository:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cd deployment-guide/scripts/processing
-</span></code></pre></div>
-<p><strong>Validate your environment:</strong></p>
-<p>Run the validation script to ensure all prerequisites are met:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash check-prerequisites.sh
-</span></code></pre></div>
-<hr />
-<h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">⚓︎</a></h2>
-<ol>
-<li><strong>Run the Configuration Script</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-processing.sh
-</span></code></pre></div>
-<p><strong>Configuration Parameters</strong>
-- <strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.
-  - <em>Example</em>: <code>example.com</code>
-- <strong><code>CLUSTER_ISSUER</code></strong> (if using <code>cert-manager</code>): Name of the ClusterIssuer.
-  - <em>Example</em>: <code>letsencrypt-prod</code>
-- <strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.
-  - <em>Example</em>: <code>default</code></p>
-<p><strong>Stage-Out S3 Configuration</strong>:
-Before proceeding, ensure you have an existing S3 object store. If you need to set one up, refer to the <a href="../../infra/minio/">MinIO Deployment Guide</a>(). These values get automatically set in the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+state if you followed the Deployment Steps.</p>
-<ul>
-<li><code>S3_ENDPOINT</code>: S3 Endpoint URL.<ul>
-<li>Example: <code>minio.example.com</code></li>
-</ul>
-</li>
-<li><code>S3_ACCESS_KEY</code>: S3 Access Key.</li>
-<li><code>S3_SECRET_KEY</code>: S3 Secret Key.</li>
-<li><code>S3_REGION</code>: S3 Region.<ul>
-<li>Example: <code>us-west-1</code></li>
-</ul>
-</li>
-</ul>
-<p><strong>Stage-In S3 Configuration</strong>:
-This is where you will get the incoming data. 
-- This can be set to the same as the Stage-Out configuration if you are storing the data in the same S3. 
-- Alternatively if your stage-in is in a different location, for example, you are using the data hosted by CloudFerro, then update these.</p>
-<ul>
-<li><code>STAGEIN_S3_ENDPOINT</code>: Stage-In S3 Endpoint URL.<ul>
-<li>Example: <code>stage-in-s3.example.com</code></li>
-</ul>
-</li>
-<li><code>STAGEIN_S3_ACCESS_KEY</code>: Stage-In S3 Access Key.</li>
-<li><code>STAGEIN_S3_SECRET_KEY</code>: Stage-In S3 Secret Key.</li>
-<li><code>STAGEIN_S3_REGION</code>: Stage-In S3 Region.<ul>
-<li>Example: <code>eu-west-2</code></li>
-</ul>
-</li>
-</ul>
-<p><strong>Important Notes:</strong></p>
-<ul>
-<li>If you choose <strong>not</strong> to use <code>cert-manager</code>, you will need to create the TLS secrets manually before deploying.</li>
-<li>The required TLS secret names are:<ul>
-<li><code>zoo-open-tls</code></li>
-</ul>
-</li>
-<li>For instructions on creating TLS secrets manually, please refer to the <a href="../../infra/tls/manual-tls/">Manual TLS Certificate Management</a> section in the TLS Certificate Management Guide.</li>
-</ul>
-<ol start="3">
-<li><strong>Deploy the Processing BB Using Helm</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>install<span class="w"> </span>zoo-project-dru<span class="w"> </span>zoo-project-dru<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.2.6<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--repo<span class="w"> </span>https://zoo-project.github.io/charts/<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--namespace<span class="w"> </span>processing<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--create-namespace
-</span></code></pre></div>
-<hr />
-<h2 id="validation-and-operation">Validation and Operation<a class="headerlink" href="#validation-and-operation" title="Permanent link">⚓︎</a></h2>
-<p><strong>Automated Validation:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>validation.sh
-</span></code></pre></div>
-<p><strong>Manual Validation:</strong></p>
-<ol>
-<li><strong>Check Kubernetes Resources:</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-l<span class="w"> </span>app.kubernetes.io/name<span class="o">=</span>zoo-project-dru-kubeproxy<span class="w"> </span>--all-namespaces
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-l<span class="w"> </span>app.kubernetes.io/instance<span class="o">=</span>zoo-project-dru<span class="w"> </span>--all-namespaces
-</span></code></pre></div>
-<ol start="2">
-<li><strong>Access Domain:</strong></li>
-</ol>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>https://zoo-open.&lt;your-domain&gt;
-</span></code></pre></div>
-<ol start="3">
-<li><strong>Test the OGC API Processes Endpoint:</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s1">&#39;https://zoo-open.&lt;your-domain&gt;/ogc-api/processes&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Accept: application/json&#39;</span>
-</span></code></pre></div>
-<ol start="4">
-<li><strong>Access the Swagger page and test the endpoints:</strong></li>
-</ol>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>https://zoo-open.&lt;your-domain&gt;/swagger-ui/oapip
-</span></code></pre></div>
-<hr />
-<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
-<p>To remove the Processing Building Block from your cluster:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
-</span></code></pre></div>
-<h3 id="additional-cleanup">Additional Cleanup<a class="headerlink" href="#additional-cleanup" title="Permanent link">⚓︎</a></h3>
-<ul>
-<li><strong>Delete Persistent Volume Claims (PVCs):</strong></li>
-</ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>-l<span class="w"> </span>app.kubernetes.io/instance<span class="o">=</span>zoo-project-dru
-</span></code></pre></div>
-<hr />
-<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
-<ul>
-<li><a href="https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru">ZOO-Project DRU Helm Chart</a></li>
-<li><a href="https://github.com/EOEPCA/eoepca-proc-service-template"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+Cookiecutter Template</a></li>
-<li><a href="https://github.com/EOEPCA/deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+Deployment Guide Repository</a></li>
-<li><a href="https://www.ogc.org/standards/ogcapi-processes">OGC API Processes Standards</a></li>
-<li><a href="https://www.commonwl.org/">Common Workflow Language (CWL)</a></li>
-<li><a href="https://github.com/Duke-GCB/calrissian">Calrissian Documentation</a></li>
-</ul>
-<hr />
-<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">⚓︎</a></h2>
-<p>If you have any issues or suggestions, please open an issue on the <a href="https://github.com/EOEPCA/deployment-guide/issues"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+Deployment Guide GitHub Repository</a>.</p>
 
 
 
@@ -1661,13 +1433,13 @@ This is where you will get the incoming data.
         
         
           
-          <a href="../resource-health/" class="md-footer__link md-footer__link--next" aria-label="Next: Resource Health">
+          <a href="../oapip-engine/" class="md-footer__link md-footer__link--next" aria-label="Next: OGC API Processes">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Resource Health
+                OGC API Processes
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1701,7 +1473,7 @@ This is where you will get the incoming data.
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>

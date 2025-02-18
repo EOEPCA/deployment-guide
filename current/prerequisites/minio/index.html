@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-health/">
+        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/minio/">
       
       
-        <link rel="prev" href="../application-hub/">
+        <link rel="prev" href="../tls/">
       
       
-        <link rel="next" href="../application-quality/">
+        <link rel="next" href="../container-registry/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Resource Health - EOEPCA Deployment Guide</title>
+        <title>S3 Storage (MinIO) - EOEPCA Deployment Guide</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#resource-health-deployment-guide" class="md-skip">
+        <a href="#eoepca-minio-deployment-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -101,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Resource Health
+              S3 Storage (MinIO)
             
           </span>
         </div>
@@ -155,11 +155,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../prerequisites/prerequisites-overview/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../prerequisites-overview/" class="md-tabs__link">
           
   
   EOEPCA+ Prerequisites
@@ -173,13 +175,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../overview/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../building-blocks/overview/" class="md-tabs__link">
           
   
   Building Blocks
@@ -365,7 +365,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../prerequisites/prerequisites-overview/" class="md-nav__link">
+      <a href="../prerequisites-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -386,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../building-blocks/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -403,269 +403,6 @@
           </ul>
         </nav>
       
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    EOEPCA+ Prerequisites
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            EOEPCA+ Prerequisites
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/prerequisites-overview/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Overview
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/kubernetes/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kubernetes Requirements
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/storage/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Storage Requirements
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Ingress Controller Setup
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/tls/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    TLS Management
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Optional Components
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_6">
-            <span class="md-nav__icon md-icon"></span>
-            Optional Components
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/minio/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    S3 Storage (MinIO)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../prerequisites/container-registry/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Container Registry
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Application Deployment →
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -702,10 +439,429 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    EOEPCA+ Prerequisites
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            EOEPCA+ Prerequisites
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prerequisites-overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kubernetes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kubernetes Requirements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Storage Requirements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingress-controller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ingress Controller Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TLS Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Optional Components
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Optional Components
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    S3 Storage (MinIO)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    S3 Storage (MinIO)
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scripted-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scripted Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Steps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-minio" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configure MinIO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deploy-minio" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Deploy MinIO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-create-access-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Create Access Keys
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../container-registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Container Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../building-blocks/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Application Deployment →
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -716,7 +872,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Building Blocks
@@ -730,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../building-blocks/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -756,20 +912,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
-          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -794,7 +947,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iam/main-iam/" class="md-nav__link">
+      <a href="../../building-blocks/iam/main-iam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -815,7 +968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iam/client-management/" class="md-nav__link">
+      <a href="../../building-blocks/iam/client-management/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -836,7 +989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iam/advanced-iam/" class="md-nav__link">
+      <a href="../../building-blocks/iam/advanced-iam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -870,20 +1023,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
         
           
-          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -908,7 +1058,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../resource-discovery/" class="md-nav__link">
+      <a href="../../building-blocks/resource-discovery/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -929,7 +1079,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../resource-registration/" class="md-nav__link">
+      <a href="../../building-blocks/resource-registration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -950,7 +1100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../data-access/" class="md-nav__link">
+      <a href="../../building-blocks/data-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -984,20 +1134,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1022,7 +1169,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../processing/" class="md-nav__link">
+      <a href="../../building-blocks/processing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1043,7 +1190,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oapip-engine/" class="md-nav__link">
+      <a href="../../building-blocks/oapip-engine/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1064,7 +1211,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../openeo-engine/" class="md-nav__link">
+      <a href="../../building-blocks/openeo-engine/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1085,7 +1232,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mlops/" class="md-nav__link">
+      <a href="../../building-blocks/mlops/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1119,20 +1266,17 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1157,7 +1301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workspace/" class="md-nav__link">
+      <a href="../../building-blocks/workspace/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1178,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../application-hub/" class="md-nav__link">
+      <a href="../../building-blocks/application-hub/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1204,30 +1348,25 @@
                 
   
   
-    
   
   
-  
     
     
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
         
           
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1238,7 +1377,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_6">
             <span class="md-nav__icon md-icon"></span>
             Platform Monitoring & Quality
@@ -1249,30 +1388,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Resource Health
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../building-blocks/resource-health/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1281,164 +1400,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#components-overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Components Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deployment-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deployment Steps
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Deployment Steps">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-run-the-configuration-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Run the Configuration Script
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-deploy-the-resource-health-bb-helm" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Deploy the Resource Health BB (Helm)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-configure-ingress" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Configure Ingress
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-monitor-the-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Monitor the Deployment
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Usage
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-defining-health-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Defining Health Checks
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#defining-health-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Defining Health Checks
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1451,7 +1412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../application-quality/" class="md-nav__link">
+      <a href="../../building-blocks/application-quality/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1533,14 +1494,20 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#components-overview" class="md-nav__link">
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scripted-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      Components Overview
+      Scripted Deployment
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1564,36 +1531,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-run-the-configuration-script" class="md-nav__link">
+  <a href="#1-configure-minio" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Run the Configuration Script
+      1. Configure MinIO
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-deploy-the-resource-health-bb-helm" class="md-nav__link">
+  <a href="#2-deploy-minio" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Deploy the Resource Health BB (Helm)
+      2. Deploy MinIO
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-configure-ingress" class="md-nav__link">
+  <a href="#3-create-access-keys" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Configure Ingress
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-monitor-the-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Monitor the Deployment
+      3. Create Access Keys
     </span>
   </a>
   
@@ -1608,39 +1566,6 @@
   <a href="#validation" class="md-nav__link">
     <span class="md-ellipsis">
       Validation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Usage
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-defining-health-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Defining Health Checks
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#defining-health-checks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Defining Health Checks
     </span>
   </a>
   
@@ -1664,6 +1589,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1679,7 +1613,7 @@
                   
 
   
-    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/resource-health.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/prerequisites/minio.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1687,62 +1621,16 @@
   
 
 
-<h1 id="resource-health-deployment-guide">Resource Health Deployment Guide<a class="headerlink" href="#resource-health-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p>The <strong>Resource Health</strong> Building Block (BB) provides a flexible framework for monitoring the health and status of resources within the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> platform. This includes core platform services as well as derived or user-provided resources such as datasets, workflows, or user applications.</p>
+<h1 id="eoepca-minio-deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ MinIO Deployment Guide<a class="headerlink" href="#eoepca-minio-deployment-guide" title="Permanent link">⚓︎</a></h1>
+<p>MinIO is a high-performance object storage system that&rsquo;s compatible with the Amazon S3 API. In the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ ecosystem, MinIO can serve as the object storage backend for various services, including user workspaces, MLOps and other data storage needs. This does not preclude the possibility to configure an alternative S3-compatible object storage solution instead of MinIO.</p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The <strong>Resource Health BB</strong> allows you to:</p>
-<ul>
-<li><strong>Define and schedule</strong> automated health checks (e.g. daily, hourly).</li>
-<li><strong>Observe and visualise</strong> check outcomes via a web dashboard.</li>
-<li><strong>Integrate with external services</strong> (e.g. IAM for OIDC authentication, Data Access, Resource Catalogue).</li>
-<li><strong>Store results</strong> in OpenSearch, optionally visualizing them using OpenSearch Dashboards.</li>
-<li><strong>Collect telemetry</strong> via OpenTelemetry, enabling advanced monitoring and alerting.</li>
-</ul>
-<hr />
-<h2 id="components-overview">Components Overview<a class="headerlink" href="#components-overview" title="Permanent link">⚓︎</a></h2>
-<ol>
-<li><strong>Resource Health Web</strong></li>
-</ol>
-<ul>
-<li>Dashboard and front-end for viewing health checks and results.</li>
-<li>By default, can be secured with OIDC authentication (e.g. via Keycloak).</li>
-</ul>
-<ol start="2">
-<li><strong>Resource Health API(s)</strong></li>
-</ol>
-<ul>
-<li><strong>Telemetry API</strong> for gathering check results and metrics.</li>
-<li><strong>Health Checks API</strong> (Check Manager) for listing, scheduling, and managing checks.</li>
-</ul>
-<ol start="3">
-<li><strong>Health Check Runner</strong></li>
-</ol>
-<ul>
-<li>A flexible engine that executes your custom health checks at scheduled intervals.</li>
-</ul>
-<ol start="4">
-<li><strong>Mock API</strong> (optional sample)</li>
-</ol>
-<ul>
-<li>An example test resource used in demonstration checks (e.g. an hourly check to a mock endpoint).</li>
-</ul>
-<ol start="5">
-<li><strong>OpenSearch &amp; OpenSearch Dashboards</strong></li>
-</ol>
-<ul>
-<li>Stores logs, results, and trace data from your checks.</li>
-<li>Provides advanced visualisation and analytics features.</li>
-</ul>
-<ol start="6">
-<li><strong>OpenTelemetry Collector</strong></li>
-</ol>
-<ul>
-<li>Receives telemetry from health checks and forward them to OpenSearch.</li>
-</ul>
+<p>MinIO provides a scalable and high-performance object storage solution that&rsquo;s compatible with AWS S3 APIs. It&rsquo;s used within the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ platform to store and manage data securely.</p>
+<h3 id="scripted-deployment">Scripted Deployment<a class="headerlink" href="#scripted-deployment" title="Permanent link">⚓︎</a></h3>
+<p>The Minio deployment in this guide follows the same <a href="../../building-blocks/overview/#scripted-deployment-approach">Scripted Deployment Approach</a>, as for the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> building blocks.</p>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
-<p>Before deploying the Resource Health Building Block, ensure you have the following:</p>
+<p>Before you begin, make sure you have the following:</p>
 <table>
 <thead>
 <tr>
@@ -1755,12 +1643,7 @@
 <tr>
 <td>Kubernetes</td>
 <td>Cluster (tested on v1.28)</td>
-<td><a href="../../prerequisites/kubernetes/">Installation Guide</a></td>
-</tr>
-<tr>
-<td>Git</td>
-<td>Properly installed</td>
-<td><a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Installation Guide</a></td>
+<td><a href="../kubernetes/">Installation Guide</a></td>
 </tr>
 <tr>
 <td>Helm</td>
@@ -1768,150 +1651,159 @@
 <td><a href="https://helm.sh/docs/intro/install/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>Helm plugins</td>
-<td><code>helm-git</code>: Version 1.3.0 tested</td>
-<td><a href="https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install">Installation Guide</a></td>
-</tr>
-<tr>
 <td>kubectl</td>
 <td>Configured for cluster access</td>
 <td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>Ingress Controller</td>
-<td>Properly installed (e.g., NGINX)</td>
-<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+<td>Ingress</td>
+<td>Properly installed</td>
+<td><a href="../ingress-controller/">Ingress Controller Setup Guide</a></td>
 </tr>
 <tr>
-<td>Internal TLS Certificates</td>
-<td>ClusterIssuer for internal certificates</td>
-<td><a href="../../prerequisites/tls/#internal-tls">Internal TLS Setup</a></td>
+<td>TLS Certificates</td>
+<td>Managed via <code>cert-manager</code> or manually</td>
+<td><a href="../tls/">TLS Certificate Management Guide</a></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Clone the Deployment Guide Repository:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.0-beta<span class="w"> </span>https://github.com/EOEPCA/deployment-guide
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/resource-health
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/minio
 </span></code></pre></div>
 <p><strong>Validate your environment:</strong></p>
+<p>Run the validation script to ensure all prerequisites are met:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>check-prerequisites.sh
 </span></code></pre></div>
-<p>This script checks common prerequisites, including your Kubernetes/Helm installation, Git, and any required Helm plugins.</p>
 <hr />
 <h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">⚓︎</a></h2>
-<h3 id="1-run-the-configuration-script">1. Run the Configuration Script<a class="headerlink" href="#1-run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
-<p>The <code>configure-resource-health.sh</code> script gathers basic configuration inputs (such as your internal ClusterIssuer for TLS, storage class, etc.) and generates a <code>generated-values.yaml</code> that tailors the Resource Health deployment to your environment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-resource-health.sh
+<h3 id="1-configure-minio">1. Configure MinIO<a class="headerlink" href="#1-configure-minio" title="Permanent link">⚓︎</a></h3>
+<p>Run the configuration script:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-minio.sh
 </span></code></pre></div>
-<p>During execution, you will be prompted for:</p>
+<p><strong>During the script execution, you will be prompted for:</strong></p>
 <ul>
-<li><strong><code>INGRESS_HOST</code></strong>: Hostname.</li>
-<li><strong><code>INTERNAL_CLUSTER_ISSUER</code></strong>: Name of the cert-manager ClusterIssuer for internal TLS. (Default: <code>eoepca-ca-clusterissuer</code>)</li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes. (Default: <code>standard</code>)</li>
+<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.<ul>
+<li><em>Example</em>: <code>example.com</code></li>
 </ul>
-<hr />
-<h3 id="2-deploy-the-resource-health-bb-helm">2. Deploy the Resource Health BB (Helm)<a class="headerlink" href="#2-deploy-the-resource-health-bb-helm" title="Permanent link">⚓︎</a></h3>
+</li>
+<li><strong><code>CLUSTER_ISSUER</code></strong> (if using <code>cert-manager</code>): Name of the ClusterIssuer.<ul>
+<li><em>Example</em>: <code>letsencrypt-http01-apisix</code></li>
+</ul>
+</li>
+<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.<ul>
+<li><em>Example</em>: <code>standard</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-deploy-minio">2. Deploy MinIO<a class="headerlink" href="#2-deploy-minio" title="Permanent link">⚓︎</a></h3>
+<p>Install MinIO using Helm:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>minio<span class="w"> </span>https://charts.min.io/
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>minio
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>minio<span class="w"> </span>minio/minio<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">5</span>.4.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>minio<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
+</span></code></pre></div>
+<h3 id="3-create-access-keys">3. Create Access Keys<a class="headerlink" href="#3-create-access-keys" title="Permanent link">⚓︎</a></h3>
+<p>Access the MinIO Console to create access keys:</p>
 <ol>
-<li><strong>Install or upgrade Resource Health</strong></li>
+<li>Navigate to <code>https://console-minio.${INGRESS_HOST}/access-keys/new-account</code></li>
+<li>Log in using the <strong>MinIO User</strong> (<code>user</code>) and <strong>MinIO Password</strong> generated during the configuration step - see file <code>~/.eoepca/state</code>.</li>
+<li>Under <code>Access Keys</code> select to <code>Create access key +</code></li>
+<li>Note down or download the <strong>Access Key</strong> and <strong>Secret Key</strong>.</li>
+<li>Click <code>Create</code>.</li>
 </ol>
-<blockquote>
-<p><strong>Note</strong>: While the Resource Health BB is not yet in the official <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm charts, you can install it directly from the GitHub repository.</p>
-</blockquote>
-<ul>
-<li>
-<p>Clone the Resource Health repository and update dependencies:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.0.0-beta2<span class="w"> </span>https://github.com/EOEPCA/resource-health.git<span class="w"> </span>reference-repo
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>reference-repo/resource-health-reference-deployment
-</span></code></pre></div></p>
-</li>
-<li>
-<p>Install or upgrade the Resource Health Helm chart:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-health<span class="w"> </span>reference-repo/resource-health-reference-deployment<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-f<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-n<span class="w"> </span>resource-health<span class="w"> </span>--create-namespace
-</span></code></pre></div></p>
-</li>
-</ul>
-<blockquote>
-<p>As part of this deployment, you will have a preconfigured healthcheck that runs every minute. </p>
-</blockquote>
-<hr />
-<h3 id="2-configure-ingress">2. Configure Ingress<a class="headerlink" href="#2-configure-ingress" title="Permanent link">⚓︎</a></h3>
-<p>By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.</p>
-<p>For the purpose of this guide, the configuration script created a sample APISIX Ingress resource in <code>generated-ingress.yaml</code> that you can apply or adapt to your environment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
+<p>Run the following script to save these keys to your <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>./apply-secrets.sh
 </span></code></pre></div>
-<hr />
-<h3 id="3-monitor-the-deployment">3. Monitor the Deployment<a class="headerlink" href="#3-monitor-the-deployment" title="Permanent link">⚓︎</a></h3>
-<p>After the Helm installation finishes, check that all pods are running in the <strong>resource-health</strong> namespace:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>resource-health
-</span></code></pre></div>
+<blockquote>
+<p>By saving these keys to the <em><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file</em>, the credentials will be automatically set during the deployment of S3-integrated Building Blocks.</p>
+</blockquote>
 <hr />
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
-<ol>
-<li><strong>Run the validation script</strong>:</li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash<span class="w"> </span>validation.sh
+<p><strong>Automated Validation:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
-<ol start="2">
-<li><strong>Access the Resource Health Web</strong>:</li>
-</ol>
-<p>Access the Resource Health Web dashboard at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>https://resource-health.${INGRESS_HOST}
-</span></code></pre></div>
-<p><img alt="Dashboard" src="../../img/resource-health/dashboard.jpeg" /></p>
-<p>Access the Health Checks at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>https://resource-health.${INGRESS_HOST}/api/healthchecks/checks/
-</span></code></pre></div>
-<p>Check the Telemetry service status at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>https://resource-health.${INGRESS_HOST}/api/telemetry/healthz
-</span></code></pre></div>
+<p>This script performs several checks to validate your MinIO deployment:</p>
+<p><strong>Pod and Service Checks</strong>: Verifies that all MinIO pods are running and services are available.</p>
+<p><strong>Endpoint Checks</strong>: Confirms that the MinIO endpoints are accessible and return the expected HTTP status codes.</p>
+<p><strong>Functionality Tests</strong>:
+  - Creates a test bucket.
+  - Uploads a test file to the bucket.
+  - Deletes the test file.
+  - Deletes the test bucket.</p>
+<blockquote>
+<p><strong>Note</strong>: The script uses <code>s3cmd</code> to interact with MinIO. Ensure that <code>s3cmd</code> is installed and configured on your machine. Please refer to the <a href="https://s3tools.org/s3cmd"><code>s3cmd</code> Installation Guide</a>.</p>
+</blockquote>
 <hr />
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">⚓︎</a></h2>
-<h3 id="1-defining-health-checks">1. Defining Health Checks<a class="headerlink" href="#1-defining-health-checks" title="Permanent link">⚓︎</a></h3>
-<p>Health checks are typically defined in the Helm chart’s values under <code>resource-health.healthchecks.checks</code>. Each check has:</p>
+<p><strong>Manual Validation:</strong></p>
+<ol>
+<li>
+<p><strong>Check Kubernetes Resources:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>minio
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Access Dashboard:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>https://console-minio.${INGRESS_HOST}
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Log In</strong>:</p>
+<p>Use the credentials generated during the configuration step:</p>
 <ul>
-<li><strong>name</strong></li>
-<li><strong>schedule</strong> (a cron expression like <code>"@hourly"</code> or <code>"0 8 * * *"</code>)</li>
-<li><strong>requirements</strong> (optional Python packages)</li>
-<li><strong>script</strong> (the actual test logic)</li>
-<li><strong>env</strong> (environment variables, e.g. references to external services)</li>
+<li><strong>Username</strong>: <code>user</code></li>
+<li><strong>Password</strong>: <em>(the password generated by the script)</em></li>
 </ul>
-<h2 id="defining-health-checks">Defining Health Checks<a class="headerlink" href="#defining-health-checks" title="Permanent link">⚓︎</a></h2>
-<p><strong>Helm-based</strong> (preferred for GitOps or static config):</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">resource-health</span><span class="p">:</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">healthchecks</span><span class="p">:</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nt">checks</span><span class="p">:</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-trivial-check</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">        </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*&quot;</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">        </span><span class="nt">requirements</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/requirements.txt&quot;</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">        </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/trivial_check.py&quot;</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SOME_HOST</span>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">            </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://some-endpoint.example.com&quot;</span>
-</span></code></pre></div>
-<p>Apply with:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-health<span class="w"> </span>reference-repo/resource-health-reference-deployment<span class="w"> </span>-f<span class="w"> </span>generated-values.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
-</span></code></pre></div>
-<p><strong>UI-based</strong> (via the Resource Health Web):</p>
-<p>Visit the Resource Health Web dashboard and select the <strong>Create new check</strong> dropdown to define a new health check.</p>
-<p>Fill in the form similarly to the Helm-based approach, including the template, schedule, name, script and requirements.</p>
-<p><img alt="New Check" src="../../img/resource-health/new-check.jpeg" /></p>
+</li>
+<li>
+<p><strong>Verify Buckets</strong>:</p>
+<p>You should see the following buckets:</p>
+<ul>
+<li>eoepca</li>
+<li>cache-bucket</li>
+<li>gitlab-backup-storage</li>
+<li>gitlab-tmp-storage</li>
+<li>gitlab-lfs-storage</li>
+<li>mlopbb-mlflow-sharinghub</li>
+<li>mlopbb-sharinghub</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a Test Bucket</strong>:</p>
+<p>Use the dashboard to create a new bucket and upload a test file.</p>
+</li>
+</ol>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
-<p>To remove all Resource Health components and the namespace:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>resource-health<span class="w"> </span>-n<span class="w"> </span>resource-health
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-health
+<p>To remove MinIO and associated resources:</p>
+<ol>
+<li><strong>Uninstall MinIO</strong>:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio
+</span></code></pre></div>
+<ol start="2">
+<li><strong>Uninstall MinIO Bucket API</strong>:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio-bucket-api
+</span></code></pre></div>
+<ol start="3">
+<li><strong>Delete Secrets and PVCs</strong>:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span>minio-auth<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>--all
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
 <ul>
-<li><a href="https://github.com/EOEPCA/resource-health"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Resource Health GitHub</a></li>
-<li><a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Helm Charts</a></li>
-<li><a href="https://github.com/EOEPCA/deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide Repository</a></li>
-<li><a href="https://opensearch.org/docs/">OpenSearch Documentation</a></li>
-<li><a href="https://opentelemetry.io/">OpenTelemetry Documentation</a></li>
+<li><a href="https://docs.min.io/">MinIO Documentation</a></li>
+<li><a href="https://github.com/minio/minio/blob/master/helm/minio/values.yaml">MinIO Complete Helm Values</a></li>
 </ul>
+<hr />
+<h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">⚓︎</a></h2>
+<p>If you have any issues or suggestions, please open an issue on the <a href="https://github.com/EOEPCA/deployment-guide/issues"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide Repository</a>.</p>
 
 
 
@@ -1947,7 +1839,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../application-hub/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Application Hub">
+          <a href="../tls/" class="md-footer__link md-footer__link--prev" aria-label="Previous: TLS Management">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -1957,20 +1849,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Application Hub
+                TLS Management
               </div>
             </div>
           </a>
         
         
           
-          <a href="../application-quality/" class="md-footer__link md-footer__link--next" aria-label="Next: Application Quality">
+          <a href="../container-registry/" class="md-footer__link md-footer__link--next" aria-label="Next: Container Registry">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Application Quality
+                Container Registry
               </div>
             </div>
             <div class="md-footer__button md-icon">
