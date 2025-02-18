@@ -4,15 +4,21 @@ global:
 
 resource-health:
   telemetry_api:
+    # Limit resources for small deployment
+    # replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/telemetry"
 
   check_api:
+    # Limit resources for small deployment
+    # replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
   web:
+    # Limit resources for small deployment
+    # replicaCount: 1
     environmentFixed:
       - name: NEXT_PUBLIC_CHECK_MANAGER_ENDPOINT
         value: "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks"
@@ -27,7 +33,15 @@ resource-health:
         env:
           - name: MOCK_API_HOST
             value: http://resource-health-mock-api:5000
+  # Limit resources for small deployment
+  # mock_api:
+  #   replicaCount: 1
 
 opensearch:
   persistence:
     storageClass: ${STORAGE_CLASS}
+  # Limit resources for small deployment
+  # replicas: 1
+  # resources:
+  #   requests:
+  #     cpu: 500m
