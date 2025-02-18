@@ -150,8 +150,12 @@ bash validation.sh
 This checks that the required pods/services/ingress exist and that the main endpoint returns a 200 status code.
 
 2. **Manual**:
-    
-- `kubectl get all -n application-quality` to confirm everything is running.
+
+To confirm everything is running...
+
+```bash
+kubectl get all -n application-quality
+```
 
 ---
 
