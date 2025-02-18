@@ -178,7 +178,8 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 1. **Login to Harbor**:
 
     ```
-    docker login harbor.${INGRESS_HOST}
+    source ~/.eoepca/state
+    docker login -u admin -p "${HARBOR_ADMIN_PASSWORD}" harbor.${INGRESS_HOST}
     ```
 
    Enter the admin username and password when prompted.
@@ -224,6 +225,8 @@ To interact with Harbor using Docker commands, you need to configure your Docker
       imagePullSecrets:
         - name: harbor-registry
     ```
+
+Alternatively, you may configure cluster-wide registry credentials - as mentioned under [Kubernetes Additional Guidance](http://0.0.0.0:8000/projects/deploy/en/latest/prerequisites/kubernetes/#creating-an-image-pull-secret-for-dockerhub).
 
 ***
 ## Uninstallation
