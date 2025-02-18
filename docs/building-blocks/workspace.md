@@ -318,7 +318,8 @@ kubectl -n ws-deploytest get bucket
 
 #### 3. Query the Workspace API
 
-Port-forward the Workspace API service:
+Port-forward the Workspace API service:<br>
+_Use of port forward allows to bypass the IAM to simplify the test_
 
 ```bash
 kubectl -n workspace port-forward svc/workspace-api 8080:8080
