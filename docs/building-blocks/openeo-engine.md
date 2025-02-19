@@ -36,14 +36,15 @@ helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --set controller.uiIngress.enable=false \
     --set controller.resources.requests.cpu=200m \
     --set webhook.resources.requests.cpu=300m \
-    --set 'spark.jobNamespaces[0]=""'
+    --set spark.jobNamespaces\[0\]=''
 ```
 
 Take a look at the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) file for all the possible configuration options.
 
 #### ZooKeeper
 
-openEO uses [Apache ZooKeeper](https://zookeeper.apache.org/) under the hood. To get a basic ZK installed in your cluster, follow these steps:
+openEO uses [Apache ZooKeeper](https://zookeeper.apache.org/) under the hood. To get a basic ZK installed in your cluster, follow these steps:<br>
+_Note use of variables `${...}` that should be substituted with appropriate values_
 
 ```bash
 helm upgrade -i openeo-geotrellis-zookeeper zookeeper \
@@ -78,12 +79,12 @@ helm upgrade -i openeo-geotrellis-openeo sparkapplication \
     --values values.yaml
 ```
 
-Example values.yaml file:<br>
+Example `values.yaml` file:<br>
 _Note use of variables `${...}` that should be substituted with appropriate values_
 ```yaml
 ---
-image: vito-docker.artifactory.vgt.vito.be/openeo-geotrellis-kube
-imageVersion: latest
+image: eoepca/openeo-geotrellis-kube
+imageVersion: 2.0-beta2
 imagePullPolicy: Always
 sparkVersion: 3.2.0
 configMaps:
