@@ -23,6 +23,7 @@ consoleIngress:
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/upstream-read-timeout: "600s"
     ${CLUSTER_ISSUER_ANNOTATION}
+    k8s.apisix.apache.org/enable-websocket: "true"
   path: /
   hosts:
     - console-minio.${INGRESS_HOST}
