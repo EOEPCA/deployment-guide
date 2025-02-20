@@ -5,7 +5,7 @@ edit_uri: "edit/main/docs/"
 
 # Site navigation
 nav:
-  - Introduction:
+  - EOEPCA+ Deployment:
       - Introduction: index.md
       - Deployments:
         - EOEPCA+ Prerequisites: prerequisites/prerequisites-overview.md
@@ -32,9 +32,10 @@ nav:
       - Data Access: building-blocks/data-access.md
 
     - Processing & Analysis:
-        - Overview: building-blocks/processing.md
-        - OGC API Processes: building-blocks/oapip-engine.md
-        - openEO: building-blocks/openeo-engine.md
+        - Processing:
+          - Overview: building-blocks/processing.md
+          - OGC API Processes: building-blocks/oapip-engine.md
+          - openEO: building-blocks/openeo-engine.md
         - MLOps: building-blocks/mlops.md
 
     - User Environments:
