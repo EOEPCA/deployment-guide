@@ -28,35 +28,19 @@ configMaps:
 
     oidc_providers = [
         OidcProvider(
-            id="egi",
-            title="EGI Check-in",
-            issuer="https://aai.egi.eu/auth/realms/egi/",
-            scopes=["openid", "email"],
+            id="eoepca",
+            title="EOEPCA",
+            issuer="${OIDC_ISSUER_URL}",
             default_clients=[
                 {
-                    "id": "vito-default-client",
+                    "id": "demo-openeo-eoepca",
                     "grant_types": [
+                        "password",
                         "authorization_code+pkce",
                         "urn:ietf:params:oauth:grant-type:device_code+pkce",
                         "refresh_token",
                     ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
-        OidcProvider(
-            id="egi-dev",
-            title="EGI Check-in (dev)",
-            issuer="https://aai-dev.egi.eu/auth/realms/egi/",
-            default_clients=[
-                {
-                    "id": "openeo-eoepca-demo",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
+                    "redirect_urls": ["https://openeo.$INGRESS_HOST"],
                 }
             ],
         ),
