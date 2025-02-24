@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#processing-openeo-engine-early-access" class="md-skip">
+        <a href="#processing-openeo-engine-deployment-guide-early-access" class="md-skip">
           Skip to content
         </a>
       
@@ -1154,52 +1154,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#openeo-geotrellis" class="md-nav__link">
+  <a href="#introduction" class="md-nav__link">
     <span class="md-ellipsis">
-      openEO Geotrellis
+      Introduction
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="openEO Geotrellis">
+    <nav class="md-nav" aria-label="Introduction">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Prerequisites">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spark-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      Spark Operator
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#zookeeper" class="md-nav__link">
-    <span class="md-ellipsis">
-      ZooKeeper
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#helm-chart" class="md-nav__link">
-    <span class="md-ellipsis">
-      Helm Chart
+      Key Features
     </span>
   </a>
   
@@ -1211,19 +1178,74 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#openeo-aggregator" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      openEO Aggregator
+      Prerequisites
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="openEO Aggregator">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Steps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Steps">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#helm-chart_1" class="md-nav__link">
+  <a href="#1-run-the-configuration-script" class="md-nav__link">
     <span class="md-ellipsis">
-      Helm chart
+      1. Run the Configuration Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deploying-openeo-geotrellis" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Deploying openEO Geotrellis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Deploying openEO Geotrellis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-install-spark-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Install Spark Operator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-install-zookeeper" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Install ZooKeeper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-deploy-openeo-geotrellis-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Deploy openEO Geotrellis Using Helm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-deploy-openeo-aggregator-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Deploy openEO Aggregator using Helm
     </span>
   </a>
   
@@ -1231,6 +1253,137 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-automated-validation-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Automated Validation (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-manual-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Manual Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Manual Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-api-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check API Metadata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Collections
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-aggregator-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate Aggregator Response
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-submit-a-job-using-the-add-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Submit a Job Using the &ldquo;add&rdquo; Process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-monitor-the-job-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Monitor the Job Status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-retrieve-the-job-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Retrieve the Job Result
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading-official-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading &amp; Official Docs
+    </span>
+  </a>
   
 </li>
       
@@ -1520,52 +1673,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#openeo-geotrellis" class="md-nav__link">
+  <a href="#introduction" class="md-nav__link">
     <span class="md-ellipsis">
-      openEO Geotrellis
+      Introduction
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="openEO Geotrellis">
+    <nav class="md-nav" aria-label="Introduction">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Prerequisites">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spark-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      Spark Operator
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#zookeeper" class="md-nav__link">
-    <span class="md-ellipsis">
-      ZooKeeper
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#helm-chart" class="md-nav__link">
-    <span class="md-ellipsis">
-      Helm Chart
+      Key Features
     </span>
   </a>
   
@@ -1577,19 +1697,74 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#openeo-aggregator" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      openEO Aggregator
+      Prerequisites
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="openEO Aggregator">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Steps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Steps">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#helm-chart_1" class="md-nav__link">
+  <a href="#1-run-the-configuration-script" class="md-nav__link">
     <span class="md-ellipsis">
-      Helm chart
+      1. Run the Configuration Script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deploying-openeo-geotrellis" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Deploying openEO Geotrellis
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Deploying openEO Geotrellis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-install-spark-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Install Spark Operator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-install-zookeeper" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Install ZooKeeper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-deploy-openeo-geotrellis-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Deploy openEO Geotrellis Using Helm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-deploy-openeo-aggregator-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Deploy openEO Aggregator using Helm
     </span>
   </a>
   
@@ -1597,6 +1772,137 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-automated-validation-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Automated Validation (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-manual-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Manual Validation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Manual Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-api-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check API Metadata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Collections
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-aggregator-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate Aggregator Response
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-submit-a-job-using-the-add-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Submit a Job Using the &ldquo;add&rdquo; Process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-monitor-the-job-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Monitor the Job Status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-retrieve-the-job-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Retrieve the Job Result
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading-official-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading &amp; Official Docs
+    </span>
+  </a>
   
 </li>
       
@@ -1623,378 +1929,199 @@
   
 
 
-<h1 id="processing-openeo-engine-early-access">Processing - openEO Engine (Early Access)<a class="headerlink" href="#processing-openeo-engine-early-access" title="Permanent link">⚓︎</a></h1>
-<p><strong>Integration of the openEO Engine has not been completed in this release.</strong></p>
-<p>Instead we provide the following <strong>work-in-progress</strong> that provides some raw steps that can be used for early access:</p>
+<h1 id="processing-openeo-engine-deployment-guide-early-access">Processing - OpenEO Engine Deployment Guide (Early Access)<a class="headerlink" href="#processing-openeo-engine-deployment-guide-early-access" title="Permanent link">⚓︎</a></h1>
+<p>The <strong>OpenEO Engine</strong> building block provides early access to a unified processing platform for Earth observation data. It brings together two key components: <strong>openEO Geotrellis</strong> and <strong>openEO Aggregator</strong>. These components work together to offer a standards-based API for connecting to diverse <abbr title="Earth Observation">EO</abbr> cloud back-ends and to federate multiple openEO services into a cohesive processing platform.</p>
+<blockquote>
+<p><strong>Note:</strong> Integration of the openEO Engine is still in early access. The steps provided here are work-in-progress and may evolve in future releases.</p>
+</blockquote>
+<hr />
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
 <ul>
-<li><strong>openEO Geotrellis</strong><br>
-  <em>Provides an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way</em></li>
-<li><strong>openEO Aggregator</strong><br>
-  <em>Provides a software component to group multiple openEO back-ends together into a unified, federated openEO processing platform</em></li>
+<li><strong>openEO Geotrellis:</strong> Provides an API that simplifies connecting to <abbr title="Earth Observation">EO</abbr> cloud back-ends, running on Apache Spark in a Kubernetes environment.</li>
+<li><strong>openEO Aggregator:</strong> Groups multiple openEO back-ends into a unified, federated processing platform.</li>
+</ul>
+<h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓︎</a></h3>
+<ul>
+<li><strong>Unified API Access:</strong> Standardized endpoints allow clients to connect easily with multiple <abbr title="Earth Observation">EO</abbr> data services.</li>
+<li><strong>Federated Processing:</strong> Seamlessly aggregates back-ends, enabling flexible data processing.</li>
+<li><strong>Standards Compliance:</strong> Follows openEO specifications to maintain broad interoperability.</li>
+<li><strong>Scalability:</strong> Uses Kubernetes and Helm for robust, scalable deployments.</li>
+<li><strong>Early Access Deployment:</strong> Offers raw steps to deploy and experiment with the openEO Engine components.</li>
 </ul>
 <hr />
-<h2 id="openeo-geotrellis">openEO Geotrellis<a class="headerlink" href="#openeo-geotrellis" title="Permanent link">⚓︎</a></h2>
-<p>openEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way.
-The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.</p>
-<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h3>
-<h4 id="spark-operator">Spark Operator<a class="headerlink" href="#spark-operator" title="Permanent link">⚓︎</a></h4>
-<p>As openEO runs on Apache Spark, we need a way to run this in a Kubernetes cluster. For this requirement, we leverage the <a href="https://github.com/kubeflow/spark-operator">Kubeflow Spark-Operator</a>. Basic instructions on how to get it running inside you cluster are:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-sparkoperator<span class="w"> </span>spark-operator<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">2</span>.0.2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span>--set<span class="w"> </span>image.registry<span class="o">=</span>vito-docker.artifactory.vgt.vito.be<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span>--set<span class="w"> </span>image.repository<span class="o">=</span>spark-operator<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span>--set<span class="w"> </span><span class="s2">&quot;image.tag=v1beta2-2.0.2-3.5.2&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span>--set<span class="w"> </span>controller.batchScheduler.enable<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span>--set<span class="w"> </span>controller.podMonitor.create<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span>--set<span class="w"> </span>controller.uiIngress.enable<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span>--set<span class="w"> </span>controller.resources.requests.cpu<span class="o">=</span>200m<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span>--set<span class="w"> </span>webhook.resources.requests.cpu<span class="o">=</span>300m<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span>--set<span class="w"> </span>spark.jobNamespaces<span class="se">\[</span><span class="m">0</span><span class="se">\]</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
+<p>Before deploying, ensure your environment meets the following requirements:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Requirement</th>
+<th>Documentation Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kubernetes</td>
+<td>Cluster (tested on v1.28)</td>
+<td><a href="../../prerequisites/kubernetes/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>Helm</td>
+<td>Version 3.5 or newer</td>
+<td><a href="https://helm.sh/docs/intro/install/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>kubectl</td>
+<td>Configured for cluster access</td>
+<td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>Ingress</td>
+<td>Properly installed</td>
+<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+</tr>
+<tr>
+<td>Cert Manager</td>
+<td>Properly installed</td>
+<td><a href="../../prerequisites/tls/">Installation Guide</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Clone the Deployment Guide Repository:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cd deployment-guide/scripts/processing/openeo
 </span></code></pre></div>
-<p>Take a look at the <a href="https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml">values.yaml</a> file for all the possible configuration options.</p>
-<h4 id="zookeeper">ZooKeeper<a class="headerlink" href="#zookeeper" title="Permanent link">⚓︎</a></h4>
-<p>openEO uses <a href="https://zookeeper.apache.org/">Apache ZooKeeper</a> under the hood. To get a basic ZK installed in your cluster, follow these steps:</p>
-<blockquote>
-<p><em>Note use of variables <code>${...}</code> that should be substituted with appropriate values</em></p>
-</blockquote>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-zookeeper<span class="w"> </span>zookeeper<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">11</span>.1.6<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span>--set<span class="w"> </span>global.storageClass<span class="o">=</span><span class="si">${</span><span class="nv">STORAGE_CLASS</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span>--set<span class="w"> </span><span class="nv">replicacount</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span>--set<span class="w"> </span>autopurge.purgeInterval<span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span>--set<span class="w"> </span>persistence.storageClass<span class="o">=</span><span class="si">${</span><span class="nv">STORAGE_CLASS</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span>--set<span class="w"> </span>persistence.size<span class="o">=</span>5Gi<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span>--set<span class="w"> </span>resources.requests.memory<span class="o">=</span>1024Mi
+<p><strong>Validate your environment:</strong></p>
+<p>Run the validation script to ensure all prerequisites are met:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash check-prerequisites.sh
 </span></code></pre></div>
-<p>The possible configuration values can be found in the <a href="https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml">values.yaml</a> file.</p>
-<h3 id="helm-chart">Helm Chart<a class="headerlink" href="#helm-chart" title="Permanent link">⚓︎</a></h3>
-<p>openEO can be deployed by Helm. A Chart can be found at the <a href="https://github.com/Open-EO/openeo-geotrellis-kubernetes/tree/master/kubernetes/charts/sparkapplication">openeo-geotrellis-kubernetes</a> repo.</p>
-<p>The releases of the Helm chart are also hosted on the <a href="https://artifactory.vgt.vito.be/helm-charts">VITO Artifactory</a> instance.</p>
-<p>Install openEO as follows in your cluster:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-openeo<span class="w"> </span>sparkapplication<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">0</span>.16.3<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span>--values<span class="w"> </span>values.yaml
-</span></code></pre></div>
-<p>Example <code>values.yaml</code> file:</p>
-<blockquote>
-<p><em>Note use of variables <code>${...}</code> that should be substituted with appropriate values</em></p>
-</blockquote>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nn">---</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eoepca/openeo-geotrellis-kube</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">imageVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0-beta2</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nt">imagePullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nt">sparkVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.2.0</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nt">configMaps</span><span class="p">:</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">backendConfig</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="no">from pathlib import Path</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="no">from openeo_driver.users.oidc import OidcProvider</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="no">from openeogeotrellis.config import GpsBackendConfig</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="no">from openeogeotrellis.deploy import (</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="no">build_gps_backend_deploy_metadata,</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="no">find_geotrellis_jars,</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="no">)</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="no">capabilities_deploy_metadata = build_gps_backend_deploy_metadata(</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">        </span><span class="no">packages=[</span>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">            </span><span class="no">&quot;openeo&quot;,</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">            </span><span class="no">&quot;openeo_driver&quot;,</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">            </span><span class="no">&quot;openeo-geopyspark&quot;,</span>
-</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">            </span><span class="no">&quot;openeo_udf&quot;,</span>
-</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">            </span><span class="no">&quot;geopyspark&quot;,</span>
-</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">        </span><span class="no">],</span>
-</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">        </span><span class="no">jar_paths=find_geotrellis_jars(extra_search_locations=[Path(&quot;/opt&quot;)]),</span>
-</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span><span class="no">)</span>
-</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>
-</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">    </span><span class="no">oidc_providers = [</span>
-</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">        </span><span class="no">OidcProvider(</span>
-</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">            </span><span class="no">id=&quot;egi&quot;,</span>
-</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">            </span><span class="no">title=&quot;EGI Check-in&quot;,</span>
-</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">            </span><span class="no">issuer=&quot;https://aai.egi.eu/auth/realms/egi/&quot;,</span>
-</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">            </span><span class="no">scopes=[&quot;openid&quot;, &quot;email&quot;],</span>
-</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">            </span><span class="no">default_clients=[</span>
-</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">                </span><span class="no">{</span>
-</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">                    </span><span class="no">&quot;id&quot;: &quot;vito-default-client&quot;,</span>
-</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">                    </span><span class="no">&quot;grant_types&quot;: [</span>
-</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">                        </span><span class="no">&quot;authorization_code+pkce&quot;,</span>
-</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">                        </span><span class="no">&quot;urn:ietf:params:oauth:grant-type:device_code+pkce&quot;,</span>
-</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">                        </span><span class="no">&quot;refresh_token&quot;,</span>
-</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">                    </span><span class="no">],</span>
-</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">                    </span><span class="no">&quot;redirect_urls&quot;: [&quot;https://editor.openeo.org&quot;],</span>
-</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">                </span><span class="no">}</span>
-</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">            </span><span class="no">],</span>
-</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">        </span><span class="no">),</span>
-</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">        </span><span class="no">OidcProvider(</span>
-</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">            </span><span class="no">id=&quot;egi-dev&quot;,</span>
-</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">            </span><span class="no">title=&quot;EGI Check-in (dev)&quot;,</span>
-</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="w">            </span><span class="no">issuer=&quot;https://aai-dev.egi.eu/auth/realms/egi/&quot;,</span>
-</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="w">            </span><span class="no">default_clients=[</span>
-</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">                </span><span class="no">{</span>
-</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">                    </span><span class="no">&quot;id&quot;: &quot;openeo-eoepca-demo&quot;,</span>
-</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="w">                    </span><span class="no">&quot;grant_types&quot;: [</span>
-</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="w">                        </span><span class="no">&quot;authorization_code+pkce&quot;,</span>
-</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">                        </span><span class="no">&quot;urn:ietf:params:oauth:grant-type:device_code+pkce&quot;,</span>
-</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="w">                        </span><span class="no">&quot;refresh_token&quot;,</span>
-</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="w">                    </span><span class="no">],</span>
-</span><span id="__span-3-60"><a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">                    </span><span class="no">&quot;redirect_urls&quot;: [&quot;https://editor.openeo.org&quot;],</span>
-</span><span id="__span-3-61"><a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="w">                </span><span class="no">}</span>
-</span><span id="__span-3-62"><a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a><span class="w">            </span><span class="no">],</span>
-</span><span id="__span-3-63"><a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">        </span><span class="no">),</span>
-</span><span id="__span-3-64"><a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a><span class="w">    </span><span class="no">]</span>
-</span><span id="__span-3-65"><a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a>
-</span><span id="__span-3-66"><a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a><span class="w">    </span><span class="no">config = GpsBackendConfig(</span>
-</span><span id="__span-3-67"><a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a><span class="w">        </span><span class="no">id=&quot;eoepca-openeo-demo&quot;,</span>
-</span><span id="__span-3-68"><a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="w">        </span><span class="no">capabilities_title=&quot;Demo openEO/EOEPCA+ service (GeoPySpark)&quot;,</span>
-</span><span id="__span-3-69"><a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a><span class="w">        </span><span class="no">capabilities_description=&quot;openEO backend based on GeoPyspark stack for EOEPCA+ demo&quot;,</span>
-</span><span id="__span-3-70"><a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a><span class="w">        </span><span class="no">capabilities_deploy_metadata=capabilities_deploy_metadata,</span>
-</span><span id="__span-3-71"><a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a><span class="w">        </span><span class="no">oidc_providers=oidc_providers,</span>
-</span><span id="__span-3-72"><a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a><span class="w">        </span><span class="no">enable_basic_auth=True,</span>
-</span><span id="__span-3-73"><a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a><span class="w">        </span><span class="no">valid_basic_auth=lambda u, p: p == f&quot;{u}123&quot;,</span>
-</span><span id="__span-3-74"><a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a><span class="w">    </span><span class="no">)</span>
-</span><span id="__span-3-75"><a id="__codelineno-3-75" name="__codelineno-3-75" href="#__codelineno-3-75"></a><span class="w">  </span><span class="nt">layerCatalog</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-3-76"><a id="__codelineno-3-76" name="__codelineno-3-76" href="#__codelineno-3-76"></a><span class="w">    </span><span class="no">[</span>
-</span><span id="__span-3-77"><a id="__codelineno-3-77" name="__codelineno-3-77" href="#__codelineno-3-77"></a><span class="w">      </span><span class="no">{</span>
-</span><span id="__span-3-78"><a id="__codelineno-3-78" name="__codelineno-3-78" href="#__codelineno-3-78"></a><span class="w">        </span><span class="no">&quot;id&quot;: &quot;TestCollection-LonLat16x16&quot;,</span>
-</span><span id="__span-3-79"><a id="__codelineno-3-79" name="__codelineno-3-79" href="#__codelineno-3-79"></a><span class="w">        </span><span class="no">&quot;description&quot;: &quot;[DEBUGGING] Fast and predictable layer for debugging purposes. One sample every 5 days. Resolution will vary, to always output 16x16 pixels.&quot;,</span>
-</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80" href="#__codelineno-3-80"></a><span class="w">        </span><span class="no">&quot;experimental&quot;: true,</span>
-</span><span id="__span-3-81"><a id="__codelineno-3-81" name="__codelineno-3-81" href="#__codelineno-3-81"></a><span class="w">        </span><span class="no">&quot;_vito&quot;: {&quot;data_source&quot;: {&quot;type&quot;: &quot;testing&quot;}},</span>
-</span><span id="__span-3-82"><a id="__codelineno-3-82" name="__codelineno-3-82" href="#__codelineno-3-82"></a><span class="w">        </span><span class="no">&quot;cube:dimensions&quot;: {</span>
-</span><span id="__span-3-83"><a id="__codelineno-3-83" name="__codelineno-3-83" href="#__codelineno-3-83"></a><span class="w">          </span><span class="no">&quot;x&quot;: {&quot;type&quot;: &quot;spatial&quot;, &quot;axis&quot;: &quot;x&quot;, &quot;reference_system&quot;: 4326},</span>
-</span><span id="__span-3-84"><a id="__codelineno-3-84" name="__codelineno-3-84" href="#__codelineno-3-84"></a><span class="w">          </span><span class="no">&quot;y&quot;: {&quot;type&quot;: &quot;spatial&quot;, &quot;axis&quot;: &quot;y&quot;, &quot;reference_system&quot;: 4326},</span>
-</span><span id="__span-3-85"><a id="__codelineno-3-85" name="__codelineno-3-85" href="#__codelineno-3-85"></a><span class="w">          </span><span class="no">&quot;t&quot;: {&quot;type&quot;: &quot;temporal&quot;},</span>
-</span><span id="__span-3-86"><a id="__codelineno-3-86" name="__codelineno-3-86" href="#__codelineno-3-86"></a><span class="w">          </span><span class="no">&quot;bands&quot;: {</span>
-</span><span id="__span-3-87"><a id="__codelineno-3-87" name="__codelineno-3-87" href="#__codelineno-3-87"></a><span class="w">            </span><span class="no">&quot;type&quot;: &quot;bands&quot;,</span>
-</span><span id="__span-3-88"><a id="__codelineno-3-88" name="__codelineno-3-88" href="#__codelineno-3-88"></a><span class="w">            </span><span class="no">&quot;values&quot;: [</span>
-</span><span id="__span-3-89"><a id="__codelineno-3-89" name="__codelineno-3-89" href="#__codelineno-3-89"></a><span class="w">              </span><span class="no">&quot;Flat:0&quot;,</span>
-</span><span id="__span-3-90"><a id="__codelineno-3-90" name="__codelineno-3-90" href="#__codelineno-3-90"></a><span class="w">              </span><span class="no">&quot;Flat:1&quot;,</span>
-</span><span id="__span-3-91"><a id="__codelineno-3-91" name="__codelineno-3-91" href="#__codelineno-3-91"></a><span class="w">              </span><span class="no">&quot;Flat:2&quot;,</span>
-</span><span id="__span-3-92"><a id="__codelineno-3-92" name="__codelineno-3-92" href="#__codelineno-3-92"></a><span class="w">              </span><span class="no">&quot;TileCol&quot;,</span>
-</span><span id="__span-3-93"><a id="__codelineno-3-93" name="__codelineno-3-93" href="#__codelineno-3-93"></a><span class="w">              </span><span class="no">&quot;TileRow&quot;,</span>
-</span><span id="__span-3-94"><a id="__codelineno-3-94" name="__codelineno-3-94" href="#__codelineno-3-94"></a><span class="w">              </span><span class="no">&quot;TileColRow:10&quot;,</span>
-</span><span id="__span-3-95"><a id="__codelineno-3-95" name="__codelineno-3-95" href="#__codelineno-3-95"></a><span class="w">              </span><span class="no">&quot;Longitude&quot;,</span>
-</span><span id="__span-3-96"><a id="__codelineno-3-96" name="__codelineno-3-96" href="#__codelineno-3-96"></a><span class="w">              </span><span class="no">&quot;Latitude&quot;,</span>
-</span><span id="__span-3-97"><a id="__codelineno-3-97" name="__codelineno-3-97" href="#__codelineno-3-97"></a><span class="w">              </span><span class="no">&quot;Year&quot;,</span>
-</span><span id="__span-3-98"><a id="__codelineno-3-98" name="__codelineno-3-98" href="#__codelineno-3-98"></a><span class="w">              </span><span class="no">&quot;Month&quot;,</span>
-</span><span id="__span-3-99"><a id="__codelineno-3-99" name="__codelineno-3-99" href="#__codelineno-3-99"></a><span class="w">              </span><span class="no">&quot;Day&quot;</span>
-</span><span id="__span-3-100"><a id="__codelineno-3-100" name="__codelineno-3-100" href="#__codelineno-3-100"></a><span class="w">            </span><span class="no">]</span>
-</span><span id="__span-3-101"><a id="__codelineno-3-101" name="__codelineno-3-101" href="#__codelineno-3-101"></a><span class="w">          </span><span class="no">}</span>
-</span><span id="__span-3-102"><a id="__codelineno-3-102" name="__codelineno-3-102" href="#__codelineno-3-102"></a><span class="w">        </span><span class="no">},</span>
-</span><span id="__span-3-103"><a id="__codelineno-3-103" name="__codelineno-3-103" href="#__codelineno-3-103"></a><span class="w">        </span><span class="no">&quot;extent&quot;: {</span>
-</span><span id="__span-3-104"><a id="__codelineno-3-104" name="__codelineno-3-104" href="#__codelineno-3-104"></a><span class="w">          </span><span class="no">&quot;spatial&quot;: {&quot;bbox&quot;: [[-180, -56, 180, 83]]},</span>
-</span><span id="__span-3-105"><a id="__codelineno-3-105" name="__codelineno-3-105" href="#__codelineno-3-105"></a><span class="w">          </span><span class="no">&quot;temporal&quot;: {&quot;interval&quot;: [[&quot;2000-01-01&quot;, null]]}</span>
-</span><span id="__span-3-106"><a id="__codelineno-3-106" name="__codelineno-3-106" href="#__codelineno-3-106"></a><span class="w">        </span><span class="no">}</span>
-</span><span id="__span-3-107"><a id="__codelineno-3-107" name="__codelineno-3-107" href="#__codelineno-3-107"></a><span class="w">      </span><span class="no">}</span>
-</span><span id="__span-3-108"><a id="__codelineno-3-108" name="__codelineno-3-108" href="#__codelineno-3-108"></a><span class="w">    </span><span class="no">]</span>
-</span><span id="__span-3-109"><a id="__codelineno-3-109" name="__codelineno-3-109" href="#__codelineno-3-109"></a><span class="nt">driver</span><span class="p">:</span>
-</span><span id="__span-3-110"><a id="__codelineno-3-110" name="__codelineno-3-110" href="#__codelineno-3-110"></a><span class="w">  </span><span class="nt">env</span><span class="p">:</span>
-</span><span id="__span-3-111"><a id="__codelineno-3-111" name="__codelineno-3-111" href="#__codelineno-3-111"></a><span class="w">    </span><span class="nt">KUBE</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
-</span><span id="__span-3-112"><a id="__codelineno-3-112" name="__codelineno-3-112" href="#__codelineno-3-112"></a><span class="w">    </span><span class="nt">KUBE_OPENEO_API_PORT</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;50001&quot;</span>
-</span><span id="__span-3-113"><a id="__codelineno-3-113" name="__codelineno-3-113" href="#__codelineno-3-113"></a><span class="w">    </span><span class="nt">PYTHONPATH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/</span>
-</span><span id="__span-3-114"><a id="__codelineno-3-114" name="__codelineno-3-114" href="#__codelineno-3-114"></a><span class="w">    </span><span class="nt">ZOOKEEPERNODES</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeo-geotrellis-zookeeper.openeo-geotrellis.svc.cluster.local:2181</span>
-</span><span id="__span-3-115"><a id="__codelineno-3-115" name="__codelineno-3-115" href="#__codelineno-3-115"></a><span class="w">  </span><span class="nt">podSecurityContext</span><span class="p">:</span>
-</span><span id="__span-3-116"><a id="__codelineno-3-116" name="__codelineno-3-116" href="#__codelineno-3-116"></a><span class="w">    </span><span class="nt">fsGroup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">18585</span>
-</span><span id="__span-3-117"><a id="__codelineno-3-117" name="__codelineno-3-117" href="#__codelineno-3-117"></a><span class="w">    </span><span class="nt">fsGroupChangePolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span>
-</span><span id="__span-3-118"><a id="__codelineno-3-118" name="__codelineno-3-118" href="#__codelineno-3-118"></a><span class="nt">executor</span><span class="p">:</span>
-</span><span id="__span-3-119"><a id="__codelineno-3-119" name="__codelineno-3-119" href="#__codelineno-3-119"></a><span class="w">  </span><span class="nt">env</span><span class="p">:</span>
-</span><span id="__span-3-120"><a id="__codelineno-3-120" name="__codelineno-3-120" href="#__codelineno-3-120"></a><span class="w">    </span><span class="nt">PYTHONPATH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/</span>
-</span><span id="__span-3-121"><a id="__codelineno-3-121" name="__codelineno-3-121" href="#__codelineno-3-121"></a><span class="nt">existingConfigMaps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-3-122"><a id="__codelineno-3-122" name="__codelineno-3-122" href="#__codelineno-3-122"></a><span class="nt">fileDependencies</span><span class="p">:</span>
-</span><span id="__span-3-123"><a id="__codelineno-3-123" name="__codelineno-3-123" href="#__codelineno-3-123"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local:///opt/layercatalog/layercatalog.json</span>
-</span><span id="__span-3-124"><a id="__codelineno-3-124" name="__codelineno-3-124" href="#__codelineno-3-124"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local:///opt/log4j2.xml</span>
-</span><span id="__span-3-125"><a id="__codelineno-3-125" name="__codelineno-3-125" href="#__codelineno-3-125"></a><span class="nt">ingress</span><span class="p">:</span>
-</span><span id="__span-3-126"><a id="__codelineno-3-126" name="__codelineno-3-126" href="#__codelineno-3-126"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-3-127"><a id="__codelineno-3-127" name="__codelineno-3-127" href="#__codelineno-3-127"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
-</span><span id="__span-3-128"><a id="__codelineno-3-128" name="__codelineno-3-128" href="#__codelineno-3-128"></a><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apisix</span>
-</span><span id="__span-3-129"><a id="__codelineno-3-129" name="__codelineno-3-129" href="#__codelineno-3-129"></a><span class="w">    </span><span class="nt">cert-manager.io/cluster-issuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${CLUSTER_ISSUER}</span>
-</span><span id="__span-3-130"><a id="__codelineno-3-130" name="__codelineno-3-130" href="#__codelineno-3-130"></a><span class="w">    </span><span class="nt">k8s.apisix.apache.org/enable-cors</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
-</span><span id="__span-3-131"><a id="__codelineno-3-131" name="__codelineno-3-131" href="#__codelineno-3-131"></a><span class="w">    </span><span class="nt">k8s.apisix.apache.org/http-to-https</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
-</span><span id="__span-3-132"><a id="__codelineno-3-132" name="__codelineno-3-132" href="#__codelineno-3-132"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-</span><span id="__span-3-133"><a id="__codelineno-3-133" name="__codelineno-3-133" href="#__codelineno-3-133"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeo.${INGRESS_HOST}</span>
-</span><span id="__span-3-134"><a id="__codelineno-3-134" name="__codelineno-3-134" href="#__codelineno-3-134"></a><span class="w">      </span><span class="nt">paths</span><span class="p">:</span>
-</span><span id="__span-3-135"><a id="__codelineno-3-135" name="__codelineno-3-135" href="#__codelineno-3-135"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
-</span><span id="__span-3-136"><a id="__codelineno-3-136" name="__codelineno-3-136" href="#__codelineno-3-136"></a><span class="w">  </span><span class="nt">tls</span><span class="p">:</span>
-</span><span id="__span-3-137"><a id="__codelineno-3-137" name="__codelineno-3-137" href="#__codelineno-3-137"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span>
-</span><span id="__span-3-138"><a id="__codelineno-3-138" name="__codelineno-3-138" href="#__codelineno-3-138"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeo.${INGRESS_HOST}</span>
-</span><span id="__span-3-139"><a id="__codelineno-3-139" name="__codelineno-3-139" href="#__codelineno-3-139"></a><span class="w">      </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeo-geotrellis-openeo-sparkapplication-cert</span>
-</span><span id="__span-3-140"><a id="__codelineno-3-140" name="__codelineno-3-140" href="#__codelineno-3-140"></a><span class="nt">jarDependencies</span><span class="p">:</span>
-</span><span id="__span-3-141"><a id="__codelineno-3-141" name="__codelineno-3-141" href="#__codelineno-3-141"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local:///opt/geotrellis-extensions-static.jar</span>
-</span><span id="__span-3-142"><a id="__codelineno-3-142" name="__codelineno-3-142" href="#__codelineno-3-142"></a><span class="nt">mainApplicationFile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local:///opt/openeo/lib64/python3.8/site-packages/openeogeotrellis/deploy/kube.py</span>
-</span><span id="__span-3-143"><a id="__codelineno-3-143" name="__codelineno-3-143" href="#__codelineno-3-143"></a><span class="nt">sparkConf</span><span class="p">:</span>
-</span><span id="__span-3-144"><a id="__codelineno-3-144" name="__codelineno-3-144" href="#__codelineno-3-144"></a><span class="w">  </span><span class="nt">spark.executorEnv.DRIVER_IMPLEMENTATION_PACKAGE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeogeotrellis</span>
-</span><span id="__span-3-145"><a id="__codelineno-3-145" name="__codelineno-3-145" href="#__codelineno-3-145"></a><span class="w">  </span><span class="nt">spark.appMasterEnv.DRIVER_IMPLEMENTATION_PACKAGE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeogeotrellis</span>
-</span><span id="__span-3-146"><a id="__codelineno-3-146" name="__codelineno-3-146" href="#__codelineno-3-146"></a><span class="nt">service</span><span class="p">:</span>
-</span><span id="__span-3-147"><a id="__codelineno-3-147" name="__codelineno-3-147" href="#__codelineno-3-147"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-3-148"><a id="__codelineno-3-148" name="__codelineno-3-148" href="#__codelineno-3-148"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50001</span>
-</span><span id="__span-3-149"><a id="__codelineno-3-149" name="__codelineno-3-149" href="#__codelineno-3-149"></a><span class="nt">ha</span><span class="p">:</span>
-</span><span id="__span-3-150"><a id="__codelineno-3-150" name="__codelineno-3-150" href="#__codelineno-3-150"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-3-151"><a id="__codelineno-3-151" name="__codelineno-3-151" href="#__codelineno-3-151"></a><span class="nt">rbac</span><span class="p">:</span>
-</span><span id="__span-3-152"><a id="__codelineno-3-152" name="__codelineno-3-152" href="#__codelineno-3-152"></a><span class="w">  </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-3-153"><a id="__codelineno-3-153" name="__codelineno-3-153" href="#__codelineno-3-153"></a><span class="w">  </span><span class="nt">role</span><span class="p">:</span>
-</span><span id="__span-3-154"><a id="__codelineno-3-154" name="__codelineno-3-154" href="#__codelineno-3-154"></a><span class="w">    </span><span class="nt">rules</span><span class="p">:</span>
-</span><span id="__span-3-155"><a id="__codelineno-3-155" name="__codelineno-3-155" href="#__codelineno-3-155"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">apiGroups</span><span class="p">:</span>
-</span><span id="__span-3-156"><a id="__codelineno-3-156" name="__codelineno-3-156" href="#__codelineno-3-156"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-3-157"><a id="__codelineno-3-157" name="__codelineno-3-157" href="#__codelineno-3-157"></a><span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
-</span><span id="__span-3-158"><a id="__codelineno-3-158" name="__codelineno-3-158" href="#__codelineno-3-158"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pods</span>
-</span><span id="__span-3-159"><a id="__codelineno-3-159" name="__codelineno-3-159" href="#__codelineno-3-159"></a><span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
-</span><span id="__span-3-160"><a id="__codelineno-3-160" name="__codelineno-3-160" href="#__codelineno-3-160"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create</span>
-</span><span id="__span-3-161"><a id="__codelineno-3-161" name="__codelineno-3-161" href="#__codelineno-3-161"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete</span>
-</span><span id="__span-3-162"><a id="__codelineno-3-162" name="__codelineno-3-162" href="#__codelineno-3-162"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deletecollection</span>
-</span><span id="__span-3-163"><a id="__codelineno-3-163" name="__codelineno-3-163" href="#__codelineno-3-163"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get</span>
-</span><span id="__span-3-164"><a id="__codelineno-3-164" name="__codelineno-3-164" href="#__codelineno-3-164"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list</span>
-</span><span id="__span-3-165"><a id="__codelineno-3-165" name="__codelineno-3-165" href="#__codelineno-3-165"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">patch</span>
-</span><span id="__span-3-166"><a id="__codelineno-3-166" name="__codelineno-3-166" href="#__codelineno-3-166"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watch</span>
-</span><span id="__span-3-167"><a id="__codelineno-3-167" name="__codelineno-3-167" href="#__codelineno-3-167"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">apiGroups</span><span class="p">:</span>
-</span><span id="__span-3-168"><a id="__codelineno-3-168" name="__codelineno-3-168" href="#__codelineno-3-168"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-3-169"><a id="__codelineno-3-169" name="__codelineno-3-169" href="#__codelineno-3-169"></a><span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
-</span><span id="__span-3-170"><a id="__codelineno-3-170" name="__codelineno-3-170" href="#__codelineno-3-170"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">services</span>
-</span><span id="__span-3-171"><a id="__codelineno-3-171" name="__codelineno-3-171" href="#__codelineno-3-171"></a><span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
-</span><span id="__span-3-172"><a id="__codelineno-3-172" name="__codelineno-3-172" href="#__codelineno-3-172"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deletecollection</span>
-</span><span id="__span-3-173"><a id="__codelineno-3-173" name="__codelineno-3-173" href="#__codelineno-3-173"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list</span>
-</span><span id="__span-3-174"><a id="__codelineno-3-174" name="__codelineno-3-174" href="#__codelineno-3-174"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">apiGroups</span><span class="p">:</span>
-</span><span id="__span-3-175"><a id="__codelineno-3-175" name="__codelineno-3-175" href="#__codelineno-3-175"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-3-176"><a id="__codelineno-3-176" name="__codelineno-3-176" href="#__codelineno-3-176"></a><span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
-</span><span id="__span-3-177"><a id="__codelineno-3-177" name="__codelineno-3-177" href="#__codelineno-3-177"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configmaps</span>
-</span><span id="__span-3-178"><a id="__codelineno-3-178" name="__codelineno-3-178" href="#__codelineno-3-178"></a><span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
-</span><span id="__span-3-179"><a id="__codelineno-3-179" name="__codelineno-3-179" href="#__codelineno-3-179"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create</span>
-</span><span id="__span-3-180"><a id="__codelineno-3-180" name="__codelineno-3-180" href="#__codelineno-3-180"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete</span>
-</span><span id="__span-3-181"><a id="__codelineno-3-181" name="__codelineno-3-181" href="#__codelineno-3-181"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deletecollection</span>
-</span><span id="__span-3-182"><a id="__codelineno-3-182" name="__codelineno-3-182" href="#__codelineno-3-182"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list</span>
-</span><span id="__span-3-183"><a id="__codelineno-3-183" name="__codelineno-3-183" href="#__codelineno-3-183"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">apiGroups</span><span class="p">:</span>
-</span><span id="__span-3-184"><a id="__codelineno-3-184" name="__codelineno-3-184" href="#__codelineno-3-184"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkoperator.k8s.io</span>
-</span><span id="__span-3-185"><a id="__codelineno-3-185" name="__codelineno-3-185" href="#__codelineno-3-185"></a><span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
-</span><span id="__span-3-186"><a id="__codelineno-3-186" name="__codelineno-3-186" href="#__codelineno-3-186"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sparkapplications</span>
-</span><span id="__span-3-187"><a id="__codelineno-3-187" name="__codelineno-3-187" href="#__codelineno-3-187"></a><span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
-</span><span id="__span-3-188"><a id="__codelineno-3-188" name="__codelineno-3-188" href="#__codelineno-3-188"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create</span>
-</span><span id="__span-3-189"><a id="__codelineno-3-189" name="__codelineno-3-189" href="#__codelineno-3-189"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete</span>
-</span><span id="__span-3-190"><a id="__codelineno-3-190" name="__codelineno-3-190" href="#__codelineno-3-190"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get</span>
-</span><span id="__span-3-191"><a id="__codelineno-3-191" name="__codelineno-3-191" href="#__codelineno-3-191"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list</span>
-</span><span id="__span-3-192"><a id="__codelineno-3-192" name="__codelineno-3-192" href="#__codelineno-3-192"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">apiGroups</span><span class="p">:</span>
-</span><span id="__span-3-193"><a id="__codelineno-3-193" name="__codelineno-3-193" href="#__codelineno-3-193"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-3-194"><a id="__codelineno-3-194" name="__codelineno-3-194" href="#__codelineno-3-194"></a><span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
-</span><span id="__span-3-195"><a id="__codelineno-3-195" name="__codelineno-3-195" href="#__codelineno-3-195"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">persistentvolumeclaims</span>
-</span><span id="__span-3-196"><a id="__codelineno-3-196" name="__codelineno-3-196" href="#__codelineno-3-196"></a><span class="w">        </span><span class="nt">verbs</span><span class="p">:</span>
-</span><span id="__span-3-197"><a id="__codelineno-3-197" name="__codelineno-3-197" href="#__codelineno-3-197"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create</span>
-</span><span id="__span-3-198"><a id="__codelineno-3-198" name="__codelineno-3-198" href="#__codelineno-3-198"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete</span>
-</span><span id="__span-3-199"><a id="__codelineno-3-199" name="__codelineno-3-199" href="#__codelineno-3-199"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deletecollection</span>
-</span><span id="__span-3-200"><a id="__codelineno-3-200" name="__codelineno-3-200" href="#__codelineno-3-200"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list</span>
-</span><span id="__span-3-201"><a id="__codelineno-3-201" name="__codelineno-3-201" href="#__codelineno-3-201"></a><span class="w">  </span><span class="nt">serviceAccountDriver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeo</span>
-</span></code></pre></div>
-<p>This gives you an <code>openeo-driver</code> pod that you can <code>port-forward</code> to on port 50001.</p>
-<p>With the port-forward activated, you can access the openEO API with <code>curl -L localhost:50001</code>.</p>
 <hr />
-<h2 id="openeo-aggregator">openEO Aggregator<a class="headerlink" href="#openeo-aggregator" title="Permanent link">⚓︎</a></h2>
-<p>The openEO Aggregator is a software component to group multiple openEO back-ends together into a unified, federated openEO processing platform.</p>
-<p>For more details on the design and configuration, please read the <a href="https://open-eo.github.io/openeo-aggregator/">dedicated documentation</a>.</p>
-<h3 id="helm-chart_1">Helm chart<a class="headerlink" href="#helm-chart_1" title="Permanent link">⚓︎</a></h3>
-<p>A Chart can be found at the <a href="https://github.com/Open-EO/openeo-geotrellis-kubernetes/tree/master/kubernetes/charts/openeo-aggregator">openeo-geotrellis-kubernetes</a> repo.</p>
-<p>The releases of the Helm chart are also hosted on the <a href="https://artifactory.vgt.vito.be/helm-charts">VITO Artifactory</a> instance.</p>
-<p>Install openEO Aggregator as follows in your cluster:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeofed<span class="w"> </span>openeo-aggregator<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">2025</span>.01.10-14<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeofed<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span>--values<span class="w"> </span>values.yaml
+<h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">⚓︎</a></h2>
+<h3 id="1-run-the-configuration-script">1. Run the Configuration Script<a class="headerlink" href="#1-run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-openeo-geotrellis.sh
 </span></code></pre></div>
-<p>An example <code>values.yaml</code> file:</p>
-<blockquote>
-<p><em>Note use of variables <code>${...}</code> that should be substituted with appropriate values</em></p>
-</blockquote>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nn">---</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nt">configMaps</span><span class="p">:</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">conf</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="no">from openeo_aggregator.config import AggregatorBackendConfig</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="no">from openeo_driver.users.oidc import OidcProvider</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="no">oidc_providers = [</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="no">OidcProvider(</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">            </span><span class="no">id=&quot;egi&quot;,</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">            </span><span class="no">title=&quot;EGI Check-in&quot;,</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">            </span><span class="no">issuer=&quot;https://aai.egi.eu/auth/realms/egi/&quot;,</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">            </span><span class="no">scopes=[&quot;openid&quot;, &quot;email&quot;],</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">            </span><span class="no">default_clients=[</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">                </span><span class="no">{</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">                    </span><span class="no">&quot;id&quot;: &quot;vito-default-client&quot;,</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">                    </span><span class="no">&quot;grant_types&quot;: [</span>
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">                        </span><span class="no">&quot;authorization_code+pkce&quot;,</span>
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">                        </span><span class="no">&quot;urn:ietf:params:oauth:grant-type:device_code+pkce&quot;,</span>
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">                        </span><span class="no">&quot;refresh_token&quot;,</span>
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">                    </span><span class="no">],</span>
-</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">                    </span><span class="no">&quot;redirect_urls&quot;: [&quot;https://editor.openeo.org&quot;],</span>
-</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">                </span><span class="no">}</span>
-</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">            </span><span class="no">],</span>
-</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">        </span><span class="no">),</span>
-</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">        </span><span class="no">OidcProvider(</span>
-</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">            </span><span class="no">id=&quot;egi-dev&quot;,</span>
-</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">            </span><span class="no">title=&quot;EGI Check-in (dev)&quot;,</span>
-</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">            </span><span class="no">issuer=&quot;https://aai-dev.egi.eu/auth/realms/egi/&quot;,</span>
-</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">            </span><span class="no">scopes=[&quot;openid&quot;, &quot;email&quot;],</span>
-</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">            </span><span class="no">default_clients=[</span>
-</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">                </span><span class="no">{</span>
-</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">                    </span><span class="no">&quot;id&quot;: &quot;openeo-eoepca-demo&quot;,</span>
-</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">                    </span><span class="no">&quot;grant_types&quot;: [</span>
-</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">                        </span><span class="no">&quot;authorization_code+pkce&quot;,</span>
-</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">                        </span><span class="no">&quot;urn:ietf:params:oauth:grant-type:device_code+pkce&quot;,</span>
-</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">                        </span><span class="no">&quot;refresh_token&quot;,</span>
-</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">                    </span><span class="no">],</span>
-</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">                    </span><span class="no">&quot;redirect_urls&quot;: [&quot;https://editor.openeo.org&quot;],</span>
-</span><span id="__span-5-39"><a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">                </span><span class="no">}</span>
-</span><span id="__span-5-40"><a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">            </span><span class="no">],</span>
-</span><span id="__span-5-41"><a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">        </span><span class="no">),</span>
-</span><span id="__span-5-42"><a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">    </span><span class="no">]</span>
-</span><span id="__span-5-43"><a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>
-</span><span id="__span-5-44"><a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">    </span><span class="no">config = AggregatorBackendConfig(</span>
-</span><span id="__span-5-45"><a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">        </span><span class="no">id=&quot;openeo-eoepca-aggregator-demo&quot;,</span>
-</span><span id="__span-5-46"><a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">        </span><span class="no">capabilities_title=&quot;openEO/EOEPCA+ Federation Demo&quot;,</span>
-</span><span id="__span-5-47"><a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a><span class="w">        </span><span class="no">capabilities_description=&quot;openEO demo federation service for EOEPCA+&quot;,</span>
-</span><span id="__span-5-48"><a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a><span class="w">        </span><span class="no">oidc_providers=oidc_providers,</span>
-</span><span id="__span-5-49"><a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="w">        </span><span class="no">aggregator_backends={</span>
-</span><span id="__span-5-50"><a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a><span class="w">            </span><span class="no">&quot;terrascope&quot;: &quot;https://openeo-dev.vito.be/openeo/1.2/&quot;,</span>
-</span><span id="__span-5-51"><a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a><span class="w">            </span><span class="no">&quot;eoepca&quot;: &quot;https://openeo.${INGRESS_HOST}/openeo/1.2/&quot;,</span>
-</span><span id="__span-5-52"><a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a><span class="w">        </span><span class="no">},</span>
-</span><span id="__span-5-53"><a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a><span class="w">    </span><span class="no">)</span>
-</span><span id="__span-5-54"><a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a>
-</span><span id="__span-5-55"><a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a><span class="nt">envVars</span><span class="p">:</span>
-</span><span id="__span-5-56"><a id="__codelineno-5-56" name="__codelineno-5-56" href="#__codelineno-5-56"></a><span class="w">  </span><span class="nt">ENV</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;prod&quot;</span>
-</span><span id="__span-5-57"><a id="__codelineno-5-57" name="__codelineno-5-57" href="#__codelineno-5-57"></a><span class="w">  </span><span class="nt">ZOOKEEPERNODES</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeo-geotrellis-zookeeper.openeo-geotrellis.svc.cluster.local:2181</span>
-</span><span id="__span-5-58"><a id="__codelineno-5-58" name="__codelineno-5-58" href="#__codelineno-5-58"></a><span class="w">  </span><span class="nt">GUNICORN_CMD_ARGS</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;--bind=0.0.0.0:8080</span><span class="nv"> </span><span class="s">--workers=10</span><span class="nv"> </span><span class="s">--threads=1</span><span class="nv"> </span><span class="s">--timeout=900&quot;</span>
-</span><span id="__span-5-59"><a id="__codelineno-5-59" name="__codelineno-5-59" href="#__codelineno-5-59"></a><span class="nt">existingConfigMaps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-5-60"><a id="__codelineno-5-60" name="__codelineno-5-60" href="#__codelineno-5-60"></a><span class="nt">fullnameOverride</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeofed</span>
-</span><span id="__span-5-61"><a id="__codelineno-5-61" name="__codelineno-5-61" href="#__codelineno-5-61"></a><span class="nt">image</span><span class="p">:</span>
-</span><span id="__span-5-62"><a id="__codelineno-5-62" name="__codelineno-5-62" href="#__codelineno-5-62"></a><span class="w">  </span><span class="nt">pullPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Always</span>
-</span><span id="__span-5-63"><a id="__codelineno-5-63" name="__codelineno-5-63" href="#__codelineno-5-63"></a><span class="w">  </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vito-docker.artifactory.vgt.vito.be/openeo-aggregator</span>
-</span><span id="__span-5-64"><a id="__codelineno-5-64" name="__codelineno-5-64" href="#__codelineno-5-64"></a><span class="w">  </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">latest</span>
-</span><span id="__span-5-65"><a id="__codelineno-5-65" name="__codelineno-5-65" href="#__codelineno-5-65"></a><span class="nt">replicaCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-</span><span id="__span-5-66"><a id="__codelineno-5-66" name="__codelineno-5-66" href="#__codelineno-5-66"></a><span class="nt">ingress</span><span class="p">:</span>
-</span><span id="__span-5-67"><a id="__codelineno-5-67" name="__codelineno-5-67" href="#__codelineno-5-67"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-5-68"><a id="__codelineno-5-68" name="__codelineno-5-68" href="#__codelineno-5-68"></a><span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
-</span><span id="__span-5-69"><a id="__codelineno-5-69" name="__codelineno-5-69" href="#__codelineno-5-69"></a><span class="w">    </span><span class="nt">kubernetes.io/ingress.class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apisix</span>
-</span><span id="__span-5-70"><a id="__codelineno-5-70" name="__codelineno-5-70" href="#__codelineno-5-70"></a><span class="w">    </span><span class="nt">cert-manager.io/cluster-issuer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${CLUSTER_ISSUER}</span>
-</span><span id="__span-5-71"><a id="__codelineno-5-71" name="__codelineno-5-71" href="#__codelineno-5-71"></a><span class="w">    </span><span class="nt">k8s.apisix.apache.org/enable-cors</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
-</span><span id="__span-5-72"><a id="__codelineno-5-72" name="__codelineno-5-72" href="#__codelineno-5-72"></a><span class="w">    </span><span class="nt">k8s.apisix.apache.org/http-to-https</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
-</span><span id="__span-5-73"><a id="__codelineno-5-73" name="__codelineno-5-73" href="#__codelineno-5-73"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
-</span><span id="__span-5-74"><a id="__codelineno-5-74" name="__codelineno-5-74" href="#__codelineno-5-74"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeofed.${INGRESS_HOST}</span>
-</span><span id="__span-5-75"><a id="__codelineno-5-75" name="__codelineno-5-75" href="#__codelineno-5-75"></a><span class="w">      </span><span class="nt">paths</span><span class="p">:</span>
-</span><span id="__span-5-76"><a id="__codelineno-5-76" name="__codelineno-5-76" href="#__codelineno-5-76"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/.well-known/openeo</span>
-</span><span id="__span-5-77"><a id="__codelineno-5-77" name="__codelineno-5-77" href="#__codelineno-5-77"></a><span class="w">          </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prefix</span>
-</span><span id="__span-5-78"><a id="__codelineno-5-78" name="__codelineno-5-78" href="#__codelineno-5-78"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/openeo</span>
-</span><span id="__span-5-79"><a id="__codelineno-5-79" name="__codelineno-5-79" href="#__codelineno-5-79"></a><span class="w">          </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prefix</span>
-</span><span id="__span-5-80"><a id="__codelineno-5-80" name="__codelineno-5-80" href="#__codelineno-5-80"></a><span class="w">  </span><span class="nt">tls</span><span class="p">:</span>
-</span><span id="__span-5-81"><a id="__codelineno-5-81" name="__codelineno-5-81" href="#__codelineno-5-81"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeofed-cert</span>
-</span><span id="__span-5-82"><a id="__codelineno-5-82" name="__codelineno-5-82" href="#__codelineno-5-82"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
-</span><span id="__span-5-83"><a id="__codelineno-5-83" name="__codelineno-5-83" href="#__codelineno-5-83"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openeofed.${INGRESS_HOST}</span>
+<p>During this process, you will be prompted for:</p>
+<ul>
+<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts (e.g., <code>example.com</code>).</li>
+<li><strong><code>STORAGE_CLASS</code></strong>: Kubernetes storage class for persistent volumes.</li>
+<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager Cluster Issuer for TLS certificates.</li>
+</ul>
+<h3 id="2-deploying-openeo-geotrellis">2. Deploying openEO Geotrellis<a class="headerlink" href="#2-deploying-openeo-geotrellis" title="Permanent link">⚓︎</a></h3>
+<p>openEO Geotrellis provides the API that connects users to <abbr title="Earth Observation">EO</abbr> cloud back-ends. It leverages Apache Spark and requires both the Spark Operator and ZooKeeper to function.</p>
+<h4 id="step-1-install-spark-operator">Step 1: Install Spark Operator<a class="headerlink" href="#step-1-install-spark-operator" title="Permanent link">⚓︎</a></h4>
+<p>Deploy the Kubeflow Spark Operator to manage Spark jobs within your Kubernetes cluster:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-sparkoperator<span class="w"> </span>spark-operator<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">2</span>.0.2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span>--values<span class="w"> </span>sparkoperator/generated-values.yaml
 </span></code></pre></div>
+<p>Refer to the <a href="https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml">values.yaml</a> for additional configuration options.</p>
+<h4 id="step-2-install-zookeeper">Step 2: Install ZooKeeper<a class="headerlink" href="#step-2-install-zookeeper" title="Permanent link">⚓︎</a></h4>
+<p>Deploy Apache ZooKeeper, which is required for internal coordination:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-zookeeper<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span>--values<span class="w"> </span>zookeeper/generated-values.yaml
+</span></code></pre></div>
+<p>For full configuration details, see the <a href="https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml">values.yaml</a>.</p>
+<h4 id="step-3-deploy-openeo-geotrellis-using-helm">Step 3: Deploy openEO Geotrellis Using Helm<a class="headerlink" href="#step-3-deploy-openeo-geotrellis-using-helm" title="Permanent link">⚓︎</a></h4>
+<p>Provides an API that simplifies connecting to <abbr title="Earth Observation">EO</abbr> cloud back-ends, running on Apache Spark in a Kubernetes environment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-openeo<span class="w"> </span>sparkapplication<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">0</span>.16.3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span>--values<span class="w"> </span>openeo-geotrellis/generated-values.yaml
+</span></code></pre></div>
+<p>Deploy ingress</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f openeo-geotrellis/generated-ingress.yaml
+</span></code></pre></div>
+<h4 id="step-4-deploy-openeo-aggregator-using-helm">Step 4: Deploy openEO Aggregator using Helm<a class="headerlink" href="#step-4-deploy-openeo-aggregator-using-helm" title="Permanent link">⚓︎</a></h4>
+<p>The openEO Aggregator federates multiple openEO back-ends into a unified processing platform.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeofed<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>https://artifactory.vgt.vito.be/artifactory/helm-charts/openeo-aggregator-2025.01.10-14.tgz<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>--values<span class="w"> </span>openeo-aggregator/generated-values.yaml
+</span></code></pre></div>
+<hr />
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
+<p>After deploying the OpenEO Engine components, perform the following checks to verify that the system is working as expected.</p>
+<h3 id="1-automated-validation-optional">1. Automated Validation (Optional)<a class="headerlink" href="#1-automated-validation-optional" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash<span class="w"> </span>validation.sh
+</span></code></pre></div>
+<p>This script verifies that:</p>
+<ul>
+<li>All required pods in the <code>openeo-geotrellis</code> (and optionally <code>openeofed</code>) namespace are running.</li>
+<li>Ingress endpoints return an HTTP 200 status code.</li>
+<li>Key API endpoints provide well-formed JSON responses.</li>
+</ul>
+<h3 id="2-manual-validation">2. Manual Validation<a class="headerlink" href="#2-manual-validation" title="Permanent link">⚓︎</a></h3>
+<p>To easily run these commands, we recommend first setting <code>${INGRESS_HOST}</code> in your environment.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span></code></pre></div>
+<p>Use the following commands to interact directly with the APIs:</p>
+<h4 id="check-api-metadata">Check API Metadata<a class="headerlink" href="#check-api-metadata" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p><em>Expected output:</em> A JSON object containing <code>api_version</code>, <code>backend_version</code>, <code>endpoints</code>, etc.</p>
+<h4 id="list-collections">List Collections<a class="headerlink" href="#list-collections" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/collections<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p><em>Expected output:</em> A JSON array listing available collections, such as the sample collection <code>TestCollection-LonLat16x16</code>.</p>
+<h4 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/processes<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p><em>Expected output:</em> A JSON object with an array of processes. Use your terminal’s scroll or <code>jq</code> to inspect the output.</p>
+<h4 id="validate-aggregator-response">Validate Aggregator Response<a class="headerlink" href="#validate-aggregator-response" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeofed.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p><em>Expected output:</em> A JSON response including federation details and links, confirming that the aggregator is aware of multiple back-ends.</p>
+<h3 id="3-usage">3. Usage<a class="headerlink" href="#3-usage" title="Permanent link">⚓︎</a></h3>
+<p>If your deployment includes sample processes and supports job submissions, you can test job execution as follows:</p>
+<h4 id="1-submit-a-job-using-the-add-process">1. Submit a Job Using the &ldquo;add&rdquo; Process<a class="headerlink" href="#1-submit-a-job-using-the-add-process" title="Permanent link">⚓︎</a></h4>
+<p>Submit a job that adds 5 and 2.5 by sending a process graph to the <code>/jobs</code> endpoint:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://openeofed.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/jobs&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="s1">        &quot;process_graph&quot;: {</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="s1">          &quot;sum&quot;: {</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="s1">            &quot;process_id&quot;: &quot;add&quot;,</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="s1">            &quot;arguments&quot;: {</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="s1">              &quot;x&quot;: 5,</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="s1">              &quot;y&quot;: 2.5</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="s1">            },</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="s1">            &quot;result&quot;: true</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="s1">          }</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="s1">        }</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="s1">      }&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p>The response should include a <code>job_id</code> (e.g., <code>"job_id": "12345"</code>) along with other job details.</p>
+<h4 id="2-monitor-the-job-status">2. Monitor the Job Status<a class="headerlink" href="#2-monitor-the-job-status" title="Permanent link">⚓︎</a></h4>
+<p>Replace <code>&lt;JOB_ID&gt;</code> with the actual job ID from the previous step and run:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/jobs/&lt;JOB_ID&gt;&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p>Check that the job’s status changes from <code>submitted</code> to <code>running</code> and eventually to <code>successful</code>.</p>
+<h4 id="3-retrieve-the-job-result">3. Retrieve the Job Result<a class="headerlink" href="#3-retrieve-the-job-result" title="Permanent link">⚓︎</a></h4>
+<p>Once the job has completed, retrieve the output:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/jobs/&lt;JOB_ID&gt;/results&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+</span></code></pre></div>
+<p><strong>Expected output:</strong><br />
+A simple numeric result:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="mf">7.5</span>
+</span></code></pre></div>
+<p>This confirms that the &ldquo;add&rdquo; process is operational and returning the correct computed sum.</p>
+<hr />
+<h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
+<ul>
+<li><a href="https://open-eo.github.io/openeo-api/">openEO Documentation</a></li>
+<li><a href="https://github.com/Open-EO/openeo-geotrellis-kubernetes">openEO Geotrellis GitHub Repository</a></li>
+<li><a href="https://open-eo.github.io/openeo-aggregator/">openEO Aggregator Documentation</a></li>
+<li><a href="https://eoepca.readthedocs.io/"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Documentation</a></li>
+</ul>
 
 
 
