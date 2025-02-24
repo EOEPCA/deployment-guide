@@ -1,0 +1,187 @@
+image: eoepca/openeo-geotrellis-kube
+imageVersion: 2.0-beta2
+imagePullPolicy: Always
+sparkVersion: 3.2.0
+configMaps:
+  backendConfig: |
+    from pathlib import Path
+
+
+    from openeo_driver.users.oidc import OidcProvider
+    from openeogeotrellis.config import GpsBackendConfig
+    from openeogeotrellis.deploy import (
+        build_gps_backend_deploy_metadata,
+        find_geotrellis_jars,
+    )
+
+
+    capabilities_deploy_metadata = build_gps_backend_deploy_metadata(
+        packages=[
+            "openeo",
+            "openeo_driver",
+            "openeo-geopyspark",
+            "openeo_udf",
+            "geopyspark",
+        ],
+        jar_paths=find_geotrellis_jars(extra_search_locations=[Path("/opt")]),
+    )
+
+    oidc_providers = [
+        OidcProvider(
+            id="egi",
+            title="EGI Check-in",
+            issuer="https://aai.egi.eu/auth/realms/egi/",
+            scopes=["openid", "email"],
+            default_clients=[
+                {
+                    "id": "vito-default-client",
+                    "grant_types": [
+                        "authorization_code+pkce",
+                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
+                        "refresh_token",
+                    ],
+                    "redirect_urls": ["https://editor.openeo.org"],
+                }
+            ],
+        ),
+        OidcProvider(
+            id="egi-dev",
+            title="EGI Check-in (dev)",
+            issuer="https://aai-dev.egi.eu/auth/realms/egi/",
+            default_clients=[
+                {
+                    "id": "openeo-eoepca-demo",
+                    "grant_types": [
+                        "authorization_code+pkce",
+                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
+                        "refresh_token",
+                    ],
+                    "redirect_urls": ["https://editor.openeo.org"],
+                }
+            ],
+        ),
+    ]
+
+    config = GpsBackendConfig(
+        id="eoepca-openeo-demo",
+        capabilities_title="Demo openEO/EOEPCA+ service (GeoPySpark)",
+        capabilities_description="openEO backend based on GeoPyspark stack for EOEPCA+ demo",
+        capabilities_deploy_metadata=capabilities_deploy_metadata,
+        oidc_providers=oidc_providers,
+        enable_basic_auth=True,
+        valid_basic_auth=lambda u, p: p == f"{u}123",
+    )
+  layerCatalog: |
+    [
+      {
+        "id": "TestCollection-LonLat16x16",
+        "description": "[DEBUGGING] Fast and predictable layer for debugging purposes. One sample every 5 days. Resolution will vary, to always output 16x16 pixels.",
+        "experimental": true,
+        "_vito": {"data_source": {"type": "testing"}},
+        "cube:dimensions": {
+          "x": {"type": "spatial", "axis": "x", "reference_system": 4326},
+          "y": {"type": "spatial", "axis": "y", "reference_system": 4326},
+          "t": {"type": "temporal"},
+          "bands": {
+            "type": "bands",
+            "values": [
+              "Flat:0",
+              "Flat:1",
+              "Flat:2",
+              "TileCol",
+              "TileRow",
+              "TileColRow:10",
+              "Longitude",
+              "Latitude",
+              "Year",
+              "Month",
+              "Day"
+            ]
+          }
+        },
+        "extent": {
+          "spatial": {"bbox": [[-180, -56, 180, 83]]},
+          "temporal": {"interval": [["2000-01-01", null]]}
+        }
+      }
+    ]
+driver:
+  env:
+    KUBE: "true"
+    KUBE_OPENEO_API_PORT: "50001"
+    PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
+    ZOOKEEPERNODES: openeo-geotrellis-zookeeper.openeo-geotrellis.svc.cluster.local:2181
+  podSecurityContext:
+    fsGroup: 18585
+    fsGroupChangePolicy: Always
+executor:
+  env:
+    PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
+existingConfigMaps: false
+fileDependencies:
+  - local:///opt/layercatalog/layercatalog.json
+  - local:///opt/log4j2.xml
+ingress:
+  enabled: false
+jarDependencies:
+  - local:///opt/geotrellis-extensions-static.jar
+mainApplicationFile: local:///opt/openeo/lib64/python3.8/site-packages/openeogeotrellis/deploy/kube.py
+sparkConf:
+  spark.executorEnv.DRIVER_IMPLEMENTATION_PACKAGE: openeogeotrellis
+  spark.appMasterEnv.DRIVER_IMPLEMENTATION_PACKAGE: openeogeotrellis
+service:
+  enabled: true
+  port: 50001
+ha:
+  enabled: false
+rbac:
+  create: true
+  role:
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - pods
+        verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - watch
+      - apiGroups:
+          - ""
+        resources:
+          - services
+        verbs:
+          - deletecollection
+          - list
+      - apiGroups:
+          - ""
+        resources:
+          - configmaps
+        verbs:
+          - create
+          - delete
+          - deletecollection
+          - list
+      - apiGroups:
+          - sparkoperator.k8s.io
+        resources:
+          - sparkapplications
+        verbs:
+          - create
+          - delete
+          - get
+          - list
+      - apiGroups:
+          - ""
+        resources:
+          - persistentvolumeclaims
+        verbs:
+          - create
+          - delete
+          - deletecollection
+          - list
+  serviceAccountDriver: openeo

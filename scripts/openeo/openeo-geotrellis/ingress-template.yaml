@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oeo
+  namespace: openeo-geotrellis
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    ${CLUSTER_ISSUER_ANNOTATION}
+    apisix.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: openeo.$INGRESS_HOST
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: openeo-geotrellis-openeo-sparkapplication
+                port:
+                  number: 50001
+  tls:
+    - hosts:
+        - openeo.$INGRESS_HOST
+      secretName: openeo-tls
