@@ -1,26 +1,77 @@
-# Processing - openEO Engine (Early Access)
+# Processing - OpenEO Engine Deployment Guide (Early Access)
 
-**Integration of the openEO Engine has not been completed in this release.**
+The **OpenEO Engine** building block provides early access to a unified processing platform for Earth observation data. It brings together two key components: **openEO Geotrellis** and **openEO Aggregator**. These components work together to offer a standards-based API for connecting to diverse EO cloud back-ends and to federate multiple openEO services into a cohesive processing platform.
 
-Instead we provide the following **work-in-progress** that provides some raw steps that can be used for early access:
-
-* **openEO Geotrellis**<br>
-  _Provides an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way_
-* **openEO Aggregator**<br>
-  _Provides a software component to group multiple openEO back-ends together into a unified, federated openEO processing platform_
+> **Note:** Integration of the openEO Engine is still in early access. The steps provided here are work-in-progress and may evolve in future releases.
 
 ---
 
-## openEO Geotrellis
+## Introduction
 
-openEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way.
-The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.
+- **openEO Geotrellis:** Provides an API that simplifies connecting to EO cloud back-ends, running on Apache Spark in a Kubernetes environment.
+- **openEO Aggregator:** Groups multiple openEO back-ends into a unified, federated processing platform.
 
-### Prerequisites
+### Key Features
 
-#### Spark Operator
+- **Unified API Access:** Standardized endpoints allow clients to connect easily with multiple EO data services.
+- **Federated Processing:** Seamlessly aggregates back-ends, enabling flexible data processing.
+- **Standards Compliance:** Follows openEO specifications to maintain broad interoperability.
+- **Scalability:** Uses Kubernetes and Helm for robust, scalable deployments.
+- **Early Access Deployment:** Offers raw steps to deploy and experiment with the openEO Engine components.
 
-As openEO runs on Apache Spark, we need a way to run this in a Kubernetes cluster. For this requirement, we leverage the [Kubeflow Spark-Operator](https://github.com/kubeflow/spark-operator). Basic instructions on how to get it running inside you cluster are:
+---
+
+## Prerequisites
+
+Before deploying, ensure your environment meets the following requirements:
+
+|Component|Requirement|Documentation Link|
+|---|---|---|
+|Kubernetes|Cluster (tested on v1.28)|[Installation Guide](../prerequisites/kubernetes.md)|
+|Helm|Version 3.5 or newer|[Installation Guide](https://helm.sh/docs/intro/install/)|
+|kubectl|Configured for cluster access|[Installation Guide](https://kubernetes.io/docs/tasks/tools/)|
+|Ingress|Properly installed|[Installation Guide](../prerequisites/ingress-controller.md)|
+|Cert Manager|Properly installed|[Installation Guide](../prerequisites/tls.md)|
+
+**Clone the Deployment Guide Repository:**
+
+```
+git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+cd deployment-guide/scripts/processing/openeo
+```
+
+**Validate your environment:**
+
+Run the validation script to ensure all prerequisites are met:
+
+```
+bash check-prerequisites.sh
+```
+
+---
+
+## Deployment Steps
+
+### 1. Run the Configuration Script
+
+```bash
+bash configure-openeo-geotrellis.sh
+```
+
+During this process, you will be prompted for:
+
+- **`INGRESS_HOST`**: Base domain for ingress hosts (e.g., `example.com`).
+- **`STORAGE_CLASS`**: Kubernetes storage class for persistent volumes.
+- **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
+
+
+### 2. Deploying openEO Geotrellis
+
+openEO Geotrellis provides the API that connects users to EO cloud back-ends. It leverages Apache Spark and requires both the Spark Operator and ZooKeeper to function.
+
+#### Step 1: Install Spark Operator
+
+Deploy the Kubeflow Spark Operator to manage Spark jobs within your Kubernetes cluster:
 
 ```bash
 helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
@@ -28,48 +79,28 @@ helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --version 2.0.2 \
     --namespace openeo-geotrellis \
     --create-namespace \
-    --set image.registry=vito-docker.artifactory.vgt.vito.be \
-    --set image.repository=spark-operator \
-    --set "image.tag=v1beta2-2.0.2-3.5.2" \
-    --set controller.batchScheduler.enable=true \
-    --set controller.podMonitor.create=false \
-    --set controller.uiIngress.enable=false \
-    --set controller.resources.requests.cpu=200m \
-    --set webhook.resources.requests.cpu=300m \
-    --set spark.jobNamespaces\[0\]=''
+    --values sparkoperator/generated-values.yaml
 ```
 
-Take a look at the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) file for all the possible configuration options.
+Refer to the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) for additional configuration options.
 
-#### ZooKeeper
+#### Step 2: Install ZooKeeper
 
-openEO uses [Apache ZooKeeper](https://zookeeper.apache.org/) under the hood. To get a basic ZK installed in your cluster, follow these steps:
-
-> _Note use of variables `${...}` that should be substituted with appropriate values_
+Deploy Apache ZooKeeper, which is required for internal coordination:
 
 ```bash
-helm upgrade -i openeo-geotrellis-zookeeper zookeeper \
-    --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 11.1.6 \
+helm upgrade -i openeo-geotrellis-zookeeper \
+    https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz \
     --namespace openeo-geotrellis \
     --create-namespace \
-    --set global.storageClass=${STORAGE_CLASS} \
-    --set replicacount=1 \
-    --set autopurge.purgeInterval=1 \
-    --set persistence.storageClass=${STORAGE_CLASS} \
-    --set persistence.size=5Gi \
-    --set resources.requests.memory=1024Mi
+    --values zookeeper/generated-values.yaml
 ```
 
-The possible configuration values can be found in the [values.yaml](https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml) file.
+For full configuration details, see the [values.yaml](https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml).
 
-### Helm Chart
+#### Step 3: Deploy openEO Geotrellis Using Helm
 
-openEO can be deployed by Helm. A Chart can be found at the [openeo-geotrellis-kubernetes](https://github.com/Open-EO/openeo-geotrellis-kubernetes/tree/master/kubernetes/charts/sparkapplication) repo.
-
-The releases of the Helm chart are also hosted on the [VITO Artifactory](https://artifactory.vgt.vito.be/helm-charts) instance.
-
-Install openEO as follows in your cluster:
+Provides an API that simplifies connecting to EO cloud back-ends, running on Apache Spark in a Kubernetes environment.
 
 ```bash
 helm upgrade -i openeo-geotrellis-openeo sparkapplication \
@@ -77,332 +108,149 @@ helm upgrade -i openeo-geotrellis-openeo sparkapplication \
     --version 0.16.3 \
     --namespace openeo-geotrellis \
     --create-namespace \
-    --values values.yaml
+    --values openeo-geotrellis/generated-values.yaml
 ```
 
-Example `values.yaml` file:
+Deploy ingress
 
-> _Note use of variables `${...}` that should be substituted with appropriate values_
-
-```yaml
----
-image: eoepca/openeo-geotrellis-kube
-imageVersion: 2.0-beta2
-imagePullPolicy: Always
-sparkVersion: 3.2.0
-configMaps:
-  backendConfig: |
-    from pathlib import Path
-
-
-    from openeo_driver.users.oidc import OidcProvider
-    from openeogeotrellis.config import GpsBackendConfig
-    from openeogeotrellis.deploy import (
-        build_gps_backend_deploy_metadata,
-        find_geotrellis_jars,
-    )
-
-
-    capabilities_deploy_metadata = build_gps_backend_deploy_metadata(
-        packages=[
-            "openeo",
-            "openeo_driver",
-            "openeo-geopyspark",
-            "openeo_udf",
-            "geopyspark",
-        ],
-        jar_paths=find_geotrellis_jars(extra_search_locations=[Path("/opt")]),
-    )
-
-    oidc_providers = [
-        OidcProvider(
-            id="egi",
-            title="EGI Check-in",
-            issuer="https://aai.egi.eu/auth/realms/egi/",
-            scopes=["openid", "email"],
-            default_clients=[
-                {
-                    "id": "vito-default-client",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
-        OidcProvider(
-            id="egi-dev",
-            title="EGI Check-in (dev)",
-            issuer="https://aai-dev.egi.eu/auth/realms/egi/",
-            default_clients=[
-                {
-                    "id": "openeo-eoepca-demo",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
-    ]
-
-    config = GpsBackendConfig(
-        id="eoepca-openeo-demo",
-        capabilities_title="Demo openEO/EOEPCA+ service (GeoPySpark)",
-        capabilities_description="openEO backend based on GeoPyspark stack for EOEPCA+ demo",
-        capabilities_deploy_metadata=capabilities_deploy_metadata,
-        oidc_providers=oidc_providers,
-        enable_basic_auth=True,
-        valid_basic_auth=lambda u, p: p == f"{u}123",
-    )
-  layerCatalog: |
-    [
-      {
-        "id": "TestCollection-LonLat16x16",
-        "description": "[DEBUGGING] Fast and predictable layer for debugging purposes. One sample every 5 days. Resolution will vary, to always output 16x16 pixels.",
-        "experimental": true,
-        "_vito": {"data_source": {"type": "testing"}},
-        "cube:dimensions": {
-          "x": {"type": "spatial", "axis": "x", "reference_system": 4326},
-          "y": {"type": "spatial", "axis": "y", "reference_system": 4326},
-          "t": {"type": "temporal"},
-          "bands": {
-            "type": "bands",
-            "values": [
-              "Flat:0",
-              "Flat:1",
-              "Flat:2",
-              "TileCol",
-              "TileRow",
-              "TileColRow:10",
-              "Longitude",
-              "Latitude",
-              "Year",
-              "Month",
-              "Day"
-            ]
-          }
-        },
-        "extent": {
-          "spatial": {"bbox": [[-180, -56, 180, 83]]},
-          "temporal": {"interval": [["2000-01-01", null]]}
-        }
-      }
-    ]
-driver:
-  env:
-    KUBE: "true"
-    KUBE_OPENEO_API_PORT: "50001"
-    PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
-    ZOOKEEPERNODES: openeo-geotrellis-zookeeper.openeo-geotrellis.svc.cluster.local:2181
-  podSecurityContext:
-    fsGroup: 18585
-    fsGroupChangePolicy: Always
-executor:
-  env:
-    PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
-existingConfigMaps: false
-fileDependencies:
-  - local:///opt/layercatalog/layercatalog.json
-  - local:///opt/log4j2.xml
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: apisix
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
-    k8s.apisix.apache.org/enable-cors: "true"
-    k8s.apisix.apache.org/http-to-https: "true"
-  hosts:
-    - host: openeo.${INGRESS_HOST}
-      paths:
-        - /
-  tls:
-    - hosts:
-        - openeo.${INGRESS_HOST}
-      secretName: openeo-geotrellis-openeo-sparkapplication-cert
-jarDependencies:
-  - local:///opt/geotrellis-extensions-static.jar
-mainApplicationFile: local:///opt/openeo/lib64/python3.8/site-packages/openeogeotrellis/deploy/kube.py
-sparkConf:
-  spark.executorEnv.DRIVER_IMPLEMENTATION_PACKAGE: openeogeotrellis
-  spark.appMasterEnv.DRIVER_IMPLEMENTATION_PACKAGE: openeogeotrellis
-service:
-  enabled: true
-  port: 50001
-ha:
-  enabled: false
-rbac:
-  create: true
-  role:
-    rules:
-      - apiGroups:
-          - ""
-        resources:
-          - pods
-        verbs:
-          - create
-          - delete
-          - deletecollection
-          - get
-          - list
-          - patch
-          - watch
-      - apiGroups:
-          - ""
-        resources:
-          - services
-        verbs:
-          - deletecollection
-          - list
-      - apiGroups:
-          - ""
-        resources:
-          - configmaps
-        verbs:
-          - create
-          - delete
-          - deletecollection
-          - list
-      - apiGroups:
-          - sparkoperator.k8s.io
-        resources:
-          - sparkapplications
-        verbs:
-          - create
-          - delete
-          - get
-          - list
-      - apiGroups:
-          - ""
-        resources:
-          - persistentvolumeclaims
-        verbs:
-          - create
-          - delete
-          - deletecollection
-          - list
-  serviceAccountDriver: openeo
+```
+kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 ```
 
-This gives you an `openeo-driver` pod that you can `port-forward` to on port 50001.
+#### Step 4: Deploy openEO Aggregator using Helm
 
-With the port-forward activated, you can access the openEO API with `curl -L localhost:50001`.
+The openEO Aggregator federates multiple openEO back-ends into a unified processing platform.
 
----
-
-## openEO Aggregator
-
-The openEO Aggregator is a software component to group multiple openEO back-ends together into a unified, federated openEO processing platform.
-
-For more details on the design and configuration, please read the [dedicated documentation](https://open-eo.github.io/openeo-aggregator/).
-
-### Helm chart
-
-A Chart can be found at the [openeo-geotrellis-kubernetes](https://github.com/Open-EO/openeo-geotrellis-kubernetes/tree/master/kubernetes/charts/openeo-aggregator) repo.
-
-The releases of the Helm chart are also hosted on the [VITO Artifactory](https://artifactory.vgt.vito.be/helm-charts) instance.
-
-Install openEO Aggregator as follows in your cluster:
 
 ```bash
-helm upgrade -i openeofed openeo-aggregator \
-    --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 2025.01.10-14 \
-    --namespace openeofed \
-    --create-namespace \
-    --values values.yaml
+helm upgrade -i openeofed \
+  https://artifactory.vgt.vito.be/artifactory/helm-charts/openeo-aggregator-2025.01.10-14.tgz \
+  --namespace openeo-geotrellis \
+  --create-namespace \
+  --values openeo-aggregator/generated-values.yaml
 ```
 
-An example `values.yaml` file:
-
-> _Note use of variables `${...}` that should be substituted with appropriate values_
-
-```yaml
 ---
-configMaps:
-  conf: |
-    from openeo_aggregator.config import AggregatorBackendConfig
-    from openeo_driver.users.oidc import OidcProvider
 
-    oidc_providers = [
-        OidcProvider(
-            id="egi",
-            title="EGI Check-in",
-            issuer="https://aai.egi.eu/auth/realms/egi/",
-            scopes=["openid", "email"],
-            default_clients=[
-                {
-                    "id": "vito-default-client",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
-        OidcProvider(
-            id="egi-dev",
-            title="EGI Check-in (dev)",
-            issuer="https://aai-dev.egi.eu/auth/realms/egi/",
-            scopes=["openid", "email"],
-            default_clients=[
-                {
-                    "id": "openeo-eoepca-demo",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
-    ]
+## Validation
 
-    config = AggregatorBackendConfig(
-        id="openeo-eoepca-aggregator-demo",
-        capabilities_title="openEO/EOEPCA+ Federation Demo",
-        capabilities_description="openEO demo federation service for EOEPCA+",
-        oidc_providers=oidc_providers,
-        aggregator_backends={
-            "terrascope": "https://openeo-dev.vito.be/openeo/1.2/",
-            "eoepca": "https://openeo.${INGRESS_HOST}/openeo/1.2/",
-        },
-    )
+After deploying the OpenEO Engine components, perform the following checks to verify that the system is working as expected.
 
-envVars:
-  ENV: "prod"
-  ZOOKEEPERNODES: openeo-geotrellis-zookeeper.openeo-geotrellis.svc.cluster.local:2181
-  GUNICORN_CMD_ARGS: "--bind=0.0.0.0:8080 --workers=10 --threads=1 --timeout=900"
-existingConfigMaps: false
-fullnameOverride: openeofed
-image:
-  pullPolicy: Always
-  repository: vito-docker.artifactory.vgt.vito.be/openeo-aggregator
-  tag: latest
-replicaCount: 1
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: apisix
-    cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}
-    k8s.apisix.apache.org/enable-cors: "true"
-    k8s.apisix.apache.org/http-to-https: "true"
-  hosts:
-    - host: openeofed.${INGRESS_HOST}
-      paths:
-        - path: /.well-known/openeo
-          pathType: Prefix
-        - path: /openeo
-          pathType: Prefix
-  tls:
-    - secretName: openeofed-cert
-      hosts:
-        - openeofed.${INGRESS_HOST}
+### 1. Automated Validation (Optional)
+
+```bash
+bash validation.sh
 ```
+
+This script verifies that:
+
+- All required pods in the `openeo-geotrellis` (and optionally `openeofed`) namespace are running.
+- Ingress endpoints return an HTTP 200 status code.
+- Key API endpoints provide well-formed JSON responses.
+
+
+
+### 2. Manual Validation
+
+To easily run these commands, we recommend first setting `${INGRESS_HOST}` in your environment.
+
+```bash
+source ~/.eoepca/state
+```
+
+Use the following commands to interact directly with the APIs:
+
+#### Check API Metadata
+
+```bash
+curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/ | jq .
+```
+
+_Expected output:_ A JSON object containing `api_version`, `backend_version`, `endpoints`, etc.
+
+#### List Collections
+
+```bash
+curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
+```
+
+_Expected output:_ A JSON array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
+
+#### List Processes
+
+```bash
+curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
+```
+
+_Expected output:_ A JSON object with an array of processes. Use your terminal’s scroll or `jq` to inspect the output.
+
+#### Validate Aggregator Response
+
+```bash
+curl -L https://openeofed.${INGRESS_HOST}/openeo/ | jq .
+```
+
+_Expected output:_ A JSON response including federation details and links, confirming that the aggregator is aware of multiple back-ends.
+
+### 3. Usage
+
+If your deployment includes sample processes and supports job submissions, you can test job execution as follows:
+
+#### 1. Submit a Job Using the "add" Process
+
+Submit a job that adds 5 and 2.5 by sending a process graph to the `/jobs` endpoint:
+
+```bash
+curl -X POST "https://openeofed.${INGRESS_HOST}/openeo/1.2/jobs" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "process_graph": {
+          "sum": {
+            "process_id": "add",
+            "arguments": {
+              "x": 5,
+              "y": 2.5
+            },
+            "result": true
+          }
+        }
+      }' | jq .
+```
+
+The response should include a `job_id` (e.g., `"job_id": "12345"`) along with other job details.
+
+#### 2. Monitor the Job Status
+
+Replace `<JOB_ID>` with the actual job ID from the previous step and run:
+
+```bash
+curl -X GET "https://openeo.${INGRESS_HOST}/openeo/1.2/jobs/<JOB_ID>" | jq .
+```
+
+Check that the job’s status changes from `submitted` to `running` and eventually to `successful`.
+
+#### 3. Retrieve the Job Result
+
+Once the job has completed, retrieve the output:
+
+```bash
+curl -X GET "https://openeo.${INGRESS_HOST}/openeo/1.2/jobs/<JOB_ID>/results" | jq .
+```
+
+**Expected output:**  
+A simple numeric result:
+
+```json
+7.5
+```
+
+This confirms that the "add" process is operational and returning the correct computed sum.
+
+---
+
+## Further Reading & Official Docs
+
+- [openEO Documentation](https://open-eo.github.io/openeo-api/)
+- [openEO Geotrellis GitHub Repository](https://github.com/Open-EO/openeo-geotrellis-kubernetes)
+- [openEO Aggregator Documentation](https://open-eo.github.io/openeo-aggregator/)
+- [EOEPCA+ Documentation](https://eoepca.readthedocs.io/)

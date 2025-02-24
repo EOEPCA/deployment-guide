@@ -1,0 +1,21 @@
+image:
+  registry: "vito-docker.artifactory.vgt.vito.be"
+  repository: "spark-operator"
+  tag: "v1beta2-2.0.2-3.5.2"
+controller:
+  batchScheduler:
+    enable: true
+  podMonitor:
+    create: false
+  uiIngress:
+    enable: false
+  resources:
+    requests:
+      cpu: "200m"
+webhook:
+  resources:
+    requests:
+      cpu: "300m"
+spark:
+  jobNamespaces:
+    - ""
