@@ -1,15 +1,9 @@
 # Processing - OpenEO Engine Deployment Guide (Early Access)
 
-The **OpenEO Engine** building block provides early access to a unified processing platform for Earth observation data. It brings together two key components: **openEO Geotrellis** and **openEO Aggregator**. These components work together to offer a standards-based API for connecting to diverse EO cloud back-ends and to federate multiple openEO services into a cohesive processing platform.
+OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.
 
 > **Note:** You must have a valid OIDC Provider to submit jobs to the OpenEO Engine. If you do not have one, refer to the [IAM Deployment Guide](./iam/main-iam.md) to set up an OIDC Provider.
 
----
-
-## Components
-
-- **openEO Geotrellis:** Provides an API that simplifies connecting to EO cloud back-ends, running on Apache Spark.
-- **openEO Aggregator:** Groups multiple openEO back-ends into a unified processing platform.
 
 ---
 
@@ -290,4 +284,3 @@ Your Access Token will eventually expire. If you receive a 401 error, you will n
 
 - [openEO Documentation](https://open-eo.github.io/openeo-api/)
 - [openEO Geotrellis GitHub Repository](https://github.com/Open-EO/openeo-geotrellis-kubernetes)
-- [openEO Aggregator Documentation](https://open-eo.github.io/openeo-aggregator/)
