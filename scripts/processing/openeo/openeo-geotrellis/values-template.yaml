@@ -33,7 +33,7 @@ configMaps:
             issuer="${OIDC_ISSUER_URL}",
             default_clients=[
                 {
-                    "id": "demo-openeo-eoepca",
+                    "id": "${OPENEO_CLIENT_ID}",
                     "grant_types": [
                         "password",
                         "authorization_code+pkce",

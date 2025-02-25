@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ../common/utils.sh
-source ../common/prerequisite-utils.sh
+source ../../common/utils.sh
+source ../../common/prerequisite-utils.sh
 echo "🔍 Checking prerequisites for OpenEO Deployment..."
 
 declare -a checks=(
