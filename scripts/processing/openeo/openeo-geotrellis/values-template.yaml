@@ -90,6 +90,8 @@ configMaps:
       }
     ]
 driver:
+  # Limit cores - uncomment for a small (dev) cluster
+  # coreRequest: 250m
   env:
     KUBE: "true"
     KUBE_OPENEO_API_PORT: "50001"
@@ -99,6 +101,8 @@ driver:
     fsGroup: 18585
     fsGroupChangePolicy: Always
 executor:
+  # Limit cores - uncomment for a small (dev) cluster
+  # coreRequest: 250m
   env:
     PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
 existingConfigMaps: false
