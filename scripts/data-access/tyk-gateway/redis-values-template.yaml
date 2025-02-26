@@ -1,4 +1,0 @@
-global:
-  storageClass: ${STORAGE_CLASS}
-  redis:
-    password: ""
