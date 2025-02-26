@@ -1,6 +1,12 @@
 {
   "type": "FeatureCollection",
-  "links": [],
+  "links": [
+    {
+      "rel": "collection",
+      "type": "application/json",
+      "href": "collections.json"
+    }
+  ],
   "features": [
     {
       "id": "S2A_26WPS_20231109_0_L2A",
