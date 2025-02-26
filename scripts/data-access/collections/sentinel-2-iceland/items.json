@@ -17,7 +17,13 @@
         64.8188325356334
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/26/W/PS/2023/11/S2A_26WPS_20231109_0_L2A/AOT.tif",
@@ -763,7 +769,13 @@
         64.01017051917611
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/27/V/WL/2023/11/S2B_27VWL_20231109_0_L2A/AOT.tif",
@@ -1517,7 +1529,13 @@
         64.90913749766527
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/26/W/PS/2023/11/S2B_26WPS_20231108_0_L2A/AOT.tif",
@@ -2263,7 +2281,13 @@
         65.58136184698695
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/26/W/NT/2023/11/S2B_26WNT_20231108_0_L2A/AOT.tif",
@@ -3009,7 +3033,13 @@
         65.5516222710476
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/26/W/PT/2023/11/S2B_26WPT_20231108_0_L2A/AOT.tif",
@@ -3767,7 +3797,13 @@
         65.31433100756534
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/27/W/VN/2023/11/S2B_27WVN_20231108_0_L2A/AOT.tif",
@@ -4517,7 +4553,13 @@
         64.64852581471845
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/27/W/VM/2023/11/S2A_27WVM_20231107_0_L2A/AOT.tif",
@@ -5263,7 +5305,13 @@
         64.90913749766527
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/27/W/XM/2023/11/S2A_27WXM_20231103_0_L2A/AOT.tif",
@@ -6005,7 +6053,13 @@
         64.645465867275
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/27/W/VM/2023/11/S2B_27WVM_20231102_0_L2A/AOT.tif",
@@ -6751,7 +6805,13 @@
         65.82154341411521
       ],
       "type": "Feature",
-      "links": [],
+      "links": [
+        {
+          "rel": "collection",
+          "type": "application/json",
+          "href": "collections.json"
+        }
+      ],
       "assets": {
         "aot": {
           "href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/27/W/WN/2023/11/S2B_27WWN_20231101_0_L2A/AOT.tif",
