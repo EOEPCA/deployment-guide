@@ -49,14 +49,13 @@ stac:
   settings:
     envVars:
       EOAPI_STAC_EXTENSIONS: "filter,query,sort,fields,pagination,transaction"
+      EOAPI_STAC_CORS_METHODS: "GET,POST,PUT,OPTIONS"
     resources:
       limits:
         cpu: "1280m"
         memory: "1536Mi"
       requests:
         cpu: "512m"
-        memory: "512Mi"
-
 vector:
   enabled: true
   settings:
@@ -66,5 +65,6 @@ vector:
       requests:
         memory: "1024Mi"
     envVars:
+      # needs to on so we can call /refresh for integration tests
       TIPG_DEBUG: "True"
       TIPG_CATALOG_TTL: "30"
