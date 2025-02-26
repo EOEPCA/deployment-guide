@@ -191,6 +191,18 @@ Once the deployment is complete and all pods are running, you can access the ser
 
 ---
 
+## Load Sample Data
+
+The following steps load some sample data into eoAPI.
+
+```bash
+cd collections/sentinel-2-iceland
+../ingest.sh
+cd ../..
+```
+
+---
+
 ## Testing and Validation
 
 Below are some quick ways to test and validate the Data Access services.
