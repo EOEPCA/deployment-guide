@@ -48,7 +48,7 @@ For a development/testing environment such as the cluster established via the [K
 1. Deploy the provisioner and its associated `standard` storage class.
 
       ```bash
-      kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta/docs/prerequisites/hostpath-provisioner.yaml
+      kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/hostpath-provisioner.yaml
       ```
 
 2. Monitor the deployment

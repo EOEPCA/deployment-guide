@@ -27,7 +27,7 @@ Before deploying the **OGC API Processes Engine**, ensure you have the following
 **Clone the Deployment Guide Repository:**
 
 ```
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/processing/oapip
 ```
 
@@ -295,7 +295,7 @@ curl --silent --show-error \
   -d @- <<EOF | jq
 {
   "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/2.0-beta/scripts/processing/oapip/examples/convert-url-app.cwl",
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl",
     "type": "application/cwl"
   }
 }

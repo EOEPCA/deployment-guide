@@ -24,7 +24,7 @@ Before deploying, ensure your environment meets the following requirements:
 **Clone the Deployment Guide Repository:**
 
 ```
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/processing/openeo
 ```
 

@@ -58,7 +58,7 @@ Before deploying the Resource Registration Building Block, ensure you have the f
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/resource-registration
 ```
 
@@ -267,7 +267,7 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
 {
   "inputs": {
     "type": "dataset",
-    "source": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/2.0-beta/scripts/resource-registration/data/simple-item.json",
+    "source": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/resource-registration/data/simple-item.json",
     "target": "https://resource-catalogue.${INGRESS_HOST}/stac"
   }
 }

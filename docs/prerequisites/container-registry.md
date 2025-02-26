@@ -51,7 +51,7 @@ Before deploying the Container Registry, make sure you have:
 **Clone the Deployment Guide Repository:**
 
 ```bash
-git clone -b 2.0-beta https://github.com/EOEPCA/deployment-guide
+git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/container-registry
 ```
 
