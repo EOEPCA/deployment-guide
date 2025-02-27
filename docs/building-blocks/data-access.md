@@ -191,14 +191,21 @@ Once the deployment is complete and all pods are running, you can access the ser
 
 ---
 
-## Load Sample Data
+## Load Sample Collection
 
-The following steps load some sample data into eoAPI.
+The following steps load a sample `Sentinel2-L2A-Iceland` collection into eoAPI.
 
 ```bash
 cd collections/sentinel-2-iceland
 ../ingest.sh
 cd ../..
+```
+
+Check the loaded collection via STAC Browser...
+
+```bash
+source ~/.eoepca/state
+xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_HOST}/stac/collections/sentinel-2-iceland
 ```
 
 ---
