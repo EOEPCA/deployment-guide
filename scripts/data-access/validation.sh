@@ -12,7 +12,6 @@ check_service_exists "data-access" "stac"
 check_service_exists "data-access" "vector"
 check_service_exists "data-access" "doc-server-eoapi"
 check_service_exists "data-access" "stacture"
-check_service_exists "data-access" "gateway-svc-tyk-oss-tyk-gateway"
 
 check_service_exists "data-access" "eoapi-support-prometheus-server" "Skipping: eoapi-support not found." || true
 check_service_exists "data-access" "eoapi-support-grafana" "Skipping: eoapi-support not found." || true

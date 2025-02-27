@@ -38,11 +38,8 @@ The Data Access BB consists of the following main components:
     
     - **Stacture**: Bridges STAC API with OGC API Coverages and OGC WCS.
     - **Terravis**: Provides advanced rendering and processing capabilities.
-4. **Tyk Gateway**: API Gateway for authentication, authorization, rate-limiting, and caching, integrated with the Identity Management BB.
     
-5. **Redis**: In-memory data structure store used by Tyk.
-    
-6. **eoapi-support**<br>
+4. **eoapi-support**<br>
    Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.
     
 
@@ -165,36 +162,7 @@ helm upgrade -i stacture eox/stacture \
 
 ---
 
-### 4. Deploy Tyk Gateway and Redis
-
-1. **Install Redis for Tyk Gateway:**
-    
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update bitnami
-helm upgrade -i tyk-redis bitnami/redis \
-  --version 20.1.0 \
-  --namespace data-access \
-  --values tyk-gateway/redis-generated-values.yaml
-```
-
-2. **Install Tyk Gateway:**
-    
-```bash
-helm repo add tyk-oss https://helm.tyk.io/public/helm/charts/
-helm repo update tyk-oss
-helm upgrade -i tyk-oss tyk-oss/tyk-oss \
-  --version 1.6.0 \
-  --namespace data-access \
-  --values tyk-gateway/generated-values.yaml
-```
-
-
-Tyk integrates with Identity Management for secure access and additional capabilities such as rate limiting or caching.
-
----
-
-### 5. Monitoring the Deployment
+### 4. Monitoring the Deployment
 
 After deploying, you can monitor the status of the deployments:
 
@@ -206,7 +174,7 @@ Check that all pods are in the `Running` state and that services/ingresses are p
 
 ---
 
-### 6. Accessing the Data Access Services
+### 5. Accessing the Data Access Services
 
 Once the deployment is complete and all pods are running, you can access the services:
 
@@ -216,12 +184,29 @@ Once the deployment is complete and all pods are running, you can access the ser
 - **Stacture API (coverages, WCS, etc.):**  
     `https://stacture.${INGRESS_HOST}/`
 <!-- currently ingress issues -->
-- **Tyk Gateway Dashboard** (if exposed via ingress):  
-    `https://tyk-gateway.${INGRESS_HOST}/`
     
 - **Grafana** (if `eoapi-support` is installed and ingress is enabled):  
     `https://eoapisupport.${INGRESS_HOST}/`
 <!-- add default credentials -->
+
+---
+
+## Load Sample Collection
+
+The following steps load a sample `Sentinel2-L2A-Iceland` collection into eoAPI.
+
+```bash
+cd collections/sentinel-2-iceland
+../ingest.sh
+cd ../..
+```
+
+Check the loaded collection via STAC Browser...
+
+```bash
+source ~/.eoepca/state
+xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_HOST}/stac/collections/sentinel-2-iceland
+```
 
 ---
 
@@ -293,8 +278,6 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
 To uninstall the Data Access Building Block and clean up associated resources:
 
 ```bash
-helm uninstall tyk-oss -n data-access
-helm uninstall tyk-redis -n data-access
 helm uninstall stacture -n data-access
 helm uninstall eoapi-support -n data-access
 helm uninstall eoapi -n data-access
@@ -309,5 +292,4 @@ kubectl delete namespace data-access
 
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
-- [Tyk Gateway Documentation](https://tyk.io/docs/)
 - [Crunchy Data Postgres Operator Documentation](https://access.crunchydata.com/documentation/postgres-operator/)
