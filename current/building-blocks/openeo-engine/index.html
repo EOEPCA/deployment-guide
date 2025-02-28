@@ -1218,6 +1218,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#step-4-create-a-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Create a Keycloak Client
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1298,24 +1307,6 @@
   
     <nav class="md-nav" aria-label="3. Usage">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#create-a-keycloak-client" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a Keycloak Client
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#create-a-keycloak-user" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a Keycloak User
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#get-an-accces-token" class="md-nav__link">
@@ -1713,6 +1704,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#step-4-create-a-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Create a Keycloak Client
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1793,24 +1793,6 @@
   
     <nav class="md-nav" aria-label="3. Usage">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#create-a-keycloak-client" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a Keycloak Client
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#create-a-keycloak-user" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a Keycloak User
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#get-an-accces-token" class="md-nav__link">
@@ -1982,11 +1964,54 @@
 <p>Deploy ingress</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 </span></code></pre></div>
+<h4 id="step-4-create-a-keycloak-client">Step 4: Create a Keycloak Client<a class="headerlink" href="#step-4-create-a-keycloak-client" title="Permanent link">⚓︎</a></h4>
+<p>The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.</p>
+<p>Thus, we configure in our openEO deployment integration with an <code>EOEPCA</code> identity provider.<br>
+Ref. helm values&hellip;</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">oidc_providers</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  <span class="n">OidcProvider</span><span class="p">(</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;eoepca&quot;</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;EOEPCA&quot;</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">issuer</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{OIDC_ISSUER_URL}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span> <span class="s2">&quot;profile&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">],</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">default_clients</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>      <span class="p">{</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;$</span><span class="si">{OPENEO_CLIENT_ID}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="s2">&quot;grant_types&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>          <span class="s2">&quot;authorization_code+pkce&quot;</span><span class="p">,</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>          <span class="s2">&quot;urn:ietf:params:oauth:grant-type:device_code+pkce&quot;</span><span class="p">,</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>          <span class="s2">&quot;refresh_token&quot;</span><span class="p">,</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>        <span class="p">],</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>        <span class="s2">&quot;redirect_urls&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;https://openeo.$INGRESS_HOST&quot;</span><span class="p">,</span><span class="s2">&quot;https://editor.openeo.org&quot;</span><span class="p">],</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>      <span class="p">}</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>    <span class="p">],</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>  <span class="p">),</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>  <span class="c1">#...</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="p">]</span>
+</span></code></pre></div>
+<p>To support this configuration, we need to create the <code>openeo-public</code> client in Keycloak, using the <code>create-client.sh</code> script.<br>
+This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash<span class="w"> </span>../../utils/create-client.sh
+</span></code></pre></div>
+<p>When prompted:</p>
+<ul>
+<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set).</li>
+<li><strong>Keycloak base domain</strong>: e.g. <code>auth.example.com</code></li>
+<li><strong>Realm</strong>: Typically <code>eoepca</code>.</li>
+<li><strong>Confidential Client?</strong>: specify <code>false</code> to create a PUBLIC client</li>
+<li><strong>Client ID</strong>: Use <code>openeo-public</code> or what you named the client in the configuration script (check <code>~/.eoepca/state</code>).</li>
+<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., &ldquo;OpenEO Public Client&rdquo;).</li>
+<li><strong>Subdomain</strong>: Use <code>openeo</code>.</li>
+<li><strong>Additional Subdomains</strong>: Leave blank.</li>
+<li><strong>Additional Hosts</strong>: Add <code>editor.openeo.org</code> to allow integration with the openEO Web Editor</li>
+</ul>
+<p>After it completes, you should see a JSON snippet confirming the newly created client. </p>
+<p>Look through the JSON and make a note of the <strong><code>secret</code></strong> value. This is the <strong>Client Secret</strong> and you will need this to obtain an access token. You can always retrieve this value from the Keycloak UI later if needed.</p>
 <hr />
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
 <p>After deploying the OpenEO Engine components, perform the following checks to verify that the system is working as expected.</p>
 <h3 id="1-automated-validation-optional">1. Automated Validation (Optional)<a class="headerlink" href="#1-automated-validation-optional" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
 <p>This script verifies that:</p>
 <ul>
@@ -1996,74 +2021,44 @@
 </ul>
 <h3 id="2-manual-validation">2. Manual Validation<a class="headerlink" href="#2-manual-validation" title="Permanent link">⚓︎</a></h3>
 <p>To easily run these commands, we recommend first setting <code>${INGRESS_HOST}</code> in your environment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span></code></pre></div>
 <p>Use the following commands to interact directly with the APIs:</p>
 <h4 id="check-api-metadata">Check API Metadata<a class="headerlink" href="#check-api-metadata" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </span></code></pre></div>
 <p><em>Expected output:</em> A JSON object containing <code>api_version</code>, <code>backend_version</code>, <code>endpoints</code>, etc.</p>
 <h4 id="list-collections">List Collections<a class="headerlink" href="#list-collections" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/collections<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/collections<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </span></code></pre></div>
 <p><em>Expected output:</em> A JSON array listing available collections, such as the sample collection <code>TestCollection-LonLat16x16</code>.</p>
 <h4 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/processes<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/processes<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </span></code></pre></div>
 <p><em>Expected output:</em> A JSON object with an array of processes. Use your terminal’s scroll or <code>jq</code> to inspect the output.</p>
 <h3 id="3-usage">3. Usage<a class="headerlink" href="#3-usage" title="Permanent link">⚓︎</a></h3>
 <p>Before running any jobs, you must obtain an access token from your OIDC Provider. Use the following command to get an access token if you followed our <a href="../iam/main-iam/">IAM Deployment Guide</a>.</p>
-<h4 id="create-a-keycloak-client">Create a Keycloak Client<a class="headerlink" href="#create-a-keycloak-client" title="Permanent link">⚓︎</a></h4>
-<p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>bash<span class="w"> </span>../../utils/create-client.sh
-</span></code></pre></div>
-<p>When prompted:</p>
-<ul>
-<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set).</li>
-<li><strong>Keycloak base domain</strong>: e.g. <code>auth.example.com</code></li>
-<li><strong>Realm</strong>: Typically <code>eoepca</code>.</li>
-<li><strong>Client ID</strong>: Use <code>openeo-client</code> or what you named the client in the configuration script (check <code>~/.eoepca/state</code>).</li>
-<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., &ldquo;OpenEO Client&rdquo;).</li>
-<li><strong>Client secret</strong>: Leave blank and let Keycloak generate one.</li>
-<li><strong>Subdomain</strong>: Use <code>openeo</code>.</li>
-<li><strong>Additional Subdomains</strong>: Leave blank.</li>
-</ul>
-<p>After it completes, you should see a JSON snippet confirming the newly created client. </p>
-<p>Look through the JSON and make a note of the <strong><code>secret</code></strong> value. This is the <strong>Client Secret</strong> and you will need this to obtain an access token. You can always retrieve this value from the Keycloak UI later if needed.</p>
-<h4 id="create-a-keycloak-user">Create a Keycloak User<a class="headerlink" href="#create-a-keycloak-user" title="Permanent link">⚓︎</a></h4>
-<p>If you have not already created a user, you can do so using the helper scripts or through the Keycloak UI. To create a user using the helper script, run</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>bash<span class="w"> </span>../../utils/create-user.sh
-</span></code></pre></div>
 <h4 id="get-an-accces-token">Get an Accces Token<a class="headerlink" href="#get-an-accces-token" title="Permanent link">⚓︎</a></h4>
+<p>This assumes use of the previously created <code>KEYCLOAK_TEST_USER</code> (default <code>eoepcauser</code>).<br>
+If needed, run the <code>create-user.sh</code> script to create a test user - <code>bash ../../utils/create-user.sh</code>.</p>
+<p>Request the access token.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENEO_USERNAME</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="c1"># The username of the user you created</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENEO_PASSWORD</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="c1"># The password of the user you created</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENEO_CLIENT_SECRET</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="c1"># You can retrieve this from the Keycloak UI, or from the JSON output of the create-client.sh script</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">         </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">         </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">OPENEO_USERNAME</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">         </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">OPENEO_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">         </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">         </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">         </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">         </span>-d<span class="w"> </span><span class="s2">&quot;scope=openid profile email&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">         </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">KEYCLOAK_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="p">|</span>
-</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">         </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span>
-</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="k">)</span>
-</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>
-</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Access token: </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>
-</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="nv">AUTH_TOKEN</span><span class="o">=</span><span class="s2">&quot;oidc/eoepca/</span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;scope=openid profile email&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">KEYCLOAK_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="p">|</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="k">)</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Access token: </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="nv">AUTH_TOKEN</span><span class="o">=</span><span class="s2">&quot;oidc/eoepca/</span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
-<p>Make sure that you replace the following values:</p>
-<ul>
-<li><YOUR-USERNAME> with your username</li>
-<li><YOUR-PASSWORD> with your password</li>
-<li><CLIENT-SECRET> with your client secret</li>
-</ul>
 <p>If the Access Token is empty, please make sure that the Keycloak client and user are correctly set up.</p>
 <p>We need to format the token as <code>oidc/eoepca/${ACCESS_TOKEN}</code> to comply with the <code>oidc_providers</code> variable seen in the Helm values.</p>
 <h4 id="submit-a-job-using-the-sum-process">Submit a Job Using the &ldquo;sum&rdquo; Process<a class="headerlink" href="#submit-a-job-using-the-sum-process" title="Permanent link">⚓︎</a></h4>

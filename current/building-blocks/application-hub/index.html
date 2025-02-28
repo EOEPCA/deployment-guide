@@ -1905,16 +1905,18 @@
 <p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
 </li>
 <li>
-<p><strong>Client ID</strong>: <code>application-hub</code>.</p>
+<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
 </li>
+<li><strong>Client ID</strong>: <code>application-hub</code>.</li>
 <li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., <code>Application Hub Client</code>).</li>
 <li><strong>Client secret</strong>: Enter the Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
 <li><strong>Subdomain</strong>: Use <code>app-hub</code> for the OAPIP engine. </li>
 <li><strong>Additional Subdomains</strong>: Leave blank.</li>
+<li><strong>Additional Hosts</strong>: Leave blank.</li>
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <hr />
-<ol start="3">
+<ol>
 <li><strong>Deploy the Application Hub Using Helm</strong></li>
 </ol>
 <p>Return to the <code>deployment-guide/scripts/app-hub</code> directory and deploy the Application Hub using Helm:</p>

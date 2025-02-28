@@ -1974,11 +1974,17 @@ For convenience we also create an <code>eoepcauser</code> (test) user to support
 <ul>
 <li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user<br><em>See <code>~/.eoepca/state</code></em></li>
 <li><strong>Keycloak base domain</strong>: e.g. <code>auth.${INGRESS_HOST}</code></li>
-<li><strong>Realm</strong>: Typically <code>eoepca</code>.</li>
+<li>
+<p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
+</li>
+<li>
+<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
+</li>
 <li><strong>Client ID</strong>: For OPA, you should use <code>opa</code>.</li>
 <li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text<br><em>e.g. name=<code>OPA Client</code> and description=<code>Open Policy Agent</code></em></li>
 <li><strong>Client secret</strong>: Enter the OPA Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
 <li><strong>Subdomain</strong>: Use <code>opa</code> for Open Policy Agent. </li>
+<li><strong>Additional Hosts</strong>: Leave blank.</li>
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <h3 id="8-deploy-opa-opal">8. Deploy OPA &amp; OPAL<a class="headerlink" href="#8-deploy-opa-opal" title="Permanent link">⚓︎</a></h3>

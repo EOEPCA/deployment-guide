@@ -2221,12 +2221,14 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
 </li>
 <li>
-<p><strong>Client ID</strong>: You should use <code>workspace</code> or what you set in the configuration script.</p>
+<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
 </li>
+<li><strong>Client ID</strong>: You should use <code>workspace</code> or what you set in the configuration script.</li>
 <li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., <code>Workspace Client</code>).</li>
 <li><strong>Client secret</strong>: Enter the Workspace Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
 <li><strong>Subdomain</strong>: Use <code>workspace-api</code>.</li>
 <li><strong>Additional Subdomains</strong>: Use <code>workspace-swagger,workspace-ui,workspace-admin</code>.</li>
+<li><strong>Additional Hosts</strong>: Leave blank.</li>
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <h3 id="82-define-resource-protection">8.2 Define Resource Protection<a class="headerlink" href="#82-define-resource-protection" title="Permanent link">⚓︎</a></h3>

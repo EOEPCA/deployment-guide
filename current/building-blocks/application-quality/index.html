@@ -1950,12 +1950,14 @@ We will configure the clients in a later step, just provide the names for now.</
 <p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
 </li>
 <li>
-<p><strong>Client ID</strong>: You should use the client ID you inputted in the configuration script (<code>application-quality</code>).</p>
+<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
 </li>
+<li><strong>Client ID</strong>: You should use the client ID you inputted in the configuration script (<code>application-quality</code>).</li>
 <li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g. Application Quality)</li>
 <li><strong>Client secret</strong>: Enter the Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
 <li><strong>Subdomain</strong>: Use <code>application-quality</code>.</li>
 <li><strong>Additional Subdomains</strong>: Leave blank.</li>
+<li><strong>Additional Hosts</strong>: Leave blank.</li>
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <hr />
