@@ -118,11 +118,13 @@ When prompted:
 - **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
 - **Client ID**: You should use `gitlab`.
 - **Client name** and **description**: Provide any helpful text (e.g., `GitLab OIDC Client`).
 - **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `gitlab`
 - **Additional Subdomains**: Leave empty.
+- **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 

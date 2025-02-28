@@ -129,11 +129,13 @@ When prompted:
 - **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
 - **Client ID**: You should use the client ID you inputted in the configuration script (`application-quality`).
 - **Client name** and **description**: Provide any helpful text (e.g. Application Quality)
 - **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `application-quality`.
 - **Additional Subdomains**: Leave blank.
+- **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 

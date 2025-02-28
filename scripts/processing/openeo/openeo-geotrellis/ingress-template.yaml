@@ -6,7 +6,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: apisix
     ${CLUSTER_ISSUER_ANNOTATION}
-    apisix.ingress.kubernetes.io/use-regex: "true"
+    k8s.apisix.apache.org/enable-cors: "true"
+    k8s.apisix.apache.org/http-to-https: "true"
 spec:
   ingressClassName: apisix
   rules:
