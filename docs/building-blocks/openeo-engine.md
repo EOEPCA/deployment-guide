@@ -212,7 +212,39 @@ curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
 
 _Expected output:_ A JSON object with an array of processes. Use your terminal’s scroll or `jq` to inspect the output.
 
-### 3. Usage
+---
+
+### 3. Usage - openEO Web Editor
+
+The deployment can be tested using the openEO Web Editor as a client.
+
+```bash
+xdg-open https://editor.openeo.org/
+```
+
+**Connect to server**
+
+* Enter the `URL` of the server - `open.${INGRESS_HOST}` - e.g. `open.myplatform.mydomain`
+* Select `Connect`
+
+**Login to service**
+
+* Select `EOEPCA`
+* Select `Log in with EOEPCA`<br>
+  This should redirect to authenticate via the IAM BB Keycloak instance
+* Authenticate as a user - such as `eoepcauser`
+
+**openEO Web Editor**
+
+Successful login should redirect to the `Welcome` page of the openEO Web Editor.
+
+The web editor can be used to explore the capabilities of the openEO instance.
+
+For example, use the `Wizard` to download some data from the default collection.
+
+---
+
+### 4. Usage - openEO API calls
 
 Before running any jobs, you must obtain an access token from your OIDC Provider. Use the following command to get an access token if you followed our [IAM Deployment Guide](./iam/main-iam.md).
 
