@@ -133,17 +133,19 @@ When prompted:
 - **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
 - **Client ID**: `application-hub`.
 - **Client name** and **description**: Provide any helpful text (e.g., `Application Hub Client`).
 - **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `app-hub` for the OAPIP engine. 
 - **Additional Subdomains**: Leave blank.
+- **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
 ---
 
-3. **Deploy the Application Hub Using Helm**
+1. **Deploy the Application Hub Using Helm**
 
 Return to the `deployment-guide/scripts/app-hub` directory and deploy the Application Hub using Helm:
 

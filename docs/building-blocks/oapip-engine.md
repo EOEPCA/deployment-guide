@@ -123,11 +123,13 @@ When prompted:
 - **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
 - **Client ID**: For the OAPIP engine, you should use `oapip-engine`.
 - **Client name** and **description**: Provide any helpful text (e.g. `OAPIP Engine Client`).
 - **Client secret**: Enter the OAPIP Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `zoo` for the OAPIP engine. 
 - **Additional Subdomains**: Leave blank.
+- **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 

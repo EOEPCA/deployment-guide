@@ -195,11 +195,13 @@ When prompted:
 - **Keycloak base domain**: e.g. `auth.example.com`
 - **Realm**: Typically `eoepca`.
 
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
 - **Client ID**: You should use `workspace` or what you set in the configuration script.
 - **Client name** and **description**: Provide any helpful text (e.g., `Workspace Client`).
 - **Client secret**: Enter the Workspace Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `workspace-api`.
 - **Additional Subdomains**: Use `workspace-swagger,workspace-ui,workspace-admin`.
+- **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
