@@ -1299,13 +1299,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-usage" class="md-nav__link">
+  <a href="#3-usage-openeo-web-editor" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Usage
+      3. Usage - openEO Web Editor
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Usage">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-usage-openeo-api-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Usage - openEO API calls
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Usage - openEO API calls">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1785,13 +1794,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-usage" class="md-nav__link">
+  <a href="#3-usage-openeo-web-editor" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Usage
+      3. Usage - openEO Web Editor
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Usage">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-usage-openeo-api-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Usage - openEO API calls
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Usage - openEO API calls">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2036,58 +2054,80 @@ This script prompts you for basic details and automatically creates a Keycloak c
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/processes<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </span></code></pre></div>
 <p><em>Expected output:</em> A JSON object with an array of processes. Use your terminal’s scroll or <code>jq</code> to inspect the output.</p>
-<h3 id="3-usage">3. Usage<a class="headerlink" href="#3-usage" title="Permanent link">⚓︎</a></h3>
+<hr />
+<h3 id="3-usage-openeo-web-editor">3. Usage - openEO Web Editor<a class="headerlink" href="#3-usage-openeo-web-editor" title="Permanent link">⚓︎</a></h3>
+<p>The deployment can be tested using the openEO Web Editor as a client.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>xdg-open<span class="w"> </span>https://editor.openeo.org/
+</span></code></pre></div>
+<p><strong>Connect to server</strong></p>
+<ul>
+<li>Enter the <code>URL</code> of the server - <code>open.${INGRESS_HOST}</code> - e.g. <code>open.myplatform.mydomain</code></li>
+<li>Select <code>Connect</code></li>
+</ul>
+<p><strong>Login to service</strong></p>
+<ul>
+<li>Select <code>EOEPCA</code></li>
+<li>Select <code>Log in with EOEPCA</code><br>
+  This should redirect to authenticate via the IAM BB Keycloak instance</li>
+<li>Authenticate as a user - such as <code>eoepcauser</code></li>
+</ul>
+<p><strong>openEO Web Editor</strong></p>
+<p>Successful login should redirect to the <code>Welcome</code> page of the openEO Web Editor.</p>
+<p>The web editor can be used to explore the capabilities of the openEO instance.</p>
+<p>For example, use the <code>Wizard</code> to download some data from the default collection.</p>
+<hr />
+<h3 id="4-usage-openeo-api-calls">4. Usage - openEO API calls<a class="headerlink" href="#4-usage-openeo-api-calls" title="Permanent link">⚓︎</a></h3>
 <p>Before running any jobs, you must obtain an access token from your OIDC Provider. Use the following command to get an access token if you followed our <a href="../iam/main-iam/">IAM Deployment Guide</a>.</p>
 <h4 id="get-an-accces-token">Get an Accces Token<a class="headerlink" href="#get-an-accces-token" title="Permanent link">⚓︎</a></h4>
 <p>This assumes use of the previously created <code>KEYCLOAK_TEST_USER</code> (default <code>eoepcauser</code>).<br>
 If needed, run the <code>create-user.sh</code> script to create a test user - <code>bash ../../utils/create-user.sh</code>.</p>
 <p>Request the access token.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;scope=openid profile email&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">KEYCLOAK_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="p">|</span>
-</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="k">)</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Access token: </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>
-</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="nv">AUTH_TOKEN</span><span class="o">=</span><span class="s2">&quot;oidc/eoepca/</span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="si">${</span><span class="nv">OPENEO_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;scope=openid profile email&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">    </span><span class="s2">&quot;https://</span><span class="si">${</span><span class="nv">KEYCLOAK_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="p">|</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">    </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="k">)</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Access token: </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="nv">AUTH_TOKEN</span><span class="o">=</span><span class="s2">&quot;oidc/eoepca/</span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <p>If the Access Token is empty, please make sure that the Keycloak client and user are correctly set up.</p>
 <p>We need to format the token as <code>oidc/eoepca/${ACCESS_TOKEN}</code> to comply with the <code>oidc_providers</code> variable seen in the Helm values.</p>
 <h4 id="submit-a-job-using-the-sum-process">Submit a Job Using the &ldquo;sum&rdquo; Process<a class="headerlink" href="#submit-a-job-using-the-sum-process" title="Permanent link">⚓︎</a></h4>
 <p>Submit a job that adds 5 and 6.5 by sending a process graph to the <code>/jobs</code> endpoint:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/result&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">AUTH_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="s1">        &quot;process&quot;: {</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="s1">          &quot;process_graph&quot;: {</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s1">            &quot;sum&quot;: {</span>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="s1">              &quot;process_id&quot;: &quot;sum&quot;,</span>
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s1">              &quot;arguments&quot;: {</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="s1">                &quot;data&quot;: [5,6.5]</span>
-</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="s1">              },</span>
-</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="s1">              &quot;result&quot;: true</span>
-</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="s1">            }</span>
-</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="s1">          }</span>
-</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="s1">        }</span>
-</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="s1">      }&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/result&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">AUTH_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="s1">        &quot;process&quot;: {</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="s1">          &quot;process_graph&quot;: {</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="s1">            &quot;sum&quot;: {</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="s1">              &quot;process_id&quot;: &quot;sum&quot;,</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="s1">              &quot;arguments&quot;: {</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="s1">                &quot;data&quot;: [5,6.5]</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="s1">              },</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="s1">              &quot;result&quot;: true</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="s1">            }</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="s1">          }</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="s1">        }</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="s1">      }&#39;</span>
 </span></code></pre></div>
 <p><strong>Expected output:</strong><br />
 A simple numeric result:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="mf">11.5</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="mf">11.5</span>
 </span></code></pre></div>
 <p>This confirms that the &ldquo;sum&rdquo; process is operational and returning the correct computed sum.</p>
 <h4 id="experiment-with-other-processes">Experiment with Other Processes<a class="headerlink" href="#experiment-with-other-processes" title="Permanent link">⚓︎</a></h4>
 <p>To see more available processes you can run, navigate to</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>https://openeo.${INGRESS_HOST}/openeo/1.2/processes
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://openeo.${INGRESS_HOST}/openeo/1.2/processes
 </span></code></pre></div>
 <p>You should see a JSON object with an array of processes. Each with example usage and descriptions. Follow the same process as above to submit a job using any of these processes.</p>
 <p>Your Access Token will eventually expire. If you receive a 401 error, you will need to obtain a new token by running the <code>Get an Access Token</code> section again.</p>
