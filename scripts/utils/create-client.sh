@@ -14,21 +14,33 @@ ask "KEYCLOAK_ADMIN_PASSWORD" "Keycloak Admin Password" "${KEYCLOAK_ADMIN_PASSWO
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
 ask "REALM" "Enter the Keycloak Realm name" "eoepca"
+ask_temp "CONFIDENTIAL_CLIENT" "Create a CONFIDENTIAL client (true|false)? (false creates a PUBLIC client)" "true" is_boolean
+PUBLIC_CLIENT="$( if [ "${CONFIDENTIAL_CLIENT}" == "true" ]; then echo "false"; else echo "true"; fi )"
 ask_temp "CLIENT_ID" "Enter the new Client ID" "myclient"
 ask_temp "CLIENT_NAME" "Enter a name for this client" "My Client"
 ask_temp "CLIENT_DESCRIPTION" "Enter a description for this client" "A sample OIDC client"
-ask_temp "CLIENT_SECRET" "Enter the client secret" ""
+if [ "${CONFIDENTIAL_CLIENT}" == "true" ]; then
+  ask_temp "CLIENT_SECRET" "Enter the client secret" ""
+fi
 ask_temp "CLIENT_SUBDOMAIN" "Enter the primary subdomain for the client (e.g., myclient)" "myclient"
 
 ask_temp "ADDITIONAL_SUBDOMAINS" "Enter additional subdomains used for the Redirect URIs, comma-separated, or leave empty (e.g., service-api,service-swagger)" ""
+
+ask_temp "ADDITIONAL_HOSTS" "Enter additional (full) hosts used for the Redirect URIs, comma-separated, or leave empty (e.g., service.some.platform)" ""
 
 ROOT_URL="https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}"
 REDIRECT_URIS=("https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*" "/*")
 
 REDIRECT_URIS=("https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*")
+# Subdomains
 IFS=',' read -ra ADDR <<<"${ADDITIONAL_SUBDOMAINS}"
 for sub in "${ADDR[@]}"; do
     REDIRECT_URIS+=("https://${sub}.${INGRESS_HOST}/*")
+done
+# Hosts
+IFS=',' read -ra HOSTS <<<"${ADDITIONAL_HOSTS}"
+for host in "${HOSTS[@]}"; do
+    REDIRECT_URIS+=("https://${host}/*")
 done
 
 echo "Redirect URIs: ${REDIRECT_URIS[@]}"
@@ -73,14 +85,14 @@ create_client_payload=$(
   "baseUrl": "${ROOT_URL}",
   "redirectUris": $(printf '%s' "$(jq -n --argjson arr "$(jq -n '$ARGS.positional' --args "${REDIRECT_URIS[@]}")" '$arr')"),
   "webOrigins": ["/*"],
-  "publicClient": false,
+  "publicClient": ${PUBLIC_CLIENT},
   "clientAuthenticatorType": "client-secret",
   "directAccessGrantsEnabled": true,
   "attributes": {
     "oauth2.device.authorization.grant.enabled": "true"
   },
-  "serviceAccountsEnabled": true,
-  "authorizationServicesEnabled": true,
+  "serviceAccountsEnabled": ${CONFIDENTIAL_CLIENT},
+  "authorizationServicesEnabled": ${CONFIDENTIAL_CLIENT},
   "frontchannelLogout": true
   ${client_secret_json}
 }

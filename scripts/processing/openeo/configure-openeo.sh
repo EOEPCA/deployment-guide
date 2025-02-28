@@ -15,7 +15,7 @@ if [ -z "$OIDC_ISSUER_URL" ]; then
     check_oidc_provider_accessible
 fi
 
-ask "OPENEO_CLIENT_ID" "As we need to set the Client ID in the Helm values, please provider what you'd like the Client ID to be. We advise you to use the default provided." "openeo-client"
+ask "OPENEO_CLIENT_ID" "Enter the Client ID (Keycloak OIDC public client) that will be created for openEO clients" "openeo-public"
 
 envsubst <"openeo-geotrellis/values-template.yaml" >"openeo-geotrellis/generated-values.yaml"
 envsubst <"sparkoperator/values-template.yaml" >"sparkoperator/generated-values.yaml"
