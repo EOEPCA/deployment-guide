@@ -4,11 +4,11 @@ metadata:
   name: ah
   namespace: application-hub
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-websocket: "true"
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
     - host: app-hub.$INGRESS_HOST
       http:

@@ -13,15 +13,19 @@ GATEKEEPER_OUTPUT_PATH="./generated-gatekeeper-values.yaml"
 # Create and source the EOEPCA state file
 create_state_file() {
     STATE_FILE="$HOME/.eoepca/state"
+    ANNOTATIONS_FILE="$HOME/.eoepca/annotations.yaml"
 
     if [ ! -f "$STATE_FILE" ]; then
         mkdir -p "$(dirname "$STATE_FILE")"
         touch "$STATE_FILE"
     fi
 
+    if [ ! -f "$ANNOTATIONS_FILE" ]; then
+        touch "$ANNOTATIONS_FILE"
+    fi
+
     source "$STATE_FILE"
 }
-
 create_state_file
 
 # Check if a command exists
@@ -120,6 +124,29 @@ add_to_state_file() {
     fi
 }
 
+load_custom_ingress_annotations() {
+    local spaces_num="${1:-4}"
+    local variable_name="${2:-CUSTOM_INGRESS_ANNOTATIONS}"
+    local spaces=$(printf '%*s' "$spaces_num" | tr ' ' ' ')
+    if [ -f ~/.eoepca/annotations.yaml ]; then
+        local annotations=$(sed "s/^/$spaces/" ~/.eoepca/annotations.yaml)
+        export "$variable_name=$annotations"
+        return 0
+    fi
+}
+load_custom_ingress_annotations
+
+
+add_to_custom_ingress_annotations() {
+    local annotation="$1"
+
+    if grep -q "$annotation" "$HOME/.eoepca/annotations.yaml"; then
+      return
+    fi
+    echo "$annotation" >>"$HOME/.eoepca/annotations.yaml"
+    load_custom_ingress_annotations
+}
+
 check() {
     local message="$1"
     local error_message="$2"
@@ -178,6 +205,32 @@ if ! command_exists envsubst; then
     exit 1
 fi
 
+configure_http_scheme() {
+    if [ -z "${HTTP_SCHEME-}" ]; then
+        ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
+    fi
+}
+configure_http_scheme
+
+configure_ingress() {
+    if [ -z "${INGRESS_CLASS-}" ]; then
+        ask "INGRESS_CLASS" "Specify the Ingress class for the EOEPCA services (apisix/nginx)" "apisix" is_non_empty
+    fi
+
+    if [ "$INGRESS_CLASS" == "nginx" ]; then
+        add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/ssl-redirect: \"true\""
+        add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/force-ssl-redirect: \"true\""
+    fi
+
+    if [ "$INGRESS_CLASS" == "apisix" ]; then
+        add_to_custom_ingress_annotations "apisix.apache.org/ssl-redirect: \"true\""
+        add_to_custom_ingress_annotations "apisix.ingress.kubernetes.io/use-regex: \"true\""
+        add_to_custom_ingress_annotations "k8s.apisix.apache.org/upstream-read-timeout: \"600s\""
+        add_to_custom_ingress_annotations "k8s.apisix.apache.org/http-to-https: \"true\""
+    fi
+}
+configure_ingress
+
 configure_cert() {
     if [ -z "${USE_CERT_MANAGER-}" ]; then
         ask_yes_no "Do you want to use automatic certificate issuance with cert-manager (yes/no)?"
@@ -191,14 +244,6 @@ configure_cert() {
     if [ "$USE_CERT_MANAGER" == "yes" ]; then
         ask "CLUSTER_ISSUER" "Specify the Cert Manager cluster issuer for TLS certificates" "letsencrypt-http01-apisix" is_non_empty
         add_to_state_file "CLUSTER_ISSUER_ANNOTATION" "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
-    else
-        add_to_state_file "CLUSTER_ISSUER_ANNOTATION" ""
+        add_to_custom_ingress_annotations "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
     fi
 }
-
-configure_http_scheme() {
-    if [ -z "${HTTP_SCHEME-}" ]; then
-        ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
-    fi
-}
-configure_http_scheme

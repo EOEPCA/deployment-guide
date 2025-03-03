@@ -52,7 +52,7 @@ Before deploying the Resource Registration Building Block, ensure you have the f
 | Helm               | Version 3.7 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
-| Ingress Controller | Properly installed (e.g., NGINX)       | [Installation Guide](../prerequisites/ingress-controller.md)      |
+| Ingress Controller | Properly installed (e.g., NGINX)       | [Installation Guide](../prerequisites/ingress/overview.md)      |
 
 
 **Clone the Deployment Guide Repository:**

@@ -1,10 +1,10 @@
 ingress:
   enabled: true
-  className: apisix
+  className: ${INGRESS_CLASS}
   domain: application-quality.${INGRESS_HOST}
   annotations:
-    ${CLUSTER_ISSUER_ANNOTATION}
-    kubernetes.io/ingress.class: apisix
+${CUSTOM_INGRESS_ANNOTATIONS}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
   tls:
     - hosts:
       - application-quality.${INGRESS_HOST}

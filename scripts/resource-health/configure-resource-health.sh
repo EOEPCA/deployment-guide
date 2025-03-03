@@ -12,6 +12,12 @@ configure_cert
 
 # Generate configuration files
 envsubst <"values-template.yaml" >"generated-values.yaml"
-envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
+
+# if ingress class is apisix
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    envsubst <"apisix-ingress-template.yaml" >"generated-ingress.yaml"
+elif [ "$INGRESS_CLASS" == "nginx" ]; then
+    envsubst <"nginx-ingress-template.yaml" >"generated-ingress.yaml"
+fi
 
 echo "You can now proceed to deploy the Resource Health BB using Helm."

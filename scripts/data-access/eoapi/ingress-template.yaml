@@ -5,15 +5,15 @@ metadata:
   name: eoapi-raster
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/use-regex: "true"
     k8s.apisix.apache.org/rewrite-target-regex: "/raster(/|$)(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
   - host: eoapi.${INGRESS_HOST}
     http:
@@ -36,15 +36,15 @@ metadata:
   name: eoapi-stac
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/use-regex: "true"
     k8s.apisix.apache.org/rewrite-target-regex: "/stac(/|$)(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
   - host: eoapi.${INGRESS_HOST}
     http:
@@ -67,15 +67,15 @@ metadata:
   name: eoapi-vector
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/use-regex: "true"
     k8s.apisix.apache.org/rewrite-target-regex: "/vector(/|$)(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
   - host: eoapi.${INGRESS_HOST}
     http:
@@ -98,12 +98,12 @@ metadata:
   name: eoapi-docs
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
   - host: eoapi.${INGRESS_HOST}
     http:

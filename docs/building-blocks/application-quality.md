@@ -1,5 +1,7 @@
 # Application Quality Deployment Guide
 
+> OIDC Authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational.
+
 The **Application Quality** Building Block (BB) supports the evolution of scientific algorithms from research prototypes to production-grade processing workflows. It provides tooling to verify non-functional requirements—code quality, best practices, vulnerability scanning, performance testing—and to manage these checks via pipelines integrated into a typical CI/CD process.
 
 ---
@@ -34,7 +36,7 @@ Before deploying the Application Quality Building Block, ensure you have the fol
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                               |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                           |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                       |
-| Ingress          | Properly installed                     | [Ingress Controllers](../prerequisites/ingress-controller.md) |
+| APISIX Ingress          | Properly installed                     | [Ingress Controllers](../prerequisites/ingress/apisix.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                                   |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
 

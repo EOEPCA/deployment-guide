@@ -19,7 +19,7 @@ Before deploying the **OGC API Processes Engine**, ensure you have the following
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | Stage-In S3      | Accessible                             |             [MinIO Deployment Guide](../prerequisites/minio.md)                                                                                  |
 | Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                                                      |
@@ -102,6 +102,8 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 ---
 
 ## Optional: Enable OIDC with Keycloak
+
+> This option is only available when using the **APISIX** Ingress Controller. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 

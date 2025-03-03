@@ -3,11 +3,9 @@ rootPassword: ${MINIO_PASSWORD}
 replicas: 2
 ingress:
   enabled: true
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   annotations:
-    k8s.apisix.apache.org/http-to-https: "true"
-    k8s.apisix.apache.org/upstream-read-timeout: "600s"
-    ${CLUSTER_ISSUER_ANNOTATION}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-websocket: "true"
   path: /
   hosts:
@@ -18,11 +16,9 @@ ingress:
         - minio.${INGRESS_HOST}
 consoleIngress:
   enabled: true
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   annotations:
-    k8s.apisix.apache.org/http-to-https: "true"
-    k8s.apisix.apache.org/upstream-read-timeout: "600s"
-    ${CLUSTER_ISSUER_ANNOTATION}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-websocket: "true"
   path: /
   hosts:

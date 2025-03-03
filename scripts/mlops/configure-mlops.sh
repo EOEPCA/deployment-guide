@@ -18,7 +18,13 @@ ask "S3_BUCKET_SHARINGHUB" "Enter the S3 bucket name for SharingHub" "mlopbb-sha
 ask "S3_BUCKET_MLFLOW" "Enter the S3 bucket name for MLFlow" "mlopbb-mlflow-sharinghub" is_non_empty
 
 # OIDC configuration
-ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
+    export MLOPS_INGRESS_ENABLED=false
+elif [ "$INGRESS_CLASS" == "nginx" ]; then
+    MLOPS_OIDC_ENABLED=false
+    export MLOPS_INGRESS_ENABLED=true
+fi
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
     echo "OIDC is enabled. Please provide the following details:"
@@ -37,7 +43,7 @@ if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
     echo "   Please store this securely: $MLOPS_OIDC_CLIENT_SECRET"
     echo ""
 else
-    export "MLOPS_OIDC_OMNIAUTH_CONFIG" ""
+    export MLOPS_OIDC_OMNIAUTH_CONFIG=""
 fi
 
 # Generate secret keys and store them in the state file

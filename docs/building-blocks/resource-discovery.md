@@ -36,7 +36,7 @@ The Resource Discovery building block includes:
 | Kubernetes       | Cluster (tested on v1.28)     | [Installation Guide](../prerequisites/kubernetes.md)     |
 | Helm             | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)               |
 | kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)           |
-| Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress-controller.md)                    |
+| Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress/overview.md)                    |
 | Cert Manager     | Properly installed            | [Installation Guide](../prerequisites/tls.md)                          |
 
 **Clone the Deployment Guide Repository:**

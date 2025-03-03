@@ -35,7 +35,12 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
 fi
 
 # OIDC
-ask "OIDC_OAPIP_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    ask "OIDC_OAPIP_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
+else
+    OIDC_OAPIP_ENABLED=false
+fi
+
 if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
 
     ask "OAPIP_CLIENT_ID" "Enter the Client ID for the OAPIP" "oapip-engine" is_non_empty
@@ -69,9 +74,3 @@ else
 fi
 
 envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
-
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- zoo-tls"
-fi

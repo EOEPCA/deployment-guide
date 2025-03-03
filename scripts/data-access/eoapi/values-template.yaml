@@ -1,5 +1,4 @@
-ingress:
-  enabled: false
+${EOAPI_INGRESS_VALUES}
 
 db:
   enabled: false
