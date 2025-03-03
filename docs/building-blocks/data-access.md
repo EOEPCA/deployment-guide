@@ -54,7 +54,7 @@ Before deploying the Data Access Building Block, ensure you have the following:
 | Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller   | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md)  |
+| Ingress Controller   | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md)  |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 | Object Store                 | Accessible object store (i.e. MinIO)   | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
 
@@ -125,7 +125,9 @@ helm upgrade -i eoapi eoapi/eoapi \
   --values eoapi/generated-values.yaml
 ```
 
-3. **Deploy the ingress:**
+3. **Deploy the Ingress (APISIX Only):**
+
+If you are using `nginx` then you can **skip** this step as the ingress will be deployed as part of the `eoapi` chart.
 
 ```bash
 kubectl apply -f eoapi/generated-ingress.yaml

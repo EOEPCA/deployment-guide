@@ -4,12 +4,12 @@ metadata:
   name: rhc
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: apisix
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
     k8s.apisix.apache.org/rewrite-target-regex: "/api/healthchecks/(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
-    ${CLUSTER_ISSUER_ANNOTATION}
+${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   tls:
     - hosts:
         - resource-health.${INGRESS_HOST}
@@ -32,12 +32,12 @@ metadata:
   name: rht
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: apisix
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
     k8s.apisix.apache.org/rewrite-target-regex: "/api/telemetry/(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
-    ${CLUSTER_ISSUER_ANNOTATION}
+${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   tls:
     - hosts:
         - resource-health.${INGRESS_HOST}
@@ -60,10 +60,10 @@ metadata:
   name: rhw
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   tls:
     - hosts:
         - resource-health.${INGRESS_HOST}

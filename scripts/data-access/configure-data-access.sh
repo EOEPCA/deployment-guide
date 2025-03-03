@@ -13,6 +13,27 @@ ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" 
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
 
+echo "Checking " $INGRESS_CLASS
+if [ "$INGRESS_CLASS" == "nginx" ]; then
+    load_custom_ingress_annotations "6" "DATA_ACCESS_INGRESS_ANNOTATIONS"
+    export EOAPI_INGRESS_VALUES="ingress:
+    enabled: true
+    className: nginx
+    annotations:
+${DATA_ACCESS_INGRESS_ANNOTATIONS}
+    host: eoapi.${INGRESS_HOST}
+    tls:
+        enabled: true
+        certManager: false
+        secretName: eoapi-tls"
+
+    load_custom_ingress_annotations "6" "DATA_ACCESS_INGRESS_ANNOTATIONS"
+
+else
+    export EOAPI_INGRESS_VALUES="ingress:
+    enabled: false"
+fi
+
 # Generate configuration files
 envsubst <"eoapi/values-template.yaml" >"eoapi/generated-values.yaml"
 envsubst <"eoapi/ingress-template.yaml" >"eoapi/generated-ingress.yaml"

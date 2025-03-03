@@ -4,13 +4,12 @@ global:
     domain: ${INGRESS_HOST}
   ingress:
     configureCertmanager: false
-    class: apisix
-    provider: apisix
+    class: ${INGRESS_CLASS}
+    provider: ${INGRESS_CLASS}
     tls:
       external: true
     annotations:
-      ${CLUSTER_ISSUER_ANNOTATION}
-      apisix.ingress.kubernetes.io/use-regex: "true"
+${MLOPS_INGRESS_ANNOTATIONS}
       kubernetes.io/tls-acme: true
 
   minio:

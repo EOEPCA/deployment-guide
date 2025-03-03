@@ -4,12 +4,12 @@ metadata:
   name: mlf
   namespace: sharinghub
   annotations:
-    kubernetes.io/ingress.class: apisix
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
     k8s.apisix.apache.org/rewrite-target-regex: "/mlflow/(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
-    ${CLUSTER_ISSUER_ANNOTATION}
+${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   tls:
     - hosts:
         - sharinghub.$INGRESS_HOST

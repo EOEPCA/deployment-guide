@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rhc
+  namespace: resource-health
+  annotations:
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+${CUSTOM_INGRESS_ANNOTATIONS}
+spec:
+  ingressClassName: ${INGRESS_CLASS}
+  tls:
+    - hosts:
+        - resource-health.${INGRESS_HOST}
+      secretName: resource-health-tls
+  rules:
+    - host: resource-health.${INGRESS_HOST}
+      http:
+        paths:
+          - path: /api/healthchecks/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: resource-health-check-api
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rht
+  namespace: resource-health
+  annotations:
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+${CUSTOM_INGRESS_ANNOTATIONS}
+spec:
+  ingressClassName: ${INGRESS_CLASS}
+  tls:
+    - hosts:
+        - resource-health.${INGRESS_HOST}
+      secretName: resource-health-tls
+  rules:
+    - host: resource-health.${INGRESS_HOST}
+      http:
+        paths:
+          - path: /api/telemetry/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: resource-health-telemetry-api
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rhw
+  namespace: resource-health
+  annotations:
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
+spec:
+  ingressClassName: ${INGRESS_CLASS}
+  tls:
+    - hosts:
+        - resource-health.${INGRESS_HOST}
+      secretName: resource-health-tls
+  rules:
+    - host: resource-health.${INGRESS_HOST}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-health-web
+                port:
+                  number: 80

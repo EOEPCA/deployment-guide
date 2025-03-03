@@ -26,12 +26,12 @@ workflow:
 ingress:
   enabled: ${OAPIP_INGRESS_ENABLED}
   hosturl: ${OAPIP_HOST}
-  ingressClassName: apisix
-  class: apisix
-  className: apisix
+  ingressClassName: ${INGRESS_CLASS}
+  class: ${INGRESS_CLASS}
+  className: ${INGRESS_CLASS}
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
   hosts:
   - host: zoo.${INGRESS_HOST}
     paths:

@@ -16,7 +16,7 @@ Before deploying, ensure your environment meets the following requirements:
 |Kubernetes|Cluster (tested on v1.28)|[Installation Guide](../prerequisites/kubernetes.md)|
 |Helm|Version 3.5 or newer|[Installation Guide](https://helm.sh/docs/intro/install/)|
 |kubectl|Configured for cluster access|[Installation Guide](https://kubernetes.io/docs/tasks/tools/)|
-|Ingress|Properly installed|[Installation Guide](../prerequisites/ingress-controller.md)|
+|APISIX Ingress|Properly installed|[Installation Guide](../prerequisites/ingress/apisix.md)|
 |Cert Manager|Properly installed|[Installation Guide](../prerequisites/tls.md)|
 |OIDC Provider|Required to submit jobs|[Installation Guide](./iam/main-iam.md)|
 

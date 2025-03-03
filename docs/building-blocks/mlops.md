@@ -29,11 +29,9 @@ Before deploying the MLOps Building Block, ensure you have the following:
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | Helm plugins     | `helm-git`: Version 1.3.0 tested       | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| OIDC             | OIDC                                   | TODO (GitLab uses this)                                                                       |
-| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | MinIO            | S3-compatible storage                  | [Installation Guide](../prerequisites/minio.md)                |
-| OIDC (Optional)             | OpenID Connect (OIDC) Provider (e.g., Keycloak) | Installation guide coming soon. |
 
 Additionally, you must have:
 
@@ -104,7 +102,7 @@ For instructions on how to set up IAM, you can follow the [IAM Building Block](.
 
 ### 2. Create a Keycloak Client for GitLab (Optional)
 
-If you **don't** want to enable OIDC, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
+If you **don't** want to enable OIDC or you are **not** using the APISIX ingress controller, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -251,7 +249,7 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --values mlflow/generated-values.yaml
 ```
 
-Deploy Ingress for the MLFlow
+Only if you are using the **APISIX ingress controller**, deploy the Ingress for MLflow SharingHub. Otherwise the Ingress is already created by the Helm chart.
 
 ```
 kubectl apply -f mlflow/generated-ingress.yaml

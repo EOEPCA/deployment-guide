@@ -18,7 +18,7 @@ The EOEPCA Identity and Access Management (IAM) Building Block provides secure a
 | Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller   | Properly installed                     | [Installation Guide](../../prerequisites/ingress-controller.md)  |
+| Ingress Controller   | Properly installed                     | [Installation Guide](../../prerequisites/ingress/overview.md)  |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../../prerequisites/tls.md) |
 
 **Clone the Deployment Guide Repository:**
@@ -82,7 +82,7 @@ These credentials will be stored in a state file at `~/.eoepca/state`.
 
 ### 2. Ensure APISIX is Installed
 
-If you haven’t installed APISIX yet, see the instructions in section [APISIX Ingress Controller](../../prerequisites/ingress-controller.md#apisix-ingress-controller).
+If you haven’t installed APISIX yet, see the instructions in section [APISIX Ingress Controller](../../prerequisites/ingress/overview.md#apisix-ingress-controller).
 
 ### 3. Apply Secrets
 

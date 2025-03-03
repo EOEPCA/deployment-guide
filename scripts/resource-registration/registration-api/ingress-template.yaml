@@ -4,11 +4,11 @@ metadata:
   name: rr
   namespace: resource-registration
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
-    apisix.ingress.kubernetes.io/use-regex: "true"
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
+
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
     - host: registration-api.$INGRESS_HOST
       http:

@@ -34,7 +34,7 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | Helm               | Version 3.7 or newer                              | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../prerequisites/tls.md) |
-| APISIX Ingress Controller | Properly installed                         | [Installation Guide](../prerequisites/ingress-controller.md#apisix-ingress-controller)      |
+| APISIX Ingress Controller | Properly installed                         | [Installation Guide](../prerequisites/ingress/overview.md#apisix-ingress-controller)      |
 | Container Registry     | ECR or Harbor (for images)                        | [Installation Guide](../prerequisites/container-registry.md)      
 
 

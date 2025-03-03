@@ -14,7 +14,11 @@ nav:
       - Overview: prerequisites/prerequisites-overview.md
       - Kubernetes Requirements: prerequisites/kubernetes.md
       - Storage Requirements: prerequisites/storage.md
-      - Ingress Controller Setup: prerequisites/ingress-controller.md
+      - Ingress Setup:
+          - Overview: prerequisites/ingress/overview.md
+          - APISIX Ingress: prerequisites/ingress/apisix.md
+          - Nginx Ingress: prerequisites/ingress/nginx.md
+          - Multiple Ingress Controllers: prerequisites/ingress/multi.md
       - TLS Management: prerequisites/tls.md
       - Optional Components:
           - S3 Storage (MinIO): prerequisites/minio.md

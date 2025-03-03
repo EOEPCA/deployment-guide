@@ -123,16 +123,16 @@ function check_cert_manager_installed() {
     fi
 }
 
-# Improve this
 function check_ingress_controller_installed() {
-    if ! kubectl get pods --all-namespaces | grep -q "apisix-ingress-controller"; then
-        echo "⚠️  APISIX Ingress Controller is not installed in the cluster."
-        echo "   Please install APISIX Ingress Controller: https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/ingress-controller/#apisix-ingress-controller"
-        echo "   If you are using a different Ingress Controller, you can ignore this message."
-        return 1
-    else
-        echo "✅ APISIX Ingress Controller is installed."
+    if kubectl get pods --all-namespaces | grep -Eq "apisix-ingress-controller|ingress-nginx-controller"; then
+        echo "✅ An Ingress Controller is installed (either APISIX or Ingress-NGINX)."
         return 0
+    else
+        echo "⚠️  Neither APISIX Ingress Controller nor Ingress-NGINX Controller is installed in the cluster."
+        echo "   Please install an Ingress Controller:"
+        echo "     APISIX Ingress Controller: https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/ingress/apisix/"
+        echo "     Ingress-NGINX Controller: https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/ingress/nginx/"
+        return 1
     fi
 }
 

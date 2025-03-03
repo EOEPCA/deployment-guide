@@ -58,7 +58,7 @@ Before deploying the Resource Health Building Block, ensure you have the followi
 | Helm                        | Version 3.5 or newer                    | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | Helm plugins                | `helm-git`: Version 1.3.0 tested        | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install) |
 | kubectl                     | Configured for cluster access           | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../prerequisites/ingress-controller.md)      |
+| Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../prerequisites/ingress/overview.md)      |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
 
 **Clone the Deployment Guide Repository:**
@@ -123,7 +123,7 @@ helm upgrade -i resource-health reference-repo/resource-health-reference-deploym
 
 By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.
 
-For the purpose of this guide, the configuration script created a sample APISIX Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment.
+For the purpose of this guide, the configuration script created a sample Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the `~/.eoepca/state` file.
 
 ```bash
 kubectl apply -f generated-ingress.yaml -n resource-health
@@ -132,6 +132,8 @@ kubectl apply -f generated-ingress.yaml -n resource-health
 ---
 
 ### 3. Monitor the Deployment
+
+Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
 
 After the Helm installation finishes, check that all pods are running in the **resource-health** namespace:
 

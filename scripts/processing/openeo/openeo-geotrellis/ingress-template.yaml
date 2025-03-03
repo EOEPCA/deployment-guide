@@ -4,12 +4,12 @@ metadata:
   name: oeo
   namespace: openeo-geotrellis
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
 spec:
-  ingressClassName: apisix
+  ingressClassName: ${INGRESS_CLASS}
   rules:
     - host: openeo.$INGRESS_HOST
       http:
