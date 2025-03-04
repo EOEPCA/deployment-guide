@@ -1053,15 +1053,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-deploy-stacture" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Deploy Stacture
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#4-monitoring-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       4. Monitoring the Deployment
@@ -1648,15 +1639,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-deploy-stacture" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Deploy Stacture
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#4-monitoring-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       4. Monitoring the Deployment
@@ -1775,15 +1757,11 @@
 <p>The <strong>Data Access</strong> Building Block provides feature-rich and reliable interfaces to geospatial data assets stored in the platform, addressing both human and machine users. This guide provides step-by-step instructions to deploy the Data Access BB in your Kubernetes cluster.</p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The Data Access Building Block combines capabilities from two complementary libraries:</p>
-<ul>
-<li><strong>eoAPI</strong>: Provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.</li>
-<li><strong>EOX View Server (Stacture and Terravis)</strong>: Adds support for OGC API Coverages, OGC WCS, and advanced rendering mechanisms.</li>
-</ul>
+<p>The Data Access Building Block provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.</p>
 <p>The building block offers:</p>
 <ul>
 <li>STAC API for data discovery</li>
-<li>Support for retrieval and visualisation of features and coverages via standard OGC APIs</li>
+<li>Support for retrieval and visualisation of raster and vector data via standard OGC APIs</li>
 <li>Dynamic specification of which datasets should be delivered with which data access services</li>
 <li>Integration with other building blocks through shared databases (e.g., pgSTAC)</li>
 </ul>
@@ -1802,13 +1780,6 @@
 <li>
 <p><strong>PostgreSQL with PostGIS and pgSTAC</strong><br>
    Database for storing geospatial metadata and data managed by the <a href="https://access.crunchydata.com/documentation/postgres-operator">Crunchy Data Postgres Operator (pgo)</a>.</p>
-</li>
-<li>
-<p><strong>Stacture and Terravis</strong>: Components from EOX View Server providing:</p>
-<ul>
-<li><strong>Stacture</strong>: Bridges STAC API with OGC API Coverages and OGC WCS.</li>
-<li><strong>Terravis</strong>: Provides advanced rendering and processing capabilities.</li>
-</ul>
 </li>
 <li>
 <p><strong>eoapi-support</strong><br>
@@ -1932,22 +1903,9 @@
 <p><strong>Note</strong>: If you prefer to monitor Data Access with your own monitoring solution, you can skip this step.</p>
 </blockquote>
 <hr />
-<h3 id="3-deploy-stacture">3. Deploy Stacture<a class="headerlink" href="#3-deploy-stacture" title="Permanent link">⚓︎</a></h3>
-<p>Stacture bridges the STAC API with OGC API Coverages and WCS. It also handles advanced rendering through Terravis.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eox<span class="w"> </span>https://charts-public.hub.eox.at/
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eox
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>stacture<span class="w"> </span>eox/stacture<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span>--values<span class="w"> </span>stacture/generated-values.yaml
-</span></code></pre></div>
-<blockquote>
-<p>This deploys <strong>Stacture</strong> and <strong>Terravis</strong> with images tagged at <code>v0.0.8</code> (configured in your <code>stacture/generated-values.yaml</code>).</p>
-</blockquote>
-<hr />
 <h3 id="4-monitoring-the-deployment">4. Monitoring the Deployment<a class="headerlink" href="#4-monitoring-the-deployment" title="Permanent link">⚓︎</a></h3>
 <p>After deploying, you can monitor the status of the deployments:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
 </span></code></pre></div>
 <p>Check that all pods are in the <code>Running</code> state and that services/ingresses are properly exposed.</p>
 <hr />
@@ -1959,28 +1917,22 @@
 <code>https://eoapi.${INGRESS_HOST}/stac/</code></p>
 </li>
 <li>
-<p><strong>Stacture API (coverages, WCS, etc.):</strong><br />
-<code>https://stacture.${INGRESS_HOST}/</code></p>
+<p><strong>Grafana</strong> (if <code>eoapi-support</code> is installed and ingress is enabled):<br />
+<code>https://eoapisupport.${INGRESS_HOST}/</code></p>
 </li>
-</ul>
-<!-- currently ingress issues -->
-
-<ul>
-<li><strong>Grafana</strong> (if <code>eoapi-support</code> is installed and ingress is enabled):<br />
-<code>https://eoapisupport.${INGRESS_HOST}/</code></li>
 </ul>
 <!-- add default credentials -->
 
 <hr />
 <h2 id="load-sample-collection">Load Sample Collection<a class="headerlink" href="#load-sample-collection" title="Permanent link">⚓︎</a></h2>
 <p>The following steps load a sample <code>Sentinel2-L2A-Iceland</code> collection into eoAPI.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>../ingest.sh
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nb">cd</span><span class="w"> </span>../..
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>../ingest.sh
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">cd</span><span class="w"> </span>../..
 </span></code></pre></div>
 <p>Check the loaded collection via STAC Browser&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
 </span></code></pre></div>
 <hr />
 <h2 id="testing-and-validation">Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Permanent link">⚓︎</a></h2>
@@ -2000,10 +1952,6 @@
 <p><strong>eoAPI Vector API Swagger UI</strong>:<br />
 <code>https://eoapi.${INGRESS_HOST}/vector/api.html</code></p>
 </li>
-<li>
-<p><strong>Stacture API Swagger UI</strong>:<br />
-<code>https://stacture.${INGRESS_HOST}/</code></p>
-</li>
 </ul>
 <p>Replace <code>${INGRESS_HOST}</code> with your actual ingress host domain.</p>
 <h3 id="2-run-demo-jupyter-notebooks">2. Run Demo Jupyter Notebooks<a class="headerlink" href="#2-run-demo-jupyter-notebooks" title="Permanent link">⚓︎</a></h3>
@@ -2016,34 +1964,33 @@
 <p>In the notebooks, set the <code>base_domain</code> variable to reflect your endpoint:</p>
 </li>
 </ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">base_domain</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{INGRESS_HOST}</span><span class="s2">&quot;</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">base_domain</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{INGRESS_HOST}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <p>For more information on how to run the demo Jupyter Notebooks, please visit the <a href="https://github.com/EOEPCA/demo/blob/main/README.md"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo Readme</a>.</p>
 <h3 id="3-perform-basic-api-tests">3. Perform Basic API Tests<a class="headerlink" href="#3-perform-basic-api-tests" title="Permanent link">⚓︎</a></h3>
 <p>You can perform basic tests using tools like <code>curl</code> or directly through the Swagger UI.</p>
 <p><strong>Example: Retrieve STAC API Landing Page</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
 </span></code></pre></div>
 <p><strong>Example: Search STAC Items</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s1">    &quot;bbox&quot;: [-10, 35, 0, 45],</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">    &quot;datetime&quot;: &quot;2021-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">    &quot;limit&quot;: 10</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">  }&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="s1">    &quot;bbox&quot;: [-10, 35, 0, 45],</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="s1">    &quot;datetime&quot;: &quot;2021-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="s1">    &quot;limit&quot;: 10</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="s1">  }&#39;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Data Access Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>stacture<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>pgo<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>pgo<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
