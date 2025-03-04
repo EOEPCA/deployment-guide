@@ -16,7 +16,6 @@ ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
 # Generate configuration files
 envsubst <"eoapi/values-template.yaml" >"eoapi/generated-values.yaml"
 envsubst <"eoapi/ingress-template.yaml" >"eoapi/generated-ingress.yaml"
-envsubst <"stacture/values-template.yaml" >"stacture/generated-values.yaml"
 envsubst <"postgres/values-template.yaml" >"postgres/generated-values.yaml"
 envsubst <"eoapi-support/values-template.yaml" >"eoapi-support/generated-values.yaml" 2>/dev/null || true
 
@@ -24,6 +23,5 @@ if [ "$USE_CERT_MANAGER" == "no" ]; then
     echo ""
     echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
     echo "- eoapi-tls"
-    echo "- data-access-stacture-tls"
     echo "- eoapisupport-tls (if eoapi-support is used)"
 fi
