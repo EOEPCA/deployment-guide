@@ -232,7 +232,9 @@ helm upgrade -i sharinghub sharinghub/sharinghub \
   --values sharinghub/generated-values.yaml
 ```
 
-Deploy Ingress for the SharingHub
+#### Deploy Ingress for the SharingHub
+
+**APISIX only** - If you are using NGINX or another ingress controller, you can skip this step.
 
 ```
 kubectl apply -f sharinghub/generated-ingress.yaml
@@ -249,7 +251,10 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
   --values mlflow/generated-values.yaml
 ```
 
-Only if you are using the **APISIX ingress controller**, deploy the Ingress for MLflow SharingHub. Otherwise the Ingress is already created by the Helm chart.
+
+#### Deploy Ingress for the MLFlow
+
+**APISIX only** - If you are using NGINX or another ingress controller, you can skip this step.
 
 ```
 kubectl apply -f mlflow/generated-ingress.yaml

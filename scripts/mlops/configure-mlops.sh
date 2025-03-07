@@ -20,10 +20,8 @@ ask "S3_BUCKET_MLFLOW" "Enter the S3 bucket name for MLFlow" "mlopbb-mlflow-shar
 # OIDC configuration
 if [ "$INGRESS_CLASS" == "apisix" ]; then
     ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
-    export MLOPS_INGRESS_ENABLED=false
 elif [ "$INGRESS_CLASS" == "nginx" ]; then
     MLOPS_OIDC_ENABLED=false
-    export MLOPS_INGRESS_ENABLED=true
 fi
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
@@ -36,14 +34,11 @@ if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
         add_to_state_file "MLOPS_OIDC_CLIENT_SECRET" "$MLOPS_OIDC_CLIENT_SECRET"
     fi
 
-    export MLOPS_OIDC_OMNIAUTH_CONFIG=$(cat gitlab/omniauth.yaml)
 
     echo ""
     echo "❗  Generated client secret for the MLOps."
     echo "   Please store this securely: $MLOPS_OIDC_CLIENT_SECRET"
     echo ""
-else
-    export MLOPS_OIDC_OMNIAUTH_CONFIG=""
 fi
 
 # Generate secret keys and store them in the state file
@@ -55,19 +50,21 @@ if [ -z "$MLFLOW_SECRET_KEY" ]; then
 fi
 
 # Generate configuration files for GitLab, SharingHub, and MLflow SharingHub
-envsubst <"gitlab/values-template.yaml" >"gitlab/generated-values.yaml"
-envsubst <"sharinghub/values-template.yaml" >"sharinghub/generated-values.yaml"
-envsubst <"mlflow/values-template.yaml" >"mlflow/generated-values.yaml"
-envsubst <"mlflow/pvc-template.yaml" >"mlflow/generated-pvc.yaml"
+gomplate  -f "gitlab/$TEMPLATE_PATH" -o "gitlab/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "sharinghub/$TEMPLATE_PATH" -o "sharinghub/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "mlflow/$TEMPLATE_PATH" -o "mlflow/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+
 
 # Generate configuration files for secrets
-envsubst <"gitlab/storage.config.template" >"gitlab/storage.config"
-envsubst <"gitlab/lfs-s3.yaml.template" >"gitlab/lfs-s3.yaml"
+gomplate -f "mlflow/pvc-template.yaml" -o "mlflow/generated-pvc.yaml" --datasource omniauth="gitlab/omniauth.yaml"
+gomplate -f "gitlab/storage.config.template" -o "gitlab/storage.config"
+gomplate -f "gitlab/lfs-s3.yaml.template" -o "gitlab/lfs-s3.yaml"
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
-    envsubst <"gitlab/provider.yaml.template" >"gitlab/provider.yaml"
+    gomplate -f "gitlab/provider.yaml.template" -o "gitlab/provider.yaml"
 fi
 
-# Ingress
-envsubst <"sharinghub/$INGRESS_TEMPLATE_PATH" >"sharinghub/$INGRESS_OUTPUT_PATH"
-envsubst <"mlflow/$INGRESS_TEMPLATE_PATH" >"mlflow/$INGRESS_OUTPUT_PATH"
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    gomplate -f "sharinghub/$INGRESS_TEMPLATE_PATH" -o "sharinghub/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "mlflow/$INGRESS_TEMPLATE_PATH" -o "mlflow/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+fi

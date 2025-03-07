@@ -64,7 +64,7 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
 
     add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
-    envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
+    gomplate -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 else
 
@@ -73,4 +73,4 @@ else
 
 fi
 
-envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
+gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

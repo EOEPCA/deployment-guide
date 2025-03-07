@@ -1,5 +1,5 @@
 global:
-  storageClass: $STORAGE_CLASS
+  storageClass: {{ getenv "STORAGE_CLASS" }}
 
 # Uncomment and modify the image section if using a custom Keycloak image with OPA plugin
 # image:
@@ -8,7 +8,7 @@ global:
 #   tag: 0.3.1
   # pullPolicy: Always
 auth:
-  adminUser: $KEYCLOAK_ADMIN_USER
+  adminUser: {{ getenv "KEYCLOAK_ADMIN_USER" }}
   existingSecret: keycloak-admin
 proxy: edge
 extraEnvVars:
@@ -17,9 +17,9 @@ extraEnvVars:
   - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
     value: "/opt/bitnami/keycloak/conf/opa-policies"
   - name: KC_HOSTNAME_URL
-    value: "https://auth.$INGRESS_HOST"
+    value: "https://auth.{{ getenv "INGRESS_HOST" }}"
   - name: KC_HOSTNAME_ADMIN_URL
-    value: "https://auth.$INGRESS_HOST"
+    value: "https://auth.{{ getenv "INGRESS_HOST" }}"
 postgresql:
   auth:
     existingSecret: kc-postgres

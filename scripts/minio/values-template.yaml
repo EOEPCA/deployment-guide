@@ -1,37 +1,47 @@
-rootUser: ${MINIO_USER}
-rootPassword: ${MINIO_PASSWORD}
+rootUser: {{ getenv "MINIO_USER" }}
+rootPassword: {{ getenv "MINIO_PASSWORD" }}
 replicas: 2
 ingress:
   enabled: true
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   annotations:
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
+    {{- end }}
+
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
   path: /
   hosts:
-    - minio.${INGRESS_HOST}
+    - minio.{{ getenv "INGRESS_HOST" }}
   tls:
     - secretName: minio-tls
       hosts:
-        - minio.${INGRESS_HOST}
+        - minio.{{ getenv "INGRESS_HOST" }}
 consoleIngress:
   enabled: true
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   annotations:
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
+    {{- end }}
+
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
   path: /
   hosts:
-    - console-minio.${INGRESS_HOST}
+    - console-minio.{{ getenv "INGRESS_HOST" }}
   tls:
     - secretName: minio-console-tls
       hosts:
-        - console-minio.${INGRESS_HOST}
+        - console-minio.{{ getenv "INGRESS_HOST" }}
 resources:
   requests:
     memory: 1Gi
 persistence:
-  storageClass: ${STORAGE_CLASS}
+  storageClass: {{ getenv "STORAGE_CLASS" }}
   size: 50Gi
 buckets:
   - name: eoepca

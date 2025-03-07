@@ -1,6 +1,6 @@
 [default]
-access_key = ${S3_ACCESS_KEY}
-secret_key = ${S3_SECRET_KEY}
-bucket_location = ${S3_REGION}
-host_base = ${S3_HOST}
+access_key = {{ getenv "S3_ACCESS_KEY" }}
+secret_key = {{ getenv "S3_SECRET_KEY" }}
+bucket_location = {{ getenv "S3_REGION" }}
+host_base = {{ getenv "S3_HOST" }}
 use_https = True

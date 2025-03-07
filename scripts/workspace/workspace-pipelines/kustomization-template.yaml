@@ -17,25 +17,25 @@ patches:
   patch: |
     - op: replace
       path: /spec/minioURL
-      value: https://minio.${INGRESS_HOST}
+      value: https://minio.{{ getenv "INGRESS_HOST" }}
 - target:
     kind: Composition
     name: workspace
   patch: |
     - op: replace
       path: /spec/pipeline/0/input/resources/3/base/spec/forProvider/manifest/spec/template/spec/containers/0/env/5/value
-      value: https://minio.${INGRESS_HOST}
+      value: https://minio.{{ getenv "INGRESS_HOST" }}
 - target:
     kind: Composition
     name: workspace
   patch: |
     - op: replace
       path: /spec/pipeline/0/input/resources/5/patches/1/transforms/0/string/fmt
-      value: '%s.${INGRESS_HOST}'
+      value: '%s.{{ getenv "INGRESS_HOST" }}'
 - target:
     kind: Composition
     name: workspace
   patch: |
     - op: replace
       path: /spec/pipeline/0/input/resources/5/patches/2/transforms/0/string/fmt
-      value: '%s.${INGRESS_HOST}'
+      value: '%s.{{ getenv "INGRESS_HOST" }}'

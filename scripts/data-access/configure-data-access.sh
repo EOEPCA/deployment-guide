@@ -13,38 +13,10 @@ ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" 
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
 
-echo "Checking " $INGRESS_CLASS
-if [ "$INGRESS_CLASS" == "nginx" ]; then
-    load_custom_ingress_annotations "6" "DATA_ACCESS_INGRESS_ANNOTATIONS"
-    export EOAPI_INGRESS_VALUES="ingress:
-    enabled: true
-    className: nginx
-    annotations:
-${DATA_ACCESS_INGRESS_ANNOTATIONS}
-    host: eoapi.${INGRESS_HOST}
-    tls:
-        enabled: true
-        certManager: false
-        secretName: eoapi-tls"
 
-    load_custom_ingress_annotations "6" "DATA_ACCESS_INGRESS_ANNOTATIONS"
+gomplate  -f "eoapi/$TEMPLATE_PATH" -o "eoapi/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "stacture/$TEMPLATE_PATH" -o "stacture/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "postgres/$TEMPLATE_PATH" -o "postgres/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "eoapi-support/$TEMPLATE_PATH" -o "eoapi-support/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
-else
-    export EOAPI_INGRESS_VALUES="ingress:
-    enabled: false"
-fi
-
-# Generate configuration files
-envsubst <"eoapi/values-template.yaml" >"eoapi/generated-values.yaml"
-envsubst <"eoapi/ingress-template.yaml" >"eoapi/generated-ingress.yaml"
-envsubst <"stacture/values-template.yaml" >"stacture/generated-values.yaml"
-envsubst <"postgres/values-template.yaml" >"postgres/generated-values.yaml"
-envsubst <"eoapi-support/values-template.yaml" >"eoapi-support/generated-values.yaml" 2>/dev/null || true
-
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- eoapi-tls"
-    echo "- data-access-stacture-tls"
-    echo "- eoapisupport-tls (if eoapi-support is used)"
-fi
+gomplate  -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

@@ -2,31 +2,51 @@ image:
   repository: eoepca/sharinghub
   pullPolicy: IfNotPresent
 
+{{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 10g
+  hosts:
+    - host: sharinghub.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: sharinghub-tls
+      hosts:
+        - sharinghub.{{ getenv "INGRESS_HOST" }}
+{{- else }}
 ingress:
   enabled: false
+{{- end }}
 
 config: |-
   server:
     allowed-origins:
-      - $HTTP_SCHEME://eoepca.readthedocs.io
+      - {{ getenv "HTTP_SCHEME" }}://eoepca.readthedocs.io
     session:
       secret-key: "${SHARINGHUB_SESSION_SECRET}"
   gitlab:
-    url: $HTTP_SCHEME://gitlab.${INGRESS_HOST}
+    url: {{ getenv "HTTP_SCHEME" }}://gitlab.{{ getenv "INGRESS_HOST" }}
     allow-public: true
   s3:
     enable: true
     bucket: ${S3_BUCKET_SHARINGHUB}
     region: us-east-1
-    endpoint: ${S3_ENDPOINT}
+    endpoint: {{ getenv "S3_ENDPOINT" }}
   mlflow:
     type: mlflow-sharinghub
-    url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow
+    url: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}/mlflow
   docs:
     url: /docs
   mlflow:
     type: mlflow-sharinghub
-    url: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}/mlflow
+    url: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}/mlflow
   stac:
     projects:
       cache-timeout: 30

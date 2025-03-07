@@ -15,9 +15,9 @@ envsubst <"values-template.yaml" >"generated-values.yaml"
 
 # if ingress class is apisix
 if [ "$INGRESS_CLASS" == "apisix" ]; then
-    envsubst <"apisix-ingress-template.yaml" >"generated-ingress.yaml"
+    envsubst <"apisix-$INGRESS_TEMPLATE_PATH" >"$INGRESS_OUTPUT_PATH"
 elif [ "$INGRESS_CLASS" == "nginx" ]; then
-    envsubst <"nginx-ingress-template.yaml" >"generated-ingress.yaml"
+    envsubst <"nginx-$INGRESS_TEMPLATE_PATH" >"$INGRESS_OUTPUT_PATH"
 fi
 
 echo "You can now proceed to deploy the Resource Health BB using Helm."

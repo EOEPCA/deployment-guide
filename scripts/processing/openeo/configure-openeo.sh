@@ -17,10 +17,10 @@ fi
 
 ask "OPENEO_CLIENT_ID" "Enter the Client ID (Keycloak OIDC public client) that will be created for openEO clients" "openeo-public"
 
-envsubst <"openeo-geotrellis/values-template.yaml" >"openeo-geotrellis/generated-values.yaml"
-envsubst <"sparkoperator/values-template.yaml" >"sparkoperator/generated-values.yaml"
-envsubst <"zookeeper/values-template.yaml" >"zookeeper/generated-values.yaml"
+gomplate -f "openeo-geotrellis/$TEMPLATE_PATH" -o "openeo-geotrellis/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "sparkoperator/$TEMPLATE_PATH" -o "sparkoperator/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "zookeeper/$TEMPLATE_PATH" -o "zookeeper/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
-envsubst <"openeo-geotrellis/ingress-template.yaml" >"openeo-geotrellis/generated-ingress.yaml"
+gomplate -f "openeo-geotrellis/$INGRESS_TEMPLATE_PATH" -o "openeo-geotrellis/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 echo "✅ openEO configured, please proceed following the guide."

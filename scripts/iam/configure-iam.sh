@@ -28,7 +28,7 @@ fi
 echo "Generating configuration files..."
 
 envsubst <"keycloak/values-template.yaml" >"keycloak/generated-values.yaml"
-envsubst <"keycloak/ingress-template.yaml" >"keycloak/generated-ingress.yaml"
-envsubst <"opa/ingress-template.yaml" >"opa/generated-ingress.yaml"
+envsubst <"keycloak/$INGRESS_TEMPLATE_PATH" >"keycloak/$INGRESS_OUTPUT_PATH"
+envsubst <"opa/$INGRESS_TEMPLATE_PATH" >"opa/$INGRESS_OUTPUT_PATH"
 
 echo "✅ Configuration files generated."

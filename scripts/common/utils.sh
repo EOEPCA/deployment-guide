@@ -33,6 +33,15 @@ command_exists() {
     command -v "$@" >/dev/null 2>&1
 }
 
+# Confirm gomplate is installed
+if ! command_exists gomplate; then
+    echo "❌ The 'gomplate' command is required but not installed."
+    echo "Run 'curl -L -o gomplate https://github.com/hairyhenderson/gomplate/releases/download/v4.3.0/gomplate_linux-amd64'"
+    echo "chmod +x gomplate"
+    echo "sudo mv gomplate /usr/local/bin/"
+    exit 1
+fi
+
 # Prompt for user input with optional validation
 ask() {
     local variable="$1"
@@ -125,14 +134,7 @@ add_to_state_file() {
 }
 
 load_custom_ingress_annotations() {
-    local spaces_num="${1:-4}"
-    local variable_name="${2:-CUSTOM_INGRESS_ANNOTATIONS}"
-    local spaces=$(printf '%*s' "$spaces_num" | tr ' ' ' ')
-    if [ -f ~/.eoepca/annotations.yaml ]; then
-        local annotations=$(sed "s/^/$spaces/" ~/.eoepca/annotations.yaml)
-        export "$variable_name=$annotations"
-        return 0
-    fi
+    export GOMPLATE_DATASOURCE_ANNOTATIONS="$HOME/.eoepca/annotations.yaml"
 }
 load_custom_ingress_annotations
 

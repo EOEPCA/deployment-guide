@@ -10,17 +10,19 @@ stacture:
 
   ingress:
     enabled: true
-    className: ${INGRESS_CLASS}
+    className: {{ getenv "INGRESS_CLASS" }}
     annotations:
-${DATA_ACCESS_INGRESS_ANNOTATIONS}
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
     hosts:
-      - host: stacture.${INGRESS_HOST}
+      - host: stacture.{{ getenv "INGRESS_HOST" }}
         paths:
           - path: /
             pathType: Prefix
     tls:
       - hosts:
-          - stacture.${INGRESS_HOST}
+          - stacture.{{ getenv "INGRESS_HOST" }}
         secretName: data-access-stacture-tls
 
   config:
@@ -41,7 +43,7 @@ ${DATA_ACCESS_INGRESS_ANNOTATIONS}
             - "TCI_10m"
         source:
           type: stac-api
-          href: $HTTP_SCHEME://eoapi.${INGRESS_HOST}/stac/
+          href: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
           collection: sentinel-2-l2a
           extra:
             properties:
@@ -114,11 +116,11 @@ terravis:
     - name: CPL_VSIL_CURL_ALLOWED_EXTENSIONS
       value: .TIF,.TIFF,.tif,.tiff,.xml,.jp2,.jpg,.jpeg,.png,.nc
     - name: AWS_ACCESS_KEY_ID
-      value: ${S3_ACCESS_KEY}
+      value: {{ getenv "S3_ACCESS_KEY" }}
     - name: AWS_SECRET_ACCESS_KEY
-      value: ${S3_SECRET_KEY}
+      value: {{ getenv "S3_SECRET_KEY" }}
     - name: AWS_S3_ENDPOINT
-      value: ${S3_HOST}
+      value: {{ getenv "S3_HOST" }}
     - name: AWS_VIRTUAL_HOSTING
       value: "FALSE"
     - name: AWS_HTTPS

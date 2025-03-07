@@ -5,17 +5,16 @@ metadata:
   name: eoapi-raster
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/use-regex: "true"
     k8s.apisix.apache.org/rewrite-target-regex: "/raster(/|$)(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-  - host: eoapi.${INGRESS_HOST}
+  - host: eoapi.{{ getenv "INGRESS_HOST" }}
     http:
       paths:
       - path: /raster(/|$)(.*)
@@ -27,7 +26,7 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - eoapi.${INGRESS_HOST}
+    - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
 ---
 apiVersion: networking.k8s.io/v1
@@ -36,7 +35,7 @@ metadata:
   name: eoapi-stac
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
 ${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
@@ -44,9 +43,9 @@ ${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/rewrite-target-regex: "/stac(/|$)(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-  - host: eoapi.${INGRESS_HOST}
+  - host: eoapi.{{ getenv "INGRESS_HOST" }}
     http:
       paths:
       - path: /stac(/|$)(.*)
@@ -58,7 +57,7 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - eoapi.${INGRESS_HOST}
+    - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
 ---
 apiVersion: networking.k8s.io/v1
@@ -67,7 +66,7 @@ metadata:
   name: eoapi-vector
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
 ${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
@@ -75,9 +74,9 @@ ${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/rewrite-target-regex: "/vector(/|$)(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-  - host: eoapi.${INGRESS_HOST}
+  - host: eoapi.{{ getenv "INGRESS_HOST" }}
     http:
       paths:
       - path: /vector(/|$)(.*)
@@ -89,7 +88,7 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - eoapi.${INGRESS_HOST}
+    - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
 ---
 apiVersion: networking.k8s.io/v1
@@ -98,14 +97,14 @@ metadata:
   name: eoapi-docs
   namespace: data-access
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
 ${CUSTOM_INGRESS_ANNOTATIONS}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-  - host: eoapi.${INGRESS_HOST}
+  - host: eoapi.{{ getenv "INGRESS_HOST" }}
     http:
       paths:
       - path: /
@@ -117,5 +116,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - eoapi.${INGRESS_HOST}
+    - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls

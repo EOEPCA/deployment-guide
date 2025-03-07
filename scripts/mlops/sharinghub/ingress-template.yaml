@@ -4,12 +4,14 @@ metadata:
   name: sh
   namespace: sharinghub
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: sharinghub.$INGRESS_HOST
+    - host: sharinghub.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /
@@ -21,5 +23,5 @@ spec:
                   number: 8000
   tls:
     - hosts:
-        - sharinghub.$INGRESS_HOST
+        - sharinghub.{{ getenv "INGRESS_HOST" }}
       secretName: sh-tls

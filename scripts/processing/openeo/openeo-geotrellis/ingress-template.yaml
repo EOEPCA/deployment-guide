@@ -4,14 +4,19 @@ metadata:
   name: oeo
   namespace: openeo-geotrellis
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
+    {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
+    {{- end }}
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: openeo.$INGRESS_HOST
+    - host: openeo.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: "/"
@@ -23,5 +28,5 @@ spec:
                   number: 50001
   tls:
     - hosts:
-        - openeo.$INGRESS_HOST
+        - openeo.{{ getenv "INGRESS_HOST" }}
       secretName: openeo-tls

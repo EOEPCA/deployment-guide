@@ -38,7 +38,7 @@ fi
 
 # Generate configuration files
 envsubst <"workspace-api/values-template.yaml" >"workspace-api/generated-values.yaml"
-envsubst <"workspace-api/ingress-template.yaml" >"workspace-api/generated-ingress.yaml"
+envsubst <"workspace-api/$INGRESS_TEMPLATE_PATH" >"workspace-api/$INGRESS_OUTPUT_PATH"
 envsubst <"workspace-ui/values-template.yaml" >"workspace-ui/generated-values.yaml"
 envsubst <"workspace-admin/values-template.yaml" >"workspace-admin/generated-values.yaml"
 envsubst <"workspace-pipelines/kustomization-template.yaml" >"workspace-pipelines/kustomization.yaml"

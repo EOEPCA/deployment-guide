@@ -8,28 +8,28 @@ jupyterhub:
       JUPYTERHUB_ENV: "dev"
       JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
       APP_HUB_NAMESPACE: "application-hub"
-      STORAGE_CLASS: ${STORAGE_CLASS}
+      STORAGE_CLASS: {{ getenv "STORAGE_CLASS" }}
       RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
-      JUPYTERHUB_CRYPT_KEY: "${APPHUB_JUPYTERHUB_CRYPT_KEY}"
+      JUPYTERHUB_CRYPT_KEY: "{{ getenv "APPHUB_JUPYTERHUB_CRYPT_KEY" }}"
 
-      OAUTH_CALLBACK_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/oauth_callback
-      OAUTH_LOGOUT_REDIRECT_URL: $HTTP_SCHEME://app-hub.${INGRESS_HOST}/hub/home
+      OAUTH_CALLBACK_URL: {{ getenv "HTTP_SCHEME" }}://app-hub.{{ getenv "INGRESS_HOST" }}/hub/oauth_callback
+      OAUTH_LOGOUT_REDIRECT_URL: {{ getenv "HTTP_SCHEME" }}://app-hub.{{ getenv "INGRESS_HOST" }}/hub/home
       OAUTH2_USERNAME_KEY: "preferred_username"
 
-      OAUTH2_USERDATA_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/userinfo
-      OAUTH2_TOKEN_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token
-      OAUTH2_AUTHORIZE_URL: $HTTP_SCHEME://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth
+      OAUTH2_USERDATA_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
+      OAUTH2_TOKEN_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+      OAUTH2_AUTHORIZE_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
 
-      OAUTH_CLIENT_ID: ${APPHUB_CLIENT_ID}
-      OAUTH_CLIENT_SECRET: "${APPHUB_CLIENT_SECRET}"
+      OAUTH_CLIENT_ID: {{ getenv "APPHUB_CLIENT_ID" }}
+      OAUTH_CLIENT_SECRET: "{{ getenv "APPHUB_CLIENT_SECRET" }}"
 
     image:
       pullPolicy: Always
 
     db:
       pvc:
-        storageClassName: ${STORAGE_CLASS}
+        storageClassName: {{ getenv "STORAGE_CLASS" }}
 
     config:
       JupyterHub:
@@ -57,5 +57,5 @@ jupyterhub:
         mem_limit: "8G"
 
 nodeSelector:
-  key: "${NODE_SELECTOR_KEY}"
-  value: "${NODE_SELECTOR_VALUE}"
+  key: "{{ getenv "NODE_SELECTOR_KEY" }}"
+  value: "{{ getenv "NODE_SELECTOR_VALUE" }}"

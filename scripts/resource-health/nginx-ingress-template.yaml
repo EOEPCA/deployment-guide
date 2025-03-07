@@ -4,18 +4,18 @@ metadata:
   name: rhc
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
 ${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
     - hosts:
-        - resource-health.${INGRESS_HOST}
+        - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
   rules:
-    - host: resource-health.${INGRESS_HOST}
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /api/healthchecks/(.*)
@@ -32,18 +32,18 @@ metadata:
   name: rht
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
 ${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
     - hosts:
-        - resource-health.${INGRESS_HOST}
+        - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
   rules:
-    - host: resource-health.${INGRESS_HOST}
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /api/telemetry/(.*)
@@ -60,16 +60,16 @@ metadata:
   name: rhw
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
 ${CUSTOM_INGRESS_ANNOTATIONS}
 spec:
-  ingressClassName: ${INGRESS_CLASS}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
     - hosts:
-        - resource-health.${INGRESS_HOST}
+        - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
   rules:
-    - host: resource-health.${INGRESS_HOST}
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /

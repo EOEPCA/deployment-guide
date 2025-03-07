@@ -30,17 +30,17 @@ configMaps:
         OidcProvider(
             id="eoepca",
             title="EOEPCA",
-            issuer="${OIDC_ISSUER_URL}",
+            issuer="{{ getenv "OIDC_ISSUER_URL" }}",
             scopes=["openid", "profile", "email"],
             default_clients=[
                 {
-                    "id": "${OPENEO_CLIENT_ID}",
+                    "id": "{{ getenv "OPENEO_CLIENT_ID" }}",
                     "grant_types": [
                         "authorization_code+pkce",
                         "urn:ietf:params:oauth:grant-type:device_code+pkce",
                         "refresh_token",
                     ],
-                    "redirect_urls": ["https://openeo.$INGRESS_HOST","https://editor.openeo.org"],
+                    "redirect_urls": ["https://openeo.{{ getenv "INGRESS_HOST" }}","https://editor.openeo.org"],
                 }
             ],
         ),

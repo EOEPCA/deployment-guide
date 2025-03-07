@@ -1,11 +1,11 @@
 # Flowable
 host:
-  external: registration-harvester-api.${INGRESS_HOST}
+  external: registration-harvester-api.{{ getenv "INGRESS_HOST" }}
 
 rest:
   admin:
-    username: ${FLOWABLE_ADMIN_USER}
-    password: ${FLOWABLE_ADMIN_PASSWORD}
+    username: {{ getenv "FLOWABLE_ADMIN_USER" }}
+    password: {{ getenv "FLOWABLE_ADMIN_PASSWORD" }}
 
 ingress:
   enabled: false
@@ -27,7 +27,7 @@ harvester:
     worker:
       log_level: INFO
       flowable:
-        host: https://registration-harvester-api.${INGRESS_HOST}/flowable-rest
+        host: https://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
         tls: true
         cacert: ""
       topics:
@@ -40,4 +40,4 @@ harvester:
           page_size: 100
 # Global storage class
 global:
-  storageClass: ${STORAGE_CLASS}
+  storageClass: {{ getenv "STORAGE_CLASS" }}

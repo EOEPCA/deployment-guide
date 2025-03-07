@@ -1,12 +1,16 @@
 expose:
   ingress:
     annotations:
-      kubernetes.io/ingress.class: ${INGRESS_CLASS}
-  ${CUSTOM_INGRESS_ANNOTATIONS}
+      kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+      {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
       k8s.apisix.apache.org/http-to-https: "true"
       k8s.apisix.apache.org/upstream-read-timeout: "600s"
+      {{- end }}
     hosts:
-      core: harbor.${INGRESS_HOST}
+      core: harbor.{{ getenv "INGRESS_HOST" }}
   tls:
     enabled: true
     certSource: secret
@@ -16,20 +20,20 @@ expose:
 persistence:
   persistentVolumeClaim:
     registry:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
     chartmuseum:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
     jobservice:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
     database:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
     redis:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
     trivy:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
 
-externalURL: ${HTTP_SCHEME}://harbor.$INGRESS_HOST
-harborAdminPassword: ${HARBOR_ADMIN_PASSWORD}
+externalURL: {{ getenv "HTTP_SCHEME" }}://harbor.{{ getenv "INGRESS_HOST" }}
+harborAdminPassword: {{ getenv "HARBOR_ADMIN_PASSWORD" }}
 
 chartmuseum:
   enabled: false

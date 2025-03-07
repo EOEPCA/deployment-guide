@@ -4,57 +4,59 @@ cookiecutter:
 customConfig:
   main:
     eoepca: |-
-      domain=${INGRESS_HOST}
+      domain={{ getenv "INGRESS_HOST" }}
 # Uncomment if docker registry credentials have been defined
 # Ref.  https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/kubernetes/#creating-an-image-pull-secret
 # imagePullSecrets:
 #   - name: regcred
 workflow:
   inputs:
-    STAGEIN_AWS_SERVICEURL: ${STAGEIN_S3_ENDPOINT}
-    STAGEIN_AWS_ACCESS_KEY_ID: ${STAGEIN_S3_ACCESS_KEY}
-    STAGEIN_AWS_SECRET_ACCESS_KEY: ${STAGEIN_S3_SECRET_KEY}
-    STAGEIN_AWS_REGION: ${STAGEIN_S3_REGION}
-    STAGEOUT_AWS_SERVICEURL: ${S3_ENDPOINT}
-    STAGEOUT_AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
-    STAGEOUT_AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
-    STAGEOUT_AWS_REGION: ${S3_REGION}
+    STAGEIN_AWS_SERVICEURL: {{ getenv "STAGEIN_S3_ENDPOINT" }}
+    STAGEIN_AWS_ACCESS_KEY_ID: {{ getenv "STAGEIN_S3_ACCESS_KEY" }}
+    STAGEIN_AWS_SECRET_ACCESS_KEY: {{ getenv "STAGEIN_S3_SECRET_KEY" }}
+    STAGEIN_AWS_REGION: {{ getenv "STAGEIN_S3_REGION" }}
+    STAGEOUT_AWS_SERVICEURL: {{ getenv "S3_ENDPOINT" }}
+    STAGEOUT_AWS_ACCESS_KEY_ID: {{ getenv "S3_ACCESS_KEY" }}
+    STAGEOUT_AWS_SECRET_ACCESS_KEY: {{ getenv "S3_SECRET_KEY" }}
+    STAGEOUT_AWS_REGION: {{ getenv "S3_REGION" }}
     STAGEOUT_OUTPUT: eoepca
   nodeSelector:
-    ${NODE_SELECTOR_KEY}: "${NODE_SELECTOR_VALUE}"
-  storageClass: ${STORAGE_CLASS}
+    {{ getenv "NODE_SELECTOR_KEY" }}: "{{ getenv "NODE_SELECTOR_VALUE" }}"
+  storageClass: {{ getenv "STORAGE_CLASS" }}
 ingress:
-  enabled: ${OAPIP_INGRESS_ENABLED}
-  hosturl: ${OAPIP_HOST}
-  ingressClassName: ${INGRESS_CLASS}
-  class: ${INGRESS_CLASS}
-  className: ${INGRESS_CLASS}
+  enabled: {{ getenv "OAPIP_INGRESS_ENABLED" }}
+  hosturl: {{ getenv "OAPIP_HOST" }}
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  class: {{ getenv "INGRESS_CLASS" }}
+  className: {{ getenv "INGRESS_CLASS" }}
   annotations:
-    kubernetes.io/ingress.class: ${INGRESS_CLASS}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
   hosts:
-  - host: zoo.${INGRESS_HOST}
+  - host: zoo.{{ getenv "INGRESS_HOST" }}
     paths:
     - path: /
       pathType: Prefix
   tls:
   - hosts:
-    - zoo.${INGRESS_HOST}
+    - zoo.{{ getenv "INGRESS_HOST" }}
     secretName: zoo-tls
 persistence:
-  procServicesStorageClass: ${STORAGE_CLASS}
-  storageClass: ${STORAGE_CLASS}
-  tmpStorageClass: ${STORAGE_CLASS}
+  procServicesStorageClass: {{ getenv "STORAGE_CLASS" }}
+  storageClass: {{ getenv "STORAGE_CLASS" }}
+  tmpStorageClass: {{ getenv "STORAGE_CLASS" }}
 postgresql:
   primary:
     persistence:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
   readReplicas:
     persistence:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
 rabbitmq:
   persistence:
-    storageClass: ${STORAGE_CLASS}
+    storageClass: {{ getenv "STORAGE_CLASS" }}
 iam:
   enabled: false
 documentation:

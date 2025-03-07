@@ -3,11 +3,11 @@ global:
 ingress:
   enabled: false
 db:
-  volume_storage_type: $STORAGE_CLASS
+  volume_storage_type: {{ getenv "STORAGE_CLASS" }}
 pycsw:
   config:
     server:
-      url: $HTTP_SCHEME://resource-catalogue.$INGRESS_HOST
+      url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}
     manager:
       transactions: "true"
       allowed_ips:
