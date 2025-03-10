@@ -7,7 +7,10 @@ metadata:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
@@ -35,7 +38,10 @@ metadata:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
@@ -61,7 +67,10 @@ metadata:
   namespace: resource-health
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:

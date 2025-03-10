@@ -5,7 +5,9 @@ metadata:
   namespace: application-hub
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
     k8s.apisix.apache.org/enable-websocket: "true"
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}

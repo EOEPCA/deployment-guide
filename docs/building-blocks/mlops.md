@@ -92,7 +92,7 @@ The S3 environment variables should be already set after successful deployment o
 
 **OIDC Configuration (Optional):**
 
-You will be prompted to provide whether you wish to enable OIDC authentication. If you **don't** want to enable OIDC, enter `false` when prompted.
+If you are using the APISIX Ingress, you will be prompted to provide whether you wish to enable OIDC authentication. If you **don't** want to enable OIDC, enter `false` when prompted.
 
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
     - *Example*: `https://keycloak.example.com/realms/master`

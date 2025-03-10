@@ -35,4 +35,5 @@ else
 fi
 
 # Generate configuration file
-envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
+gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+

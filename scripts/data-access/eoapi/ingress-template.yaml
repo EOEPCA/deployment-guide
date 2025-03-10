@@ -36,7 +36,9 @@ metadata:
   namespace: data-access
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/use-regex: "true"
@@ -67,7 +69,9 @@ metadata:
   namespace: data-access
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
     k8s.apisix.apache.org/use-regex: "true"
@@ -98,7 +102,9 @@ metadata:
   namespace: data-access
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-${CUSTOM_INGRESS_ANNOTATIONS}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
 spec:

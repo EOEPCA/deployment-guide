@@ -65,7 +65,7 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| APISIX Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md) |
+| APISIX Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/apisix.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | IAM             | IAM must be installed for this                                   | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
 

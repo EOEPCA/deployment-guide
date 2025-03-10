@@ -3,14 +3,14 @@
 source ../../common/utils.sh
 echo "Configuring openEO..."
 
-echo "⚠️   An OIDC Provider is required to submit jobs. Please ensure that an OIDC Provider is accessible. If you have one, ignore this message, otherwise consult the guide."
-echo ""
 
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Enter the storage class name" "standard" is_non_empty
 configure_cert
 
 if [ -z "$OIDC_ISSUER_URL" ]; then
+    echo "⚠️   An OIDC Provider is required to submit jobs. Please ensure that an OIDC Provider is accessible. If you have one, ignore this message, otherwise consult the guide."
+    echo ""
     source ../../common/prerequisite-utils.sh
     check_oidc_provider_accessible
 fi

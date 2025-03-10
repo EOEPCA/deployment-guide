@@ -3,8 +3,10 @@ ingress:
   className: {{ getenv "INGRESS_CLASS" }}
   domain: application-quality.{{ getenv "INGRESS_HOST" }}
   annotations:
-${CUSTOM_INGRESS_ANNOTATIONS}
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
   tls:
     - hosts:
       - application-quality.{{ getenv "INGRESS_HOST" }}

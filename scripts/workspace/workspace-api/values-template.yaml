@@ -6,7 +6,9 @@ image:
 ingress:
   enabled: false
   # annotations:
-  #   ${CUSTOM_INGRESS_ANNOTATIONS}
+  #   {{- range $key, $value := (datasource "annotations") }}
+  #   {{ $key }}: "{{ $value }}"
+  #   {{- end }}
   #   kubernetes.io/ingress.class: nginx
   #   nginx.ingress.kubernetes.io/enable-cors: "true"
   #   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"

@@ -107,10 +107,13 @@ kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 
 #### Step 4: Create a Keycloak Client
 
-The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.
+The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. 
 
-Thus, we configure in our openEO deployment integration with an `EOEPCA` identity provider.<br>
-Ref. helm values...
+For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.
+
+Thus, we configure in our openEO deployment integration with an `EOEPCA` identity provider.
+
+Inside the `generated-values.yaml` you will find the following configuration:
 
 ```python
 oidc_providers = [
@@ -224,7 +227,7 @@ xdg-open https://editor.openeo.org/
 
 **Connect to server**
 
-* Enter the `URL` of the server - `open.${INGRESS_HOST}` - e.g. `open.myplatform.mydomain`
+* Enter the `URL` of the server - `openeo.${INGRESS_HOST}` - e.g. `openeo.myplatform.mydomain`
 * Select `Connect`
 
 **Login to service**
