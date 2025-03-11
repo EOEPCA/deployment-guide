@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Configuring MinIO..."
 source ../common/utils.sh
+echo "Configuring MinIO..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain

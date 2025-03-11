@@ -205,11 +205,31 @@ configure_http_scheme() {
         ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
     fi
 }
-configure_http_scheme
+
+configure_cert() {
+    if [ -z "${USE_CERT_MANAGER-}" ]; then
+        ask_yes_no "Do you use automatic certificate issuance with cert-manager (yes/no)?"
+        if [ "$?" == 1 ]; then
+            add_to_state_file "USE_CERT_MANAGER" "no"
+        else
+            add_to_state_file "USE_CERT_MANAGER" "yes"
+        fi
+    fi
+
+    if [ "$USE_CERT_MANAGER" == "yes" ]; then
+        ask "CLUSTER_ISSUER" "Specify the Cert Manager cluster issuer for TLS certificates" "letsencrypt-http01-apisix" is_non_empty
+        add_to_state_file "CLUSTER_ISSUER_ANNOTATION" "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
+        add_to_custom_ingress_annotations "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
+    fi
+}
 
 configure_ingress() {
     if [ -z "${INGRESS_CLASS-}" ]; then
         ask "INGRESS_CLASS" "Specify the Ingress class for the EOEPCA services (apisix/nginx)" "apisix" is_non_empty
+        if [ -f "$HOME/.eoepca/annotations.yaml" ]; then
+            rm "$HOME/.eoepca/annotations.yaml"
+            create_state_file
+        fi
     fi
 
     if [ "$INGRESS_CLASS" == "nginx" ]; then
@@ -224,21 +244,42 @@ configure_ingress() {
         add_to_custom_ingress_annotations "k8s.apisix.apache.org/http-to-https: \"true\""
     fi
 }
-configure_ingress
 
-configure_cert() {
-    if [ -z "${USE_CERT_MANAGER-}" ]; then
-        ask_yes_no "Do you want to use automatic certificate issuance with cert-manager (yes/no)?"
-        if [ "$?" == 1 ]; then
-            add_to_state_file "USE_CERT_MANAGER" "no"
-        else
-            add_to_state_file "USE_CERT_MANAGER" "yes"
-        fi
-    fi
+first_time_setup() {
+    if [ -z "${INGRESS_CLASS-}" ] || [ -z "${HTTP_SCHEME-}" ]; then
+        echo "
+        ███████╗░█████╗░███████╗██████╗░░█████╗░░█████╗░░░░░░░░
+        ██╔════╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗░░██╗░░
+        █████╗░░██║░░██║█████╗░░██████╔╝██║░░╚═╝███████║██████╗
+        ██╔══╝░░██║░░██║██╔══╝░░██╔═══╝░██║░░██╗██╔══██║╚═██╔═╝
+        ███████╗╚█████╔╝███████╗██║░░░░░╚█████╔╝██║░░██║░░╚═╝░░
+        ╚══════╝░╚════╝░╚══════╝╚═╝░░░░░░╚════╝░╚═╝░░╚═╝░░░░░░░"
 
-    if [ "$USE_CERT_MANAGER" == "yes" ]; then
-        ask "CLUSTER_ISSUER" "Specify the Cert Manager cluster issuer for TLS certificates" "letsencrypt-http01-apisix" is_non_empty
-        add_to_state_file "CLUSTER_ISSUER_ANNOTATION" "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
-        add_to_custom_ingress_annotations "cert-manager.io/cluster-issuer: ${CLUSTER_ISSUER}"
+        echo ""
+        echo "Earth Observation Exploitation Platform Common Architecture Deployment Guide scripts"
+        echo ""
+        echo "These scripts accompany the EOEPCA Deployment Guide and are used to configure the deployment of the EOEPCA Building Blocks."
+        echo "https://eoepca.readthedocs.io/projects/deploy/en/latest/"
+        echo ""
+        echo "State variables are stored in $HOME/.eoepca/state."
+        echo "As you are running this script for the first time, you will be prompted to configure some settings. These settings will be saved for future runs and ensure integration between the Building Blocks."
+        echo "You can use enter to accept the default values or previously configured values."
+        echo ""
+        echo "Please configure the following settings:"
+        echo ""
+        configure_ingress
+        configure_http_scheme
+        ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
+        ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
+        configure_cert
+        echo ""
+        echo "✅ First time setup complete. These values are stored in the state file which are used to configure the Building Blocks."
+        echo "To reset your configuration, delete the state file at $HOME/.eoepca/state."
+        echo ""
+        echo "Moving on..."
+        echo ""
     fi
 }
+first_time_setup
+
+
