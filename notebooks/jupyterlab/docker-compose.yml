@@ -1,0 +1,23 @@
+services:
+  eoepcalab:
+    container_name: eoepcalab
+    hostname: eoepcalab
+    build:
+      context: ..
+      dockerfile: jupyterlab/Dockerfile
+    image: eoepca/eoepcalab
+    ports:
+    - "8888:8888"
+    volumes:
+    - ${PWD}/examples:/home/${PUSER}/work
+    # START (make permissions work)
+    environment:
+      NB_USER: "${PUSER}"
+      NB_UID: "${PUID}"
+      NB_GID: "${PGID}"
+      CHOWN_HOME: "yes"
+      JUPYTER_ENABLE_LAB: "yes"
+    user: root  # needed to perform the user chown
+    working_dir: "/home/${PUSER}/work"
+    # END (make permissions work)
+    command: ["start-notebook.sh", "--NotebookApp.token=''" ]
