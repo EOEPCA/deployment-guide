@@ -103,7 +103,7 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
 
 4. **Log In**
 
-    Navigate to `https://harbor.your-domain` in your browser.
+    Navigate to `https://harbor.${INGRESS_HOST}` in your browser.
 
     - **Username**: `admin`
     - **Password**: The password that was generated during configuration<br>

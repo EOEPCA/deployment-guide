@@ -139,6 +139,8 @@ If these return meaningful responses (especially HTTP 200 with JSON or HTML data
 
 Using the command line can be a quick way to check endpoints and see raw responses. Below are some example commands.
 
+We recommend executing `source ~/.eoepca/state` to load the environment variables, or manually set the `INGRESS_HOST` variable.
+
 #### 3.1. Basic Liveness Check
 
 ```bash
@@ -164,7 +166,6 @@ curl "https://resource-catalogue.${INGRESS_HOST}/stac"
 #### 3.4. Searching STAC Items
 
 ```bash
-source ~/.eoepca/state
 curl -X POST "https://resource-catalogue.${INGRESS_HOST}/stac/search" \
    --silent --show-error \
   -H "Content-Type: application/json" \

@@ -3,7 +3,6 @@
 source ../../common/utils.sh
 echo "Configuring openEO..."
 
-
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Enter the storage class name" "standard" is_non_empty
 configure_cert

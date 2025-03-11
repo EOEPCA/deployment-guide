@@ -281,5 +281,3 @@ first_time_setup() {
     fi
 }
 first_time_setup
-
-

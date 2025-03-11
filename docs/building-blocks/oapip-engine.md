@@ -77,7 +77,7 @@ If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), 
 
 **OIDC Configuration:**
 
-You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
+If you are using the APISIX Ingress Controller, you will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
 
 When prompted for the `Client ID` we recommend setting it to `oapip-engine`.
 

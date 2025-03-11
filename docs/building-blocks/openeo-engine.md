@@ -1,4 +1,4 @@
-# Processing - OpenEO Engine Deployment Guide (Early Access)
+# Processing - OpenEO Engine Deployment Guide
 
 OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.
 
@@ -16,7 +16,7 @@ Before deploying, ensure your environment meets the following requirements:
 |Kubernetes|Cluster (tested on v1.28)|[Installation Guide](../prerequisites/kubernetes.md)|
 |Helm|Version 3.5 or newer|[Installation Guide](https://helm.sh/docs/intro/install/)|
 |kubectl|Configured for cluster access|[Installation Guide](https://kubernetes.io/docs/tasks/tools/)|
-|APISIX Ingress|Properly installed|[Installation Guide](../prerequisites/ingress/apisix.md)|
+|Ingress|Properly installed|[Installation Guide](../prerequisites/ingress/overview.md)|
 |Cert Manager|Properly installed|[Installation Guide](../prerequisites/tls.md)|
 |OIDC Provider|Required to submit jobs|[Installation Guide](./iam/main-iam.md)|
 

@@ -23,12 +23,21 @@ if [ -z "$OPA_CLIENT_SECRET" ]; then
     OPA_CLIENT_SECRET=$(generate_aes_key 32)
     add_to_state_file "OPA_CLIENT_SECRET" "$OPA_CLIENT_SECRET"
 fi
+add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
 
 # Generate configuration files
 echo "Generating configuration files..."
 
-envsubst <"keycloak/values-template.yaml" >"keycloak/generated-values.yaml"
-envsubst <"keycloak/$INGRESS_TEMPLATE_PATH" >"keycloak/$INGRESS_OUTPUT_PATH"
-envsubst <"opa/$INGRESS_TEMPLATE_PATH" >"opa/$INGRESS_OUTPUT_PATH"
+gomplate -f "keycloak/$TEMPLATE_PATH" -o "keycloak/$OUTPUT_PATH"
+gomplate -f "opa/$TEMPLATE_PATH" -o "opa/$OUTPUT_PATH"
+
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    gomplate -f "keycloak/apisix-ingress-template.yaml" -o "keycloak/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "opa/apisix-ingress-template.yaml" -o "opa/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+else
+    gomplate -f "keycloak/nginx-ingress-template.yaml" -o "keycloak/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "opa/nginx-ingress-template.yaml" -o "opa/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+fi
+
 
 echo "✅ Configuration files generated."

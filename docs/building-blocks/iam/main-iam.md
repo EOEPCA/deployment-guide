@@ -41,13 +41,12 @@ If any checks fail, address them before proceeding.
 ## Overview of Deployment Steps
 
 1. **Configure the IAM Environment**: Provide ingress host, storage classes, etc.
-2. **Install APISIX Ingress (if not done already)**: Ensure APISIX is ready.
-3. **Deploy Keycloak**: Set up the central identity provider.
-4. **Create the `eoepca` Realm and Basic Users**: Keep `master` for admin tasks only.
-5. **(Optional) Integrate External IdPs**: Add GitHub or other providers.
-6. **Deploy OPA & OPAL**: For advanced policy decisions.
-7. **Set up Policies & Permissions**: Restrict access to services as needed.
-8. **Test & Validate**: Confirm that IAM is working as intended.
+2. **Deploy Keycloak**: Set up the central identity provider.
+3. **Create the `eoepca` Realm and Basic Users**: Keep `master` for admin tasks only.
+4. **(Optional) Integrate External IdPs**: Add GitHub or other providers.
+5. **Deploy OPA & OPAL**: For advanced policy decisions.
+6. **Set up Policies & Permissions**: Restrict access to services as needed.
+7. **Test & Validate**: Confirm that IAM is working as intended.
 
 For production, use proper TLS, stable storage, and consider external identity providers. For development, simpler self-signed certs and test credentials may suffice.
 
@@ -80,11 +79,7 @@ The script will also generate secure passwords for:
 
 These credentials will be stored in a state file at `~/.eoepca/state`.
 
-### 2. Ensure APISIX is Installed
-
-If you haven’t installed APISIX yet, see the instructions in section [APISIX Ingress Controller](../../prerequisites/ingress/overview.md#apisix-ingress-controller).
-
-### 3. Apply Secrets
+### 2. Apply Secrets
 
 ```bash
 bash apply-secrets.sh
@@ -92,7 +87,7 @@ bash apply-secrets.sh
 
 This creates Kubernetes secrets from the credentials generated earlier.
 
-### 4. Deploy Keycloak
+### 3. Deploy Keycloak
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -124,7 +119,7 @@ image:
 
 Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with your registry, repository, and tag.
 
-### 5. Create the `eoepca` Realm and a Test User
+### 4. Create the `eoepca` Realm and a Test User
 
 Instead of using `master`, create a dedicated `eoepca` realm - using the Keycloak REST API.<br>
 For convenience we also create an `eoepcauser` (test) user to support usage examples in this guide where a user must be assumed.
@@ -167,11 +162,11 @@ bash ../utils/create-user.sh
 ```
 
 
-### 6. (Optional) Integrate External Identity Providers
+### 5. (Optional) Integrate External Identity Providers
 
 If you wish to add GitHub or another IdP, see [Advanced Configuration](advanced-iam.md#integrating-github-as-an-external-identity-provider) for detailed instructions and examples.
 
-### 7. Create the `opa` Client
+### 6. Create the `opa` Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -194,13 +189,13 @@ When prompted:
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
-### 8. Deploy OPA & OPAL
+### 7. Deploy OPA & OPAL
 
 ```bash
 helm repo add opal https://permitio.github.io/opal-helm-chart
 helm repo update opal
 helm upgrade -i opa opal/opal \
-  --values opa/values.yaml \
+  --values opa/generated-values.yaml \
   --version 0.0.28 \
   --namespace iam \
   --create-namespace
@@ -212,7 +207,7 @@ Apply OPA ingress:
 kubectl -n iam apply -f opa/generated-ingress.yaml
 ```
 
-### 9. Testing & Validation
+### 8. Testing & Validation
 
 ```bash
 bash validation.sh

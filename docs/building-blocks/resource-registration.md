@@ -284,7 +284,9 @@ EOF
 https://registration-api.${INGRESS_HOST}/jobs
 ```
 
-You should see a new job with the status `COMPLETED`. The registered STAC Item will be available via:
+You should see a new job with the status `COMPLETED`. 
+
+If you have deployed the [**Resource Discovery**](./resource-discovery.md) Building Block, then the registered STAC Item will also be available at:
 
 ```
 https://resource-catalogue.${INGRESS_HOST}/stac/collections/metadata:main/items/20201211_223832_CS2
