@@ -14,7 +14,7 @@ For more in-depth information about each requirement (including recommended solu
 
 - [Kubernetes Requirements](kubernetes.md)
 - [Storage Requirements](storage.md)
-- [Ingress Controller Setup](ingress-controller.md)
+- [Ingress Controller Setup](../prerequisites/ingress/overview.md)
 - [TLS Management](tls.md)
 
 ---

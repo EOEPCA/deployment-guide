@@ -36,7 +36,7 @@ echo "❗  Generated client secret for the App Hub."
 echo "   Please store this securely: $APPHUB_CLIENT_SECRET"
 echo ""
 
-envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
-envsubst <"$INGRESS_TEMPLATE_PATH" >"$INGRESS_OUTPUT_PATH"
+gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH"
+gomplate  -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 echo "✅ Configuration file generated: $OUTPUT_PATH"

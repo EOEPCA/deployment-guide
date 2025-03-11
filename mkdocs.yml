@@ -52,27 +52,6 @@ nav:
     
   - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
 
-
-  # - Deploy EOEPCA Components:
-  #   - Persistence: eoepca/persistence.md
-  #   - Identity & Access Management:
-  #     - IAM Overview: eoepca/iam-overview.md
-  #     - Keycloak Solution (NEW):
-  #       - Identity Service: eoepca/identity-service.md
-  #       - Resource Protection: eoepca/resource-protection-keycloak.md
-  #     - Gluu Solution (deprecated):
-  #       - Login Service: eoepca/login-service.md
-  #       - Policy Decision Point: eoepca/pdp.md
-  #       - Resource Protection: eoepca/resource-protection-gluu.md
-  #       - User Profile: eoepca/user-profile.md
-  #   - ADES (Processing): eoepca/ades-zoo.md
-  #   - Application Hub: eoepca/application-hub.md
-  #   - Resource Catalogue: eoepca/resource-catalogue.md
-  #   - Data Access: eoepca/data-access.md
-  #   - Registration API: eoepca/registration-api.md
-  #   - Workspace: eoepca/workspace.md
-  #   - Container Registry: eoepca/container-registry.md
-
 theme:
   # name: mkdocs
   # name: readthedocs

@@ -37,11 +37,12 @@ if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
 fi
 
 # Generate configuration files
-envsubst <"workspace-api/values-template.yaml" >"workspace-api/generated-values.yaml"
-envsubst <"workspace-api/$INGRESS_TEMPLATE_PATH" >"workspace-api/$INGRESS_OUTPUT_PATH"
-envsubst <"workspace-ui/values-template.yaml" >"workspace-ui/generated-values.yaml"
-envsubst <"workspace-admin/values-template.yaml" >"workspace-admin/generated-values.yaml"
-envsubst <"workspace-pipelines/kustomization-template.yaml" >"workspace-pipelines/kustomization.yaml"
+gomplate  -f "workspace-api/$TEMPLATE_PATH" -o "workspace-api/$OUTPUT_PATH"
+gomplate  -f "workspace-api/$INGRESS_TEMPLATE_PATH" -o "workspace-api/$INGRESS_OUTPUT_PATH"
+gomplate  -f "workspace-ui/$TEMPLATE_PATH" -o "workspace-ui/$OUTPUT_PATH"
+gomplate  -f "workspace-admin/$TEMPLATE_PATH" -o "workspace-admin/$OUTPUT_PATH"
+gomplate  -f "workspace-pipelines/kustomization-template.yaml" -o "workspace-pipelines/kustomization.yaml"
+
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
 
@@ -49,11 +50,3 @@ echo ""
 echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"
 echo "Workspace UI Password: $WORKSPACE_UI_PASSWORD"
 echo ""
-
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- workspace-admin-tls"
-    echo "- workspace-api-tls"
-    echo "- workspace-ui-tls"
-fi

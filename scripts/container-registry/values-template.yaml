@@ -5,10 +5,6 @@ expose:
       {{- range $key, $value := (datasource "annotations") }}
       {{ $key }}: "{{ $value }}"
       {{- end }}
-      {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
-      k8s.apisix.apache.org/http-to-https: "true"
-      k8s.apisix.apache.org/upstream-read-timeout: "600s"
-      {{- end }}
     hosts:
       core: harbor.{{ getenv "INGRESS_HOST" }}
   tls:

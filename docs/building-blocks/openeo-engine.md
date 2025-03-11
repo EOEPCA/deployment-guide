@@ -222,12 +222,13 @@ _Expected output:_ A JSON object with an array of processes. Use your terminalâ€
 The deployment can be tested using the openEO Web Editor as a client.
 
 ```bash
-xdg-open https://editor.openeo.org/
+xdg-open https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.2/
 ```
 
-**Connect to server**
+**Alternatively**
 
-* Enter the `URL` of the server - `openeo.${INGRESS_HOST}` - e.g. `openeo.myplatform.mydomain`
+* Open the [openEO Web Editor](https://editor.openeo.org/)
+* Enter the `URL` of the server - `https://openeo.${INGRESS_HOST}` - e.g. `https://openeo.myplatform.mydomain`
 * Select `Connect`
 
 **Login to service**

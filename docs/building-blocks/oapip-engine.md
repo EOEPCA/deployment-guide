@@ -155,7 +155,7 @@ Zoo uses a path prefix to establish a context within the processing service - su
 
 Protection can be applied so that the context is accessible only by the owning user(s).
 
-For the purposes of this example we will assume the user `eoepcauser` - adjust for your own purposes.
+For the purposes of this example we can assume the user `eoepcauser` - adjust for your own purposes.
 
 1. Use the `protect-resource.sh`:
         

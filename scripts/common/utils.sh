@@ -200,13 +200,6 @@ is_valid_domain() {
     [[ "$1" =~ ^[a-zA-Z0-9.-]+$ ]]
 }
 
-# Check if envsubst is available
-if ! command_exists envsubst; then
-    echo "❌ The 'envsubst' command is required but not installed."
-    echo "Run 'apt install gettext' to use 'envsubst'."
-    exit 1
-fi
-
 configure_http_scheme() {
     if [ -z "${HTTP_SCHEME-}" ]; then
         ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
