@@ -10,6 +10,7 @@ services:
     - "8888:8888"
     volumes:
     - ${PWD}/examples:/home/${PUSER}/work
+    - $HOME/.eoepca/state:/home/${PUSER}/.eoepca/state
     # START (make permissions work)
     environment:
       NB_USER: "${PUSER}"
