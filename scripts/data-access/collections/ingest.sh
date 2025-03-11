@@ -47,7 +47,7 @@ done
 
 # Install required packages
 echo "Installing required packages in pod $EOAPI_POD_RASTER in namespace $FOUND_NAMESPACE..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'apt update -y && apt install python3 python3-pip -y && pip install pypgstac[psycopg]'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'apt update -y && apt install python3 python3-pip -y && pip install -U pypgstac[psycopg]'; then
     echo "Failed to install packages."
     exit 1
 fi
