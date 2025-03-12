@@ -11,7 +11,13 @@ ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 configure_cert
 
 # Generate configuration files
-envsubst <"values-template.yaml" >"generated-values.yaml"
-envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
+gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH"
+
+# if ingress class is apisix
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    gomplate  -f "apisix-ingress-template.yaml" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+elif [ "$INGRESS_CLASS" == "nginx" ]; then
+    gomplate  -f "nginx-ingress-template.yaml" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+fi
 
 echo "You can now proceed to deploy the Resource Health BB using Helm."

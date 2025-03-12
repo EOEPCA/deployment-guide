@@ -1,5 +1,7 @@
 # Application Quality Deployment Guide
 
+> OIDC Authentication is currently a requirement of this Building Block. 
+
 The **Application Quality** Building Block (BB) supports the evolution of scientific algorithms from research prototypes to production-grade processing workflows. It provides tooling to verify non-functional requirements—code quality, best practices, vulnerability scanning, performance testing—and to manage these checks via pipelines integrated into a typical CI/CD process.
 
 ---
@@ -34,7 +36,7 @@ Before deploying the Application Quality Building Block, ensure you have the fol
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                               |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                           |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                       |
-| Ingress          | Properly installed                     | [Ingress Controllers](../prerequisites/ingress-controller.md) |
+| OIDC Provider             | An OIDC Provider must be available              | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                                   |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
 
@@ -70,7 +72,7 @@ bash configure-application-quality.sh
 
 **OIDC Configuration**:
 
-> OIDC authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational.
+> OIDC authentication is currently a requirement of this Building Block.
 
 If you choose to enable OIDC authentication, you will be asked to provide.
 We will configure the clients in a later step, just provide the names for now.
@@ -107,15 +109,8 @@ helm upgrade -i application-quality reference-repo/helm \
   --values generated-values.yaml
 ```
 
-## Optional: Enable OIDC with Keycloak
 
-If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
-
-If you **do** want to protect the endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak.
-
-> Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
-
-### 2.1 Create a Keycloak Client
+### 4 Create a Keycloak Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 

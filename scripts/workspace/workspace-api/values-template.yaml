@@ -5,22 +5,10 @@ image:
   pullPolicy: Always
 ingress:
   enabled: false
-  # annotations:
-  #   ${CLUSTER_ISSUER_ANNOTATION}
-  #   kubernetes.io/ingress.class: nginx
-  #   nginx.ingress.kubernetes.io/enable-cors: "true"
-  #   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-  # hosts:
-  #   - host: workspace-api.${INGRESS_HOST}
-  #     paths: ["/"]
-  # tls:
-  #   - hosts:
-  #       - workspace-api.${INGRESS_HOST}
-  #     secretName: workspace-api-tls
 prefixForName: "ws-"
 workspaceSecretName: "bucket"
-s3Endpoint: ${S3_ENDPOINT}
-s3Region: ${S3_REGION}
-harborUrl: "$HTTP_SCHEME://harbor.${INGRESS_HOST}"
+s3Endpoint: {{ getenv "S3_ENDPOINT" }}
+s3Region: {{ getenv "S3_REGION" }}
+harborUrl: "{{ getenv "HTTP_SCHEME" }}://harbor.{{ getenv "INGRESS_HOST" }}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor-admin-password"

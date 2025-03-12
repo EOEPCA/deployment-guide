@@ -65,9 +65,9 @@ Users engage with the Application Hub’s SaaS products designed for in-depth in
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| APISIX Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/apisix.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
-| IAM             | IAM must be installed for this                                   | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
+| OIDC Provider             | An OIDC Provider must be available              | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
 
 **Clone the Deployment Guide Repository:**
 
@@ -145,7 +145,7 @@ After it completes, you should see a JSON snippet confirming the newly created c
 
 ---
 
-1. **Deploy the Application Hub Using Helm**
+3. **Deploy the Application Hub Using Helm**
 
 Return to the `deployment-guide/scripts/app-hub` directory and deploy the Application Hub using Helm:
 

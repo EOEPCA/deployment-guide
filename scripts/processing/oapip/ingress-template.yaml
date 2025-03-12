@@ -10,7 +10,7 @@ spec:
     - name: zoo-docs
       match:
         hosts:
-          - zoo.$INGRESS_HOST
+          - zoo.{{ getenv "INGRESS_HOST" }}
         paths:
           - /*
         exprs:
@@ -30,7 +30,7 @@ spec:
     - name: zoo-protected
       match:
         hosts:
-          - zoo.$INGRESS_HOST
+          - zoo.{{ getenv "INGRESS_HOST" }}
         paths:
           - /*
       backends:
@@ -41,20 +41,20 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            discovery: "https://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
+            discovery: "https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             realm: eoepca
             bearer_only: true
-            client_id: ${OAPIP_CLIENT_ID}
-            client_secret: ${OAPIP_CLIENT_SECRET}
+            client_id: {{ getenv "OAPIP_CLIENT_ID" }}
+            client_secret: {{ getenv "OAPIP_CLIENT_SECRET" }}
         # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "https://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/uma2-configuration"
+            discovery: "https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-            client_id: ${OAPIP_CLIENT_ID}
-            client_secret: ${OAPIP_CLIENT_SECRET}
+            client_id: {{ getenv "OAPIP_CLIENT_ID" }}
+            client_secret: {{ getenv "OAPIP_CLIENT_SECRET" }}
         # Allow CORS access
         - name: cors
           enable: true
@@ -66,10 +66,10 @@ metadata:
   namespace: processing
 spec:
   dnsNames:
-    - zoo.$INGRESS_HOST
+    - zoo.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     kind: ClusterIssuer
-    name: ${CLUSTER_ISSUER}
+    name: {{ getenv "CLUSTER_ISSUER" }}
   secretName: zoo-tls
   usages:
     - digital signature
@@ -83,7 +83,7 @@ metadata:
   namespace: processing
 spec:
   hosts:
-    - zoo.$INGRESS_HOST
+    - zoo.{{ getenv "INGRESS_HOST" }}
   secret:
     name: zoo-tls
     namespace: processing

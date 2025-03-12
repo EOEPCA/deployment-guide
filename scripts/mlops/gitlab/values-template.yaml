@@ -1,23 +1,34 @@
 global:
   edition: ce
   hosts:
-    domain: ${INGRESS_HOST}
+    domain: {{ getenv "INGRESS_HOST" }}
   ingress:
     configureCertmanager: false
-    class: apisix
-    provider: apisix
+    class: {{ getenv "INGRESS_CLASS" }}
+    provider: {{ getenv "INGRESS_CLASS" }}
     tls:
       external: true
     annotations:
-      ${CLUSTER_ISSUER_ANNOTATION}
-      apisix.ingress.kubernetes.io/use-regex: "true"
-      kubernetes.io/tls-acme: true
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+    kubernetes.io/tls-acme: true
 
   minio:
     enabled: false
 
   appConfig:
-    ${MLOPS_OIDC_OMNIAUTH_CONFIG}
+  {{- if eq (getenv "MLOPS_OIDC_ENABLED") "true" }}
+    omniauth:
+      enabled: true
+      allowSingleSignOn: ["saml", "openid_connect"]
+      blockAutoCreatedUsers: false
+      providers:
+        - secret: openid-connect
+  {{- else }}
+    omniauth:
+      enabled: false
+  {{- end }}
     lfs:
       enabled: true
       bucket: gitlab-lfs-storage
@@ -43,7 +54,7 @@ upgradeCheck:
 gitlab:
   gitaly:
     persistence:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: {{ getenv "STORAGE_CLASS" }}
   webservice:
     ingress:
       tls:
@@ -101,12 +112,12 @@ gitlab-runner:
 
 redis:
   global:
-    storageClass: ${STORAGE_CLASS}
+    storageClass: {{ getenv "STORAGE_CLASS" }}
   metrics:
     enabled: false
 
 postgresql:
   global:
-    storageClass: ${STORAGE_CLASS}
+    storageClass: {{ getenv "STORAGE_CLASS" }}
   metrics:
     enabled: false

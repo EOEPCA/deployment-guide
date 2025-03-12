@@ -14,7 +14,11 @@ nav:
       - Overview: prerequisites/prerequisites-overview.md
       - Kubernetes Requirements: prerequisites/kubernetes.md
       - Storage Requirements: prerequisites/storage.md
-      - Ingress Controller Setup: prerequisites/ingress-controller.md
+      - Ingress Setup:
+          - Overview: prerequisites/ingress/overview.md
+          - APISIX Ingress: prerequisites/ingress/apisix.md
+          - Nginx Ingress: prerequisites/ingress/nginx.md
+          - Multiple Ingress Controllers: prerequisites/ingress/multi.md
       - TLS Management: prerequisites/tls.md
       - Optional Components:
           - S3 Storage (MinIO): prerequisites/minio.md
@@ -47,27 +51,6 @@ nav:
       - Application Quality: building-blocks/application-quality.md
     
   - Further EOEPCA+ Documentation: https://eoepca.readthedocs.io/
-
-
-  # - Deploy EOEPCA Components:
-  #   - Persistence: eoepca/persistence.md
-  #   - Identity & Access Management:
-  #     - IAM Overview: eoepca/iam-overview.md
-  #     - Keycloak Solution (NEW):
-  #       - Identity Service: eoepca/identity-service.md
-  #       - Resource Protection: eoepca/resource-protection-keycloak.md
-  #     - Gluu Solution (deprecated):
-  #       - Login Service: eoepca/login-service.md
-  #       - Policy Decision Point: eoepca/pdp.md
-  #       - Resource Protection: eoepca/resource-protection-gluu.md
-  #       - User Profile: eoepca/user-profile.md
-  #   - ADES (Processing): eoepca/ades-zoo.md
-  #   - Application Hub: eoepca/application-hub.md
-  #   - Resource Catalogue: eoepca/resource-catalogue.md
-  #   - Data Access: eoepca/data-access.md
-  #   - Registration API: eoepca/registration-api.md
-  #   - Workspace: eoepca/workspace.md
-  #   - Container Registry: eoepca/container-registry.md
 
 theme:
   # name: mkdocs

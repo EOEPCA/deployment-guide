@@ -13,15 +13,11 @@ ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" 
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
 
-# Generate configuration files
-envsubst <"eoapi/values-template.yaml" >"eoapi/generated-values.yaml"
-envsubst <"eoapi/ingress-template.yaml" >"eoapi/generated-ingress.yaml"
-envsubst <"postgres/values-template.yaml" >"postgres/generated-values.yaml"
-envsubst <"eoapi-support/values-template.yaml" >"eoapi-support/generated-values.yaml" 2>/dev/null || true
 
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- eoapi-tls"
-    echo "- eoapisupport-tls (if eoapi-support is used)"
+gomplate  -f "eoapi/$TEMPLATE_PATH" -o "eoapi/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "postgres/$TEMPLATE_PATH" -o "postgres/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "eoapi-support/$TEMPLATE_PATH" -o "eoapi-support/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    gomplate  -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi

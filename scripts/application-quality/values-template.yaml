@@ -1,13 +1,15 @@
 ingress:
   enabled: true
-  className: apisix
-  domain: application-quality.${INGRESS_HOST}
+  className: {{ getenv "INGRESS_CLASS" }}
+  domain: application-quality.{{ getenv "INGRESS_HOST" }}
   annotations:
-    ${CLUSTER_ISSUER_ANNOTATION}
-    kubernetes.io/ingress.class: apisix
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
   tls:
     - hosts:
-      - application-quality.${INGRESS_HOST}
+      - application-quality.{{ getenv "INGRESS_HOST" }}
       secretName: application-quality-tls
 
 web:
@@ -40,7 +42,7 @@ api:
 persistence:
   enabled: true
   createStorageClass: false
-  storageClassName: ${STORAGE_CLASS}
+  storageClassName: {{ getenv "STORAGE_CLASS" }}
   accessMode:
   - ReadWriteOnce
   size: 1Gi
@@ -50,7 +52,7 @@ calrissian:
   volumeSize: "5Gi"
   maxCores: "2"
   maxRam: "2Gi"
-  storageClassName: ${STORAGE_CLASS}
+  storageClassName: {{ getenv "STORAGE_CLASS" }}
 
 opensearch:
   # Enable or disable saving runs and reports in Opensearch (default: false)
@@ -101,19 +103,19 @@ external_tools:
 nodeSelector: {}
 
 oidc:
-  enabled: ${OIDC_APPLICATION_QUALITY_ENABLED}
-  realmBaseUrl: ${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}
+  enabled: {{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" }}
+  realmBaseUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
   # Client ID and Secret set in SealedSecret
-  clientId: ${APP_QUALITY_CLIENT_ID}
-  clientSecret: ${APP_QUALITY_CLIENT_SECRET}
+  clientId: {{ getenv "APP_QUALITY_CLIENT_ID" }}
+  clientSecret: {{ getenv "APP_QUALITY_CLIENT_SECRET" }}
   preferredUsernameClaimField: "preferred_username"
   logoutEndpointPath: "end_session"
   logoutRedirectUrlParameterName: "post_logout_redirect_url"
-  postLogoutRedirectUrl: "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/"
+  postLogoutRedirectUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
   loginUrl: "/oidc/authenticate"
-  loginRedirectUrl:  "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/"
+  loginRedirectUrl:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
   logoutRedirectUrl: "/"
-  rpRedirectUri:  "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/"
+  rpRedirectUri:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
   rpSignAlgo: "RS256"
 
 sonarqube:

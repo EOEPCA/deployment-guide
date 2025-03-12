@@ -45,7 +45,7 @@ Before deploying the Container Registry, make sure you have:
 | Kubernetes       | Cluster (tested on v1.28)              | [Deployment Guide](kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| Ingress          | Properly installed                     | [Documentation](ingress-controller.md) |
+| Ingress          | Properly installed                     | [Documentation](../prerequisites/ingress/overview.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](tls.md)                             |
 
 **Clone the Deployment Guide Repository:**
@@ -103,7 +103,7 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
 
 4. **Log In**
 
-    Navigate to `https://harbor.your-domain` in your browser.
+    Navigate to `https://harbor.${INGRESS_HOST}` in your browser.
 
     - **Username**: `admin`
     - **Password**: The password that was generated during configuration<br>

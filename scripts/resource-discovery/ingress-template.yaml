@@ -4,13 +4,15 @@ metadata:
   name: rc
   namespace: resource-discovery
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
-    apisix.ingress.kubernetes.io/use-regex: "true"
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
 spec:
-  ingressClassName: apisix
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: resource-catalogue.$INGRESS_HOST
+    - host: resource-catalogue.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: "/"
@@ -22,5 +24,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - resource-catalogue.$INGRESS_HOST
+        - resource-catalogue.{{ getenv "INGRESS_HOST" }}
       secretName: resource-catalogue-tls

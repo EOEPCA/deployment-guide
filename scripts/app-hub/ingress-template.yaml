@@ -4,13 +4,15 @@ metadata:
   name: ah
   namespace: application-hub
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
     k8s.apisix.apache.org/enable-websocket: "true"
 spec:
-  ingressClassName: apisix
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: app-hub.$INGRESS_HOST
+    - host: app-hub.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: "/"
@@ -22,5 +24,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - app-hub.$INGRESS_HOST
+        - app-hub.{{ getenv "INGRESS_HOST" }}
       secretName: app-hub-tls

@@ -1,4 +1,4 @@
-# Processing - OpenEO Engine Deployment Guide (Early Access)
+# Processing - OpenEO Engine Deployment Guide
 
 OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.
 
@@ -16,7 +16,7 @@ Before deploying, ensure your environment meets the following requirements:
 |Kubernetes|Cluster (tested on v1.28)|[Installation Guide](../prerequisites/kubernetes.md)|
 |Helm|Version 3.5 or newer|[Installation Guide](https://helm.sh/docs/intro/install/)|
 |kubectl|Configured for cluster access|[Installation Guide](https://kubernetes.io/docs/tasks/tools/)|
-|Ingress|Properly installed|[Installation Guide](../prerequisites/ingress-controller.md)|
+|Ingress|Properly installed|[Installation Guide](../prerequisites/ingress/overview.md)|
 |Cert Manager|Properly installed|[Installation Guide](../prerequisites/tls.md)|
 |OIDC Provider|Required to submit jobs|[Installation Guide](./iam/main-iam.md)|
 
@@ -107,10 +107,13 @@ kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 
 #### Step 4: Create a Keycloak Client
 
-The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.
+The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. 
 
-Thus, we configure in our openEO deployment integration with an `EOEPCA` identity provider.<br>
-Ref. helm values...
+For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.
+
+Thus, we configure in our openEO deployment integration with an `EOEPCA` identity provider.
+
+Inside the `generated-values.yaml` you will find the following configuration:
 
 ```python
 oidc_providers = [
@@ -237,12 +240,13 @@ _Expected output:_ A JSON object with an array of processes. Use your terminalâ€
 The deployment can be tested using the openEO Web Editor as a client.
 
 ```bash
-xdg-open https://editor.openeo.org/
+xdg-open https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.2/
 ```
 
-**Connect to server**
+**Alternatively**
 
-* Enter the `URL` of the server - `open.${INGRESS_HOST}` - e.g. `open.myplatform.mydomain`
+* Open the [openEO Web Editor](https://editor.openeo.org/)
+* Enter the `URL` of the server - `https://openeo.${INGRESS_HOST}` - e.g. `https://openeo.myplatform.mydomain`
 * Select `Connect`
 
 **Login to service**

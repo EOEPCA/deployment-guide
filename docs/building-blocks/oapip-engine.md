@@ -19,7 +19,7 @@ Before deploying the **OGC API Processes Engine**, ensure you have the following
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress-controller.md) |
+| Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
 | Stage-In S3      | Accessible                             |             [MinIO Deployment Guide](../prerequisites/minio.md)                                                                                  |
 | Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                                                      |
@@ -77,7 +77,7 @@ If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), 
 
 **OIDC Configuration:**
 
-You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
+If you are using the APISIX Ingress Controller, you will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
 
 When prompted for the `Client ID` we recommend setting it to `oapip-engine`.
 
@@ -103,7 +103,9 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 ## Optional: Enable OIDC with Keycloak
 
-If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
+> This option is only available when using the **APISIX** Ingress Controller as it relies upon APISIX to act as the policy enforcement point.. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
+
+If you **do not** wish to use OIDC IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section. You can still work with the OAPIP Engine but access will not be restricted.
 
 If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
 
@@ -153,7 +155,7 @@ Zoo uses a path prefix to establish a context within the processing service - su
 
 Protection can be applied so that the context is accessible only by the owning user(s).
 
-For the purposes of this example we will assume the user `eoepcauser` - adjust for your own purposes.
+For the purposes of this example we can assume the user `eoepcauser` - adjust for your own purposes.
 
 1. Use the `protect-resource.sh`:
         
@@ -173,7 +175,7 @@ When prompted (adjust values for your needs):
 
 ### 2.3 Create APISIX Route Ingress
 
-Apply the APISIX route ingress:
+If you are using APISIX Ingress controller, apply the ingress:
 
 ```bash
 kubectl apply -f generated-ingress.yaml
@@ -182,7 +184,9 @@ kubectl apply -f generated-ingress.yaml
 ---
 
 
-### 2.4 Confirm Protection
+### 2.4 Confirm Protection (APISIX Only)
+
+> Resource protection is only available when using the APISIX Ingress Controller.
 
 With the resource and permission created, attempts to access the protected endpoint (`/eoepcauser/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
 

@@ -13,7 +13,7 @@ spec:
     - name: workspace-api
       match:
         hosts:
-          - workspace-api.$INGRESS_HOST
+          - workspace-api.{{ getenv "INGRESS_HOST" }}
         paths:
           - /*
       backends:
@@ -24,11 +24,11 @@ spec:
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/${REALM}/.well-known/uma2-configuration"
+            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-            client_id: ${WORKSPACE_CLIENT_ID}
-            client_secret: ${WORKSPACE_CLIENT_SECRET}
+            client_id: {{ getenv "WORKSPACE_CLIENT_ID" }}
+            client_secret: {{ getenv "WORKSPACE_CLIENT_SECRET" }}
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
@@ -42,7 +42,7 @@ spec:
     - name: workspace-api-swagger
       match:
         hosts:
-          - workspace-swagger.$INGRESS_HOST
+          - workspace-swagger.{{ getenv "INGRESS_HOST" }}
         paths:
           - /*
       backends:
@@ -59,18 +59,18 @@ spec:
           enable: true
           config:
             access_token_in_authorization_header: true
-            discovery: "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/${REALM}/.well-known/openid-configuration"
-            client_id: ${WORKSPACE_CLIENT_ID}
-            client_secret: ${WORKSPACE_CLIENT_SECRET}
+            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            client_id: {{ getenv "WORKSPACE_CLIENT_ID" }}
+            client_secret: {{ getenv "WORKSPACE_CLIENT_SECRET" }}
         # Require authorization for access to API
         - name: authz-keycloak
           enable: true
           config:
-            discovery: "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/${REALM}/.well-known/uma2-configuration"
+            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-            client_id: ${WORKSPACE_CLIENT_ID}
-            client_secret: ${WORKSPACE_CLIENT_SECRET}
+            client_id: {{ getenv "WORKSPACE_CLIENT_ID" }}
+            client_secret: {{ getenv "WORKSPACE_CLIENT_SECRET" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -79,11 +79,11 @@ metadata:
   namespace: workspace
 spec:
   dnsNames:
-    - workspace-api.$INGRESS_HOST
-    - workspace-swagger.$INGRESS_HOST
+    - workspace-api.{{ getenv "INGRESS_HOST" }}
+    - workspace-swagger.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     kind: ClusterIssuer
-    name: ${CLUSTER_ISSUER}
+    name: {{ getenv "CLUSTER_ISSUER" }}
   secretName: workspace-api-tls
   usages:
     - digital signature
@@ -97,8 +97,8 @@ metadata:
   namespace: workspace
 spec:
   hosts:
-    - workspace-api.$INGRESS_HOST
-    - workspace-swagger.$INGRESS_HOST
+    - workspace-api.{{ getenv "INGRESS_HOST" }}
+    - workspace-swagger.{{ getenv "INGRESS_HOST" }}
   secret:
     name: workspace-api-tls
     namespace: workspace

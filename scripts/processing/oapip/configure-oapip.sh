@@ -35,7 +35,9 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
 fi
 
 # OIDC
-ask "OIDC_OAPIP_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
+ask "OIDC_OAPIP_ENABLED" "Do you want to enable OIDC for the OAPIP?" "true" is_boolean
+
+
 if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
 
     ask "OAPIP_CLIENT_ID" "Enter the Client ID for the OAPIP" "oapip-engine" is_non_empty
@@ -57,9 +59,15 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
         ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
     fi
 
-    add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
-    envsubst <"ingress-template.yaml" >"generated-ingress.yaml"
+
+    if [ "$INGRESS_CLASS" == "apisix" ]; then
+        add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
+        gomplate -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    else
+        add_to_state_file "OAPIP_INGRESS_ENABLED" "true"
+    fi
+
 
 else
 
@@ -68,10 +76,4 @@ else
 
 fi
 
-envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
-
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- zoo-tls"
-fi
+gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

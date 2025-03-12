@@ -3,14 +3,40 @@ image:
   pullPolicy: IfNotPresent
 
 mlflowSharinghub:
-  sharinghubUrl: $HTTP_SCHEME://sharinghub.${INGRESS_HOST}
+  sharinghubUrl: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}
   sharinghubStacCollection: ai-model
   sharinghubAuthDefaultToken: false
-  artifactsDestination: s3://${S3_BUCKET_MLFLOW}
+  artifactsDestination: s3://{{ getenv "S3_BUCKET_MLFLOW" }}
 
 s3:
   enabled: true
-  endpointUrl: ${S3_ENDPOINT}
+  endpointUrl: {{ getenv "S3_ENDPOINT" }}
 
+# This will only be enabled when nginx is used as ingress controller
+# For APISIX, you will have a `$INGRESS_OUTPUT_PATH` file that will be used to deploy the ingress
+{{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 10g
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Script-Name /mlflow;
+      rewrite ^/mlflow/(.*)$ /$1 break;
+  hosts:
+    - host: sharinghub.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - path: /mlflow/
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: sharinghub-tls
+      hosts:
+        - sharinghub.{{ getenv "INGRESS_HOST" }}
+{{- else }}
 ingress:
   enabled: false
+{{- end }}

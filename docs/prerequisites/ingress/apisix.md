@@ -1,44 +1,10 @@
-
-# Ingress and DNS Requirements
-
-Access to the EOEPCA BB services is provided via an ingress controller that acts as a reverse proxy. Proxy routes are configured using host-based routing that relies upon wildcard DNS to resolve traffic to the platform domain (e.g. `*.myplatform.com`). Thus, an ingress controller that supports these features is required.
-
-The EOEPCA+ Identity and Access Management (IAM) solution advocates use of the APISIX Ingress Controller, which offers native integration of IAM request authorisation - which, for example, integrates with Keycloak via OIDC (authentication) and UMA (authorisation) flows. Thus, following description of the general requirements for cluster ingress, a guide is provided for [deployment of APISIX](#apisix-ingress-controller).
-
-**Requirements:**
-
-- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: `*.myplatform.com`.<br>
-  _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller._
-- **Ingress Controller**: APISIX is recommended for use with the EOEPCA+ IAM soluiton; others such as NGINX can also be used if the IAM integration is not of interest
-
-**Production vs Development:**
-
-- **Production**:  
-    - Ensure a stable and supported ingress controller (e.g. APISIX) exposed through a routable IP address
-    - A fully functional wildcard DNS record
-  
-- **Development / Testing**:  
-    - Can be exposed through a private IP address
-    - Local or makeshift DNS solutions (e.g. nip.io) might be acceptable for internal development/test/demo
-
-## Additional Notes
-
-- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: `*.myplatform.com`.<br>
-  _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller._
-
-- **Ingress Class**: Specify the ingress class in your ingress resources for example `apisix` for APISIX, `nginx` for NGINX.
-
-## Further Reading
-
-- **Kubernetes Ingress Concepts**: [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-- **APISIX Documentation**: [APISIX Ingress Controller](https://apisix.apache.org/docs/ingress-controller/)
-- **NGINX Documentation**: [Ingress-NGINX Controller](https://kubernetes.github.io/ingress-nginx/)
-
-## APISIX Ingress Controller
+# APISIX Ingress Controller
 
 For full installation instructions for the APISIX Ingress Controller see the official [Installation Guide](https://apisix.apache.org/docs/apisix/installation-guide/).
 
-As a quick start, the steps included here can be followed to deploy the APISIX Ingress Controller via helm chart...
+## Quickstart Installation
+
+> **Disclaimer:** We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
 
 ```bash
 helm repo add apisix https://charts.apiseven.com
@@ -60,7 +26,7 @@ helm upgrade -i apisix apisix/apisix \
 
 > This can be adapted according to the network topology of your cluster environment.
 
-**Forced TLS Redirection**
+### Forced TLS Redirection
 
 The following `ApisixGlobalRule` is used to configure Apisix to redirect all `http` traffic to `https`.
 
@@ -95,7 +61,7 @@ For `filter` reference see:
 * [Plugin Common Configuration](https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration)
 * [Expression Syntax](https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators)
 
-**Forwarded Port Correction**
+### Forwarded Port Correction
 
 By default, APISIX sets the `X-Forwarded-Port` header to its container port (`9443` by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is `443`.
 
@@ -119,9 +85,7 @@ spec:
 EOF
 ```
 
-**APISIX Uninstallation**
-
-APISIX can be uninstalled as follows...
+### APISIX Uninstallation
 
 ```bash
 helm -n ingress-apisix uninstall apisix

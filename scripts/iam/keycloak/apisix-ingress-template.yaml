@@ -11,7 +11,7 @@ spec:
           servicePort: 80
       match:
         hosts:
-          - auth.$INGRESS_HOST
+          - auth.{{ getenv "INGRESS_HOST" }}
         paths:
           - /*
       plugins:
@@ -25,10 +25,10 @@ metadata:
   name: auth
 spec:
   dnsNames:
-    - auth.$INGRESS_HOST
+    - auth.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     kind: ClusterIssuer
-    name: ${CLUSTER_ISSUER}
+    name: {{ getenv "CLUSTER_ISSUER" }}
   secretName: auth-tls
   usages:
     - digital signature
@@ -41,7 +41,7 @@ metadata:
   name: keycloak
 spec:
   hosts:
-    - auth.$INGRESS_HOST
+    - auth.{{ getenv "INGRESS_HOST" }}
   secret:
     name: auth-tls
     namespace: iam

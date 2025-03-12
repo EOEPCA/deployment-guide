@@ -4,18 +4,20 @@ metadata:
   name: rhc
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: apisix
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     k8s.apisix.apache.org/rewrite-target-regex: "/api/healthchecks/(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
-    ${CLUSTER_ISSUER_ANNOTATION}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
 spec:
-  ingressClassName: apisix
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
     - hosts:
-        - resource-health.${INGRESS_HOST}
+        - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
   rules:
-    - host: resource-health.${INGRESS_HOST}
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /api/healthchecks
@@ -32,18 +34,20 @@ metadata:
   name: rht
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: apisix
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     k8s.apisix.apache.org/rewrite-target-regex: "/api/telemetry/(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
-    ${CLUSTER_ISSUER_ANNOTATION}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
 spec:
-  ingressClassName: apisix
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
     - hosts:
-        - resource-health.${INGRESS_HOST}
+        - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
   rules:
-    - host: resource-health.${INGRESS_HOST}
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /api/telemetry
@@ -60,16 +64,18 @@ metadata:
   name: rhw
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: apisix
-    ${CLUSTER_ISSUER_ANNOTATION}
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
 spec:
-  ingressClassName: apisix
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   tls:
     - hosts:
-        - resource-health.${INGRESS_HOST}
+        - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
   rules:
-    - host: resource-health.${INGRESS_HOST}
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /

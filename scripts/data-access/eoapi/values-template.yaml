@@ -1,5 +1,20 @@
+{{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+  host: "eoapi.{{ getenv "INGRESS_HOST" }}"
+  tls:
+    enabled: true
+    certManager: false
+    secretName: "eoapi-tls"
+{{- else }}
 ingress:
   enabled: false
+{{- end }}
 
 db:
   enabled: false
@@ -14,13 +29,13 @@ postgrescluster:
     - name: eoapi
       replicas: 1
       dataVolumeClaimSpec:
-        storageClassName: ${STORAGE_CLASS}
+        storageClassName: {{ getenv "STORAGE_CLASS" }}
         accessModes:
           - "ReadWriteMany"
         resources:
           requests:
             storage: 1Gi
-  backupsStorageClassName: ${STORAGE_CLASS}
+  backupsStorageClassName: {{ getenv "STORAGE_CLASS" }}
   nfsCustom:
     - name: repo1
 
@@ -36,9 +51,9 @@ raster:
     tag: "1.4.0"
   settings:
     envVars:
-      AWS_S3_ENDPOINT: ${S3_HOST}
-      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
-      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      AWS_S3_ENDPOINT: {{ getenv "S3_HOST" }}
+      AWS_ACCESS_KEY_ID: {{ getenv "S3_ACCESS_KEY" }}
+      AWS_SECRET_ACCESS_KEY: {{ getenv "S3_SECRET_KEY" }}
       AWS_VIRTUAL_HOSTING: "FALSE"
     resources:
       requests:

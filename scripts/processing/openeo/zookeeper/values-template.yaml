@@ -1,10 +1,10 @@
 global:
-  storageClass: "${STORAGE_CLASS}"
+  storageClass: "{{ getenv "STORAGE_CLASS" }}"
 replicacount: 1
 autopurge:
   purgeInterval: 1
 persistence:
-  storageClass: "${STORAGE_CLASS}"
+  storageClass: "{{ getenv "STORAGE_CLASS" }}"
   size: 5Gi
 resources:
   requests:

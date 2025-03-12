@@ -36,7 +36,7 @@ The Resource Discovery building block includes:
 | Kubernetes       | Cluster (tested on v1.28)     | [Installation Guide](../prerequisites/kubernetes.md)     |
 | Helm             | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)               |
 | kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)           |
-| Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress-controller.md)                    |
+| Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress/overview.md)                    |
 | Cert Manager     | Properly installed            | [Installation Guide](../prerequisites/tls.md)                          |
 
 **Clone the Deployment Guide Repository:**
@@ -84,6 +84,9 @@ helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --namespace resource-discovery \
   --create-namespace
 ```
+
+> **Disclaimer**: The deployment process can take a few minutes to complete. If you notice one of the pods in an `Error` state, it is likely waiting for the database to become fully operational before it can start successfully.
+
 
 Deploy the ingress for the Resource Discovery service:
 
@@ -139,6 +142,8 @@ If these return meaningful responses (especially HTTP 200 with JSON or HTML data
 
 Using the command line can be a quick way to check endpoints and see raw responses. Below are some example commands.
 
+We recommend executing `source ~/.eoepca/state` to load the environment variables, or manually set the `INGRESS_HOST` variable.
+
 #### 3.1. Basic Liveness Check
 
 ```bash
@@ -164,7 +169,6 @@ curl "https://resource-catalogue.${INGRESS_HOST}/stac"
 #### 3.4. Searching STAC Items
 
 ```bash
-source ~/.eoepca/state
 curl -X POST "https://resource-catalogue.${INGRESS_HOST}/stac/search" \
    --silent --show-error \
   -H "Content-Type: application/json" \

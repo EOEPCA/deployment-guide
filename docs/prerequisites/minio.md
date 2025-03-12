@@ -22,7 +22,7 @@ Before you begin, make sure you have the following:
 | Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](kubernetes.md)             |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress          | Properly installed                     | [Ingress Controller Setup Guide](ingress-controller.md)     |
+| Ingress          | Properly installed                     | [Ingress Controller Setup Guide](../prerequisites/ingress/overview.md)     |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](tls.md) |
 
 **Clone the Deployment Guide Repository:**

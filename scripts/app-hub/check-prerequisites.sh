@@ -9,7 +9,8 @@ declare -a checks=(
     "check_kubectl_installed"
     "check_helm_installed"
     "check_cert_manager_installed"
-    "check_ingress_controller_installed"
+    "check_apisix_ingress_installed"
+    "check_oidc_provider_accessible"
 )
 
 run_validation "${checks[@]}"

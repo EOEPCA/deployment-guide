@@ -14,8 +14,11 @@ ask "KEYCLOAK_ADMIN_PASSWORD" "Keycloak Admin Password" "${KEYCLOAK_ADMIN_PASSWO
 ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
 ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 
-ask "KEYCLOAK_TEST_USER" "Enter the username for the example user" "eoepcauser"
-ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the example user" "eoepcapassword"
+ask_temp "USER_NAME" "Enter the username for the example user" "eoepcauser"
+ask_temp "USER_PASSWORD" "Enter the password for the example user" "eoepcapassword"
+
+
+
 
 # Obtain Admin Token (from 'master' realm)
 ACCESS_TOKEN=$(curl --silent --show-error \
@@ -35,15 +38,15 @@ fi
 echo "Obtained Admin Token successfully: ${ACCESS_TOKEN:0:10}..."
 
 # 1. Create the user
-echo "Creating user $KEYCLOAK_TEST_USER in realm '${REALM}'..."
+echo "Creating user $USER_NAME in realm '${REALM}'..."
 
 create_user_payload=$(
     cat <<EOF
 {
-  "username": "${KEYCLOAK_TEST_USER}",
+  "username": "${USER_NAME}",
   "enabled": true,
   "emailVerified": true,
-  "email": "${KEYCLOAK_TEST_USER}@${INGRESS_HOST}",
+  "email": "${USER_NAME}@${INGRESS_HOST}",
   "firstName": "Eoepca",
   "lastName": "User"
 }
@@ -69,7 +72,7 @@ fi
 
 # 2. Retrieve the new user's ID
 user_id=$(curl --silent --show-error \
-    -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${KEYCLOAK_TEST_USER}" \
+    -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${USER_NAME}" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" |
     jq -r '.[0].id')
 
@@ -78,7 +81,7 @@ if [ -z "${user_id}" ] || [ "${user_id}" = "null" ]; then
     exit 1
 fi
 
-echo "User ${KEYCLOAK_TEST_USER} created with ID: ${user_id}"
+echo "User ${USER_NAME} created with ID: ${user_id}"
 
 # 3. Set the password
 echo "Setting password"
@@ -87,7 +90,7 @@ reset_password_payload=$(
     cat <<EOF
 {
   "type": "password",
-  "value": "${KEYCLOAK_TEST_PASSWORD}",
+  "value": "${USER_PASSWORD}",
   "temporary": false
 }
 EOF
@@ -111,5 +114,14 @@ fi
 echo "Password for user set successfully."
 
 # 4. Confirmation
-echo "✅ User ${KEYCLOAK_TEST_USER} created successfully in realm '${REALM}' with password ${KEYCLOAK_TEST_PASSWORD}"
+if [ -z "$KEYCLOAK_TEST_USER" ]; then
+    add_to_state_file "KEYCLOAK_TEST_USER" "$USER_NAME"
+fi
+if [ -z "$KEYCLOAK_TEST_PASSWORD" ]; then
+    add_to_state_file "KEYCLOAK_TEST_PASSWORD" "$USER_PASSWORD"
+    echo "✅  Test user credentials added to the state file."
+fi
+
+echo "✅ User ${USER_NAME} created successfully in realm '${REALM}' with password ${USER_PASSWORD}"
 exit 0
+

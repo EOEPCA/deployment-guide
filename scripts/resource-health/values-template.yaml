@@ -1,6 +1,6 @@
 global:
   defaultInternalIssuerRef:
-    name: ${INTERNAL_CLUSTER_ISSUER}
+    name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
 
 resource-health:
   telemetry_api:
@@ -21,9 +21,9 @@ resource-health:
     # replicaCount: 1
     environmentFixed:
       - name: NEXT_PUBLIC_CHECK_MANAGER_ENDPOINT
-        value: "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks"
+        value: "{{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks"
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
-        value: "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/telemetry/v1"
+        value: "{{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/v1"
   healthchecks:
     checks:
       - name: mockapi-check
@@ -39,7 +39,7 @@ resource-health:
 
 opensearch:
   persistence:
-    storageClass: ${STORAGE_CLASS}
+    storageClass: {{ getenv "STORAGE_CLASS" }}
   # Limit resources for small deployment
   # replicas: 1
   # resources:

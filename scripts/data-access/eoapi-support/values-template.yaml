@@ -8,16 +8,18 @@ grafana:
     annotations: {}
   ingress:
     enabled: true
-    ingressClassName: apisix
+    ingressClassName: {{ getenv "INGRESS_CLASS" }}
     hosts:
-      - eoapisupport.${INGRESS_HOST}
+      - eoapisupport.{{ getenv "INGRESS_HOST" }}
     annotations:
-      kubernetes.io/ingress.class: apisix
-      ${CLUSTER_ISSUER_ANNOTATION}
+      kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
     tls:
       - secretName: eoapisupport-tls
         hosts:
-          - eoapisupport.${INGRESS_HOST}
+          - eoapisupport.{{ getenv "INGRESS_HOST" }}
   datasources:
     datasources.yaml:
       datasources:
@@ -39,7 +41,7 @@ prometheus:
       type: ClusterIP
     persistentVolume:
       enabled: true
-      storageClass: "${STORAGE_CLASS}"
+      storageClass: "{{ getenv "STORAGE_CLASS" }}"
       accessModes:
         - ReadWriteMany
 

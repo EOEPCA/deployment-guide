@@ -32,5 +32,6 @@ echo "Waiting for CA certificate to be ready..."
 kubectl wait --for=condition=Ready certificate eoepca-ca -n cert-manager --timeout=180s
 
 add_to_state_file "INTERNAL_TLS_ENABLED" "true"
+add_to_state_file "INTERNAL_CLUSTER_ISSUER" "eoepca-ca-clusterissuer"
 
 echo "✅ Internal TLS setup completed successfully."

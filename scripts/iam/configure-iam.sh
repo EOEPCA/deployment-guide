@@ -7,6 +7,7 @@ echo "Configuring the IAM..."
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
+ask "REALM" "Enter what you'd like for the Keycloak realm name" "eoepca" is_non_empty
 configure_cert
 
 # Generate passwords and store them in the state file
@@ -23,12 +24,23 @@ if [ -z "$OPA_CLIENT_SECRET" ]; then
     OPA_CLIENT_SECRET=$(generate_aes_key 32)
     add_to_state_file "OPA_CLIENT_SECRET" "$OPA_CLIENT_SECRET"
 fi
+add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
+
+add_to_state_file "OIDC_ISSUER_URL" "https://auth.$INGRESS_HOST/realms/$REALM"
 
 # Generate configuration files
 echo "Generating configuration files..."
 
-envsubst <"keycloak/values-template.yaml" >"keycloak/generated-values.yaml"
-envsubst <"keycloak/ingress-template.yaml" >"keycloak/generated-ingress.yaml"
-envsubst <"opa/ingress-template.yaml" >"opa/generated-ingress.yaml"
+gomplate -f "keycloak/$TEMPLATE_PATH" -o "keycloak/$OUTPUT_PATH"
+gomplate -f "opa/$TEMPLATE_PATH" -o "opa/$OUTPUT_PATH"
+
+if [ "$INGRESS_CLASS" == "apisix" ]; then
+    gomplate -f "keycloak/apisix-ingress-template.yaml" -o "keycloak/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "opa/apisix-ingress-template.yaml" -o "opa/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+else
+    gomplate -f "keycloak/nginx-ingress-template.yaml" -o "keycloak/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "opa/nginx-ingress-template.yaml" -o "opa/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+fi
+
 
 echo "✅ Configuration files generated."

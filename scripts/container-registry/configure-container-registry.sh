@@ -15,7 +15,7 @@ export HARBOR_URL="$HTTP_SCHEME://harbor.$INGRESS_HOST"
 add_to_state_file "HARBOR_ADMIN_PASSWORD" $HARBOR_ADMIN_PASSWORD
 add_to_state_file "HARBOR_URL" $HARBOR_URL
 
-envsubst <"$TEMPLATE_PATH" >"$OUTPUT_PATH"
+gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 echo "✅ Configuration file generated: $OUTPUT_PATH"
 
@@ -24,8 +24,3 @@ echo ""
 echo "🔐 IMPORTANT: The following passwords have been generated for your deployment:"
 echo "Harbor admin password: $HARBOR_ADMIN_PASSWORD"
 
-if [ "$USE_CERT_MANAGER" == "no" ]; then
-    echo ""
-    echo "📄 Since you're not using cert-manager, please create the following TLS secrets manually before deploying:"
-    echo "- harbor-tls"
-fi
