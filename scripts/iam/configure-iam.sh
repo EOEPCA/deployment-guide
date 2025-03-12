@@ -7,6 +7,7 @@ echo "Configuring the IAM..."
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
+ask "REALM" "Enter what you'd like for the Keycloak realm name" "eoepca" is_non_empty
 configure_cert
 
 # Generate passwords and store them in the state file
@@ -24,6 +25,8 @@ if [ -z "$OPA_CLIENT_SECRET" ]; then
     add_to_state_file "OPA_CLIENT_SECRET" "$OPA_CLIENT_SECRET"
 fi
 add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
+
+add_to_state_file "OIDC_ISSUER_URL" "https://auth.$INGRESS_HOST/realms/$REALM"
 
 # Generate configuration files
 echo "Generating configuration files..."

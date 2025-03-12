@@ -11,9 +11,13 @@ configure_cert
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
 
 # OIDC configuration
-ask "OIDC_APPLICATION_QUALITY_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
+if [ -z "$OIDC_ISSUER_URL" ]; then
+    ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "https://keycloak.${INGRESS_HOST}/auth/realms/${REALM}" is_non_empty
+fi
 
-if [ "$OIDC_APPLICATION_QUALITY_ENABLED" == "true" ]; then
+if [ "$OIDC_ISSUER_URL" ]; then
+
+    export OIDC_APPLICATION_QUALITY_ENABLED="true"
 
     # OIDC Configuration
     ask "APP_QUALITY_CLIENT_ID" "Enter the OIDC client ID for the Application Quality Building Block" "application-quality" is_non_empty
