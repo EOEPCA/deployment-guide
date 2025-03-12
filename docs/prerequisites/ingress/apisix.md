@@ -2,7 +2,9 @@
 
 For full installation instructions for the APISIX Ingress Controller see the official [Installation Guide](https://apisix.apache.org/docs/apisix/installation-guide/).
 
-As a quick start, the steps included here can be followed to deploy the APISIX Ingress Controller via Helm chart.
+## Quickstart Installation
+
+> **Disclaimer:** We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
 
 ```bash
 helm repo add apisix https://charts.apiseven.com
@@ -24,7 +26,7 @@ helm upgrade -i apisix apisix/apisix \
 
 > This can be adapted according to the network topology of your cluster environment.
 
-**Forced TLS Redirection**
+### Forced TLS Redirection
 
 The following `ApisixGlobalRule` is used to configure Apisix to redirect all `http` traffic to `https`.
 
@@ -59,7 +61,7 @@ For `filter` reference see:
 * [Plugin Common Configuration](https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration)
 * [Expression Syntax](https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators)
 
-**Forwarded Port Correction**
+### Forwarded Port Correction
 
 By default, APISIX sets the `X-Forwarded-Port` header to its container port (`9443` by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is `443`.
 
@@ -83,7 +85,7 @@ spec:
 EOF
 ```
 
-**APISIX Uninstallation**
+### APISIX Uninstallation
 
 ```bash
 helm -n ingress-apisix uninstall apisix

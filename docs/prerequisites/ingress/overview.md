@@ -5,20 +5,25 @@ EOEPCA+ requires an Ingress Controller to route external traffic into the platfo
 ## Two Ingress Options
 
 1. [APISIX Ingress](apisix.md)  
-   - Recommended for deeper integration with IAM / Keycloak (supports OIDC and UMA flows).
+   - **Recommended** for environments needing IAM integration with policy-based access control.
 
 2. [Nginx Ingress](nginx.md)  
-   - A simpler, widely-used option if you don't require IAM-based request authorization.
+   - **Suitable only** for open-access scenarios where IAM-based request authorization is not required.
+
+You must choose one of these ingress controllers based on your security and access control requirements:
+
+- For deployments **requiring IAM-based authorization**, you must use **APISIX**.
+- For deployments that are **fully open or don't need IAM-based authorization**, **NGINX** can be used.
 
 You can install **either** one for a basic deployment. If your deployment demands multiple ingress controllers simultaneously, see [Multiple Ingress Controllers](ingress-multi.md).
 
-**Before proceeding**:  
-- You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: `*.myplatform.com`.<br>
-- Ensure your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  
+**Before proceeding:**  
+- Ensure a wildcard DNS entry is pointing to your cluster’s load balancer or external IP, e.g., `*.myplatform.com`.  
+- Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  
 
->  _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller._
+> _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames, using the entrypoint IP-address of your cluster that routes to your ingress controller._
 
-Continue with whichever approach best suits your environment:
+Continue with the approach best suited for your environment:
 
 - **[Install APISIX →](apisix.md)**  
 - **[Install NGINX →](nginx.md)**

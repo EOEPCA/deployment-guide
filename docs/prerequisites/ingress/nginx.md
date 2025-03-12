@@ -1,10 +1,12 @@
 # Nginx Ingress
 
-This document provides instructions to deploy [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) for EOEPCA+. This is a simpler alternative to APISIX if you don't require advanced features like IAM-based request authorization.
+> **Important:** The NGINX ingress should **only be used for open deployments** where IAM-based request authorization is **not required**. If you require IAM integration and request authorization, select the **APISIX Ingress** instead.
 
-## Installation
+This document provides instructions to deploy [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) for EOEPCA+. 
 
-Below is a minimal example using Helm:
+## Quickstart Installation
+
+> **Disclaimer:** We recommend following the official installation instructions for the NGINX Ingress Controller. However, this quick start guide should also work for most environments.
 
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -17,7 +19,7 @@ helm upgrade -i ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.service.type=LoadBalancer
 ```
 
-Adjust parameters as needed (e.g., `NodePort` vs. `LoadBalancer` service).
+Adjust parameters as needed (e.g. `NodePort` vs. `LoadBalancer` service).
 
 ### Forced TLS Redirection
 
@@ -55,6 +57,3 @@ spec:
 helm -n ingress-nginx uninstall ingress-nginx
 kubectl delete ns ingress-nginx
 ```
-
-**Next Steps**  
-Once NGINX is installed, you can proceed with applying your EOEPCA+ ingress rules (or Helm chart values) referencing `ingressClassName: nginx`. 

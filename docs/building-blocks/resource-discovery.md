@@ -85,6 +85,9 @@ helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --create-namespace
 ```
 
+> **Disclaimer**: The deployment process can take a few minutes to complete. If you notice one of the pods in an `Error` state, it is likely waiting for the database to become fully operational before it can start successfully.
+
+
 Deploy the ingress for the Resource Discovery service:
 
 ```bash

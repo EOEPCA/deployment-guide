@@ -145,7 +145,7 @@ After it completes, you should see a JSON snippet confirming the newly created c
 
 ---
 
-1. **Deploy the Application Hub Using Helm**
+3. **Deploy the Application Hub Using Helm**
 
 Return to the `deployment-guide/scripts/app-hub` directory and deploy the Application Hub using Helm:
 

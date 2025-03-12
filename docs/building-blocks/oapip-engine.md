@@ -103,9 +103,9 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 ## Optional: Enable OIDC with Keycloak
 
-> This option is only available when using the **APISIX** Ingress Controller. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
+> This option is only available when using the **APISIX** Ingress Controller as it relies upon APISIX to act as the policy enforcement point.. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
 
-If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
+If you **do not** wish to use OIDC IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section. You can still work with the OAPIP Engine but access will not be restricted.
 
 If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
 
@@ -175,7 +175,7 @@ When prompted (adjust values for your needs):
 
 ### 2.3 Create APISIX Route Ingress
 
-Apply the APISIX route ingress:
+If you are using APISIX Ingress controller, apply the ingress:
 
 ```bash
 kubectl apply -f generated-ingress.yaml
@@ -184,7 +184,9 @@ kubectl apply -f generated-ingress.yaml
 ---
 
 
-### 2.4 Confirm Protection
+### 2.4 Confirm Protection (APISIX Only)
+
+> Resource protection is only available when using the APISIX Ingress Controller.
 
 With the resource and permission created, attempts to access the protected endpoint (`/eoepcauser/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
 
