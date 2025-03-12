@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#processing-openeo-engine-deployment-guide-early-access" class="md-skip">
+        <a href="#processing-openeo-engine-deployment-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -524,16 +524,127 @@
   
   
   
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ingress Setup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ingress Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
+      <a href="../../prerequisites/ingress/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Ingress Controller Setup
+    Overview
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/apisix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    APISIX Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/nginx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nginx Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/multi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Ingress Controllers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1899,7 +2010,7 @@
   
 
 
-<h1 id="processing-openeo-engine-deployment-guide-early-access">Processing - OpenEO Engine Deployment Guide (Early Access)<a class="headerlink" href="#processing-openeo-engine-deployment-guide-early-access" title="Permanent link">⚓︎</a></h1>
+<h1 id="processing-openeo-engine-deployment-guide">Processing - OpenEO Engine Deployment Guide<a class="headerlink" href="#processing-openeo-engine-deployment-guide" title="Permanent link">⚓︎</a></h1>
 <p>OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.</p>
 <blockquote>
 <p><strong>Note:</strong> You must have a valid OIDC Provider to submit jobs to the OpenEO Engine. If you do not have one, refer to the <a href="../iam/main-iam/">IAM Deployment Guide</a> to set up an OIDC Provider.</p>
@@ -1934,7 +2045,7 @@
 <tr>
 <td>Ingress</td>
 <td>Properly installed</td>
-<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+<td><a href="../../prerequisites/ingress/overview/">Installation Guide</a></td>
 </tr>
 <tr>
 <td>Cert Manager</td>
@@ -2001,9 +2112,10 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 </span></code></pre></div>
 <h4 id="step-4-create-a-keycloak-client">Step 4: Create a Keycloak Client<a class="headerlink" href="#step-4-create-a-keycloak-client" title="Permanent link">⚓︎</a></h4>
-<p>The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.</p>
-<p>Thus, we configure in our openEO deployment integration with an <code>EOEPCA</code> identity provider.<br>
-Ref. helm values&hellip;</p>
+<p>The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. </p>
+<p>For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - with the need to register their own OIDC client.</p>
+<p>Thus, we configure in our openEO deployment integration with an <code>EOEPCA</code> identity provider.</p>
+<p>Inside the <code>generated-values.yaml</code> you will find the following configuration:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">oidc_providers</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  <span class="n">OidcProvider</span><span class="p">(</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;eoepca&quot;</span><span class="p">,</span>
@@ -2089,11 +2201,12 @@ This script prompts you for basic details and automatically creates a Keycloak c
 <hr />
 <h3 id="4-usage-openeo-web-editor">4. Usage - openEO Web Editor<a class="headerlink" href="#4-usage-openeo-web-editor" title="Permanent link">⚓︎</a></h3>
 <p>The deployment can be tested using the openEO Web Editor as a client.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>xdg-open<span class="w"> </span>https://editor.openeo.org/
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>xdg-open<span class="w"> </span>https://editor.openeo.org?server<span class="o">=</span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/
 </span></code></pre></div>
-<p><strong>Connect to server</strong></p>
+<p><strong>Alternatively</strong></p>
 <ul>
-<li>Enter the <code>URL</code> of the server - <code>open.${INGRESS_HOST}</code> - e.g. <code>open.myplatform.mydomain</code></li>
+<li>Open the <a href="https://editor.openeo.org/">openEO Web Editor</a></li>
+<li>Enter the <code>URL</code> of the server - <code>https://openeo.${INGRESS_HOST}</code> - e.g. <code>https://openeo.myplatform.mydomain</code></li>
 <li>Select <code>Connect</code></li>
 </ul>
 <p><strong>Login to service</strong></p>

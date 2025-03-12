@@ -522,16 +522,127 @@
   
   
   
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ingress Setup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ingress Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
+      <a href="../../prerequisites/ingress/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Ingress Controller Setup
+    Overview
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/apisix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    APISIX Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/nginx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nginx Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/multi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Ingress Controllers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1428,25 +1539,10 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optional-enable-oidc-with-keycloak" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional: Enable OIDC with Keycloak
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional: Enable OIDC with Keycloak">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
-  <a href="#21-create-a-keycloak-client" class="md-nav__link">
+  <a href="#4-create-a-keycloak-client" class="md-nav__link">
     <span class="md-ellipsis">
-      2.1 Create a Keycloak Client
+      4 Create a Keycloak Client
     </span>
   </a>
   
@@ -1678,25 +1774,10 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optional-enable-oidc-with-keycloak" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional: Enable OIDC with Keycloak
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional: Enable OIDC with Keycloak">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
-  <a href="#21-create-a-keycloak-client" class="md-nav__link">
+  <a href="#4-create-a-keycloak-client" class="md-nav__link">
     <span class="md-ellipsis">
-      2.1 Create a Keycloak Client
+      4 Create a Keycloak Client
     </span>
   </a>
   
@@ -1818,6 +1899,9 @@
 
 
 <h1 id="application-quality-deployment-guide">Application Quality Deployment Guide<a class="headerlink" href="#application-quality-deployment-guide" title="Permanent link">⚓︎</a></h1>
+<blockquote>
+<p>OIDC Authentication is currently a requirement of this Building Block. </p>
+</blockquote>
 <p>The <strong>Application Quality</strong> Building Block (BB) supports the evolution of scientific algorithms from research prototypes to production-grade processing workflows. It provides tooling to verify non-functional requirements—code quality, best practices, vulnerability scanning, performance testing—and to manage these checks via pipelines integrated into a typical CI/CD process.</p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
@@ -1865,9 +1949,9 @@
 <td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>Ingress</td>
-<td>Properly installed</td>
-<td><a href="../../prerequisites/ingress-controller/">Ingress Controllers</a></td>
+<td>OIDC Provider</td>
+<td>An OIDC Provider must be available</td>
+<td><a href="../iam/main-iam/">Deployment Guide</a></td>
 </tr>
 <tr>
 <td>TLS Certificates</td>
@@ -1902,7 +1986,7 @@
 </ul>
 <p><strong>OIDC Configuration</strong>:</p>
 <blockquote>
-<p>OIDC authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational.</p>
+<p>OIDC authentication is currently a requirement of this Building Block.</p>
 </blockquote>
 <p>If you choose to enable OIDC authentication, you will be asked to provide.
 We will configure the clients in a later step, just provide the names for now.</p>
@@ -1932,13 +2016,7 @@ We will configure the clients in a later step, just provide the names for now.</
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml
 </span></code></pre></div>
-<h2 id="optional-enable-oidc-with-keycloak">Optional: Enable OIDC with Keycloak<a class="headerlink" href="#optional-enable-oidc-with-keycloak" title="Permanent link">⚓︎</a></h2>
-<p>If you <strong>do not</strong> wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the <a href="#validation">Validation</a> section.</p>
-<p>If you <strong>do</strong> want to protect the endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) <strong>and</strong> you enabled <code>OIDC</code> in the configuration script then follow these steps. You will create a new client in Keycloak.</p>
-<blockquote>
-<p>Before starting this please ensure that you have followed our <a href="../iam/main-iam/">IAM Deployment Guide</a> and have a Keycloak instance running.</p>
-</blockquote>
-<h3 id="21-create-a-keycloak-client">2.1 Create a Keycloak Client<a class="headerlink" href="#21-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
+<h3 id="4-create-a-keycloak-client">4 Create a Keycloak Client<a class="headerlink" href="#4-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
 <p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>../utils/create-client.sh
 </span></code></pre></div>

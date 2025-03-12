@@ -524,16 +524,127 @@
   
   
   
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ingress Setup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ingress Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
+      <a href="../../prerequisites/ingress/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Ingress Controller Setup
+    Overview
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/apisix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    APISIX Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/nginx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nginx Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/multi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Ingress Controllers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1835,7 +1946,7 @@
 <tr>
 <td>Ingress</td>
 <td>Properly installed</td>
-<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+<td><a href="../../prerequisites/ingress/overview/">Installation Guide</a></td>
 </tr>
 <tr>
 <td>Cert Manager</td>
@@ -1885,6 +1996,9 @@ During the script execution, you will be prompted to provide:</p>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-discovery<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
 </span></code></pre></div>
+<blockquote>
+<p><strong>Disclaimer</strong>: The deployment process can take a few minutes to complete. If you notice one of the pods in an <code>Error</code> state, it is likely waiting for the database to become fully operational before it can start successfully.</p>
+</blockquote>
 <p>Deploy the ingress for the Resource Discovery service:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
 </span></code></pre></div>
@@ -1922,6 +2036,7 @@ Confirms which OGC API conformance classes and standards are supported by the se
 <p>If these return meaningful responses (especially HTTP 200 with JSON or HTML data), it indicates that your Resource Discovery instance is operational.</p>
 <h3 id="3-manual-validation-via-curl-command-line">3. Manual Validation via cURL / Command Line<a class="headerlink" href="#3-manual-validation-via-curl-command-line" title="Permanent link">⚓︎</a></h3>
 <p>Using the command line can be a quick way to check endpoints and see raw responses. Below are some example commands.</p>
+<p>We recommend executing <code>source ~/.eoepca/state</code> to load the environment variables, or manually set the <code>INGRESS_HOST</code> variable.</p>
 <h4 id="31-basic-liveness-check">3.1. Basic Liveness Check<a class="headerlink" href="#31-basic-liveness-check" title="Permanent link">⚓︎</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-I<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
 </span></code></pre></div>
@@ -1938,15 +2053,14 @@ Confirms which OGC API conformance classes and standards are supported by the se
 <li>You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.</li>
 </ul>
 <h4 id="34-searching-stac-items">3.4. Searching STAC Items<a class="headerlink" href="#34-searching-stac-items" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">   </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">        &quot;bbox&quot;: [-180, -90, 180, 90],</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">        &quot;datetime&quot;: &quot;2010-01-01T00:00:00Z/2025-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">        &quot;limit&quot;: 5</span>
-</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="s1">      }&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">   </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s1">        &quot;bbox&quot;: [-180, -90, 180, 90],</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">        &quot;datetime&quot;: &quot;2010-01-01T00:00:00Z/2025-12-31T23:59:59Z&quot;,</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">        &quot;limit&quot;: 5</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">      }&#39;</span>
 </span></code></pre></div>
 <p>You should receive a JSON response listing zero or more STAC items that match the query. If you have not yet ingested any items, you may get an empty result array (<code>"features": []</code>).  </p>
 <h3 id="4-ingesting-sample-records">4. Ingesting Sample Records<a class="headerlink" href="#4-ingesting-sample-records" title="Permanent link">⚓︎</a></h3>

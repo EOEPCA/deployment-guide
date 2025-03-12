@@ -8,21 +8,25 @@
       
       
       
-        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress-controller/">
+        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress/overview/">
       
       
+        <link rel="prev" href="../../storage/">
       
       
-      <link rel="icon" href="../../img/favicon.ico">
+        <link rel="next" href="../apisix/">
+      
+      
+      <link rel="icon" href="../../../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
     
     
       
-        <title>Ingress and DNS Requirements - EOEPCA Deployment Guide</title>
+        <title>Overview - EOEPCA Deployment Guide</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.bcfcd587.min.css">
       
       
 
@@ -41,9 +45,9 @@
       
     
     
-      <link rel="stylesheet" href="../../css/eoepca.css">
+      <link rel="stylesheet" href="../../../css/eoepca.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -62,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ingress-and-dns-requirements" class="md-skip">
+        <a href="#ingress-overview" class="md-skip">
           Skip to content
         </a>
       
@@ -78,9 +82,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="EOEPCA Deployment Guide" class="md-header__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+    <a href="../../.." title="EOEPCA Deployment Guide" class="md-header__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
       
-  <img src="../../img/favicon.ico" alt="logo">
+  <img src="../../../img/favicon.ico" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -97,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ingress and DNS Requirements
+              Overview
             
           </span>
         </div>
@@ -137,7 +141,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../.." class="md-tabs__link">
+        <a href="../../.." class="md-tabs__link">
           
   
   EOEPCA+ Deployment
@@ -151,11 +155,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../prerequisites-overview/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../prerequisites-overview/" class="md-tabs__link">
           
   
   EOEPCA+ Prerequisites
@@ -173,7 +179,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../building-blocks/overview/" class="md-tabs__link">
+        <a href="../../../building-blocks/overview/" class="md-tabs__link">
           
   
   Building Blocks
@@ -229,9 +235,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="EOEPCA Deployment Guide" class="md-nav__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
+    <a href="../../.." title="EOEPCA Deployment Guide" class="md-nav__button md-logo" aria-label="EOEPCA Deployment Guide" data-md-component="logo">
       
-  <img src="../../img/favicon.ico" alt="logo">
+  <img src="../../../img/favicon.ico" alt="logo">
 
     </a>
     EOEPCA Deployment Guide
@@ -298,7 +304,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -359,7 +365,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../prerequisites-overview/" class="md-nav__link">
+      <a href="../../prerequisites-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -380,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/overview/" class="md-nav__link">
+      <a href="../../../building-blocks/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -413,25 +419,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -442,7 +453,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             EOEPCA+ Prerequisites
@@ -456,7 +467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../prerequisites-overview/" class="md-nav__link">
+      <a href="../../prerequisites-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -477,7 +488,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kubernetes/" class="md-nav__link">
+      <a href="../../kubernetes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -498,7 +509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../storage/" class="md-nav__link">
+      <a href="../../storage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -516,25 +527,30 @@
                 
   
   
+    
   
   
+  
     
     
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -545,7 +561,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             Ingress Setup
@@ -556,10 +572,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ingress/overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -568,6 +604,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-ingress-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Two Ingress Options
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -580,7 +645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ingress/apisix/" class="md-nav__link">
+      <a href="../apisix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -601,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ingress/nginx/" class="md-nav__link">
+      <a href="../nginx/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -622,7 +687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ingress/multi/" class="md-nav__link">
+      <a href="../multi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -651,7 +716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tls/" class="md-nav__link">
+      <a href="../../tls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -677,17 +742,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -712,7 +780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../minio/" class="md-nav__link">
+      <a href="../../minio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -733,7 +801,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../container-registry/" class="md-nav__link">
+      <a href="../../container-registry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -762,7 +830,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/overview/" class="md-nav__link">
+      <a href="../../../building-blocks/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -830,7 +898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/overview/" class="md-nav__link">
+      <a href="../../../building-blocks/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -891,7 +959,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/iam/main-iam/" class="md-nav__link">
+      <a href="../../../building-blocks/iam/main-iam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -912,7 +980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/iam/client-management/" class="md-nav__link">
+      <a href="../../../building-blocks/iam/client-management/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -933,7 +1001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/iam/advanced-iam/" class="md-nav__link">
+      <a href="../../../building-blocks/iam/advanced-iam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1002,7 +1070,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/resource-discovery/" class="md-nav__link">
+      <a href="../../../building-blocks/resource-discovery/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1023,7 +1091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/resource-registration/" class="md-nav__link">
+      <a href="../../../building-blocks/resource-registration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1044,7 +1112,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/data-access/" class="md-nav__link">
+      <a href="../../../building-blocks/data-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1153,7 +1221,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/processing/" class="md-nav__link">
+      <a href="../../../building-blocks/processing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1174,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/oapip-engine/" class="md-nav__link">
+      <a href="../../../building-blocks/oapip-engine/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1195,7 +1263,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/openeo-engine/" class="md-nav__link">
+      <a href="../../../building-blocks/openeo-engine/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1224,7 +1292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/mlops/" class="md-nav__link">
+      <a href="../../../building-blocks/mlops/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1293,7 +1361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/workspace/" class="md-nav__link">
+      <a href="../../../building-blocks/workspace/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1314,7 +1382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/application-hub/" class="md-nav__link">
+      <a href="../../../building-blocks/application-hub/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1383,7 +1451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/resource-health/" class="md-nav__link">
+      <a href="../../../building-blocks/resource-health/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1404,7 +1472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../building-blocks/application-quality/" class="md-nav__link">
+      <a href="../../../building-blocks/application-quality/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1480,27 +1548,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#additional-notes" class="md-nav__link">
+  <a href="#two-ingress-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional Notes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#apisix-ingress-controller" class="md-nav__link">
-    <span class="md-ellipsis">
-      APISIX Ingress Controller
+      Two Ingress Options
     </span>
   </a>
   
@@ -1521,7 +1571,7 @@
                   
 
   
-    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/prerequisites/ingress-controller.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/prerequisites/ingress/overview.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1529,125 +1579,36 @@
   
 
 
-<h1 id="ingress-and-dns-requirements">Ingress and DNS Requirements<a class="headerlink" href="#ingress-and-dns-requirements" title="Permanent link">⚓︎</a></h1>
-<p>Access to the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> BB services is provided via an ingress controller that acts as a reverse proxy. Proxy routes are configured using host-based routing that relies upon wildcard DNS to resolve traffic to the platform domain (e.g. <code>*.myplatform.com</code>). Thus, an ingress controller that supports these features is required.</p>
-<p>The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Identity and Access Management (IAM) solution advocates use of the APISIX Ingress Controller, which offers native integration of IAM request authorisation - which, for example, integrates with Keycloak via OIDC (authentication) and UMA (authorisation) flows. Thus, following description of the general requirements for cluster ingress, a guide is provided for <a href="#apisix-ingress-controller">deployment of APISIX</a>.</p>
-<p><strong>Requirements:</strong></p>
-<ul>
-<li><strong>Wildcard DNS</strong>: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: <code>*.myplatform.com</code>.<br>
-  <em>For testing, wildcard DNS can be simulated using IP-address-based <code>nip.io</code> hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller.</em></li>
-<li><strong>Ingress Controller</strong>: APISIX is recommended for use with the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ IAM soluiton; others such as NGINX can also be used if the IAM integration is not of interest</li>
-</ul>
-<p><strong>Production vs Development:</strong></p>
-<ul>
+<h1 id="ingress-overview">Ingress Overview<a class="headerlink" href="#ingress-overview" title="Permanent link">⚓︎</a></h1>
+<p><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ requires an Ingress Controller to route external traffic into the platform&rsquo;s services. This setup typically depends on <strong>Wildcard DNS</strong> so that multiple services (hostnames) can be exposed under a single domain (e.g. <code>*.example.com</code>).</p>
+<h2 id="two-ingress-options">Two Ingress Options<a class="headerlink" href="#two-ingress-options" title="Permanent link">⚓︎</a></h2>
+<ol>
 <li>
-<p><strong>Production</strong>:  </p>
-<ul>
-<li>Ensure a stable and supported ingress controller (e.g. APISIX) exposed through a routable IP address</li>
-<li>A fully functional wildcard DNS record</li>
-</ul>
+<p><a href="../apisix/">APISIX Ingress</a><br />
+   - <strong>Recommended</strong> for environments needing IAM integration with policy-based access control.</p>
 </li>
 <li>
-<p><strong>Development / Testing</strong>:  </p>
-<ul>
-<li>Can be exposed through a private IP address</li>
-<li>Local or makeshift DNS solutions (e.g. nip.io) might be acceptable for internal development/test/demo</li>
-</ul>
+<p><a href="../nginx/">Nginx Ingress</a><br />
+   - <strong>Suitable only</strong> for open-access scenarios where IAM-based request authorization is not required.</p>
 </li>
-</ul>
-<h2 id="additional-notes">Additional Notes<a class="headerlink" href="#additional-notes" title="Permanent link">⚓︎</a></h2>
+</ol>
+<p>You must choose one of these ingress controllers based on your security and access control requirements:</p>
 <ul>
-<li>
-<p><strong>Wildcard DNS</strong>: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: <code>*.myplatform.com</code>.<br>
-  <em>For testing, wildcard DNS can be simulated using IP-address-based <code>nip.io</code> hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller.</em></p>
-</li>
-<li>
-<p><strong>Ingress Class</strong>: Specify the ingress class in your ingress resources for example <code>apisix</code> for APISIX, <code>nginx</code> for NGINX.</p>
-</li>
+<li>For deployments <strong>requiring IAM-based authorization</strong>, you must use <strong>APISIX</strong>.</li>
+<li>For deployments that are <strong>fully open or don&rsquo;t need IAM-based authorization</strong>, <strong>NGINX</strong> can be used.</li>
 </ul>
-<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
-<ul>
-<li><strong>Kubernetes Ingress Concepts</strong>: <a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Kubernetes Ingress</a></li>
-<li><strong>APISIX Documentation</strong>: <a href="https://apisix.apache.org/docs/ingress-controller/">APISIX Ingress Controller</a></li>
-<li><strong>NGINX Documentation</strong>: <a href="https://kubernetes.github.io/ingress-nginx/">Ingress-NGINX Controller</a></li>
-</ul>
-<h2 id="apisix-ingress-controller">APISIX Ingress Controller<a class="headerlink" href="#apisix-ingress-controller" title="Permanent link">⚓︎</a></h2>
-<p>For full installation instructions for the APISIX Ingress Controller see the official <a href="https://apisix.apache.org/docs/apisix/installation-guide/">Installation Guide</a>.</p>
-<p>As a quick start, the steps included here can be followed to deploy the APISIX Ingress Controller via helm chart&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>apisix<span class="w"> </span>https://charts.apiseven.com
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>apisix
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>apisix<span class="w"> </span>apisix/apisix<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.9.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span>--namespace<span class="w"> </span>ingress-apisix<span class="w"> </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span>--set<span class="w"> </span>service.type<span class="o">=</span>NodePort<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span>--set<span class="w"> </span>service.http.nodePort<span class="o">=</span><span class="m">31080</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span>--set<span class="w"> </span>service.tls.nodePort<span class="o">=</span><span class="m">31443</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableIPv6<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableServerTokens<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span>--set<span class="w"> </span>apisix.ssl.enabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span>--set<span class="w"> </span>apisix.pluginAttrs.redirect.https_port<span class="o">=</span><span class="m">443</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span>--set<span class="w"> </span>ingress-controller.enabled<span class="o">=</span><span class="nb">true</span>
-</span></code></pre></div>
+<p>You can install <strong>either</strong> one for a basic deployment. If your deployment demands multiple ingress controllers simultaneously, see <a href="ingress-multi.md">Multiple Ingress Controllers</a>.</p>
+<p><strong>Before proceeding:</strong><br />
+- Ensure a wildcard DNS entry is pointing to your cluster’s load balancer or external IP, e.g., <code>*.myplatform.com</code>.<br />
+- Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  </p>
 <blockquote>
-<p>The above configuration assumes that the Kubernetes cluster exposes NodePorts 31080 (http) and 31443 (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public 80/443 traffic to these exposed ports on the cluster nodes.</p>
-<p>This can be adapted according to the network topology of your cluster environment.</p>
+<p><em>For testing, wildcard DNS can be simulated using IP-address-based <code>nip.io</code> hostnames, using the entrypoint IP-address of your cluster that routes to your ingress controller.</em></p>
 </blockquote>
-<p><strong>Forced TLS Redirection</strong></p>
-<p>The following <code>ApisixGlobalRule</code> is used to configure Apisix to redirect all <code>http</code> traffic to <code>https</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl -n ingress-apisix apply -f -</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="s">apiVersion: apisix.apache.org/v2</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="s">kind: ApisixGlobalRule</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="s">metadata:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s">  name: redirect-to-tls</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s">spec:</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="s">  plugins:</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s">    - name: redirect</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="s">      enable: true</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="s">      config:</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="s">        http_to_https: true</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s">        _meta:</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="s">          filter:</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="s">            # With &#39;!OR&#39; all conditions must be false</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="s">            - &quot;!OR&quot;</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="s">            # Exclude paths used by letsencrypt http challenge</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s">            - [ &#39;request_uri&#39;, &#39;~*&#39;, &#39;^/\.well-known/acme-challenge.*&#39; ]</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="s">            # Use header X-No-Force-Tls to override</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="s">            - [ &quot;http_x_no_force_tls&quot;, &quot;==&quot;, &quot;true&quot; ]</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="s">EOF</span>
-</span></code></pre></div>
-<blockquote>
-<p>The <code>filter</code> is used to suppress the redirection in the specific case of traffic used by the Letsencrypt HTTP01 challenge whilst establishing TLS certificates.<br>
-Use of the header <code>X-No-Force-Tls</code> is included to provide an override that may prove useful in some circumstances or during development.</p>
-</blockquote>
-<p>For <code>filter</code> reference see:</p>
+<p>Continue with the approach best suited for your environment:</p>
 <ul>
-<li><a href="https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration">Plugin Common Configuration</a></li>
-<li><a href="https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators">Expression Syntax</a></li>
+<li><strong><a href="../apisix/">Install APISIX →</a></strong>  </li>
+<li><strong><a href="../nginx/">Install NGINX →</a></strong></li>
 </ul>
-<p><strong>Forwarded Port Correction</strong></p>
-<p>By default, APISIX sets the <code>X-Forwarded-Port</code> header to its container port (<code>9443</code> by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is <code>443</code>.</p>
-<p>Thus, we apply a global rule that replaces the value <code>9443</code> with the value <code>443</code>.<br>
-<em>Actually the rule also replaces port <code>9080</code> with port <code>80</code> though this should be irrelevant due to prior HTTP-to-HTTPS redirection</em></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl -n ingress-apisix apply -f -</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s">apiVersion: apisix.apache.org/v2</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s">kind: ApisixGlobalRule</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s">metadata:</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s">  name: forwarded-port-correction</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">spec:</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">  plugins:</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s">    - name: serverless-pre-function</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">      enable: true</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">      config:</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s">        phase: &quot;rewrite&quot;</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s">        functions:</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s">          - &quot;return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) &gt; 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end&quot;</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="s">EOF</span>
-</span></code></pre></div>
-<p><strong>APISIX Uninstallation</strong></p>
-<p>APISIX can be uninstalled as follows&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>ingress-apisix<span class="w"> </span>uninstall<span class="w"> </span>apisix
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>ingress-apisix
-</span></code></pre></div>
 
 
 
@@ -1679,6 +1640,44 @@ Use of the header <code>X-No-Force-Tls</code> is included to provide an override
         <footer class="md-footer">
   
     
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../storage/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Storage Requirements">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Storage Requirements
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../apisix/" class="md-footer__link md-footer__link--next" aria-label="Next: APISIX Ingress">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                APISIX Ingress
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1702,10 +1701,10 @@ Use of the header <code>X-No-Force-Tls</code> is included to provide an override
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.footer", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.footer", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.1e8ae164.min.js"></script>
       
     
   </body>

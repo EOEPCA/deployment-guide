@@ -524,16 +524,127 @@
   
   
   
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ingress Setup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ingress Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
+      <a href="../../prerequisites/ingress/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Ingress Controller Setup
+    Overview
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/apisix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    APISIX Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/nginx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nginx Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/multi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Ingress Controllers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1828,7 +1939,7 @@
 <tr>
 <td>Ingress Controller</td>
 <td>Properly installed (e.g., NGINX)</td>
-<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+<td><a href="../../prerequisites/ingress/overview/">Installation Guide</a></td>
 </tr>
 <tr>
 <td>Internal TLS Certificates</td>
@@ -1886,11 +1997,12 @@
 <hr />
 <h3 id="2-configure-ingress">2. Configure Ingress<a class="headerlink" href="#2-configure-ingress" title="Permanent link">⚓︎</a></h3>
 <p>By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.</p>
-<p>For the purpose of this guide, the configuration script created a sample APISIX Ingress resource in <code>generated-ingress.yaml</code> that you can apply or adapt to your environment.</p>
+<p>For the purpose of this guide, the configuration script created a sample Ingress resource in <code>generated-ingress.yaml</code> that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the <code>~/.eoepca/state</code> file.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span></code></pre></div>
 <hr />
 <h3 id="3-monitor-the-deployment">3. Monitor the Deployment<a class="headerlink" href="#3-monitor-the-deployment" title="Permanent link">⚓︎</a></h3>
+<p>Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.</p>
 <p>After the Helm installation finishes, check that all pods are running in the <strong>resource-health</strong> namespace:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span></code></pre></div>

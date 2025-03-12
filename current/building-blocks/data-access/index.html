@@ -524,16 +524,127 @@
   
   
   
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Ingress Setup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Ingress Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../prerequisites/ingress-controller/" class="md-nav__link">
+      <a href="../../prerequisites/ingress/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Ingress Controller Setup
+    Overview
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/apisix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    APISIX Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/nginx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nginx Ingress
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prerequisites/ingress/multi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multiple Ingress Controllers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1816,7 +1927,7 @@
 <tr>
 <td>Ingress Controller</td>
 <td>Properly installed</td>
-<td><a href="../../prerequisites/ingress-controller/">Installation Guide</a></td>
+<td><a href="../../prerequisites/ingress/overview/">Installation Guide</a></td>
 </tr>
 <tr>
 <td>TLS Certificates</td>
@@ -1887,8 +1998,9 @@
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi/generated-values.yaml
 </span></code></pre></div>
 <ol start="3">
-<li><strong>Deploy the ingress:</strong></li>
+<li><strong>Deploy the Ingress (APISIX Only):</strong></li>
 </ol>
+<p>If you are using <code>nginx</code> then you can <strong>skip</strong> this step as the ingress will be deployed as part of the <code>eoapi</code> chart.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
 </span></code></pre></div>
 <ol start="4">
