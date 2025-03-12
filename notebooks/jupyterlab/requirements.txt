@@ -1,0 +1,3 @@
+openeo
+matplotlib
+netCDF4

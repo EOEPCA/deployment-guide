@@ -167,7 +167,7 @@ Look through the JSON and make a note of the **`secret`** value. This is the **C
 
 After deploying the OpenEO Engine components, perform the following checks to verify that the system is working as expected.
 
-### 1. Automated Validation (Optional)
+### 1. Automated Validation
 
 ```bash
 bash validation.sh
@@ -179,9 +179,27 @@ This script verifies that:
 - Ingress endpoints return an HTTP 200 status code.
 - Key API endpoints provide well-formed JSON responses.
 
+### 2. Jupyter Notebook
 
+Launch the notebook server:
 
-### 2. Manual Validation
+> Note that this assumes `docker` and `docker-compose` are available.
+
+```bash
+../../../notebooks/run.sh
+```
+
+Open the openeo notebook:
+
+```bash
+xdg-open http://127.0.0.1:8888/lab/tree/openeo.ipynb
+```
+
+Clear the cell outputs and then execute the notebook - which should complete with similar outputs to the reference notebook.
+
+> Once complete, the notebook server can be quit with Ctrl-C in the terminal.
+
+### 3. Manual Validation
 
 To easily run these commands, we recommend first setting `${INGRESS_HOST}` in your environment.
 
@@ -217,7 +235,7 @@ _Expected output:_ A JSON object with an array of processes. Use your terminalâ€
 
 ---
 
-### 3. Usage - openEO Web Editor
+### 4. Usage - openEO Web Editor
 
 The deployment can be tested using the openEO Web Editor as a client.
 
@@ -248,7 +266,7 @@ For example, use the `Wizard` to download some data from the default collection.
 
 ---
 
-### 4. Usage - openEO API calls
+### 5. Usage - openEO API calls
 
 Before running any jobs, you must obtain an access token from your OIDC Provider. Use the following command to get an access token if you followed our [IAM Deployment Guide](./iam/main-iam.md).
 

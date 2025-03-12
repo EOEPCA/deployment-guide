@@ -7,15 +7,12 @@ The **Data Access** Building Block provides feature-rich and reliable interfaces
 
 ## Introduction
 
-The Data Access Building Block combines capabilities from two complementary libraries:
-
-- **eoAPI**: Provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.
-- **EOX View Server (Stacture and Terravis)**: Adds support for OGC API Coverages, OGC WCS, and advanced rendering mechanisms.
+The Data Access Building Block provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.
 
 The building block offers:
 
 - STAC API for data discovery
-- Support for retrieval and visualisation of features and coverages via standard OGC APIs
+- Support for retrieval and visualisation of raster and vector data via standard OGC APIs
 - Dynamic specification of which datasets should be delivered with which data access services
 - Integration with other building blocks through shared databases (e.g., pgSTAC)
 
@@ -34,12 +31,7 @@ The Data Access BB consists of the following main components:
 2. **PostgreSQL with PostGIS and pgSTAC**<br>
    Database for storing geospatial metadata and data managed by the [Crunchy Data Postgres Operator (pgo)](https://access.crunchydata.com/documentation/postgres-operator).
     
-3. **Stacture and Terravis**: Components from EOX View Server providing:
-    
-    - **Stacture**: Bridges STAC API with OGC API Coverages and OGC WCS.
-    - **Terravis**: Provides advanced rendering and processing capabilities.
-    
-4. **eoapi-support**<br>
+3. **eoapi-support**<br>
    Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.
     
 
@@ -147,23 +139,6 @@ helm upgrade -i eoapi-support eoapi/eoapi-support \
 
 ---
 
-### 3. Deploy Stacture
-
-Stacture bridges the STAC API with OGC API Coverages and WCS. It also handles advanced rendering through Terravis.
-
-```bash
-helm repo add eox https://charts-public.hub.eox.at/
-helm repo update eox
-helm upgrade -i stacture eox/stacture \
-  --version 0.0.0 \
-  --namespace data-access \
-  --values stacture/generated-values.yaml
-```
-
-> This deploys **Stacture** and **Terravis** with images tagged at `v0.0.8` (configured in your `stacture/generated-values.yaml`).
-
----
-
 ### 4. Monitoring the Deployment
 
 After deploying, you can monitor the status of the deployments:
@@ -182,10 +157,6 @@ Once the deployment is complete and all pods are running, you can access the ser
 
 - **eoAPI STAC API:**  
     `https://eoapi.${INGRESS_HOST}/stac/`
-    
-- **Stacture API (coverages, WCS, etc.):**  
-    `https://stacture.${INGRESS_HOST}/`
-<!-- currently ingress issues -->
     
 - **Grafana** (if `eoapi-support` is installed and ingress is enabled):  
     `https://eoapisupport.${INGRESS_HOST}/`
@@ -228,10 +199,6 @@ The Data Access Building Block provides Swagger UI documentation for its APIs, a
     
 - **eoAPI Vector API Swagger UI**:  
     `https://eoapi.${INGRESS_HOST}/vector/api.html`
-    
-- **Stacture API Swagger UI**:  
-    `https://stacture.${INGRESS_HOST}/`
-    
 
 Replace `${INGRESS_HOST}` with your actual ingress host domain.
 
@@ -280,7 +247,6 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
 To uninstall the Data Access Building Block and clean up associated resources:
 
 ```bash
-helm uninstall stacture -n data-access
 helm uninstall eoapi-support -n data-access
 helm uninstall eoapi -n data-access
 helm uninstall pgo -n data-access
