@@ -13,3 +13,5 @@ generated-ingress.yaml
 reference-repo/
 reference-repo*
 /kubeconfig.yaml
+.pytest_cache/
+test-report.xml

@@ -221,6 +221,24 @@ kubectl get pods -n iam
 
 Ensure all components (Keycloak, OPA, etc.) are running and accessible.
 
+### 9. Test Suite Execution
+
+Run the IAM tests from the system test suite.
+
+> We only run the smoke tests here, since the full IAM tests rely upon the (example) protection of the Processing BB (OGC API Processes engine).
+
+```bash
+../../test-suite.sh -m smoketest test/iam
+```
+
+**_The test results are summarised to the file `test-report.xml`._**
+
+If the Processing BB (example) protection has been applied, then the full IAM test suite can be run:
+
+```bash
+../../test-suite.sh test/iam
+```
+
 ---
 
 ## Further Configuration & Usage
