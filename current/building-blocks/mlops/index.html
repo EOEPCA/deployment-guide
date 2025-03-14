@@ -1497,13 +1497,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-basic-usage-walkthrough" class="md-nav__link">
+  <a href="#2-test-suite-execution" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Basic Usage Walkthrough
+      2. Test Suite Execution
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Basic Usage Walkthrough">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-basic-usage-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Basic Usage Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Basic Usage Walkthrough">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2032,13 +2041,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-basic-usage-walkthrough" class="md-nav__link">
+  <a href="#2-test-suite-execution" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Basic Usage Walkthrough
+      2. Test Suite Execution
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Basic Usage Walkthrough">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-basic-usage-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Basic Usage Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Basic Usage Walkthrough">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2427,7 +2445,13 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </li>
 </ol>
 <hr />
-<h3 id="2-basic-usage-walkthrough">2. Basic Usage Walkthrough<a class="headerlink" href="#2-basic-usage-walkthrough" title="Permanent link">⚓︎</a></h3>
+<h3 id="2-test-suite-execution">2. Test Suite Execution<a class="headerlink" href="#2-test-suite-execution" title="Permanent link">⚓︎</a></h3>
+<p>Run the <em>MLOps</em> tests from the system test suite.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>../../test-suite.sh<span class="w"> </span>test/mlops
+</span></code></pre></div>
+<p><strong><em>The test results are summarised to the file <code>test-report.xml</code>.</em></strong></p>
+<hr />
+<h3 id="3-basic-usage-walkthrough">3. Basic Usage Walkthrough<a class="headerlink" href="#3-basic-usage-walkthrough" title="Permanent link">⚓︎</a></h3>
 <p>This section walks you through a minimal scenario of creating a GitLab project, tagging it for discovery in SharingHub, and running a simple MLflow training job.</p>
 <h4 id="21-create-a-new-gitlab-project">2.1 Create a New GitLab Project<a class="headerlink" href="#21-create-a-new-gitlab-project" title="Permanent link">⚓︎</a></h4>
 <ol>
@@ -2498,12 +2522,12 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </li>
 <li>
 <p>The link will resemble:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
 </span></code></pre></div>
 </li>
 <li>
 <p>Set this as an environment variable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s2">&quot;https://sharinghub.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/mlflow/root/mlops-test-project/tracking/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s2">&quot;https://sharinghub.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/mlflow/root/mlops-test-project/tracking/&quot;</span>
 </span></code></pre></div>
 </li>
 </ul>
@@ -2524,7 +2548,7 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </li>
 <li>
 <p>Set the token as an environment variable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_TOKEN</span><span class="o">=</span><span class="s2">&quot;&lt;YOUR-TOKEN&gt;&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_TOKEN</span><span class="o">=</span><span class="s2">&quot;&lt;YOUR-TOKEN&gt;&quot;</span>
 </span></code></pre></div>
 </li>
 </ul>
@@ -2534,20 +2558,20 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <blockquote>
 <p>It is assumed that a python virtual environment is established for the following steps.<br>
 For example, using the <code>venv</code> module&hellip;
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
 </span></code></pre></div></p>
 </blockquote>
 <ul>
 <li>
 <p>Ensure you have the required packages:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>pip<span class="w"> </span>install<span class="w"> </span>mlflow<span class="w"> </span>scikit-learn
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>pip<span class="w"> </span>install<span class="w"> </span>mlflow<span class="w"> </span>scikit-learn
 </span></code></pre></div>
 </li>
 <li>
 <p>Run the provided example script located in the <code>data/</code> directory of <code>deployment-guide/scripts/mlops</code>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">cd</span><span class="w"> </span>data/
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>python<span class="w"> </span>example-script.py
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>data/
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>python<span class="w"> </span>example-script.py
 </span></code></pre></div>
 </li>
 <li>
@@ -2587,10 +2611,10 @@ For example, using the <code>venv</code> module&hellip;
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the MLOps Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>gitlab<span class="w"> </span>-n<span class="w"> </span>gitlab
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>sharinghub<span class="w"> </span>mlflow-sharinghub<span class="w"> </span>-n<span class="w"> </span>sharinghub
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>bash<span class="w"> </span>utils/uninstallation-cleanup.sh
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>gitlab<span class="w"> </span>sharinghub
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>gitlab<span class="w"> </span>-n<span class="w"> </span>gitlab
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>sharinghub<span class="w"> </span>mlflow-sharinghub<span class="w"> </span>-n<span class="w"> </span>sharinghub
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>bash<span class="w"> </span>utils/uninstallation-cleanup.sh
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>gitlab<span class="w"> </span>sharinghub
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>

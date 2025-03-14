@@ -1052,6 +1052,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#9-test-suite-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Test Suite Execution
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1812,6 +1821,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#9-test-suite-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Test Suite Execution
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2096,6 +2114,17 @@ For convenience we also create an <code>eoepcauser</code> (test) user to support
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>iam
 </span></code></pre></div>
 <p>Ensure all components (Keycloak, OPA, etc.) are running and accessible.</p>
+<h3 id="9-test-suite-execution">9. Test Suite Execution<a class="headerlink" href="#9-test-suite-execution" title="Permanent link">⚓︎</a></h3>
+<p>Run the IAM tests from the system test suite.</p>
+<blockquote>
+<p>We only run the smoke tests here, since the full IAM tests rely upon the (example) protection of the Processing BB (OGC API Processes engine).</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>../../test-suite.sh<span class="w"> </span>-m<span class="w"> </span>smoketest<span class="w"> </span>test/iam
+</span></code></pre></div>
+<p><strong><em>The test results are summarised to the file <code>test-report.xml</code>.</em></strong></p>
+<p>If the Processing BB (example) protection has been applied, then the full IAM test suite can be run:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>../../test-suite.sh<span class="w"> </span>test/iam
+</span></code></pre></div>
 <hr />
 <h2 id="further-configuration-usage">Further Configuration &amp; Usage<a class="headerlink" href="#further-configuration-usage" title="Permanent link">⚓︎</a></h2>
 <p>For detailed steps on:</p>
@@ -2133,9 +2162,9 @@ For convenience we also create an <code>eoepcauser</code> (test) user to support
 <li>
 <p><strong>Retrieve Admin Credentials</strong></p>
 <p>The admin credentials are stored in the state file. Retrieve them using:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Username: </span><span class="nv">$KEYCLOAK_ADMIN_USER</span><span class="s2">&quot;</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Password: </span><span class="nv">$KEYCLOAK_ADMIN_PASSWORD</span><span class="s2">&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Username: </span><span class="nv">$KEYCLOAK_ADMIN_USER</span><span class="s2">&quot;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Password: </span><span class="nv">$KEYCLOAK_ADMIN_PASSWORD</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 </li>
 <li>
@@ -2149,27 +2178,27 @@ For convenience we also create an <code>eoepcauser</code> (test) user to support
 <li>URL: <code>https://opa.${INGRESS_HOST}/</code></li>
 </ul>
 <p>You can test policy evaluations by sending requests to OPA&rsquo;s REST API. For example:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># Authenticate as test user `eoepcauser`</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="p">=</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_id=admin-cli&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span><span class="s2">&quot;https://auth.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="k">)</span>
-</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="c1"># Interogate OPA using the access token for `eoepcauser`</span>
-</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://opa.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/v1/data/example/allow&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;: {&quot;user&quot;: &quot;alice&quot;}}&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c1"># Authenticate as test user `eoepcauser`</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="p">=</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_id=admin-cli&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="s2">&quot;https://auth.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="k">)</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="c1"># Interogate OPA using the access token for `eoepcauser`</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://opa.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/v1/data/example/allow&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;input&quot;: {&quot;user&quot;: &quot;alice&quot;}}&#39;</span>
 </span></code></pre></div>
 <hr />
 <h3 id="validating-kubernetes-resources">Validating Kubernetes Resources<a class="headerlink" href="#validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
 <p>Ensure that all Kubernetes resources are running correctly.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>iam
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>iam
 </span></code></pre></div>
 <p><strong>Expected Output</strong>:</p>
 <ul>
@@ -2179,12 +2208,12 @@ For convenience we also create an <code>eoepcauser</code> (test) user to support
 <hr />
 <h2 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">⚓︎</a></h2>
 <p>To remove IAM components:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>keycloak/generated-ingress.yaml
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>bash<span class="w"> </span>delete-secrets.sh
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>helm<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>uninstall<span class="w"> </span>keycloak
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>opa/generated-ingress.yaml
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>helm<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>uninstall<span class="w"> </span>opa
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>keycloak/generated-ingress.yaml
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>bash<span class="w"> </span>delete-secrets.sh
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>helm<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>uninstall<span class="w"> </span>keycloak
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>opa/generated-ingress.yaml
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>helm<span class="w"> </span>-n<span class="w"> </span>iam<span class="w"> </span>uninstall<span class="w"> </span>opa
 </span></code></pre></div>
 <p>If you created custom clients or realms, remove them using the scripts in <code>scripts/</code> or the instructions in the appendices.</p>
 <hr />
