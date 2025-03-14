@@ -307,7 +307,19 @@ All pods should be in `Running` (or `Completed`) state.
 
 ---
 
-### 2. Basic Usage Walkthrough
+### 2. Test Suite Execution
+
+Run the _MLOps_ tests from the system test suite.
+
+```bash
+../../test-suite.sh test/mlops
+```
+
+**_The test results are summarised to the file `test-report.xml`._**
+
+---
+
+### 3. Basic Usage Walkthrough
 
 This section walks you through a minimal scenario of creating a GitLab project, tagging it for discovery in SharingHub, and running a simple MLflow training job.
 

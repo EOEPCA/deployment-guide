@@ -240,6 +240,16 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   }'
 ```
 
+### 4. Test Suite Execution
+
+Run the _Data Access_ tests from the system test suite.
+
+```bash
+../../test-suite.sh test/data-access
+```
+
+**_The test results are summarised to the file `test-report.xml`._**
+
 ---
 
 ## Uninstallation
