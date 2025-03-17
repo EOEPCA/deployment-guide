@@ -17,7 +17,6 @@ check_service_exists "workspace" "workspace-admin-api"
 check_service_exists "workspace" "workspace-admin-auth"
 check_service_exists "workspace" "workspace-admin-metrics-scraper"
 check_service_exists "workspace" "workspace-admin-web"
-check_service_exists "workspace" "workspace-ui"
 
 # Check ingress
 check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "401"
