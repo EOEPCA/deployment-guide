@@ -1455,40 +1455,31 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#7-deploy-the-workspace-ui" class="md-nav__link">
+  <a href="#7-optional-enable-oidc-with-keycloak" class="md-nav__link">
     <span class="md-ellipsis">
-      7. Deploy the Workspace UI
+      7. Optional: Enable OIDC with Keycloak
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#8-optional-enable-oidc-with-keycloak" class="md-nav__link">
+  <a href="#71-create-a-keycloak-client" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Optional: Enable OIDC with Keycloak
+      7.1 Create a Keycloak Client
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#81-create-a-keycloak-client" class="md-nav__link">
+  <a href="#72-define-resource-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      8.1 Create a Keycloak Client
+      7.2 Define Resource Protection
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#82-define-resource-protection" class="md-nav__link">
-    <span class="md-ellipsis">
-      8.2 Define Resource Protection
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8.2 Define Resource Protection">
+    <nav class="md-nav" aria-label="7.2 Define Resource Protection">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1506,9 +1497,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#83-create-apisix-route-ingress" class="md-nav__link">
+  <a href="#73-create-apisix-route-ingress" class="md-nav__link">
     <span class="md-ellipsis">
-      8.3 Create APISIX Route Ingress
+      7.3 Create APISIX Route Ingress
     </span>
   </a>
   
@@ -1930,40 +1921,31 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#7-deploy-the-workspace-ui" class="md-nav__link">
+  <a href="#7-optional-enable-oidc-with-keycloak" class="md-nav__link">
     <span class="md-ellipsis">
-      7. Deploy the Workspace UI
+      7. Optional: Enable OIDC with Keycloak
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#8-optional-enable-oidc-with-keycloak" class="md-nav__link">
+  <a href="#71-create-a-keycloak-client" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Optional: Enable OIDC with Keycloak
+      7.1 Create a Keycloak Client
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#81-create-a-keycloak-client" class="md-nav__link">
+  <a href="#72-define-resource-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      8.1 Create a Keycloak Client
+      7.2 Define Resource Protection
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#82-define-resource-protection" class="md-nav__link">
-    <span class="md-ellipsis">
-      8.2 Define Resource Protection
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8.2 Define Resource Protection">
+    <nav class="md-nav" aria-label="7.2 Define Resource Protection">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1981,9 +1963,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#83-create-apisix-route-ingress" class="md-nav__link">
+  <a href="#73-create-apisix-route-ingress" class="md-nav__link">
     <span class="md-ellipsis">
-      8.3 Create APISIX Route Ingress
+      7.3 Create APISIX Route Ingress
     </span>
   </a>
   
@@ -2302,27 +2284,15 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <blockquote>
 <p>There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding.</p>
 </blockquote>
-<h3 id="7-deploy-the-workspace-ui">7. Deploy the Workspace UI<a class="headerlink" href="#7-deploy-the-workspace-ui" title="Permanent link">⚓︎</a></h3>
-<p><strong>Install the Workspace UI:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>workspace-ui<span class="w"> </span>eoepca-dev/workspace-ui<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.3<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>workspace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--values<span class="w"> </span>workspace-ui/generated-values.yaml
-</span></code></pre></div>
-<blockquote>
-<p>There is currently no ingress set up for the Workspace UI. To access it, you can use port-forwarding.</p>
-</blockquote>
-<h3 id="8-optional-enable-oidc-with-keycloak">8. Optional: Enable OIDC with Keycloak<a class="headerlink" href="#8-optional-enable-oidc-with-keycloak" title="Permanent link">⚓︎</a></h3>
+<h3 id="7-optional-enable-oidc-with-keycloak">7. Optional: Enable OIDC with Keycloak<a class="headerlink" href="#7-optional-enable-oidc-with-keycloak" title="Permanent link">⚓︎</a></h3>
 <p>If you <strong>do not</strong> wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the <a href="#validation">Validation</a> section.</p>
 <p>If you <strong>do</strong> want to protect endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) <strong>and</strong> you enabled <code>OIDC</code> in the configuration script then follow these steps. You will create a new client in Keycloak and optionally define resource-protection rules (e.g. restricting who can list jobs).</p>
 <blockquote>
 <p>Before starting this please ensure that you have followed our <a href="../iam/main-iam/">IAM Deployment Guide</a> and have a Keycloak instance running.</p>
 </blockquote>
-<h3 id="81-create-a-keycloak-client">8.1 Create a Keycloak Client<a class="headerlink" href="#81-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
+<h3 id="71-create-a-keycloak-client">7.1 Create a Keycloak Client<a class="headerlink" href="#71-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
 <p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bash<span class="w"> </span>../utils/create-client.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash<span class="w"> </span>../utils/create-client.sh
 </span></code></pre></div>
 <p>When prompted:</p>
 <ul>
@@ -2338,20 +2308,20 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., <code>Workspace Client</code>).</li>
 <li><strong>Client secret</strong>: Enter the Workspace Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
 <li><strong>Subdomain</strong>: Use <code>workspace-api</code>.</li>
-<li><strong>Additional Subdomains</strong>: Use <code>workspace-swagger,workspace-ui,workspace-admin</code>.</li>
+<li><strong>Additional Subdomains</strong>: Use <code>workspace-swagger,workspace-admin</code>.</li>
 <li><strong>Additional Hosts</strong>: Leave blank.</li>
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
-<h3 id="82-define-resource-protection">8.2 Define Resource Protection<a class="headerlink" href="#82-define-resource-protection" title="Permanent link">⚓︎</a></h3>
+<h3 id="72-define-resource-protection">7.2 Define Resource Protection<a class="headerlink" href="#72-define-resource-protection" title="Permanent link">⚓︎</a></h3>
 <p>Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don&rsquo;t have a user, you can create one using:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>bash<span class="w"> </span>../utils/create-user.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bash<span class="w"> </span>../utils/create-user.sh
 </span></code></pre></div>
 <hr />
 <h4 id="protect-the-workspaces-endpoint">Protect the <code>/workspaces/*</code> Endpoint<a class="headerlink" href="#protect-the-workspaces-endpoint" title="Permanent link">⚓︎</a></h4>
 <ol>
 <li>Use the <code>protect-resource.sh</code>:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>bash<span class="w"> </span>../utils/protect-resource.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>bash<span class="w"> </span>../utils/protect-resource.sh
 </span></code></pre></div>
 <p>When prompted:</p>
 <ul>
@@ -2362,28 +2332,28 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <li><strong>Resource URI</strong>: <code>/workspaces/*</code></li>
 </ul>
 <hr />
-<h3 id="83-create-apisix-route-ingress">8.3 Create APISIX Route Ingress<a class="headerlink" href="#83-create-apisix-route-ingress" title="Permanent link">⚓︎</a></h3>
+<h3 id="73-create-apisix-route-ingress">7.3 Create APISIX Route Ingress<a class="headerlink" href="#73-create-apisix-route-ingress" title="Permanent link">⚓︎</a></h3>
 <p>Apply the APISIX route ingress:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>workspace-api/generated-ingress.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>workspace-api/generated-ingress.yaml
 </span></code></pre></div>
 <hr />
 <h2 id="validation-and-usage">Validation and Usage<a class="headerlink" href="#validation-and-usage" title="Permanent link">⚓︎</a></h2>
 <p>After deploying the Workspace Building Block, you can validate and interact with it through a series of checks and tests described below.</p>
 <h3 id="automated-validation">Automated Validation<a class="headerlink" href="#automated-validation" title="Permanent link">⚓︎</a></h3>
 <p>To run automated checks:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
 <p>If all checks pass, your Workspace BB deployment is functioning as expected.</p>
 <hr />
 <h3 id="manual-validation-steps">Manual Validation Steps<a class="headerlink" href="#manual-validation-steps" title="Permanent link">⚓︎</a></h3>
 <h4 id="1-check-kubernetes-resources">1. Check Kubernetes Resources<a class="headerlink" href="#1-check-kubernetes-resources" title="Permanent link">⚓︎</a></h4>
 <p>List all resources in the <code>workspace</code> namespace:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>workspace
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>workspace
 </span></code></pre></div>
 <p>Confirm that all pods are <code>Running</code> and no errors are reported.</p>
 <h4 id="2-access-the-workspace-api-swagger-documentation">2. Access the Workspace API Swagger Documentation<a class="headerlink" href="#2-access-the-workspace-api-swagger-documentation" title="Permanent link">⚓︎</a></h4>
 <p>You can view the Workspace API’s Swagger documentation at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>https://workspace-swagger.${INGRESS_HOST}/docs
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>https://workspace-swagger.${INGRESS_HOST}/docs
 </span></code></pre></div>
 <p>Replace <code>${INGRESS_HOST}</code> with your configured ingress host domain.</p>
 <blockquote>
@@ -2393,86 +2363,85 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <h3 id="creating-and-testing-a-workspace">Creating and Testing a Workspace<a class="headerlink" href="#creating-and-testing-a-workspace" title="Permanent link">⚓︎</a></h3>
 <h4 id="1-create-a-new-workspace">1. Create a New Workspace<a class="headerlink" href="#1-create-a-new-workspace" title="Permanent link">⚓︎</a></h4>
 <p>Apply a sample <code>Workspace</code> resource definition:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="s">apiVersion: epca.eo/v1beta1</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="s">kind: Workspace</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="s">metadata:</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="s">  name: ws-deploytest</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="s">  namespace: workspace</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="s">spec:</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="s">  subscription: bronze</span>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="s">EOF</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="s">apiVersion: epca.eo/v1beta1</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="s">kind: Workspace</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="s">metadata:</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="s">  name: ws-deploytest</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="s">  namespace: workspace</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s">spec:</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="s">  subscription: bronze</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <p>Check that a new namespace was created:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>ns<span class="w"> </span>ws-deploytest
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>ns<span class="w"> </span>ws-deploytest
 </span></code></pre></div>
 <h4 id="2-verify-storage-buckets">2. Verify Storage Buckets<a class="headerlink" href="#2-verify-storage-buckets" title="Permanent link">⚓︎</a></h4>
 <p>Confirm that the workspace’s storage buckets (<code>ws-deploytest</code> and <code>ws-deploytest-stage</code>) were created:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>ws-deploytest<span class="w"> </span>get<span class="w"> </span>bucket
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>ws-deploytest<span class="w"> </span>get<span class="w"> </span>bucket
 </span></code></pre></div>
 <h4 id="3-query-the-workspace-api">3. Query the Workspace API<a class="headerlink" href="#3-query-the-workspace-api" title="Permanent link">⚓︎</a></h4>
 <p>Port-forward the Workspace API service:<br>
 <em>Use of port forward allows to bypass the IAM to simplify the test</em></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span>port-forward<span class="w"> </span>svc/workspace-api<span class="w"> </span><span class="m">8080</span>:8080
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span>port-forward<span class="w"> </span>svc/workspace-api<span class="w"> </span><span class="m">8080</span>:8080
 </span></code></pre></div>
 <p>From another terminal window, call the Workspace API to get details for the newly created workspace:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>curl<span class="w"> </span>http://localhost:8080/workspaces/ws-deploytest<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>curl<span class="w"> </span>http://localhost:8080/workspaces/ws-deploytest<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span>
 </span></code></pre></div>
 <p>Record the secret from the response for S3 access:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nv">SECRET</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8080/workspaces/ws-deploytest<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.storage.credentials.secret&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nv">SECRET</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8080/workspaces/ws-deploytest<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.storage.credentials.secret&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <p>Now the <code>port-forward</code> to the Workspace API service can be stopped - <code>Ctrl-C</code> in original terminal window.</p>
 <h4 id="4-interacting-with-s3-buckets">4. Interacting with S3 Buckets<a class="headerlink" href="#4-interacting-with-s3-buckets" title="Permanent link">⚓︎</a></h4>
 <p>Use <code>s3cmd</code> (configured via <code>source ~/.eoepca/state</code>) to list and manipulate objects in the workspace’s S3 buckets.</p>
 <p><strong>List Buckets:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">  </span>--access_key<span class="w"> </span>ws-deploytest<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">  </span>--secret_key<span class="w"> </span><span class="nv">$SECRET</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span>--access_key<span class="w"> </span>ws-deploytest<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span>--secret_key<span class="w"> </span><span class="nv">$SECRET</span>
 </span></code></pre></div>
 <p><strong>Upload a Test File:</strong></p>
 <blockquote>
 <p>Ensure you are in the directory <code>scripts/workspace</code> for access to the test file <code>validation.sh</code>.</p>
 </blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>s3cmd<span class="w"> </span>put<span class="w"> </span>validation.sh<span class="w"> </span>s3://ws-deploytest<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">  </span>--access_key<span class="w"> </span>ws-deploytest<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">  </span>--secret_key<span class="w"> </span><span class="nv">$SECRET</span>
+</span></code></pre></div>
+<p><strong>Check the Uploaded File:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>s3cmd<span class="w"> </span>put<span class="w"> </span>validation.sh<span class="w"> </span>s3://ws-deploytest<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span>s3://ws-deploytest<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">  </span>--access_key<span class="w"> </span>ws-deploytest<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">  </span>--secret_key<span class="w"> </span><span class="nv">$SECRET</span>
 </span></code></pre></div>
-<p><strong>Check the Uploaded File:</strong></p>
+<p><strong>Delete the Test File:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span>s3://ws-deploytest<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>s3cmd<span class="w"> </span>del<span class="w"> </span>s3://ws-deploytest/validation.sh<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">  </span>--access_key<span class="w"> </span>ws-deploytest<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">  </span>--secret_key<span class="w"> </span><span class="nv">$SECRET</span>
 </span></code></pre></div>
-<p><strong>Delete the Test File:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>s3cmd<span class="w"> </span>del<span class="w"> </span>s3://ws-deploytest/validation.sh<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span>--access_key<span class="w"> </span>ws-deploytest<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span>--secret_key<span class="w"> </span><span class="nv">$SECRET</span>
-</span></code></pre></div>
 <h4 id="5-delete-the-test-workspace">5. Delete the Test Workspace<a class="headerlink" href="#5-delete-the-test-workspace" title="Permanent link">⚓︎</a></h4>
 <p>To remove the test workspace:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span>delete<span class="w"> </span>workspaces<span class="w"> </span>ws-deploytest
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span>delete<span class="w"> </span>workspaces<span class="w"> </span>ws-deploytest
 </span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Workspace Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-ui<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-admin<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>workspace-api/generated-ingress.yaml<span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-api<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-crossplane<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-k<span class="w"> </span>workspace-pipelines<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>workspace
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-admin<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>workspace-api/generated-ingress.yaml<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-api<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-crossplane<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-k<span class="w"> </span>workspace-pipelines<span class="w"> </span>-n<span class="w"> </span>workspace<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>workspace
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
