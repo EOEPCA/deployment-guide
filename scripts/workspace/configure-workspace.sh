@@ -15,10 +15,6 @@ ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 
-if [ -z "$WORKSPACE_UI_PASSWORD" ]; then
-    add_to_state_file "WORKSPACE_UI_PASSWORD" $(generate_aes_key 32)
-fi
-
 # OIDC
 ask "OIDC_WORKSPACE_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
@@ -45,8 +41,3 @@ gomplate  -f "workspace-pipelines/kustomization-template.yaml" -o "workspace-pip
 
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
-
-echo ""
-echo "🔐 IMPORTANT: The following secrets have been generated or used for your deployment:"
-echo "Workspace UI Password: $WORKSPACE_UI_PASSWORD"
-echo ""

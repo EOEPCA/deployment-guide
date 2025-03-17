@@ -157,23 +157,7 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
 
 > There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding.
 
-### 7. Deploy the Workspace UI
-
-**Install the Workspace UI:**
-
-```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i workspace-ui eoepca-dev/workspace-ui \
-  --version 0.0.3 \
-  --namespace workspace \
-  --values workspace-ui/generated-values.yaml
-```
-
-> There is currently no ingress set up for the Workspace UI. To access it, you can use port-forwarding.
-
-
-### 8. Optional: Enable OIDC with Keycloak
+### 7. Optional: Enable OIDC with Keycloak
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
@@ -181,7 +165,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-### 8.1 Create a Keycloak Client
+### 7.1 Create a Keycloak Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -200,13 +184,13 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text (e.g., `Workspace Client`).
 - **Client secret**: Enter the Workspace Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `workspace-api`.
-- **Additional Subdomains**: Use `workspace-swagger,workspace-ui,workspace-admin`.
+- **Additional Subdomains**: Use `workspace-swagger,workspace-admin`.
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
 
-### 8.2 Define Resource Protection
+### 7.2 Define Resource Protection
 
 Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
 
@@ -234,7 +218,7 @@ When prompted:
 
 ---
 
-### 8.3 Create APISIX Route Ingress
+### 7.3 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 
@@ -406,7 +390,6 @@ kubectl -n workspace delete workspaces ws-deploytest
 To uninstall the Workspace Building Block and clean up associated resources:
 
 ```bash
-helm uninstall workspace-ui -n workspace ; \
 helm uninstall workspace-admin -n workspace ; \
 kubectl -n workspace delete -f workspace-api/generated-ingress.yaml; \
 helm uninstall workspace-api -n workspace ; \
