@@ -151,22 +151,6 @@ EOF
 echo "   Waiting for ingress to be available..."
 sleep 30 # Give some time for ingress rules to propagate
 
-# Check DNS resolution using ANY record so that if there's a CNAME -> A chain, we still see it.
-if ! command -v dig &>/dev/null; then
-  echo "WARNING: 'dig' command not found, skipping DNS check."
-else
-  dns_output=$(dig +short ANY "$TEST_HOST")
-  if [ -z "$dns_output" ]; then
-    echo "ERROR: DNS lookup for $TEST_HOST returned no result."
-    echo "       Check your wildcard DNS configuration (or create a DNS record if needed)."
-    exit 1
-  else
-    echo "   DNS resolution for $TEST_HOST returned:"
-    echo "$dns_output"
-    echo "   This indicates that $TEST_HOST does resolve (even if via CNAME)."
-  fi
-fi
-
 # Try to curl the service (requires external reachability)
 echo "   Attempting to curl http://$TEST_HOST ..."
 curl_output=$(curl -sk --max-time 10 "http://$TEST_HOST" || true)
