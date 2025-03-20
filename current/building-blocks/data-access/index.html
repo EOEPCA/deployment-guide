@@ -1164,18 +1164,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-monitoring-the-deployment" class="md-nav__link">
+  <a href="#3-monitoring-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Monitoring the Deployment
+      3. Monitoring the Deployment
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-accessing-the-data-access-services" class="md-nav__link">
+  <a href="#4-accessing-the-data-access-services" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Accessing the Data Access Services
+      4. Accessing the Data Access Services
     </span>
   </a>
   
@@ -1215,9 +1215,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-run-demo-jupyter-notebooks" class="md-nav__link">
+  <a href="#2-access-the-stac-manager-ui" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Run Demo Jupyter Notebooks
+      2. Access the STAC Manager UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-demo-jupyter-notebooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Run Demo Jupyter Notebooks
     </span>
   </a>
   
@@ -1759,18 +1768,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-monitoring-the-deployment" class="md-nav__link">
+  <a href="#3-monitoring-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Monitoring the Deployment
+      3. Monitoring the Deployment
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-accessing-the-data-access-services" class="md-nav__link">
+  <a href="#4-accessing-the-data-access-services" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Accessing the Data Access Services
+      4. Accessing the Data Access Services
     </span>
   </a>
   
@@ -1810,9 +1819,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-run-demo-jupyter-notebooks" class="md-nav__link">
+  <a href="#2-access-the-stac-manager-ui" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Run Demo Jupyter Notebooks
+      2. Access the STAC Manager UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-demo-jupyter-notebooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Run Demo Jupyter Notebooks
     </span>
   </a>
   
@@ -2016,30 +2034,40 @@
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi/generated-values.yaml
 </span></code></pre></div>
 <ol start="3">
+<li><strong>Deploy STAC Admin Manager</strong></li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>stac-manager<span class="w"> </span>eoepca-dev/stac-manager<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>stac-manager/generated-values.yaml
+</span></code></pre></div>
+<ol start="4">
 <li><strong>Deploy the Ingress (APISIX Only):</strong></li>
 </ol>
 <p>If you are using <code>nginx</code> then you can <strong>skip</strong> this step as the ingress will be deployed as part of the <code>eoapi</code> chart.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
 </span></code></pre></div>
-<ol start="4">
+<ol start="5">
 <li><strong>(Optional) Install <code>eoapi-support</code></strong> for Grafana, Prometheus, and the metrics server:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-support<span class="w"> </span>eoapi/eoapi-support<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.1.7<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-support/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-support<span class="w"> </span>eoapi/eoapi-support<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.1.7<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-support/generated-values.yaml
 </span></code></pre></div>
 <blockquote>
 <p><strong>Note</strong>: If you prefer to monitor Data Access with your own monitoring solution, you can skip this step.</p>
 </blockquote>
 <hr />
-<h3 id="4-monitoring-the-deployment">4. Monitoring the Deployment<a class="headerlink" href="#4-monitoring-the-deployment" title="Permanent link">⚓︎</a></h3>
+<h3 id="3-monitoring-the-deployment">3. Monitoring the Deployment<a class="headerlink" href="#3-monitoring-the-deployment" title="Permanent link">⚓︎</a></h3>
 <p>After deploying, you can monitor the status of the deployments:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
 </span></code></pre></div>
 <p>Check that all pods are in the <code>Running</code> state and that services/ingresses are properly exposed.</p>
 <hr />
-<h3 id="5-accessing-the-data-access-services">5. Accessing the Data Access Services<a class="headerlink" href="#5-accessing-the-data-access-services" title="Permanent link">⚓︎</a></h3>
+<h3 id="4-accessing-the-data-access-services">4. Accessing the Data Access Services<a class="headerlink" href="#4-accessing-the-data-access-services" title="Permanent link">⚓︎</a></h3>
 <p>Once the deployment is complete and all pods are running, you can access the services:</p>
 <ul>
 <li>
@@ -2056,13 +2084,13 @@
 <hr />
 <h2 id="load-sample-collection">Load Sample Collection<a class="headerlink" href="#load-sample-collection" title="Permanent link">⚓︎</a></h2>
 <p>The following steps load a sample <code>Sentinel2-L2A-Iceland</code> collection into eoAPI.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>../ingest.sh
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">cd</span><span class="w"> </span>../..
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>../ingest.sh
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nb">cd</span><span class="w"> </span>../..
 </span></code></pre></div>
 <p>Check the loaded collection via STAC Browser&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
 </span></code></pre></div>
 <hr />
 <h2 id="testing-and-validation">Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Permanent link">⚓︎</a></h2>
@@ -2084,7 +2112,11 @@
 </li>
 </ul>
 <p>Replace <code>${INGRESS_HOST}</code> with your actual ingress host domain.</p>
-<h3 id="2-run-demo-jupyter-notebooks">2. Run Demo Jupyter Notebooks<a class="headerlink" href="#2-run-demo-jupyter-notebooks" title="Permanent link">⚓︎</a></h3>
+<h3 id="2-access-the-stac-manager-ui">2. Access the STAC Manager UI<a class="headerlink" href="#2-access-the-stac-manager-ui" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h3 id="3-run-demo-jupyter-notebooks">3. Run Demo Jupyter Notebooks<a class="headerlink" href="#3-run-demo-jupyter-notebooks" title="Permanent link">⚓︎</a></h3>
 <p>The <a href="https://github.com/EOEPCA/demo"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo</a> Jupyter Notebooks showcase how to interact with the Data Access services programmatically, including examples for data discovery, visualization, and data download using the Data Access APIs. See the <a href="https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb">04 Data Access Notebook</a> for usage examples.</p>
 <ul>
 <li>
@@ -2094,38 +2126,38 @@
 <p>In the notebooks, set the <code>base_domain</code> variable to reflect your endpoint:</p>
 </li>
 </ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">base_domain</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{INGRESS_HOST}</span><span class="s2">&quot;</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">base_domain</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{INGRESS_HOST}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <p>For more information on how to run the demo Jupyter Notebooks, please visit the <a href="https://github.com/EOEPCA/demo/blob/main/README.md"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo Readme</a>.</p>
 <h3 id="3-perform-basic-api-tests">3. Perform Basic API Tests<a class="headerlink" href="#3-perform-basic-api-tests" title="Permanent link">⚓︎</a></h3>
 <p>You can perform basic tests using tools like <code>curl</code> or directly through the Swagger UI.</p>
 <p><strong>Example: Retrieve STAC API Landing Page</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
 </span></code></pre></div>
 <p><strong>Example: Search STAC Items</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="s1">    &quot;bbox&quot;: [-10, 35, 0, 45],</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="s1">    &quot;datetime&quot;: &quot;2021-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="s1">    &quot;limit&quot;: 10</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="s1">  }&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="s1">    &quot;bbox&quot;: [-10, 35, 0, 45],</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="s1">    &quot;datetime&quot;: &quot;2021-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="s1">    &quot;limit&quot;: 10</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="s1">  }&#39;</span>
 </span></code></pre></div>
 <h3 id="4-test-suite-execution">4. Test Suite Execution<a class="headerlink" href="#4-test-suite-execution" title="Permanent link">⚓︎</a></h3>
 <p>Run the <em>Data Access</em> tests from the system test suite.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>../../test-suite.sh<span class="w"> </span>test/data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>../../test-suite.sh<span class="w"> </span>test/data-access
 </span></code></pre></div>
 <p><strong><em>The test results are summarised to the file <code>test-report.xml</code>.</em></strong></p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Data Access Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>pgo<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>pgo<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
