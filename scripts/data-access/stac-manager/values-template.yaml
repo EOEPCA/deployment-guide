@@ -1,0 +1,9 @@
+ingress:
+  enabled: false
+resources:
+  requests:
+    memory: "512Mi"
+  limits:
+    memory: "4Gi"
+stacApi: https://eoapi.{{ getenv "INGRESS_HOST" }}/stac
+publicUrl: https://eoapi.{{ getenv "INGRESS_HOST" }}

@@ -117,7 +117,18 @@ helm upgrade -i eoapi eoapi/eoapi \
   --values eoapi/generated-values.yaml
 ```
 
-3. **Deploy the Ingress (APISIX Only):**
+3. **Deploy STAC Admin Manager**
+ 
+```bash
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
+helm upgrade -i stac-manager eoepca-dev/stac-manager \
+  --version 0.0.3 \
+  --namespace data-access \
+  --values stac-manager/generated-values.yaml
+```
+
+4. **Deploy the Ingress (APISIX Only):**
 
 If you are using `nginx` then you can **skip** this step as the ingress will be deployed as part of the `eoapi` chart.
 
@@ -125,7 +136,7 @@ If you are using `nginx` then you can **skip** this step as the ingress will be 
 kubectl apply -f eoapi/generated-ingress.yaml
 ```
 
-4. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
+5. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
     
 ```bash
 helm upgrade -i eoapi-support eoapi/eoapi-support \
@@ -139,7 +150,7 @@ helm upgrade -i eoapi-support eoapi/eoapi-support \
 
 ---
 
-### 4. Monitoring the Deployment
+### 3. Monitoring the Deployment
 
 After deploying, you can monitor the status of the deployments:
 
@@ -151,7 +162,7 @@ Check that all pods are in the `Running` state and that services/ingresses are p
 
 ---
 
-### 5. Accessing the Data Access Services
+### 4. Accessing the Data Access Services
 
 Once the deployment is complete and all pods are running, you can access the services:
 
@@ -202,7 +213,14 @@ The Data Access Building Block provides Swagger UI documentation for its APIs, a
 
 Replace `${INGRESS_HOST}` with your actual ingress host domain.
 
-### 2. Run Demo Jupyter Notebooks
+### 2. Access the STAC Manager UI
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}"
+```
+
+### 3. Run Demo Jupyter Notebooks
 
 The [EOEPCA/demo](https://github.com/EOEPCA/demo) Jupyter Notebooks showcase how to interact with the Data Access services programmatically, including examples for data discovery, visualization, and data download using the Data Access APIs. See the [04 Data Access Notebook](https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb) for usage examples.
 

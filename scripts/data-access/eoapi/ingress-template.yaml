@@ -98,7 +98,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: eoapi-docs
+  name: eoapi-stac-manager
   namespace: data-access
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
@@ -107,6 +107,7 @@ metadata:
     {{- end }}
     k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/http-to-https: "true"
+    k8s.apisix.apache.org/enable-websocket: "true"
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
@@ -114,12 +115,12 @@ spec:
     http:
       paths:
       - path: /
-        pathType: Exact
+        pathType: Prefix
         backend:
           service:
-            name: doc-server-eoapi
+            name: stac-manager
             port:
-              number: 80
+              number: 9000
   tls:
   - hosts:
     - eoapi.{{ getenv "INGRESS_HOST" }}
