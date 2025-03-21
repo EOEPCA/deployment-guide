@@ -15,3 +15,6 @@ reference-repo*
 /kubeconfig.yaml
 .pytest_cache/
 test-report.xml
+venv/
+*.log
+notebooks/examples/test-runs/*

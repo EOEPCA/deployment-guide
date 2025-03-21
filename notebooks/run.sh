@@ -18,8 +18,8 @@ if ! hash docker 2>/dev/null; then
   echo "ERROR - docker is required" 1>&2
   exit 1
 fi
-if ! hash docker-compose 2>/dev/null; then
-  echo "ERROR - docker-compose is required" 1>&2
+if ! hash docker-compose 2>/dev/null && ! hash docker compose 2>/dev/null; then
+  echo "ERROR - docker-compose or docker compose is required" 1>&2
   exit 1
 fi
 
