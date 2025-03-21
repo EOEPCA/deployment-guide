@@ -1,6 +1,6 @@
 import os
 import subprocess
-
+import requests
 
 def load_eoepca_state():
     # Source the eoepca state and capture the exported variables
@@ -15,3 +15,24 @@ def load_eoepca_state():
     for line in output.decode("utf-8").splitlines():
         key, _, value = line.partition("=")
         os.environ[key] = value
+
+
+def get_access_token(username, password, client_id, client_secret=None):
+    url = f"{os.environ['HTTP_SCHEME']}://{os.environ['KEYCLOAK_HOST']}/realms/eoepca/protocol/openid-connect/token"
+    payload = {
+        "username": username,
+        "password": password,
+        "grant_type": "password",
+        "client_id": client_id,
+        "scope": "openid profile email",
+    }
+    if client_secret:
+        payload["client_secret"] = client_secret
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    response = requests.post(url, data=payload, headers=headers)
+    response.raise_for_status()
+    access_token = response.json()["access_token"]
+    return access_token
