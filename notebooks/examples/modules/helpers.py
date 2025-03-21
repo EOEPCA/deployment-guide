@@ -1,6 +1,9 @@
+import contextlib
 import os
 import subprocess
 import requests
+
+test_results = {}
 
 def load_eoepca_state():
     # Source the eoepca state and capture the exported variables
@@ -36,3 +39,16 @@ def get_access_token(username, password, client_id, client_secret=None):
     response.raise_for_status()
     access_token = response.json()["access_token"]
     return access_token
+
+
+@contextlib.contextmanager
+def test_cell(name):
+    try:
+        yield
+        test_results[name] = {'status': 'PASS', 'message': ''}
+    except AssertionError as e:
+        test_results[name] = {'status': 'FAIL', 'message': f"Assertion failed: {e}"}
+        print(f"[{name}] Assertion failed: {e}")
+    except Exception as e:
+        test_results[name] = {'status': 'FAIL', 'message': str(e)}
+        print(f"[{name}] Exception: {e}")
