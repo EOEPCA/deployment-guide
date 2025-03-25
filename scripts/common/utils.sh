@@ -233,15 +233,19 @@ configure_ingress() {
     fi
 
     if [ "$INGRESS_CLASS" == "nginx" ]; then
-        add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/ssl-redirect: \"true\""
-        add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/force-ssl-redirect: \"true\""
+	if [ "$HTTP_SCHEME" == "https" ]; then
+		add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/ssl-redirect: \"true\""
+		add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/force-ssl-redirect: \"true\""
+	fi
     fi
 
     if [ "$INGRESS_CLASS" == "apisix" ]; then
-        add_to_custom_ingress_annotations "apisix.apache.org/ssl-redirect: \"true\""
-        add_to_custom_ingress_annotations "apisix.ingress.kubernetes.io/use-regex: \"true\""
+	add_to_custom_ingress_annotations "apisix.ingress.kubernetes.io/use-regex: \"true\""
         add_to_custom_ingress_annotations "k8s.apisix.apache.org/upstream-read-timeout: \"600s\""
-        add_to_custom_ingress_annotations "k8s.apisix.apache.org/http-to-https: \"true\""
+	if [ "$HTTP_SCHEME" == "https" ]; then
+	        add_to_custom_ingress_annotations "apisix.apache.org/ssl-redirect: \"true\""
+        	add_to_custom_ingress_annotations "k8s.apisix.apache.org/upstream-read-timeout: \"600s\""
+	fi
     fi
 }
 

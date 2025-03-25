@@ -39,10 +39,12 @@ ingress:
     paths:
     - path: /
       pathType: Prefix
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
     - zoo.{{ getenv "INGRESS_HOST" }}
     secretName: zoo-tls
+  {{ end }}
 persistence:
   procServicesStorageClass: {{ getenv "STORAGE_CLASS" }}
   storageClass: {{ getenv "STORAGE_CLASS" }}
