@@ -1585,17 +1585,17 @@
 <ol>
 <li>
 <p><a href="../apisix/">APISIX Ingress</a><br />
-   - <strong>Recommended</strong> for environments needing IAM integration with policy-based access control.</p>
+   - <strong>Recommended</strong> if following the IAM spects of this guide which relies upon APISIX plugins for IAM integration, with policy-based access control.</p>
 </li>
 <li>
 <p><a href="../nginx/">Nginx Ingress</a><br />
-   - <strong>Suitable only</strong> for open-access scenarios where IAM-based request authorization is not required.</p>
+   - <strong>Suitable only</strong> for open-access scenarios (in accordance with this guide), or where you are integrating your own IAM approach with the deployment.</p>
 </li>
 </ol>
 <p>You must choose one of these ingress controllers based on your security and access control requirements:</p>
 <ul>
-<li>For deployments <strong>requiring IAM-based authorization</strong>, you must use <strong>APISIX</strong>.</li>
-<li>For deployments that are <strong>fully open or don&rsquo;t need IAM-based authorization</strong>, <strong>NGINX</strong> can be used.</li>
+<li>For deployments <strong>requiring <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>&rsquo;s IAM-based authorization</strong>, you must use <strong>APISIX</strong>.</li>
+<li>For deployments that are <strong>fully open or have their own authorization approach</strong>, <strong>NGINX</strong> can be used.</li>
 </ul>
 <p>You can install <strong>either</strong> one for a basic deployment. If your deployment demands multiple ingress controllers simultaneously, see <a href="ingress-multi.md">Multiple Ingress Controllers</a>.</p>
 <p><strong>Before proceeding:</strong><br />
