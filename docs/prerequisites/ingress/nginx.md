@@ -1,6 +1,6 @@
 # Nginx Ingress
 
-> **Important:** The NGINX ingress should **only be used for open deployments** where IAM-based request authorization is **not required**. If you require IAM integration and request authorization, select the **APISIX Ingress** instead.
+> **Important:** The NGINX ingress should **only be used for open deployments** where EOEPCA's IAM-based request authorization is **not required** - or you are integrating your own IAM approach. If you are following the IAM integration and request authorization approach described in this guide, then select the **APISIX Ingress** instead.
 
 This document provides instructions to deploy [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) for EOEPCA+. 
 
