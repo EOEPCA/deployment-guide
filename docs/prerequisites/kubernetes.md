@@ -87,6 +87,7 @@ export KUBECONFIG="$PWD/kubeconfig.yaml"
 k3d cluster create eoepca \
   --image rancher/k3s:v1.28.7-k3s1 \
   --k3s-arg="--disable=traefik@server:0" \
+  --k3s-arg="--tls-san=$(hostname -f)@server:0" \
   --servers 1 --agents 0 \
   --port 31080:31080@loadbalancer \
   --port 31443:31443@loadbalancer
@@ -99,6 +100,7 @@ The characteristics of the created cluster are:
 * Single node that provides all Kubernetes roles (control-place, master, worker, etc.)
 * No ingress controller (which is established elsewhere is this guide)
 * Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired
+* The (optional) `--tls-san` is used to facilitate cluster administration (`kubectl`) from other hosts - by including the hostname in the `kubeconfig` client certificate
 
 The Kubernetes version of the cluster can be selected via the `--image` option - taking account of:
 
@@ -129,6 +131,7 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
     k3d cluster create eoepca \
       --image rancher/k3s:v1.28.7-k3s1 \
       --k3s-arg="--disable=traefik@server:0" \
+      --k3s-arg="--tls-san=$(hostname -f)@server:0" \
       --servers 1 --agents 0 \
       --port 31080:31080@loadbalancer \
       --port 31443:31443@loadbalancer \
