@@ -6,13 +6,13 @@
     xmlns:dct="http://purl.org/dc/terms/">
   <csw:Insert>
     <csw:Record>
-      <dc:identifier>urn:uuid:19887a8a-f6b0-4a63-ae56-1fba0e12801j</dc:identifier>
+      <dc:identifier>urn:uuid:12345</dc:identifier>
       <dc:type>http://purl.org/dc/dcmitype/Image</dc:type>
       <dc:format>image/svg+xml</dc:format>
-      <dc:title>EOEPCA Sample Record 3</dc:title>
+      <dc:title>EOEPCA Sample Record From Notebook</dc:title>
       <dct:spatial>GR-22</dct:spatial>
-      <dc:subject>EOEPCA-TEST-3</dc:subject>
-      <dct:abstract>This is a sample abstracDDDDt.</dct:abstract>
+      <dc:subject>EOEPCA</dc:subject>
+      <dct:abstract>This is a record was loaded from the EOEPCA notebook.</dct:abstract>
     </csw:Record>
   </csw:Insert>
 </csw:Transaction>
