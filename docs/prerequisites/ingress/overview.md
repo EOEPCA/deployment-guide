@@ -4,16 +4,16 @@ EOEPCA+ requires an Ingress Controller to route external traffic into the platfo
 
 ## Two Ingress Options
 
-1. [APISIX Ingress](apisix.md)  
-   - **Recommended** for environments needing IAM integration with policy-based access control.
+1. [APISIX Ingress](apisix.md)<br>
+   **Recommended** if following the IAM aspects of this guide which relies upon APISIX plugins for IAM integration, with policy-based access control.
 
-2. [Nginx Ingress](nginx.md)  
-   - **Suitable only** for open-access scenarios where IAM-based request authorization is not required.
+1. [Nginx Ingress](nginx.md)<br>
+   **Suitable only** for open-access scenarios (in accordance with this guide), or where you are integrating your own IAM approach with the deployment.
 
 You must choose one of these ingress controllers based on your security and access control requirements:
 
-- For deployments **requiring IAM-based authorization**, you must use **APISIX**.
-- For deployments that are **fully open or don't need IAM-based authorization**, **NGINX** can be used.
+- For deployments **requiring EOEPCA's IAM-based authorization**, you must use **APISIX**.
+- For deployments that are **fully open or have their own authorization approach**, **NGINX** can be used.
 
 You can install **either** one for a basic deployment. If your deployment demands multiple ingress controllers simultaneously, see [Multiple Ingress Controllers](ingress-multi.md).
 
