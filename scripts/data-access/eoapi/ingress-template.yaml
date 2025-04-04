@@ -24,10 +24,12 @@ spec:
             name: raster
             port:
               number: 8080
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
     - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -57,10 +59,12 @@ spec:
             name: stac
             port:
               number: 8080
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
     - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -90,10 +94,12 @@ spec:
             name: vector
             port:
               number: 8080
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
     - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -121,7 +127,9 @@ spec:
             name: stac-manager
             port:
               number: 9000
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
     - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: eoapi-tls
+  {{- end }}

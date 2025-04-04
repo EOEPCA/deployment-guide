@@ -15,10 +15,12 @@ ingress:
   path: /
   hosts:
     - minio.{{ getenv "INGRESS_HOST" }}
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - secretName: minio-tls
       hosts:
         - minio.{{ getenv "INGRESS_HOST" }}
+  {{- end }}
 consoleIngress:
   enabled: true
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
@@ -33,10 +35,12 @@ consoleIngress:
   path: /
   hosts:
     - console-minio.{{ getenv "INGRESS_HOST" }}
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - secretName: minio-console-tls
       hosts:
         - console-minio.{{ getenv "INGRESS_HOST" }}
+  {{- end }}
 resources:
   requests:
     memory: 1Gi

@@ -22,7 +22,9 @@ spec:
                 port:
                   number: 8080
 
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
         - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
       secretName: flowable-custom-tls
+  {{- end }}

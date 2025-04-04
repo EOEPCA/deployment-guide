@@ -16,10 +16,12 @@ grafana:
       {{- range $key, $value := (datasource "annotations") }}
       {{ $key }}: "{{ $value }}"
       {{- end }}
+    {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
     tls:
       - secretName: eoapisupport-tls
         hosts:
           - eoapisupport.{{ getenv "INGRESS_HOST" }}
+    {{- end }}
   datasources:
     datasources.yaml:
       datasources:

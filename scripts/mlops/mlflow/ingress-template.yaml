@@ -12,10 +12,12 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
         - sharinghub.{{ getenv "INGRESS_HOST" }}
       secretName: sh-tls
+  {{- end }}
   rules:
     - host: sharinghub.{{ getenv "INGRESS_HOST" }}
       http:

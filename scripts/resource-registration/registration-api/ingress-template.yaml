@@ -21,7 +21,9 @@ spec:
                 name: registration-api-service
                 port:
                   number: 80
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
         - registration-api.{{ getenv "INGRESS_HOST" }}
       secretName: resource-registration-tls
+  {{- end }}
