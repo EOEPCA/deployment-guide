@@ -8,12 +8,12 @@
     xmlns:gml="http://www.opengis.net/gml">
   <csw:Insert>
     <csw:Record>
-      <dc:identifier>urn:uuid:11111</dc:identifier>
+      <dc:identifier>urn:uuid:12345</dc:identifier>
       <dc:type>http://purl.org/dc/dcmitype/Image</dc:type>
       <dc:format>image/svg+xml</dc:format>
-      <dc:title>Another EOEPCA Sample Record From Notebook</dc:title>
+      <dc:title>EOEPCA Sample Record</dc:title>
       <dct:subject>EOEPCA</dct:subject>
-      <dct:abstract>This record was loaded from the EOEPCA notebook with enriched metadata for search.</dct:abstract>
+      <dct:abstract>This record was loaded from the EOEPCA notebook.</dct:abstract>
       <!-- Spatial Extent -->
       <ows:BoundingBox crs="urn:x-ogc:def:crs:EPSG:6.11:4326" dimensions="2">
         <ows:LowerCorner>1 172.91</ows:LowerCorner>
