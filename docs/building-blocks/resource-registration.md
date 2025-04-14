@@ -117,7 +117,7 @@ Deploy the Registration API using the generated values file.
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-beta2 \
+  --version 2.0.0-rc1 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -157,7 +157,7 @@ By way of example, a `worker` is deployed that harvests `Landast` data from [USG
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-harvester-worker eoepca-dev/registration-harvester \
-  --version 2.0.0-beta2 \
+  --version 2.0.0-rc1 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml

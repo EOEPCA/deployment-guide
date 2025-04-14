@@ -112,7 +112,7 @@ helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.5.2 \
+  --version 0.6.0 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
 ```
@@ -136,7 +136,17 @@ If you are using `nginx` then you can **skip** this step as the ingress will be 
 kubectl apply -f eoapi/generated-ingress.yaml
 ```
 
-5. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
+5. **Deploy EOAPI Maps Plugin**
+
+```bash
+helm upgrade -i eoapi-maps-plugin eoepca-dev/eoapi-maps-plugin \
+  --version 0.0.21 \
+  --namespace data-access \
+  --values eoapi-maps-plugin/generated-values.yaml
+```
+
+
+6. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
     
 ```bash
 helm upgrade -i eoapi-support eoapi/eoapi-support \
@@ -171,7 +181,9 @@ Once the deployment is complete and all pods are running, you can access the ser
     
 - **Grafana** (if `eoapi-support` is installed and ingress is enabled):  
     `https://eoapisupport.${INGRESS_HOST}/`
-<!-- add default credentials -->
+
+- **eoAPI Maps Plugin:**  
+    `https://maps.${INGRESS_HOST}/`
 
 ---
 

@@ -80,13 +80,10 @@ helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i resource-discovery eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 2.0.0-beta2 \
+  --version 2.0.0-rc1 \
   --namespace resource-discovery \
   --create-namespace
 ```
-
-> **Disclaimer**: The deployment process can take a few minutes to complete. If you notice one of the pods in an `Error` state, it is likely waiting for the database to become fully operational before it can start successfully.
-
 
 Deploy the ingress for the Resource Discovery service:
 

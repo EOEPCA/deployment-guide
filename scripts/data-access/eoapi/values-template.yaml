@@ -25,6 +25,9 @@ postgrescluster:
   postGISVersion: 3.4
   pgBouncerReplicas: 1
   monitoring: false
+  backupsEnabled: true
+  backupsStorageClassName: managed-nfs-storage-retain
+  backupsSize: 100Mi
   instances:
     - name: eoapi
       replicas: 1
@@ -35,9 +38,6 @@ postgrescluster:
         resources:
           requests:
             storage: 1Gi
-  backupsStorageClassName: {{ getenv "STORAGE_CLASS" }}
-  nfsCustom:
-    - name: repo1
 
 pgstacBootstrap:
   enabled: true
@@ -58,7 +58,14 @@ raster:
     resources:
       requests:
         memory: "3072Mi"
-
+multidim:
+  enabled: true
+  settings:
+    envSecrets:
+          - data-access
+    resources:
+      requests:
+        memory: "1024Mi"
 stac:
   enabled: true
   settings:
