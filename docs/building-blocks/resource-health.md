@@ -104,7 +104,7 @@ During execution, you will be prompted for:
 
 - Clone the Resource Health repository and update dependencies:
 ```bash
-git clone -b 2.0.0-beta2 https://github.com/EOEPCA/resource-health.git reference-repo
+git clone -b 2.0.0-rc1 https://github.com/EOEPCA/resource-health.git reference-repo
 helm dependency update reference-repo/resource-health-reference-deployment
 ```
 

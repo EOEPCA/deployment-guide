@@ -200,6 +200,10 @@ is_valid_domain() {
     [[ "$1" =~ ^[a-zA-Z0-9.-]+$ ]]
 }
 
+is_yes_no() {
+    [[ "$1" == "yes" || "$1" == "no" ]]
+}
+
 configure_http_scheme() {
     if [ -z "${HTTP_SCHEME-}" ]; then
         ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
