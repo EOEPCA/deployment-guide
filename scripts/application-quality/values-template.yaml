@@ -61,8 +61,8 @@ application-quality:
 
   oidc:
     enabled: {{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" }}
+    {{- if eq (getenv "OIDC_APPLICATION_QUALITY_ENABLED") "true" }}
     realmBaseUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
-    # Client ID and Secret set in SealedSecret
     clientId: {{ getenv "APP_QUALITY_CLIENT_ID" }}
     clientSecret: {{ getenv "APP_QUALITY_CLIENT_SECRET" }}
     preferredUsernameClaimField: "preferred_username"
@@ -74,6 +74,7 @@ application-quality:
     logoutRedirectUrl: "/"
     rpRedirectUri:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
     rpSignAlgo: "RS256"
+    {{- end }}
 
   sonarqube:
     enabled: false
