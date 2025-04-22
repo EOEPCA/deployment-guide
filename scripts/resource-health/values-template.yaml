@@ -77,6 +77,7 @@ opensearch-dashboards:
 ## Example health checks to deploy with the resource health BB itself
 resource-health:
   telemetry_api:
+    replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/telemetry"
@@ -156,6 +157,7 @@ resource-health:
 
 
   check_api:
+    replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
@@ -305,6 +307,7 @@ resource-health:
             return True
 
   web:
+    replicaCount: 1
     environmentFixed:
       - name: NEXT_PUBLIC_CHECK_MANAGER_ENDPOINT
         value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/v1

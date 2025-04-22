@@ -287,8 +287,9 @@ Run the _Data Access_ tests from the system test suite.
 To uninstall the Data Access Building Block and clean up associated resources:
 
 ```bash
-helm uninstall eoapi-support -n data-access
 helm uninstall eoapi -n data-access
+helm uninstall eoapi-maps-plugin -n data-access
+helm uninstall stac-manager -n data-access
 helm uninstall pgo -n data-access
 
 kubectl delete namespace data-access
