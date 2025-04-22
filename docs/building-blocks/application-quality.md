@@ -1,6 +1,6 @@
 # Application Quality Deployment Guide
 
-> OIDC Authentication is currently a requirement of this Building Block. 
+> For now, APISIX is a requirement of this Building Block. This is because OIDC is a required and EOEPCA uses Apache APISIX as the API Gateway to handle OIDC Authentication.
 
 The **Application Quality** Building Block (BB) supports the evolution of scientific algorithms from research prototypes to production-grade processing workflows. It provides tooling to verify non-functional requirements—code quality, best practices, vulnerability scanning, performance testing—and to manage these checks via pipelines integrated into a typical CI/CD process.
 
@@ -101,9 +101,9 @@ git clone https://github.com/EOEPCA/application-quality.git reference-repo \
 2. **Install** with Helm:
     
 ```bash
-helm dependency update reference-repo/helm
+helm dependency update reference-repo/application-quality-reference-deployment
 
-helm upgrade -i application-quality reference-repo/helm \
+helm upgrade -i application-quality reference-repo/application-quality-reference-deployment \
   --namespace application-quality \
   --create-namespace \
   --values generated-values.yaml

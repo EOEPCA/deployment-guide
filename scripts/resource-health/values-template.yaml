@@ -1,6 +1,6 @@
 global:
   defaultInternalIssuerRef:
-    name: eoepca-ca-clusterissuer
+    name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
 
 opensearch:
   securityConfig:
