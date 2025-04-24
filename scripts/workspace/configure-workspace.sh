@@ -35,7 +35,7 @@ fi
 # Generate configuration files
 gomplate  -f "workspace-api/$TEMPLATE_PATH" -o "workspace-api/$OUTPUT_PATH"
 gomplate  -f "workspace-api/$INGRESS_TEMPLATE_PATH" -o "workspace-api/$INGRESS_OUTPUT_PATH"
-gomplate  -f "workspace-ui/$TEMPLATE_PATH" -o "workspace-ui/$OUTPUT_PATH"
+# gomplate  -f "workspace-ui/$TEMPLATE_PATH" -o "workspace-ui/$OUTPUT_PATH"
 gomplate  -f "workspace-admin/$TEMPLATE_PATH" -o "workspace-admin/$OUTPUT_PATH"
 gomplate  -f "workspace-pipelines/kustomization-template.yaml" -o "workspace-pipelines/kustomization.yaml"
 

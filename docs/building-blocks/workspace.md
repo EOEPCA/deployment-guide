@@ -103,7 +103,7 @@ Crossplane is used for managing cloud resources within Kubernetes.
 helm repo add crossplane https://charts.crossplane.io/stable
 helm repo update crossplane
 helm upgrade -i workspace-crossplane crossplane/crossplane \
-  --version v1.17.1 \
+  --version v1.18.1 \
   --namespace workspace \
   --create-namespace
 ```
