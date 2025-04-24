@@ -1,15 +1,27 @@
 cookiecutter:
   templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
-  # templateBranch: feature/python3.8
+  templateBranch: feature/python3.8
 customConfig:
   main:
     eoepca: |-
       domain={{ getenv "INGRESS_HOST" }}
+      workspace_url=https://workspace-api.{{ getenv "INGRESS_HOST" }}
+      workspace_prefix=ws
 # Uncomment if docker registry credentials have been defined
 # Ref.  https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/kubernetes/#creating-an-image-pull-secret
 # imagePullSecrets:
 #   - name: regcred
+zoofpm:
+  image:
+    tag: eoepca-e912be9fd38445c7416a2b4b3d749b1ae67247ea
+zookernel:
+  env:
+    ZOO_OUTPUT_FORMAT: "stac-collection"
+  image:
+    tag: eoepca-e912be9fd38445c7416a2b4b3d749b1ae67247ea
 workflow:
+  defaultMaxRam: 1024
+  defaultMaxCores: 2
   inputs:
     STAGEIN_AWS_SERVICEURL: {{ getenv "STAGEIN_S3_ENDPOINT" }}
     STAGEIN_AWS_ACCESS_KEY_ID: {{ getenv "STAGEIN_S3_ACCESS_KEY" }}
