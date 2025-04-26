@@ -30,19 +30,12 @@ spec:
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            bearer_only: false # as we want to redirect to login screen (default: false)
-            set_access_token_header: false # UI endpoint so don't pass access token (default: true)
-            access_token_in_authorization_header: false # not necessary here is it just defines if the access token (if passed) should be in x-access-token or authroization header (default: false)
-            set_id_token_header: true # UI endpoint so pass (default: true)
-            set_userinfo_header: true # UI endpoint so pass (default: true)
+            bearer_only: false
+            set_access_token_header: false
+            access_token_in_authorization_header: false
+            set_id_token_header: true
+            set_userinfo_header: true
           secretRef: workspace-api
-        # - name: serverless-pre-function
-        #   config:
-        #     phase: rewrite
-        #     functions:
-        #       - |
-        #         ngx.log(ngx.ERR, "TEST: serverless-pre-function executed")
-        #         ngx.exit(500)
     - name: workspace-api-docs
       match:
         hosts:
@@ -107,3 +100,30 @@ spec:
           config:
             host: http://iam-opal-opal-client:8181
             policy: eoepca/workspace/wsapi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: workspace-api-ingress
+  namespace: workspace
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  tls:
+    - hosts:
+        - workspace-api.{{ getenv "INGRESS_HOST" }}
+      secretName: workspace-api-tls
+  rules:
+    - host: workspace-api.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: workspace-api
+                port:
+                  number: 8080

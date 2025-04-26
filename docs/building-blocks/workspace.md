@@ -261,7 +261,7 @@ Confirm that all pods are `Running` and no errors are reported.
 You can view the Workspace API’s Swagger documentation at:
 
 ```
-https://workspace-swagger.${INGRESS_HOST}/docs
+https://workspace-api.${INGRESS_HOST}/docs
 ```
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
