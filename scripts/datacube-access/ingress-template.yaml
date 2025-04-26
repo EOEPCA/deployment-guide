@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: datacube-access
+  namespace: datacube-access
+  annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  rules:
+    - host: datacube-access.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: "/"
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: datacube-access
+                port:
+                  number: 8000
+  tls:
+    - hosts:
+        - datacube-access.{{ getenv "INGRESS_HOST" }}
+      secretName: datacube-access-tls

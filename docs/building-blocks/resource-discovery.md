@@ -1,31 +1,32 @@
 # Resource Discovery Deployment Guide
 
-The **Resource Discovery** building block provides a standards-based Earth Observation (EO) metadata catalogue, supporting OGC CSW, OGC API Records, STAC, and OpenSearch. It combines and extends the functionality previously known as the "Resource Catalogue," but has now evolved to handle additional resource types and deeper integration with data-catalogue components like **eoAPI**. Under the hood it still leverages **pycsw** for OGC compliance and can also integrate with **pgSTAC** (via eoAPI) for large-scale STAC metadata handling. This guide provides step-by-step instructions to deploy Resource Discovery in your Kubernetes cluster.
+The **Resource Discovery** building block provides a catalogue for Earth Observation (EO) metadata using open standards. It supports common standards such as OGC CSW, OGC API Records, STAC, and OpenSearch. Previously known as the "Resource Catalogue", it has now expanded to handle more types of resources and better integrates with tools like **eoAPI**. Internally, it uses **pycsw** to ensure OGC compatibility and can also work with **pgSTAC** via eoAPI to handle large amounts of STAC metadata.  
+
+This guide shows you step-by-step how to set up Resource Discovery in your Kubernetes cluster.
 
 ---
 
 ## Introduction
 
-The Resource Discovery building block is a key component of the EOEPCA+ ecosystem. It enables users to aggregate, manage, and retrieve EO metadata from multiple sources. By adhering to open standards, it ensures discoverability and interoperability, facilitating integration with existing systems and enhancing scalability.
+Resource Discovery is an important component of the EOEPCA ecosystem. It helps users easily manage and search EO metadata from various sources. By using open standards, it makes data easier to find and integrate with other systems.
 
 ### Key Features
 
-- **Metadata Management**: Aggregate and retrieve EO metadata efficiently across multiple resource types.  
-- **Standards Compliance**: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.  
-- **Discoverability**: Advanced search capabilities—supporting bounding boxes, time intervals, free-text, and more.  
-- **Scalability**: Built on **pycsw** and optionally on **pgSTAC**, enabling flexible, scalable deployments.  
-- **Federation**: Supports platform federation by maintaining references to remote platforms.  
-- **Transactional Support**: Endpoints for creating, updating, and deleting resources where permitted.
+- **Easy Metadata Management**: Collect and search EO metadata efficiently.
+- **Uses Open Standards**: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.
+- **Advanced Search**: Search by area (bounding boxes), time intervals, text, and more.
+- **Federation**: Can connect and share metadata with other EOEPCA platforms.
+- **Transactional Updates**: Allows creating, updating, and deleting records when enabled.
 
 ### Interfaces
 
-The Resource Discovery building block includes:
+Resource Discovery includes the following APIs:
 
-- **OGC CSW (2.0.2 and 3.0)**  
-- **OGC API - Records (Part 1: Core)**  
-- **STAC API 1.0.0**  
-- **OpenSearch** with OGC EO, Geo, and Time extensions  
-- **Optional Dataset Catalogue** via **eoAPI** for STAC-based ingestion of granule-level data  
+- **OGC CSW (versions 2.0.2 and 3.0)**
+- **OGC API - Records (Core)**
+- **STAC API 1.0.0**
+- **OpenSearch** (with support for EO, Geo, and Time queries)
+- **Optional STAC Dataset Catalogue** via **eoAPI**
 
 ---
 

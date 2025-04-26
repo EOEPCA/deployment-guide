@@ -1,0 +1,35 @@
+ingress:
+  enabled: true
+  className: {{ getenv "INGRESS_CLASS" }}
+  annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+  hosts:
+    - host: datacube-access.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - path: /*
+          pathType: ImplementationSpecific
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+  - hosts:
+      - datacube-access.{{ getenv "INGRESS_HOST" }}
+    secretName: datacube-access-tls
+  {{- end }}
+
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: {{ getenv "CLUSTER_ISSUER" }}
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+config:
+  dataBackend: {{ getenv "STAC_CATALOG_ENDPOINT" }}
