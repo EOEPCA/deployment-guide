@@ -98,10 +98,10 @@ helm upgrade -i iam eoepca-dev/iam-bb \
   --create-namespace
 ```
 
-### 4. Create a Test user
+### 4. Create a Test User
 
 **Create a Test User in the `eoepca` Realm**<br>
-_The `eoepca` realm should already be set up from the previous steps. Create a test user with a username and password of your choice. This user will be used for testing purposes throughout the deployment of other Building Blocks (BBs)._
+_The `eoepca` realm should already be set up from the helm deployment. Create a test user with a username and password of your choice. This user will be used for testing purposes throughout the deployment of other Building Blocks (BBs)._
 
 
 ```bash

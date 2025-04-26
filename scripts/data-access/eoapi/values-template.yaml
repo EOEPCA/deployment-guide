@@ -26,7 +26,7 @@ postgrescluster:
   pgBouncerReplicas: 1
   monitoring: false
   backupsEnabled: true
-  backupsStorageClassName: managed-nfs-storage-retain
+  backupsStorageClassName: {{ getenv "STORAGE_CLASS" }}
   backupsSize: 100Mi
   instances:
     - name: eoapi

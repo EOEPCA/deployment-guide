@@ -94,7 +94,14 @@ During the script execution, you will be prompted to provide:
 - **`S3_SECRET_KEY`**: Secret key for S3 storage.
 
 
-### 2. Deploy PostgreSQL Operator and eoAPI
+### 2. Apply Secrets
+The script will create a Kubernetes secret for the S3 credentials. Ensure you have the `S3_ACCESS_KEY` and `S3_SECRET_KEY` set in your environment.
+
+```bash
+bash apply-secrets.sh
+```
+
+### 3. Deploy PostgreSQL Operator and eoAPI
 
 1. **Install the PostgreSQL Operator (pgo) from the Crunchy Data OCI registry:**
     
@@ -118,6 +125,8 @@ helm upgrade -i eoapi eoapi/eoapi \
 ```
 
 3. **Deploy STAC Admin Manager**
+
+> Note: The STAC Manager may not deploy fully, if you see `CrashLoopBackOff` errors, this is expected. The STAC Manager is not required for the Data Access Building Block to function
  
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
@@ -160,7 +169,7 @@ helm upgrade -i eoapi-support eoapi/eoapi-support \
 
 ---
 
-### 3. Monitoring the Deployment
+### 4. Monitoring the Deployment
 
 After deploying, you can monitor the status of the deployments:
 
@@ -172,7 +181,7 @@ Check that all pods are in the `Running` state and that services/ingresses are p
 
 ---
 
-### 4. Accessing the Data Access Services
+### 5. Accessing the Data Access Services
 
 Once the deployment is complete and all pods are running, you can access the services:
 

@@ -11,7 +11,7 @@
       <dc:identifier>urn:uuid:12345678</dc:identifier>
       <dc:type>http://purl.org/dc/dcmitype/Image</dc:type>
       <dc:format>image/svg+xml</dc:format>
-      <dc:title>EOEPCA Sample Record 4</dc:title>
+      <dc:title>EOEPCA Sample Record</dc:title>
       <dct:subject>EOEPCA</dct:subject>
       <dct:abstract>This record was loaded from the EOEPCA notebook.</dct:abstract>
       <!-- Spatial Extent -->
