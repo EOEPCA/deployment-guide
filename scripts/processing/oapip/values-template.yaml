@@ -1,6 +1,11 @@
 cookiecutter:
+  {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
   templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
-  templateBranch: feature/python3.8
+  # templateBranch: feature/python3.8
+  {{- else if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
+  templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template-wes.git
+  templateBranch: main
+  {{- end }}
 customConfig:
   main:
     eoepca: |-
@@ -25,6 +30,12 @@ workflow:
   defaultMaxRam: 1024
   defaultMaxCores: 2
   inputs:
+  {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
+    WES_URL: {{ getenv "OAPIP_TOIL_WES_URL" }}
+    WES_USER: {{ getenv "OAPIP_TOIL_WES_USER" }}
+    WES_PASSWORD: {{ getenv "OAPIP_TOIL_WES_PASSWORD" }}
+  additionalInputs:
+  {{- end }}
     STAGEIN_AWS_SERVICEURL: {{ getenv "STAGEIN_S3_ENDPOINT" }}
     STAGEIN_AWS_ACCESS_KEY_ID: {{ getenv "STAGEIN_S3_ACCESS_KEY" }}
     STAGEIN_AWS_SECRET_ACCESS_KEY: {{ getenv "STAGEIN_S3_SECRET_KEY" }}
@@ -35,7 +46,9 @@ workflow:
     STAGEOUT_AWS_REGION: {{ getenv "S3_REGION" }}
     STAGEOUT_OUTPUT: eoepca
   nodeSelector:
+    {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
     {{ getenv "NODE_SELECTOR_KEY" }}: "{{ getenv "NODE_SELECTOR_VALUE" }}"
+    {{- end }}
   storageClass: {{ getenv "STORAGE_CLASS" }}
 ingress:
   enabled: {{ getenv "OAPIP_INGRESS_ENABLED" }}
@@ -53,10 +66,12 @@ ingress:
     paths:
     - path: /
       pathType: Prefix
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
     - zoo.{{ getenv "INGRESS_HOST" }}
     secretName: zoo-tls
+  {{ end }}
 persistence:
   procServicesStorageClass: {{ getenv "STORAGE_CLASS" }}
   storageClass: {{ getenv "STORAGE_CLASS" }}
@@ -83,10 +98,6 @@ files:
       id: stage-out
       doc: "Stage-out the results to S3"
       inputs:
-        process:
-          type: string
-        collection_id:
-          type: string
         STAGEOUT_OUTPUT:
           type: string
         STAGEOUT_AWS_ACCESS_KEY_ID:
@@ -97,18 +108,31 @@ files:
           type: string
         STAGEOUT_AWS_SERVICEURL:
           type: string
+        {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
+        sub_path:
+        {{- else if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
+        process:
+        {{- end }}
+          type: string
       outputs:
         StacCatalogUri:
           outputBinding:
+            {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
+            outputEval: ${  return "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.sub_path + "/catalog.json"; }
+            {{- else if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
             outputEval: ${  return "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.process + "/catalog.json"; }
+            {{- end }}
           type: string
       baseCommand:
         - python
         - stageout.py
       arguments:
         - $( inputs.STAGEOUT_OUTPUT )
+        {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
+        - $( inputs.sub_path )
+        {{- else if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
         - $( inputs.process )
-        - $( inputs.collection_id )
+        {{- end }}
         - valueFrom: |
             ${
               if( !Array.isArray(inputs.wf_outputs) ) 
@@ -148,7 +172,7 @@ files:
 
                 bucket = sys.argv[1]
                 subfolder = sys.argv[2]
-                collection_id = sys.argv[3]
+                collection_id = sys.argv[2]
                 print(f"bucket: {bucket}", file=sys.stderr)
                 print(f"subfolder: {subfolder}", file=sys.stderr)
                 print(f"collection_id: {collection_id}", file=sys.stderr)
@@ -156,7 +180,7 @@ files:
                 # cat_url
                 # Should really be one or more, for cwl outputs of type Directory[]
                 # - but as a quick fix we just take the first one for now.
-                cat_url = sys.argv[4]
+                cat_url = sys.argv[3]
                 print(f"cat_url: {cat_url}", file=sys.stderr)
 
                 aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]

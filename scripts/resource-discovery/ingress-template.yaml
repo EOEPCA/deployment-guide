@@ -22,7 +22,9 @@ spec:
                 name: resource-catalogue-service
                 port:
                   number: 80
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
         - resource-catalogue.{{ getenv "INGRESS_HOST" }}
       secretName: resource-catalogue-tls
+  {{- end }}
