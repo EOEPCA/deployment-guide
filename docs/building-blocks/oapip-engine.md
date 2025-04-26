@@ -93,7 +93,7 @@ For instructions on how to set up IAM, you can follow the [IAM Building Block](.
 helm repo add zoo-project https://zoo-project.github.io/charts/
 helm repo update zoo-project
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.4.7 \
+  --version 0.4.14 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace
