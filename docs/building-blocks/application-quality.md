@@ -109,7 +109,7 @@ helm upgrade -i application-quality reference-repo/application-quality-reference
 ```
 
 
-### 4 Create a Keycloak Client (If OIDC is enabled)
+### 4 Create a Keycloak Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
