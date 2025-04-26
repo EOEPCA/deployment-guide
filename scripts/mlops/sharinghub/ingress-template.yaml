@@ -21,7 +21,9 @@ spec:
                 name: sharinghub
                 port:
                   number: 8000
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
         - sharinghub.{{ getenv "INGRESS_HOST" }}
       secretName: sh-tls
+  {{- end }}

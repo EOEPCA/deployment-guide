@@ -9,8 +9,6 @@ echo "Configuring the Processing Building Block..."
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
 configure_cert
-ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run processing workflows" "kubernetes.io/os" is_non_empty
-ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 
 # Stage-out S3 configuration
 ask "S3_ENDPOINT" "Enter the Stage-Out S3 Endpoint URL (e.g., ${HTTP_SCHEME}://minio.$INGRESS_HOST)" "${HTTP_SCHEME}://minio.$INGRESS_HOST" is_valid_domain
@@ -74,6 +72,21 @@ else
     add_to_state_file "OAPIP_INGRESS_ENABLED" "true"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
 
+fi
+
+# Processing engine
+is_valid_engine() {
+    [[ "$1" == "calrissian" || "$1" == "toil" ]]
+}
+ask "OAPIP_EXECUTION_ENGINE" "Select your execution engine. Supported engines are calrissian and toil." "calrissian" is_valid_engine
+
+if [[ "$OAPIP_EXECUTION_ENGINE" == "toil" ]]; then
+  ask "OAPIP_TOIL_WES_URL" "Insert the HPC Toil WES service endpoint" "https://toil.hpc.host/ga4gh/wes/v1/" is_non_empty
+  ask "OAPIP_TOIL_WES_USER" "Insert the HPC Toil WES username" "test" is_non_empty
+  ask "OAPIP_TOIL_WES_PASSWORD" "Insert the HPT Toil WES password (hashed)" '$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG' is_non_empty
+elif [[ "$OAPIP_EXECUTION_ENGINE" == "calrissian" ]]; then
+  ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run processing workflows" "kubernetes.io/os" is_non_empty
+  ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 fi
 
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

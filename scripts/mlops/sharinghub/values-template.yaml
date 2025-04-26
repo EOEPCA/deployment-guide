@@ -16,10 +16,12 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - secretName: sharinghub-tls
       hosts:
         - sharinghub.{{ getenv "INGRESS_HOST" }}
+  {{- end }}
 {{- else }}
 ingress:
   enabled: false

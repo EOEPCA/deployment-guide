@@ -7,10 +7,12 @@ ingress:
     {{ $key }}: "{{ $value }}"
     {{- end }}
   host: "eoapi.{{ getenv "INGRESS_HOST" }}"
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     enabled: true
     certManager: false
     secretName: "eoapi-tls"
+  {{- end }}
 {{- else }}
 ingress:
   enabled: false

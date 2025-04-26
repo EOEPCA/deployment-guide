@@ -22,7 +22,9 @@ spec:
                 name: application-hub-proxy-public
                 port:
                   number: 80
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
         - app-hub.{{ getenv "INGRESS_HOST" }}
       secretName: app-hub-tls
+  {{- end }}

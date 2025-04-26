@@ -6,7 +6,7 @@ The **OGC API Processes Engine** provides an OGC API Processes execution engine 
 
 - **Standardised Interfaces**: Implements OGC API Processes standards for interoperability.
 - **Application Deployment**: Supports deployment, replacement, and undeployment of applications.
-- **Execution Engine**: Executes applications using Kubernetes and Calrissian for CWL workflows.
+- **Execution Engine**: Applications execution backend. Can be Kubernetes/Calrissian, HPC/Toil and others.
 
 ---
 
@@ -57,11 +57,6 @@ bash configure-oapip.sh
     - *Example*: `letsencrypt-http01-apisix`
 - **`STORAGE_CLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
-- **`NODE_SELECTOR_KEY`**: Determine which nodes will run the processing workflows.
-    - *Example*: `kubernetes.io/os`
-    - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
-- **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
-    - *Example*: `linux`
 
 **Stage-Out S3 Configuration:**
 
@@ -82,6 +77,34 @@ If you are using the APISIX Ingress Controller, you will be prompted to provide 
 When prompted for the `Client ID` we recommend setting it to `oapip-engine`.
 
 For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
+
+**Execution Engine Configuration:**
+
+Different Execution Engines can be selected, according to the type of backend. The currently supported engines and their additional dependencies are the following:
+
+| Execution Engine | Backend | Additional dependencies |
+| --- | --- | --- |
+| calrissian | Executes applications as Kubernetes jobs in dedicated namespaces, using [Calrissian](https://duke-gcb.github.io/calrissian/) | None |
+| toil | Executes application as HPC jobs on a variety of HPC batch scedulers, using [Toil](https://toil.ucsc-cgl.org/) | A [Toil WES Service](https://toil.readthedocs.io/en/master/running/server/wes.html) |
+
+The following Execution Engine specific configuration parameters needs to be setup:
+
+For Calrissian:
+- **`NODE_SELECTOR_KEY`**: Determine which nodes will run the processing workflows.
+    - *Example*: `kubernetes.io/os`
+    - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+- **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
+    - *Example*: `linux`
+
+For Toil:
+- **`OAPIP_TOIL_WES_URL`**: The Toil WES service endpoint, including the path. Must be ending with `/ga4gh/wes/v1/`
+    - *Example*: `https://toil.hpc.host/ga4gh/wes/v1/`
+    - *Read more*: [Zoo Wes Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
+- **`OAPIP_TOIL_WES_USER`**: The Toil WES service user
+    - *Example*: `test`
+- **`OAPIP_TOIL_WES_PASSWORD`**: The Toil WES service password (must but be in htpasswd format)
+    - *Example*: `$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG`
+
 
 ---
 
