@@ -2184,7 +2184,7 @@
 <ul>
 <li><strong>Standardised Interfaces</strong>: Implements OGC API Processes standards for interoperability.</li>
 <li><strong>Application Deployment</strong>: Supports deployment, replacement, and undeployment of applications.</li>
-<li><strong>Execution Engine</strong>: Executes applications using Kubernetes and Calrissian for CWL workflows.</li>
+<li><strong>Execution Engine</strong>: Applications execution backend. Can be Kubernetes/Calrissian, HPC/Toil and others.</li>
 </ul>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
@@ -2262,15 +2262,6 @@
 <li><em>Example</em>: <code>standard</code></li>
 </ul>
 </li>
-<li><strong><code>NODE_SELECTOR_KEY</code></strong>: Determine which nodes will run the processing workflows.<ul>
-<li><em>Example</em>: <code>kubernetes.io/os</code></li>
-<li><em>Read more</em>: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">Node Selector Documentation</a></li>
-</ul>
-</li>
-<li><strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector key.<ul>
-<li><em>Example</em>: <code>linux</code></li>
-</ul>
-</li>
 </ul>
 <p><strong>Stage-Out S3 Configuration:</strong></p>
 <p>Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the <a href="../../prerequisites/minio/">MinIO Deployment Guide</a>. These values should already be in your <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file if you followed the main deployment steps.</p>
@@ -2286,6 +2277,44 @@
 <p>If you are using the APISIX Ingress Controller, you will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the <a href="#optional-oidc-configuration">OIDC Configuration</a> section after deployment.</p>
 <p>When prompted for the <code>Client ID</code> we recommend setting it to <code>oapip-engine</code>.</p>
 <p>For instructions on how to set up IAM, you can follow the <a href="../iam/main-iam/">IAM Building Block</a> guide.</p>
+<p><strong>Execution Engine Configuration:</strong></p>
+<p>Different Execution Engines can be selected, according to the type of backend. The currently supported engines and their additional dependencies are the following:</p>
+<table>
+<thead>
+<tr>
+<th>Execution Engine</th>
+<th>Backend</th>
+<th>Additional dependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>calrissian</td>
+<td>Executes applications as Kubernetes jobs in dedicated namespaces, using <a href="https://duke-gcb.github.io/calrissian/">Calrissian</a></td>
+<td>None</td>
+</tr>
+<tr>
+<td>toil</td>
+<td>Executes application as HPC jobs on a variety of HPC batch scedulers, using <a href="https://toil.ucsc-cgl.org/">Toil</a></td>
+<td>A <a href="https://toil.readthedocs.io/en/master/running/server/wes.html">Toil WES Service</a></td>
+</tr>
+</tbody>
+</table>
+<p>The following Execution Engine specific configuration parameters needs to be setup:</p>
+<p>For Calrissian:
+- <strong><code>NODE_SELECTOR_KEY</code></strong>: Determine which nodes will run the processing workflows.
+    - <em>Example</em>: <code>kubernetes.io/os</code>
+    - <em>Read more</em>: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">Node Selector Documentation</a>
+- <strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector key.
+    - <em>Example</em>: <code>linux</code></p>
+<p>For Toil:
+- <strong><code>OAPIP_TOIL_WES_URL</code></strong>: The Toil WES service endpoint, including the path. Must be ending with <code>/ga4gh/wes/v1/</code>
+    - <em>Example</em>: <code>https://toil.hpc.host/ga4gh/wes/v1/</code>
+    - <em>Read more</em>: <a href="https://zoo-project.github.io/zoo-wes-runner/">Zoo Wes Runner documentation</a>
+- <strong><code>OAPIP_TOIL_WES_USER</code></strong>: The Toil WES service user
+    - <em>Example</em>: <code>test</code>
+- <strong><code>OAPIP_TOIL_WES_PASSWORD</code></strong>: The Toil WES service password (must but be in htpasswd format)
+    - <em>Example</em>: <code>$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG</code></p>
 <hr />
 <h3 id="deploy-the-oapip-engine">Deploy the OAPIP Engine<a class="headerlink" href="#deploy-the-oapip-engine" title="Permanent link">⚓︎</a></h3>
 <h4 id="deploy-the-helm-chart">Deploy the Helm Chart<a class="headerlink" href="#deploy-the-helm-chart" title="Permanent link">⚓︎</a></h4>
