@@ -5,7 +5,9 @@ customConfig:
   main:
     eoepca: |-
       domain={{ getenv "INGRESS_HOST" }}
+      {{ if eq (getenv "USE_WORKSPACE_API") "true" }}
       workspace_url=https://workspace-api.{{ getenv "INGRESS_HOST" }}
+      {{ end }}
       workspace_prefix=ws
 # Uncomment if docker registry credentials have been defined
 # Ref.  https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/kubernetes/#creating-an-image-pull-secret

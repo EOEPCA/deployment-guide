@@ -137,7 +137,7 @@ After it completes, you should see a JSON snippet confirming the newly created c
 
 ---
 
-### 2.2 Define Resource Protection
+### 2.2 Define Resource Protection (Optional)
 
 By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to **restrict** or **fine-tune** access to certain endpoints (like `/ogc-api/jobs/`).
 
