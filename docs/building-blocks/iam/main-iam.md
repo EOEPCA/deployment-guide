@@ -87,88 +87,37 @@ bash apply-secrets.sh
 
 This creates Kubernetes secrets from the credentials generated earlier.
 
-### 3. Deploy Keycloak
-
+### 3. Deploy IAM Building Block
 ```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update bitnami
-helm upgrade -i keycloak bitnami/keycloak \
-  --values keycloak/generated-values.yaml \
-  --version 21.4.4 \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
+helm upgrade -i iam eoepca-dev/iam-bb \
+  --version 2.0.0-rc1 \
   --namespace iam \
+  --values generated-values.yaml \
   --create-namespace
 ```
 
-Apply Keycloak ingress:
+### 4. Create a Test user
 
-```bash
-kubectl -n iam apply -f keycloak/generated-ingress.yaml
-```
+**Create a Test User in the `eoepca` Realm**<br>
+_The `eoepca` realm should already be set up from the previous steps. Create a test user with a username and password of your choice. This user will be used for testing purposes throughout the deployment of other Building Blocks (BBs)._
 
-**Custom Keycloak Image**
-
-If you have a custom Keycloak image that includes the Keycloak-OPA adapter plugin, you can specify it in the `keycloak/values-template.yaml` file by uncommenting and modifying the `image` section:
-
-```yaml
-image:
-  registry: your.registry
-  repository: eoepca/keycloak-with-opa-plugin
-  tag: your-tag
-  pullPolicy: Always
-```
-
-Replace `your.registry`, `eoepca/keycloak-with-opa-plugin`, and `your-tag` with your registry, repository, and tag.
-
-### 4. Create the `eoepca` Realm and a Test User
-
-Instead of using `master`, create a dedicated `eoepca` realm - using the Keycloak REST API.<br>
-For convenience we also create an `eoepcauser` (test) user to support usage examples in this guide where a user must be assumed.
-
-**Create the `eoepca` realm...**
-
-```bash
-source ~/.eoepca/state
-
-# Get access token for Keycloak admin user
-ACCESS_TOKEN=$( \
-  curl --silent --show-error \
-    -X POST \
-    -d "username=${KEYCLOAK_ADMIN_USER}" \
-    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
-)
-
-# Create the `eoepca` realm
-curl --silent --show-error \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d @- \
-  "https://auth.${INGRESS_HOST}/admin/realms" <<EOF
-{
-  "realm": "eoepca",
-  "enabled": true
-}
-EOF
-```
-
-**Create the `eoepcauser` user in the `eoepca` realm...**<br>
-_Set the user/password according to your needs_
 
 ```bash
 bash ../utils/create-user.sh
 ```
 
+- Example username: `eoepcauser`
+- Example password: `eoepcapassword`
 
-### 5. (Optional) Integrate External Identity Providers
+You can configure the username and password as per your requirements.
 
-If you wish to add GitHub or another IdP, see [Advanced Configuration](advanced-iam.md#integrating-github-as-an-external-identity-provider) for detailed instructions and examples.
 
-### 6. Create the `opa` Client
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+### 5. Create the `opa` and `identity-api` Client
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm. Make sure that you **run this script twice**, once for each client as both clients are required.
 
 ```bash
 bash ../utils/create-client.sh
@@ -181,33 +130,17 @@ When prompted:
 - **Realm**: Typically `eoepca`.
 
 - **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: For OPA, you should use `opa`.
-- **Client name** and **description**: Provide any helpful text<br>_e.g. name=`OPA Client` and description=`Open Policy Agent`_
-- **Client secret**: Enter the OPA Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `opa` for Open Policy Agent. 
+- **Client ID**: For **OPA**, you should use `opa`. For the **Identity API**, use `identity-api`.
+- **Client name** and **description**: Provide any helpful text<br>
+- **Client secret**: Enter the Client Secrets that was generated during the configuration script (check `~/.eoepca/state` if you cleared the terminal).
+- **Subdomain**: Use `opa` for Open Policy Agent. Use `identity-api` for the Identity API.
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
-### 7. Deploy OPA & OPAL
+---
 
-```bash
-helm repo add opal https://permitio.github.io/opal-helm-chart
-helm repo update opal
-helm upgrade -i opa opal/opal \
-  --values opa/generated-values.yaml \
-  --version 0.0.28 \
-  --namespace iam \
-  --create-namespace
-```
-
-Apply OPA ingress:
-
-```bash
-kubectl -n iam apply -f opa/generated-ingress.yaml
-```
-
-### 8. Testing & Validation
+### 6. Testing & Validation
 
 ```bash
 bash validation.sh
