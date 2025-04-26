@@ -3,6 +3,9 @@ global:
     name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
 
 opensearch:
+  persistence:
+    enabled: true
+    storageClass: {{ getenv "STORAGE_CLASS" }}
   securityConfig:
     config:
       data:

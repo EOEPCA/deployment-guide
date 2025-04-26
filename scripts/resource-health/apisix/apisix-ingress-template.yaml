@@ -33,7 +33,7 @@ spec:
         enable: true
         config:
           regex_uri: ["^/api/telemetry/(.*)", "/$1"]
-    plugin_config_name: resource-health-route-plugin
+    plugin_config_name: resource-health-route-browser-auth-plugin
 
   - name: resource-health-check-api-route
     match:
@@ -50,7 +50,7 @@ spec:
         enable: true
         config:
           regex_uri: ["^/api/healthchecks/(.*)", "/$1"]
-    plugin_config_name: resource-health-route-plugin
+    plugin_config_name: resource-health-route-browser-auth-plugin
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls

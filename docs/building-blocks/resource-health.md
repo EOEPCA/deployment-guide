@@ -119,11 +119,20 @@ When prompted:
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
+
 ---
 
 ### 3. Deploy the Resource Health BB (Helm)
 
-1. **Install or upgrade Resource Health**
+1. **Apply Secrets**
+
+```bash
+bash apply-secrets.sh
+```
+This script creates the necessary secrets for the Resource Health BB.
+
+
+2. **Install or upgrade Resource Health**
 
 > **Note**: While the Resource Health BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
 
@@ -144,7 +153,7 @@ helm upgrade -i resource-health reference-repo/resource-health-reference-deploym
 
 ---
 
-### 4. Configure Ingress
+### 3. Configure Ingress
 
 By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.
 
@@ -166,7 +175,7 @@ For the purpose of this guide, the configuration script created a sample Ingress
 
 ---
 
-### 5. Monitor the Deployment
+### 4. Monitor the Deployment
 
 Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
 
