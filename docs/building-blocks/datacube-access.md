@@ -1,8 +1,8 @@
 # Datacube Access Deployment Guide
 
-> **Note**: This Building Block is a very early version and is not yet fully functional. It is currently under development and should be used with caution. 
+> **Note**: This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.
 
-The **Datacube Access** building block allows users to access and explore multi-dimensional Earth Observation (EO) data using standard APIs. It is built on open standards from OGC (Open Geospatial Consortium), making it easy to connect with other EOEPCA components and data catalogs. 
+The **Datacube Access** building block allows users to access and explore multi-dimensional Earth Observation (EO) data using standard APIs. It is built on open standards from OGC (Open Geospatial Consortium). 
 
 ---
 

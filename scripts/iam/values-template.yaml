@@ -48,8 +48,14 @@ iam: &iam
           key: credentials
           namespace: crossplane-system
   opa:
+    {{- if eq ( getenv "INGRESS_HOST" ) "apisix" }}
     enabled: &opaEnabled true
     createRoute: true
+    {{- else }}
+    enabled: &opaEnabled false
+    createRoute: false
+    {{- end }}
+
     hosts:
       - iam-opa.{{ getenv "INGRESS_HOST" }}
     paths:
@@ -65,7 +71,11 @@ iam: &iam
     #clientSecretRef: opa-route
   identityApi:
     enabled: &identityApiEnabled true
+    {{- if eq ( getenv "INGRESS_HOST" ) "apisix" }}
     createRoute: true
+    {{- else }}
+    createRoute: false
+    {{- end }}
     hosts:
       - identity-api.{{ getenv "INGRESS_HOST" }}
     paths:

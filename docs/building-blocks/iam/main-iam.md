@@ -1,5 +1,7 @@
 # Identity and Access Management (IAM) Deployment Guide
 
+> Currently, **APISIX** Ingress Controller is the only supported ingress controller for the IAM Building Block. The deployment guide will be updated to support other ingress controllers in the future.
+
 The EOEPCA Identity and Access Management (IAM) Building Block provides secure authentication and authorisation for all platform services. It enables you to manage users, roles, policies, and integrate with external identity providers.
 
 **Key Features:**

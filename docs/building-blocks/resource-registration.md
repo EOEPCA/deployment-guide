@@ -265,17 +265,17 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
   -H "Content-Type: application/json" \
   -d @- <<EOF
 {
-  "inputs": {
-    "type": "dataset",
-    "source": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/resource-registration/data/simple-item.json",
-    "target": "https://resource-catalogue.${INGRESS_HOST}/stac"
-  }
+    "inputs": {
+        "type": "collection",
+        "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/james-hinton/temp-data-store/refs/heads/main/stac-collection.json"},
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
+    }
 }
 EOF
 ```
 
-- **type**: Use `"dataset"` for STAC EO data.
-- **source**: A valid STAC Item URL (in this example, hosted on GitHub).
+- **type**: Use `"collection"` for STAC Colletion EO data.
+- **source**: A valid STAC Collection URL (in this example, hosted on GitHub).
 - **target**: Your STAC server endpoint where the resource is to be registered.
 
 ### Validating the Registration

@@ -7,10 +7,23 @@ ingress:
     {{ $key }}: "{{ $value }}"
     {{- end }}
   hosts:
+    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
     - host: datacube-access.{{ getenv "INGRESS_HOST" }}
       paths:
         - path: /*
           pathType: ImplementationSpecific
+    {{- else }}
+    - host: datacube-access.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: datacube-access
+              port:
+                number: 8000
+    {{- end }}
+
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
