@@ -1,0 +1,45 @@
+{
+    "id": "S2MSI2A",
+    "stac_version": "1.0.0",
+    "license": "other",
+    "extent": {
+      "spatial": {
+        "bbox": [
+          [-180, -56, 180, 82]
+        ]
+      },
+      "temporal": {
+        "interval": [
+          [
+            "2015-06-21T12:00:00.000Z",
+            null
+            ]
+        ]
+      }
+    },
+    "title": "Sentinel-2 MSI Level 2A",
+    "description": "Sentinel-2 MultiSpectral Instrument Level 2A",
+    "type": "Collection",
+    "links": [
+      {
+        "rel": "self",
+        "type": "application/json",
+        "href": "https://resource-catalogue.notebook-test.develop.eoepca.org/stac/collections/S2MSI2A"
+      },
+      {
+        "rel": "root",
+        "type": "application/json",
+        "href": "https://resource-catalogue.notebook-test.develop.eoepca.org/stac/"
+      },
+      {
+        "rel": "parent",
+        "type": "application/json",
+        "href": "https://resource-catalogue.notebook-test.develop.eoepca.org/stac/collections"
+      },
+      {
+        "rel": "items",
+        "type": "application/geo+json",
+        "href": "https://resource-catalogue.notebook-test.develop.eoepca.org/stac/collections/S2MSI2A/items"
+      }
+    ]
+  }

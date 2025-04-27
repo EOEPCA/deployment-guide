@@ -1,0 +1,78 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: resource-health-route
+  namespace: resource-health
+spec:
+  http:
+  - name: resource-health-web-route
+    match:
+      hosts:
+        - resource-health.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - /
+        - /_next/*
+        - /.apisix/*
+    backends:
+      - serviceName: resource-health-web
+        servicePort: 80
+    plugin_config_name: resource-health-route-browser-auth-plugin
+
+  - name: resource-health-telemetry-api-route
+    match:
+      hosts:
+        - resource-health.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - /api/telemetry/*
+        - /api/telemetry/docs/*
+    backends:
+      - serviceName: resource-health-telemetry-api
+        servicePort: 8080
+    plugins:
+      - name: proxy-rewrite
+        enable: true
+        config:
+          regex_uri: ["^/api/telemetry/(.*)", "/$1"]
+    plugin_config_name: resource-health-route-browser-auth-plugin
+
+  - name: resource-health-check-api-route
+    match:
+      hosts:
+        - resource-health.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - /api/healthchecks/*
+        - /api/healthchecks/docs/*
+    backends:
+      - serviceName: resource-health-check-api
+        servicePort: 8000
+    plugins:
+      - name: proxy-rewrite
+        enable: true
+        config:
+          regex_uri: ["^/api/healthchecks/(.*)", "/$1"]
+    plugin_config_name: resource-health-route-browser-auth-plugin
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: resource-health-tls
+  namespace: resource-health
+spec:
+  hosts:
+    - resource-health.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: resource-health-tls
+    namespace: resource-health
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: resource-health-tls
+  namespace: resource-health
+spec:
+  secretName: resource-health-tls
+  dnsNames:
+    - resource-health.deploybox.co.uk
+  issuerRef:
+    name: {{ getenv "CLUSTER_ISSUER" }}
+    kind: ClusterIssuer

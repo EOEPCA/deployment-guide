@@ -6,9 +6,15 @@ For full installation instructions for the APISIX Ingress Controller see the off
 
 > **Disclaimer:** We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
 
-```bash
+```
 helm repo add apisix https://charts.apiseven.com
 helm repo update apisix
+```
+
+### Option A: Deploy as NodePort Service
+
+```bash
+
 helm upgrade -i apisix apisix/apisix \
   --version 2.9.0 \
   --namespace ingress-apisix --create-namespace \
@@ -24,9 +30,25 @@ helm upgrade -i apisix apisix/apisix \
 
 > The above configuration assumes that the Kubernetes cluster exposes NodePorts 31080 (http) and 31443 (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public 80/443 traffic to these exposed ports on the cluster nodes.
 
+### Option B: Deploy as LoadBalancer Service
+
+```bash
+helm upgrade -i apisix apisix/apisix \
+  --version 2.9.0 \
+  --namespace ingress-apisix --create-namespace \
+  --set service.type=LoadBalancer \
+  --set service.http.port=80 \
+  --set service.tls.port=443 \
+  --set apisix.enableIPv6=false \
+  --set apisix.enableServerTokens=false \
+  --set apisix.ssl.enabled=true \
+  --set apisix.pluginAttrs.redirect.https_port=443 \
+  --set ingress-controller.enabled=true
+```
+
 > This can be adapted according to the network topology of your cluster environment.
 
-### Forced TLS Redirection
+### Forced TLS Redirection (Optional)
 
 The following `ApisixGlobalRule` is used to configure Apisix to redirect all `http` traffic to `https`.
 
@@ -61,7 +83,7 @@ For `filter` reference see:
 * [Plugin Common Configuration](https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration)
 * [Expression Syntax](https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators)
 
-### Forwarded Port Correction
+### Forwarded Port Correction (Optional)
 
 By default, APISIX sets the `X-Forwarded-Port` header to its container port (`9443` by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is `443`.
 

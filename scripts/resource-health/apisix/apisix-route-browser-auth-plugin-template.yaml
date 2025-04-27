@@ -1,0 +1,18 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixPluginConfig
+metadata:
+  name: resource-health-route-browser-auth-plugin
+  namespace: resource-health
+spec:
+  plugins:
+    - name: openid-connect
+      enable: true
+      config:
+        bearer_only: false
+        set_access_token_header: true
+        set_id_token_header: true
+        set_refresh_token_header: true
+        access_token_in_authorization_header: true
+        discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+        scope: openid email profile offline_access
+      secretRef: resource-health-iam-client-credentials

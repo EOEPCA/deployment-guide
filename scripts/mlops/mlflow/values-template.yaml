@@ -8,9 +8,19 @@ mlflowSharinghub:
   sharinghubAuthDefaultToken: false
   artifactsDestination: s3://{{ getenv "S3_BUCKET_MLFLOW" }}
 
+podSecurityContext:
+  fsGroup: 999
+
 s3:
   enabled: true
   endpointUrl: {{ getenv "S3_ENDPOINT" }}
+
+postgresql:
+  enabled: true
+  auth:
+    existingSecret: mlflow-sharinghub-postgres
+  global:
+    storageClass: managed-nfs-storage
 
 # This will only be enabled when nginx is used as ingress controller
 # For APISIX, you will have a `$INGRESS_OUTPUT_PATH` file that will be used to deploy the ingress

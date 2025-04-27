@@ -1,29 +1,29 @@
 # Application Quality Deployment Guide
 
-> OIDC Authentication is currently a requirement of this Building Block. 
-
-The **Application Quality** Building Block (BB) supports the evolution of scientific algorithms from research prototypes to production-grade processing workflows. It provides tooling to verify non-functional requirements—code quality, best practices, vulnerability scanning, performance testing—and to manage these checks via pipelines integrated into a typical CI/CD process.
+The **Application Quality Building Block (BB)** supports the transition of scientific algorithms from research prototypes to production-grade workflows. It provides tools for verifying code quality, security best practices, vulnerability scanning, performance testing and orchestrating these checks via pipelines integrated into a CI/CD process.
 
 ---
 
 ## Introduction
 
-The **Application Quality Building Block** provides tooling to encourage best practices in software development and to test (and optimize) the performance of processing workflows in a sandbox environment. It includes:
+The **Application Quality Building Block** provides tools and processes designed to:
 
-- **Development Best Practice**: Static code analysis, vulnerability scans, best practice checks for open reproducible science.
-- **Application Quality Tooling**: Container-based tools that can be orchestrated in pipelines (e.g. SonarQube, Bandit, Sphinx, etc.).
-- **Application Performance**: Tools supporting performance testing and optimisation of processing workflows.
+- **Ensure Best Practices:** Including static code analysis, security scanning, and adherence to open science standards.
+- **Streamline Quality Checks:** Containerised tooling such as SonarQube, Bandit, and Sphinx, integrated into automated pipelines.
+- **Measure Performance:** Tools and methods to test and optimise workflow execution performance.
+
+> **Important:** The Application Quality BB requires **APISIX** as an ingress controller to support OIDC authentication and API management. Deployments using NGINX ingress without additional OIDC plugins or proxies will not function correctly.
 
 ---
 
 ## Architecture Overview
 
-- **Application Quality Database**: Stores definitions of analysis tools, pipelines, and pipeline execution metadata.
-- **Application Quality Web Portal**: Front-end for pipeline creation, management, and viewing results.
-- **Application Quality API**: Backend service that provides data to the Web Portal and interacts with the database.
-- **Application Quality Engine**: Orchestrates pipeline executions. Submits CWL documents to a CWL runner (e.g. Calrissian) for container-based tasks.
-- **CWL Runner (Calrissian)**: Runs each step in containers on Kubernetes.
-- **Optional**: OpenSearch & OpenSearch Dashboards to store, visualise, and analyze results.
+- **Database:** Stores definitions for analysis tools, pipelines, and execution metadata.
+- **Web Portal:** User interface for creating pipelines, executing them, and reviewing results.
+- **Backend API:** Provides backend services for the web portal, interacting with the database.
+- **Pipeline Engine:** Manages and orchestrates pipeline execution, submitting CWL workflows to runners like Calrissian.
+- **CWL Runner (Calrissian):** Executes workflow steps in Kubernetes containers.
+- **OpenSearch & Dashboards (Optional):** Stores, visualises, and analyses pipeline execution results.
 
 ---
 
@@ -37,6 +37,7 @@ Before deploying the Application Quality Building Block, ensure you have the fol
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                           |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                       |
 | OIDC Provider             | An OIDC Provider must be available              | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
+| APISIX Ingress Controller | Installed and configured for OIDC | [APISIX Ingress Guide](../prerequisites/apisix-ingress.md)                                         |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                                   |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
 
@@ -63,21 +64,19 @@ bash check-prerequisites.sh
 bash configure-application-quality.sh
 ```
 
-**Configuration Parameters** include:
+Provide values for:
 
-- **`INGRESS_HOST`**: Base domain (e.g. `example.org`)
-- **`STORAGE_CLASS`**: Name of your storage class (e.g. `standard`, `managed-nfs-storage-retain`)
-- **`CLUSTER_ISSUER`**: Cert-manager issuer name (e.g. `letsencrypt-prod`)
-- **`INTERNAL_CLUSTER_ISSUER`**: Name of the cert-manager ClusterIssuer for internal TLS. (Default: `eoepca-ca-clusterissuer`)
+- **`INGRESS_HOST`**: Your base domain (e.g. `example.org`).
+- **`STORAGE_CLASS`**: Kubernetes storage class name.
+- **`CLUSTER_ISSUER`**: Cert-manager issuer name.
+- **`INTERNAL_CLUSTER_ISSUER`**: Internal TLS issuer (default: `eoepca-ca-clusterissuer`).
 
-**OIDC Configuration**:
+#### OIDC Authentication
 
-> OIDC authentication is currently a requirement of this Building Block.
+OIDC authentication requires APISIX ingress. If using APISIX:
 
-If you choose to enable OIDC authentication, you will be asked to provide.
-We will configure the clients in a later step, just provide the names for now.
+- **`APP_QUALITY_CLIENT_ID`**: Set the client ID (`application-quality`).
 
-- **`APP_QUALITY_CLIENT_ID`**: OIDC client ID for the Application Quality Building Block. (use `application-quality`)
 
 
 ### 2. Apply Secrets
@@ -89,7 +88,7 @@ bash apply-secrets.sh
 
 ### 3. Deploy via Helm
 
-> **Note**: While the Application Quality BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
+> **Note:** Application Quality is not yet in the official Helm charts. Deploy directly from GitHub.
 
 1. **Clone the reference repository**:
     
@@ -101,9 +100,9 @@ git clone https://github.com/EOEPCA/application-quality.git reference-repo \
 2. **Install** with Helm:
     
 ```bash
-helm dependency update reference-repo/helm
+helm dependency update reference-repo/application-quality-reference-deployment
 
-helm upgrade -i application-quality reference-repo/helm \
+helm upgrade -i application-quality reference-repo/application-quality-reference-deployment \
   --namespace application-quality \
   --create-namespace \
   --values generated-values.yaml

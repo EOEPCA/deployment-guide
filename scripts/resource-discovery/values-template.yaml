@@ -3,7 +3,7 @@ global:
 ingress:
   enabled: false
 db:
-  volume_storage_type: {{ getenv "STORAGE_CLASS" }}
+  volume_storageclass: {{ getenv "STORAGE_CLASS" }}
 pycsw:
   config:
     server:
@@ -14,8 +14,21 @@ pycsw:
         - '"*"'
     metadata:
       identification:
-        title: EOEPCA Resource Catalogue
-        description: pycsw is an OARec and OGC CSW server implementation written in Python
+        title: EOEPCA+ Resource Catalogue
+        description: EOEPCA+ Resource Catalogue
+        keywords:
+            - EOEPCA+
+            - Earth observation
+            - discovery
+        license:
+          name: CC-BY 4.0 license
+          url: https://creativecommons.org/licenses/by/4.0
+        keywords_type: theme
+        terms_of_service: https://creativecommons.org/licenses/by/4.0
+        url: https://eoepca.org
       provider:
-        name: EOEPCA
+        name: EOEPCA+
         url: https://eoepca.org/
+    repository:
+      facets:
+          - type

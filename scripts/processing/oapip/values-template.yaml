@@ -10,11 +10,25 @@ customConfig:
   main:
     eoepca: |-
       domain={{ getenv "INGRESS_HOST" }}
+      {{ if eq (getenv "USE_WORKSPACE_API") "true" }}
+      workspace_url=https://workspace-api.{{ getenv "INGRESS_HOST" }}
+      {{ end }}
+      workspace_prefix=ws
 # Uncomment if docker registry credentials have been defined
 # Ref.  https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/kubernetes/#creating-an-image-pull-secret
 # imagePullSecrets:
 #   - name: regcred
+zoofpm:
+  image:
+    tag: eoepca-e912be9fd38445c7416a2b4b3d749b1ae67247ea
+zookernel:
+  env:
+    ZOO_OUTPUT_FORMAT: "stac-collection"
+  image:
+    tag: eoepca-e912be9fd38445c7416a2b4b3d749b1ae67247ea
 workflow:
+  defaultMaxRam: 1024
+  defaultMaxCores: 2
   inputs:
   {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
     WES_URL: {{ getenv "OAPIP_TOIL_WES_URL" }}

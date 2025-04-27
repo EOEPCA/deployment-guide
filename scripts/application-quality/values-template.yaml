@@ -1,133 +1,538 @@
-ingress:
-  enabled: true
-  className: {{ getenv "INGRESS_CLASS" }}
-  domain: application-quality.{{ getenv "INGRESS_HOST" }}
-  annotations:
-    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-  tls:
-    - hosts:
-      - application-quality.{{ getenv "INGRESS_HOST" }}
-      secretName: application-quality-tls
 
-web:
-  image:
-    repository: eoepca/eoepca-appquality-frontend
-    tag: 2025-01-15.1
-    pullPolicy: IfNotPresent
-    #pullSecrets:
-    #  - name: spaceapps-nexus-asb-ro
-  serviceType: NodePort
-  servicePort: 80
-  containerPort: 80
-  replicaCount: 1
+global:
+  ## The internal cluster (sub)domain for services in this deployment,
+  ## typically <namespace>.svc.cluster.local
+  internalDomain: "svc.cluster.local"
 
-api:
-  image:
-    repository: eoepca/eoepca-appquality-backend
-    tag: 2025-01-10.1
-    pullPolicy: IfNotPresent
-    #pullSecrets:
-    #  - name: spaceapps-nexus-asb-ro
-  serviceType: NodePort
-  servicePort: 8000
-  containerPort: 8000
-  replicaCount: 1
-  adminUser: "admin"
-  adminPassword: "admin"
-  adminEmail: "admin@admin"
+  ## A certificate issues for the above domain
+  defaultInternalIssuerRef:
+    kind: ClusterIssuer
+    ## INSTRUCTION: Set to name of certificate issuer for the internal cluster domain
+    name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
 
-persistence:
-  enabled: true
-  createStorageClass: false
-  storageClassName: {{ getenv "STORAGE_CLASS" }}
-  accessMode:
-  - ReadWriteOnce
-  size: 1Gi
+  defaultExternalIssuerRef:
+    kind: ClusterIssuer
+    ## INSTRUCTION: Set to name of certificate issuer for published services
+    name: {{ getenv "CLUSTER_ISSUER" }}
 
-calrissian:
-  image: "terradue/calrissian:0.14.0"
-  volumeSize: "5Gi"
-  maxCores: "2"
-  maxRam: "2Gi"
-  storageClassName: {{ getenv "STORAGE_CLASS" }}
+application-quality:
+  # Values for deploying the Application Quality Building Block in the EOEPCA Develop cluster.
 
-opensearch:
-  # Enable or disable saving runs and reports in Opensearch (default: false)
-  enabled: false
-  # Internal URL of the Opensearch servier (e.g. https://opensearch-cluster-master.application-quality-opensearch.svc.cluster.local:9200)
-  #url:
-  # Name of the Opensearch index where the pipeline runs must be stored (default: application-quality-pipeline-runs)
-  #indexRuns: 
-  # Name of the Opensearch index where the pipeline run reports must be stored (default: application-quality-pipeline-run-reports)
-  #indexReports:
-  # Username and password of an Opensearch user who has access to the two indices above
-  #username:
-  #password:
+  namespace: application-quality
 
-web_server:
-  access_scheme: http
-  force_ssl_redirect: true
-  deploy_mode: prod
-  instance_name: EOEPCA-plus-Testing
-  theme: eoepca-develop
-  log_level: DEBUG
-  version: v0.0.1
-  additional_allowed_host: "localhost, 127.0.0.1, proxy,"
-  django_configuration: prod
+  # Application Quality backend
+  api:
+    image:
+      repository: eoepca/eoepca-appquality-backend
+      tag: 2.0.0-rc1
 
-entrypoint:
-  collectstatic: "true"
-  migrate_db: "true"
-  load_data_on_init_db: "true"
+  # Application Quality frontend
+  web:
+    image:
+      repository: eoepca/eoepca-appquality-frontend
+      tag: 2.0.0-rc1
+    publicUrl: "https://application-quality.{{ getenv "INGRESS_HOST" }}"
 
-db:
-  image:
-    repository: postgres
-    tag: 13
-    pullPolicy: IfNotPresent
-  name: "appquality"
-  user: "admin"
-  password: "admin"
-  serviceType: NodePort
-  servicePort: 5432
-  containerPort: 5432
-  storage:
+  persistence:
+    enabled: true
+    storageClassName: {{ getenv "STORAGE_CLASS" }}
+    createStorageClass: false
+    accessMode:
+    - ReadWriteOnce
     size: 2Gi
 
-external_tools:
-  registry_url: "http://nexus.spaceapplications.com"
+  calrissian:
+    image: "terradue/calrissian:0.14.0"
+    storageClassName: {{ getenv "STORAGE_CLASS" }}
+    volumeSize: "2Gi"
+    maxCores: "2"
+    maxRam: "2Gi"
 
-nodeSelector: {}
+  vclusters:
+    enabled: false
 
-oidc:
-  enabled: {{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" }}
-  realmBaseUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
-  # Client ID and Secret set in SealedSecret
-  clientId: {{ getenv "APP_QUALITY_CLIENT_ID" }}
-  clientSecret: {{ getenv "APP_QUALITY_CLIENT_SECRET" }}
-  preferredUsernameClaimField: "preferred_username"
-  logoutEndpointPath: "end_session"
-  logoutRedirectUrlParameterName: "post_logout_redirect_url"
-  postLogoutRedirectUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
-  loginUrl: "/oidc/authenticate"
-  loginRedirectUrl:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
-  logoutRedirectUrl: "/"
-  rpRedirectUri:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
-  rpSignAlgo: "RS256"
+  opensearch:
+    enabled: false
+    url: "http://opensearch-cluster-master.application-quality.svc.cluster.local:9200"
+    #indexRuns:
+    #indexReports:
+    username: appquality-backend-rw
+    password: ""
 
-sonarqube:
-  enabled: false
-  serverUrl: ""
-  accessToken: ""
+  oidc:
+    enabled: {{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" }}
+    {{- if eq (getenv "OIDC_APPLICATION_QUALITY_ENABLED") "true" }}
+    realmBaseUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
+    clientId: {{ getenv "APP_QUALITY_CLIENT_ID" }}
+    clientSecret: {{ getenv "APP_QUALITY_CLIENT_SECRET" }}
+    preferredUsernameClaimField: "preferred_username"
+    logoutEndpointPath: "end_session"
+    logoutRedirectUrlParameterName: "post_logout_redirect_url"
+    postLogoutRedirectUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
+    loginUrl: "/oidc/authenticate"
+    loginRedirectUrl:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
+    logoutRedirectUrl: "/"
+    rpRedirectUri:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
+    rpSignAlgo: "RS256"
+    {{- end }}
 
-nodeSelector: {}
+  sonarqube:
+    enabled: false
+    serverUrl: application-quality-sonarqube-sonarqube.application-quality.svc.cluster.local:9000
+    accessToken: ""
 
-tolerations: []
+  ingress:
+    enabled: true
+    className: {{ getenv "INGRESS_CLASS" }}
+    domain: application-quality.{{ getenv "INGRESS_HOST" }}
+    annotations:
+      kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+    tls:
+      - hosts:
+        - application-quality.{{ getenv "INGRESS_HOST" }}
+        secretName: application-quality-tls
 
-affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
 
-serviceAccount:
-  create: false
+
+opensearch:
+  # Needed for predictable DNS and resource names
+  fullnameOverride: "application-quality-opensearch"
+
+  replicas: "2"
+
+  persistence:
+    enabled: true
+    storageClass: {{ getenv "STORAGE_CLASS" }}
+    size: 12Gi
+
+  sysctl:
+    enabled: false
+  sysctlInit:
+    enabled: true
+
+  rbac:
+    create: false
+    serviceAccountAnnotations: {}
+    serviceAccountName: "application-quality-opensearch-dashboards-dashboards"
+    # Controls whether or not the Service Account token is automatically mounted to /var/run/secrets/kubernetes.io/serviceaccount
+    automountServiceAccountToken: false
+
+  extraEnvs:
+    - name: DISABLE_INSTALL_DEMO_CONFIG
+      value: "true"
+
+  secretMounts:
+    - name: certs
+      secretName: opensearch-tls-certificate
+      path: /usr/share/opensearch/config/esnode
+    - name: admin-certs
+      secretName: opensearch-admin-certificate
+      path: /usr/share/opensearch/config/admin
+
+  opensearchJavaOpts: "-Xmx2G -Xms2G"
+
+  # https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml#L148-L151
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "1G"
+    limits:
+      cpu: "4000m"
+      memory: "4G"
+
+  config:
+    # https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml#L36-L48
+    log4j2.properties: |
+      status = error
+  
+      appender.console.type = Console
+      appender.console.name = console
+      appender.console.layout.type = PatternLayout
+      appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] [%node_name]%marker %m%n
+ 
+      rootLogger.level = info
+      rootLogger.appenderRef.console.ref = console
+      # c.a.d.a.h.j.AbstractHTTPJwtAuthenticator
+      logger.securityjwt.name = com.amazon.dlic.auth.http.jwt
+      logger.securityjwt.level = trace
+ 
+    opensearch.yml: >
+      cluster.name: opensearch-cluster
+
+      network.host: 0.0.0.0
+
+      plugins:
+        security:
+          nodes_dn:
+            - 'CN=application-quality-opensearch-node'
+          ssl:
+            transport:
+              pemcert_filepath: esnode/tls.crt
+              pemkey_filepath: esnode/tls.key
+              pemtrustedcas_filepath: esnode/ca.crt
+              enforce_hostname_verification: false
+              resolve_hostname: false
+            http:
+              enabled: true
+              pemcert_filepath: esnode/tls.crt
+              pemkey_filepath: esnode/tls.key
+              pemtrustedcas_filepath: esnode/ca.crt
+              clientauth_mode: OPTIONAL
+          allow_unsafe_democertificates: false
+          allow_default_init_securityindex: true
+          authcz:
+            admin_dn:
+              # Use the "commonName" from the Certificate object (see in templates)
+              # - CN=opensearch-admin,OU=client,O=client,L=test,C=de
+              - CN=opensearch-admin
+          audit.type: internal_opensearch
+          enable_snapshot_restore_privilege: true
+          check_snapshot_restore_write_privileges: true
+          restapi:
+            roles_enabled: ["all_access", "security_rest_api_access"]
+          system_indices:
+            enabled: true
+            indices:
+              [
+                ".opendistro-alerting-config",
+                ".opendistro-alerting-alert*",
+                ".opendistro-anomaly-results*",
+                ".opendistro-anomaly-detector*",
+                ".opendistro-anomaly-checkpoints",
+                ".opendistro-anomaly-detection-state",
+                ".opendistro-reports-*",
+                ".opendistro-notifications-*",
+                ".opendistro-notebooks",
+                ".opendistro-asynchronous-search-response*",
+              ]
+  securityConfig:
+    enabled: true
+    path: "/usr/share/opensearch/config/opensearch-security"
+    config:
+      dataComplete: false
+      data:
+        config.yml: |-
+          _meta:
+            type: "config"
+            config_version: 2
+
+          config:
+            dynamic:
+              kibana:
+                multitenancy_enabled: true
+                # https://opensearch.org/docs/latest/security/configuration/best-practices/#7-consider-disabling-the-private-tenant
+                #private_tenant_enabled: false
+                server_username: 'dashboards-client'
+                index: '.opensearch-dashboards'
+
+              do_not_fail_on_forbidden: false
+
+              http:
+                anonymous_auth_enabled: false
+
+              authc:
+                openid_auth_domain:
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 0
+                  http_authenticator:
+                    type: openid
+                    #challenge: false
+                    challenge: true
+                    config:
+                      ## How to determine the username
+                      subject_key: preferred_username
+                      ## How to determine which backend_roles a user belongs to
+                      roles_key: opensearch-roles
+                      openid_connect_url: https://auth.eoepca-testing.spaceapplications.com/realms/eoepca/.well-known/openid-configuration
+                  authentication_backend:
+                    type: noop
+
+                basic_internal_auth_domain:
+                  description: "Authenticate via HTTP Basic against internal users database"
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 1 
+                  http_authenticator:
+                    type: basic
+                    challenge: true
+                  authentication_backend:
+                    type: intern
+
+                clientcert_auth_domain:
+                  description: "Authenticate via SSL client certificates"
+                  http_enabled: true
+                  transport_enabled: false
+                  order: 2
+                  http_authenticator:
+                    type: clientcert
+                    config:
+                      username_attribute: cn
+                    challenge: false
+                  authentication_backend:
+                    type: noop
+
+        internal_users.yml: |-
+          _meta:
+            type: "internalusers"
+            config_version: 2
+
+          spaceapps:
+            hash: "$2y$12$Fz7OW72EtL1KPMdPgtL.YuASfcjHCMm9NSGUaa6yxo9mtdVQcQNcS"
+            reserved: true
+            backend_roles:
+            - "admin"
+            description: "Temporary admin user (Delete me)"
+
+          appquality-backend-ro:
+            hash: "$2y$12$EzrBjng/196TSFJl15LwMOpvY2mDDs.pqPBcM3nQmB02YFQ.yU4GC"
+            description: "User for accessing Application Quality data in read-only mode"
+
+          appquality-backend-rw:
+            hash: "$2y$12$w8obM9zTRNAZB/R66objZedabMGPKz8IN3vifs5hjVSJwUgV3BnqC"
+            description: "User for accessing Application Quality data in read-write mode"
+
+
+        roles.yml: |-
+          _meta:
+            type: "roles"
+            config_version: 2
+
+          application-quality-ro:
+            cluster_permissions:
+              - cluster_all
+            index_permissions:
+              - index_patterns:
+                - "application-quality-*"
+                - "appquality-*"
+                allowed_actions:
+                  - read
+
+          application-quality-rw:
+            cluster_permissions:
+              - cluster_all
+            index_permissions:
+              - index_patterns:
+                - "application-quality-*"
+                - "appquality-*"
+                allowed_actions:
+                  - crud
+
+          application-quality-own-data-access:
+            reserved: false
+            hidden: false
+            cluster_permissions: []
+            index_permissions:
+              - index_patterns:
+                - application-quality-*
+                ## Document Level Security filter
+                dls: "{ \"bool\": { \"must\" : { \"match\": { \"attributes.authentication_subject\" : \"${user.name}\" } } } }"
+                allowed_actions:
+                  - crud
+
+
+        roles_mapping.yml: |-
+          _meta:
+            type: "rolesmapping"
+            config_version: 2
+
+          ## all_access is a built-in role
+          all_access:
+            reserved: false
+            backend_roles: []
+            #- "admin"
+            users:
+            - "spaceapps"
+            description: "Maps admin to all_access"
+
+          dashboard_server:
+            reserved: true
+            hidden: false
+            backend_roles: []
+            hosts: []
+            users:
+            - "dashboards-client"
+            - "spaceapps"
+            and_backend_roles: []
+
+          kibana_server:
+            reserved: true
+            hidden: false
+            # backend_roles: []
+            backend_roles:
+            # This is a group membership defined in KeyCloak
+            - "[opensearch_all_access]"
+            - "alice"
+            - "bob"
+            - "eric"
+            hosts: []
+            users:
+            - "dashboards-client"
+            - "spaceapps"
+            and_backend_roles: []
+
+          kibana_user:
+            reserved: true
+            hidden: false
+            backend_roles: []
+            hosts: []
+            users:
+            - "appquality-backend-ro"
+            - "appquality-backend-rw"
+            and_backend_roles: []
+
+          application-quality-ro:
+            users:
+            - "appquality-backend-ro"
+
+          application-quality-rw:
+            reserved: false
+            users:
+            - "appquality-backend-rw"
+            backend_roles:
+            # This is a group membership defined in KeyCloak
+            - "[opensearch_all_access]"
+            - "alice"
+            - "bob"
+            - "eric"
+
+        # action_groups.yml: |-
+        # tenants.yml: |-
+
+
+opensearch-dashboards:
+
+  # Needed for predictable DNS and resource names
+  fullnameOverride: "application-quality-opensearch-dashboards"
+
+  ingress:
+    enabled: true
+    className: {{ getenv "INGRESS_CLASS" }}
+    domain: application-quality.{{ getenv "INGRESS_HOST" }}
+    annotations:
+      kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+    hosts:
+      - host: application-quality.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - path: /dashboards
+            pathType: Prefix
+            backend:
+              serviceName: application-quality-opensearch-dashboards
+              servicePort: 5601
+    tls:
+      - hosts:
+        - application-quality.{{ getenv "INGRESS_HOST" }}
+        secretName: application-quality-tls
+
+  config:
+    opensearch_dashboards.yml:
+      server:
+        name: "Application Quality Dashboards"
+        host: 0.0.0.0
+        # Change the entry point/base URL of opensearch-dashboards
+        basePath: /dashboards
+        rewriteBasePath: true
+        maxPayloadBytes: 1048576
+        ssl:
+          # Enables SSL communication between the OpenSearch Dashboards server and the user’s web browser.
+          enabled: true
+          certificateAuthorities: [ "/usr/share/opensearch-dashboards/certs/ca.crt" ]
+          certificate: /usr/share/opensearch-dashboards/certs/tls.crt
+          key: /usr/share/opensearch-dashboards/certs/tls.key
+
+      opensearch:
+        logQueries: true
+
+        ssl:
+          # Establishes communication between OpenSearch and OpenSearch Dashboards. Valid values are full, certificate, or none.
+          # certificate = verify the certificate but not the hostname
+          verificationMode: full
+          alwaysPresentCertificate: true
+          certificateAuthorities: [ "/usr/share/opensearch-dashboards/admincerts/ca.crt" ]
+          certificate: /usr/share/opensearch-dashboards/admincerts/tls.crt
+          key: /usr/share/opensearch-dashboards/admincerts/tls.key
+
+      logging:
+        verbose: true
+
+      opensearch_security:
+        # https://opensearch.org/docs/latest/security/authentication-backends/openid-connect/#configuration-settings
+        auth.multiple_auth_enabled: true
+        auth.type: ["basicauth", "openid"]
+
+        openid:
+          # OIDC parameters provided using environment variables
+          connect_url: {{ getenv "OSD_CONNECT_URL" }}
+          client_id: {{ getenv "APP_QUALITY_CLIENT_ID" }}
+          client_secret: {{ getenv "APP_QUALITY_CLIENT_SECRET" }}
+          base_redirect_url: {{ getenv "OSD_BASE_REDIRECT" }}
+          # scope: openid profile email
+          scope: openid roles profile user_name email
+          header: Authorization
+          verify_hostnames: false
+          trust_dynamic_headers: "true"
+
+      opensearchDashboards:
+        # The default application to load.
+        # defaultAppId: "home"
+
+        branding:
+          # "https://eoepca.readthedocs.io/projects/deploy/en/stable/img/favicon.ico"
+          logo:
+            defaultUrl: "https://eoepca.org/media_portal/images/eoepca_logo_no_bg.original.png"
+            #darkModeUrl: ""
+          mark:
+            defaultUrl: "https://eoepca.org/media_portal/images/eoepca_logo_no_bg.original.png"
+            #darkModeUrl: ""
+          loadingLogo:
+            defaultUrl: "https://eoepca.org/media_portal/images/eoepca_logo_no_bg.original.png"
+            #darkModeUrl: ""
+          faviconUrl: "https://eoepca.org/media_portal/images/eoepca_logo_no_bg.original.png"
+          applicationTitle: "Application Quality Dashboards"
+          useExpandedHeader: false
+
+        # Set the backend roles in groups or users, whoever has the backend roles or exactly match the user ids defined in this config will be regard as dashboard admin.
+        # Dashboard admin will have the access to all the workspaces(workspace.enabled: true) and objects inside OpenSearch Dashboards.
+        # The default config is [], and no one will be dashboard admin. 
+        # If the user config is set to wildcard ["*"], anyone will be dashboard admin.
+        # dashboardAdmin.groups: ["dashboard_admin"]
+        # dashboardAdmin.users: ["dashboard_admin"]
+        # dashboardAdmin.users: ["dashboards_client", "spaceapps"]
+
+      # Set the value of this setting to true to enable plugin application config. By default it is disabled.
+      application_config.enabled: true
+
+      # Set the value of this setting to true to enable plugin CSP handler. By default it is disabled.
+      # It requires the application config plugin as its dependency.
+      # csp_handler.enabled: false
+
+      home:
+        disableWelcomeScreen: false
+        disableNewThemeModal: false
+
+  # Load environment variables from kubernetes secret or config map
+  envFrom:
+  - secretRef:
+      name: application-quality-opensearch-dashboards-openid-config
+  # - configMapRef:
+  #     name: application-quality-opensearch-dashboards-openid-config
+
+  secretMounts:
+    - name: certs
+      secretName: opensearch-dashboards-tls-certificate
+      path: /usr/share/opensearch-dashboards/certs
+    - name: clientcerts
+      secretName: opensearch-dashboards-client-certificate
+      path: /usr/share/opensearch-dashboards/clientcerts
+    - name: admincerts
+      secretName: opensearch-admin-certificate
+      path: /usr/share/opensearch-dashboards/admincerts

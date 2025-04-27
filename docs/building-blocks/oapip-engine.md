@@ -90,6 +90,7 @@ Different Execution Engines can be selected, according to the type of backend. T
 The following Execution Engine specific configuration parameters needs to be setup:
 
 For Calrissian:
+
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run the processing workflows.
     - *Example*: `kubernetes.io/os`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
@@ -97,6 +98,7 @@ For Calrissian:
     - *Example*: `linux`
 
 For Toil:
+
 - **`OAPIP_TOIL_WES_URL`**: The Toil WES service endpoint, including the path. Must be ending with `/ga4gh/wes/v1/`
     - *Example*: `https://toil.hpc.host/ga4gh/wes/v1/`
     - *Read more*: [Zoo Wes Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
@@ -116,7 +118,7 @@ For Toil:
 helm repo add zoo-project https://zoo-project.github.io/charts/
 helm repo update zoo-project
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.3.22 \
+  --version 0.4.14 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace
@@ -160,7 +162,7 @@ After it completes, you should see a JSON snippet confirming the newly created c
 
 ---
 
-### 2.2 Define Resource Protection
+### 2.2 Define Resource Protection (Optional)
 
 By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to **restrict** or **fine-tune** access to certain endpoints (like `/ogc-api/jobs/`).
 
