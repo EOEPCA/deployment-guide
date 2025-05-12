@@ -1073,6 +1073,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datacube-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datacube Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1519,6 +1540,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Run the Configuration Script">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oidc-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      OIDC Authentication
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1754,6 +1790,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Run the Configuration Script">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oidc-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      OIDC Authentication
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1899,27 +1950,27 @@
 
 
 <h1 id="application-quality-deployment-guide">Application Quality Deployment Guide<a class="headerlink" href="#application-quality-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<blockquote>
-<p>OIDC Authentication is currently a requirement of this Building Block. </p>
-</blockquote>
-<p>The <strong>Application Quality</strong> Building Block (BB) supports the evolution of scientific algorithms from research prototypes to production-grade processing workflows. It provides tooling to verify non-functional requirements—code quality, best practices, vulnerability scanning, performance testing—and to manage these checks via pipelines integrated into a typical CI/CD process.</p>
+<p>The <strong>Application Quality Building Block (BB)</strong> supports the transition of scientific algorithms from research prototypes to production-grade workflows. It provides tools for verifying code quality, security best practices, vulnerability scanning, performance testing and orchestrating these checks via pipelines integrated into a CI/CD process.</p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The <strong>Application Quality Building Block</strong> provides tooling to encourage best practices in software development and to test (and optimize) the performance of processing workflows in a sandbox environment. It includes:</p>
+<p>The <strong>Application Quality Building Block</strong> provides tools and processes designed to:</p>
 <ul>
-<li><strong>Development Best Practice</strong>: Static code analysis, vulnerability scans, best practice checks for open reproducible science.</li>
-<li><strong>Application Quality Tooling</strong>: Container-based tools that can be orchestrated in pipelines (e.g. SonarQube, Bandit, Sphinx, etc.).</li>
-<li><strong>Application Performance</strong>: Tools supporting performance testing and optimisation of processing workflows.</li>
+<li><strong>Ensure Best Practices:</strong> Including static code analysis, security scanning, and adherence to open science standards.</li>
+<li><strong>Streamline Quality Checks:</strong> Containerised tooling such as SonarQube, Bandit, and Sphinx, integrated into automated pipelines.</li>
+<li><strong>Measure Performance:</strong> Tools and methods to test and optimise workflow execution performance.</li>
 </ul>
+<blockquote>
+<p><strong>Important:</strong> The Application Quality BB requires <strong>APISIX</strong> as an ingress controller to support OIDC authentication and API management. Deployments using NGINX ingress without additional OIDC plugins or proxies will not function correctly.</p>
+</blockquote>
 <hr />
 <h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">⚓︎</a></h2>
 <ul>
-<li><strong>Application Quality Database</strong>: Stores definitions of analysis tools, pipelines, and pipeline execution metadata.</li>
-<li><strong>Application Quality Web Portal</strong>: Front-end for pipeline creation, management, and viewing results.</li>
-<li><strong>Application Quality API</strong>: Backend service that provides data to the Web Portal and interacts with the database.</li>
-<li><strong>Application Quality Engine</strong>: Orchestrates pipeline executions. Submits CWL documents to a CWL runner (e.g. Calrissian) for container-based tasks.</li>
-<li><strong>CWL Runner (Calrissian)</strong>: Runs each step in containers on Kubernetes.</li>
-<li><strong>Optional</strong>: OpenSearch &amp; OpenSearch Dashboards to store, visualise, and analyze results.</li>
+<li><strong>Database:</strong> Stores definitions for analysis tools, pipelines, and execution metadata.</li>
+<li><strong>Web Portal:</strong> User interface for creating pipelines, executing them, and reviewing results.</li>
+<li><strong>Backend API:</strong> Provides backend services for the web portal, interacting with the database.</li>
+<li><strong>Pipeline Engine:</strong> Manages and orchestrates pipeline execution, submitting CWL workflows to runners like Calrissian.</li>
+<li><strong>CWL Runner (Calrissian):</strong> Executes workflow steps in Kubernetes containers.</li>
+<li><strong>OpenSearch &amp; Dashboards (Optional):</strong> Stores, visualises, and analyses pipeline execution results.</li>
 </ul>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
@@ -1954,6 +2005,11 @@
 <td><a href="../iam/main-iam/">Deployment Guide</a></td>
 </tr>
 <tr>
+<td>APISIX Ingress Controller</td>
+<td>Installed and configured for OIDC</td>
+<td><a href="../prerequisites/apisix-ingress.md">APISIX Ingress Guide</a></td>
+</tr>
+<tr>
 <td>TLS Certificates</td>
 <td>Managed via <code>cert-manager</code> or manually</td>
 <td><a href="../../prerequisites/tls/">TLS Certificate Management Guide</a></td>
@@ -1977,28 +2033,24 @@
 <h3 id="1-run-the-configuration-script">1. Run the Configuration Script<a class="headerlink" href="#1-run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-application-quality.sh
 </span></code></pre></div>
-<p><strong>Configuration Parameters</strong> include:</p>
+<p>Provide values for:</p>
 <ul>
-<li><strong><code>INGRESS_HOST</code></strong>: Base domain (e.g. <code>example.org</code>)</li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Name of your storage class (e.g. <code>standard</code>, <code>managed-nfs-storage-retain</code>)</li>
-<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager issuer name (e.g. <code>letsencrypt-prod</code>)</li>
-<li><strong><code>INTERNAL_CLUSTER_ISSUER</code></strong>: Name of the cert-manager ClusterIssuer for internal TLS. (Default: <code>eoepca-ca-clusterissuer</code>)</li>
+<li><strong><code>INGRESS_HOST</code></strong>: Your base domain (e.g. <code>example.org</code>).</li>
+<li><strong><code>STORAGE_CLASS</code></strong>: Kubernetes storage class name.</li>
+<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager issuer name.</li>
+<li><strong><code>INTERNAL_CLUSTER_ISSUER</code></strong>: Internal TLS issuer (default: <code>eoepca-ca-clusterissuer</code>).</li>
 </ul>
-<p><strong>OIDC Configuration</strong>:</p>
-<blockquote>
-<p>OIDC authentication is currently a requirement of this Building Block.</p>
-</blockquote>
-<p>If you choose to enable OIDC authentication, you will be asked to provide.
-We will configure the clients in a later step, just provide the names for now.</p>
+<h4 id="oidc-authentication">OIDC Authentication<a class="headerlink" href="#oidc-authentication" title="Permanent link">⚓︎</a></h4>
+<p>OIDC authentication requires APISIX ingress. If using APISIX:</p>
 <ul>
-<li><strong><code>APP_QUALITY_CLIENT_ID</code></strong>: OIDC client ID for the Application Quality Building Block. (use <code>application-quality</code>)</li>
+<li><strong><code>APP_QUALITY_CLIENT_ID</code></strong>: Set the client ID (<code>application-quality</code>).</li>
 </ul>
 <h3 id="2-apply-secrets">2. Apply Secrets<a class="headerlink" href="#2-apply-secrets" title="Permanent link">⚓︎</a></h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash apply-secrets.sh
 </span></code></pre></div>
 <h3 id="3-deploy-via-helm">3. Deploy via Helm<a class="headerlink" href="#3-deploy-via-helm" title="Permanent link">⚓︎</a></h3>
 <blockquote>
-<p><strong>Note</strong>: While the Application Quality BB is not yet in the official <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Helm charts, you can install it directly from the GitHub repository.</p>
+<p><strong>Note:</strong> Application Quality is not yet in the official Helm charts. Deploy directly from GitHub.</p>
 </blockquote>
 <ol>
 <li><strong>Clone the reference repository</strong>:</li>
@@ -2009,9 +2061,9 @@ We will configure the clients in a later step, just provide the names for now.</
 <ol start="2">
 <li><strong>Install</strong> with Helm:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>reference-repo/helm
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>reference-repo/application-quality-reference-deployment
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>application-quality<span class="w"> </span>reference-repo/helm<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>application-quality<span class="w"> </span>reference-repo/application-quality-reference-deployment<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--namespace<span class="w"> </span>application-quality<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml

@@ -1303,6 +1303,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datacube-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datacube Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2070,7 +2091,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-api<span class="w"> </span>eoepca-dev/registration-api<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-beta2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc1<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-api/generated-values.yaml
@@ -2096,7 +2117,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-beta2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc1<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
@@ -2164,17 +2185,17 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 </span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="s">{</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s">  &quot;inputs&quot;: {</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">    &quot;type&quot;: &quot;dataset&quot;,</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="s">    &quot;source&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/resource-registration/data/simple-item.json&quot;,</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">    &quot;target&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">  }</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s">    &quot;inputs&quot;: {</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">        &quot;type&quot;: &quot;collection&quot;,</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="s">        &quot;source&quot;: {&quot;rel&quot;: &quot;collection&quot;, &quot;href&quot;: &quot;https://raw.githubusercontent.com/james-hinton/temp-data-store/refs/heads/main/stac-collection.json&quot;},</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">        &quot;target&quot;: {&quot;rel&quot;: &quot;https://api.stacspec.org/v1.0.0/core&quot;, &quot;href&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;}</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">    }</span>
 </span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s">}</span>
 </span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <ul>
-<li><strong>type</strong>: Use <code>"dataset"</code> for STAC <abbr title="Earth Observation">EO</abbr> data.</li>
-<li><strong>source</strong>: A valid STAC Item URL (in this example, hosted on GitHub).</li>
+<li><strong>type</strong>: Use <code>"collection"</code> for STAC Colletion <abbr title="Earth Observation">EO</abbr> data.</li>
+<li><strong>source</strong>: A valid STAC Collection URL (in this example, hosted on GitHub).</li>
 <li><strong>target</strong>: Your STAC server endpoint where the resource is to be registered.</li>
 </ul>
 <h3 id="validating-the-registration">Validating the Registration<a class="headerlink" href="#validating-the-registration" title="Permanent link">⚓︎</a></h3>

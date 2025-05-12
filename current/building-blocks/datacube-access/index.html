@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/data-access/">
+        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/datacube-access/">
       
       
-        <link rel="prev" href="../resource-registration/">
+        <link rel="prev" href="../data-access/">
       
       
-        <link rel="next" href="../datacube-access/">
+        <link rel="next" href="../processing/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data Access - EOEPCA Deployment Guide</title>
+        <title>Datacube Access - EOEPCA Deployment Guide</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-access-deployment-guide" class="md-skip">
+        <a href="#datacube-access-deployment-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -101,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Access
+              Datacube Access
             
           </span>
         </div>
@@ -1060,6 +1060,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1076,7 +1097,7 @@
           
   
   <span class="md-ellipsis">
-    Data Access
+    Datacube Access
   </span>
   
 
@@ -1087,7 +1108,7 @@
         
   
   <span class="md-ellipsis">
-    Data Access
+    Datacube Access
   </span>
   
 
@@ -1115,14 +1136,29 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#components-overview" class="md-nav__link">
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Components Overview
+      Key Features
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interfaces
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1142,49 +1178,73 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Deployment Steps">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-and-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation and Operation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation and Operation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-run-the-configuration-script" class="md-nav__link">
+  <a href="#1-automated-validation" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Run the Configuration Script
+      1. Automated Validation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-apply-secrets" class="md-nav__link">
+  <a href="#2-manual-validation-via-web-browser" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Apply Secrets
+      2. Manual Validation via Web Browser
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-deploy-postgresql-operator-and-eoapi" class="md-nav__link">
+  <a href="#3-manual-validation-via-curl" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Deploy PostgreSQL Operator and eoAPI
+      3. Manual Validation via cURL
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Manual Validation via cURL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-api-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic API Check
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-monitoring-the-deployment" class="md-nav__link">
+  <a href="#collection-access-test" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Monitoring the Deployment
+      Collection Access Test
     </span>
   </a>
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+        
           <li class="md-nav__item">
-  <a href="#5-accessing-the-data-access-services" class="md-nav__link">
+  <a href="#validating-kubernetes-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Accessing the Data Access Services
+      Validating Kubernetes Resources
     </span>
   </a>
   
@@ -1196,87 +1256,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#load-sample-collection" class="md-nav__link">
+  <a href="#further-reading-official-docs" class="md-nav__link">
     <span class="md-ellipsis">
-      Load Sample Collection
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-and-validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing and Validation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Testing and Validation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-access-the-swagger-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Access the Swagger UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-access-the-stac-manager-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Access the STAC Manager UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-run-demo-jupyter-notebooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Run Demo Jupyter Notebooks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-perform-basic-api-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Perform Basic API Tests
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-test-suite-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Test Suite Execution
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
+      Further Reading &amp; Official Docs
     </span>
   </a>
   
@@ -1286,27 +1268,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../datacube-access/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Datacube Access
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1749,14 +1710,29 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#components-overview" class="md-nav__link">
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      Components Overview
+      Key Features
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interfaces
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1776,49 +1752,73 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Deployment Steps">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-and-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation and Operation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation and Operation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-run-the-configuration-script" class="md-nav__link">
+  <a href="#1-automated-validation" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Run the Configuration Script
+      1. Automated Validation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-apply-secrets" class="md-nav__link">
+  <a href="#2-manual-validation-via-web-browser" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Apply Secrets
+      2. Manual Validation via Web Browser
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-deploy-postgresql-operator-and-eoapi" class="md-nav__link">
+  <a href="#3-manual-validation-via-curl" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Deploy PostgreSQL Operator and eoAPI
+      3. Manual Validation via cURL
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Manual Validation via cURL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-api-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic API Check
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-monitoring-the-deployment" class="md-nav__link">
+  <a href="#collection-access-test" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Monitoring the Deployment
+      Collection Access Test
     </span>
   </a>
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+        
           <li class="md-nav__item">
-  <a href="#5-accessing-the-data-access-services" class="md-nav__link">
+  <a href="#validating-kubernetes-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Accessing the Data Access Services
+      Validating Kubernetes Resources
     </span>
   </a>
   
@@ -1830,87 +1830,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#load-sample-collection" class="md-nav__link">
+  <a href="#further-reading-official-docs" class="md-nav__link">
     <span class="md-ellipsis">
-      Load Sample Collection
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-and-validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing and Validation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Testing and Validation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-access-the-swagger-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Access the Swagger UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-access-the-stac-manager-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Access the STAC Manager UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-run-demo-jupyter-notebooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Run Demo Jupyter Notebooks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-perform-basic-api-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Perform Basic API Tests
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-test-suite-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Test Suite Execution
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstallation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Uninstallation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#further-reading" class="md-nav__link">
-    <span class="md-ellipsis">
-      Further Reading
+      Further Reading &amp; Official Docs
     </span>
   </a>
   
@@ -1931,7 +1853,7 @@
                   
 
   
-    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/data-access.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/datacube-access.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1939,42 +1861,32 @@
   
 
 
-<h1 id="data-access-deployment-guide">Data Access Deployment Guide<a class="headerlink" href="#data-access-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p>The <strong>Data Access</strong> Building Block provides feature-rich and reliable interfaces to geospatial data assets stored in the platform, addressing both human and machine users. This guide provides step-by-step instructions to deploy the Data Access BB in your Kubernetes cluster.</p>
+<h1 id="datacube-access-deployment-guide">Datacube Access Deployment Guide<a class="headerlink" href="#datacube-access-deployment-guide" title="Permanent link">⚓︎</a></h1>
+<blockquote>
+<p><strong>Note</strong>: This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.</p>
+</blockquote>
+<p>The <strong>Datacube Access</strong> building block allows users to access and explore multi-dimensional Earth Observation (<abbr title="Earth Observation">EO</abbr>) data using standard APIs. It is built on open standards from OGC (Open Geospatial Consortium). </p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The Data Access Building Block provides STAC data discovery, OGC API Features and OGC API Tiles for vector and raster data access.</p>
-<p>The building block offers:</p>
+<p>Datacube Access gives users simple ways to discover, access, and process large Earth Observation datasets, known as &ldquo;datacubes.&rdquo; These datacubes are structured, multi-dimensional sets of data, useful for various analytics and visualisation tasks.</p>
+<h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓︎</a></h3>
 <ul>
-<li>STAC API for data discovery</li>
-<li>Support for retrieval and visualisation of raster and vector data via standard OGC APIs</li>
-<li>Dynamic specification of which datasets should be delivered with which data access services</li>
-<li>Integration with other building blocks through shared databases (e.g., pgSTAC)</li>
+<li><strong>Easy Data Access</strong>: Quickly access and manage large <abbr title="Earth Observation">EO</abbr> datacubes.</li>
+<li><strong>Uses Open Standards</strong>: Implements OGC GeoDataCube API, OGC Coverages, OGC Features and STAC APIs.</li>
+<li><strong>Data Discovery</strong>: Easily discover data with STAC API integration.</li>
+<li><strong>Flexible Data Storage</strong>: Works with common storage solutions like S3, HTTP or local file systems.</li>
+<li><strong>Data Processing</strong>: Execute custom processing jobs using openEO and OGC API Processes.</li>
 </ul>
-<hr />
-<h2 id="components-overview">Components Overview<a class="headerlink" href="#components-overview" title="Permanent link">⚓︎</a></h2>
-<p>The Data Access BB consists of the following main components:</p>
-<ol>
-<li>
-<p><strong>eoAPI</strong>: A set of microservices for geospatial data access, including:</p>
+<h3 id="interfaces">Interfaces<a class="headerlink" href="#interfaces" title="Permanent link">⚓︎</a></h3>
+<p>Datacube Access provides the following APIs:</p>
 <ul>
-<li><strong>stac</strong>: STAC API for accessing geospatial metadata.</li>
-<li><strong>raster</strong>: Access to raster data via OGC APIs.</li>
-<li><strong>vector</strong>: Access to vector data via OGC APIs.</li>
+<li><strong>OGC API Coverages</strong></li>
+<li><strong>OGC API Features</strong></li>
+<li><strong>STAC API</strong></li>
+<li><strong>openEO API for process discovery and execution</strong></li>
 </ul>
-</li>
-<li>
-<p><strong>PostgreSQL with PostGIS and pgSTAC</strong><br>
-   Database for storing geospatial metadata and data managed by the <a href="https://access.crunchydata.com/documentation/postgres-operator">Crunchy Data Postgres Operator (pgo)</a>.</p>
-</li>
-<li>
-<p><strong>eoapi-support</strong><br>
-   Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.</p>
-</li>
-</ol>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
-<p>Before deploying the Data Access Building Block, ensure you have the following:</p>
 <table>
 <thead>
 <tr>
@@ -2000,228 +1912,108 @@
 <td><a href="https://kubernetes.io/docs/tasks/tools/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>Ingress Controller</td>
+<td>Ingress</td>
 <td>Properly installed</td>
 <td><a href="../../prerequisites/ingress/overview/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>TLS Certificates</td>
-<td>Managed via <code>cert-manager</code> or manually</td>
-<td><a href="../../prerequisites/tls/">TLS Certificate Management Guide</a></td>
+<td>Cert Manager</td>
+<td>Properly installed</td>
+<td><a href="../../prerequisites/tls/">Installation Guide</a></td>
 </tr>
 <tr>
-<td>Object Store</td>
-<td>Accessible object store (i.e. MinIO)</td>
-<td><a href="../../prerequisites/minio/">MinIO Deployment Guide</a></td>
+<td>STAC Catalog</td>
+<td>Properly installed</td>
+<td><a href="../resource-discovery/">Deployment Guide</a></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Clone the Deployment Guide Repository:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/EOEPCA/deployment-guide
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/data-access
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/datacube-access
 </span></code></pre></div>
 <p><strong>Validate your environment:</strong></p>
-<p>Run the validation script to ensure all prerequisites are met:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>check-prerequisites.sh
 </span></code></pre></div>
 <hr />
 <h2 id="deployment-steps">Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permanent link">⚓︎</a></h2>
-<h3 id="1-run-the-configuration-script">1. Run the Configuration Script<a class="headerlink" href="#1-run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
-<p>The configuration script will prompt you for necessary configuration values, generate configuration files, and prepare for deployment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-data-access.sh
-</span></code></pre></div>
-<p><strong>Configuration Parameters</strong></p>
-<p>During the script execution, you will be prompted to provide:</p>
-<ul>
-<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.<ul>
-<li><em>Example</em>: <code>example.com</code></li>
-</ul>
-</li>
-<li><strong><code>CLUSTER_ISSUER</code></strong> (optional): Cert-manager Cluster Issuer for TLS certificates.<ul>
-<li><em>Example</em>: <code>letsencrypt-prod</code></li>
-</ul>
-</li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.<ul>
-<li><em>Example</em>: <code>standard</code></li>
-</ul>
-</li>
-<li><strong><code>S3_HOST</code></strong>: Host URL for MinIO or S3-compatible storage.<ul>
-<li><em>Example</em>: <code>minio.example.com</code></li>
-</ul>
-</li>
-<li><strong><code>S3_ACCESS_KEY</code></strong>: Access key for your S3 storage.</li>
-<li><strong><code>S3_SECRET_KEY</code></strong>: Secret key for S3 storage.</li>
-</ul>
-<h3 id="2-apply-secrets">2. Apply Secrets<a class="headerlink" href="#2-apply-secrets" title="Permanent link">⚓︎</a></h3>
-<p>The script will create a Kubernetes secret for the S3 credentials. Ensure you have the <code>S3_ACCESS_KEY</code> and <code>S3_SECRET_KEY</code> set in your environment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash<span class="w"> </span>apply-secrets.sh
-</span></code></pre></div>
-<h3 id="3-deploy-postgresql-operator-and-eoapi">3. Deploy PostgreSQL Operator and eoAPI<a class="headerlink" href="#3-deploy-postgresql-operator-and-eoapi" title="Permanent link">⚓︎</a></h3>
 <ol>
-<li><strong>Install the PostgreSQL Operator (pgo) from the Crunchy Data OCI registry:</strong></li>
+<li><strong>Run the Configuration Script</strong></li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>pgo<span class="w"> </span>oci://registry.developers.crunchydata.com/crunchydata/pgo<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">5</span>.6.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--values<span class="w"> </span>postgres/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-datacube-access.sh
 </span></code></pre></div>
+<p><strong>Configuration Parameters</strong>
+During script execution, provide:</p>
+<ul>
+<li><strong><code>INGRESS_HOST</code></strong>: Domain for ingress hosts.</li>
+<li><em>Example</em>: <code>example.com</code></li>
+<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager issuer for TLS certificates.</li>
+<li><em>Example</em>: <code>letsencrypt-http01</code></li>
+</ul>
 <ol start="2">
-<li><strong>Install <code>eoAPI</code>:</strong></li>
+<li><strong>Deploy Datacube Access Using Helm</strong></li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoapi<span class="w"> </span>https://devseed.com/eoapi-k8s/
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoapi
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi<span class="w"> </span>eoapi/eoapi<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.6.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>datacube-access<span class="w"> </span>eoepca-dev/datacube-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>datacube-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
 </span></code></pre></div>
-<ol start="3">
-<li><strong>Deploy STAC Admin Manager</strong></li>
-</ol>
-<blockquote>
-<p>Note: The STAC Manager may not deploy fully, if you see <code>CrashLoopBackOff</code> errors, this is expected. The STAC Manager is not required for the Data Access Building Block to function</p>
-</blockquote>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>stac-manager<span class="w"> </span>eoepca-dev/stac-manager<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.3<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--values<span class="w"> </span>stac-manager/generated-values.yaml
-</span></code></pre></div>
-<ol start="4">
-<li><strong>Deploy the Ingress (APISIX Only):</strong></li>
-</ol>
-<p>If you are using <code>nginx</code> then you can <strong>skip</strong> this step as the ingress will be deployed as part of the <code>eoapi</code> chart.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
-</span></code></pre></div>
-<ol start="5">
-<li><strong>Deploy EOAPI Maps Plugin</strong></li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-maps-plugin<span class="w"> </span>eoepca-dev/eoapi-maps-plugin<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.21<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-maps-plugin/generated-values.yaml
-</span></code></pre></div>
-<ol start="6">
-<li><strong>(Optional) Install <code>eoapi-support</code></strong> for Grafana, Prometheus, and the metrics server:</li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-support<span class="w"> </span>eoapi/eoapi-support<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.1.7<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-support/generated-values.yaml
-</span></code></pre></div>
-<blockquote>
-<p><strong>Note</strong>: If you prefer to monitor Data Access with your own monitoring solution, you can skip this step.</p>
-</blockquote>
 <hr />
-<h3 id="4-monitoring-the-deployment">4. Monitoring the Deployment<a class="headerlink" href="#4-monitoring-the-deployment" title="Permanent link">⚓︎</a></h3>
-<p>After deploying, you can monitor the status of the deployments:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
+<h2 id="validation-and-operation">Validation and Operation<a class="headerlink" href="#validation-and-operation" title="Permanent link">⚓︎</a></h2>
+<h3 id="1-automated-validation">1. Automated Validation<a class="headerlink" href="#1-automated-validation" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
-<p>Check that all pods are in the <code>Running</code> state and that services/ingresses are properly exposed.</p>
-<hr />
-<h3 id="5-accessing-the-data-access-services">5. Accessing the Data Access Services<a class="headerlink" href="#5-accessing-the-data-access-services" title="Permanent link">⚓︎</a></h3>
-<p>Once the deployment is complete and all pods are running, you can access the services:</p>
+<h3 id="2-manual-validation-via-web-browser">2. Manual Validation via Web Browser<a class="headerlink" href="#2-manual-validation-via-web-browser" title="Permanent link">⚓︎</a></h3>
+<p>Verify endpoints using a web browser:</p>
 <ul>
-<li>
-<p><strong>eoAPI STAC API:</strong><br />
-<code>https://eoapi.${INGRESS_HOST}/stac/</code></p>
-</li>
-<li>
-<p><strong>Grafana</strong> (if <code>eoapi-support</code> is installed and ingress is enabled):<br />
-<code>https://eoapisupport.${INGRESS_HOST}/</code></p>
-</li>
-<li>
-<p><strong>eoAPI Maps Plugin:</strong><br />
-<code>https://maps.${INGRESS_HOST}/</code></p>
-</li>
+<li><strong>Landing/Home Page</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>https://datacube-access.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/
+</span></code></pre></div>
+Expect a JSON response with API information and links.</p>
+<ul>
+<li><strong>OpenAPI Documentation</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>https://datacube-access.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/docs
+</span></code></pre></div>
+Interactive UI listing available API endpoints.</p>
+<ul>
+<li><strong>Collections Access</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>https://datacube-access.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/collections
+</span></code></pre></div>
+Verify JSON or HTML response listing available datacube collections.</p>
+<ul>
+<li><strong>Conformance Check</strong></li>
+</ul>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>https://datacube-access.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/conformance
+</span></code></pre></div>
+Confirm OGC API conformance classes and supported standards.</p>
+<h3 id="3-manual-validation-via-curl">3. Manual Validation via cURL<a class="headerlink" href="#3-manual-validation-via-curl" title="Permanent link">⚓︎</a></h3>
+<p>Quick command-line checks:</p>
+<h4 id="basic-api-check">Basic API Check<a class="headerlink" href="#basic-api-check" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>curl<span class="w"> </span>-I<span class="w"> </span><span class="s2">&quot;https://datacube-access.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
+</span></code></pre></div>
+<h4 id="collection-access-test">Collection Access Test<a class="headerlink" href="#collection-access-test" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://datacube-access.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections&quot;</span>
+</span></code></pre></div>
+<hr />
+<h3 id="validating-kubernetes-resources">Validating Kubernetes Resources<a class="headerlink" href="#validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
+<p>Check Kubernetes resource health:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>datacube-access
+</span></code></pre></div>
+<ul>
+<li>Ensure all pods are <code>Running</code>.</li>
 </ul>
 <hr />
-<h2 id="load-sample-collection">Load Sample Collection<a class="headerlink" href="#load-sample-collection" title="Permanent link">⚓︎</a></h2>
-<p>The following steps load a sample <code>Sentinel2-L2A-Iceland</code> collection into eoAPI.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>../ingest.sh
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nb">cd</span><span class="w"> </span>../..
-</span></code></pre></div>
-<p>Check the loaded collection via STAC Browser&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
-</span></code></pre></div>
-<hr />
-<h2 id="testing-and-validation">Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Permanent link">⚓︎</a></h2>
-<p>Below are some quick ways to test and validate the Data Access services.</p>
-<h3 id="1-access-the-swagger-ui">1. Access the Swagger UI<a class="headerlink" href="#1-access-the-swagger-ui" title="Permanent link">⚓︎</a></h3>
-<p>The Data Access Building Block provides Swagger UI documentation for its APIs, allowing you to interact with the APIs directly from your browser.</p>
+<h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
 <ul>
-<li>
-<p><strong>eoAPI STAC API Swagger UI</strong>:<br />
-<code>https://eoapi.${INGRESS_HOST}/stac/api.html</code></p>
-</li>
-<li>
-<p><strong>eoAPI Raster API Swagger UI</strong>:<br />
-<code>https://eoapi.${INGRESS_HOST}/raster/api.html</code></p>
-</li>
-<li>
-<p><strong>eoAPI Vector API Swagger UI</strong>:<br />
-<code>https://eoapi.${INGRESS_HOST}/vector/api.html</code></p>
-</li>
-</ul>
-<p>Replace <code>${INGRESS_HOST}</code> with your actual ingress host domain.</p>
-<h3 id="2-access-the-stac-manager-ui">2. Access the STAC Manager UI<a class="headerlink" href="#2-access-the-stac-manager-ui" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">&quot;</span>
-</span></code></pre></div>
-<h3 id="3-run-demo-jupyter-notebooks">3. Run Demo Jupyter Notebooks<a class="headerlink" href="#3-run-demo-jupyter-notebooks" title="Permanent link">⚓︎</a></h3>
-<p>The <a href="https://github.com/EOEPCA/demo"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo</a> Jupyter Notebooks showcase how to interact with the Data Access services programmatically, including examples for data discovery, visualization, and data download using the Data Access APIs. See the <a href="https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb">04 Data Access Notebook</a> for usage examples.</p>
-<ul>
-<li>
-<p>Before running the notebooks, ensure that sample data is registered into the Data Access component. Follow the <a href="../resource-registration/">Resource Registration Guide</a>.</p>
-</li>
-<li>
-<p>In the notebooks, set the <code>base_domain</code> variable to reflect your endpoint:</p>
-</li>
-</ul>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">base_domain</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{INGRESS_HOST}</span><span class="s2">&quot;</span>
-</span></code></pre></div>
-<p>For more information on how to run the demo Jupyter Notebooks, please visit the <a href="https://github.com/EOEPCA/demo/blob/main/README.md"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>/demo Readme</a>.</p>
-<h3 id="3-perform-basic-api-tests">3. Perform Basic API Tests<a class="headerlink" href="#3-perform-basic-api-tests" title="Permanent link">⚓︎</a></h3>
-<p>You can perform basic tests using tools like <code>curl</code> or directly through the Swagger UI.</p>
-<p><strong>Example: Retrieve STAC API Landing Page</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
-</span></code></pre></div>
-<p><strong>Example: Search STAC Items</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="s1">    &quot;bbox&quot;: [-10, 35, 0, 45],</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="s1">    &quot;datetime&quot;: &quot;2021-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="s1">    &quot;limit&quot;: 10</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="s1">  }&#39;</span>
-</span></code></pre></div>
-<h3 id="4-test-suite-execution">4. Test Suite Execution<a class="headerlink" href="#4-test-suite-execution" title="Permanent link">⚓︎</a></h3>
-<p>Run the <em>Data Access</em> tests from the system test suite.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>../../test-suite.sh<span class="w"> </span>test/data-access
-</span></code></pre></div>
-<p><strong><em>The test results are summarised to the file <code>test-report.xml</code>.</em></strong></p>
-<hr />
-<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
-<p>To uninstall the Data Access Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-maps-plugin<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>stac-manager<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>pgo<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
-</span></code></pre></div>
-<hr />
-<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
-<ul>
-<li><a href="https://github.com/EOEPCA/data-access"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Data Access GitHub Repository</a></li>
-<li><a href="https://github.com/developmentseed/eoAPI">eoAPI Documentation</a></li>
-<li><a href="https://access.crunchydata.com/documentation/postgres-operator/">Crunchy Data Postgres Operator Documentation</a></li>
+<li><a href="https://eoepca.readthedocs.io/projects/datacube-access/en/latest/"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Datacube Access Documentation</a></li>
+<li><a href="https://m-mohr.github.io/geodatacube-api/">OGC GeoDataCube API</a></li>
+<li><a href="https://openeo.org/documentation/1.0/">openEO Documentation</a></li>
 </ul>
 
 
@@ -2258,7 +2050,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../resource-registration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Resource Registration">
+          <a href="../data-access/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Data Access">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -2268,20 +2060,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Resource Registration
+                Data Access
               </div>
             </div>
           </a>
         
         
           
-          <a href="../datacube-access/" class="md-footer__link md-footer__link--next" aria-label="Next: Datacube Access">
+          <a href="../processing/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Datacube Access
+                Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">

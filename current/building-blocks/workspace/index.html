@@ -1075,6 +1075,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datacube-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datacube Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2244,7 +2265,7 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>crossplane<span class="w"> </span>https://charts.crossplane.io/stable
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>crossplane
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>workspace-crossplane<span class="w"> </span>crossplane/crossplane<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span>v1.17.1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span>v1.18.1<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--namespace<span class="w"> </span>workspace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--create-namespace
 </span></code></pre></div>
@@ -2353,7 +2374,7 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <p>Confirm that all pods are <code>Running</code> and no errors are reported.</p>
 <h4 id="2-access-the-workspace-api-swagger-documentation">2. Access the Workspace API Swagger Documentation<a class="headerlink" href="#2-access-the-workspace-api-swagger-documentation" title="Permanent link">⚓︎</a></h4>
 <p>You can view the Workspace API’s Swagger documentation at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>https://workspace-swagger.${INGRESS_HOST}/docs
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>https://workspace-api.${INGRESS_HOST}/docs
 </span></code></pre></div>
 <p>Replace <code>${INGRESS_HOST}</code> with your configured ingress host domain.</p>
 <blockquote>

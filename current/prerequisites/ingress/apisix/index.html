@@ -652,18 +652,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#forced-tls-redirection" class="md-nav__link">
+  <a href="#option-a-deploy-as-nodeport-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Forced TLS Redirection
+      Option A: Deploy as NodePort Service
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#forwarded-port-correction" class="md-nav__link">
+  <a href="#option-b-deploy-as-loadbalancer-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Forwarded Port Correction
+      Option B: Deploy as LoadBalancer Service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forced-tls-redirection-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forced TLS Redirection (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forwarded-port-correction-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forwarded Port Correction (Optional)
     </span>
   </a>
   
@@ -1159,6 +1177,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../building-blocks/datacube-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datacube Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1591,18 +1630,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#forced-tls-redirection" class="md-nav__link">
+  <a href="#option-a-deploy-as-nodeport-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Forced TLS Redirection
+      Option A: Deploy as NodePort Service
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#forwarded-port-correction" class="md-nav__link">
+  <a href="#option-b-deploy-as-loadbalancer-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Forwarded Port Correction
+      Option B: Deploy as LoadBalancer Service
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forced-tls-redirection-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forced TLS Redirection (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forwarded-port-correction-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forwarded Port Correction (Optional)
     </span>
   </a>
   
@@ -1651,46 +1708,63 @@
 <blockquote>
 <p><strong>Disclaimer:</strong> We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.</p>
 </blockquote>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>apisix<span class="w"> </span>https://charts.apiseven.com
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>apisix
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>apisix<span class="w"> </span>apisix/apisix<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.9.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span>--namespace<span class="w"> </span>ingress-apisix<span class="w"> </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span>--set<span class="w"> </span>service.type<span class="o">=</span>NodePort<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span>--set<span class="w"> </span>service.http.nodePort<span class="o">=</span><span class="m">31080</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span>--set<span class="w"> </span>service.tls.nodePort<span class="o">=</span><span class="m">31443</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableIPv6<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableServerTokens<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span>--set<span class="w"> </span>apisix.ssl.enabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span>--set<span class="w"> </span>apisix.pluginAttrs.redirect.https_port<span class="o">=</span><span class="m">443</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span>--set<span class="w"> </span>ingress-controller.enabled<span class="o">=</span><span class="nb">true</span>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>helm repo add apisix https://charts.apiseven.com
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>helm repo update apisix
+</span></code></pre></div>
+<h3 id="option-a-deploy-as-nodeport-service">Option A: Deploy as NodePort Service<a class="headerlink" href="#option-a-deploy-as-nodeport-service" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>apisix<span class="w"> </span>apisix/apisix<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.9.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>--namespace<span class="w"> </span>ingress-apisix<span class="w"> </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--set<span class="w"> </span>service.type<span class="o">=</span>NodePort<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>--set<span class="w"> </span>service.http.nodePort<span class="o">=</span><span class="m">31080</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>--set<span class="w"> </span>service.tls.nodePort<span class="o">=</span><span class="m">31443</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableIPv6<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableServerTokens<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span>--set<span class="w"> </span>apisix.ssl.enabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span>--set<span class="w"> </span>apisix.pluginAttrs.redirect.https_port<span class="o">=</span><span class="m">443</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span>--set<span class="w"> </span>ingress-controller.enabled<span class="o">=</span><span class="nb">true</span>
 </span></code></pre></div>
 <blockquote>
 <p>The above configuration assumes that the Kubernetes cluster exposes NodePorts 31080 (http) and 31443 (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public 80/443 traffic to these exposed ports on the cluster nodes.</p>
+</blockquote>
+<h3 id="option-b-deploy-as-loadbalancer-service">Option B: Deploy as LoadBalancer Service<a class="headerlink" href="#option-b-deploy-as-loadbalancer-service" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>apisix<span class="w"> </span>apisix/apisix<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.9.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>--namespace<span class="w"> </span>ingress-apisix<span class="w"> </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>--set<span class="w"> </span>service.type<span class="o">=</span>LoadBalancer<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>--set<span class="w"> </span>service.http.port<span class="o">=</span><span class="m">80</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span>--set<span class="w"> </span>service.tls.port<span class="o">=</span><span class="m">443</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableIPv6<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span>--set<span class="w"> </span>apisix.enableServerTokens<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span>--set<span class="w"> </span>apisix.ssl.enabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span>--set<span class="w"> </span>apisix.pluginAttrs.redirect.https_port<span class="o">=</span><span class="m">443</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span>--set<span class="w"> </span>ingress-controller.enabled<span class="o">=</span><span class="nb">true</span>
+</span></code></pre></div>
+<blockquote>
 <p>This can be adapted according to the network topology of your cluster environment.</p>
 </blockquote>
-<h3 id="forced-tls-redirection">Forced TLS Redirection<a class="headerlink" href="#forced-tls-redirection" title="Permanent link">⚓︎</a></h3>
+<h3 id="forced-tls-redirection-optional">Forced TLS Redirection (Optional)<a class="headerlink" href="#forced-tls-redirection-optional" title="Permanent link">⚓︎</a></h3>
 <p>The following <code>ApisixGlobalRule</code> is used to configure Apisix to redirect all <code>http</code> traffic to <code>https</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl -n ingress-apisix apply -f -</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="s">apiVersion: apisix.apache.org/v2</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="s">kind: ApisixGlobalRule</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="s">metadata:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s">  name: redirect-to-tls</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s">spec:</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="s">  plugins:</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s">    - name: redirect</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="s">      enable: true</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="s">      config:</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="s">        http_to_https: true</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s">        _meta:</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="s">          filter:</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="s">            # With &#39;!OR&#39; all conditions must be false</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="s">            - &quot;!OR&quot;</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="s">            # Exclude paths used by letsencrypt http challenge</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s">            - [ &#39;request_uri&#39;, &#39;~*&#39;, &#39;^/\.well-known/acme-challenge.*&#39; ]</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="s">            # Use header X-No-Force-Tls to override</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="s">            - [ &quot;http_x_no_force_tls&quot;, &quot;==&quot;, &quot;true&quot; ]</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="s">EOF</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl -n ingress-apisix apply -f -</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="s">apiVersion: apisix.apache.org/v2</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s">kind: ApisixGlobalRule</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s">metadata:</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">  name: redirect-to-tls</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s">spec:</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s">  plugins:</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s">    - name: redirect</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="s">      enable: true</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="s">      config:</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="s">        http_to_https: true</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="s">        _meta:</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="s">          filter:</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="s">            # With &#39;!OR&#39; all conditions must be false</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="s">            - &quot;!OR&quot;</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="s">            # Exclude paths used by letsencrypt http challenge</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="s">            - [ &#39;request_uri&#39;, &#39;~*&#39;, &#39;^/\.well-known/acme-challenge.*&#39; ]</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="s">            # Use header X-No-Force-Tls to override</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="s">            - [ &quot;http_x_no_force_tls&quot;, &quot;==&quot;, &quot;true&quot; ]</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <blockquote>
 <p>The <code>filter</code> is used to suppress the redirection in the specific case of traffic used by the Letsencrypt HTTP01 challenge whilst establishing TLS certificates.<br>
@@ -1701,28 +1775,28 @@ Use of the header <code>X-No-Force-Tls</code> is included to provide an override
 <li><a href="https://apisix.apache.org/docs/apisix/terminology/plugin/#plugin-common-configuration">Plugin Common Configuration</a></li>
 <li><a href="https://github.com/api7/lua-resty-expr?tab=readme-ov-file#comparison-operators">Expression Syntax</a></li>
 </ul>
-<h3 id="forwarded-port-correction">Forwarded Port Correction<a class="headerlink" href="#forwarded-port-correction" title="Permanent link">⚓︎</a></h3>
+<h3 id="forwarded-port-correction-optional">Forwarded Port Correction (Optional)<a class="headerlink" href="#forwarded-port-correction-optional" title="Permanent link">⚓︎</a></h3>
 <p>By default, APISIX sets the <code>X-Forwarded-Port</code> header to its container port (<code>9443</code> by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is <code>443</code>.</p>
 <p>Thus, we apply a global rule that replaces the value <code>9443</code> with the value <code>443</code>.<br>
 <em>Actually the rule also replaces port <code>9080</code> with port <code>80</code> though this should be irrelevant due to prior HTTP-to-HTTPS redirection</em></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl -n ingress-apisix apply -f -</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s">apiVersion: apisix.apache.org/v2</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s">kind: ApisixGlobalRule</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s">metadata:</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s">  name: forwarded-port-correction</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">spec:</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">  plugins:</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s">    - name: serverless-pre-function</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">      enable: true</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">      config:</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s">        phase: &quot;rewrite&quot;</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s">        functions:</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s">          - &quot;return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) &gt; 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end&quot;</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="s">EOF</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl -n ingress-apisix apply -f -</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s">apiVersion: apisix.apache.org/v2</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="s">kind: ApisixGlobalRule</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s">metadata:</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s">  name: forwarded-port-correction</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s">spec:</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s">  plugins:</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s">    - name: serverless-pre-function</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="s">      enable: true</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="s">      config:</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="s">        phase: &quot;rewrite&quot;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="s">        functions:</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="s">          - &quot;return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) &gt; 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end&quot;</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <h3 id="apisix-uninstallation">APISIX Uninstallation<a class="headerlink" href="#apisix-uninstallation" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>ingress-apisix<span class="w"> </span>uninstall<span class="w"> </span>apisix
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>ingress-apisix
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>ingress-apisix<span class="w"> </span>uninstall<span class="w"> </span>apisix
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>ingress-apisix
 </span></code></pre></div>
 
 

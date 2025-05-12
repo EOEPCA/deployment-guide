@@ -1075,6 +1075,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datacube-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datacube Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1329,13 +1350,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-define-resource-protection" class="md-nav__link">
+  <a href="#22-define-resource-protection-optional" class="md-nav__link">
     <span class="md-ellipsis">
-      2.2 Define Resource Protection
+      2.2 Define Resource Protection (Optional)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2.2 Define Resource Protection">
+    <nav class="md-nav" aria-label="2.2 Define Resource Protection (Optional)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1938,13 +1959,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-define-resource-protection" class="md-nav__link">
+  <a href="#22-define-resource-protection-optional" class="md-nav__link">
     <span class="md-ellipsis">
-      2.2 Define Resource Protection
+      2.2 Define Resource Protection (Optional)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2.2 Define Resource Protection">
+    <nav class="md-nav" aria-label="2.2 Define Resource Protection (Optional)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2301,27 +2322,41 @@
 </tbody>
 </table>
 <p>The following Execution Engine specific configuration parameters needs to be setup:</p>
-<p>For Calrissian:
-- <strong><code>NODE_SELECTOR_KEY</code></strong>: Determine which nodes will run the processing workflows.
-    - <em>Example</em>: <code>kubernetes.io/os</code>
-    - <em>Read more</em>: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">Node Selector Documentation</a>
-- <strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector key.
-    - <em>Example</em>: <code>linux</code></p>
-<p>For Toil:
-- <strong><code>OAPIP_TOIL_WES_URL</code></strong>: The Toil WES service endpoint, including the path. Must be ending with <code>/ga4gh/wes/v1/</code>
-    - <em>Example</em>: <code>https://toil.hpc.host/ga4gh/wes/v1/</code>
-    - <em>Read more</em>: <a href="https://zoo-project.github.io/zoo-wes-runner/">Zoo Wes Runner documentation</a>
-- <strong><code>OAPIP_TOIL_WES_USER</code></strong>: The Toil WES service user
-    - <em>Example</em>: <code>test</code>
-- <strong><code>OAPIP_TOIL_WES_PASSWORD</code></strong>: The Toil WES service password (must but be in htpasswd format)
-    - <em>Example</em>: <code>$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG</code></p>
+<p>For Calrissian:</p>
+<ul>
+<li><strong><code>NODE_SELECTOR_KEY</code></strong>: Determine which nodes will run the processing workflows.<ul>
+<li><em>Example</em>: <code>kubernetes.io/os</code></li>
+<li><em>Read more</em>: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">Node Selector Documentation</a></li>
+</ul>
+</li>
+<li><strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector key.<ul>
+<li><em>Example</em>: <code>linux</code></li>
+</ul>
+</li>
+</ul>
+<p>For Toil:</p>
+<ul>
+<li><strong><code>OAPIP_TOIL_WES_URL</code></strong>: The Toil WES service endpoint, including the path. Must be ending with <code>/ga4gh/wes/v1/</code><ul>
+<li><em>Example</em>: <code>https://toil.hpc.host/ga4gh/wes/v1/</code></li>
+<li><em>Read more</em>: <a href="https://zoo-project.github.io/zoo-wes-runner/">Zoo Wes Runner documentation</a></li>
+</ul>
+</li>
+<li><strong><code>OAPIP_TOIL_WES_USER</code></strong>: The Toil WES service user<ul>
+<li><em>Example</em>: <code>test</code></li>
+</ul>
+</li>
+<li><strong><code>OAPIP_TOIL_WES_PASSWORD</code></strong>: The Toil WES service password (must but be in htpasswd format)<ul>
+<li><em>Example</em>: <code>$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG</code></li>
+</ul>
+</li>
+</ul>
 <hr />
 <h3 id="deploy-the-oapip-engine">Deploy the OAPIP Engine<a class="headerlink" href="#deploy-the-oapip-engine" title="Permanent link">⚓︎</a></h3>
 <h4 id="deploy-the-helm-chart">Deploy the Helm Chart<a class="headerlink" href="#deploy-the-helm-chart" title="Permanent link">⚓︎</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>zoo-project<span class="w"> </span>https://zoo-project.github.io/charts/
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>zoo-project
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>zoo-project-dru<span class="w"> </span>zoo-project/zoo-project-dru<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.3.22<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.4.14<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>processing<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
@@ -2359,7 +2394,7 @@
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <hr />
-<h3 id="22-define-resource-protection">2.2 Define Resource Protection<a class="headerlink" href="#22-define-resource-protection" title="Permanent link">⚓︎</a></h3>
+<h3 id="22-define-resource-protection-optional">2.2 Define Resource Protection (Optional)<a class="headerlink" href="#22-define-resource-protection-optional" title="Permanent link">⚓︎</a></h3>
 <p>By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to <strong>restrict</strong> or <strong>fine-tune</strong> access to certain endpoints (like <code>/ogc-api/jobs/</code>).</p>
 <p>Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don&rsquo;t have a user, you can create one using:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>../../utils/create-user.sh

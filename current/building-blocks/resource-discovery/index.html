@@ -1279,6 +1279,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datacube-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datacube Access
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1895,27 +1916,27 @@
 
 
 <h1 id="resource-discovery-deployment-guide">Resource Discovery Deployment Guide<a class="headerlink" href="#resource-discovery-deployment-guide" title="Permanent link">⚓︎</a></h1>
-<p>The <strong>Resource Discovery</strong> building block provides a standards-based Earth Observation (<abbr title="Earth Observation">EO</abbr>) metadata catalogue, supporting OGC CSW, OGC API Records, STAC, and OpenSearch. It combines and extends the functionality previously known as the &ldquo;Resource Catalogue,&rdquo; but has now evolved to handle additional resource types and deeper integration with data-catalogue components like <strong>eoAPI</strong>. Under the hood it still leverages <strong>pycsw</strong> for OGC compliance and can also integrate with <strong>pgSTAC</strong> (via eoAPI) for large-scale STAC metadata handling. This guide provides step-by-step instructions to deploy Resource Discovery in your Kubernetes cluster.</p>
+<p>The <strong>Resource Discovery</strong> building block provides a catalogue for Earth Observation (<abbr title="Earth Observation">EO</abbr>) metadata using open standards. It supports common standards such as OGC CSW, OGC API Records, STAC, and OpenSearch. Previously known as the &ldquo;Resource Catalogue&rdquo;, it has now expanded to handle more types of resources and better integrates with tools like <strong>eoAPI</strong>. Internally, it uses <strong>pycsw</strong> to ensure OGC compatibility and can also work with <strong>pgSTAC</strong> via eoAPI to handle large amounts of STAC metadata.  </p>
+<p>This guide shows you step-by-step how to set up Resource Discovery in your Kubernetes cluster.</p>
 <hr />
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The Resource Discovery building block is a key component of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ ecosystem. It enables users to aggregate, manage, and retrieve <abbr title="Earth Observation">EO</abbr> metadata from multiple sources. By adhering to open standards, it ensures discoverability and interoperability, facilitating integration with existing systems and enhancing scalability.</p>
+<p>Resource Discovery is an important component of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> ecosystem. It helps users easily manage and search <abbr title="Earth Observation">EO</abbr> metadata from various sources. By using open standards, it makes data easier to find and integrate with other systems.</p>
 <h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓︎</a></h3>
 <ul>
-<li><strong>Metadata Management</strong>: Aggregate and retrieve <abbr title="Earth Observation">EO</abbr> metadata efficiently across multiple resource types.  </li>
-<li><strong>Standards Compliance</strong>: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.  </li>
-<li><strong>Discoverability</strong>: Advanced search capabilities—supporting bounding boxes, time intervals, free-text, and more.  </li>
-<li><strong>Scalability</strong>: Built on <strong>pycsw</strong> and optionally on <strong>pgSTAC</strong>, enabling flexible, scalable deployments.  </li>
-<li><strong>Federation</strong>: Supports platform federation by maintaining references to remote platforms.  </li>
-<li><strong>Transactional Support</strong>: Endpoints for creating, updating, and deleting resources where permitted.</li>
+<li><strong>Easy Metadata Management</strong>: Collect and search <abbr title="Earth Observation">EO</abbr> metadata efficiently.</li>
+<li><strong>Uses Open Standards</strong>: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.</li>
+<li><strong>Advanced Search</strong>: Search by area (bounding boxes), time intervals, text, and more.</li>
+<li><strong>Federation</strong>: Can connect and share metadata with other <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> platforms.</li>
+<li><strong>Transactional Updates</strong>: Allows creating, updating, and deleting records when enabled.</li>
 </ul>
 <h3 id="interfaces">Interfaces<a class="headerlink" href="#interfaces" title="Permanent link">⚓︎</a></h3>
-<p>The Resource Discovery building block includes:</p>
+<p>Resource Discovery includes the following APIs:</p>
 <ul>
-<li><strong>OGC CSW (2.0.2 and 3.0)</strong>  </li>
-<li><strong>OGC API - Records (Part 1: Core)</strong>  </li>
-<li><strong>STAC API 1.0.0</strong>  </li>
-<li><strong>OpenSearch</strong> with OGC <abbr title="Earth Observation">EO</abbr>, Geo, and Time extensions  </li>
-<li><strong>Optional Dataset Catalogue</strong> via <strong>eoAPI</strong> for STAC-based ingestion of granule-level data  </li>
+<li><strong>OGC CSW (versions 2.0.2 and 3.0)</strong></li>
+<li><strong>OGC API - Records (Core)</strong></li>
+<li><strong>STAC API 1.0.0</strong></li>
+<li><strong>OpenSearch</strong> (with support for <abbr title="Earth Observation">EO</abbr>, Geo, and Time queries)</li>
+<li><strong>Optional STAC Dataset Catalogue</strong> via <strong>eoAPI</strong></li>
 </ul>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
@@ -1992,13 +2013,10 @@ During the script execution, you will be prompted to provide:</p>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-discovery<span class="w"> </span>eoepca-dev/rm-resource-catalogue<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-beta2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc1<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-discovery<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
 </span></code></pre></div>
-<blockquote>
-<p><strong>Disclaimer</strong>: The deployment process can take a few minutes to complete. If you notice one of the pods in an <code>Error</code> state, it is likely waiting for the database to become fully operational before it can start successfully.</p>
-</blockquote>
 <p>Deploy the ingress for the Resource Discovery service:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
 </span></code></pre></div>
