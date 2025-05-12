@@ -2,46 +2,317 @@ global:
   defaultInternalIssuerRef:
     name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
 
+opensearch:
+  persistence:
+    enabled: true
+    storageClass: {{ getenv "STORAGE_CLASS" }}
+  securityConfig:
+    config:
+      data:
+        config.yml: |-
+          _meta:
+            type: "config"
+            config_version: 2
+
+          config:
+            dynamic:
+              kibana:
+                multitenancy_enabled: true
+                server_username: 'dashboards-client'
+                index: '.opensearch-dashboards'
+              do_not_fail_on_forbidden: false
+
+              http:
+                anonymous_auth_enabled: false
+              authc:
+                basic_internal_auth_domain:
+                  description: "Authenticate via HTTP Basic against internal users database"
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 2
+                  http_authenticator:
+                    type: basic
+                    challenge: true
+                  authentication_backend:
+                    type: intern
+                clientcert_auth_domain:
+                  description: "Authenticate via SSL client certificates"
+                  http_enabled: true
+                  transport_enabled: false
+                  order: 1
+                  http_authenticator:
+                    type: clientcert
+                    config:
+                      username_attribute: cn
+                    challenge: false
+                  authentication_backend:
+                    type: noop
+                openid_auth_domain:
+                  http_enabled: true
+                  transport_enabled: true
+                  order: 0
+                  http_authenticator:
+                    type: openid
+                    challenge: false
+                    config:
+                      subject_key: preferred_username
+                      roles_key: roles
+                      # jwt_header: X-Access-Token
+                      openid_connect_url: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+                  authentication_backend:
+                    type: noop
+
+opensearch-dashboards:
+  config:
+    opensearch_dashboards.yml:
+      server:
+        basePath: "/dashboards"
+        ssl:
+          enabled: false
+      opensearch:
+        requestHeadersAllowlist: [ authorization,securitytenant,x-access-token,x-id-token,x-userinfo,x-refresh-token ]
+      opensearch_security:
+        auth:
+          #type: "basicauth"
+          type: "jwt"
+          #multiple_auth_enabled: true
+
+## Example health checks to deploy with the resource health BB itself
 resource-health:
   telemetry_api:
-    # Limit resources for small deployment
-    # replicaCount: 1
+    replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/telemetry"
+      - name: OPEN_ID_CONNECT_URL
+        value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+      - name: OPEN_ID_CONNECT_AUDIENCE
+        value: "account"
+
+    use_hook_configmap: True
+    hooks:
+      oidc_auth_hooks.py: |
+        from python_opentelemetry_access.telemetry_hooks.utils import *
+        from eoepca_security import OIDCProxyScheme, Tokens
+        from typing import TypedDict
+        import os
+
+        class UserInfo(TypedDict):
+            username: str | None
+            access_token: str
+
+        def get_fastapi_security() -> OIDCProxyScheme:
+            return OIDCProxyScheme(
+                openIdConnectUrl=os.environ["OPEN_ID_CONNECT_URL"],
+                audience=os.environ["OPEN_ID_CONNECT_AUDIENCE"],
+                id_token_header="x-id-token",
+                refresh_token_header="x-refresh-token",
+                auth_token_header="Authorization",
+                auth_token_in_authorization=True,
+                auto_error=True,  ## Set False to allow unauthenticated access!
+                scheme_name="OIDC behind auth proxy",
+            )
+
+
+        def on_auth(tokens: Tokens | None) -> UserInfo:
+            if tokens is None or tokens["auth"] is None:
+                raise APIException(
+                    Error(
+                        status="403",
+                        code="MissingTokens",
+                        title="Missing authentication token",
+                        detail="Potentially missing authenticating proxy",
+                    )
+                )
+
+            username_claim = (
+                os.environ.get("RH_TELEMETRY_USERNAME_CLAIM") or "preferred_username"
+            )
+
+            return UserInfo(
+                username=tokens["id"].decoded[username_claim]
+                if tokens["id"] is not None and username_claim in tokens["id"].decoded
+                else tokens["auth"].decoded["payload"].get(username_claim),
+                access_token=tokens["auth"].raw,
+            )
+
+        ## For the OpenSearch proxy/backend
+
+        def get_opensearch_config(userinfo: UserInfo) -> OpensearchConfig:
+            return OpensearchConfig(
+                ## Host to connect to
+                # hosts=[{"host": "localhost", "port": 9200}],
+                hosts=[{"host": "opensearch-cluster-master-headless", "port": 9200}],
+                use_ssl=True,
+                ## For unverified tls
+                # verify_certs=False,
+                # ssl_show_warn=False,
+                ## For verified tls
+                verify_certs=True,
+                ssl_show_warn=True,
+                ca_certs="/certs/ca.crt",
+                ## For mTLS auth
+                # client_cert = "/certs/tls.crt"
+                # client_key = "/certs/tls.key"
+                # Authenticate by forwarding user token
+                extra_headers={"Authorization": f"Bearer {userinfo['access_token']}"},
+            )
+
 
   check_api:
-    # Limit resources for small deployment
-    # replicaCount: 1
+    replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
+      - name: OPEN_ID_CONNECT_URL
+        value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+      - name: OPEN_ID_CONNECT_AUDIENCE
+        value: "account"
+
+    use_hook_configmap: True
+    hooks:
+      oidc_auth_hooks.py: |
+        from check_hooks.hook_utils import *
+
+        from eoepca_security import OIDCProxyScheme, Tokens
+        from typing import TypedDict
+        import os
+
+
+        class UserInfo(TypedDict):
+            userid: str
+            username: str
+            access_token: str
+            refresh_token: str | None
+
+
+        def get_fastapi_security() -> OIDCProxyScheme:
+            return OIDCProxyScheme(
+                openIdConnectUrl=os.environ["OPEN_ID_CONNECT_URL"],
+                audience=os.environ["OPEN_ID_CONNECT_AUDIENCE"],
+                id_token_header="x-id-token",
+                refresh_token_header="x-refresh-token",
+                auth_token_header="Authorization",
+                auth_token_in_authorization=True,
+                auto_error=True,  ## Set False to allow unauthenticated access!
+                scheme_name="OIDC behind auth proxy",
+            )
+
+
+        def on_auth(tokens: Tokens | None) -> UserInfo:
+            print("ON AUTH")
+
+            if tokens is None or tokens["auth"] is None:  # or tokens['id'] is None:
+                raise APIException(
+                    Error(
+                        status="403",
+                        code="MissingTokens",
+                        title="Missing authentication or ID token",
+                        detail="Potentially missing authenticating proxy",
+                    )
+                )
+
+            claims = {}
+            claims.update(tokens["auth"].decoded["payload"])
+            if tokens["id"] is not None:
+                claims.update(tokens["id"].decoded)
+
+            user_id_claim = os.environ.get("RH_CHECK_USER_ID_CLAIM") or "sub"
+            username_claim = os.environ.get("RH_CHECK_USERNAME_CLAIM") or "preferred_username"
+
+            user_id = claims.get(user_id_claim)
+            username = claims.get(username_claim)
+
+            if user_id is None or username is None:
+                print(claims)
+                raise APIException(
+                    Error(
+                        status="401",
+                        code="Missing user id/name",
+                        title="Missing user identification",
+                        detail="Username or user id missing",
+                    )
+                )
+
+            return UserInfo(
+                userid=user_id,
+                username=username,
+                access_token=tokens["auth"].raw,
+                refresh_token=tokens["refresh"].raw if tokens["refresh"] else None,
+            )
+
+
+        def on_template_access(userinfo: UserInfo, template: CheckTemplate) -> bool:
+            print("ON TEMPLATE_ACCESS")
+
+            ## Only bob can use/access unsafe templates
+            if userinfo["username"] != "bob" and template.id != "simple_ping":
+                return False
+
+            return True
+
+        ## For the k8s backend
+
+        async def get_k8s_config(userinfo: UserInfo) -> K8sConfiguration:
+            return await k8s_config_from_cluster()
+
+
+        def get_k8s_namespace(userinfo: UserInfo) -> str:
+            return "resource-health"
+
+
+        def on_k8s_cronjob_access(
+            userinfo: UserInfo, client: K8sClient, cronjob: K8sCronJob
+        ) -> bool:
+            return cronjob.metadata.annotations.get("owner") == userinfo["username"]
+
+
+        async def on_k8s_cronjob_create(
+            userinfo: UserInfo, client: K8sClient, cronjob: K8sCronJob
+        ) -> bool:
+            ## Ensure cronjob is tagged with correct owner
+
+            if (
+                "owner" in cronjob.metadata.annotations
+                and cronjob.metadata.annotations["owner"] != userinfo["username"]
+            ):
+                return False
+
+            cronjob.metadata.annotations["owner"] = userinfo["username"]
+
+            ## Ensure the user has an offline token set
+            ## Note: Would be more robust to check on every access but use a cache
+            secret_name = f"resource-health-{userinfo['username']}-offline-secret"
+            secret_namespace = get_k8s_namespace(userinfo)
+
+            offline_secret = await lookup_k8s_secret(
+                client=client,
+                namespace=secret_namespace,
+                name=secret_name
+            )
+
+            if offline_secret is None:
+                if userinfo['refresh_token'] is None:
+                    raise APIException(Error(
+                        status="404",
+                        code="MissingOfflineToken",
+                        title="Missing offline token, please create at least one check using the website",
+                    ))
+                await create_k8s_secret(
+                    client=client,
+                    name=secret_name,
+                    namespace=secret_namespace,
+                    string_data={
+                        "offline_token": userinfo['refresh_token']
+                    }
+                )
+
+            return True
+
   web:
-    # Limit resources for small deployment
-    # replicaCount: 1
+    replicaCount: 1
     environmentFixed:
       - name: NEXT_PUBLIC_CHECK_MANAGER_ENDPOINT
-        value: "{{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks"
+        value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/v1
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
-        value: "{{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/v1"
-  healthchecks:
-    checks:
-      - name: mockapi-check
-        schedule: "*/1 * * * *"
-        script: "https://raw.githubusercontent.com/EOEPCA/resource-health/refs/tags/v0.1.0-demo/pytest-health/instrumentation/examples/mock_api_check.py"
-        requirements: "https://gist.githubusercontent.com/tilowiklundSensmetry/a9fefe2873b731b483f554607a82deaa/raw/1136a82ca3c8f28b1ad4d895871514185927dd1c/requirements.txt"
-        env:
-          - name: MOCK_API_HOST
-            value: http://resource-health-mock-api:5000
-  # Limit resources for small deployment
-  # mock_api:
-  #   replicaCount: 1
-
-opensearch:
-  persistence:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
-  # Limit resources for small deployment
-  # replicas: 1
-  # resources:
-  #   requests:
-  #     cpu: 500m
+        value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/v1

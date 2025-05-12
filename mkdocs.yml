@@ -34,6 +34,7 @@ nav:
       - Resource Discovery: building-blocks/resource-discovery.md
       - Resource Registration: building-blocks/resource-registration.md
       - Data Access: building-blocks/data-access.md
+      - Datacube Access: building-blocks/datacube-access.md
 
     - Processing & Analysis:
         - Processing:

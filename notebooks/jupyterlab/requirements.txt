@@ -1,3 +1,8 @@
 openeo
 matplotlib
 netCDF4
+OWSLib
+folium
+geolinks
+tifffile
+pystac

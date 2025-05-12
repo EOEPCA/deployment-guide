@@ -49,6 +49,15 @@ if [ -z "$MLFLOW_SECRET_KEY" ]; then
     add_to_state_file "MLFLOW_SECRET_KEY" "$(generate_aes_key 32)"
 fi
 
+if [ -z "$MLFLOW_POSTGRES_USERNAME" ]; then
+    add_to_state_file "MLFLOW_POSTGRES_USERNAME" "postgres"
+fi
+
+if [ -z "$MLFLOW_POSTGRES_PASSWORD" ]; then
+    MLFLOW_POSTGRES_PASSWORD=$(generate_aes_key 32)
+    add_to_state_file "MLFLOW_POSTGRES_PASSWORD" "$MLFLOW_POSTGRES_PASSWORD"
+fi
+
 # Generate configuration files for GitLab, SharingHub, and MLflow SharingHub
 gomplate  -f "gitlab/$TEMPLATE_PATH" -o "gitlab/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "sharinghub/$TEMPLATE_PATH" -o "sharinghub/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

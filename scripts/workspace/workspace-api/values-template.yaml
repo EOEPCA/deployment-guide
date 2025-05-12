@@ -1,11 +1,11 @@
 fullnameOverride: workspace-api
 existingSecret: harbor
 image:
-  tag: 2.0.0_pre1
+  tag: 2.0.0
   pullPolicy: Always
 ingress:
   enabled: false
-prefixForName: "ws-"
+prefixForName: "ws"
 workspaceSecretName: "bucket"
 s3Endpoint: {{ getenv "S3_ENDPOINT" }}
 s3Region: {{ getenv "S3_REGION" }}

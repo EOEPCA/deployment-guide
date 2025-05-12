@@ -20,27 +20,41 @@ if [ -z "$KEYCLOAK_POSTGRES_PASSWORD" ]; then
     add_to_state_file "KEYCLOAK_POSTGRES_PASSWORD" "$KEYCLOAK_POSTGRES_PASSWORD"
 fi
 add_to_state_file "KEYCLOAK_ADMIN_USER" "admin"
+
+# OIDC client secrets
+ask "OPA_CLIENT_ID" "Enter the OPA client ID" "opa" is_non_empty
 if [ -z "$OPA_CLIENT_SECRET" ]; then
     OPA_CLIENT_SECRET=$(generate_aes_key 32)
     add_to_state_file "OPA_CLIENT_SECRET" "$OPA_CLIENT_SECRET"
 fi
-add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
+ask "IDENTITY_API_CLIENT_ID" "Enter the Identity API client ID" "identity-api" is_non_empty
+if [ -z "$IDENTITY_API_CLIENT_SECRET" ]; then
+    IDENTITY_API_CLIENT_SECRET=$(generate_aes_key 32)
+    add_to_state_file "IDENTITY_API_CLIENT_SECRET" "$IDENTITY_API_CLIENT_SECRET"
+fi
 
+echo ""
+echo "❗  Generated passwords:"
+echo "KEYCLOAK_ADMIN_PASSWORD: $KEYCLOAK_ADMIN_PASSWORD"
+echo "KEYCLOAK_POSTGRES_PASSWORD: $KEYCLOAK_POSTGRES_PASSWORD"
+echo
+echo "OPA_CLIENT_ID: $OPA_CLIENT_ID"
+echo "OPA_CLIENT_SECRET: $OPA_CLIENT_SECRET"
+echo
+echo "IDENTITY_API_CLIENT_ID: $IDENTITY_API_CLIENT_ID"
+echo "IDENTITY_API_CLIENT_SECRET: $IDENTITY_API_CLIENT_SECRET"
+echo ""
+
+
+add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
 add_to_state_file "OIDC_ISSUER_URL" "https://auth.$INGRESS_HOST/realms/$REALM"
 
 # Generate configuration files
 echo "Generating configuration files..."
 
-gomplate -f "keycloak/$TEMPLATE_PATH" -o "keycloak/$OUTPUT_PATH"
-gomplate -f "opa/$TEMPLATE_PATH" -o "opa/$OUTPUT_PATH"
-
+gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 if [ "$INGRESS_CLASS" == "apisix" ]; then
-    gomplate -f "keycloak/apisix-ingress-template.yaml" -o "keycloak/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-    gomplate -f "opa/apisix-ingress-template.yaml" -o "opa/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-else
-    gomplate -f "keycloak/nginx-ingress-template.yaml" -o "keycloak/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-    gomplate -f "opa/nginx-ingress-template.yaml" -o "opa/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "apisix-tls-template.yaml" -o "apisix-tls.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
-
 
 echo "✅ Configuration files generated."

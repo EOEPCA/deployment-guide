@@ -33,7 +33,7 @@ if [ "$OIDC_ISSUER_URL" ]; then
     echo ""
 
     add_to_state_file "OSD_BASE_REDIRECT" "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/dashboards"
-    add_to_state_file "OSD_CONNECT_URL" "${HTTP_SCHEME}://{KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
+    add_to_state_file "OSD_CONNECT_URL" "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
 else
     echo "OIDC authentication is currently a requirement of this Building Block. The application will still deploy, but it will not be fully operational."
 fi

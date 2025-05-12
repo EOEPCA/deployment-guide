@@ -103,7 +103,7 @@ Crossplane is used for managing cloud resources within Kubernetes.
 helm repo add crossplane https://charts.crossplane.io/stable
 helm repo update crossplane
 helm upgrade -i workspace-crossplane crossplane/crossplane \
-  --version v1.17.1 \
+  --version v1.18.1 \
   --namespace workspace \
   --create-namespace
 ```
@@ -261,7 +261,7 @@ Confirm that all pods are `Running` and no errors are reported.
 You can view the Workspace API’s Swagger documentation at:
 
 ```
-https://workspace-swagger.${INGRESS_HOST}/docs
+https://workspace-api.${INGRESS_HOST}/docs
 ```
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.

@@ -224,7 +224,7 @@ This script prompts you for `GITLAB_APP_ID` and `GITLAB_APP_SECRET` from the ste
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.3.0"
+helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.4.0"
 helm repo update sharinghub
 helm upgrade -i sharinghub sharinghub/sharinghub \
   --namespace sharinghub \

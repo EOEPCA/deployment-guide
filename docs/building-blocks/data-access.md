@@ -94,7 +94,14 @@ During the script execution, you will be prompted to provide:
 - **`S3_SECRET_KEY`**: Secret key for S3 storage.
 
 
-### 2. Deploy PostgreSQL Operator and eoAPI
+### 2. Apply Secrets
+The script will create a Kubernetes secret for the S3 credentials. Ensure you have the `S3_ACCESS_KEY` and `S3_SECRET_KEY` set in your environment.
+
+```bash
+bash apply-secrets.sh
+```
+
+### 3. Deploy PostgreSQL Operator and eoAPI
 
 1. **Install the PostgreSQL Operator (pgo) from the Crunchy Data OCI registry:**
     
@@ -112,12 +119,14 @@ helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.5.2 \
+  --version 0.6.0 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
 ```
 
 3. **Deploy STAC Admin Manager**
+
+> Note: The STAC Manager may not deploy fully, if you see `CrashLoopBackOff` errors, this is expected. The STAC Manager is not required for the Data Access Building Block to function
  
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
@@ -136,7 +145,17 @@ If you are using `nginx` then you can **skip** this step as the ingress will be 
 kubectl apply -f eoapi/generated-ingress.yaml
 ```
 
-5. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
+5. **Deploy EOAPI Maps Plugin**
+
+```bash
+helm upgrade -i eoapi-maps-plugin eoepca-dev/eoapi-maps-plugin \
+  --version 0.0.21 \
+  --namespace data-access \
+  --values eoapi-maps-plugin/generated-values.yaml
+```
+
+
+6. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
     
 ```bash
 helm upgrade -i eoapi-support eoapi/eoapi-support \
@@ -150,7 +169,7 @@ helm upgrade -i eoapi-support eoapi/eoapi-support \
 
 ---
 
-### 3. Monitoring the Deployment
+### 4. Monitoring the Deployment
 
 After deploying, you can monitor the status of the deployments:
 
@@ -162,7 +181,7 @@ Check that all pods are in the `Running` state and that services/ingresses are p
 
 ---
 
-### 4. Accessing the Data Access Services
+### 5. Accessing the Data Access Services
 
 Once the deployment is complete and all pods are running, you can access the services:
 
@@ -171,7 +190,9 @@ Once the deployment is complete and all pods are running, you can access the ser
     
 - **Grafana** (if `eoapi-support` is installed and ingress is enabled):  
     `https://eoapisupport.${INGRESS_HOST}/`
-<!-- add default credentials -->
+
+- **eoAPI Maps Plugin:**  
+    `https://maps.${INGRESS_HOST}/`
 
 ---
 
@@ -275,8 +296,9 @@ Run the _Data Access_ tests from the system test suite.
 To uninstall the Data Access Building Block and clean up associated resources:
 
 ```bash
-helm uninstall eoapi-support -n data-access
 helm uninstall eoapi -n data-access
+helm uninstall eoapi-maps-plugin -n data-access
+helm uninstall stac-manager -n data-access
 helm uninstall pgo -n data-access
 
 kubectl delete namespace data-access

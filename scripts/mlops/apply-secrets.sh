@@ -45,4 +45,10 @@ kubectl create secret generic mlflow-sharinghub-s3 \
   --from-literal secret-access-key="$S3_SECRET_KEY" \
   --namespace sharinghub
 
+kubectl create secret generic mlflow-sharinghub-postgres \
+  --from-literal=password="$MLFLOW_POSTGRES_PASSWORD" \
+  --from-literal=postgres-password="$MLFLOW_POSTGRES_PASSWORD" \
+  --namespace sharinghub
+
+
 echo "✅ Secrets applied."

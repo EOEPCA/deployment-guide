@@ -96,15 +96,49 @@ During execution, you will be prompted for:
 
 ---
 
-### 2. Deploy the Resource Health BB (Helm)
+### 2. Create a Keycloak Client
 
-1. **Install or upgrade Resource Health**
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+
+```bash
+bash ../utils/create-client.sh
+```
+
+When prompted:
+
+- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
+- **Keycloak base domain**: e.g. `auth.example.com`
+- **Realm**: Typically `eoepca`.
+
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
+- **Client ID**: For the Resource Health, you should use `resource-health`.
+- **Client name** and **description**: Provide any helpful text (e.g. `Resource Health`).
+- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
+- **Subdomain**: Use `resource-health`. 
+- **Additional Subdomains**: Leave blank.
+- **Additional Hosts**: Leave blank.
+
+After it completes, you should see a JSON snippet confirming the newly created client.
+
+---
+
+### 3. Deploy the Resource Health BB (Helm)
+
+1. **Apply Secrets**
+
+```bash
+bash apply-secrets.sh
+```
+This script creates the necessary secrets for the Resource Health BB.
+
+
+2. **Install or upgrade Resource Health**
 
 > **Note**: While the Resource Health BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
 
 - Clone the Resource Health repository and update dependencies:
 ```bash
-git clone -b 2.0.0-beta2 https://github.com/EOEPCA/resource-health.git reference-repo
+git clone -b 2.0.0-rc1 https://github.com/EOEPCA/resource-health.git reference-repo
 helm dependency update reference-repo/resource-health-reference-deployment
 ```
 
@@ -119,19 +153,29 @@ helm upgrade -i resource-health reference-repo/resource-health-reference-deploym
 
 ---
 
-### 2. Configure Ingress
+### 3. Configure Ingress
 
 By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.
 
 For the purpose of this guide, the configuration script created a sample Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the `~/.eoepca/state` file.
 
-```bash
-kubectl apply -f generated-ingress.yaml -n resource-health
-```
+- **APISIX**
+
+    ```bash
+    kubectl apply -f apisix/plugin-api-auth.yaml -n resource-health
+    kubectl apply -f apisix/plugin-browser-auth.yaml -n resource-health
+    kubectl apply -f generated-ingress.yaml -n resource-health
+    ```
+
+- **Nginx**
+
+    ```bash
+    kubectl apply -f generated-ingress.yaml -n resource-health
+    ```
 
 ---
 
-### 3. Monitor the Deployment
+### 4. Monitor the Deployment
 
 Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
 

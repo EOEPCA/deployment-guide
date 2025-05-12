@@ -19,7 +19,7 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: 2.0.0-beta2
+    tag: 2.0.0-rc1
   secret:
     name: registration-harvester-secret
   container_port: 8080
@@ -27,7 +27,7 @@ harvester:
     worker:
       log_level: INFO
       flowable:
-        host: https://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
+        host: {{ getenv "HTTP_SCHEME"}}://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
         tls: true
         cacert: ""
       topics:

@@ -1,5 +1,7 @@
 # Application Hub Deployment Guide
 
+> **OIDC** is currently a requirement for the Application Hub. This is a work in progress and will be updated in the future.
+
 The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps
 
 ***
