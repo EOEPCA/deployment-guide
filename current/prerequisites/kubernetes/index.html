@@ -1704,7 +1704,7 @@
 </li>
 <li>
 <p><strong>Run Containers as Root (Mandatory)</strong>  </p>
-<p>Some <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster’s security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow <code>root</code> containers.</p>
+<p>Some <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster&rsquo;s security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow <code>root</code> containers.</p>
 </li>
 <li>
 <p><strong>Load Balancer with 80/443 (Recommended)</strong>  </p>
@@ -1726,8 +1726,8 @@
 <li>
 <p><strong>Production</strong>  </p>
 <ul>
-<li>Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider’s managed K8S).  </li>
-<li>Use cert-manager with Let’s Encrypt or your CA for auto-renewed certificates.  </li>
+<li>Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider&rsquo;s managed K8S).  </li>
+<li>Use cert-manager with Let&rsquo;s Encrypt or your CA for auto-renewed certificates.  </li>
 <li>Keep your images in a Docker Hub authenticated registry or a private repository to avoid pull-rate issues.</li>
 </ul>
 </li>

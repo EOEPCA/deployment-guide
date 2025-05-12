@@ -1692,7 +1692,7 @@
 <blockquote>
 <p><strong>Note:</strong> If the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you&rsquo;re using the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> IAM Building Block. Ensure the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> IAM Building Block is installed. For more information, refer to <a href="../main-iam/">this guide</a>.</p>
 </blockquote>
-<p>This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>’s secured endpoints.</p>
+<p>This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>&rsquo;s secured endpoints.</p>
 <h2 id="creating-a-keycloak-client">Creating a Keycloak Client<a class="headerlink" href="#creating-a-keycloak-client" title="Permanent link">⚓︎</a></h2>
 <h3 id="using-the-script">Using the Script<a class="headerlink" href="#using-the-script" title="Permanent link">⚓︎</a></h3>
 <p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
@@ -1767,7 +1767,7 @@
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[] | select(.clientId == &quot;&lt;UPDATE TO CLIENT ID&gt;&quot;)&#39;</span>
 </span></code></pre></div>
 <h2 id="deleting-a-client">Deleting a Client<a class="headerlink" href="#deleting-a-client" title="Permanent link">⚓︎</a></h2>
-<p>First, get the client’s unique ID:</p>
+<p>First, get the client&rsquo;s unique ID:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">myclient_id</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>

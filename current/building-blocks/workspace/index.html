@@ -2373,7 +2373,7 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 </span></code></pre></div>
 <p>Confirm that all pods are <code>Running</code> and no errors are reported.</p>
 <h4 id="2-access-the-workspace-api-swagger-documentation">2. Access the Workspace API Swagger Documentation<a class="headerlink" href="#2-access-the-workspace-api-swagger-documentation" title="Permanent link">⚓︎</a></h4>
-<p>You can view the Workspace API’s Swagger documentation at:</p>
+<p>You can view the Workspace API&rsquo;s Swagger documentation at:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>https://workspace-api.${INGRESS_HOST}/docs
 </span></code></pre></div>
 <p>Replace <code>${INGRESS_HOST}</code> with your configured ingress host domain.</p>
@@ -2398,7 +2398,7 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>ns<span class="w"> </span>ws-deploytest
 </span></code></pre></div>
 <h4 id="2-verify-storage-buckets">2. Verify Storage Buckets<a class="headerlink" href="#2-verify-storage-buckets" title="Permanent link">⚓︎</a></h4>
-<p>Confirm that the workspace’s storage buckets (<code>ws-deploytest</code> and <code>ws-deploytest-stage</code>) were created:</p>
+<p>Confirm that the workspace&rsquo;s storage buckets (<code>ws-deploytest</code> and <code>ws-deploytest-stage</code>) were created:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>ws-deploytest<span class="w"> </span>get<span class="w"> </span>bucket
 </span></code></pre></div>
 <h4 id="3-query-the-workspace-api">3. Query the Workspace API<a class="headerlink" href="#3-query-the-workspace-api" title="Permanent link">⚓︎</a></h4>
@@ -2414,7 +2414,7 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 </span></code></pre></div>
 <p>Now the <code>port-forward</code> to the Workspace API service can be stopped - <code>Ctrl-C</code> in original terminal window.</p>
 <h4 id="4-interacting-with-s3-buckets">4. Interacting with S3 Buckets<a class="headerlink" href="#4-interacting-with-s3-buckets" title="Permanent link">⚓︎</a></h4>
-<p>Use <code>s3cmd</code> (configured via <code>source ~/.eoepca/state</code>) to list and manipulate objects in the workspace’s S3 buckets.</p>
+<p>Use <code>s3cmd</code> (configured via <code>source ~/.eoepca/state</code>) to list and manipulate objects in the workspace&rsquo;s S3 buckets.</p>
 <p><strong>List Buckets:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span><span class="se">\</span>

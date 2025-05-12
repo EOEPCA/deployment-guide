@@ -1767,13 +1767,13 @@
 
 
 <h1 id="tls-management">TLS Management<a class="headerlink" href="#tls-management" title="Permanent link">⚓︎</a></h1>
-<p>TLS plays an essential role in securing both external and internal traffic for <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>. In practice, <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>’s Building Blocks often rely on certificates issued via a <code>ClusterIssuer</code>, enabling automatic certificate management for all namespaces in the cluster. We strongly recommend using cert-manager for this purpose.</p>
+<p>TLS plays an essential role in securing both external and internal traffic for <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>. In practice, <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>&rsquo;s Building Blocks often rely on certificates issued via a <code>ClusterIssuer</code>, enabling automatic certificate management for all namespaces in the cluster. We strongly recommend using cert-manager for this purpose.</p>
 <h2 id="exposed-service-tls">Exposed Service TLS<a class="headerlink" href="#exposed-service-tls" title="Permanent link">⚓︎</a></h2>
 <p>For services that are extrernally exposed via the ingress controller, there are several options to establish the TLS certificates for each service.</p>
 <h3 id="dynamic-using-cert-manager">Dynamic using Cert-Manager<a class="headerlink" href="#dynamic-using-cert-manager" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li>The simplest, most robust way to handle certificates in production.</li>
-<li>You can create a <code>ClusterIssuer</code> that automatically issues and renews certs from Let’s Encrypt or your own CA.</li>
+<li>You can create a <code>ClusterIssuer</code> that automatically issues and renews certs from Let&rsquo;s Encrypt or your own CA.</li>
 <li>Using either DNS-based or HTTP-based Let&rsquo;s Encrypt challenge approaches</li>
 <li>In multi-tenant or multi-namespace scenarios, this is especially useful.</li>
 </ul>
@@ -1811,11 +1811,12 @@
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>--version<span class="w"> </span>v1.16.1<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>--set<span class="w"> </span>crds.enabled<span class="o">=</span><span class="nb">true</span>
 </span></code></pre></div>
-<p><strong>Create a ClusterIssuer for Let’s Encrypt</strong></p>
+<p><strong>Create a ClusterIssuer for Let&rsquo;s Encrypt</strong></p>
 <ol>
 <li>
 <p>Using <strong>HTTP01 Challenge</strong> via APISIX ingress <a href="https://letsencrypt.org/docs/challenge-types/#http-01-challenge">[ref]</a></p>
-<p>Set your details for email.</p>
+<p>Set your details for email and the ingress class (apisix/nginx)</p>
+<p>You can also change the <code>metadata.name</code> and <code>spec.acme.privateKeySecretRef.name</code> to something more meaningful.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl apply -f -</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s">apiVersion: cert-manager.io/v1</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s">kind: ClusterIssuer</span>

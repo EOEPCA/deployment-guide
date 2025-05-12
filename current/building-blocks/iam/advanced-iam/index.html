@@ -1814,7 +1814,7 @@
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Group ID: </span><span class="si">${</span><span class="nv">group_id</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <p><strong>Add a User to the Group:</strong></p>
-<p>Obtain the user’s ID (e.g., the <code>eoepca</code> user created previously):</p>
+<p>Obtain the user&rsquo;s ID (e.g., the <code>eoepca</code> user created previously):</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">user_id</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://auth.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/admin/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/users?username=eoepcauser&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -1930,10 +1930,10 @@
 <p>Group members see <code>{"status":"ok"}</code>, others see <code>{"error":"access_denied","error_description":"not_authorized"}</code>.</p>
 <hr />
 <h2 id="role-based-vs-group-based-permissions">Role-Based vs Group-Based Permissions<a class="headerlink" href="#role-based-vs-group-based-permissions" title="Permanent link">⚓︎</a></h2>
-<p>The above example used a group. For more granular control or organisational alignment, you can use Keycloak roles. Instead of adding users directly to groups, you create roles and assign those roles to groups or users. Adjust the policy to reference roles instead of groups. The Keycloak Admin REST API is similar; you’d just target the <code>/roles</code> endpoints.</p>
+<p>The above example used a group. For more granular control or organisational alignment, you can use Keycloak roles. Instead of adding users directly to groups, you create roles and assign those roles to groups or users. Adjust the policy to reference roles instead of groups. The Keycloak Admin REST API is similar; you&rsquo;d just target the <code>/roles</code> endpoints.</p>
 <hr />
 <h2 id="opa-policy-integration">OPA Policy Integration<a class="headerlink" href="#opa-policy-integration" title="Permanent link">⚓︎</a></h2>
-<p>Instead of relying solely on Keycloak’s policy engine, you can use OPA policies for authorisation. Configure APISIX to query OPA for decisions:</p>
+<p>Instead of relying solely on Keycloak&rsquo;s policy engine, you can use OPA policies for authorisation. Configure APISIX to query OPA for decisions:</p>
 <ul>
 <li><strong>OPA Plugin Setup</strong>: Instead of <code>authz-keycloak</code>, use the <code>opa</code> plugin in the ApisixRoute.</li>
 <li><strong>OPA Policy Rego Files</strong>: Store policies in a Git repository managed by OPAL.</li>
