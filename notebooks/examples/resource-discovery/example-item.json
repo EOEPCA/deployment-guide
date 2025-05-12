@@ -1,0 +1,21 @@
+{
+    "type": "Feature",
+    "stac_version": "1.0.0",
+    "id": "example-item",
+    "properties": {
+      "datetime": "2024-01-01T00:00:00Z"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [0.0, 0.0]
+    },
+    "bbox": [0.0, 0.0, 0.0, 0.0],
+    "assets": {
+      "example-data": {
+        "href": "http://example.com/data.tif",
+        "type": "image/tiff"
+      }
+    },
+    "links": [],
+    "collection": "metadata:main"
+  }
