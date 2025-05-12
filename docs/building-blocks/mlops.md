@@ -340,7 +340,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 
 3. **Add the SharingHub Topic**
     
-    - In your project’s sidebar, go to **Settings → General**.
+    - In your project's sidebar, go to **Settings → General**.
     - Locate the **Topics** section and add the topic:  
         `sharinghub:aimodel`  
     - Click **Save changes**.
@@ -394,7 +394,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         
 8. **Authenticate and Retrieve a Token**
     
-    - In GitLab, navigate to your project’s Access Tokens page:  
+    - In GitLab, navigate to your project's Access Tokens page:  
         `https://gitlab.${INGRESS_HOST}/mlops-test-project/-/settings/access_tokens`
         
     - Click **Add new token**.

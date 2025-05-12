@@ -231,7 +231,7 @@ _Expected output:_ A JSON array listing available collections, such as the sampl
 curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
 ```
 
-_Expected output:_ A JSON object with an array of processes. Use your terminal’s scroll or `jq` to inspect the output.
+_Expected output:_ A JSON object with an array of processes. Use your terminal's scroll or `jq` to inspect the output.
 
 ---
 

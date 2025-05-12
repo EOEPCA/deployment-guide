@@ -18,7 +18,7 @@ You must choose one of these ingress controllers based on your security and acce
 You can install **either** one for a basic deployment. If your deployment demands multiple ingress controllers simultaneously, see [Multiple Ingress Controllers](ingress-multi.md).
 
 **Before proceeding:**  
-- Ensure a wildcard DNS entry is pointing to your cluster’s load balancer or external IP, e.g., `*.myplatform.com`.  
+- Ensure a wildcard DNS entry is pointing to your cluster's load balancer or external IP, e.g., `*.myplatform.com`.  
 - Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  
 
 > _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames, using the entrypoint IP-address of your cluster that routes to your ingress controller._

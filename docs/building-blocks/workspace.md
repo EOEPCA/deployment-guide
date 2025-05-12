@@ -258,7 +258,7 @@ Confirm that all pods are `Running` and no errors are reported.
 
 #### 2. Access the Workspace API Swagger Documentation
 
-You can view the Workspace API’s Swagger documentation at:
+You can view the Workspace API's Swagger documentation at:
 
 ```
 https://workspace-api.${INGRESS_HOST}/docs
@@ -296,7 +296,7 @@ kubectl get ns ws-deploytest
 
 #### 2. Verify Storage Buckets
 
-Confirm that the workspace’s storage buckets (`ws-deploytest` and `ws-deploytest-stage`) were created:
+Confirm that the workspace's storage buckets (`ws-deploytest` and `ws-deploytest-stage`) were created:
 
 ```bash
 kubectl -n ws-deploytest get bucket
@@ -327,7 +327,7 @@ Now the `port-forward` to the Workspace API service can be stopped - `Ctrl-C` in
 
 #### 4. Interacting with S3 Buckets
 
-Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate objects in the workspace’s S3 buckets.
+Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate objects in the workspace's S3 buckets.
 
 **List Buckets:**
 

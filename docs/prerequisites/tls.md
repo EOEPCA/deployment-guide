@@ -1,7 +1,7 @@
 
 # TLS Management
 
-TLS plays an essential role in securing both external and internal traffic for EOEPCA. In practice, EOEPCA’s Building Blocks often rely on certificates issued via a `ClusterIssuer`, enabling automatic certificate management for all namespaces in the cluster. We strongly recommend using cert-manager for this purpose.
+TLS plays an essential role in securing both external and internal traffic for EOEPCA. In practice, EOEPCA's Building Blocks often rely on certificates issued via a `ClusterIssuer`, enabling automatic certificate management for all namespaces in the cluster. We strongly recommend using cert-manager for this purpose.
 
 ## Exposed Service TLS
 
@@ -10,7 +10,7 @@ For services that are extrernally exposed via the ingress controller, there are 
 ### Dynamic using Cert-Manager
 
    - The simplest, most robust way to handle certificates in production.
-   - You can create a `ClusterIssuer` that automatically issues and renews certs from Let’s Encrypt or your own CA.
+   - You can create a `ClusterIssuer` that automatically issues and renews certs from Let's Encrypt or your own CA.
    - Using either DNS-based or HTTP-based Let's Encrypt challenge approaches
    - In multi-tenant or multi-namespace scenarios, this is especially useful.
 
@@ -59,11 +59,13 @@ helm upgrade -i cert-manager jetstack/cert-manager \
   --set crds.enabled=true
 ```
 
-**Create a ClusterIssuer for Let’s Encrypt**
+**Create a ClusterIssuer for Let's Encrypt**
 
 1. Using **HTTP01 Challenge** via APISIX ingress [[ref]](https://letsencrypt.org/docs/challenge-types/#http-01-challenge)
 
-    Set your details for email.
+    Set your details for email and the ingress class (apisix/nginx)
+
+    You can also change the `metadata.name` and `spec.acme.privateKeySecretRef.name` to something more meaningful.
 
     ```bash
     cat - <<'EOF' | kubectl apply -f -

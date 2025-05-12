@@ -27,7 +27,7 @@ Some EOEPCA Building Blocks, particularly those involved in processing (e.g. the
 
 - **Processing Building Blocks**: For instance, the CWL Processing Engine needs shared file access.
 
-Make sure to check which Building Blocks you plan to deploy and ensure the cluster’s StorageClass and volume provisioning match these requirements.
+Make sure to check which Building Blocks you plan to deploy and ensure the cluster's StorageClass and volume provisioning match these requirements.
 
 ## Setting Up Storage Classes
 

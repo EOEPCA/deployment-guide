@@ -1,6 +1,6 @@
 # EOEPCA+ Prerequisites
 
-This section outlines the infrastructure requirements for deploying EOEPCA. Rather than explaining how to build a Kubernetes cluster from scratch, we focus on what EOEPCA specifically needs from your existing environment. We assume you have a working Kubernetes cluster, or know how to create one by referring to standard guides (e.g. Rancher, Kubernetes.io), and that you simply want to ensure it meets EOEPCA’s particular prerequisites.
+This section outlines the infrastructure requirements for deploying EOEPCA. Rather than explaining how to build a Kubernetes cluster from scratch, we focus on what EOEPCA specifically needs from your existing environment. We assume you have a working Kubernetes cluster, or know how to create one by referring to standard guides (e.g. Rancher, Kubernetes.io), and that you simply want to ensure it meets EOEPCA's particular prerequisites.
 
 
 ## High-Level Requirements

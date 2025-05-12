@@ -223,7 +223,7 @@ https://resource-health.${INGRESS_HOST}/api/telemetry/healthz
 
 ### 1. Defining Health Checks
 
-Health checks are typically defined in the Helm chart’s values under `resource-health.healthchecks.checks`. Each check has:
+Health checks are typically defined in the Helm chart's values under `resource-health.healthchecks.checks`. Each check has:
 
 - **name**
 - **schedule** (a cron expression like `"@hourly"` or `"0 8 * * *"`)

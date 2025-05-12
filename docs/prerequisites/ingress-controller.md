@@ -7,7 +7,7 @@ The EOEPCA+ Identity and Access Management (IAM) solution advocates use of the A
 
 **Requirements:**
 
-- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: `*.myplatform.com`.<br>
+- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster's load balancer or external IP. For example: `*.myplatform.com`.<br>
   _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller._
 - **Ingress Controller**: APISIX is recommended for use with the EOEPCA+ IAM soluiton; others such as NGINX can also be used if the IAM integration is not of interest
 
@@ -23,7 +23,7 @@ The EOEPCA+ Identity and Access Management (IAM) solution advocates use of the A
 
 ## Additional Notes
 
-- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster’s load balancer or external IP. For example: `*.myplatform.com`.<br>
+- **Wildcard DNS**: You must have a wildcard DNS entry pointing to your cluster's load balancer or external IP. For example: `*.myplatform.com`.<br>
   _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames - using the entrypoint IP-address of your cluster that routes to your ingress controller._
 
 - **Ingress Class**: Specify the ingress class in your ingress resources for example `apisix` for APISIX, `nginx` for NGINX.

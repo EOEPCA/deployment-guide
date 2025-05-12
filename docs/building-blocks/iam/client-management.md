@@ -1,7 +1,7 @@
 > **Note:** If the EOEPCA IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you're using the EOEPCA IAM Building Block. Ensure the EOEPCA IAM Building Block is installed. For more information, refer to [this guide](./main-iam.md).
 
 
-This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with EOEPCA’s secured endpoints.
+This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with EOEPCA's secured endpoints.
 
 
 ## Creating a Keycloak Client
@@ -95,7 +95,7 @@ curl --silent --show-error \
 
 ## Deleting a Client
 
-First, get the client’s unique ID:
+First, get the client's unique ID:
 
 ```bash
 myclient_id=$( \

@@ -18,7 +18,7 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 
 3. **Run Containers as Root (Mandatory)**  
 
-    Some EOEPCA components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster’s security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow `root` containers.
+    Some EOEPCA components require root privileges (e.g., certain processing containers). Attempting to run them under a non-root UID can fail. Ensure your cluster's security policies (PodSecurityPolicies, PodSecurity Standards, or Admission Controllers) allow `root` containers.
 
 4. **Load Balancer with 80/443 (Recommended)**  
 
@@ -34,8 +34,8 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 
 - **Production**  
 
-    - Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider’s managed K8S).  
-    - Use cert-manager with Let’s Encrypt or your CA for auto-renewed certificates.  
+    - Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider's managed K8S).  
+    - Use cert-manager with Let's Encrypt or your CA for auto-renewed certificates.  
     - Keep your images in a Docker Hub authenticated registry or a private repository to avoid pull-rate issues.
 
 - **Development / Testing**

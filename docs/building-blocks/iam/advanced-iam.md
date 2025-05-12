@@ -79,7 +79,7 @@ echo "Group ID: ${group_id}"
 
 **Add a User to the Group:**
 
-Obtain the user’s ID (e.g., the `eoepca` user created previously):
+Obtain the user's ID (e.g., the `eoepca` user created previously):
 
 ```bash
 user_id=$( \
@@ -229,13 +229,13 @@ Group members see `{"status":"ok"}`, others see `{"error":"access_denied","error
 
 ## Role-Based vs Group-Based Permissions
 
-The above example used a group. For more granular control or organisational alignment, you can use Keycloak roles. Instead of adding users directly to groups, you create roles and assign those roles to groups or users. Adjust the policy to reference roles instead of groups. The Keycloak Admin REST API is similar; you’d just target the `/roles` endpoints.
+The above example used a group. For more granular control or organisational alignment, you can use Keycloak roles. Instead of adding users directly to groups, you create roles and assign those roles to groups or users. Adjust the policy to reference roles instead of groups. The Keycloak Admin REST API is similar; you'd just target the `/roles` endpoints.
 
 ---
 
 ## OPA Policy Integration
 
-Instead of relying solely on Keycloak’s policy engine, you can use OPA policies for authorisation. Configure APISIX to query OPA for decisions:
+Instead of relying solely on Keycloak's policy engine, you can use OPA policies for authorisation. Configure APISIX to query OPA for decisions:
 
 - **OPA Plugin Setup**: Instead of `authz-keycloak`, use the `opa` plugin in the ApisixRoute.
 - **OPA Policy Rego Files**: Store policies in a Git repository managed by OPAL.

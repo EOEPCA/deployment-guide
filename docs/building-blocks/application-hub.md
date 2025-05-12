@@ -52,7 +52,7 @@ End-users can execute operational applications made available on the platform. T
 
 **Stakeholders**: End-users and Developers
 
-Users engage with the Application Hub’s SaaS products designed for in-depth interaction, analysis, and execution of EO applications:
+Users engage with the Application Hub's SaaS products designed for in-depth interaction, analysis, and execution of EO applications:
 
 - **Interactive Graphical Applications (IGAs)**: Containerised applications for geospatial data exploration.
 - **Web Apps and Notebooks**: Specialised tools for data analysis and visualisation.
@@ -251,7 +251,7 @@ Ensure the JupyterHub pod(s) and other components are in the `Running` state.
     
 - Go to `https://app-hub.${INGRESS_HOST}/`.
 - You should be redirected to Keycloak (or your chosen OIDC provider) for login if OIDC is set up.
-- Upon successful login, you’ll land in the JupyterHub interface (the "spawn" page).
+- Upon successful login, you'll land in the JupyterHub interface (the "spawn" page).
 
 3. **Spawn a Notebook**:
 
