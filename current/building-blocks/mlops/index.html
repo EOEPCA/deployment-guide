@@ -2354,11 +2354,8 @@
 <ol>
 <li>In the bottom-left corner of GitLab, select <strong>Admin Area</strong>.</li>
 <li>In the Admin Area sidebar, click on <strong>Applications</strong>.</li>
-<li>Then click <strong>New Application</strong> to create a new OAuth app.</li>
+<li>Then click <strong>Add New Application</strong> to create a new OAuth app.</li>
 </ol>
-<blockquote>
-<p><strong>Note:</strong> The GitLab interface may vary slightly depending on your version. For the latest guidance, consult <a href="https://docs.gitlab.com/ee/integration/oauth_provider.html">GitLab&rsquo;s OAuth Provider documentation</a>.</p>
-</blockquote>
 <h4 id="44-configure-the-oauth-application">4.4 Configure the OAuth Application<a class="headerlink" href="#44-configure-the-oauth-application" title="Permanent link">⚓︎</a></h4>
 <p>Fill out the new application form with the following details:</p>
 <ul>
@@ -2414,7 +2411,7 @@
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span>--values<span class="w"> </span>mlflow/generated-values.yaml
 </span></code></pre></div>
 <h4 id="deploy-ingress-for-the-mlflow">Deploy Ingress for the MLFlow<a class="headerlink" href="#deploy-ingress-for-the-mlflow" title="Permanent link">⚓︎</a></h4>
-<p><strong>APISIX only</strong> - If you are using NGINX or another ingress controller, you can skip this step.</p>
+<p><strong>Note:</strong> The following ingress configuration applies to both <strong>NGINX</strong> and <strong>APISIX</strong> ingress controllers. Ensure your ingress controller is properly set up before applying the configuration.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl apply -f mlflow/generated-ingress.yaml
 </span></code></pre></div>
 <hr />
