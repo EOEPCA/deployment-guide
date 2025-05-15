@@ -5,8 +5,16 @@ metadata:
   namespace: sharinghub
   annotations:
     kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+
+    {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+    {{- else if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/rewrite-target-regex: "/mlflow/(.*)"
     k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
+    {{- end }}
+
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
@@ -22,6 +30,15 @@ spec:
     - host: sharinghub.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
+        {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+          - path: /mlflow(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mlflow-sharinghub
+                port:
+                  number: 5000
+        {{- else if eq (getenv "INGRESS_CLASS") "apisix" }}
           - path: "/mlflow"
             pathType: Prefix
             backend:
@@ -29,3 +46,4 @@ spec:
                 name: mlflow-sharinghub
                 port:
                   number: 5000
+        {{- end }}

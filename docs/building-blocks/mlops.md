@@ -178,9 +178,7 @@ Save this password securely for the next step.
 
 1. In the bottom-left corner of GitLab, select **Admin Area**.
 2. In the Admin Area sidebar, click on **Applications**.
-3. Then click **New Application** to create a new OAuth app.
-
-> **Note:** The GitLab interface may vary slightly depending on your version. For the latest guidance, consult [GitLab's OAuth Provider documentation](https://docs.gitlab.com/ee/integration/oauth_provider.html).
+3. Then click **Add New Application** to create a new OAuth app.
 
 #### 4.4 Configure the OAuth Application
 
@@ -254,7 +252,7 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
 
 #### Deploy Ingress for the MLFlow
 
-**APISIX only** - If you are using NGINX or another ingress controller, you can skip this step.
+**Note:** The following ingress configuration applies to both **NGINX** and **APISIX** ingress controllers. Ensure your ingress controller is properly set up before applying the configuration.
 
 ```
 kubectl apply -f mlflow/generated-ingress.yaml

@@ -20,35 +20,10 @@ postgresql:
   auth:
     existingSecret: mlflow-sharinghub-postgres
   global:
-    storageClass: managed-nfs-storage
+    storageClass: {{ getenv "STORAGE_CLASS" }}
+  persistence:
+    storageClass: {{ getenv "STORAGE_CLASS" }}
 
-# This will only be enabled when nginx is used as ingress controller
-# For APISIX, you will have a `$INGRESS_OUTPUT_PATH` file that will be used to deploy the ingress
-{{- if eq (getenv "INGRESS_CLASS") "nginx" }}
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: 10g
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header X-Script-Name /mlflow;
-      rewrite ^/mlflow/(.*)$ /$1 break;
-  hosts:
-    - host: sharinghub.{{ getenv "INGRESS_HOST" }}
-      paths:
-        - path: /mlflow/
-          pathType: ImplementationSpecific
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-    - secretName: sharinghub-tls
-      hosts:
-        - sharinghub.{{ getenv "INGRESS_HOST" }}
-  {{- end }}
-{{- else }}
+
 ingress:
   enabled: false
-{{- end }}
