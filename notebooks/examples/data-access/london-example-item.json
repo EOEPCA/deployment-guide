@@ -1,0 +1,63 @@
+{
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "id": "london-example-item-4",
+  "properties": {
+    "datetime": "2024-01-01T00:00:00Z"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -0.15,
+          51.52
+        ],
+        [
+          -0.15,
+          51.48
+        ],
+        [
+          -0.08,
+          51.48
+        ],
+        [
+          -0.08,
+          51.52
+        ],
+        [
+          -0.15,
+          51.52
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    -0.15,
+    51.48,
+    -0.08,
+    51.52
+  ],
+  "assets": {
+    "osm-wms": {
+      "href": "https://ows.terrestris.de/osm/service?service=WMS&version=1.3.0&request=GetCapabilities",
+      "type": "application/xml",
+      "title": "OSM WMS Capabilities"
+    }
+  },
+  "links": [
+    {
+      "href": "https://ows.terrestris.de/osm/service?service=WMS&version=1.3.0&request=GetCapabilities",
+      "rel": "service",
+      "type": "application/xml",
+      "title": "OSM WMS"
+    },
+    {
+      "href": "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WCSServer?request=GetCapabilities",
+      "rel": "service",
+      "type": "application/xml",
+      "title": "EOX WCS"
+    }
+  ],
+  "collection": "metadata:main"
+}
