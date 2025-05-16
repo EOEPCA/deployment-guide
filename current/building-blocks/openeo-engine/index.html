@@ -2121,6 +2121,9 @@
 </span></code></pre></div>
 <p>For full configuration details, see the <a href="https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml">values.yaml</a>.</p>
 <h4 id="step-3-deploy-openeo-geotrellis-using-helm">Step 3: Deploy openEO Geotrellis Using Helm<a class="headerlink" href="#step-3-deploy-openeo-geotrellis-using-helm" title="Permanent link">⚓︎</a></h4>
+<blockquote>
+<p>You must wait for the ZooKeeper deployment to be fully running before deploying openEO Geotrellis. This is because it relies on the webhook.</p>
+</blockquote>
 <p>Provides an API that simplifies connecting to <abbr title="Earth Observation">EO</abbr> cloud back-ends, running on Apache Spark in a Kubernetes environment.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-openeo<span class="w"> </span>sparkapplication<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>

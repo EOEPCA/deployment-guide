@@ -1551,6 +1551,48 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#4-configure-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Configure Keycloak Client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Configure Keycloak Client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-a-keycloak-realm-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Create a Keycloak Realm Role
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-assign-the-role-to-your-keycloak-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Assign the Role to your Keycloak User
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-add-the-realm-role-mapper-to-your-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Add the Realm Role Mapper to your Keycloak Client
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#4-monitor-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       4. Monitor the Deployment
@@ -1785,6 +1827,48 @@
       3. Configure Ingress
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configure-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Configure Keycloak Client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Configure Keycloak Client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-a-keycloak-realm-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Create a Keycloak Realm Role
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-assign-the-role-to-your-keycloak-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Assign the Role to your Keycloak User
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-add-the-realm-role-mapper-to-your-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Add the Realm Role Mapper to your Keycloak Client
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2081,6 +2165,72 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 </li>
 </ul>
 <hr />
+<h3 id="4-configure-keycloak-client">4. Configure Keycloak Client<a class="headerlink" href="#4-configure-keycloak-client" title="Permanent link">⚓︎</a></h3>
+<p>To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.</p>
+<h4 id="step-1-create-a-keycloak-realm-role">Step 1: Create a Keycloak Realm Role<a class="headerlink" href="#step-1-create-a-keycloak-realm-role" title="Permanent link">⚓︎</a></h4>
+<ul>
+<li>Log into your Keycloak (<code>auth.${INGRESS_HOST}</code>).</li>
+<li>Navigate to your realm (<code>eoepca</code>).</li>
+<li>Click on <strong>Roles</strong>, then click <strong>Add Role</strong>.</li>
+<li>Create a new role named <code>opensearch_user</code></li>
+</ul>
+<h4 id="step-2-assign-the-role-to-your-keycloak-user">Step 2: Assign the Role to your Keycloak User<a class="headerlink" href="#step-2-assign-the-role-to-your-keycloak-user" title="Permanent link">⚓︎</a></h4>
+<ul>
+<li>Still in Keycloak, go to <strong>Users</strong> and select your user (e.g. <code>eoepcauser</code>).</li>
+<li>Click on the <strong>Role Mappings</strong> tab.</li>
+<li>Assign the newly created <code>opensearch_user</code> realm role to this user.</li>
+</ul>
+<h4 id="step-3-add-the-realm-role-mapper-to-your-keycloak-client">Step 3: Add the Realm Role Mapper to your Keycloak Client<a class="headerlink" href="#step-3-add-the-realm-role-mapper-to-your-keycloak-client" title="Permanent link">⚓︎</a></h4>
+<ul>
+<li>Go to <strong>Clients</strong> and select your <code>resource-health</code> client.</li>
+<li>Navigate to <strong>Client Scopes → resource-health-dedicated</strong> and click <strong>Add Mapper</strong>.</li>
+<li>Configure the <code>User Realm Role</code> template mapper as follows:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mapper Type</td>
+<td><code>User Realm Role</code></td>
+</tr>
+<tr>
+<td>Name</td>
+<td><code>realm roles</code></td>
+</tr>
+<tr>
+<td>Multivalued</td>
+<td><code>ON</code> ✅</td>
+</tr>
+<tr>
+<td>Token Claim Name</td>
+<td><code>roles</code></td>
+</tr>
+<tr>
+<td>Claim JSON Type</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>Add to ID token</td>
+<td><code>ON</code> ✅</td>
+</tr>
+<tr>
+<td>Add to Access token</td>
+<td><code>ON</code> ✅</td>
+</tr>
+<tr>
+<td>Add to Userinfo</td>
+<td><code>ON</code> (recommended) ✅</td>
+</tr>
+</tbody>
+</table>
+<p>This configuration ensures Keycloak will correctly include realm roles in the JWT.</p>
+<p><img alt="Dashboard" src="../../img/resource-health/role.jpeg" /></p>
+<hr />
 <h3 id="4-monitor-the-deployment">4. Monitor the Deployment<a class="headerlink" href="#4-monitor-the-deployment" title="Permanent link">⚓︎</a></h3>
 <p>Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.</p>
 <p>After the Helm installation finishes, check that all pods are running in the <strong>resource-health</strong> namespace:</p>
@@ -2101,10 +2251,7 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 </span></code></pre></div>
 <p><img alt="Dashboard" src="../../img/resource-health/dashboard.jpeg" /></p>
 <p>Access the Health Checks at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>https://resource-health.${INGRESS_HOST}/api/healthchecks/checks/
-</span></code></pre></div>
-<p>Check the Telemetry service status at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>https://resource-health.${INGRESS_HOST}/api/telemetry/healthz
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/
 </span></code></pre></div>
 <hr />
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">⚓︎</a></h2>
@@ -2119,19 +2266,19 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 </ul>
 <h2 id="defining-health-checks">Defining Health Checks<a class="headerlink" href="#defining-health-checks" title="Permanent link">⚓︎</a></h2>
 <p><strong>Helm-based</strong> (preferred for GitOps or static config):</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">resource-health</span><span class="p">:</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">healthchecks</span><span class="p">:</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">checks</span><span class="p">:</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-trivial-check</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*&quot;</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">        </span><span class="nt">requirements</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/requirements.txt&quot;</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">        </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/trivial_check.py&quot;</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SOME_HOST</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">            </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://some-endpoint.example.com&quot;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">resource-health</span><span class="p">:</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">healthchecks</span><span class="p">:</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">checks</span><span class="p">:</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily-trivial-check</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">        </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">8</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*&quot;</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">        </span><span class="nt">requirements</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/requirements.txt&quot;</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">        </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/trivial_check.py&quot;</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SOME_HOST</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">            </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://some-endpoint.example.com&quot;</span>
 </span></code></pre></div>
 <p>Apply with:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-health<span class="w"> </span>reference-repo/resource-health-reference-deployment<span class="w"> </span>-f<span class="w"> </span>generated-values.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-health<span class="w"> </span>reference-repo/resource-health-reference-deployment<span class="w"> </span>-f<span class="w"> </span>generated-values.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span></code></pre></div>
 <p><strong>UI-based</strong> (via the Resource Health Web):</p>
 <p>Visit the Resource Health Web dashboard and select the <strong>Create new check</strong> dropdown to define a new health check.</p>
@@ -2140,8 +2287,8 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To remove all Resource Health components and the namespace:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>resource-health<span class="w"> </span>-n<span class="w"> </span>resource-health
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-health
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>resource-health<span class="w"> </span>-n<span class="w"> </span>resource-health
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-health
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
