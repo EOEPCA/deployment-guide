@@ -88,6 +88,8 @@ For full configuration details, see the [values.yaml](https://github.com/bitnami
 
 #### Step 3: Deploy openEO Geotrellis Using Helm
 
+> You must wait for the ZooKeeper deployment to be fully running before deploying openEO Geotrellis. This is because it relies on the webhook.
+
 Provides an API that simplifies connecting to EO cloud back-ends, running on Apache Spark in a Kubernetes environment.
 
 ```bash

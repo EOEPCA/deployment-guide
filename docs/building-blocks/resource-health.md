@@ -175,6 +175,46 @@ For the purpose of this guide, the configuration script created a sample Ingress
 
 ---
 
+### 4. Configure Keycloak Client
+
+To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.
+
+#### Step 1: Create a Keycloak Realm Role
+
+* Log into your Keycloak (`auth.${INGRESS_HOST}`).
+* Navigate to your realm (`eoepca`).
+* Click on **Roles**, then click **Add Role**.
+* Create a new role named `opensearch_user`
+
+#### Step 2: Assign the Role to your Keycloak User
+
+* Still in Keycloak, go to **Users** and select your user (e.g. `eoepcauser`).
+* Click on the **Role Mappings** tab.
+* Assign the newly created `opensearch_user` realm role to this user.
+
+#### Step 3: Add the Realm Role Mapper to your Keycloak Client
+
+* Go to **Clients** and select your `resource-health` client.
+* Navigate to **Client Scopes → resource-health-dedicated** and click **Add Mapper**.
+* Configure the `User Realm Role` template mapper as follows:
+
+| Field               | Value                |
+| ------------------- | -------------------- |
+| Mapper Type         | `User Realm Role`    |
+| Name                | `realm roles`        |
+| Multivalued         | `ON` ✅               |
+| Token Claim Name    | `roles`              |
+| Claim JSON Type     | `String`             |
+| Add to ID token     | `ON` ✅               |
+| Add to Access token | `ON` ✅               |
+| Add to Userinfo     | `ON` (recommended) ✅ |
+
+This configuration ensures Keycloak will correctly include realm roles in the JWT.
+
+![Dashboard](../img/resource-health/role.jpeg)
+
+---
+
 ### 4. Monitor the Deployment
 
 Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
@@ -208,13 +248,7 @@ https://resource-health.${INGRESS_HOST}
 Access the Health Checks at:
 
 ```url
-https://resource-health.${INGRESS_HOST}/api/healthchecks/checks/
-```
-
-Check the Telemetry service status at:
-
-```url
-https://resource-health.${INGRESS_HOST}/api/telemetry/healthz
+https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/
 ```
 
 ---

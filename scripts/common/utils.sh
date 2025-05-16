@@ -162,12 +162,16 @@ check() {
 
 ask_yes_no() {
     local message="$1"
-    read -p "$message (yes/no): " RESPONSE
-    if [[ "$RESPONSE" == "yes" ]]; then
-        return 0
-    else
-        return 1
-    fi
+    while true; do
+        read -p "$message (yes/no): " RESPONSE
+        if [[ "$RESPONSE" == "yes" ]]; then
+            return 0
+        elif [[ "$RESPONSE" == "no" ]]; then
+            return 1
+        else
+            echo "Please answer 'yes' or 'no'."
+        fi
+    done
 }
 
 # Function to generate a secure password and encode it in base64

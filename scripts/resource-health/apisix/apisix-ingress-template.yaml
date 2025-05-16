@@ -72,7 +72,7 @@ metadata:
 spec:
   secretName: resource-health-tls
   dnsNames:
-    - resource-health.deploybox.co.uk
+    - resource-health.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     name: {{ getenv "CLUSTER_ISSUER" }}
     kind: ClusterIssuer

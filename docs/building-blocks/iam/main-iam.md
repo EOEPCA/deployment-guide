@@ -100,6 +100,12 @@ helm upgrade -i iam eoepca-dev/iam-bb \
   --create-namespace
 ```
 
+Then apply the **APISIX TLS** resource:
+
+```bash
+kubectl apply -f apisix-tls.yaml
+```
+
 ### 4. Create a Test User
 
 **Create a Test User in the `eoepca` Realm**<br>

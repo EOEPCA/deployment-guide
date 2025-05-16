@@ -9,6 +9,15 @@ opensearch:
   securityConfig:
     config:
       data:
+        roles_mapping.yml: |-
+          _meta:
+            type: "rolesmapping"
+            config_version: 2
+
+          all_access:
+            backend_roles:
+              - "opensearch_user"
+              - "all_access"
         config.yml: |-
           _meta:
             type: "config"
