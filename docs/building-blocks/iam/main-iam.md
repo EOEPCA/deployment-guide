@@ -285,12 +285,8 @@ kubectl get pods -n iam
 To remove IAM components:
 
 ```bash
-kubectl -n iam delete -f keycloak/generated-ingress.yaml
-bash delete-secrets.sh
-helm -n iam uninstall keycloak
-
-kubectl -n iam delete -f opa/generated-ingress.yaml
-helm -n iam uninstall opa
+helm -n iam uninstall iam
+kubectl delete ns iam
 ```
 
 If you created custom clients or realms, remove them using the scripts in `scripts/` or the instructions in the appendices.

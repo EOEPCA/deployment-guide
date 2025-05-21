@@ -57,7 +57,7 @@ iam: &iam
     {{- end }}
 
     hosts:
-      - iam-opa.{{ getenv "INGRESS_HOST" }}
+      - opa.{{ getenv "INGRESS_HOST" }}
     paths:
       - /*
     # Client credentials:
@@ -71,7 +71,7 @@ iam: &iam
     #clientSecretRef: opa-route
   identityApi:
     enabled: &identityApiEnabled true
-    {{- if eq ( getenv "INGRESS_HOST" ) "apisix" }}
+    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
     createRoute: true
     {{- else }}
     createRoute: false
@@ -99,6 +99,8 @@ iam: &iam
 
 keycloak:
   enabled: *keycloakEnabled
+  # default is "small" - see https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+  resourcesPreset: "large"
   image:
     # The following settings must point to a custom Keycloak image that includes the Keycloak OPA Plugin.
     registry: byud8gih.c1.de1.container-registry.ovh.net
@@ -140,7 +142,7 @@ keycloak:
   extraEnvVars:
     # KC_SPI_POLICY_OPA_OPA_BASE_URI must point to the base URI of the OPA service.
     - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
-      value: "http://iam-opal-opal-client:8181/v1/data/"
+      value: "http://iam-opal-client.iam:8181/v1/data/"
     # KC_SPI_POLICY_OPA_OPA_POLICY_DIR points to a pod-internal config directory for
     # policies and should not be changed.
     - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR

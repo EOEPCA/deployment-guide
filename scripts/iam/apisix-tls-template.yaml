@@ -35,7 +35,7 @@ spec:
     kind: ClusterIssuer
     name: {{ getenv "CLUSTER_ISSUER" }}
   dnsNames:
-  - iam-opa.{{ getenv "INGRESS_HOST" }}
+  - opa.{{ getenv "INGRESS_HOST" }}
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
@@ -68,7 +68,7 @@ metadata:
   namespace: iam
 spec:
   hosts:
-    - iam-opa.{{ getenv "INGRESS_HOST" }}
+    - opa.{{ getenv "INGRESS_HOST" }}
   secret:
     name: opa-cert-tls
     namespace: iam
