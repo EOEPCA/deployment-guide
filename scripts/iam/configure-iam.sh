@@ -8,6 +8,7 @@ echo "Configuring the IAM..."
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
 ask "REALM" "Enter what you'd like for the Keycloak realm name" "eoepca" is_non_empty
+ask "CLUSTER_ISSUER" "Enter the cluster issuer for TLS certificates" "letsencrypt-prod" is_non_empty
 configure_cert
 
 # Generate passwords and store them in the state file
