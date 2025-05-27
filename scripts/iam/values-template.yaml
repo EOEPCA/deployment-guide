@@ -21,7 +21,7 @@ iam: &iam
   keycloak:
     enabled: &keycloakEnabled true
     # "Official" Keycloak URL
-    url: &kcurl https://auth.{{ getenv "INGRESS_HOST" }}
+    url: &kcurl {{ getenv "HTTP_SCHEME" }}://auth.{{ getenv "INGRESS_HOST" }}
     hosts:
       - auth.{{ getenv "INGRESS_HOST" }}
     paths:
