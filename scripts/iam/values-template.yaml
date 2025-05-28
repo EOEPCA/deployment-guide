@@ -416,7 +416,7 @@ identity-service:
       # Config values that can be passed via env vars
       extraEnv:
         - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
-          value: *kcurl
+          value: "http://iam-keycloak.iam.svc.cluster.local"
         - name: ADMIN_USERNAME
           # Use dedicated identity-api user
           value: {{ getenv "KEYCLOAK_ADMIN_USER" }}
