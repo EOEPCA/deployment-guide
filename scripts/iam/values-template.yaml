@@ -48,7 +48,7 @@ iam: &iam
           key: credentials
           namespace: crossplane-system
   opa:
-    {{- if eq ( getenv "INGRESS_HOST" ) "apisix" }}
+    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
     enabled: &opaEnabled true
     createRoute: true
     {{- else }}
