@@ -1,6 +1,7 @@
 #!/bin/bash
 source ../common/utils.sh
 source ../common/validation-utils.sh
+source ~/.eoepca/state
 
 echo "🔍 Validating IAM deployment..."
 
@@ -16,19 +17,19 @@ check_service_exists "iam" "identity-api"
 # Validate Keycloak realm 'eoepca'
 echo "Validating Keycloak realm 'eoepca' exists..."
 ACCESS_TOKEN=$( \
-  curl --silent --show-error \
+  curl -k --silent --show-error \
     -X POST \
     -d "username=${KEYCLOAK_ADMIN_USER}" \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+    "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
 )
 
-REALM_EXISTS=$(curl --silent --show-error \
+REALM_EXISTS=$(curl -k --silent --show-error \
   -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}" \
+  "https://${KEYCLOAK_HOST}/admin/realms/${REALM}" \
   -o /dev/null -w '%{http_code}')
 
 if [ "$REALM_EXISTS" -eq 200 ]; then
@@ -40,10 +41,10 @@ fi
 # Validate Keycloak client 'opa'
 echo "Validating Keycloak client 'opa' exists..."
 OPA_CLIENT_ID="$( \
-  curl --silent --show-error \
+  curl -k --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
+    "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
     | jq -r '.[] | select(.clientId == "opa") | .id' \
 )"
 
