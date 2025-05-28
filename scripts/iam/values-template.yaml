@@ -148,12 +148,9 @@ keycloak:
     # KC_HOSTNAME and optionally KC_HOSTNAME_ADMIN should be set to the official base
     # URL of Keycloak (usually the same as iam.keycloak.url)
     - name: KC_HOSTNAME
-      value: *kcurl
-    # TODO: Remove the following two variables:
-    - name: KC_HOSTNAME_URL
-      value: *kcurl
-    - name: KC_HOSTNAME_ADMIN_URL
-      value: *kcurl
+      value: auth.{{ getenv "INGRESS_HOST" }}
+    - name: KC_HOSTNAME_PORT
+      value: "31443"
     - name: KC_HOSTNAME_STRICT_HTTPS
       value: "false"
     - name: KC_PROXY
