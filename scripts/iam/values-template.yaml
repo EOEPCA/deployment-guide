@@ -21,7 +21,7 @@ iam: &iam
   keycloak:
     enabled: &keycloakEnabled true
     # "Official" Keycloak URL
-    url: &kcurl {{ getenv "HTTP_SCHEME" }}://auth.{{ getenv "INGRESS_HOST" }}
+    url: &kcurl {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
     hosts:
       - auth.{{ getenv "INGRESS_HOST" }}
     paths:
@@ -154,6 +154,10 @@ keycloak:
       value: *kcurl
     - name: KC_HOSTNAME_ADMIN_URL
       value: *kcurl
+    - name: KC_HOSTNAME_STRICT_HTTPS
+      value: "false"
+    - name: KC_PROXY
+      value: "edge"
   ## Service configuration
   ##
   service:
