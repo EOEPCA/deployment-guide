@@ -47,7 +47,7 @@ echo "Redirect URIs: ${REDIRECT_URIS[@]}"
 
 # Obtain Admin Token
 ACCESS_TOKEN=$(
-    curl --silent --show-error \
+    curl -k --silent --show-error \
         -X POST \
         -d "username=${KEYCLOAK_ADMIN_USER}" \
         --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
@@ -99,7 +99,7 @@ create_client_payload=$(
 EOF
 )
 
-curl --silent --show-error \
+curl -k --silent --show-error \
     -X POST \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
     -H "Content-Type: application/json" \
@@ -110,7 +110,7 @@ echo "Client creation request sent."
 
 # Verify Creation
 echo "Verifying creation of client: ${CLIENT_ID}"
-curl --silent --show-error \
+curl -k --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
     "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" |
