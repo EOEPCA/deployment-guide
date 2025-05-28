@@ -21,7 +21,7 @@ ask_temp "USER_PASSWORD" "Enter the password for the example user" "eoepcapasswo
 
 
 # Obtain Admin Token (from 'master' realm)
-ACCESS_TOKEN=$(curl --silent --show-error \
+ACCESS_TOKEN=$(curl -k --silent --show-error \
     -X POST \
     -d "username=${KEYCLOAK_ADMIN_USER}" \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
@@ -55,7 +55,7 @@ EOF
 
 # We do a POST to /admin/realms/{realm}/users to create the user.
 create_user_response=$(
-    curl --silent --show-error \
+    curl -k --silent --show-error \
         -X POST \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
@@ -71,7 +71,7 @@ if [ "${create_user_response}" != "201" ]; then
 fi
 
 # 2. Retrieve the new user's ID
-user_id=$(curl --silent --show-error \
+user_id=$(curl -k --silent --show-error \
     -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${USER_NAME}" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" |
     jq -r '.[0].id')
@@ -97,7 +97,7 @@ EOF
 )
 
 password_response=$(
-    curl --silent --show-error \
+    curl -k --silent --show-error \
         -X PUT \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
