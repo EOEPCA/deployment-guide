@@ -144,8 +144,10 @@ We recommend executing `source ~/.eoepca/state` to load the environment variable
 
 #### 3.1. Basic Liveness Check
 
+_Returns response headers only..._
+
 ```bash
-curl -I "https://resource-catalogue.${INGRESS_HOST}/"
+curl -s -D - -o /dev/null "https://resource-catalogue.${INGRESS_HOST}/"
 ```
 
 #### 3.2. Testing OGC CSW
