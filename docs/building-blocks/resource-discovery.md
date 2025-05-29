@@ -221,7 +221,7 @@ pycsw-admin.py load-records \
     Navigate to:
     
     ```
-    https://resource-catalogue.<INGRESS_HOST>/collections/metadata:main/items
+    https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items
     ```
     
     Confirm that the newly ingested record (titled `EOEPCA Sample Record`) appears in the search results.
