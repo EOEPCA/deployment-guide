@@ -23,7 +23,9 @@ When prompted:
 - **Client ID**: A unique identifier for your client application, for example, `my-client-app`.
 - **Client Name and Description**: Descriptive texts to identify your client application, like `My Client Application`.
 - **Client Secret**: A secret key associated with your client. During the Building Block installations, these will be set for you.
-- **Subdomain**: A designated subdomain for your client application, for instance, `app`.
+- **Subdomain**: A designated subdomain for your client application (for auth flow redirection), for instance, `app`.
+- **Additional Subdomains**: Additional allowed subdomains (for auth flow redirection), if required - otherwise leave blank.
+- **Additional Hosts**: Additional allowed full hostnames (for auth flow redirection), if required - otherwise leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 

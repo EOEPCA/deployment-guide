@@ -121,7 +121,7 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text (e.g., `GitLab OIDC Client`).
 - **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `gitlab`
-- **Additional Subdomains**: Leave empty.
+- **Additional Subdomains**: Leave blank.
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.

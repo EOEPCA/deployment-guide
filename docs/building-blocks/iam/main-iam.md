@@ -142,6 +142,7 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text<br>
 - **Client secret**: Enter the Client Secrets that was generated during the configuration script (check `~/.eoepca/state` if you cleared the terminal).
 - **Subdomain**: Use `opa` for Open Policy Agent. Use `identity-api` for the Identity API.
+- **Additional Subdomains**: Leave blank.
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
