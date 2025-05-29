@@ -241,6 +241,7 @@ configure_ingress() {
     fi
 
     if [ "$INGRESS_CLASS" == "nginx" ]; then
+        add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/enable-cors: \"true\""
 	if [ "$HTTP_SCHEME" == "https" ]; then
 		add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/ssl-redirect: \"true\""
 		add_to_custom_ingress_annotations "nginx.ingress.kubernetes.io/force-ssl-redirect: \"true\""
@@ -248,11 +249,11 @@ configure_ingress() {
     fi
 
     if [ "$INGRESS_CLASS" == "apisix" ]; then
-	add_to_custom_ingress_annotations "apisix.ingress.kubernetes.io/use-regex: \"true\""
+	    add_to_custom_ingress_annotations "apisix.ingress.kubernetes.io/use-regex: \"true\""
         add_to_custom_ingress_annotations "k8s.apisix.apache.org/upstream-read-timeout: \"600s\""
+        add_to_custom_ingress_annotations "k8s.apisix.apache.org/enable-cors: \"true\""
 	if [ "$HTTP_SCHEME" == "https" ]; then
-	        add_to_custom_ingress_annotations "apisix.apache.org/ssl-redirect: \"true\""
-        	add_to_custom_ingress_annotations "k8s.apisix.apache.org/upstream-read-timeout: \"600s\""
+        add_to_custom_ingress_annotations "apisix.apache.org/ssl-redirect: \"true\""
 	fi
     fi
 }
@@ -279,8 +280,8 @@ first_time_setup() {
         echo ""
         echo "Please configure the following settings:"
         echo ""
-        configure_ingress
         configure_http_scheme
+        configure_ingress
         ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
         ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
         configure_cert
