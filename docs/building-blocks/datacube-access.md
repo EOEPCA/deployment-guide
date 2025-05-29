@@ -133,8 +133,10 @@ Quick command-line checks:
 
 #### Basic API Check
 
+_Returns response headers only..._
+
 ```bash
-curl -I "https://datacube-access.${INGRESS_HOST}/"
+curl -s -D - -o /dev/null "https://datacube-access.${INGRESS_HOST}/"
 ```
 
 #### Collection Access Test
