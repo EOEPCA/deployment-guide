@@ -1872,7 +1872,7 @@
 <h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><strong>Easy Data Access</strong>: Quickly access and manage large <abbr title="Earth Observation">EO</abbr> datacubes.</li>
-<li><strong>Uses Open Standards</strong>: Implements OGC GeoDataCube API, OGC Coverages, OGC Features and STAC APIs.</li>
+<li><strong>Uses Open Standards</strong>: STAC, openEO, OGC API Processes, OGC Application Packages</li>
 <li><strong>Data Discovery</strong>: Easily discover data with STAC API integration.</li>
 <li><strong>Flexible Data Storage</strong>: Works with common storage solutions like S3, HTTP or local file systems.</li>
 <li><strong>Data Processing</strong>: Execute custom processing jobs using openEO and OGC API Processes.</li>
@@ -1995,7 +1995,8 @@ Confirm OGC API conformance classes and supported standards.</p>
 <h3 id="3-manual-validation-via-curl">3. Manual Validation via cURL<a class="headerlink" href="#3-manual-validation-via-curl" title="Permanent link">⚓︎</a></h3>
 <p>Quick command-line checks:</p>
 <h4 id="basic-api-check">Basic API Check<a class="headerlink" href="#basic-api-check" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>curl<span class="w"> </span>-I<span class="w"> </span><span class="s2">&quot;https://datacube-access.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
+<p><em>Returns response headers only&hellip;</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-D<span class="w"> </span>-<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span><span class="s2">&quot;https://datacube-access.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
 </span></code></pre></div>
 <h4 id="collection-access-test">Collection Access Test<a class="headerlink" href="#collection-access-test" title="Permanent link">⚓︎</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://datacube-access.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections&quot;</span>

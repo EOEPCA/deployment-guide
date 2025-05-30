@@ -2056,7 +2056,8 @@ Confirms which OGC API conformance classes and standards are supported by the se
 <p>Using the command line can be a quick way to check endpoints and see raw responses. Below are some example commands.</p>
 <p>We recommend executing <code>source ~/.eoepca/state</code> to load the environment variables, or manually set the <code>INGRESS_HOST</code> variable.</p>
 <h4 id="31-basic-liveness-check">3.1. Basic Liveness Check<a class="headerlink" href="#31-basic-liveness-check" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-I<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
+<p><em>Returns response headers only&hellip;</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-D<span class="w"> </span>-<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
 </span></code></pre></div>
 <h4 id="32-testing-ogc-csw">3.2. Testing OGC CSW<a class="headerlink" href="#32-testing-ogc-csw" title="Permanent link">⚓︎</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/csw?service=CSW&amp;version=2.0.2&amp;request=GetCapabilities&quot;</span>
@@ -2113,7 +2114,7 @@ Confirms which OGC API conformance classes and standards are supported by the se
 <li>
 <p><strong>Via Web Browser / UI</strong><br />
     Navigate to:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://resource-catalogue.&lt;INGRESS_HOST&gt;/collections/metadata:main/items
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items
 </span></code></pre></div>
 <p>Confirm that the newly ingested record (titled <code>EOEPCA Sample Record</code>) appears in the search results.</p>
 </li>
