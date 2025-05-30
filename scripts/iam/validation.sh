@@ -54,6 +54,21 @@ else
   echo "❌ Keycloak client 'opa' does not exist."
 fi
 
+# Validate Keycloak client 'identity-api'
+echo "Validating Keycloak client 'identity-api' exists..."
+IDENTITY_API_CLIENT_ID="$( \
+  curl -k --silent --show-error \
+    -X GET \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
+    | jq -r '.[] | select(.clientId == "identity-api") | .id' \
+)"
+
+if [ -n "$IDENTITY_API_CLIENT_ID" ]; then
+  echo "✅ Keycloak client 'identity-api' exists."
+else
+  echo "❌ Keycloak client 'identity-api' does not exist."
+fi
 
 echo
 echo "All Resources:"
