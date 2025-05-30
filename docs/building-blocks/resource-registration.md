@@ -286,13 +286,13 @@ https://registration-api.${INGRESS_HOST}/jobs
 
 You should see a new job with the status `COMPLETED`. 
 
-If you have deployed the [**Resource Discovery**](./resource-discovery.md) Building Block, then the registered STAC Item will also be available at:
+If you have deployed the [**Resource Discovery**](./resource-discovery.md) Building Block, then the registered `Collection` will also be available at:
 
 ```
-https://resource-catalogue.${INGRESS_HOST}/stac/collections/metadata:main/items/20201211_223832_CS2
+https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items/S2MSI2A
 ```
 
-_(The item ID and collection path will vary based on your input.)_
+_(Adjust this path according to your input.)_
 
 #### Using the Registration Harvester
 
