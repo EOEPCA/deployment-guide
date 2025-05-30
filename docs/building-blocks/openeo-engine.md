@@ -194,7 +194,7 @@ Launch the notebook server:
 Open the openeo notebook:
 
 ```bash
-xdg-open http://127.0.0.1:8888/lab/tree/openeo.ipynb
+xdg-open http://127.0.0.1:8888/lab/tree/openeo/openeo.ipynb
 ```
 
 Clear the cell outputs and then execute the notebook - which should complete with similar outputs to the reference notebook.
