@@ -66,6 +66,8 @@ kubectl create secret docker-registry regcred \
 -n processing
 ```
 
+These credentials (`regcred`) can then be referenced as an _imagePullSecret_ in the relevant _PodSpec_ of any workloads running in the `processing` namespace.
+
 > NOTE. Your Kubernetes distribution may provide other means for configuring cluster-wide container registry credentials - e.g. directly within the container runtime of each node within your cluster - as illustrated below with the `--registry-config` option of the `k3d` cluster creation.
 
 ## Quick Start

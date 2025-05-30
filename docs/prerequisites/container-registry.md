@@ -204,6 +204,8 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 
 **Configure Kubernetes to Pull Images from Harbor:**
 
+The following steps provide an example of how to configure a pod with _Image Pull Secrets_ to use images from the deployed _Container Registry_.
+
 1. **Create an image pull secret**:
 
     ```bash
