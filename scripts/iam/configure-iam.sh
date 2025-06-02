@@ -10,6 +10,10 @@ ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes
 ask "REALM" "Enter what you'd like for the Keycloak realm name" "eoepca" is_non_empty
 configure_cert
 
+if [ -z "$CLUSTER_ISSUER" ]; then
+    ask "CLUSTER_ISSUER" "Enter the cluster issuer name for TLS certificates" "selfsigned-issuer" is_non_empty
+fi
+
 # Generate passwords and store them in the state file
 if [ -z "$KEYCLOAK_ADMIN_PASSWORD" ]; then
     KEYCLOAK_ADMIN_PASSWORD=$(generate_aes_key 16)
@@ -55,6 +59,9 @@ echo "Generating configuration files..."
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 if [ "$INGRESS_CLASS" == "apisix" ]; then
     gomplate -f "apisix-tls-template.yaml" -o "apisix-tls.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    echo "Generated apisix-tls.yaml"
+else
+    echo "Skipping apisix-tls.yaml generation for non-APISIX ingress class."
 fi
 
 echo "✅ Configuration files generated."
