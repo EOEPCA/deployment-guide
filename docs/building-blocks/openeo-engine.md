@@ -275,7 +275,10 @@ Before running any jobs, you must obtain an access token from your OIDC Provider
 #### Get an Accces Token
 
 This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`).<br>
-If needed, run the `create-user.sh` script to create a test user - `bash ../../utils/create-user.sh`.
+If needed, run the `create-user.sh` script to create a test user...
+```
+bash ../../utils/create-user.sh
+```
 
 Request the access token.
 
