@@ -80,7 +80,7 @@ This quick start provides some simple instructions to establish a local developm
 
 Follow the [Installation Instructions](https://k3d.io/stable/#releases) to install the `k3d` binary.
 
-**Create Kubernetes Cluster**
+### Create Kubernetes Cluster
 
 Cluster creation is initiated by the following command.
 
@@ -140,6 +140,71 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
       --registry-config "registries.yaml"
     ```
 
-**Storage Provisioner**
+### Suppress Resource Requests
+
+In the case that `k3d` or other similar single node development cluster is used, then it is likely that insufficient cpu/memory will be available to satisfy the resource `requests` specified by the helm charts defaults.
+
+A simple approach to avoid this problem is to use a Mutating Admission Policy to zero any pod resource requests.
+
+> NOTE that the success of this workaround relies upon the (overall) tendancy of the deployed components to request more cpu/memory resource than they require for a simple development setup.
+
+For this we can use the Kyverno Policy Engine through which we can configure an admission webhook with a mutating rule.
+
+**Install Kyvero using Helm**
+
+```bash
+helm repo add kyverno https://kyverno.github.io/kyverno/
+helm repo update kyverno
+helm upgrade -i kyverno kyverno/kyverno \
+  --version 3.4.1 \
+  --namespace kyverno \
+  --create-namespace
+```
+
+**Create the ClusterPolicy**
+
+```yaml
+cat - <<'EOF' | kubectl apply -f -
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: remove-resource-requests
+spec:
+  rules:
+    - name: remove-resource-requests
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        foreach:
+          - list: "request.object.spec.containers"
+            patchStrategicMerge:
+              spec:
+                containers:
+                  - name: "{{ element.name }}"
+                    resources:
+                      requests:
+                        cpu: "0"
+                        memory: "0"
+          - list: "request.object.spec.initContainers || []"
+            preconditions:
+              all:
+                - key: "{{ length(request.object.spec.initContainers) }}"
+                  operator: GreaterThan
+                  value: 0
+            patchStrategicMerge:
+              spec:
+                initContainers:
+                  - name: "{{ element.name }}"
+                    resources:
+                      requests:
+                        cpu: "0"
+                        memory: "0"
+EOF
+```
+
+### Storage Provisioner
 
 As described in the [EOEPCA+ Prerequisites](storage.md), a persistence solution providing `ReadWriteMany` storage is required by some BBs. For this development deployment the single node HostPath Provisioner can be used as described in the [Storage Quick Start](storage.md#quick-start).
