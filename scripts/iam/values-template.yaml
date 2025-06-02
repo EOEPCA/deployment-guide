@@ -100,7 +100,7 @@ iam: &iam
 keycloak:
   enabled: *keycloakEnabled
   # default is "small" - see https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
-  resourcesPreset: "large"
+  # resourcesPreset: "large"
   image:
     # The following settings must point to a custom Keycloak image that includes the Keycloak OPA Plugin.
     registry: byud8gih.c1.de1.container-registry.ovh.net
