@@ -1758,6 +1758,7 @@
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>--docker-email<span class="o">=</span><span class="s2">&quot;YOUR_EMAIL&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>-n<span class="w"> </span>processing
 </span></code></pre></div>
+<p>These credentials (<code>regcred</code>) can then be referenced as an <em>imagePullSecret</em> in the relevant <em>PodSpec</em> of any workloads running in the <code>processing</code> namespace.</p>
 <blockquote>
 <p>NOTE. Your Kubernetes distribution may provide other means for configuring cluster-wide container registry credentials - e.g. directly within the container runtime of each node within your cluster - as illustrated below with the <code>--registry-config</code> option of the <code>k3d</code> cluster creation.</p>
 </blockquote>

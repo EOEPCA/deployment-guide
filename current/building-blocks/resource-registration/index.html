@@ -2202,10 +2202,10 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://registration-api.${INGRESS_HOST}/jobs
 </span></code></pre></div>
 <p>You should see a new job with the status <code>COMPLETED</code>. </p>
-<p>If you have deployed the <a href="../resource-discovery/"><strong>Resource Discovery</strong></a> Building Block, then the registered STAC Item will also be available at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>https://resource-catalogue.${INGRESS_HOST}/stac/collections/metadata:main/items/20201211_223832_CS2
+<p>If you have deployed the <a href="../resource-discovery/"><strong>Resource Discovery</strong></a> Building Block, then the registered <code>Collection</code> will also be available at:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items/S2MSI2A
 </span></code></pre></div>
-<p><em>(The item ID and collection path will vary based on your input.)</em></p>
+<p><em>(Adjust this path according to your input.)</em></p>
 <h4 id="using-the-registration-harvester">Using the Registration Harvester<a class="headerlink" href="#using-the-registration-harvester" title="Permanent link">⚓︎</a></h4>
 <p>The Registration Harvester leverages Flowable to automate resource harvesting workflows.</p>
 <p><strong>Access the Flowable REST API Swagger UI:</strong></p>
