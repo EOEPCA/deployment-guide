@@ -50,7 +50,7 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
+    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 ```
@@ -272,7 +272,7 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
+    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 ```
