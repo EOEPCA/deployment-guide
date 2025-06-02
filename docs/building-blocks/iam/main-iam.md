@@ -94,7 +94,7 @@ This creates Kubernetes secrets from the credentials generated earlier.
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i iam eoepca-dev/iam-bb \
-  --version 2.0.0-rc1 \
+  --version 2.0.0-rc.1.2 \
   --namespace iam \
   --values generated-values.yaml \
   --create-namespace
@@ -142,6 +142,7 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text<br>
 - **Client secret**: Enter the Client Secrets that was generated during the configuration script (check `~/.eoepca/state` if you cleared the terminal).
 - **Subdomain**: Use `opa` for Open Policy Agent. Use `identity-api` for the Identity API.
+- **Additional Subdomains**: Leave blank.
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
@@ -285,12 +286,8 @@ kubectl get pods -n iam
 To remove IAM components:
 
 ```bash
-kubectl -n iam delete -f keycloak/generated-ingress.yaml
-bash delete-secrets.sh
-helm -n iam uninstall keycloak
-
-kubectl -n iam delete -f opa/generated-ingress.yaml
-helm -n iam uninstall opa
+helm -n iam uninstall iam
+kubectl delete ns iam
 ```
 
 If you created custom clients or realms, remove them using the scripts in `scripts/` or the instructions in the appendices.

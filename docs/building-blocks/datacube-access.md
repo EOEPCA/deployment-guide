@@ -13,7 +13,7 @@ Datacube Access gives users simple ways to discover, access, and process large E
 ### Key Features
 
 - **Easy Data Access**: Quickly access and manage large EO datacubes.
-- **Uses Open Standards**: Implements OGC GeoDataCube API, OGC Coverages, OGC Features and STAC APIs.
+- **Uses Open Standards**: STAC, openEO, OGC API Processes, OGC Application Packages
 - **Data Discovery**: Easily discover data with STAC API integration.
 - **Flexible Data Storage**: Works with common storage solutions like S3, HTTP or local file systems.
 - **Data Processing**: Execute custom processing jobs using openEO and OGC API Processes.
@@ -133,8 +133,10 @@ Quick command-line checks:
 
 #### Basic API Check
 
+_Returns response headers only..._
+
 ```bash
-curl -I "https://datacube-access.${INGRESS_HOST}/"
+curl -s -D - -o /dev/null "https://datacube-access.${INGRESS_HOST}/"
 ```
 
 #### Collection Access Test

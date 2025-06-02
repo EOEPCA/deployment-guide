@@ -144,8 +144,10 @@ We recommend executing `source ~/.eoepca/state` to load the environment variable
 
 #### 3.1. Basic Liveness Check
 
+_Returns response headers only..._
+
 ```bash
-curl -I "https://resource-catalogue.${INGRESS_HOST}/"
+curl -s -D - -o /dev/null "https://resource-catalogue.${INGRESS_HOST}/"
 ```
 
 #### 3.2. Testing OGC CSW
@@ -221,7 +223,7 @@ pycsw-admin.py load-records \
     Navigate to:
     
     ```
-    https://resource-catalogue.<INGRESS_HOST>/collections/metadata:main/items
+    https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items
     ```
     
     Confirm that the newly ingested record (titled `EOEPCA Sample Record`) appears in the search results.

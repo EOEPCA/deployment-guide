@@ -14,7 +14,7 @@ The building block offers:
 - STAC API for data discovery
 - Support for retrieval and visualisation of raster and vector data via standard OGC APIs
 - Dynamic specification of which datasets should be delivered with which data access services
-- Integration with other building blocks through shared databases (e.g., pgSTAC)
+- Integration with other building blocks through shared databases (e.g. pgSTAC)
 
 ---
 

@@ -66,6 +66,8 @@ kubectl create secret docker-registry regcred \
 -n processing
 ```
 
+These credentials (`regcred`) can then be referenced as an _imagePullSecret_ in the relevant _PodSpec_ of any workloads running in the `processing` namespace.
+
 > NOTE. Your Kubernetes distribution may provide other means for configuring cluster-wide container registry credentials - e.g. directly within the container runtime of each node within your cluster - as illustrated below with the `--registry-config` option of the `k3d` cluster creation.
 
 ## Quick Start
@@ -85,7 +87,7 @@ Cluster creation is initiated by the following command.
 ```bash
 export KUBECONFIG="$PWD/kubeconfig.yaml"
 k3d cluster create eoepca \
-  --image rancher/k3s:v1.28.7-k3s1 \
+  --image rancher/k3s:v1.28.15-k3s1 \
   --k3s-arg="--disable=traefik@server:0" \
   --k3s-arg="--tls-san=$(hostname -f)@server:0" \
   --servers 1 --agents 0 \
@@ -129,7 +131,7 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
     ```bash
     export KUBECONFIG="$PWD/kubeconfig.yaml"
     k3d cluster create eoepca \
-      --image rancher/k3s:v1.28.7-k3s1 \
+      --image rancher/k3s:v1.28.15-k3s1 \
       --k3s-arg="--disable=traefik@server:0" \
       --k3s-arg="--tls-san=$(hostname -f)@server:0" \
       --servers 1 --agents 0 \
