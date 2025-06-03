@@ -304,7 +304,7 @@ opal:
         default allow_policy_evaluation := false
 
         allow_policy_evaluation {
-          input.method in ["GET", "POST"]
+          (input.method == "GET" or input.method == "POST")
           input.path[0] == "v1"
         }
 
