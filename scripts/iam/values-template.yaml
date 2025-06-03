@@ -304,6 +304,12 @@ opal:
         echo := input if {
           print(input)
         }
+        # TESTING ONLY: Allow anything with a Authorization header
+        default allow := true
+        allow if {
+          claims := io.jwt.decode(input.headers["Authorization"][0][7:])[1]
+          print("Allowing everything for testing, Input: ", input, " Claims: ", claims)
+        }
         default allow_policy_evaluation := false
         allow_policy_evaluation if {
           # Generally allow GET and POST on /v1/data/**
@@ -355,7 +361,7 @@ opal:
         allow if {
           # Allow selected Werum users to GET arbitrary URLs 
           claims := verified_claims
-          claims.email in ["w-scho@werum.de", "w-jfe@werum.de", "w-mwo@werum.de"]
+          claims.email in ["w-scho@werum.de", "w-jfe@werum.de", "w-mwo@werum.de", "eoepcauser@eoepca.local"]
           input.method = "GET"
           print("External, Input: ", input, " Claims: ", claims)
         }
