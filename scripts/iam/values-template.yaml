@@ -290,85 +290,28 @@ opal:
     # serverUrl: http://custom-hostname-for-opal:opal-port
     opaStartupData:
       policy.rego: |
-        # Simple example policy gives everyone read access to non-system documents
-        # and only gives a root user full access.
+        # Simple example policy gives everyone access
         package system.authz
-        import rego.v1
-        jwks_request(url) := http.send({
-          "url": url,
-          "method": "GET",
-          "force_cache": true,
-          "force_cache_duration_seconds": 3600 # Cache response for an hour
-        })
-        jwks := jwks_request("http://iam-keycloak/realms/eoepca/protocol/openid-connect/certs").raw_body
-        echo := input if {
-          print(input)
-        }
-        # TESTING ONLY: Allow anything with a Authorization header
+
         default allow := false
 
-        allow if {
+        allow {
+          input.headers["Authorization"]
           authHeader := input.headers["Authorization"][_]
           startswith(authHeader, "Bearer ")
-          token := substring(authHeader, count("Bearer "), -1)
-          claims := io.jwt.decode(token)[1]
-          print("Allowing everything for testing. Claims: ", claims)
         }
-        #######
+
         default allow_policy_evaluation := false
-        allow_policy_evaluation if {
-          # Generally allow GET and POST on /v1/data/**
-          #"GET" == input.method
+
+        allow_policy_evaluation {
           input.method in ["GET", "POST"]
-          "v1" == input.path[0]
-          "data" == input.path[1]
-          "system" != input.path[2]
+          input.path[0] == "v1"
         }
-        allow_policy_evaluation if {
-          # Generally allow POST on /v1/query
-          "POST" == input.method
-          ["v1", "query"] == input.path
+
+        allow {
+          allow_policy_evaluation
         }
-        allow_policy_evaluation if {
-          # Generally allow GET on /
-          "GET" == input.method
-          [""] == input.path
-          print("GET /, Input: ", input)
-        }
-        # Claims from JWT if JWT is present and can be verified; null otherwise 
-        default verified_claims = null
-        verified_claims := claims if {
-          [type, token] := split(input.headers["Authorization"][_], " ")
-          type == "Bearer"
-          io.jwt.verify_rs256(token, jwks) == true
-          claims := io.jwt.decode(token)[1]
-        }
-        allow if {
-          # Allow everything for "root" identity
-          "root$secret" == input.identity
-          print("Root identity, Input: ", input)
-        }
-        allow if {
-          # Preliminarily allow policy evaluation if Authorization header is unset,
-          # i.e., if the request is anonymous, but originates from within the cluster
-          not input.headers["Authorization"]
-          allow_policy_evaluation == true
-          print("AuthZ unset, Input: ", input)
-        }
-        allow if {
-          # Allow authenticated users to evaluate policies 
-          claims := verified_claims
-          claims != null
-          allow_policy_evaluation == true
-          print("External, Input: ", input, " Claims: ", claims)
-        }
-        allow if {
-          # Allow selected Werum users to GET arbitrary URLs 
-          claims := verified_claims
-          claims.email in ["w-scho@werum.de", "w-jfe@werum.de", "w-mwo@werum.de", "eoepcauser@eoepca.local"]
-          input.method = "GET"
-          print("External, Input: ", input, " Claims: ", claims)
-        }
+        
     extraEnv:
       OPAL_POLICY_STORE_URL: http://localhost:8181
       OPAL_POLICY_STORE_AUTH_TYPE: token
