@@ -295,22 +295,23 @@ opal:
 
         default allow := false
 
-        allow {
-          input.headers["Authorization"]
-          authHeader := input.headers["Authorization"][_]
+        allow if {
+          input.headers.Authorization
+          authHeader := input.headers.Authorization[_]
           startswith(authHeader, "Bearer ")
         }
 
         default allow_policy_evaluation := false
 
-        allow_policy_evaluation {
-          (input.method == "GET" or input.method == "POST")
+        allow_policy_evaluation if {
+          input.method in ["GET", "POST"]
           input.path[0] == "v1"
         }
 
-        allow {
+        allow if {
           allow_policy_evaluation
         }
+
         
     extraEnv:
       OPAL_POLICY_STORE_URL: http://localhost:8181
