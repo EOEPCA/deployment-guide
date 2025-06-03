@@ -343,7 +343,6 @@ opal:
           io.jwt.verify_rs256(token, jwks) == true
           claims := io.jwt.decode(token)[1]
         }
-        default allow := false
         allow if {
           # Allow everything for "root" identity
           "root$secret" == input.identity
