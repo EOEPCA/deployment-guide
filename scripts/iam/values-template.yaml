@@ -305,11 +305,16 @@ opal:
           print(input)
         }
         # TESTING ONLY: Allow anything with a Authorization header
-        default allow := true
+        default allow := false
+
         allow if {
-          claims := io.jwt.decode(input.headers["Authorization"][0][7:])[1]
-          print("Allowing everything for testing, Input: ", input, " Claims: ", claims)
+          authHeader := input.headers["Authorization"][_]
+          startswith(authHeader, "Bearer ")
+          token := substring(authHeader, count("Bearer "), -1)
+          claims := io.jwt.decode(token)[1]
+          print("Allowing everything for testing. Claims: ", claims)
         }
+        #######
         default allow_policy_evaluation := false
         allow_policy_evaluation if {
           # Generally allow GET and POST on /v1/data/**
