@@ -290,35 +290,24 @@ opal:
     # serverUrl: http://custom-hostname-for-opal:opal-port
     opaStartupData:
       policy.rego: |
-        # Simple example policy gives everyone access
         package system.authz
 
-        default allow := false
+        default allow = false
 
-        allow if {
-          input.headers.Authorization
-          authHeader := input.headers.Authorization[_]
-          startswith(authHeader, "Bearer ")
+        allow {
+          input.identity == "root$secret"
         }
 
-        default allow_policy_evaluation := false
-
-        allow_policy_evaluation if {
-          input.method in ["GET", "POST"]
-          input.path[0] == "v1"
+        allow {
+          input.headers["Authorization"]
+          startswith(input.headers["Authorization"], "Bearer ")
         }
-
-        allow if {
-          allow_policy_evaluation
-        }
-
-        
     extraEnv:
       OPAL_POLICY_STORE_URL: http://localhost:8181
       OPAL_POLICY_STORE_AUTH_TYPE: token
       OPAL_POLICY_STORE_AUTH_TOKEN: root$secret
       OPAL_INLINE_OPA_LOG_FORMAT: full
-      OPAL_DATA_UPDATER_ENABLED: False
+      OPAL_DATA_UPDATER_ENABLED: "false"
       OPAL_INLINE_OPA_CONFIG: >-
         {
           "addr": "http://0.0.0.0:8181",
