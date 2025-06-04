@@ -30,11 +30,13 @@ spec:
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            bearer_only: false
-            set_access_token_header: false
-            access_token_in_authorization_header: false
             set_id_token_header: true
             set_userinfo_header: true
+            # Following settings to enable support for both interactive and API access
+            use_jwks: true                              # (default: false)
+            bearer_only: false                          # (default: false)
+            set_access_token_header: true               # (default: true)
+            access_token_in_authorization_header: true  # (default: false)
           secretRef: workspace-api
     - name: workspace-api-docs
       match:
@@ -50,8 +52,12 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            access_token_in_authorization_header: true
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            # Following settings to enable support for both interactive and API access
+            use_jwks: true                              # (default: false)
+            bearer_only: false                          # (default: false)
+            set_access_token_header: true               # (default: true)
+            access_token_in_authorization_header: true  # (default: false)
           secretRef: workspace-api
     - name: workspace-api-admin
       match:  
@@ -89,11 +95,13 @@ spec:
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             introspection_endpoint: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token/introspect"
-            bearer_only: false
-            set_access_token_header: true
-            access_token_in_authorization_header: true
             set_id_token_header: false
             set_userinfo_header: false
+            # Following settings to enable support for both interactive and API access
+            use_jwks: true                              # (default: false)
+            bearer_only: false                          # (default: false)
+            set_access_token_header: true               # (default: true)
+            access_token_in_authorization_header: true  # (default: false)
           secretRef: workspace-api
         - name: opa
           enable: true

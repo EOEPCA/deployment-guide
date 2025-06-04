@@ -43,9 +43,13 @@ spec:
           config:
             discovery: "https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             realm: eoepca
-            bearer_only: true
             client_id: {{ getenv "OAPIP_CLIENT_ID" }}
             client_secret: {{ getenv "OAPIP_CLIENT_SECRET" }}
+            # Following settings to enable support for both interactive and API access
+            use_jwks: true                              # (default: false)
+            bearer_only: false                          # (default: false)
+            set_access_token_header: true               # (default: true)
+            access_token_in_authorization_header: true  # (default: false)
         # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
