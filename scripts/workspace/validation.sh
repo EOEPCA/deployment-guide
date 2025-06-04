@@ -19,8 +19,9 @@ check_service_exists "workspace" "workspace-admin-metrics-scraper"
 check_service_exists "workspace" "workspace-admin-web"
 
 # Check ingress
-check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "401"
-check_url_status_code "$HTTP_SCHEME://workspace-swagger.$INGRESS_HOST/docs" "200"
+CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/probe" "200"
+CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "302"
+CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/" "302"
 
 echo
 echo "All Resources in 'workspace' namespace:"
