@@ -37,7 +37,7 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
+          secretRef: workspace-api-client
     - name: workspace-api-docs
       match:
         hosts:
@@ -58,7 +58,7 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
+          secretRef: workspace-api-client
     - name: workspace-api-admin
       match:  
         hosts:
@@ -73,13 +73,26 @@ spec:
         - serviceName: workspace-api
           servicePort: 8080
       plugins:
+        # Authenticate - expect JWT in `Authorization: Bearer` header
+        - name: openid-connect
+          enable: true
+          config:
+            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            realm: eoepca
+            # Following settings to enable support for both interactive and API access
+            use_jwks: true                              # (default: false)
+            bearer_only: false                          # (default: false)
+            set_access_token_header: true               # (default: true)
+            access_token_in_authorization_header: true  # (default: false)
+          secretRef: workspace-api-client
+        # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-          secretRef: workspace-api
+          secretRef: workspace-api-client
     - name: workspace-api-user
       match:
         hosts:
@@ -94,7 +107,6 @@ spec:
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            introspection_endpoint: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token/introspect"
             set_id_token_header: false
             set_userinfo_header: false
             # Following settings to enable support for both interactive and API access
@@ -102,36 +114,38 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
+          secretRef: workspace-api-client
         - name: opa
           enable: true
           config:
             host: http://iam-opal-client.iam:8181
             policy: eoepca/workspace/wsapi
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  name: workspace-api-ingress
+  name: workspace-api
   namespace: workspace
-  annotations:
-    kubernetes.io/ingress.class: apisix
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
 spec:
-  tls:
-    - hosts:
-        - workspace-api.{{ getenv "INGRESS_HOST" }}
-      secretName: workspace-api-tls
-  rules:
-    - host: workspace-api.{{ getenv "INGRESS_HOST" }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: workspace-api
-                port:
-                  number: 8080
+  dnsNames:
+    - workspace-api.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: workspace-api-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: workspace-api
+  namespace: workspace
+spec:
+  hosts:
+    - workspace-api.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: workspace-api-tls
+    namespace: workspace

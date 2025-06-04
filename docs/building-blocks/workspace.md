@@ -93,6 +93,7 @@ bash apply-secrets.sh
 
 - `harbor-admin-password`
 - `minio-secret`
+- `workspace-api-client`  _(if OIDC is enabled for the workspace)_
 
 
 ### 3. Deploy Crossplane
