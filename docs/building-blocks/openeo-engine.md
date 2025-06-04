@@ -161,8 +161,6 @@ When prompted:
 
 After it completes, you should see a JSON snippet confirming the newly created client. 
 
-Look through the JSON and make a note of the **`secret`** value. This is the **Client Secret** and you will need this to obtain an access token. You can always retrieve this value from the Keycloak UI later if needed.
-
 ---
 
 ## Validation

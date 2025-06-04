@@ -20,8 +20,8 @@ check_service_exists "processing" "zoo-project-dru-postgresql"
 check_service_exists "processing" "zoo-project-dru-rabbitmq"
 
 if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
-    check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "401"
-    check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "401"
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "302"
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "302"
 else
     check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
     check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "200"
