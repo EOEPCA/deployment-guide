@@ -1,3 +1,47 @@
+gitlab:
+  gitaly:
+    persistence:
+      storageClass: {{ getenv "STORAGE_CLASS" }}
+    replicaCount: 1
+
+  webservice:
+    minReplicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 1Gi
+      limits:
+        cpu: 500m
+        memory: 2Gi
+    ingress:
+      tls:
+        secretName: gitlab-tls
+
+  kas:
+    replicas: 1  
+    ingress:
+      tls:
+        secretName: kas-tls
+
+  sidekiq:
+    minReplicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1Gi
+      limits:
+        cpu: 500m
+        memory: 2Gi
+
+postgresql:
+  global:
+    storageClass: {{ getenv "STORAGE_CLASS" }}
+  replicas: 1
+
+redis:
+  global:
+    storageClass: {{ getenv "STORAGE_CLASS" }}
+
 global:
   edition: ce
   hosts:
@@ -13,10 +57,8 @@ global:
       {{ $key }}: "{{ $value }}"
       {{- end }}
     kubernetes.io/tls-acme: true
-
   minio:
     enabled: false
-
   appConfig:
   {{- if eq (getenv "MLOPS_OIDC_ENABLED") "true" }}
     omniauth:
@@ -45,45 +87,6 @@ global:
       bucket: gitlab-backup-storage
       tmpBucket: gitlab-tmp-storage
 
-  registry:
-    enabled: false
-
-upgradeCheck:
-  enabled: false
-
-gitlab:
-  gitaly:
-    persistence:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
-  webservice:
-    ingress:
-      tls:
-        secretName: gitlab-tls
-    # Limit resources for a small (resource limited) deployment
-    # resources:
-    #   requests:
-    #     cpu: 200m
-    #     memory: 2G
-    # minReplicas: 1
-
-  kas:
-    ingress:
-      tls:
-        secretName: kas-tls
-
-  toolbox:
-    backups:
-      objectStorage:
-        config:
-          secret: gitlab-storage-config
-          key: config
-  sidekiq:
-    enabled: true
-    # Limit resources for a small (resource limited) deployment
-    # resources:
-    #   requests:
-    #     cpu: 500m
-
 registry:
   enabled: false
   ingress:
@@ -109,15 +112,3 @@ prometheus:
 
 gitlab-runner:
   install: false
-
-redis:
-  global:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
-  metrics:
-    enabled: false
-
-postgresql:
-  global:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
-  metrics:
-    enabled: false
