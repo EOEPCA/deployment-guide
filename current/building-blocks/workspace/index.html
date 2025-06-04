@@ -2259,6 +2259,7 @@
 <ul>
 <li><code>harbor-admin-password</code></li>
 <li><code>minio-secret</code></li>
+<li><code>workspace-api-client</code>  <em>(if OIDC is enabled for the workspace)</em></li>
 </ul>
 <h3 id="3-deploy-crossplane">3. Deploy Crossplane<a class="headerlink" href="#3-deploy-crossplane" title="Permanent link">⚓︎</a></h3>
 <p>Crossplane is used for managing cloud resources within Kubernetes.</p>
@@ -2329,7 +2330,7 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., <code>Workspace Client</code>).</li>
 <li><strong>Client secret</strong>: Enter the Workspace Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
 <li><strong>Subdomain</strong>: Use <code>workspace-api</code>.</li>
-<li><strong>Additional Subdomains</strong>: Use <code>workspace-swagger,workspace-admin</code>.</li>
+<li><strong>Additional Subdomains</strong>: Leave blank.</li>
 <li><strong>Additional Hosts</strong>: Leave blank.</li>
 </ul>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>

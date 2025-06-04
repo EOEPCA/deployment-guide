@@ -2476,15 +2476,19 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <li>
 <p><strong>Log into GitLab</strong></p>
 <blockquote>
-<p>You should have your credentials in the <code>~/.eoepca/state</code> file.</p>
+<p>These steps assume that the <code>eoepcauser</code> test user was created in the earlier IAM setup steps, and that the Gitlab instance has been integrated with Keycloak via OIDC.</p>
 </blockquote>
-<p><code>https://gitlab.${INGRESS_HOST}/</code></p>
+<ul>
+<li>Open the Gitlab UI - <code>https://gitlab.${INGRESS_HOST}/</code></li>
+<li>Select to <code>Sign in with EOEPCA</code></li>
+<li>Login as user <code>eoepcauser</code></li>
+</ul>
 </li>
 <li>
 <p><strong>Create the Project</strong></p>
 <ul>
 <li>Click <strong>Create a Project</strong> → <strong>Create blank project</strong> and enter the name: <code>mlops-test-project</code>.</li>
-<li>Set the project URL to the user <code>root</code>.</li>
+<li>The project URL should reflect the current user - e.g. <code>https://gitlab.${INGRESS_HOST}/eoepcauser/</code></li>
 <li>Set the project visibility to <strong>Public</strong>.</li>
 <li>Click <strong>Create project</strong>.</li>
 </ul>
@@ -2509,7 +2513,8 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <p><strong>Sign in with GitLab</strong></p>
 <ul>
 <li>Click the login button in the top-right corner.</li>
-<li>Sign in using your GitLab credentials.</li>
+<li>Sign into Gitlab via <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> as before<br>
+  <em>Note that if the Gitlab session is still active, then this will be automatic</em></li>
 </ul>
 </li>
 <li>
@@ -2540,12 +2545,12 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </li>
 <li>
 <p>The link will resemble:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>https://sharinghub.${INGRESS_HOST}/mlflow/eoepcauser/mlops-test-project/tracking/
 </span></code></pre></div>
 </li>
 <li>
 <p>Set this as an environment variable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s2">&quot;https://sharinghub.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/mlflow/root/mlops-test-project/tracking/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s2">&quot;https://sharinghub.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/mlflow/eoepcauser/mlops-test-project/tracking/&quot;</span>
 </span></code></pre></div>
 </li>
 </ul>
@@ -2555,7 +2560,7 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <ul>
 <li>
 <p>In GitLab, navigate to your project&rsquo;s Access Tokens page:<br />
-<code>https://gitlab.${INGRESS_HOST}/mlops-test-project/-/settings/access_tokens</code></p>
+<code>https://gitlab.${INGRESS_HOST}/eoepcauser/mlops-test-project/-/settings/access_tokens</code></p>
 </li>
 <li>
 <p>Click <strong>Add new token</strong>.</p>
