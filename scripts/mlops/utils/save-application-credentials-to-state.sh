@@ -7,6 +7,7 @@ ask "GITLAB_APP_SECRET" "Enter the SharingHub Secret" "" is_non_empty
 kubectl create secret generic sharinghub-oidc \
   --from-literal=client-id="$GITLAB_APP_ID" \
   --from-literal=client-secret="$GITLAB_APP_SECRET" \
-  --namespace sharinghub
+  --namespace sharinghub \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Successfully saved variables to state and created the secret in the sharinghub namespace"
