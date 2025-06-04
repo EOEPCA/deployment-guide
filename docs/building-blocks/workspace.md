@@ -185,7 +185,7 @@ When prompted:
 - **Client name** and **description**: Provide any helpful text (e.g., `Workspace Client`).
 - **Client secret**: Enter the Workspace Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `workspace-api`.
-- **Additional Subdomains**: Use `workspace-swagger,workspace-admin`.
+- **Additional Subdomains**: Leave blank.
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
