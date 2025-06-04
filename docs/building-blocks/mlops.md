@@ -325,14 +325,16 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 
 1. **Log into GitLab**
 
-    > You should have your credentials in the `~/.eoepca/state` file.
+    > These steps assume that the `eoepcauser` test user was created in the earlier IAM setup steps, and that the Gitlab instance has been integrated with Keycloak via OIDC.
 
-    `https://gitlab.${INGRESS_HOST}/`
+    * Open the Gitlab UI - `https://gitlab.${INGRESS_HOST}/`
+    * Select to `Sign in with EOEPCA`
+    * Login as user `eoepcauser`
     
 2. **Create the Project**
     
     - Click **Create a Project** → **Create blank project** and enter the name: `mlops-test-project`.
-    - Set the project URL to the user `root`.
+    - The project URL should reflect the current user - e.g. `https://gitlab.${INGRESS_HOST}/eoepcauser/`
     - Set the project visibility to **Public**.
     - Click **Create project**.
 
@@ -351,7 +353,8 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 5. **Sign in with GitLab**
     
     - Click the login button in the top-right corner.
-    - Sign in using your GitLab credentials.
+    - Sign into Gitlab via EOEPCA as before<br>
+      _Note that if the Gitlab session is still active, then this will be automatic_
 
 6. **Locate Your Project**
     
@@ -381,19 +384,19 @@ This section walks you through a minimal scenario of creating a GitLab project, 
     - The link will resemble:
         
         ```
-        https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/
+        https://sharinghub.${INGRESS_HOST}/mlflow/eoepcauser/mlops-test-project/tracking/
         ```
         
     - Set this as an environment variable:
         
         ```bash
-        export MLFLOW_TRACKING_URI="https://sharinghub.${INGRESS_HOST}/mlflow/root/mlops-test-project/tracking/"
+        export MLFLOW_TRACKING_URI="https://sharinghub.${INGRESS_HOST}/mlflow/eoepcauser/mlops-test-project/tracking/"
         ```
         
 8. **Authenticate and Retrieve a Token**
     
     - In GitLab, navigate to your project's Access Tokens page:  
-        `https://gitlab.${INGRESS_HOST}/mlops-test-project/-/settings/access_tokens`
+        `https://gitlab.${INGRESS_HOST}/eoepcauser/mlops-test-project/-/settings/access_tokens`
         
     - Click **Add new token**.
         
