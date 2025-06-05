@@ -303,7 +303,7 @@ opal:
           "force_cache": true,
           "force_cache_duration_seconds": 3600 # Cache response for an hour
         })
-        jwks := jwks_request("http://iam-keycloak/realms/eoepca/protocol/openid-connect/certs").raw_body
+        jwks := jwks_request("{{ getenv "OIDC_ISSUER_URL" }}/protocol/openid-connect/certs").raw_body
         echo := input if {
           print(input)
         }
@@ -353,13 +353,6 @@ opal:
           claims := verified_claims
           claims != null
           allow_policy_evaluation == true
-          print("External, Input: ", input, " Claims: ", claims)
-        }
-        allow if {
-          # Allow selected Werum users to GET arbitrary URLs 
-          claims := verified_claims
-          claims.email in ["w-scho@werum.de", "w-jfe@werum.de", "w-mwo@werum.de"]
-          input.method = "GET"
           print("External, Input: ", input, " Claims: ", claims)
         }
     extraEnv:
@@ -433,7 +426,7 @@ identity-service:
         - name: ADMIN_PASSWORD
           value: {{ getenv "KEYCLOAK_ADMIN_PASSWORD" }}
         - name: REALM
-          value: "eoepca"
+          value: {{ getenv "REALM" }}
         # - name: VERSION
         #   value: v1.0.0
         - name: LOG_LEVEL
