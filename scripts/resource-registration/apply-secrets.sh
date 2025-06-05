@@ -5,7 +5,7 @@ source ../common/utils.sh
 source "$HOME/.eoepca/state"
 
 echo "Applying Kubernetes secrets..."
-kubectl create namespace resource-registration
+kubectl create namespace resource-registration --dry-run=client -o yaml | kubectl apply -f -
 
 # Create secrets for Flowable
 kubectl create secret generic flowable-admin-credentials \
