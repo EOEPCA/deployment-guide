@@ -50,7 +50,12 @@ config: |-
       - {{ getenv "HTTP_SCHEME" }}://eoepca.readthedocs.io
 
   gitlab:
+    # if GITLAB_URL is set, it will override the default URL
+    {{- if eq ( getenv "GITLAB_URL" ) "" }}
     url: {{ getenv "HTTP_SCHEME" }}://gitlab.{{ getenv "INGRESS_HOST" }}
+    {{- else }}
+    url: {{ getenv "GITLAB_URL" }}
+    {{- end }}
     allow-public: true
 
   docs:
