@@ -27,7 +27,11 @@ spec:
       secretName: sh-tls
   {{- end }}
   rules:
+    {{- if eq ( getenv "PATH_BASED_ROUTING" ) "true" }}
+    - host: {{ getenv "INGRESS_HOST" }}
+    {{- else }}
     - host: sharinghub.{{ getenv "INGRESS_HOST" }}
+    {{- end }}
       http:
         paths:
         {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
