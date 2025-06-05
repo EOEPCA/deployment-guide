@@ -12,7 +12,11 @@ ingress:
     {{- end }}
     nginx.ingress.kubernetes.io/proxy-body-size: 10g
   hosts:
+    {{- if eq ( getenv "PATH_BASED_ROUTING" ) "true" }}
+    - host: {{ getenv "INGRESS_HOST" }}
+    {{- else }}
     - host: sharinghub.{{ getenv "INGRESS_HOST" }}
+    {{- end }}
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -20,7 +24,11 @@ ingress:
   tls:
     - secretName: sharinghub-tls
       hosts:
+        {{- if eq ( getenv "PATH_BASED_ROUTING" ) "true" }}
+        - {{ getenv "INGRESS_HOST" }}
+        {{- else }}
         - sharinghub.{{ getenv "INGRESS_HOST" }}
+        {{- end }}
   {{- end }}
 {{- else }}
 ingress:
@@ -30,7 +38,11 @@ ingress:
 config: |-
   services:
     store:
+      {{- if eq ( getenv "PATH_BASED_ROUTING" ) "true" }}
+      url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "INGRESS_HOST" }}/api/store
+      {{- else }}
       url: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}/api/store
+      {{- end }}
       mode: http
 
   server:
@@ -46,7 +58,11 @@ config: |-
 
   mlflow:
     type: mlflow-sharinghub
+    {{- if eq ( getenv "PATH_BASED_ROUTING" ) "true" }}
+    url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "INGRESS_HOST" }}/mlflow
+    {{- else }}
     url: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}/mlflow
+    {{- end }}
 
   s3:
     bucket: mlopsbb-sharinghub
