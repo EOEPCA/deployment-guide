@@ -3,7 +3,12 @@ image:
   pullPolicy: IfNotPresent
 
 mlflowSharinghub:
+  {{- if eq ( getenv "PATH_BASED_ROUTING" ) "true" }}
+  sharinghubUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "INGRESS_HOST" }}
+  {{- else }}
   sharinghubUrl: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}
+
+  {{- end }}
   sharinghubStacCollection: ai-model
   sharinghubAuthDefaultToken: false
   artifactsDestination: s3://{{ getenv "S3_BUCKET_MLFLOW" }}
