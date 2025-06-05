@@ -47,7 +47,7 @@ echo ""
 
 
 add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
-add_to_state_file "OIDC_ISSUER_URL" "https://auth.$INGRESS_HOST/realms/$REALM"
+add_to_state_file "OIDC_ISSUER_URL" "${HTTP_SCHEME}://auth.$INGRESS_HOST/realms/$REALM"
 
 # Generate configuration files
 echo "Generating configuration files..."
