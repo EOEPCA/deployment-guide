@@ -242,7 +242,9 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 - URL: `https://opa.${INGRESS_HOST}/`
 
-You can test policy evaluations by sending requests to OPA's REST API. For example:
+You can test policy evaluations by sending requests to OPA's REST API.
+
+Authenticate as test user `eoepcauser`...
 
 ```bash
 source ~/.eoepca/state
@@ -256,11 +258,41 @@ ACCESS_TOKEN=$( \
     -d "client_id=admin-cli" \
     "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
 )
-# Interogate OPA using the access token for `eoepcauser`
-curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/allow" \
+```
+
+Simple `allow all` test query...
+
+```bash
+curl -X GET "https://opa.${INGRESS_HOST}/v1/data/example/allow_all" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json"
+```
+
+User `bob` **is** a privileged user...
+
+```bash
+curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
-  -d '{"input": {"user": "alice"}}'
+  -d '{"input": {"identity": {"attributes": { "preferred_username": ["bob"]}}}}'
+```
+
+User `larry` **is NOT** a privileged user...
+
+```bash
+curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"input": {"identity": {"attributes": { "preferred_username": ["larry"]}}}}'
+```
+
+User `larry` **has** a verified email...
+
+```bash
+curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/email_verified" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"input": {"identity": {"attributes": { "preferred_username": ["larry"], "email_verified": ["true"]}}}}'
 ```
 
 ---

@@ -109,7 +109,16 @@ helm upgrade -i workspace-crossplane crossplane/crossplane \
   --create-namespace
 ```
 
-### 4. Deploy the Workspace API
+### 4. Initialise the Core Crossplane Providers
+
+```bash
+while ! kubectl -n workspace apply -f https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/v2025.06.05/setup/common/init/providers.yaml 2>/dev/null; do sleep 1; done
+while ! kubectl -n workspace apply -f https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/v2025.06.05/setup/common/main/providerConfigs.yaml 2>/dev/null; do sleep 1; done
+```
+
+> _Due to dependencies, it is necessary to take multiple (`while`) passes to `apply` the providers._
+
+### 5. Deploy the Workspace API
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
@@ -123,27 +132,23 @@ helm upgrade -i workspace-api eoepca-dev/rm-workspace-api \
 > Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
 > If you have enabled OIDC, we will set up the APISIX route/ingress in later steps.
 
-### 5. Deploy the Workspace Pipelines
+### 6. Deploy the Workspace Pipelines
 
 The Workspace Pipelines define the template that specifies the services provisioned within newly created Workspaces.
 
-Some example pipelines are provided in the [Workspace Git Repository](https://github.com/EOEPCA/workspace) under the path `setup/eoepca-demo`.
+Some example pipelines are provided in the [Workspace Git Repository](https://github.com/EOEPCA/workspace) under the path `setup/`.
 
 These example pipelines are deployed here using `kustomize` (`kubectl -k`) with inline patching to apply the values configured via the `configure-workspace.sh` script.
 
 **Apply the Pipelines:**
 
-_NOTE that due to a race condition regarding the deployment of the Crossplane CRDs, it is necessary to run the apply command twice._
-
 ```bash
-kubectl -n workspace apply -k workspace-pipelines 2>/dev/null
-while ! kubectl get crd providerconfigs.kubernetes.crossplane.io >/dev/null 2>&1 || \
-      ! kubectl get crd providerconfigs.minio.crossplane.io >/dev/null 2>&1; \
-      do sleep 1; done
-kubectl -n workspace apply -k workspace-pipelines
+while ! kubectl -n workspace apply -k workspace-api 2>/dev/null; do sleep 1; done
 ```
 
-### 6. Deploy the Workspace Admin Dashboard
+> _Due to dependencies, it is necessary to take multiple (`while`) passes to `apply` the pipelines._
+
+### 7. Deploy the Workspace Admin Dashboard
 
 **Install the Workspace Admin Dashboard:**
 
@@ -158,7 +163,7 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
 
 > There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding.
 
-### 7. Optional: Enable OIDC with Keycloak
+### 8. Optional: Enable OIDC with Keycloak
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
@@ -166,7 +171,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-### 7.1 Create a Keycloak Client
+### 8.1 Create a Keycloak Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -191,35 +196,9 @@ When prompted:
 After it completes, you should see a JSON snippet confirming the newly created client.
 
 
-### 7.2 Define Resource Protection
-
-Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
-
-```bash
-bash ../utils/create-user.sh
-```
-
 ---
 
-#### Protect the `/workspaces/*` Endpoint
-
-1. Use the `protect-resource.sh`:
-        
-```bash
-bash ../utils/protect-resource.sh
-```
-        
-When prompted:
-
-- **Client ID**: `workspace` (the client you created in the previous step)
-- **Username**: e.g. `eoepcauser` (or any user you want to test with, if you don't have a user, then create one in Keycloak)
-- **Display Name**: `eoepcauser`
-- **Resource Type**: `urn:workspace:resources:default`
-- **Resource URI**: `/workspaces/*`
-
----
-
-### 7.3 Create APISIX Route Ingress
+### 8.2 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 
@@ -282,25 +261,28 @@ cat <<EOF | kubectl apply -f -
 apiVersion: epca.eo/v1beta1
 kind: Workspace
 metadata:
-  name: ws-deploytest
+  name: ws-eoepcauser
   namespace: workspace
 spec:
   subscription: bronze
+  owner: eoepcauser
+  extraBuckets:
+    - ws-eoepcauser-shared
 EOF
 ```
 
 Check that a new namespace was created:
 
 ```bash
-kubectl get ns ws-deploytest
+kubectl get ns ws-eoepcauser
 ```
 
 #### 2. Verify Storage Buckets
 
-Confirm that the workspace's storage buckets (`ws-deploytest` and `ws-deploytest-stage`) were created:
+Confirm that the workspace's storage buckets - `ws-eoepcauser` _(default)_ and `ws-eoepcauser-shared` _(additional)_ - were created:
 
 ```bash
-kubectl -n ws-deploytest get bucket
+kubectl -n ws-eoepcauser get bucket
 ```
 
 #### 3. Query the Workspace API
@@ -315,13 +297,13 @@ kubectl -n workspace port-forward svc/workspace-api 8080:8080
 From another terminal window, call the Workspace API to get details for the newly created workspace:
 
 ```bash
-curl http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json'
+curl http://localhost:8080/workspaces/ws-eoepcauser -H 'accept: application/json'
 ```
 
 Record the secret from the response for S3 access:
 
 ```bash
-SECRET="$(curl -s http://localhost:8080/workspaces/ws-deploytest -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
+SECRET="$(curl -s http://localhost:8080/workspaces/ws-eoepcauser -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
 ```
 
 Now the `port-forward` to the Workspace API service can be stopped - `Ctrl-C` in original terminal window.
@@ -337,7 +319,7 @@ source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-deploytest \
+  --access_key ws-eoepcauser \
   --secret_key $SECRET
 ```
 
@@ -347,10 +329,10 @@ s3cmd ls \
 
 ```bash
 source ~/.eoepca/state
-s3cmd put validation.sh s3://ws-deploytest \
+s3cmd put validation.sh s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-deploytest \
+  --access_key ws-eoepcauser \
   --secret_key $SECRET
 ```
 
@@ -358,10 +340,10 @@ s3cmd put validation.sh s3://ws-deploytest \
 
 ```bash
 source ~/.eoepca/state
-s3cmd ls s3://ws-deploytest \
+s3cmd ls s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-deploytest \
+  --access_key ws-eoepcauser \
   --secret_key $SECRET
 ```
 
@@ -369,10 +351,10 @@ s3cmd ls s3://ws-deploytest \
 
 ```bash
 source ~/.eoepca/state
-s3cmd del s3://ws-deploytest/validation.sh \
+s3cmd del s3://ws-eoepcauser/validation.sh \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-deploytest \
+  --access_key ws-eoepcauser \
   --secret_key $SECRET
 ```
 
@@ -381,7 +363,7 @@ s3cmd del s3://ws-deploytest/validation.sh \
 To remove the test workspace:
 
 ```bash
-kubectl -n workspace delete workspaces ws-deploytest
+kubectl -n workspace delete workspaces ws-eoepcauser
 ```
 
 ---
