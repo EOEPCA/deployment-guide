@@ -9,6 +9,9 @@ metadata:
     {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Script-Name /mlflow;
+      rewrite ^/mlflow/(.*)$ /$1 break;
 
     {{- else if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/rewrite-target-regex: "/mlflow/(.*)"
