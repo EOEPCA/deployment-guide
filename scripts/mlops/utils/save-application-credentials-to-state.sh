@@ -9,4 +9,9 @@ kubectl create secret generic sharinghub-oidc \
   --from-literal=client-secret="$GITLAB_APP_SECRET" \
   --namespace sharinghub
 
+kubectl create secret generic mlflow-sharinghub-gitlab \
+  --from-literal=client-id="$GITLAB_APP_ID" \
+  --from-literal=client-secret="$GITLAB_APP_SECRET" \
+  --namespace sharinghub
+
 echo "Successfully saved variables to state and created the secret in the sharinghub namespace"

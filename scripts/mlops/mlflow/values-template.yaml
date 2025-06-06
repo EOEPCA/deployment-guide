@@ -12,6 +12,10 @@ mlflowSharinghub:
   sharinghubStacCollection: ai-model
   sharinghubAuthDefaultToken: false
   artifactsDestination: s3://{{ getenv "S3_BUCKET_MLFLOW" }}
+  
+  {{- if not (eq (getenv "GITLAB_URL") "") }}
+  gitlabUrl: {{ getenv "GITLAB_URL" }}
+  {{- end }}
 
 podSecurityContext:
   fsGroup: 999
