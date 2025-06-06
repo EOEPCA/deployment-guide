@@ -1,1 +1,2 @@
-generated-ingress.yaml
+kustomization.yaml
+generated-*.yaml

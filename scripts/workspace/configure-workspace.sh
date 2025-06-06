@@ -33,11 +33,11 @@ if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
 fi
 
 # Generate configuration files
+gomplate  -f "workspace-api/kustomization-template.yaml" -o "workspace-api/kustomization.yaml"
 gomplate  -f "workspace-api/$TEMPLATE_PATH" -o "workspace-api/$OUTPUT_PATH"
 gomplate  -f "workspace-api/$INGRESS_TEMPLATE_PATH" -o "workspace-api/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-# gomplate  -f "workspace-ui/$TEMPLATE_PATH" -o "workspace-ui/$OUTPUT_PATH"
+gomplate  -f "workspace-api/environment-template.yaml" -o "workspace-api/generated-environment.yaml"
 gomplate  -f "workspace-admin/$TEMPLATE_PATH" -o "workspace-admin/$OUTPUT_PATH"
-gomplate  -f "workspace-pipelines/kustomization-template.yaml" -o "workspace-pipelines/kustomization.yaml"
 
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."

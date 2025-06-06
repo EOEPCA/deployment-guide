@@ -6,9 +6,7 @@ image:
 ingress:
   enabled: false
 prefixForName: "ws"
-workspaceSecretName: "bucket"
-s3Endpoint: {{ getenv "S3_ENDPOINT" }}
-s3Region: {{ getenv "S3_REGION" }}
+workspaceSecretName: "workspace"
 harborUrl: "{{ getenv "HTTP_SCHEME" }}://harbor.{{ getenv "INGRESS_HOST" }}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor-admin-password"

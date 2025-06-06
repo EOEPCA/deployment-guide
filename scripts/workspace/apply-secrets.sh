@@ -6,7 +6,7 @@ source "$HOME/.eoepca/state"
 
 echo "Applying Kubernetes secrets..."
 
-kubectl create namespace workspace
+kubectl create namespace workspace --dry-run=client -o yaml | kubectl apply -f -
 
 # Check HARBOR_ADMIN_PASSWORD is set
 if [ -z "$HARBOR_ADMIN_PASSWORD" ]; then

@@ -1,0 +1,24 @@
+apiVersion: apiextensions.crossplane.io/v1beta1
+kind: EnvironmentConfig
+metadata:
+  name: workspace
+data:
+  domain: {{ getenv "INGRESS_HOST" }}
+  separator: "."
+  storage:
+    provider: Minio
+    endpoint: https://minio.{{ getenv "INGRESS_HOST" }}
+    region: {{ getenv "S3_REGION" }}
+  iam:
+    discovery: {{ getenv "OIDC_ISSUER_URL" }}/.well-known/openid-configuration
+  opa: 
+    host: http://iam-opal-client.iam:8181
+    policy: eoepca/workspace/wsui
+  vcluster:
+    separator: ".ws."
+    prefix: ""
+  workspace:
+    pvcs:
+    - "rclone"
+    auth:
+      mapper: "reader-share"
