@@ -20,7 +20,7 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  {{- if eq ( getenv "USE_CERT_MANAGER" ) "yes" }}
   tls:
     - hosts:
         - sharinghub.{{ getenv "INGRESS_HOST" }}

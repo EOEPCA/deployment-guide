@@ -20,7 +20,7 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  {{- if eq ( getenv "USE_CERT_MANAGER=" ) "yes" }}
   tls:
     - secretName: sharinghub-tls
       hosts:
