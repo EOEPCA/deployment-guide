@@ -37,7 +37,7 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api-client
+          secretRef: workspace-api
     - name: workspace-api-docs
       match:
         hosts:
@@ -58,7 +58,7 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api-client
+          secretRef: workspace-api
     - name: workspace-api-admin
       match:  
         hosts:
@@ -84,7 +84,7 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api-client
+          secretRef: workspace-api
         # Authorization - required for access to API
         - name: authz-keycloak
           enable: true
@@ -92,7 +92,7 @@ spec:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-          secretRef: workspace-api-client
+          secretRef: workspace-api
     - name: workspace-api-user
       match:
         hosts:
@@ -114,7 +114,7 @@ spec:
             bearer_only: false                          # (default: false)
             set_access_token_header: true               # (default: true)
             access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api-client
+          secretRef: workspace-api
         - name: opa
           enable: true
           config:
