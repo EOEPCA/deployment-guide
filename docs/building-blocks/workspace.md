@@ -93,7 +93,8 @@ bash apply-secrets.sh
 
 - `harbor-admin-password`
 - `minio-secret`
-- `workspace-api-client`  _(if OIDC is enabled for the workspace)_
+- `workspace-api`  _(if OIDC is enabled for the workspace)_
+- `workspace-pipeline`  _(if OIDC is enabled for the workspace)_
 
 
 ### 3. Deploy Crossplane
@@ -171,7 +172,15 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-### 8.1 Create a Keycloak Client
+### 8.1 Create Keycloak Clients
+
+The Workspace requires two Keycloak clients:
+
+1. `workspace` - used for the OIDC/UMA flows that enforce authentication/authorization during request ingress
+2. `workspace-pipeline` - used by the `workspace-api` to perform administrative actions against the Keycloak API to properly protect newly created workspaces<br>
+   > NOTE that this client is configured with additional roles to support this function
+
+#### 8.1.1 `workspace` Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -195,6 +204,42 @@ When prompted:
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
+#### 8.1.2 `workspace-pipeline` Client
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+
+```bash
+bash ../utils/create-client.sh
+```
+
+When prompted:
+
+- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
+- **Keycloak base domain**: e.g. `auth.example.com`
+- **Realm**: Typically `eoepca`.
+
+- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
+- **Client ID**: You should use `workspace-pipeline` or what you set in the configuration script.
+- **Client name** and **description**: Provide any helpful text (e.g., `Workspace Pipelines`).
+- **Client secret**: Enter the Workspace Pipeline Secret that was generated during the configuration script (check `~/.eoepca/state`).
+- **Subdomain**: Use `workspace-api`.
+- **Additional Subdomains**: Leave blank.
+- **Additional Hosts**: Leave blank.
+
+After it completes, you should see a JSON snippet confirming the newly created client.
+
+**Assign Service Account Roles**
+
+Login to the Keycloak Admin Console as the `admin` user.
+
+Under the realm for your deployment, navigate to the settings for the `workspace-pipeline` client.
+
+Under tab `Service account roles`, assign the following `realm management` roles:
+
+* `manage-clients`
+* `create-client`
+* `manage-users`
+* `manage-authorization`
 
 ---
 

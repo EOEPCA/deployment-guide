@@ -28,9 +28,17 @@ kubectl create secret generic minio-secret \
   --dry-run=client -o yaml | kubectl apply -f -
 
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-  kubectl create secret generic workspace-api-client \
-    --from-literal=client_id="$WORKSPACE_CLIENT_ID" \
-    --from-literal=client_secret="$WORKSPACE_CLIENT_SECRET" \
+  kubectl create secret generic workspace-api \
+    --from-literal=client_id="$WORKSPACE_API_CLIENT_ID" \
+    --from-literal=client_secret="$WORKSPACE_API_CLIENT_SECRET" \
+    --namespace workspace \
+    --dry-run=client -o yaml | kubectl apply -f -
+fi
+
+if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
+  kubectl create secret generic workspace-pipeline \
+    --from-literal=client_id="$WORKSPACE_PIPELINE_CLIENT_ID" \
+    --from-literal=client_secret="$WORKSPACE_PIPELINE_CLIENT_SECRET" \
     --namespace workspace \
     --dry-run=client -o yaml | kubectl apply -f -
 fi

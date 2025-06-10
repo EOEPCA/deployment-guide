@@ -18,18 +18,27 @@ ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 # OIDC
 ask "OIDC_WORKSPACE_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-
-    ask "WORKSPACE_CLIENT_ID" "Enter the Client ID for the Workspace" "workspace" is_non_empty
-
-    if [ -z "$WORKSPACE_CLIENT_SECRET" ]; then
-        WORKSPACE_CLIENT_SECRET=$(generate_aes_key 32)
-        add_to_state_file "WORKSPACE_CLIENT_SECRET" "$WORKSPACE_CLIENT_SECRET"
+    # WORKSPACE API CLIENT
+    ask "WORKSPACE_API_CLIENT_ID" "Enter the Client ID for the Workspace" "workspace" is_non_empty
+    if [ -z "$WORKSPACE_API_CLIENT_SECRET" ]; then
+        WORKSPACE_API_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "WORKSPACE_API_CLIENT_SECRET" "$WORKSPACE_API_CLIENT_SECRET"
     fi
     echo ""
     echo "❗  Generated client secret for the Workspace."
-    echo "   Please store this securely: $WORKSPACE_CLIENT_SECRET"
+    echo "   Please store this securely: $WORKSPACE_API_CLIENT_SECRET"
     echo ""
 
+    # WORKSPACE PIPELINE CLIENT
+    ask "WORKSPACE_PIPELINE_CLIENT_ID" "Enter the Client ID for the Workspace Pipeline" "workspace-pipeline" is_non_empty
+    if [ -z "$WORKSPACE_PIPELINE_CLIENT_SECRET" ]; then
+        WORKSPACE_PIPELINE_CLIENT_SECRET=$(generate_aes_key 32)
+        add_to_state_file "WORKSPACE_PIPELINE_CLIENT_SECRET" "$WORKSPACE_PIPELINE_CLIENT_SECRET"
+    fi
+    echo ""
+    echo "❗  Generated client secret for the Workspace Pipeline."
+    echo "   Please store this securely: $WORKSPACE_PIPELINE_CLIENT_SECRET"
+    echo ""
 fi
 
 # Generate configuration files
