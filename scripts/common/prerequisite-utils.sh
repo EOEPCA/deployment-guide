@@ -112,6 +112,10 @@ function check_docker_installed() {
 }
 
 function check_cert_manager_installed() {
+    if [[ "$HTTP_SCHEME" == "http" ]]; then
+        echo "✅ Cert-Manager is not required (the default scheme is http)."
+        return 0
+    fi    
     if ! kubectl get pods --all-namespaces | grep -q cert-manager; then
         echo "⚠️  Cert-Manager is not installed in the cluster."
         echo "   Please install Cert-Manager: https://cert-manager.io/docs/installation/"
