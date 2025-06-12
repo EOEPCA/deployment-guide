@@ -201,23 +201,23 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 **Keycloak Home Page:**
 
-- URL: `https://auth.${INGRESS_HOST}/`
+- URL: `${HTTP_SCHEME}://auth.${INGRESS_HOST}/`
 
 **OpenID Connect Discovery Endpoint:**
 
-- URL: `https://auth.${INGRESS_HOST}/realms/${REALM}/.well-known/openid-configuration`
+- URL: `${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/.well-known/openid-configuration`
 
 **OAuth 2.0 Authorization Endpoint:**
 
-- URL: `https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/auth`
+- URL: `${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/auth`
 
 **OAuth 2.0 Token Endpoint:**
 
-- URL: `https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token`
+- URL: `${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token`
 
 **Administration Console:**
 
-- URL: `https://auth.${INGRESS_HOST}/admin/`
+- URL: `${HTTP_SCHEME}://auth.${INGRESS_HOST}/admin/`
 
 **Accessing the Administration Console:**
 
@@ -240,7 +240,7 @@ After deployment, the IAM exposes several endpoints for authentication, authoriz
 
 **OPA Endpoint:**
 
-- URL: `https://opa.${INGRESS_HOST}/`
+- URL: `${HTTP_SCHEME}://opa.${INGRESS_HOST}/`
 
 You can test policy evaluations by sending requests to OPA's REST API.
 
@@ -256,14 +256,14 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
+    "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
 )
 ```
 
 Simple `allow all` test query...
 
 ```bash
-curl -X GET "https://opa.${INGRESS_HOST}/v1/data/example/allow_all" \
+curl -X GET "${HTTP_SCHEME}://opa.${INGRESS_HOST}/v1/data/example/allow_all" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json"
 ```
@@ -271,7 +271,7 @@ curl -X GET "https://opa.${INGRESS_HOST}/v1/data/example/allow_all" \
 User `bob` **is** a privileged user...
 
 ```bash
-curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
+curl -X POST "${HTTP_SCHEME}://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"input": {"identity": {"attributes": { "preferred_username": ["bob"]}}}}'
@@ -280,7 +280,7 @@ curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
 User `larry` **is NOT** a privileged user...
 
 ```bash
-curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
+curl -X POST "${HTTP_SCHEME}://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"input": {"identity": {"attributes": { "preferred_username": ["larry"]}}}}'
@@ -289,7 +289,7 @@ curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/privileged_user" \
 User `larry` **has** a verified email...
 
 ```bash
-curl -X POST "https://opa.${INGRESS_HOST}/v1/data/example/email_verified" \
+curl -X POST "${HTTP_SCHEME}://opa.${INGRESS_HOST}/v1/data/example/email_verified" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"input": {"identity": {"attributes": { "preferred_username": ["larry"], "email_verified": ["true"]}}}}'
