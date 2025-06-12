@@ -35,7 +35,7 @@ ACCESS_TOKEN=$(
         --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
         -d "grant_type=password" \
         -d "client_id=admin-cli" \
-        "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
+        "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
         jq -r '.access_token'
 )
 
@@ -47,7 +47,7 @@ fi
 # 1. Create the Group
 echo "Creating group: ${GROUP_NAME}"
 curl -k --silent --show-error \
-    -X POST "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/groups" \
+    -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/groups" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
     -d "{\"name\": \"${GROUP_NAME}\"}"
@@ -55,7 +55,7 @@ curl -k --silent --show-error \
 # Get the group ID
 group_id=$(
     curl -k --silent --show-error \
-        -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/groups" \
+        -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/groups" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" |
         jq -r ".[] | select(.name == \"${GROUP_NAME}\") | .id"
 )
@@ -70,7 +70,7 @@ fi
 echo "Retrieving user ID of ${USER_NAME}"
 user_id=$(
     curl -k --silent --show-error \
-        -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${USER_NAME}" \
+        -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${USER_NAME}" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" |
         jq -r '.[0].id'
 )
@@ -83,14 +83,14 @@ fi
 
 echo "Adding user ${USER_NAME} (ID: ${user_id}) to group ${GROUP_NAME} (ID: ${group_id})"
 curl -k --silent --show-error \
-    -X PUT "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${user_id}/groups/${group_id}" \
+    -X PUT "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${user_id}/groups/${group_id}" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}"
 
 # 3. Create a Policy for the group
 echo "Retrieving internal client ID for client: ${CLIENT_ID}"
 internal_client_id=$(
     curl -k --silent --show-error \
-        -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
+        -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" |
         jq -r ".[] | select(.clientId == \"${CLIENT_ID}\") | .id"
 )
@@ -102,7 +102,7 @@ fi
 echo "Creating group-based policy: ${POLICY_NAME}"
 policy_id=$(
     curl -k --silent --show-error \
-        -X POST "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${internal_client_id}/authz/resource-server/policy/group" \
+        -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${internal_client_id}/authz/resource-server/policy/group" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -d @- <<EOF | jq -r '.id'
@@ -125,7 +125,7 @@ fi
 echo "Creating resource ${RESOURCE_NAME} for URI ${RESOURCE_URI}"
 resource_id=$(
     curl -k --silent --show-error \
-        -X POST "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${internal_client_id}/authz/resource-server/resource" \
+        -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${internal_client_id}/authz/resource-server/resource" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -d @- <<EOF | jq -r '._id'
@@ -147,7 +147,7 @@ fi
 echo "Creating permission: ${PERMISSION_NAME}"
 permission_id=$(
     curl -k --silent --show-error \
-        -X POST "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${internal_client_id}/authz/resource-server/policy/resource" \
+        -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${internal_client_id}/authz/resource-server/policy/resource" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -d @- <<EOF | jq -r '.id'
