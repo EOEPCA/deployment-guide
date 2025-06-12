@@ -12,7 +12,7 @@ source '../common/utils.sh'
 ask "KEYCLOAK_ADMIN_USER" "Keycloak Admin Username" "${KEYCLOAK_ADMIN_USER}"
 ask "KEYCLOAK_ADMIN_PASSWORD" "Keycloak Admin Password" "${KEYCLOAK_ADMIN_PASSWORD}"
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
-ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
+ask "KEYCLOAK_HOST" "Enter the Keycloak full hostname excluding scheme (http(s)) (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
 ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 ask_temp "CONFIDENTIAL_CLIENT" "Create a CONFIDENTIAL client (true|false)? (false creates a PUBLIC client)" "true" is_boolean
 PUBLIC_CLIENT="$( if [ "${CONFIDENTIAL_CLIENT}" == "true" ]; then echo "false"; else echo "true"; fi )"
@@ -28,14 +28,14 @@ ask_temp "ADDITIONAL_SUBDOMAINS" "Enter additional subdomains used for the Redir
 
 ask_temp "ADDITIONAL_HOSTS" "Enter additional (full) hosts used for the Redirect URIs, comma-separated, or leave empty (e.g., service.some.platform)" ""
 
-ROOT_URL="https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}"
-REDIRECT_URIS=("https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*" "/*")
+ROOT_URL="${HTTP_SCHEME}://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}"
+REDIRECT_URIS=("${HTTP_SCHEME}://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*" "/*")
 
-REDIRECT_URIS=("https://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*")
+REDIRECT_URIS=("${HTTP_SCHEME}://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*")
 # Subdomains
 IFS=',' read -ra ADDR <<<"${ADDITIONAL_SUBDOMAINS}"
 for sub in "${ADDR[@]}"; do
-    REDIRECT_URIS+=("https://${sub}.${INGRESS_HOST}/*")
+    REDIRECT_URIS+=("${HTTP_SCHEME}://${sub}.${INGRESS_HOST}/*")
 done
 # Hosts
 IFS=',' read -ra HOSTS <<<"${ADDITIONAL_HOSTS}"
@@ -53,7 +53,7 @@ ACCESS_TOKEN=$(
         --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
         -d "grant_type=password" \
         -d "client_id=admin-cli" \
-        "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
+        "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
         jq -r '.access_token'
 )
 
@@ -104,7 +104,7 @@ curl -k --silent --show-error \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
     -H "Content-Type: application/json" \
     -d "${create_client_payload}" \
-    "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients"
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients"
 
 echo "Client creation request sent."
 
@@ -113,7 +113,7 @@ echo "Verifying creation of client: ${CLIENT_ID}"
 curl -k --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" |
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" |
     jq ".[] | select(.clientId == \"${CLIENT_ID}\")"
 
 echo "Done. If the above JSON block is displayed, the client was created successfully."
