@@ -14,6 +14,8 @@ if [ -z "$OIDC_ISSUER_URL" ]; then
     check_oidc_provider_accessible
 fi
 
+ask "OPENEO_ENABLE_OIDC" "Enable OIDC authentication for openEO? (yes/no)" "yES" is_yes_no
+
 ask "OPENEO_CLIENT_ID" "Enter the Client ID (Keycloak OIDC public client) that will be created for openEO clients" "openeo-public"
 
 gomplate -f "openeo-geotrellis/$TEMPLATE_PATH" -o "openeo-geotrellis/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
