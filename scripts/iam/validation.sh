@@ -23,13 +23,13 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" | jq -r '.access_token' \
 )
 
 REALM_EXISTS=$(curl -k --silent --show-error \
   -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://${KEYCLOAK_HOST}/admin/realms/${REALM}" \
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}" \
   -o /dev/null -w '%{http_code}')
 
 if [ "$REALM_EXISTS" -eq 200 ]; then
@@ -44,7 +44,7 @@ OPA_CLIENT_ID="$( \
   curl -k --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
     | jq -r '.[] | select(.clientId == "opa") | .id' \
 )"
 
@@ -60,7 +60,7 @@ IDENTITY_API_CLIENT_ID="$( \
   curl -k --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
     | jq -r '.[] | select(.clientId == "identity-api") | .id' \
 )"
 
