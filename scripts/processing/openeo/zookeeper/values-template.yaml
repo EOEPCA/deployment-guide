@@ -5,7 +5,7 @@ autopurge:
   purgeInterval: 1
 persistence:
   storageClass: "{{ getenv "STORAGE_CLASS" }}"
-  size: 5Gi
+  size: 1Gi
 resources:
   requests:
     memory: 1024Mi
