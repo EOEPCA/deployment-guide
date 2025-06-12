@@ -11,7 +11,7 @@ source '../common/utils.sh'
 # Ask the user for Keycloak and realm details
 ask "KEYCLOAK_ADMIN_USER" "Keycloak Admin Username" "${KEYCLOAK_ADMIN_USER}"
 ask "KEYCLOAK_ADMIN_PASSWORD" "Keycloak Admin Password" "${KEYCLOAK_ADMIN_PASSWORD}"
-ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+ask "KEYCLOAK_HOST" "Enter the Keycloak full hostname excluding scheme (http(s)) (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
 ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 
 ask_temp "USER_NAME" "Enter the username for the example user" "eoepcauser"
@@ -27,7 +27,7 @@ ACCESS_TOKEN=$(curl -k --silent --show-error \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" |
     jq -r '.access_token')
 
 if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
@@ -60,7 +60,7 @@ create_user_response=$(
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "${create_user_payload}" \
-        "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users" \
+        "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users" \
         -w "%{http_code}"
 )
 
@@ -72,7 +72,7 @@ fi
 
 # 2. Retrieve the new user's ID
 user_id=$(curl -k --silent --show-error \
-    -X GET "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${USER_NAME}" \
+    -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${USER_NAME}" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" |
     jq -r '.[0].id')
 
@@ -102,7 +102,7 @@ password_response=$(
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "${reset_password_payload}" \
-        "https://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${user_id}/reset-password" \
+        "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${user_id}/reset-password" \
         -w "%{http_code}"
 )
 
