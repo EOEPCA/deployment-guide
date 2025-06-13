@@ -112,14 +112,16 @@ function check_docker_installed() {
 }
 
 function check_cert_manager_installed() {
-    if ! kubectl get pods --all-namespaces | grep -q cert-manager; then
-        echo "⚠️  Cert-Manager is not installed in the cluster."
-        echo "   Please install Cert-Manager: https://cert-manager.io/docs/installation/"
-        echo "   If you are manually managing certificates, you can ignore this message."
-        return 1
-    else
-        echo "✅ Cert-Manager is installed."
-        return 0
+    if [ "${USE_CERT_MANAGER}" = "yes" ]; then
+        if ! kubectl get pods --all-namespaces | grep -q cert-manager; then
+            echo "⚠️  Cert-Manager is not installed in the cluster."
+            echo "   Please install Cert-Manager: https://cert-manager.io/docs/installation/"
+            echo "   If you are manually managing certificates, you can ignore this message."
+            return 1
+        else
+            echo "✅ Cert-Manager is installed."
+            return 0
+        fi
     fi
 }
 
