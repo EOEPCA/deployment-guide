@@ -13,14 +13,16 @@ helm repo update apisix
 
 ### Option A: Deploy as NodePort Service
 
-```bash
+The deployment configuration below assumes that the Kubernetes cluster exposes NodePorts `31080` (http) and `31443` (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public `80/443` traffic to these exposed ports on the cluster nodes.
 
+```bash
 helm upgrade -i apisix apisix/apisix \
   --version 2.9.0 \
   --namespace ingress-apisix --create-namespace \
   --set service.type=NodePort \
   --set service.http.nodePort=31080 \
   --set service.tls.nodePort=31443 \
+  --set etcd.replicaCount=1 \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \
@@ -28,7 +30,9 @@ helm upgrade -i apisix apisix/apisix \
   --set ingress-controller.enabled=true
 ```
 
-> The above configuration assumes that the Kubernetes cluster exposes NodePorts 31080 (http) and 31443 (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public 80/443 traffic to these exposed ports on the cluster nodes.
+> Note that the above configures a single replica for the `etcd` service (ref. `--set etcd.replicaCount=1`). This is useful only for a single node development cluster.
+> 
+> **The default number or replicas is `3`, which should be used (at minimum) for a production cluster.**
 
 ### Option B: Deploy as LoadBalancer Service
 

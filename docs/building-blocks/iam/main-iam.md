@@ -252,7 +252,7 @@ source ~/.eoepca/state
 ACCESS_TOKEN=$( \
   curl --silent --show-error \
     -X POST \
-    -d "username=${KEYCLOAK_TEST_USER=}" \
+    -d "username=${KEYCLOAK_TEST_USER}" \
     --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
