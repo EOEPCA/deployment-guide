@@ -17,6 +17,13 @@ mlflowSharinghub:
   gitlabUrl: {{ getenv "GITLAB_URL" }}
   {{- end }}
 
+persistence:
+  accessModes:
+    - ReadWriteOnce
+  size: 1Gi
+  annotations:
+    helm.sh/resource-policy: keep
+
 podSecurityContext:
   fsGroup: 999
 
@@ -32,6 +39,7 @@ postgresql:
     storageClass: {{ getenv "STORAGE_CLASS" }}
   persistence:
     storageClass: {{ getenv "STORAGE_CLASS" }}
+    size: 1Gi
 
 
 ingress:
