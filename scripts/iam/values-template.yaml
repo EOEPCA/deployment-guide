@@ -150,15 +150,8 @@ keycloak:
     # policies and should not be changed.
     - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
       value: "/opt/bitnami/keycloak/conf/opa-policies"
-    # KC_HOSTNAME and optionally KC_HOSTNAME_ADMIN should be set to the official base
-    # URL of Keycloak (usually the same as iam.keycloak.url)
-    - name: KC_HOSTNAME
-      value: *kcurl
-    # TODO: Remove the following two variables:
-    - name: KC_HOSTNAME_URL
-      value: *kcurl
-    - name: KC_HOSTNAME_ADMIN_URL
-      value: *kcurl
+    - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+      value: "true"
     - name: KC_HOSTNAME_STRICT_HTTPS
       value: "false"
     - name: KC_PROXY
