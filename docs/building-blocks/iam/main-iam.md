@@ -255,7 +255,8 @@ ACCESS_TOKEN=$( \
     -d "username=${KEYCLOAK_TEST_USER}" \
     --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "grant_type=password" \
-    -d "client_id=admin-cli" \
+    -d "client_id=${OPA_CLIENT_ID}" \
+    -d "client_secret=${OPA_CLIENT_SECRET}" \
     "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
 )
 ```
