@@ -10,8 +10,8 @@ metadata:
     meta.helm.sh/release-namespace: sharinghub
 spec:
   accessModes:
-    - ReadWriteOnce
-  storageClassName: {{ getenv "STORAGE_CLASS" }}
+  - ReadWriteOnce
+  storageClassName: { ? { getenv "STORAGE_CLASS" } }
   resources:
     requests:
-      storage: 10Gi
+      storage: 1Gi
