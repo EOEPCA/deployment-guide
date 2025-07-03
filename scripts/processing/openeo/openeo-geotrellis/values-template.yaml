@@ -85,8 +85,6 @@ configMaps:
         capabilities_description="openEO backend based on GeoPyspark stack for EOEPCA+ demo",
         capabilities_deploy_metadata=capabilities_deploy_metadata,
         oidc_providers=oidc_providers,
-        enable_basic_auth=True,
-        valid_basic_auth=lambda u, p: p == f"{u}123",
     )
   layerCatalog: |
     [
