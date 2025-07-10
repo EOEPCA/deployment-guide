@@ -1892,14 +1892,17 @@
 <h3 id="3-create-access-keys">3. Create Access Keys<a class="headerlink" href="#3-create-access-keys" title="Permanent link">⚓︎</a></h3>
 <p>Access the MinIO Console to create access keys:</p>
 <ol>
-<li>Navigate to <code>https://console-minio.${INGRESS_HOST}/access-keys/new-account</code></li>
+<li>Navigate to <code>https://console-minio.${INGRESS_HOST}/access-keys/new-account</code><br>
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>xdg-open<span class="w"> </span>https://console-minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/access-keys/new-account
+</span></code></pre></div></li>
 <li>Log in using the <strong>MinIO User</strong> (<code>user</code>) and <strong>MinIO Password</strong> generated during the configuration step - see file <code>~/.eoepca/state</code>.</li>
 <li>Under <code>Access Keys</code> select to <code>Create access key +</code></li>
 <li>Note down or download the <strong>Access Key</strong> and <strong>Secret Key</strong>.</li>
 <li>Click <code>Create</code>.</li>
 </ol>
 <p>Run the following script to save these keys to your <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>./apply-secrets.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>./apply-secrets.sh
 </span></code></pre></div>
 <blockquote>
 <p>By saving these keys to the <em><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file</em>, the credentials will be automatically set during the deployment of S3-integrated Building Blocks.</p>
@@ -1907,7 +1910,7 @@
 <hr />
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
 <p><strong>Automated Validation:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
 <p>This script performs several checks to validate your MinIO deployment:</p>
 <p><strong>Pod and Service Checks</strong>: Verifies that all MinIO pods are running and services are available.</p>
@@ -1925,12 +1928,12 @@
 <ol>
 <li>
 <p><strong>Check Kubernetes Resources:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>minio
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>minio
 </span></code></pre></div>
 </li>
 <li>
 <p><strong>Access Dashboard:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>https://console-minio.${INGRESS_HOST}
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>https://console-minio.${INGRESS_HOST}
 </span></code></pre></div>
 </li>
 <li>
@@ -1965,18 +1968,18 @@
 <ol>
 <li><strong>Uninstall MinIO</strong>:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio
 </span></code></pre></div>
 <ol start="2">
 <li><strong>Uninstall MinIO Bucket API</strong>:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio-bucket-api
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio-bucket-api
 </span></code></pre></div>
 <ol start="3">
 <li><strong>Delete Secrets and PVCs</strong>:</li>
 </ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span>minio-auth<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>--all
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span>minio-auth<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>--all
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
