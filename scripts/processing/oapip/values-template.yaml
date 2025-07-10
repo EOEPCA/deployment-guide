@@ -114,6 +114,8 @@ files:
         process:
         {{- end }}
           type: string
+        collection_id:
+          type: string
       outputs:
         StacCatalogUri:
           outputBinding:
@@ -133,6 +135,7 @@ files:
         {{- else if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
         - $( inputs.process )
         {{- end }}
+        - $( inputs.collection_id )
         - valueFrom: |
             ${
               if( !Array.isArray(inputs.wf_outputs) ) 
@@ -169,10 +172,11 @@ files:
                 from pystac.stac_io import DefaultStacIO, StacIO
                 from urllib.parse import urlparse
                 from datetime import datetime
+                import math
 
                 bucket = sys.argv[1]
                 subfolder = sys.argv[2]
-                collection_id = sys.argv[2]
+                collection_id = sys.argv[3]
                 print(f"bucket: {bucket}", file=sys.stderr)
                 print(f"subfolder: {subfolder}", file=sys.stderr)
                 print(f"collection_id: {collection_id}", file=sys.stderr)
@@ -180,7 +184,7 @@ files:
                 # cat_url
                 # Should really be one or more, for cwl outputs of type Directory[]
                 # - but as a quick fix we just take the first one for now.
-                cat_url = sys.argv[3]
+                cat_url = sys.argv[4]
                 print(f"cat_url: {cat_url}", file=sys.stderr)
 
                 aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
@@ -192,8 +196,11 @@ files:
                 print(f"region_name: {region_name}", file=sys.stderr)
                 print(f"endpoint_url: {endpoint_url}", file=sys.stderr)
 
+                if os.path.exists("/tmp/catalog"):
+                    shutil.rmtree("/tmp/catalog")
                 shutil.copytree(cat_url, "/tmp/catalog")
                 cat = pystac.read_file(os.path.join("/tmp/catalog", "catalog.json"))
+
 
                 class CustomStacIO(DefaultStacIO):
                     """Custom STAC IO class that uses boto3 to read from S3."""
@@ -235,39 +242,41 @@ files:
                 # create a STAC collection for the process
                 date = datetime.now().strftime("%Y-%m-%d")
 
-                dates = [datetime.strptime(
-                    f"{date}T00:00:00", "%Y-%m-%dT%H:%M:%S"
-                ), datetime.strptime(f"{date}T23:59:59", "%Y-%m-%dT%H:%M:%S")]
+                dates = [
+                    datetime.strptime(f"{date}T00:00:00", "%Y-%m-%dT%H:%M:%S"),
+                    datetime.strptime(f"{date}T23:59:59", "%Y-%m-%dT%H:%M:%S"),
+                ]
 
                 collection = pystac.Collection(
-                  id=collection_id,
-                  description="description",
-                  extent=pystac.Extent(
-                    spatial=pystac.SpatialExtent([[-180, -90, 180, 90]]), 
-                    temporal=pystac.TemporalExtent(intervals=[[min(dates), max(dates)]])
-                  ),
-                  title="Processing results",
-                  href=f"s3://{bucket}/{subfolder}/collection.json",
-                  stac_extensions=[],
-                  keywords=["eoepca"],
-                  license="proprietary",
+                    id=collection_id,
+                    description="description",
+                    extent=pystac.Extent(
+                        spatial=pystac.SpatialExtent([[-180, -90, 180, 90]]),
+                        temporal=pystac.TemporalExtent(intervals=[[min(dates), max(dates)]]),
+                    ),
+                    title="Processing results",
+                    href=f"s3://{bucket}/{subfolder}/collection.json",
+                    stac_extensions=[],
+                    keywords=["eoepca"],
+                    license="proprietary",
                 )
 
                 for index, link in enumerate(cat.links):
-                  if link.rel == "root":
-                      cat.links.pop(index) # remove root link
+                    if link.rel == "root":
+                        cat.links.pop(index)  # remove root link
 
                 for item in cat.get_items():
-
                     item.set_collection(collection)
-                    
+
                     collection.add_item(item)
-                    
+
                     for key, asset in item.get_assets().items():
                         s3_path = os.path.normpath(
-                            os.path.join(subfolder, collection_id, item.id, os.path.basename(asset.href))
+                            os.path.join(
+                                subfolder, collection_id, item.id, os.path.basename(asset.href)
+                            )
                         )
-                        print(f"upload {asset.href} to s3://{bucket}/{s3_path}",file=sys.stderr)
+                        print(f"upload {asset.href} to s3://{bucket}/{s3_path}", file=sys.stderr)
                         client.upload_file(
                             asset.get_absolute_href(),
                             bucket,
@@ -276,7 +285,17 @@ files:
                         asset.href = f"s3://{bucket}/{s3_path}"
                         item.add_asset(key, asset)
 
-                collection.update_extent_from_items() 
+                collection.update_extent_from_items()
+                # `Infinite` is not valid JSON, so we need to check for it and set a default bbox
+                for bbox in collection.extent.spatial.bboxes:
+                    for coordinate in bbox:
+                        if math.isinf(coordinate):
+                            # If any coordinate is infinite, set the bbox to the default
+                            bbox[0] = -180.0
+                            bbox[1] = -90.0
+                            bbox[2] = 180.0
+                            bbox[3] = 90.0
+                            break
 
                 cat.clear_items()
 
