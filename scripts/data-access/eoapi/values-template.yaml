@@ -21,6 +21,21 @@ ingress:
 db:
   enabled: false
 
+{{- if eq (getenv "EXTERNAL_POSTGRES") "true" }}
+postgrescluster:
+  enabled: false
+pgstacBootstrap:
+  enabled: false
+postgresql:
+  type: "external-plaintext"
+  external:
+    host: "{{ getenv "EXTERNAL_POSTGRES_HOST" }}"
+    port: "{{ getenv "EXTERNAL_POSTGRES_PORT" }}"
+    database: "{{ getenv "EXTERNAL_POSTGRES_DBNAME" }}"
+    credentials:
+      username: "{{ getenv "EXTERNAL_POSTGRES_USERNAME" }}"
+      password: "{{ getenv "EXTERNAL_POSTGRES_PASSWORD" }}"
+{{- else }}
 postgrescluster:
   enabled: true
   postgresVersion: 16
@@ -46,11 +61,9 @@ pgstacBootstrap:
   settings:
     envVars:
       KEEP_ALIVE: "false"
-
+{{- end }}
 raster:
   enabled: true
-  image:
-    tag: "1.4.0"
   settings:
     envVars:
       AWS_S3_ENDPOINT: {{ getenv "S3_HOST" }}
