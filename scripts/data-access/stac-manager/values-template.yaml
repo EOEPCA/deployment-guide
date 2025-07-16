@@ -10,7 +10,7 @@ ingress:
   - host: "eoapi.{{ getenv "INGRESS_HOST" }}"
     paths:
     - path: /manager(/|$)(.*)
-    - pathType: ImplementationSpecific
+      pathType: ImplementationSpecific
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     enabled: true
