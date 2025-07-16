@@ -126,13 +126,11 @@ helm upgrade -i eoapi eoapi/eoapi \
 
 3. **Deploy STAC Admin Manager**
 
-> Note: The STAC Manager may not deploy fully, if you see `CrashLoopBackOff` errors, this is expected. The STAC Manager is not required for the Data Access Building Block to function
- 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i stac-manager eoepca-dev/stac-manager \
-  --version 0.0.3 \
+helm repo add stac-manager https://stac-manager.ds.io/
+helm repo update stac-manager
+helm upgrade -i stac-manager stac-manager/stac-manager \
+  --version 0.0.11 \
   --namespace data-access \
   --values stac-manager/generated-values.yaml
 ```
