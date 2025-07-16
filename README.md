@@ -1,5 +1,7 @@
 # EOEPCA Deployment Guide
 
+_See [latest published version](https://eoepca.readthedocs.io/projects/deploy/en/latest/)_
+
 The guide is written in Markdown and rendered through the [`mkdocs` tool](https://www.mkdocs.org/).
 
 The file `mkdocs.yml` is the configuration file that describes the organisation and settings for the document generation.
