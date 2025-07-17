@@ -26,7 +26,7 @@ kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for
 ### Envoy Gateway - Envoy Proxy
 
 > **NOTE...**<br>
-> We only need this as we want to expose http/80 / https/443 on NodePorts 31080/31443 - rather than the default LoadBalancer on port 80.<br>
+> We only need this as we want to expose http/80 / https/443 on NodePorts 31080/31443 - rather than the default LoadBalancer on port 80/443.<br>
 > Each `Gateway` resource instantiates a set of resources (deployment, pods, service, etc.) that implement the `Gateway` - including a `Service` that exposes the listening ports of the `Gateway`.<br>
 > These resources are defined by a template that can be patched via an `EnvoyProxy` resource.<br>
 > Thus, we patch the `envoyService` ports defintion to include the required `NodePorts`.<br>
@@ -204,6 +204,12 @@ spec:
         - name: http-echo
           port: 3000
 EOF
+```
+
+Test the endpoint - should return a summary (echo) of the request...
+
+```bash
+curl http://http-echo.verify.eoepca.org
 ```
 
 ## HTTPS Test Service
@@ -490,7 +496,7 @@ spec:
 EOF
 ```
 
-Test the endpoint - should return `{"error_msg":"404 Route Not Found"}`...
+Test the endpoint - should return `{"error_msg":"404 Route Not Found"}` - we recognise this as coming from APISIX...
 
 ```bash
 curl http://fred.verify.eoepca.org/index.html
@@ -546,11 +552,6 @@ metadata:
   namespace: dummy
   annotations:
     kubernetes.io/ingress.class: apisix
-    # apisix.apache.org/ssl-redirect: "true"
-    # apisix.ingress.kubernetes.io/use-regex: "true"
-    # cert-manager.io/cluster-issuer: "letsencrypt-http01-apisix"
-    # k8s.apisix.apache.org/enable-cors: "true"
-    # k8s.apisix.apache.org/upstream-read-timeout: "600s"
 spec:
   ingressClassName: apisix
   rules:
@@ -636,10 +637,6 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: apisix
     cert-manager.io/cluster-issuer: "letsencrypt-http01-apisix"
-    # apisix.apache.org/ssl-redirect: "true"
-    # apisix.ingress.kubernetes.io/use-regex: "true"
-    # k8s.apisix.apache.org/enable-cors: "true"
-    # k8s.apisix.apache.org/upstream-read-timeout: "600s"
 spec:
   ingressClassName: apisix
   rules:
@@ -678,4 +675,10 @@ Test `https/443` endpoint - should return `This is service DUMMY (http/80)`...
 
 ```bash
 curl https://dummy-letsencrypt.verify.eoepca.org/index.html
+```
+
+Since the certificate is legitimate, we can open this endpoint in our browser...
+
+```bash
+xdg-open https://dummy-letsencrypt.verify.eoepca.org/index.html
 ```
