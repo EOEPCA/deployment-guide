@@ -12,7 +12,9 @@ k3d cluster create eoepca \
   --port 31443:31443@loadbalancer
 ```
 
-## Quickstart Deploy
+## Envoy Gateway
+
+### Envoy Gateway - Deploy via Helm
 
 ```bash
 helm upgrade -i envoy-gateway oci://docker.io/envoyproxy/gateway-helm \
@@ -21,7 +23,7 @@ helm upgrade -i envoy-gateway oci://docker.io/envoyproxy/gateway-helm \
 kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
 ```
 
-### Envoy Proxy
+### Envoy Gateway - Envoy Proxy
 
 > **NOTE...**<br>
 > We only need this as we want to expose http/80 / https/443 on NodePorts 31080/31443 - rather than the default LoadBalancer on port 80.<br>
@@ -66,7 +68,7 @@ spec:
 EOF
 ```
 
-### Gateway Class
+### Envoy Gateway - Gateway Class
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -79,7 +81,7 @@ spec:
 EOF
 ```
 
-### Gateway
+### Envoy Gateway - Gateway
 
 > NOTE. The EnvoyProxy reference is only needed if the NodePort 31080/31443 patching is required
 
@@ -120,9 +122,9 @@ spec:
 EOF
 ```
 
-### HTTP Test Service
+## HTTP Test Service
 
-#### HTTP - Deployment and Service
+### HTTP - Deployment and Service
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -182,7 +184,7 @@ spec:
 EOF
 ```
 
-#### HTTP - Routing via HTTPRoute
+### HTTP - Routing via HTTPRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -204,9 +206,9 @@ spec:
 EOF
 ```
 
-### HTTPS Test Service
+## HTTPS Test Service
 
-#### HTTPS - Self-signed TLS Cert
+### HTTPS - Self-signed TLS Cert
 
 ```bash
 clear
@@ -221,7 +223,7 @@ kubectl create secret tls tls-echo-tls \
 rm tls.key tls.crt
 ```
 
-#### HTTPS - Echo Pod and Service
+### HTTPS - Echo Pod and Service
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -270,7 +272,7 @@ spec:
 EOF
 ```
 
-#### HTTPS - http/80 routing via HTTPRoute
+### HTTPS - http/80 routing via HTTPRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -283,6 +285,8 @@ spec:
   parentRefs:
     - name: eoepca-public
       namespace: gateway
+  hostnames:
+    - tls-echo.verify.eoepca.org
   rules:
     - backendRefs:
         - name: tls-echo
@@ -290,7 +294,13 @@ spec:
 EOF
 ```
 
-#### HTTPS - https/443 routing via TLSRoute
+Test the endpoint - should return `This is service TLS ECHO (http/80)`...
+
+```bash
+curl http://tls-echo.verify.eoepca.org/index.html
+```
+
+### HTTPS - https/443 routing via TLSRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -303,6 +313,8 @@ spec:
   parentRefs:
     - name: eoepca-public
       namespace: gateway
+  hostnames:
+    - tls-echo.verify.eoepca.org
   rules:
     - backendRefs:
       - name: tls-echo
@@ -310,9 +322,15 @@ spec:
 EOF
 ```
 
-### DUMMY Test Service
+Test the endpoint - should return `This is service TLS ECHO (https/443)`...
 
-#### DUMMY - Self-signed TLS Cert
+```bash
+curl https://tls-echo.verify.eoepca.org/index.html -k
+```
+
+## DUMMY Test Service
+
+### DUMMY - Self-signed TLS Cert
 
 ```bash
 clear
@@ -327,7 +345,7 @@ kubectl create secret tls dummy-tls \
 rm tls.key tls.crt
 ```
 
-#### DUMMY - Echo Pod and Service
+### DUMMY - Echo Pod and Service
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -376,7 +394,7 @@ spec:
 EOF
 ```
 
-#### DUMMY - http/80 routing via HTTPRoute
+### DUMMY - http/80 routing via HTTPRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -398,7 +416,13 @@ spec:
 EOF
 ```
 
-#### DUMMY - Routing via TLSRoute
+Test the endpoint - should return `This is service DUMMY (http/80)`...
+
+```bash
+curl http://dummy.verify.eoepca.org/index.html
+```
+
+### DUMMY - https/443 routing via TLSRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -418,4 +442,240 @@ spec:
         - name: dummy
           port: 443
 EOF
+```
+
+Test the endpoint - should return `This is service DUMMY (https/443)`...
+
+```bash
+curl https://dummy.verify.eoepca.org/index.html -k
+```
+
+## APISIX
+
+### APISIX - Deploy via helm
+
+```bash
+helm repo add apisix https://charts.apiseven.com && \
+helm repo update apisix && \
+helm upgrade -i apisix apisix/apisix \
+  --version 2.9.0 \
+  --namespace ingress-apisix --create-namespace \
+  --set apisix.enableIPv6=false \
+  --set apisix.enableServerTokens=false \
+  --set apisix.ssl.enabled=true \
+  --set apisix.pluginAttrs.redirect.https_port=443 \
+  --set ingress-controller.enabled=true \
+  --set etcd.replicaCount=1
+```
+
+### APISIX - http/80 routing via HTTPRoute
+
+> No hostname rules, so acts as Default Route
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: apisix
+  namespace: ingress-apisix
+spec:
+  parentRefs:
+    - name: eoepca-public
+      namespace: gateway
+  rules:
+    - backendRefs:
+        - name: apisix-gateway
+          port: 80
+EOF
+```
+
+Test the endpoint - should return `{"error_msg":"404 Route Not Found"}`...
+
+```bash
+curl http://fred.verify.eoepca.org/index.html
+```
+
+### APISIX - https/443 routing via TLSRoute
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: apisix
+  namespace: ingress-apisix
+spec:
+  parentRefs:
+    - name: eoepca-public
+      namespace: gateway
+  rules:
+    - backendRefs:
+        - name: apisix-gateway
+          port: 443
+EOF
+```
+
+> Will test this by creating an Ingress in next steps
+
+## APISIX - Routing via Ingress
+
+### APISIX - DUMMY Ingress - Self-signed TLS Cert
+
+```bash
+clear
+kubectl create namespace dummy 2>/dev/null
+openssl req -x509 -newkey rsa:2048 -nodes \
+  -keyout tls.key -out tls.crt -days 365 \
+  -subj "/CN=dummy-apisix.verify.eoepca.org"
+kubectl delete secret dummy-apisix-tls --namespace dummy 2>/dev/null
+kubectl create secret tls dummy-apisix-tls \
+  --cert=tls.crt --key=tls.key \
+  --namespace dummy
+rm tls.key tls.crt
+```
+
+### APISIX - DUMMY Ingress
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dummy
+  namespace: dummy
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    # apisix.apache.org/ssl-redirect: "true"
+    # apisix.ingress.kubernetes.io/use-regex: "true"
+    # cert-manager.io/cluster-issuer: "letsencrypt-http01-apisix"
+    # k8s.apisix.apache.org/enable-cors: "true"
+    # k8s.apisix.apache.org/upstream-read-timeout: "600s"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: dummy-apisix.verify.eoepca.org
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: dummy
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - dummy-apisix.verify.eoepca.org
+      secretName: dummy-apisix-tls
+EOF
+```
+
+### APISIX - DUMMY Ingress - Test http/80
+
+Test `http/80` endpoint - should return `This is service DUMMY (http/80)`...
+
+```bash
+curl http://dummy-apisix.verify.eoepca.org/index.html
+```
+
+### APISIX - DUMMY Ingress - Test https/443
+
+Test `https/443` endpoint - should return `This is service DUMMY (http/80)`...
+
+> NOTE APISIX terminates the TLS and forwards to the `http/80` service
+
+```bash
+curl https://dummy-apisix.verify.eoepca.org/index.html -k
+```
+
+## APISIX - Ingress with Letsencrypt
+
+### APISIX - Ingress with Letsencrypt - Deploy Cert Manager
+
+```bash
+clear
+helm repo add jetstack https://charts.jetstack.io
+helm repo update jetstack
+helm upgrade -i cert-manager jetstack/cert-manager \
+  --namespace cert-manager --create-namespace \
+  --version v1.16.1 \
+  --set crds.enabled=true
+```
+
+### APISIX - Ingress with Letsencrypt - Cluster Issuer
+
+```bash
+cat - <<'EOF' | kubectl apply -f -
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-http01-apisix
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: richard.conway@telespazio.com
+    privateKeySecretRef:
+      name: letsencrypt-http01-apisix
+    solvers:
+      - http01:
+          ingress:
+            class: apisix
+EOF
+```
+
+### APISIX - Ingress with Letsencrypt - Ingress Resource
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dummy-letsencrypt
+  namespace: dummy
+  annotations:
+    kubernetes.io/ingress.class: apisix
+    cert-manager.io/cluster-issuer: "letsencrypt-http01-apisix"
+    # apisix.apache.org/ssl-redirect: "true"
+    # apisix.ingress.kubernetes.io/use-regex: "true"
+    # k8s.apisix.apache.org/enable-cors: "true"
+    # k8s.apisix.apache.org/upstream-read-timeout: "600s"
+spec:
+  ingressClassName: apisix
+  rules:
+    - host: dummy-letsencrypt.verify.eoepca.org
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: dummy
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - dummy-letsencrypt.verify.eoepca.org
+      secretName: dummy-letsencrypt-tls
+EOF
+```
+
+### APISIX - Ingress with Letsencrypt - Test http/80
+
+Test `http/80` endpoint - should return `This is service DUMMY (http/80)`...
+
+```bash
+curl http://dummy-letsencrypt.verify.eoepca.org/index.html
+```
+
+### APISIX - Ingress with Letsencrypt - Test https/443
+
+Test `https/443` endpoint - should return `This is service DUMMY (http/80)`...
+
+> NOTES:
+> * APISIX terminates the TLS and forwards to the `http/80` service
+> * The `-k` option is not needed as we have a fully signed TLS certificate
+
+```bash
+curl https://dummy-letsencrypt.verify.eoepca.org/index.html
 ```
