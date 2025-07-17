@@ -123,10 +123,20 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: https
+      protocol: TLS
+      port: 443
+      tls:
+        mode: Passthrough
+      allowedRoutes:
+        namespaces:
+          from: All
 EOF
 ```
 
-### Test Service
+### HTTP Test Service
+
+#### HTTP - Deployment and Service
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -186,7 +196,7 @@ spec:
 EOF
 ```
 
-## HTTPRoute
+#### HTTP - Routing via HTTPRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
@@ -212,5 +222,167 @@ spec:
       #   - path:
       #       type: PathPrefix
       #       value: /
+EOF
+```
+
+### HTTPS Test Service
+
+#### HTTPS - Self-signed TLS Cert
+
+```bash
+clear
+kubectl create namespace tls-echo 2>/dev/null
+openssl req -x509 -newkey rsa:2048 -nodes \
+  -keyout tls.key -out tls.crt -days 365 \
+  -subj "/CN=tls-echo.verify.eoepca.org"
+kubectl delete secret tls-echo-tls --namespace tls-echo 2>/dev/null
+kubectl create secret tls tls-echo-tls \
+  --cert=tls.crt --key=tls.key \
+  --namespace tls-echo
+rm tls.key tls.crt
+```
+
+#### HTTPS - Echo Pod and Service
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tls-echo
+  namespace: tls-echo
+  labels:
+    app: tls-echo
+spec:
+  containers:
+  - name: echo
+    image: alpine:latest
+    command: ["/bin/sh", "-c"]
+    args:
+      - apk add openssl && \
+        echo "This is service TLS ECHO" >index.html && \
+        openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW
+    volumeMounts:
+    - name: tls
+      mountPath: /tls
+      readOnly: true
+  volumes:
+  - name: tls
+    secret:
+      secretName: tls-echo-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tls-echo
+  namespace: tls-echo
+spec:
+  selector:
+    app: tls-echo
+  ports:
+  - port: 443
+    targetPort: 443
+EOF
+```
+
+#### HTTPS - Routing via TLSRoute
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: tls-echo
+  namespace: tls-echo
+spec:
+  parentRefs:
+  - name: eg
+    namespace: default
+  rules:
+  - backendRefs:
+    - name: tls-echo
+      port: 443
+EOF
+```
+
+### DUMMY Test Service
+
+#### DUMMY - Self-signed TLS Cert
+
+```bash
+clear
+kubectl create namespace dummy 2>/dev/null
+openssl req -x509 -newkey rsa:2048 -nodes \
+  -keyout tls.key -out tls.crt -days 365 \
+  -subj "/CN=dummy.verify.eoepca.org"
+kubectl delete secret dummy-tls --namespace dummy 2>/dev/null
+kubectl create secret tls dummy-tls \
+  --cert=tls.crt --key=tls.key \
+  --namespace dummy
+rm tls.key tls.crt
+```
+
+#### DUMMY - Echo Pod and Service
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dummy
+  namespace: dummy
+  labels:
+    app: dummy
+spec:
+  containers:
+  - name: echo
+    image: alpine:latest
+    command: ["/bin/sh", "-c"]
+    args:
+      - apk add openssl && \
+        echo "This is service DUMMY" >index.html && \
+        openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW
+    volumeMounts:
+    - name: tls
+      mountPath: /tls
+      readOnly: true
+  volumes:
+  - name: tls
+    secret:
+      secretName: dummy-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dummy
+  namespace: dummy
+spec:
+  selector:
+    app: dummy
+  ports:
+  - port: 443
+    targetPort: 443
+EOF
+```
+
+#### DUMMY - Routing via TLSRoute
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: dummy
+  namespace: dummy
+spec:
+  parentRefs:
+  - name: eg
+    namespace: default
+  hostnames:
+  - dummy.verify.eoepca.org
+  rules:
+  - backendRefs:
+    - name: dummy
+      port: 443
 EOF
 ```
