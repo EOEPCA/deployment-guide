@@ -259,9 +259,11 @@ spec:
     image: alpine:latest
     command: ["/bin/sh", "-c"]
     args:
-      - apk add openssl && \
-        echo "This is service TLS ECHO" >index.html && \
-        openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW
+      - |
+        apk add openssl socat && \
+        echo "This is service TLS ECHO (https/443)" >index.html && \
+        (openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW &) && \
+        socat TCP-LISTEN:80,reuseaddr,fork EXEC:'echo -e "HTTP/1.1 200 OK\r\nContent-Length: 35\r\n\r\nThis is service TLS ECHO (http/80)"'
     volumeMounts:
     - name: tls
       mountPath: /tls
@@ -280,12 +282,36 @@ spec:
   selector:
     app: tls-echo
   ports:
-  - port: 443
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
     targetPort: 443
 EOF
 ```
 
-#### HTTPS - Routing via TLSRoute
+#### HTTPS - http/80 routing via HTTPRoute
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: tls-echo
+  namespace: tls-echo
+spec:
+  parentRefs:
+    - name: eg
+      namespace: default
+  rules:
+    - backendRefs:
+        - name: tls-echo
+          port: 80
+EOF
+```
+
+#### HTTPS - https/443 routing via TLSRoute
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
