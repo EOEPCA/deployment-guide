@@ -15,21 +15,33 @@ k3d cluster create eoepca \
 ## Quickstart Deploy
 
 ```bash
-helm install eg oci://docker.io/envoyproxy/gateway-helm --version v0.0.0-latest -n envoy-gateway-system --create-namespace
+helm upgrade -i envoy-gateway oci://docker.io/envoyproxy/gateway-helm \
+  --version v0.0.0-latest \
+  --namespace envoy-gateway-system --create-namespace
 kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
-kubectl apply -f https://github.com/envoyproxy/gateway/releases/download/latest/quickstart.yaml -n default
 ```
 
 ### Envoy Proxy
 
-> NOTE. We only need this as we want to expose http/80 on NodePort 31080 - rather than the default LoadBalancer on port 80.
+> **NOTE...**<br>
+> We only need this as we want to expose http/80 / https/443 on NodePorts 31080/31443 - rather than the default LoadBalancer on port 80.<br>
+> Each `Gateway` resource instantiates a set of resources (deployment, pods, service, etc.) that implement the `Gateway` - including a `Service` that exposes the listening ports of the `Gateway`.<br>
+> These resources are defined by a template that can be patched via an `EnvoyProxy` resource.<br>
+> Thus, we patch the `envoyService` ports defintion to include the required `NodePorts`.<br>
+> The `EnvoyProxy/nodeport-proxy-config` is then used as a parameter in the `Gateway` below.
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:
   name: nodeport-proxy-config
+  namespace: gateway
 spec:
   provider:
     type: Kubernetes
@@ -61,7 +73,7 @@ clear ; cat <<EOF | kubectl apply -f -
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: eg
+  name: envoy
 spec:
   controllerName: gateway.envoyproxy.io/gatewayclass-controller
 EOF
@@ -73,12 +85,18 @@ EOF
 
 ```bash
 clear ; cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: eg
+  name: eoepca-public
+  namespace: gateway
 spec:
-  gatewayClassName: eg
+  gatewayClassName: envoy
   infrastructure:
     parametersRef:
       group: gateway.envoyproxy.io
@@ -175,21 +193,14 @@ metadata:
   namespace: http-echo
 spec:
   parentRefs:
-    - name: eg
-      namespace: default
+    - name: eoepca-public
+      namespace: gateway
   hostnames:
     - "http-echo.verify.eoepca.org"
   rules:
     - backendRefs:
-        - group: ""
-          kind: Service
-          name: http-echo
+        - name: http-echo
           port: 3000
-          weight: 1
-      # matches:
-      #   - path:
-      #       type: PathPrefix
-      #       value: /
 EOF
 ```
 
@@ -270,8 +281,8 @@ metadata:
   namespace: tls-echo
 spec:
   parentRefs:
-    - name: eg
-      namespace: default
+    - name: eoepca-public
+      namespace: gateway
   rules:
     - backendRefs:
         - name: tls-echo
@@ -290,8 +301,8 @@ metadata:
   namespace: tls-echo
 spec:
   parentRefs:
-    - name: eg
-      namespace: default
+    - name: eoepca-public
+      namespace: gateway
   rules:
     - backendRefs:
       - name: tls-echo
@@ -376,14 +387,14 @@ metadata:
   namespace: dummy
 spec:
   parentRefs:
-    - name: eg
-      namespace: default
+    - name: eoepca-public
+      namespace: gateway
   hostnames:
     - dummy.verify.eoepca.org
   rules:
     - backendRefs:
-      - name: dummy
-        port: 80
+        - name: dummy
+          port: 80
 EOF
 ```
 
@@ -398,13 +409,13 @@ metadata:
   namespace: dummy
 spec:
   parentRefs:
-    - name: eg
-      namespace: default
+    - name: eoepca-public
+      namespace: gateway
   hostnames:
     - dummy.verify.eoepca.org
   rules:
     - backendRefs:
-      - name: dummy
-        port: 443
+        - name: dummy
+          port: 443
 EOF
 ```
