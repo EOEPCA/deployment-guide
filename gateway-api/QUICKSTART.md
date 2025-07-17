@@ -34,8 +34,6 @@ spec:
   provider:
     type: Kubernetes
     kubernetes:
-      envoyDeployment:
-        replicas: 1
       envoyService:
         type: NodePort
         patch:
@@ -43,46 +41,16 @@ spec:
           value:
             spec:
               ports:
-              - name: http-80
-                port: 80
-                protocol: TCP
-                targetPort: 10080
-                nodePort: 31080
-              - name: https-443
-                port: 443
-                protocol: TCP
-                targetPort: 10443
-                nodePort: 31443
-EOF
-```
-
-```bash
-clear ; cat <<EOF | kubectl apply -f -
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: EnvoyProxy
-metadata:
-  name: nodeport-proxy-config
-spec:
-  provider:
-    type: Kubernetes
-    kubernetes:
-      envoyService:
-        type: NodePort
-        patch:
-          type: StrategicMerge
-          value:
-            spec:
-              ports:
-              - name: http-80
-                port: 80
-                protocol: TCP
-                targetPort: 10080
-                nodePort: 31080
-              - name: https-443
-                port: 443
-                protocol: TCP
-                targetPort: 10443
-                nodePort: 31443
+                - name: http-80
+                  port: 80
+                  protocol: TCP
+                  targetPort: 10080
+                  nodePort: 31080
+                - name: https-443
+                  port: 443
+                  protocol: TCP
+                  targetPort: 10443
+                  nodePort: 31443
 EOF
 ```
 
@@ -255,23 +223,23 @@ metadata:
     app: tls-echo
 spec:
   containers:
-  - name: echo
-    image: alpine:latest
-    command: ["/bin/sh", "-c"]
-    args:
-      - |
-        apk add openssl socat && \
-        echo "This is service TLS ECHO (https/443)" >index.html && \
-        (openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW &) && \
-        socat TCP-LISTEN:80,reuseaddr,fork EXEC:'echo -e "HTTP/1.1 200 OK\r\nContent-Length: 35\r\n\r\nThis is service TLS ECHO (http/80)"'
-    volumeMounts:
-    - name: tls
-      mountPath: /tls
-      readOnly: true
+    - name: echo
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          apk add openssl socat && \
+          echo "This is service TLS ECHO (https/443)" >index.html && \
+          (openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW &) && \
+          socat TCP-LISTEN:80,reuseaddr,fork EXEC:'echo -e "HTTP/1.1 200 OK\r\nContent-Length: 35\r\n\r\nThis is service TLS ECHO (http/80)"'
+      volumeMounts:
+        - name: tls
+          mountPath: /tls
+          readOnly: true
   volumes:
-  - name: tls
-    secret:
-      secretName: tls-echo-tls
+    - name: tls
+      secret:
+        secretName: tls-echo-tls
 ---
 apiVersion: v1
 kind: Service
@@ -282,12 +250,12 @@ spec:
   selector:
     app: tls-echo
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
-  - name: https
-    port: 443
-    targetPort: 443
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
 EOF
 ```
 
@@ -322,12 +290,12 @@ metadata:
   namespace: tls-echo
 spec:
   parentRefs:
-  - name: eg
-    namespace: default
+    - name: eg
+      namespace: default
   rules:
-  - backendRefs:
-    - name: tls-echo
-      port: 443
+    - backendRefs:
+      - name: tls-echo
+        port: 443
 EOF
 ```
 
@@ -361,21 +329,23 @@ metadata:
     app: dummy
 spec:
   containers:
-  - name: echo
-    image: alpine:latest
-    command: ["/bin/sh", "-c"]
-    args:
-      - apk add openssl && \
-        echo "This is service DUMMY" >index.html && \
-        openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW
-    volumeMounts:
-    - name: tls
-      mountPath: /tls
-      readOnly: true
+    - name: echo
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          apk add openssl socat && \
+          echo "This is service DUMMY (https/443)" >index.html && \
+          (openssl s_server -accept 443 -cert /tls/tls.crt -key /tls/tls.key -WWW &) && \
+          socat TCP-LISTEN:80,reuseaddr,fork EXEC:'echo -e "HTTP/1.1 200 OK\r\nContent-Length: 32\r\n\r\nThis is service DUMMY (http/80)"'
+      volumeMounts:
+        - name: tls
+          mountPath: /tls
+          readOnly: true
   volumes:
-  - name: tls
-    secret:
-      secretName: dummy-tls
+    - name: tls
+      secret:
+        secretName: dummy-tls
 ---
 apiVersion: v1
 kind: Service
@@ -386,8 +356,34 @@ spec:
   selector:
     app: dummy
   ports:
-  - port: 443
-    targetPort: 443
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
+EOF
+```
+
+#### DUMMY - http/80 routing via HTTPRoute
+
+```bash
+clear ; cat <<EOF | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: dummy
+  namespace: dummy
+spec:
+  parentRefs:
+    - name: eg
+      namespace: default
+  hostnames:
+    - dummy.verify.eoepca.org
+  rules:
+    - backendRefs:
+      - name: dummy
+        port: 80
 EOF
 ```
 
@@ -402,13 +398,13 @@ metadata:
   namespace: dummy
 spec:
   parentRefs:
-  - name: eg
-    namespace: default
+    - name: eg
+      namespace: default
   hostnames:
-  - dummy.verify.eoepca.org
+    - dummy.verify.eoepca.org
   rules:
-  - backendRefs:
-    - name: dummy
-      port: 443
+    - backendRefs:
+      - name: dummy
+        port: 443
 EOF
 ```
