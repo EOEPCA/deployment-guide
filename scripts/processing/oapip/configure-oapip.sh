@@ -79,17 +79,19 @@ fi
 
 # Processing engine
 is_valid_engine() {
-    [[ "$1" == "calrissian" || "$1" == "toil" ]]
+    [[ "$1" == "calrissian" || "$1" == "toil" || "$1" == "argo" ]]
 }
-ask "OAPIP_EXECUTION_ENGINE" "Select your execution engine. Supported engines are calrissian and toil." "calrissian" is_valid_engine
+ask "OAPIP_EXECUTION_ENGINE" "Select your execution engine. Supported engines are calrissian, toil and argo." "calrissian" is_valid_engine
 
 if [[ "$OAPIP_EXECUTION_ENGINE" == "toil" ]]; then
-  ask "OAPIP_TOIL_WES_URL" "Insert the HPC Toil WES service endpoint" "https://toil.hpc.host/ga4gh/wes/v1/" is_non_empty
-  ask "OAPIP_TOIL_WES_USER" "Insert the HPC Toil WES username" "test" is_non_empty
-  ask "OAPIP_TOIL_WES_PASSWORD" "Insert the HPT Toil WES password (hashed)" '$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG' is_non_empty
+ ask "OAPIP_TOIL_WES_URL" "Insert the HPC Toil WES service endpoint" "https://toil.hpc.host/ga4gh/wes/v1/" is_non_empty
+ ask "OAPIP_TOIL_WES_USER" "Insert the HPC Toil WES username" "test" is_non_empty
+ ask "OAPIP_TOIL_WES_PASSWORD" "Insert the HPT Toil WES password (hashed)" '$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG' is_non_empty
 elif [[ "$OAPIP_EXECUTION_ENGINE" == "calrissian" ]]; then
-  ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run processing workflows" "kubernetes.io/os" is_non_empty
-  ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
+ ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run processing workflows" "kubernetes.io/os" is_non_empty
+ ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
+elif [[ "$OAPIP_EXECUTION_ENGINE" == "argo" ]]; then
+ ask "ARGO_NAMESPACE" "Specify the namespace where Argo Workflows will be executed" "argo" is_non_empty
 fi
 
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
