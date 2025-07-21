@@ -91,7 +91,6 @@ elif [[ "$OAPIP_EXECUTION_ENGINE" == "calrissian" ]]; then
  ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run processing workflows" "kubernetes.io/os" is_non_empty
  ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 elif [[ "$OAPIP_EXECUTION_ENGINE" == "argo" ]]; then
- ask "ARGO_NAMESPACE" "Specify the namespace where Argo Workflows will be executed" "argo" is_non_empty
 fi
 
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
