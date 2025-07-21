@@ -1,4 +1,22 @@
-# Envoy Gateway Proof-of-concept
+# Gateway API Proof-of-concept
+
+## Motivation
+
+The motivation for this proof-of-concept is to address the needs for multiple points of TLS termination:
+* APISIX ingress controller, including IAM policy enforcement
+* Workspace vClusters exposing Kubernetes API access with dedicated TLS certificates
+
+The platform exposes a single public entrypoint - which must route the traffic to these internal endpoints. **Significantly, the traffic must be routed with SSL passthrough such that APISIX and the Workspace vClusters can perform their own SSL termination.**
+
+Some investigations have been made to achieve this via `ingress-nginx` SSL passthrough. But it was found that this is somewhat limited - in particular for integration with APISIX - and it is also understood that use of `ssl-passtrhough` with nginx introduces inefficiencies.
+
+A better alternative has been found in the Kubernetes [`Gateway API` ](https://gateway-api.sigs.k8s.io/) - which offers a more sophisticated and flexible approach to traffic routing.
+
+This proof-of-concept introduces `Envoy Gateway` as the platform entrypoint implementing the `Gateway API` - with example `HTTPRoute` and `TLSRoute` resources for integration with APISIX and with self-terminating dummy endpoints (that emulate a Workspace vCluster).
+
+The outcome of this approach, from the point if the building-blocks, is largely transparent:
+* BBs create `Ingress` and `ApisixRoute` resources as per existing approach - to be satisfied by APISIX
+* To expose Workspace vCluster Kubernetes API - the Workspace BB would have to use `TLSRoute` resources instead of the current `Ingress` resources used - which are directly routed (SSL passthrough) from the gateway to the vCLuster endpoint
 
 ## Create fresh cluster
 
