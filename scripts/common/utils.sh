@@ -253,7 +253,7 @@ configure_ingress() {
         add_to_custom_ingress_annotations "k8s.apisix.apache.org/upstream-read-timeout: \"600s\""
         add_to_custom_ingress_annotations "k8s.apisix.apache.org/enable-cors: \"true\""
 	if [ "$HTTP_SCHEME" == "https" ]; then
-        add_to_custom_ingress_annotations "apisix.apache.org/ssl-redirect: \"true\""
+        add_to_custom_ingress_annotations "k8s.apisix.apache.org/http-to-https: \"true\""
 	fi
     fi
 }
