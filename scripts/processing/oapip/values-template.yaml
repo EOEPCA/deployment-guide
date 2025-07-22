@@ -39,6 +39,9 @@ workflow:
     WES_USER: {{ getenv "OAPIP_TOIL_WES_USER" }}
     WES_PASSWORD: {{ getenv "OAPIP_TOIL_WES_PASSWORD" }}
   {{- end }}
+  {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "argo" }}
+    ARGO_INSECURE_SKIP_VERIFY: "true"
+  {{- end }}
   additionalInputs:
     STAGEIN_AWS_SERVICEURL: {{ getenv "STAGEIN_S3_ENDPOINT" }}
     STAGEIN_AWS_ACCESS_KEY_ID: {{ getenv "STAGEIN_S3_ACCESS_KEY" }}
