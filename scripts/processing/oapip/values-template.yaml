@@ -37,15 +37,6 @@ workflow:
     WES_URL: {{ getenv "OAPIP_TOIL_WES_URL" }}
     WES_USER: {{ getenv "OAPIP_TOIL_WES_USER" }}
     WES_PASSWORD: {{ getenv "OAPIP_TOIL_WES_PASSWORD" }}
-  {{- else if eq (getenv "OAPIP_EXECUTION_ENGINE") "argo" }}
-    ARGO_WF_ENDPOINT: "http://argo-server.argo.svc:2746"
-    ARGO_CWL_RUNNER_TEMPLATE: "argo-cwl-runner"
-    ARGO_CWL_RUNNER_ENTRYPOINT: "calrissian-runner"
-    ARGO_WF_TOKEN:
-      valueFrom:
-        secretKeyRef:
-          name: argo-server-token
-          key: token
   {{- end }}
   additionalInputs:
     STAGEIN_AWS_SERVICEURL: {{ getenv "STAGEIN_S3_ENDPOINT" }}
@@ -62,6 +53,16 @@ workflow:
     {{ getenv "NODE_SELECTOR_KEY" }}: "{{ getenv "NODE_SELECTOR_VALUE" }}"
     {{- end }}
   storageClass: {{ getenv "STORAGE_CLASS" }}
+
+  {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "argo" }}
+  argo:
+    enabled: true
+    wfServer: "http://argo-server.argo.svc:2746"
+    CwlRunnerTemplare: "argo-cwl-runner"
+    CwlRunnerEndpoint: "calrissian-runner"
+    wfToken: "aaaabbbbccccdddd"
+  {{- end }}
+
 ingress:
   enabled: {{ getenv "OAPIP_INGRESS_ENABLED" }}
   hosturl: {{ getenv "OAPIP_HOST" }}
