@@ -61,7 +61,7 @@ workflow:
   {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "argo" }}
   argo:
     enabled: true
-    wfServer: "https://argo-server.argo.svc:2746"
+    wfServer: "http://argo-server.argo.svc:2746"
     CwlRunnerTemplare: "argo-cwl-runner"
     CwlRunnerEndpoint: "calrissian-runner"
     wfToken: "aaaabbbbccccdddd"
