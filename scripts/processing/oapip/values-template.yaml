@@ -1,3 +1,4 @@
+useKubeProxy: false
 cookiecutter:
   {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
   templateUrl: https://github.com/EOEPCA/eoepca-proc-service-template.git
