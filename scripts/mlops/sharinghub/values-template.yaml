@@ -70,9 +70,9 @@ config: |-
     {{- end }}
 
   s3:
-    bucket: mlopsbb-sharinghub
-    region: eu
-    endpoint: {{ getenv "HTTP_SCHEME" }}://minio.{{ getenv "INGRESS_HOST" }}
+    bucket: {{ getenv "S3_BUCKET_SHARINGHUB" }}
+    region: {{ getenv "S3_REGION" }}
+    endpoint: {{ getenv "S3_ENDPOINT" }}
 
   jupyterlab:
     url: {{ getenv "HTTP_SCHEME" }}://applicationhub.{{ getenv "INGRESS_HOST" }}
