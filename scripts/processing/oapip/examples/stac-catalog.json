@@ -1,0 +1,18 @@
+{
+  "id": "simple-catalog",
+  "type": "Catalog",
+  "stac_version": "1.0.0",
+  "description": "A simple, self-contained STAC Catalog with no external links.",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "self",
+      "href": "./catalog.json",
+      "type": "application/json"
+    }
+  ]
+}
