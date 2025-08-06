@@ -1,0 +1,48 @@
+gateway:
+  auth:
+    type: simple
+    simple:
+      password: "{{ getenv "DASK_GATEWAY_PASSWORD" }}"
+      
+  backend:
+    scheduler:
+      cores:
+        request: 0.5
+        limit: 1
+      memory:
+        request: 1Gi
+        limit: 2Gi
+      
+    worker:
+      cores:
+        request: {{ getenv "DASK_WORKER_CORES" "1" }}
+        limit: {{ getenv "DASK_WORKER_CORES" "2" }}
+      memory:
+        request: {{ getenv "DASK_WORKER_MEMORY" "2Gi" }}
+        limit: {{ getenv "DASK_WORKER_MEMORY" "4Gi" }}
+        
+    cluster:
+      limits:
+        cores: 100
+        memory: "200Gi"
+        
+  service:
+    type: ClusterIP
+    
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+      
+traefik:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

@@ -18,3 +18,5 @@ test-report.xml
 venv/
 *.log
 notebooks/examples/test-runs/*
+scripts/mlops/gitlab/old-min.yaml
+scripts/mlops/gitlab/minimal-values.yaml

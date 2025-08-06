@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openeo-dask
+  namespace: openeo
+  annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+    
+    {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    {{- end }}
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  rules:
+    - host: openeo.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: openeo-dask
+                port:
+                  number: 8080
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - openeo.{{ getenv "INGRESS_HOST" }}
+      secretName: openeo-tls
+  {{- end }}
