@@ -4,7 +4,6 @@ metadata:
   name: ah
   namespace: application-hub
   annotations:
-    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}

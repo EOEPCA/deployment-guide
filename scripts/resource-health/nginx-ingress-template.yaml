@@ -4,7 +4,6 @@ metadata:
   name: rhc
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
     {{- range $key, $value := (datasource "annotations") }}
@@ -35,7 +34,6 @@ metadata:
   name: rht
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
     {{- range $key, $value := (datasource "annotations") }}
@@ -66,7 +64,6 @@ metadata:
   name: rhw
   namespace: resource-health
   annotations:
-    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}

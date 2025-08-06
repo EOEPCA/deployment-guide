@@ -4,8 +4,6 @@ metadata:
   name: mlf
   namespace: sharinghub
   annotations:
-    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-
     {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
