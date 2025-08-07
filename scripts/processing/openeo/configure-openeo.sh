@@ -2,12 +2,16 @@
 source ../../common/utils.sh
 echo "Configuring OpenEO..."
 
-# First, ask which backend to use
-ask "OPENEO_BACKEND" "Which OpenEO backend would you like to deploy? (geotrellis/dask)" "geotrellis" is_valid_backend
-
 function is_valid_backend() {
     [[ "$1" == "geotrellis" || "$1" == "dask" ]]
 }
+
+function can_be_empty() {
+    true
+}
+
+# First, ask which backend to use
+ask "OPENEO_BACKEND" "Which OpenEO backend would you like to deploy? (geotrellis/dask)" "geotrellis" is_valid_backend
 
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Enter the storage class name" "standard" is_non_empty
@@ -41,9 +45,9 @@ if [[ "$OPENEO_BACKEND" == "dask" ]]; then
         ask "DASK_GATEWAY_PASSWORD" "Enter password for existing Dask Gateway" "" is_non_empty
     fi
     
-    ask "DASK_WORKER_CORES" "Default CPU cores per Dask worker" "2" is_number
+    ask "DASK_WORKER_CORES" "Default CPU cores per Dask worker" "2" is_non_empty
     ask "DASK_WORKER_MEMORY" "Default memory per Dask worker (e.g., 4Gi)" "4Gi" is_non_empty
-    ask "DASK_MAX_WORKERS" "Maximum number of Dask workers" "10" is_number
+    ask "DASK_MAX_WORKERS" "Maximum number of Dask workers" "10" is_non_empty
     
     # S3 configuration for data access
     ask "S3_ENDPOINT" "S3 endpoint for data access" "http://minio.minio.svc.cluster.local:9000" is_non_empty
@@ -52,7 +56,7 @@ if [[ "$OPENEO_BACKEND" == "dask" ]]; then
     ask "S3_REGION" "S3 region" "us-east-1" is_non_empty
     
     # STAC configuration
-    ask "STAC_CATALOG_URL" "STAC catalog URL (optional, leave empty to skip)" "" is_optional
+    ask "STAC_CATALOG_URL" "STAC catalog URL (optional, leave empty to skip)" "" can_be_empty
     
     # Generate Dask backend templates
     gomplate -f "openeo-dask/$TEMPLATE_PATH" -o "openeo-dask/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
