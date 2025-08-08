@@ -1,0 +1,25 @@
+---
+apiVersion: policy.linkerd.io/v1beta3
+kind: Server
+metadata:
+  name: web-server
+  namespace: emojivoto
+spec:
+  podSelector:
+    matchLabels:
+      app: web-svc
+  port: 8080
+  proxyProtocol: HTTP/1
+---
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  name: allow-meshed
+  namespace: emojivoto
+spec:
+  server:
+    name: web-server
+  client:
+    meshTLS:
+      identities:
+        - "can-be-trusted.test.serviceaccount.identity.linkerd.cluster.local"

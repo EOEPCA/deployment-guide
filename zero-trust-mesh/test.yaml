@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: can-be-trusted
+  namespace: test
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dont-trust-me
+  namespace: test
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-one
+  namespace: test
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  serviceAccountName: can-be-trusted
+  containers:
+  - name: curl
+    image: curlimages/curl:latest
+    command: ["/bin/sh"]
+    stdin: true
+    tty: true
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-two
+  namespace: test
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  serviceAccountName: dont-trust-me
+  containers:
+  - name: curl
+    image: curlimages/curl:latest
+    command: ["/bin/sh"]
+    stdin: true
+    tty: true
