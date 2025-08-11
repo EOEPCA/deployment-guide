@@ -46,3 +46,17 @@ spec:
     command: ["/bin/sh"]
     stdin: true
     tty: true
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-three
+  namespace: test
+spec:
+  serviceAccountName: dont-trust-me
+  containers:
+  - name: curl
+    image: curlimages/curl:latest
+    command: ["/bin/sh"]
+    stdin: true
+    tty: true

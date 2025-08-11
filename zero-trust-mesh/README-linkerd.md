@@ -128,45 +128,58 @@ kubectl apply -f test.yaml
 ```
 
 These pods have specific `ServiceAccounts` that will be used for mTLS access:
-* Pod `curl-one` - service account `can-be-trusted`
-* Pod `curl-two` - service account `dont-trust-me`
+* Pod `curl-one` - meshed with service account `can-be-trusted`
+* Pod `curl-two` - meshed with service account `dont-trust-me`
+* Pod `curl-two` - not meshed
 
 ## Check access from test pods to `Emojivoto`
 
-Since we have not yet specified any protection - both pods should have access to the `web-svc.emojivoto` service.
+Since we have not yet specified any protection - all pods should have access to the `web-svc.emojivoto` service.
 
-Pod `curl-one` - returns `200`...
+All pods return `200 OK`.
 
 ```bash
-kubectl -n test exec -it pod/curl-one -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
+kubectl -n test exec -it pod/curl-one -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/" ; \
+kubectl -n test exec -it pod/curl-two -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/" ; \
+kubectl -n test exec -it pod/curl-three -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
 ```
 
-Pod `curl-two` - returns `200`...
+## Apply mTLS Protection (any meshed client) to `Emojivoto`
+
+Restrict access only meshed services.
 
 ```bash
-kubectl -n test exec -it pod/curl-two -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
-```
-
-## Apply mTLS Protection to `Emojivoto`
-
-Restrict access only to the service account of the `curl-one` pod - `can-be-trusted.test.serviceaccount.identity.linkerd.cluster.local`.
-
-```bash
-kubectl apply -f protect-emojivoto.yaml
+kubectl apply -f protect-any-meshed-client.yaml
 ```
 
 ## Re-check access from test pods to `Emojivoto`
 
-Now the protection is applied - only pod `curl-one` should be allowed, whereas `curl-two` should be denied.
+Now the protection is applied - only pods `curl-one` and `curl-two` should be allowed, whereas `curl-three` should be denied.
 
-Pod `curl-one` - returns `200` (OK)...
+`pod-three` returns `403 Forbidden`.
 
 ```bash
-kubectl -n test exec -it pod/curl-one -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
+kubectl -n test exec -it pod/curl-one -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/" ; \
+kubectl -n test exec -it pod/curl-two -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/" ; \
+kubectl -n test exec -it pod/curl-three -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
 ```
 
-Pod `curl-two` - returns `403` (Forbidden)...
+## Apply mTLS Protection (identity based) to `Emojivoto`
+
+Restrict access only to the service account of the `curl-one` pod - `can-be-trusted.test.serviceaccount.identity.linkerd.cluster.local`.
 
 ```bash
-kubectl -n test exec -it pod/curl-two -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
+kubectl apply -f protect-trusted-identities.yaml
+```
+
+## Re-check access from test pods to `Emojivoto`
+
+Now the protection is applied - only pod `curl-one` should be allowed, whereas `curl-two` and `curl-three` should be denied.
+
+Only pod `curl-one` returns `200 OK`.
+
+```bash
+kubectl -n test exec -it pod/curl-one -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/" ; \
+kubectl -n test exec -it pod/curl-two -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/" ; \
+kubectl -n test exec -it pod/curl-three -c curl -- curl -s -o /dev/null -D - web-svc.emojivoto | grep -i "^HTTP/"
 ```
