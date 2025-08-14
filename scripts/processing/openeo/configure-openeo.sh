@@ -6,10 +6,6 @@ function is_valid_backend() {
     [[ "$1" == "geotrellis" || "$1" == "dask" ]]
 }
 
-function can_be_empty() {
-    true
-}
-
 # First, ask which backend to use
 ask "OPENEO_BACKEND" "Which OpenEO backend would you like to deploy? (geotrellis/dask)" "geotrellis" is_valid_backend
 
@@ -17,15 +13,7 @@ ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "STORAGE_CLASS" "Enter the storage class name" "standard" is_non_empty
 configure_cert
 
-# if [ -z "$OIDC_ISSUER_URL" ]; then
-#     echo "⚠️   An OIDC Provider is required to submit jobs. Please ensure that an OIDC Provider is accessible."
-#     echo ""
-#     source ../../common/prerequisite-utils.sh
-#     check_oidc_provider_accessible
-# fi
-
 ask "OPENEO_ENABLE_OIDC" "Enable OIDC authentication for OpenEO? (yes/no)" "yes" is_yes_no
-
 if [[ "$OPENEO_ENABLE_OIDC" == "yes" ]]; then
     ask "OPENEO_CLIENT_ID" "Enter the Client ID (OIDC public client) that will be created for OpenEO clients" "openeo-public"
 fi
