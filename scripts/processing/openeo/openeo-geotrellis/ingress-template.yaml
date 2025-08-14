@@ -4,6 +4,7 @@ metadata:
   name: oeo
   namespace: openeo-geotrellis
   annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}

@@ -25,7 +25,7 @@ configMaps:
         ],
         jar_paths=find_geotrellis_jars(extra_search_locations=[Path("/opt")]),
     )
-
+    {{- if eq ( getenv "OPENEO_ENABLE_OIDC" ) "yes" }}
     oidc_providers = [
         OidcProvider(
             id="eoepca",
@@ -78,6 +78,9 @@ configMaps:
             ],
         ),
     ]
+    {{- else }}
+    oidc_providers = []
+    {{- end }}
 
     config = GpsBackendConfig(
         id="eoepca-openeo-demo",
@@ -85,6 +88,8 @@ configMaps:
         capabilities_description="openEO backend based on GeoPyspark stack for EOEPCA+ demo",
         capabilities_deploy_metadata=capabilities_deploy_metadata,
         oidc_providers=oidc_providers,
+        enable_basic_auth=True,
+        valid_basic_auth=lambda u, p: p == f"{u}123"
     )
   layerCatalog: |
     [
@@ -138,12 +143,12 @@ executor:
     PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
 existingConfigMaps: false
 fileDependencies:
-  - local:///opt/layercatalog/layercatalog.json
-  - local:///opt/log4j2.xml
+- local:///opt/layercatalog/layercatalog.json
+- local:///opt/log4j2.xml
 ingress:
   enabled: false
 jarDependencies:
-  - local:///opt/geotrellis-extensions-static.jar
+- local:///opt/geotrellis-extensions-static.jar
 mainApplicationFile: local:///opt/openeo/lib64/python3.8/site-packages/openeogeotrellis/deploy/kube.py
 sparkConf:
   spark.executorEnv.DRIVER_IMPLEMENTATION_PACKAGE: openeogeotrellis
@@ -157,50 +162,50 @@ rbac:
   create: true
   role:
     rules:
-      - apiGroups:
-          - ""
-        resources:
-          - pods
-        verbs:
-          - create
-          - delete
-          - deletecollection
-          - get
-          - list
-          - patch
-          - watch
-      - apiGroups:
-          - ""
-        resources:
-          - services
-        verbs:
-          - deletecollection
-          - list
-      - apiGroups:
-          - ""
-        resources:
-          - configmaps
-        verbs:
-          - create
-          - delete
-          - deletecollection
-          - list
-      - apiGroups:
-          - sparkoperator.k8s.io
-        resources:
-          - sparkapplications
-        verbs:
-          - create
-          - delete
-          - get
-          - list
-      - apiGroups:
-          - ""
-        resources:
-          - persistentvolumeclaims
-        verbs:
-          - create
-          - delete
-          - deletecollection
-          - list
+    - apiGroups:
+      - ""
+      resources:
+      - pods
+      verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - watch
+    - apiGroups:
+      - ""
+      resources:
+      - services
+      verbs:
+      - deletecollection
+      - list
+    - apiGroups:
+      - ""
+      resources:
+      - configmaps
+      verbs:
+      - create
+      - delete
+      - deletecollection
+      - list
+    - apiGroups:
+      - sparkoperator.k8s.io
+      resources:
+      - sparkapplications
+      verbs:
+      - create
+      - delete
+      - get
+      - list
+    - apiGroups:
+      - ""
+      resources:
+      - persistentvolumeclaims
+      verbs:
+      - create
+      - delete
+      - deletecollection
+      - list
   serviceAccountDriver: openeo
