@@ -1351,9 +1351,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-4-create-a-keycloak-client" class="md-nav__link">
+  <a href="#step-4-create-a-keycloak-client-only-if-oidc-is-enabled" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 4: Create a Keycloak Client
+      Step 4: Create a Keycloak Client (Only if OIDC is enabled)
     </span>
   </a>
   
@@ -1459,9 +1459,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-an-accces-token" class="md-nav__link">
+  <a href="#get-an-access-token-oidc-authentication" class="md-nav__link">
     <span class="md-ellipsis">
-      Get an Accces Token
+      Get an Access Token (OIDC Authentication)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-an-access-token-basic-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get an Access Token (Basic Authentication)
     </span>
   </a>
   
@@ -1855,9 +1864,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-4-create-a-keycloak-client" class="md-nav__link">
+  <a href="#step-4-create-a-keycloak-client-only-if-oidc-is-enabled" class="md-nav__link">
     <span class="md-ellipsis">
-      Step 4: Create a Keycloak Client
+      Step 4: Create a Keycloak Client (Only if OIDC is enabled)
     </span>
   </a>
   
@@ -1963,9 +1972,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get-an-accces-token" class="md-nav__link">
+  <a href="#get-an-access-token-oidc-authentication" class="md-nav__link">
     <span class="md-ellipsis">
-      Get an Accces Token
+      Get an Access Token (OIDC Authentication)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-an-access-token-basic-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get an Access Token (Basic Authentication)
     </span>
   </a>
   
@@ -2034,7 +2052,7 @@
 <h1 id="processing-openeo-engine-deployment-guide">Processing - OpenEO Engine Deployment Guide<a class="headerlink" href="#processing-openeo-engine-deployment-guide" title="Permanent link">⚓︎</a></h1>
 <p>OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.</p>
 <blockquote>
-<p><strong>Note:</strong> You must have a valid OIDC Provider to submit jobs to the OpenEO Engine. If you do not have one, refer to the <a href="../iam/main-iam/">IAM Deployment Guide</a> to set up an OIDC Provider.</p>
+<p><strong>Note:</strong> OIDC authentication is now optional for OpenEO deployments. If you choose to enable OIDC during configuration, you&rsquo;ll need a valid OIDC Provider. Refer to the <a href="../iam/main-iam/">IAM Deployment Guide</a> if you need to set one up.</p>
 </blockquote>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
@@ -2075,7 +2093,7 @@
 </tr>
 <tr>
 <td>OIDC Provider</td>
-<td>Required to submit jobs</td>
+<td>Optional (if enabling OIDC)</td>
 <td><a href="../iam/main-iam/">Installation Guide</a></td>
 </tr>
 </tbody>
@@ -2093,12 +2111,18 @@
 <h3 id="1-run-the-configuration-script">1. Run the Configuration Script<a class="headerlink" href="#1-run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-openeo.sh
 </span></code></pre></div>
-<p>During this process, you will be prompted for:</p>
+<p>During this process, you&rsquo;ll be prompted for:</p>
 <ul>
-<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts (e.g., <code>example.com</code>).</li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Kubernetes storage class for persistent volumes.</li>
-<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager Cluster Issuer for TLS certificates.</li>
+<li><strong><code>OPENEO_BACKEND</code></strong>: Which backend to deploy - currently only <code>geotrellis</code> is fully supported (Dask backend is still under development, so don&rsquo;t select it yet)</li>
+<li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts (e.g. <code>example.com</code>)</li>
+<li><strong><code>STORAGE_CLASS</code></strong>: Kubernetes storage class for persistent volumes</li>
+<li><strong><code>CLUSTER_ISSUER</code></strong>: Cert-manager Cluster Issuer for TLS certificates</li>
+<li><strong><code>OPENEO_ENABLE_OIDC</code></strong>: Whether to enable OIDC authentication (yes/no)</li>
+<li><strong><code>OPENEO_CLIENT_ID</code></strong>: Client ID for OpenEO clients (only if OIDC is enabled)</li>
 </ul>
+<blockquote>
+<p><strong>Note on Authentication:</strong> The configuration script now offers a choice between OIDC authentication and basic authentication. If you choose not to enable OIDC, the deployment will use basic authentication instead.</p>
+</blockquote>
 <h3 id="2-deploying-openeo-geotrellis">2. Deploying openEO Geotrellis<a class="headerlink" href="#2-deploying-openeo-geotrellis" title="Permanent link">⚓︎</a></h3>
 <p>openEO Geotrellis provides the API that connects users to <abbr title="Earth Observation">EO</abbr> cloud back-ends. It leverages Apache Spark and requires both the Spark Operator and ZooKeeper to function.</p>
 <h4 id="step-1-install-spark-operator">Step 1: Install Spark Operator<a class="headerlink" href="#step-1-install-spark-operator" title="Permanent link">⚓︎</a></h4>
@@ -2132,14 +2156,17 @@
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span>--values<span class="w"> </span>openeo-geotrellis/generated-values.yaml
 </span></code></pre></div>
-<p>Deploy ingress</p>
+<p>Deploy ingress:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 </span></code></pre></div>
-<h4 id="step-4-create-a-keycloak-client">Step 4: Create a Keycloak Client<a class="headerlink" href="#step-4-create-a-keycloak-client" title="Permanent link">⚓︎</a></h4>
-<p>The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers. </p>
-<p>For OIDC identity providers details of an OIDC client is provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - without the need to register their own OIDC client.</p>
-<p>Thus, we configure in our openEO deployment integration with an <code>EOEPCA</code> identity provider.</p>
-<p>Inside the <code>generated-values.yaml</code> you will find the following configuration:</p>
+<h4 id="step-4-create-a-keycloak-client-only-if-oidc-is-enabled">Step 4: Create a Keycloak Client (Only if OIDC is enabled)<a class="headerlink" href="#step-4-create-a-keycloak-client-only-if-oidc-is-enabled" title="Permanent link">⚓︎</a></h4>
+<blockquote>
+<p><strong>Note:</strong> This step is only required if you enabled OIDC authentication during the configuration step. If you chose basic authentication, skip to the Validation section.</p>
+</blockquote>
+<p>The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers.</p>
+<p>For OIDC identity providers, details of an OIDC client are provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - without the need to register their own OIDC client.</p>
+<p>Thus, if OIDC is enabled, we configure in our openEO deployment integration with an <code>EOEPCA</code> identity provider.</p>
+<p>Inside the <code>generated-values.yaml</code> (when OIDC is enabled) you&rsquo;ll find the following configuration:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">oidc_providers</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  <span class="n">OidcProvider</span><span class="p">(</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;eoepca&quot;</span><span class="p">,</span>
@@ -2161,23 +2188,22 @@
 </span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>  <span class="c1">#...</span>
 </span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="p">]</span>
 </span></code></pre></div>
-<p>To support this configuration, we need to create the <code>openeo-public</code> client in Keycloak, using the <code>create-client.sh</code> script.<br>
-This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
+<p>To support this configuration, create the <code>openeo-public</code> client in Keycloak using the <code>create-client.sh</code> script:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash<span class="w"> </span>../../utils/create-client.sh
 </span></code></pre></div>
 <p>When prompted:</p>
 <ul>
-<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set).</li>
+<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set)</li>
 <li><strong>Keycloak base domain</strong>: e.g. <code>auth.example.com</code></li>
-<li><strong>Realm</strong>: Typically <code>eoepca</code>.</li>
+<li><strong>Realm</strong>: Typically <code>eoepca</code></li>
 <li><strong>Confidential Client?</strong>: specify <code>false</code> to create a PUBLIC client</li>
-<li><strong>Client ID</strong>: Use <code>openeo-public</code> or what you named the client in the configuration script (check <code>~/.eoepca/state</code>).</li>
-<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., &ldquo;OpenEO Public Client&rdquo;).</li>
-<li><strong>Subdomain</strong>: Use <code>openeo</code>.</li>
-<li><strong>Additional Subdomains</strong>: Leave blank.</li>
+<li><strong>Client ID</strong>: Use <code>openeo-public</code> or what you named the client in the configuration script (check <code>~/.eoepca/state</code>)</li>
+<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g., &ldquo;OpenEO Public Client&rdquo;)</li>
+<li><strong>Subdomain</strong>: Use <code>openeo</code></li>
+<li><strong>Additional Subdomains</strong>: Leave blank</li>
 <li><strong>Additional Hosts</strong>: Add <code>editor.openeo.org</code> to allow integration with the openEO Web Editor</li>
 </ul>
-<p>After it completes, you should see a JSON snippet confirming the newly created client. </p>
+<p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <hr />
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
 <p>After deploying the OpenEO Engine components, perform the following checks to verify that the system is working as expected.</p>
@@ -2186,9 +2212,9 @@ This script prompts you for basic details and automatically creates a Keycloak c
 </span></code></pre></div>
 <p>This script verifies that:</p>
 <ul>
-<li>All required pods in the <code>openeo-geotrellis</code> (and optionally <code>openeofed</code>) namespace are running.</li>
-<li>Ingress endpoints return an HTTP 200 status code.</li>
-<li>Key API endpoints provide well-formed JSON responses.</li>
+<li>All required pods in the <code>openeo-geotrellis</code> namespace are running</li>
+<li>Ingress endpoints return an HTTP 200 status code</li>
+<li>Key API endpoints provide well-formed JSON responses</li>
 </ul>
 <h3 id="2-jupyter-notebook">2. Jupyter Notebook<a class="headerlink" href="#2-jupyter-notebook" title="Permanent link">⚓︎</a></h3>
 <p>Launch the notebook server:</p>
@@ -2205,7 +2231,7 @@ This script prompts you for basic details and automatically creates a Keycloak c
 <p>Once complete, the notebook server can be quit with Ctrl-C in the terminal.</p>
 </blockquote>
 <h3 id="3-manual-validation">3. Manual Validation<a class="headerlink" href="#3-manual-validation" title="Permanent link">⚓︎</a></h3>
-<p>To easily run these commands, we recommend first setting <code>${INGRESS_HOST}</code> in your environment.</p>
+<p>To easily run these commands, we recommend first setting <code>${INGRESS_HOST}</code> in your environment:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span></code></pre></div>
 <p>Use the following commands to interact directly with the APIs:</p>
@@ -2233,25 +2259,30 @@ This script prompts you for basic details and automatically creates a Keycloak c
 <li>Select <code>Connect</code></li>
 </ul>
 <p><strong>Login to service</strong></p>
-<ul>
-<li>Select <code>EOEPCA</code></li>
-<li>Select <code>Log in with EOEPCA</code><br>
-  This should redirect to authenticate via the IAM BB Keycloak instance</li>
-<li>Authenticate as a user - such as <code>eoepcauser</code></li>
-</ul>
+<p>If OIDC authentication is enabled:
+* Select <code>EOEPCA</code>
+* Select <code>Log in with EOEPCA</code><br />
+  This should redirect to authenticate via the IAM BB Keycloak instance
+* Authenticate as a user - such as <code>eoepcauser</code></p>
+<p>If basic authentication is configured
+* Use the basic authentication credentials configured in your deployment
+* The system will handle authentication without requiring external identity providers</p>
 <p><strong>openEO Web Editor</strong></p>
 <p>Successful login should redirect to the <code>Welcome</code> page of the openEO Web Editor.</p>
 <p>The web editor can be used to explore the capabilities of the openEO instance.</p>
 <p>For example, use the <code>Wizard</code> to download some data from the default collection.</p>
 <hr />
 <h3 id="5-usage-openeo-api-calls">5. Usage - openEO API calls<a class="headerlink" href="#5-usage-openeo-api-calls" title="Permanent link">⚓︎</a></h3>
-<p>Before running any jobs, you must obtain an access token from your OIDC Provider. Use the following command to get an access token if you followed our <a href="../iam/main-iam/">IAM Deployment Guide</a>.</p>
-<h4 id="get-an-accces-token">Get an Accces Token<a class="headerlink" href="#get-an-accces-token" title="Permanent link">⚓︎</a></h4>
-<p>This assumes use of the previously created <code>KEYCLOAK_TEST_USER</code> (default <code>eoepcauser</code>).<br>
-If needed, run the <code>create-user.sh</code> script to create a test user&hellip;
+<p>The authentication method depends on whether you enabled OIDC during configuration.</p>
+<h4 id="get-an-access-token-oidc-authentication">Get an Access Token (OIDC Authentication)<a class="headerlink" href="#get-an-access-token-oidc-authentication" title="Permanent link">⚓︎</a></h4>
+<blockquote>
+<p><strong>Note:</strong> This section applies only if you enabled OIDC authentication. For basic authentication deployments, you can skip directly to submitting jobs using basic auth headers.</p>
+</blockquote>
+<p>This assumes use of the previously created <code>KEYCLOAK_TEST_USER</code> (default <code>eoepcauser</code>).<br />
+If needed, run the <code>create-user.sh</code> script to create a test user:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>bash ../../utils/create-user.sh
 </span></code></pre></div></p>
-<p>Request the access token.</p>
+<p>Request the access token:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
@@ -2271,36 +2302,41 @@ If needed, run the <code>create-user.sh</code> script to create a test user&hell
 </span></code></pre></div>
 <p>If the Access Token is empty, please make sure that the Keycloak client and user are correctly set up.</p>
 <p>We need to format the token as <code>oidc/eoepca/${ACCESS_TOKEN}</code> to comply with the <code>oidc_providers</code> variable seen in the Helm values.</p>
-<h4 id="submit-a-job-using-the-sum-process">Submit a Job Using the &ldquo;sum&rdquo; Process<a class="headerlink" href="#submit-a-job-using-the-sum-process" title="Permanent link">⚓︎</a></h4>
-<p>Submit a job that adds 5 and 6.5 by sending a process graph to the <code>/jobs</code> endpoint:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/result&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">AUTH_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="s1">        &quot;process&quot;: {</span>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="s1">          &quot;process_graph&quot;: {</span>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="s1">            &quot;sum&quot;: {</span>
-</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="s1">              &quot;process_id&quot;: &quot;sum&quot;,</span>
-</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="s1">              &quot;arguments&quot;: {</span>
-</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="s1">                &quot;data&quot;: [5,6.5]</span>
-</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="s1">              },</span>
-</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="s1">              &quot;result&quot;: true</span>
-</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="s1">            }</span>
-</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="s1">          }</span>
-</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="s1">        }</span>
-</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="s1">      }&#39;</span>
+<h4 id="get-an-access-token-basic-authentication">Get an Access Token (Basic Authentication)<a class="headerlink" href="#get-an-access-token-basic-authentication" title="Permanent link">⚓︎</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>export BASIC_AUTH=$(echo -n &quot;testuser:testuser123&quot; | base64)
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>AUTH_TOKEN=&quot;basic/openeo/${BASIC_AUTH}&quot;
 </span></code></pre></div>
+<h4 id="submit-a-job-using-the-sum-process">Submit a Job Using the &ldquo;sum&rdquo; Process<a class="headerlink" href="#submit-a-job-using-the-sum-process" title="Permanent link">⚓︎</a></h4>
+<p>Submit a job that adds 5 and 6.5 by sending a process graph to the <code>/jobs</code> endpoint.</p>
+<p>For OIDC authentication:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/result&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">AUTH_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="s1">        &quot;process&quot;: {</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="s1">          &quot;process_graph&quot;: {</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="s1">            &quot;sum&quot;: {</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="s1">              &quot;process_id&quot;: &quot;sum&quot;,</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="s1">              &quot;arguments&quot;: {</span>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="s1">                &quot;data&quot;: [5,6.5]</span>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="s1">              },</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="s1">              &quot;result&quot;: true</span>
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="s1">            }</span>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="s1">          }</span>
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="s1">        }</span>
+</span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="s1">      }&#39;</span>
+</span></code></pre></div></p>
 <p><strong>Expected output:</strong><br />
 A simple numeric result:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="mf">11.5</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="mf">11.5</span>
 </span></code></pre></div>
 <p>This confirms that the &ldquo;sum&rdquo; process is operational and returning the correct computed sum.</p>
 <h4 id="experiment-with-other-processes">Experiment with Other Processes<a class="headerlink" href="#experiment-with-other-processes" title="Permanent link">⚓︎</a></h4>
-<p>To see more available processes you can run, navigate to</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>https://openeo.${INGRESS_HOST}/openeo/1.2/processes
+<p>To see more available processes you can run, navigate to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>https://openeo.${INGRESS_HOST}/openeo/1.2/processes
 </span></code></pre></div>
 <p>You should see a JSON object with an array of processes. Each with example usage and descriptions. Follow the same process as above to submit a job using any of these processes.</p>
-<p>Your Access Token will eventually expire. If you receive a 401 error, you will need to obtain a new token by running the <code>Get an Access Token</code> section again.</p>
+<p>Your Access Token will eventually expire (if using OIDC). If you receive a 401 error, you&rsquo;ll need to obtain a new token by running the <code>Get an Access Token</code> section again.</p>
 <hr />
 <h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
 <ul>
