@@ -1,0 +1,10 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixPluginConfig
+metadata:
+  name: minio-ingress
+spec:
+  plugins:
+    - name: client-control
+      enable: true
+      config:
+        max_body_size: 0

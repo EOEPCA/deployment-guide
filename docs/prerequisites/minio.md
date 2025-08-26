@@ -74,6 +74,12 @@ helm upgrade -i minio minio/minio \
   --create-namespace
 ```
 
+Apply additional ingress configuration:
+
+```bash
+kubectl -n minio apply -f ingress-plugin-config.yaml
+```
+
 ### 3. Create Access Keys
 
 Access the MinIO Console to create access keys:
@@ -164,25 +170,11 @@ This script performs several checks to validate your MinIO deployment:
 
 ## Uninstallation
 
-To remove MinIO and associated resources:
-
-1. **Uninstall MinIO**:
+Remove MinIO and associated resources:
 
 ```bash
 helm -n minio uninstall minio
-```
-
-2. **Uninstall MinIO Bucket API**:
-
-```bash
-helm -n minio uninstall minio-bucket-api
-```
-
-3. **Delete Secrets and PVCs**:
-
-```bash
-kubectl delete secret minio-auth -n minio ; \
-kubectl delete pvc -n minio --all
+kubectl delete ns/minio
 ```
 
 ---

@@ -8,7 +8,7 @@ ingress:
     {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
     {{- end }}
-
+    k8s.apisix.apache.org/plugin-config-name: "minio-ingress"
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
@@ -28,7 +28,7 @@ consoleIngress:
     {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
     {{- end }}
-
+    k8s.apisix.apache.org/plugin-config-name: "minio-ingress"
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
@@ -55,3 +55,4 @@ buckets:
   - name: gitlab-lfs-storage
   - name: mlopbb-mlflow-sharinghub
   - name: mlopbb-sharinghub
+  - name: openeo-geotrellis-data
