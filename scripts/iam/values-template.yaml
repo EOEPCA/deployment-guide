@@ -41,7 +41,7 @@ iam: &iam
     configuration: &kcConfig
       # Set this to true to enable generation of Crossplane CRs;
       # if set to false, Crossplane is not used and no CRs are generated.
-      useCrossplane: true
+      useCrossplane: false
       # Set this to true to enable Keycloak Config CLI for initial realm
       # setup. The realm configuration must be provided in the
       # keycloak.keycloakConfigCli section.
@@ -50,7 +50,7 @@ iam: &iam
       # Set to false (default) to generate them using Helm random functions.
       useSecretGenerator: false
       # Set to true to auto-generate clients as Crossplane CRs.
-      createClients: false
+      createClients: true
       realm:
         # Set to true to auto-generate realm as Crossplane CR.
         # Note that this only makes sense if useKeycloakConfigCli is set to
