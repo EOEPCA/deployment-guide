@@ -182,8 +182,18 @@ keycloak:
   ##
   args: []
   ## @param extraEnvVars Extra environment variables to be set on Keycloak container
-  ## The charts defaults are fine.
-  # extraEnvVars: []
+  extraEnvVars:
+    # KC_SPI_POLICY_OPA_OPA_BASE_URI must point to the base URI of the OPA service.
+    - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
+      value: "http://iam-opal-client:8181/v1/data/"
+    # KC_SPI_POLICY_OPA_OPA_POLICY_DIR points to a pod-internal config directory for
+    # policies and should not be changed.
+    - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
+      value: "/opt/bitnami/keycloak/conf/opa-policies"
+    # KC_HOSTNAME and optionally KC_HOSTNAME_ADMIN should be set to the official base
+    # URL of Keycloak (usually the same as iam.keycloak.url)
+    - name: KC_HOSTNAME
+      value: *kcurl
   ##
   ## Service configuration
   ##
@@ -263,11 +273,6 @@ keycloak:
     image:
       repository: bitnamilegacy/keycloak-config-cli
     ## @param keycloakConfigCli.extraEnvVars Additional environment variables to set
-    ## Example:
-    ## extraEnvVars:
-    ##   - name: FOO
-    ##     value: "bar"
-    ##
     extraEnvVars:
       - name: IMPORT_VARSUBSTITUTION_ENABLED
         value: "true"
@@ -275,6 +280,7 @@ keycloak:
         value: *realmName
       - name: IAM_REALM_DISPLAY_NAME
         value: *realmDisplayName
+    ##
     # TODO: Create secret for crossplane user credentials and reference it here.
     extraEnvVarsSecret: "keycloak-provider"
     ## @param keycloakConfigCli.configuration keycloak-config-cli realms configuration
@@ -541,8 +547,7 @@ identity-service:
           value: "http://iam-keycloak.iam.svc.cluster.local"
         - name: ADMIN_USERNAME
           # Use dedicated identity-api user
-          value: {{ getenv "KEYCLOAK_ADMIN_USER" }}
-          #value: *adminUser
+          value: *adminUser
         - name: ADMIN_PASSWORD
           value: {{ getenv "KEYCLOAK_ADMIN_PASSWORD" }}
         - name: REALM
