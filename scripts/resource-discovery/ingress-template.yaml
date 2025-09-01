@@ -1,29 +1,51 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
 metadata:
   name: resource-catalogue
   namespace: resource-discovery
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-
 spec:
-  ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  rules:
-    - host: resource-catalogue.{{ getenv "INGRESS_HOST" }}
-      http:
+  http:
+    - name: resource-catalogue
+      match:
+        hosts:
+          - resource-catalogue.{{ getenv "INGRESS_HOST" }}
         paths:
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: resource-catalogue-service
-                port:
-                  number: 80
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-    - hosts:
-        - resource-catalogue.{{ getenv "INGRESS_HOST" }}
-      secretName: resource-catalogue-tls
-  {{- end }}
+          - /*
+      backends:
+        - serviceName: resource-catalogue-service
+          servicePort: 80
+      plugins:
+        # Allow CORS access
+        - name: cors
+          enable: true
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: resource-catalogue
+  namespace: resource-discovery
+spec:
+  dnsNames:
+    - resource-catalogue.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: resource-catalogue-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: resource-catalogue
+  namespace: resource-discovery
+spec:
+  hosts:
+    - resource-catalogue.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: resource-catalogue-tls
+    namespace: resource-discovery
+{{- end }}

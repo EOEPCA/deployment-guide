@@ -120,6 +120,7 @@ spec:
           config:
             host: http://iam-opal-client.iam:8181
             policy: eoepca/workspace/wsapi
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -149,3 +150,4 @@ spec:
   secret:
     name: workspace-api-tls
     namespace: workspace
+{{- end }}

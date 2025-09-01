@@ -51,6 +51,7 @@ spec:
         config:
           regex_uri: ["^/api/healthchecks/(.*)", "/$1"]
     plugin_config_name: resource-health-route-browser-auth-plugin
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
@@ -76,3 +77,4 @@ spec:
   issuerRef:
     name: {{ getenv "CLUSTER_ISSUER" }}
     kind: ClusterIssuer
+{{- end }}
