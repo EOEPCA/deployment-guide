@@ -94,7 +94,7 @@ This creates Kubernetes secrets from the credentials generated earlier.
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i iam eoepca-dev/iam-bb \
-  --version 2.0.0-rc.1.2 \
+  --version 2.0.0-rc2 \
   --namespace iam \
   --values generated-values.yaml \
   --create-namespace
