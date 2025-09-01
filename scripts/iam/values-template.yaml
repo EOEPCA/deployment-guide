@@ -112,6 +112,7 @@ iam: &iam
     {{- else }}
     createRoute: false
     {{- end }}
+    url: {{ getenv "INGRESS_SCHEME" }}://identity-api.{{ getenv "INGRESS_HOST" }}
     hosts:
       - identity-api.{{ getenv "INGRESS_HOST" }}
     paths:
