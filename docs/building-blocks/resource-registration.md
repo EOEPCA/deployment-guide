@@ -117,7 +117,7 @@ Deploy the Registration API using the generated values file.
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-rc1 \
+  --version 2.0.0-rc2 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -157,7 +157,7 @@ By way of example, a `worker` is deployed that harvests `Landast` data from [USG
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-harvester-worker eoepca-dev/registration-harvester \
-  --version 2.0.0-rc1 \
+  --version 2.0.0-rc2 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml
@@ -190,8 +190,9 @@ bash validation.sh
 
 This page provides basic information about the Registration API.
 
-```
-https://registration-api.${INGRESS_HOST}/
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/"
 ```
  
 
@@ -199,21 +200,19 @@ https://registration-api.${INGRESS_HOST}/
 
 Interactive API documentation allowing you to explore and test the Registration API endpoints.
 
-```
-https://registration-api.${INGRESS_HOST}/openapi?f=html
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/openapi?f=html"
 ``` 
 
 **Flowable REST API Swagger UI:**
 
 Provides Swagger UI documentation for the Flowable REST API.
 
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/"
 ```
-https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
-```
-
-**Note:**
-
-- You can use `xdg-open` to open these URLs in your default browser after setting the `INGRESS_HOST` variable (`source ~/.eoepca/state`)
 
 ---
 
@@ -233,7 +232,7 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/hello-world/exe
 
 ---
 
-## Registering Resources
+### Registering Resources
 
 Resource Registration relies on an **OGC API Processes** interface. To register a resource, send a `POST` request with a JSON payload to:
 
@@ -243,17 +242,16 @@ Resource Registration relies on an **OGC API Processes** interface. To register 
 
 A typical JSON request body might look like:
 
-```json5
+```json
 {
   "inputs": {
-    "type": "...",         // e.g. "dataset", "item" etc.
     "source": "...",       // URL to the resource's current location (e.g. Git repo, S3 bucket, etc.)
     "target": "..."        // Endpoint or final location to publish the resource
   }
 }
 ```
 
-### Registering a Dataset (Example)
+#### Registering a Dataset (Example)
 
 > **Prerequisite**: You should have a running STAC server. For a quick setup, refer to the [Resource Discovery](resource-discovery.md) Building Block documentation.
 
@@ -266,7 +264,6 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
   -d @- <<EOF
 {
     "inputs": {
-        "type": "collection",
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/james-hinton/temp-data-store/refs/heads/main/stac-collection.json"},
         "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
     }
@@ -274,34 +271,54 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
 EOF
 ```
 
-- **type**: Use `"collection"` for STAC Colletion EO data.
-- **source**: A valid STAC Collection URL (in this example, hosted on GitHub).
+- **source**: A valid STAC Collection URL (in this example, hosted on GitHub).<br>
+  _(Adjust this path according to your input.)_
 - **target**: Your STAC server endpoint where the resource is to be registered.
 
-### Validating the Registration
+#### Validating the Registration
 
-```
-https://registration-api.${INGRESS_HOST}/jobs
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/jobs"
 ```
 
 You should see a new job with the status `COMPLETED`. 
 
 If you have deployed the [**Resource Discovery**](./resource-discovery.md) Building Block, then the registered `Collection` will also be available at:
 
-```
-https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items/S2MSI2A
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/S2MSI2A"
 ```
 
-_(Adjust this path according to your input.)_
+#### Dataset Deregistration
 
-#### Using the Registration Harvester
+Demonstrates use of the API for resource deregistration...
+
+```bash
+source ~/.eoepca/state
+curl -X POST "https://registration-api.${INGRESS_HOST}/processes/deregister/execution" \
+  -H "Content-Type: application/json" \
+  -d @- <<EOF
+{
+    "inputs": {
+        "id": "S2MSI2A",
+        "rel": "collection",
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
+    }
+}
+EOF
+```
+
+### Using the Registration Harvester
 
 The Registration Harvester leverages Flowable to automate resource harvesting workflows.
 
 **Access the Flowable REST API Swagger UI:**
 
-```url
-https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/"
 ```
 
 **List Deployed Processes**

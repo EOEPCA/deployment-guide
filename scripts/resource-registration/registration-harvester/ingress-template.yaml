@@ -1,29 +1,63 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
 metadata:
   name: registration-harvester-api
   namespace: resource-registration
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
 spec:
-  ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  rules:
-    - host: registration-harvester-api.{{ getenv "INGRESS_HOST" }}
-      http:
+  http:
+    # 1. Redirect to /flowable-rest/
+    - name: redirect-root
+      match:
+        hosts:
+          - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
         paths:
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: registration-harvester-api-engine-flowable-rest
-                port:
-                  number: 8080
+          - /
+          - /flowable-rest
+      plugins:
+        - name: redirect
+          enable: true
+          config:
+            uri: /flowable-rest/
+      backends:  # never hit due to redirect
+        - serviceName: registration-harvester-api-engine-flowable-rest
+          servicePort: 8080
 
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-    - hosts:
-        - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
-      secretName: flowable-custom-tls
-  {{- end }}
+    # 2. Main service handler
+    - name: rewrite-flowable-path
+      match:
+        hosts:
+          - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /flowable-rest/*
+      backends:
+        - serviceName: registration-harvester-api-engine-flowable-rest
+          servicePort: 8080
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: registration-harvester-api-tls
+  namespace: resource-registration
+spec:
+  dnsNames:
+    - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: registration-harvester-api-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: registration-harvester-api-tls
+  namespace: resource-registration
+spec:
+  hosts:
+    - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: registration-harvester-api-tls
+    namespace: resource-registration
