@@ -1193,12 +1193,7 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#registering-resources" class="md-nav__link">
     <span class="md-ellipsis">
       Registering Resources
@@ -1224,13 +1219,12 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Validating the Registration">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
-  <a href="#using-the-registration-harvester" class="md-nav__link">
+  <a href="#dataset-deregistration" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the Registration Harvester
+      Dataset Deregistration
     </span>
   </a>
   
@@ -1238,6 +1232,15 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-registration-harvester" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Registration Harvester
+    </span>
+  </a>
   
 </li>
         
@@ -1860,12 +1863,7 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#registering-resources" class="md-nav__link">
     <span class="md-ellipsis">
       Registering Resources
@@ -1891,13 +1889,12 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Validating the Registration">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
-  <a href="#using-the-registration-harvester" class="md-nav__link">
+  <a href="#dataset-deregistration" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the Registration Harvester
+      Dataset Deregistration
     </span>
   </a>
   
@@ -1905,6 +1902,15 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-registration-harvester" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Registration Harvester
+    </span>
+  </a>
   
 </li>
         
@@ -2091,7 +2097,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-api<span class="w"> </span>eoepca-dev/registration-api<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-api/generated-values.yaml
@@ -2117,7 +2123,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
@@ -2135,20 +2141,19 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <hr />
 <p><strong>Registration API Home:</strong></p>
 <p>This page provides basic information about the Registration API.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>https://registration-api.${INGRESS_HOST}/
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
 </span></code></pre></div>
 <p><strong>Swagger UI Documentation:</strong></p>
 <p>Interactive API documentation allowing you to explore and test the Registration API endpoints.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>https://registration-api.${INGRESS_HOST}/openapi?f=html
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openapi?f=html&quot;</span>
 </span></code></pre></div>
 <p><strong>Flowable REST API Swagger UI:</strong></p>
 <p>Provides Swagger UI documentation for the Flowable REST API.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/docs/&quot;</span>
 </span></code></pre></div>
-<p><strong>Note:</strong></p>
-<ul>
-<li>You can use <code>xdg-open</code> to open these URLs in your default browser after setting the <code>INGRESS_HOST</code> variable (<code>source ~/.eoepca/state</code>)</li>
-</ul>
 <hr />
 <h3 id="testing-a-simple-hello-world-process">Testing a Simple Hello-World Process<a class="headerlink" href="#testing-a-simple-hello-world-process" title="Permanent link">⚓︎</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
@@ -2162,20 +2167,19 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="s1">}&#39;</span>
 </span></code></pre></div>
 <hr />
-<h2 id="registering-resources">Registering Resources<a class="headerlink" href="#registering-resources" title="Permanent link">⚓︎</a></h2>
+<h3 id="registering-resources">Registering Resources<a class="headerlink" href="#registering-resources" title="Permanent link">⚓︎</a></h3>
 <p>Resource Registration relies on an <strong>OGC API Processes</strong> interface. To register a resource, send a <code>POST</code> request with a JSON payload to:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>/processes/register/execution
 </span></code></pre></div>
 <p>A typical JSON request body might look like:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>{
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  &quot;inputs&quot;: {
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    &quot;type&quot;: &quot;...&quot;,         // e.g. &quot;dataset&quot;, &quot;item&quot; etc.
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    &quot;source&quot;: &quot;...&quot;,       // URL to the resource&#39;s current location (e.g. Git repo, S3 bucket, etc.)
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    &quot;target&quot;: &quot;...&quot;        // Endpoint or final location to publish the resource
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  }
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>}
+<div class="language-json highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p">{</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">       </span><span class="c1">// URL to the resource&#39;s current location (e.g. Git repo, S3 bucket, etc.)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w">        </span><span class="c1">// Endpoint or final location to publish the resource</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="registering-a-dataset-example">Registering a Dataset (Example)<a class="headerlink" href="#registering-a-dataset-example" title="Permanent link">⚓︎</a></h3>
+<h4 id="registering-a-dataset-example">Registering a Dataset (Example)<a class="headerlink" href="#registering-a-dataset-example" title="Permanent link">⚓︎</a></h4>
 <blockquote>
 <p><strong>Prerequisite</strong>: You should have a running STAC server. For a quick setup, refer to the <a href="../resource-discovery/">Resource Discovery</a> Building Block documentation.</p>
 </blockquote>
@@ -2186,41 +2190,57 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 </span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="s">{</span>
 </span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s">    &quot;inputs&quot;: {</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">        &quot;type&quot;: &quot;collection&quot;,</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="s">        &quot;source&quot;: {&quot;rel&quot;: &quot;collection&quot;, &quot;href&quot;: &quot;https://raw.githubusercontent.com/james-hinton/temp-data-store/refs/heads/main/stac-collection.json&quot;},</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">        &quot;target&quot;: {&quot;rel&quot;: &quot;https://api.stacspec.org/v1.0.0/core&quot;, &quot;href&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;}</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">    }</span>
-</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s">}</span>
-</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="s">EOF</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">        &quot;source&quot;: {&quot;rel&quot;: &quot;collection&quot;, &quot;href&quot;: &quot;https://raw.githubusercontent.com/james-hinton/temp-data-store/refs/heads/main/stac-collection.json&quot;},</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="s">        &quot;target&quot;: {&quot;rel&quot;: &quot;https://api.stacspec.org/v1.0.0/core&quot;, &quot;href&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;}</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">    }</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">}</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <ul>
-<li><strong>type</strong>: Use <code>"collection"</code> for STAC Colletion <abbr title="Earth Observation">EO</abbr> data.</li>
-<li><strong>source</strong>: A valid STAC Collection URL (in this example, hosted on GitHub).</li>
+<li><strong>source</strong>: A valid STAC Collection URL (in this example, hosted on GitHub).<br>
+  <em>(Adjust this path according to your input.)</em></li>
 <li><strong>target</strong>: Your STAC server endpoint where the resource is to be registered.</li>
 </ul>
-<h3 id="validating-the-registration">Validating the Registration<a class="headerlink" href="#validating-the-registration" title="Permanent link">⚓︎</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://registration-api.${INGRESS_HOST}/jobs
+<h4 id="validating-the-registration">Validating the Registration<a class="headerlink" href="#validating-the-registration" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/jobs&quot;</span>
 </span></code></pre></div>
 <p>You should see a new job with the status <code>COMPLETED</code>. </p>
 <p>If you have deployed the <a href="../resource-discovery/"><strong>Resource Discovery</strong></a> Building Block, then the registered <code>Collection</code> will also be available at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items/S2MSI2A
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections/S2MSI2A&quot;</span>
 </span></code></pre></div>
-<p><em>(Adjust this path according to your input.)</em></p>
-<h4 id="using-the-registration-harvester">Using the Registration Harvester<a class="headerlink" href="#using-the-registration-harvester" title="Permanent link">⚓︎</a></h4>
+<h4 id="dataset-deregistration">Dataset Deregistration<a class="headerlink" href="#dataset-deregistration" title="Permanent link">⚓︎</a></h4>
+<p>Demonstrates use of the API for resource deregistration&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/processes/deregister/execution&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="s">{</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="s">    &quot;inputs&quot;: {</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="s">        &quot;id&quot;: &quot;S2MSI2A&quot;,</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="s">        &quot;rel&quot;: &quot;collection&quot;,</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="s">        &quot;target&quot;: {&quot;rel&quot;: &quot;https://api.stacspec.org/v1.0.0/core&quot;, &quot;href&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;}</span>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="s">    }</span>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="s">}</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<h3 id="using-the-registration-harvester">Using the Registration Harvester<a class="headerlink" href="#using-the-registration-harvester" title="Permanent link">⚓︎</a></h3>
 <p>The Registration Harvester leverages Flowable to automate resource harvesting workflows.</p>
 <p><strong>Access the Flowable REST API Swagger UI:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/docs/&quot;</span>
 </span></code></pre></div>
 <p><strong>List Deployed Processes</strong></p>
 <p>Retrieve a list of deployed processes:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>curl<span class="w"> </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">     </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/process-definitions&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>curl<span class="w"> </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">     </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/process-definitions&quot;</span>
 </span></code></pre></div>
 <hr />
 <h3 id="validating-kubernetes-resources">Validating Kubernetes Resources<a class="headerlink" href="#validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
 <p>Ensure that all Kubernetes resources are running correctly.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <p><strong>Expected Output:</strong></p>
 <ul>
@@ -2230,11 +2250,11 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Resource Registration Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
