@@ -1,4 +1,10 @@
+
+global:
+  storageClass: {{ getenv "STORAGE_CLASS" }}
+
+#-------------------------------------------------------------------------------
 # Flowable
+#-------------------------------------------------------------------------------
 host:
   external: registration-harvester-api.{{ getenv "INGRESS_HOST" }}
 
@@ -10,7 +16,9 @@ rest:
 ingress:
   enabled: false
 
+#-------------------------------------------------------------------------------
 # Harvester
+#-------------------------------------------------------------------------------
 harvester:
   service:
     name: registration-harvester
@@ -19,7 +27,7 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: 2.0.0-rc1
+    tag: 2.0.0-rc2
   secret:
     name: registration-harvester-secret
   container_port: 8080
@@ -38,6 +46,3 @@ harvester:
         LandsatDiscoverHandler:
           usgs_api_url: https://landsatlook.usgs.gov/stac-server
           page_size: 100
-# Global storage class
-global:
-  storageClass: {{ getenv "STORAGE_CLASS" }}
