@@ -7,7 +7,7 @@ services:
       dockerfile: jupyterlab/Dockerfile
     image: eoepca/eoepcalab
     ports:
-    - "8888:8888"
+    - "${EXPOSE_PORT}:8888"
     volumes:
     - ${PWD}/examples:/home/${PUSER}/work
     - $HOME/.eoepca/state:/home/${PUSER}/.eoepca/state
