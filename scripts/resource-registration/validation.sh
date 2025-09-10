@@ -11,7 +11,7 @@ check_service_exists "resource-registration" "registration-api-service"
 check_service_exists "resource-registration" "registration-harvester-api-engine-postgres-hl"
 check_service_exists "resource-registration" "registration-harvester-api-engine-flowable-rest"
 check_service_exists "resource-registration" "registration-harvester-api-engine-postgres"
-check_service_exists "resource-registration" "registration-harvester-worker-service"
+check_service_exists "resource-registration" "landsat-harvester-worker-service"
 
 # Check ingress
 check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "200"
