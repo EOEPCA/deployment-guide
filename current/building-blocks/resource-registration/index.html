@@ -1185,15 +1185,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#testing-a-simple-hello-world-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing a Simple Hello-World Process
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#registering-resources" class="md-nav__link">
     <span class="md-ellipsis">
       Registering Resources
@@ -1204,9 +1195,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#registering-a-dataset-example" class="md-nav__link">
+  <a href="#example-registering-a-collection" class="md-nav__link">
     <span class="md-ellipsis">
-      Registering a Dataset (Example)
+      Example - Registering a Collection
     </span>
   </a>
   
@@ -1222,9 +1213,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dataset-deregistration" class="md-nav__link">
+  <a href="#collection-de-registration" class="md-nav__link">
     <span class="md-ellipsis">
-      Dataset Deregistration
+      Collection De-registration
     </span>
   </a>
   
@@ -1242,14 +1233,47 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Using the Registration Harvester">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-deploy-workflow-for-landsat-harvesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example - Deploy Workflow for Landsat harvesting
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
-  <a href="#validating-kubernetes-resources" class="md-nav__link">
+  <a href="#invoke-landsat-harvesting-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      Validating Kubernetes Resources
+      Invoke Landsat Harvesting Workflow
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitor-the-job-progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitor the job progress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-the-catalogue-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check the Catalogue collection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1855,15 +1879,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#testing-a-simple-hello-world-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing a Simple Hello-World Process
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#registering-resources" class="md-nav__link">
     <span class="md-ellipsis">
       Registering Resources
@@ -1874,9 +1889,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#registering-a-dataset-example" class="md-nav__link">
+  <a href="#example-registering-a-collection" class="md-nav__link">
     <span class="md-ellipsis">
-      Registering a Dataset (Example)
+      Example - Registering a Collection
     </span>
   </a>
   
@@ -1892,9 +1907,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dataset-deregistration" class="md-nav__link">
+  <a href="#collection-de-registration" class="md-nav__link">
     <span class="md-ellipsis">
-      Dataset Deregistration
+      Collection De-registration
     </span>
   </a>
   
@@ -1912,14 +1927,47 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Using the Registration Harvester">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-deploy-workflow-for-landsat-harvesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example - Deploy Workflow for Landsat harvesting
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
-  <a href="#validating-kubernetes-resources" class="md-nav__link">
+  <a href="#invoke-landsat-harvesting-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      Validating Kubernetes Resources
+      Invoke Landsat Harvesting Workflow
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitor-the-job-progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitor the job progress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-the-catalogue-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check the Catalogue collection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2089,7 +2137,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span></code></pre></div>
 <p><strong>Secrets Created:</strong></p>
 <ul>
-<li><code>flowable-admin-credentials</code> / <code>registration-harvester-secret</code>:<br>
+<li><code>flowable-admin-credentials</code>:<br>
   <em>Contains Flowable admin username and password</em></li>
 </ul>
 <h3 id="3-deploy-the-registration-api-using-helm">3. Deploy the Registration API Using Helm<a class="headerlink" href="#3-deploy-the-registration-api-using-helm" title="Permanent link">⚓︎</a></h3>
@@ -2122,75 +2170,86 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <p>By way of example, a <code>worker</code> is deployed that harvests <code>Landast</code> data from <a href="https://landsatlook.usgs.gov/stac-server">USGS</a>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
 </span></code></pre></div>
+<p>The Landsat harvester relies upon credentials for the USGS service. These can be obtained via free sign-up at the <a href="https://m2m.cr.usgs.gov/">USGS Machine-to-Machine (M2M) API</a>.</p>
+<p>The Landsat harvester worker expects a Kubernetes secret that provides these (and other) credentials.</p>
+<p>The <a href="https://ers.cr.usgs.gov/password/appgenerate">Generate Application Token</a> page should be used to create a token with the <code>M2M API</code> scope - which can then be set into the following environment variables for inclusion in the secret.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">M2M_USER</span><span class="o">=</span><span class="s1">&#39;your-username&#39;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">M2M_PASSWORD</span><span class="o">=</span><span class="s1">&#39;your-generated-token&#39;</span>
+</span></code></pre></div>
+<p>Now we can create the <code>landsat-harvester-secret</code> Kubernetes secret that is expected by the Landsat harvester worker.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>landsat-harvester-secret<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--from-literal<span class="o">=</span><span class="nv">FLOWABLE_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FLOWABLE_ADMIN_USER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>--from-literal<span class="o">=</span><span class="nv">FLOWABLE_PASSWORD</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FLOWABLE_ADMIN_PASSWORD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span>--from-literal<span class="o">=</span><span class="nv">M2M_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">M2M_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span>--from-literal<span class="o">=</span><span class="nv">M2M_PASSWORD</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">M2M_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">  </span>--dry-run<span class="o">=</span>client<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+</span></code></pre></div>
 <h3 id="5-monitor-the-deployment">5. Monitor the Deployment<a class="headerlink" href="#5-monitor-the-deployment" title="Permanent link">⚓︎</a></h3>
 <p>Check the status of the deployments:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <hr />
 <h2 id="validation-and-usage">Validation and Usage<a class="headerlink" href="#validation-and-usage" title="Permanent link">⚓︎</a></h2>
+<p><strong>Check Kubernetes Resources:</strong></p>
+<p>Ensure that all Kubernetes resources are running correctly.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span></code></pre></div>
+<ul>
+<li>All pods should be in the <code>Running</code> state.</li>
+<li>No pods should be in <code>CrashLoopBackOff</code> or <code>Error</code> states.</li>
+</ul>
 <p><strong>Automated Validation:</strong></p>
 <p>This script performs a series of automated tests to validate the deployment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
 <hr />
 <p><strong>Registration API Home:</strong></p>
 <p>This page provides basic information about the Registration API.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
 </span></code></pre></div>
 <p><strong>Swagger UI Documentation:</strong></p>
 <p>Interactive API documentation allowing you to explore and test the Registration API endpoints.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openapi?f=html&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openapi?f=html&quot;</span>
 </span></code></pre></div>
 <p><strong>Flowable REST API Swagger UI:</strong></p>
 <p>Provides Swagger UI documentation for the Flowable REST API.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/docs/&quot;</span>
-</span></code></pre></div>
-<hr />
-<h3 id="testing-a-simple-hello-world-process">Testing a Simple Hello-World Process<a class="headerlink" href="#testing-a-simple-hello-world-process" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/processes/hello-world/execution&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="s1">   &quot;inputs&quot;: {</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="s1">      &quot;name&quot;: &quot;Resource Registration Validation Tester&quot;,</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="s1">      &quot;message&quot;: &quot;This confirms that the Registration API is working correctly.&quot;</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="s1">   }</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="s1">}&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/docs/&quot;</span>
 </span></code></pre></div>
 <hr />
 <h3 id="registering-resources">Registering Resources<a class="headerlink" href="#registering-resources" title="Permanent link">⚓︎</a></h3>
-<p>Resource Registration relies on an <strong>OGC API Processes</strong> interface. To register a resource, send a <code>POST</code> request with a JSON payload to:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>/processes/register/execution
-</span></code></pre></div>
-<p>A typical JSON request body might look like:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p">{</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">       </span><span class="c1">// URL to the resource&#39;s current location (e.g. Git repo, S3 bucket, etc.)</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w">        </span><span class="c1">// Endpoint or final location to publish the resource</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="p">}</span>
-</span></code></pre></div>
-<h4 id="registering-a-dataset-example">Registering a Dataset (Example)<a class="headerlink" href="#registering-a-dataset-example" title="Permanent link">⚓︎</a></h4>
+<p>Resource Registration relies on an <strong>OGC API Processes</strong> interface, through which it provides the <em>Registration API</em> interfaces:</p>
+<ul>
+<li>Registration: <code>POST /processes/register/execution</code></li>
+<li>De-registration: <code>POST /processes/deregister/execution</code></li>
+</ul>
+<p>These interfaces are illustrated below.</p>
+<h4 id="example-registering-a-collection">Example - Registering a Collection<a class="headerlink" href="#example-registering-a-collection" title="Permanent link">⚓︎</a></h4>
+<p>This example registers a <code>Collection</code> resource into the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Resource Catalogue instance.</p>
 <blockquote>
-<p><strong>Prerequisite</strong>: You should have a running STAC server. For a quick setup, refer to the <a href="../resource-discovery/">Resource Discovery</a> Building Block documentation.</p>
+<p>This assumes that the <a href="../resource-discovery/">Resource Discovery</a> Building Block has been deployed - offering a STAC endpoint.</p>
 </blockquote>
-<p>Use the following command to register a STAC Item with the platform:</p>
+<p>Use the following command to register an STAC Collection <code>landsat-ot-c2-l2</code> - representing the <code>Landsat 8-9 OLI/TIRS Collection 2 Level-2</code>.</p>
+<blockquote>
+<p>This collection is used in later steps as a target for harvesting of some example Landsat data.</p>
+</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/processes/register/execution&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 </span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="s">{</span>
 </span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s">    &quot;inputs&quot;: {</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">        &quot;source&quot;: {&quot;rel&quot;: &quot;collection&quot;, &quot;href&quot;: &quot;https://raw.githubusercontent.com/james-hinton/temp-data-store/refs/heads/main/stac-collection.json&quot;},</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s">        &quot;source&quot;: {&quot;rel&quot;: &quot;collection&quot;, &quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/landsat/landsat-ot-c2-l2.json&quot;},</span>
 </span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="s">        &quot;target&quot;: {&quot;rel&quot;: &quot;https://api.stacspec.org/v1.0.0/core&quot;, &quot;href&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;}</span>
 </span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">    }</span>
 </span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">}</span>
@@ -2208,17 +2267,20 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <p>You should see a new job with the status <code>COMPLETED</code>. </p>
 <p>If you have deployed the <a href="../resource-discovery/"><strong>Resource Discovery</strong></a> Building Block, then the registered <code>Collection</code> will also be available at:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections/S2MSI2A&quot;</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections/landsat-ot-c2-l2&quot;</span>
 </span></code></pre></div>
-<h4 id="dataset-deregistration">Dataset Deregistration<a class="headerlink" href="#dataset-deregistration" title="Permanent link">⚓︎</a></h4>
+<h4 id="collection-de-registration">Collection De-registration<a class="headerlink" href="#collection-de-registration" title="Permanent link">⚓︎</a></h4>
 <p>Demonstrates use of the API for resource deregistration&hellip;</p>
+<blockquote>
+<p>Skip this step if you are intending to perform the example harvesting of Landsat data - as is illustrated in later steps.</p>
+</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/processes/deregister/execution&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 </span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="s">{</span>
 </span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="s">    &quot;inputs&quot;: {</span>
-</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="s">        &quot;id&quot;: &quot;S2MSI2A&quot;,</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="s">        &quot;id&quot;: &quot;landsat-ot-c2-l2&quot;,</span>
 </span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="s">        &quot;rel&quot;: &quot;collection&quot;,</span>
 </span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="s">        &quot;target&quot;: {&quot;rel&quot;: &quot;https://api.stacspec.org/v1.0.0/core&quot;, &quot;href&quot;: &quot;https://resource-catalogue.${INGRESS_HOST}/stac&quot;}</span>
 </span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="s">    }</span>
@@ -2231,30 +2293,131 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/docs/&quot;</span>
 </span></code></pre></div>
-<p><strong>List Deployed Processes</strong></p>
-<p>Retrieve a list of deployed processes:</p>
+<p><strong>List Deployed Workflows</strong></p>
+<p>Initially only the built-in <code>Demo processes</code> workflow is deployed.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>curl<span class="w"> </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">     </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/process-definitions&quot;</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/deployments&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.data[] | &quot;\(.deploymentTime): \(.name)&quot; &#39;</span>
 </span></code></pre></div>
-<hr />
-<h3 id="validating-kubernetes-resources">Validating Kubernetes Resources<a class="headerlink" href="#validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
-<p>Ensure that all Kubernetes resources are running correctly.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-registration
+<p>The <code>Demo processes</code> workflow provides a number of example processes.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/process-definitions&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.data[] | &quot;\(.key): \(.name)&quot; &#39;</span>
 </span></code></pre></div>
-<p><strong>Expected Output:</strong></p>
+<h4 id="example-deploy-workflow-for-landsat-harvesting">Example - Deploy Workflow for Landsat harvesting<a class="headerlink" href="#example-deploy-workflow-for-landsat-harvesting" title="Permanent link">⚓︎</a></h4>
+<p>Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:</p>
 <ul>
-<li>All pods should be in the <code>Running</code> state.</li>
-<li>No pods should be in <code>CrashLoopBackOff</code> or <code>Error</code> states.</li>
+<li>landsat_discover_data (LandsatDiscoverHandler)</li>
+<li>landsat_continuous_data_discovery (LandsatContinuousDiscoveryHandler)</li>
+<li>landsat_get_download_urls (LandsatGetDownloadUrlHandler)</li>
+<li>landsat_download_data (LandsatDownloadHandler)</li>
+<li>landsat_untar (LandsatUntarHandler)</li>
+<li>landsat_extract_metadata (LandsatExtractMetadataHandler)</li>
+<li>landsat_register_metadata (LandsatRegisterMetadataHandler)</li>
 </ul>
+<p>To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.</p>
+<p><strong>Workflow - Landsat Registration (main)</strong></p>
+<p>Deploy the BPMN workflow <code>landsat.bpmn</code> by <code>POST</code> to the Flowable service&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/deployments&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<p><img alt="Landsat Registration" src="../images/landsat-workflow-bpmn.png" /></p>
+<p><strong>Sub-Workflow Landsat Scene Ingestion</strong></p>
+<p>Deploy the BPMN sub-workflow <code>landsat-scene-ingestion.bpmn</code> by <code>POST</code> to the Flowable service&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/deployments&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<p><img alt="Landsat Registration" src="../images/landsat-scene-ingestion.png" /></p>
+<p><strong>List Deployed Workflows</strong></p>
+<p>Now the landsat <strong><em>workflows</em></strong> and associated <strong><em>processes</em></strong> should be listed as deployed.</p>
+<p><em>Workflows&hellip;</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/deployments&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.data[] | &quot;\(.deploymentTime): \(.name)&quot; &#39;</span>
+</span></code></pre></div>
+<p><em>Processes&hellip;</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># Retrieve processes</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="nv">processes</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/repository/process-definitions&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span>-u<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">  </span><span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;\nProcess listing...&quot;</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$processes</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.data[] | &quot;\(.key): \(.name)&quot;&#39;</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="c1"># Extract Landsat Workflow process ID</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="nv">landsat_process_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$processes</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;[.data[] | select(.name == &quot;Landsat Workflow&quot;)][0].id&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;\nLandsat process ID: </span><span class="si">${</span><span class="nv">landsat_process_id</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h4 id="invoke-landsat-harvesting-workflow">Invoke Landsat Harvesting Workflow<a class="headerlink" href="#invoke-landsat-harvesting-workflow" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/runtime/process-instances&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span>-u<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="s">{</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="s">  &quot;processDefinitionId&quot;: &quot;$landsat_process_id&quot;,</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="s">  &quot;variables&quot;: [</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="s">    {</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="s">      &quot;name&quot;: &quot;datetime_interval&quot;,</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="s">      &quot;type&quot;: &quot;string&quot;,</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="s">      &quot;value&quot;: &quot;2024-11-13T10:00:00Z/2024-11-13T11:00:00Z&quot;</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="s">    },</span>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="s">    {</span>
+</span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="s">      &quot;name&quot;: &quot;collections&quot;,</span>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="s">      &quot;type&quot;: &quot;string&quot;,</span>
+</span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="s">      &quot;value&quot;: &quot;landsat-c2l2-sr&quot;</span>
+</span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="s">    },</span>
+</span><span id="__span-28-19"><a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="s">    {</span>
+</span><span id="__span-28-20"><a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="s">      &quot;name&quot;: &quot;bbox&quot;,</span>
+</span><span id="__span-28-21"><a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="s">      &quot;type&quot;: &quot;string&quot;,</span>
+</span><span id="__span-28-22"><a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="s">      &quot;value&quot;: &quot;-7,46,3,52&quot;</span>
+</span><span id="__span-28-23"><a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a><span class="s">    }</span>
+</span><span id="__span-28-24"><a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a><span class="s">  ]</span>
+</span><span id="__span-28-25"><a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a><span class="s">}</span>
+</span><span id="__span-28-26"><a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<h4 id="monitor-the-job-progress">Monitor the job progress<a class="headerlink" href="#monitor-the-job-progress" title="Permanent link">⚓︎</a></h4>
+<p><strong><em>Logs&hellip;</em></strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>resource-registration<span class="w"> </span>logs<span class="w"> </span>-f<span class="w">  </span>deploy/landsat-harvester-worker
+</span></code></pre></div>
+<p><strong><em>Process instances&hellip;</em></strong></p>
+<p>Expecting an instance of the main <code>Landsat Workflow</code> process, and for each scene discovered, an instance of the <code>Landsat Scene Ingestion</code> process.</p>
+<blockquote>
+<p>This may take a few minutes to complete.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/runtime/process-instances&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">  </span>-u<span class="w"> </span><span class="si">${</span><span class="nv">FLOWABLE_ADMIN_USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">FLOWABLE_ADMIN_PASSWORD</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.data[] | &quot;\(.startTime) | \(.id) | \(.processDefinitionName)&quot;&#39;</span>
+</span></code></pre></div>
+<h4 id="check-the-catalogue-collection">Check the Catalogue collection<a class="headerlink" href="#check-the-catalogue-collection" title="Permanent link">⚓︎</a></h4>
+<p>Expecting 5 scenes registered into the Landsat collection.</p>
+<blockquote>
+<p>This may take a few minutes to complete.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections/landsat-ot-c2-l2/items&quot;</span>
+</span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Resource Registration Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>
-</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>

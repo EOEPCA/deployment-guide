@@ -1203,12 +1203,40 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="4. Ingesting Sample Records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-find-the-resource-catalogue-pod" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Find the Resource Catalogue Pod
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
-  <a href="#validating-kubernetes-resources" class="md-nav__link">
+  <a href="#42-copy-the-sample-file-sample_recordxml-to-the-pod" class="md-nav__link">
     <span class="md-ellipsis">
-      Validating Kubernetes Resources
+      4.2. Copy the Sample File (sample_record.xml) to the pod
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-load-the-sample-record-using-pycsw" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Load the Sample Record using pycsw
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-verify-the-ingested-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Verify the Ingested Record
     </span>
   </a>
   
@@ -1216,6 +1244,29 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-validating-kubernetes-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Validating Kubernetes Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
   
 </li>
       
@@ -1867,12 +1918,40 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="4. Ingesting Sample Records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-find-the-resource-catalogue-pod" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Find the Resource Catalogue Pod
+    </span>
+  </a>
+  
 </li>
         
           <li class="md-nav__item">
-  <a href="#validating-kubernetes-resources" class="md-nav__link">
+  <a href="#42-copy-the-sample-file-sample_recordxml-to-the-pod" class="md-nav__link">
     <span class="md-ellipsis">
-      Validating Kubernetes Resources
+      4.2. Copy the Sample File (sample_record.xml) to the pod
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-load-the-sample-record-using-pycsw" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Load the Sample Record using pycsw
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-verify-the-ingested-record" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Verify the Ingested Record
     </span>
   </a>
   
@@ -1880,6 +1959,29 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-validating-kubernetes-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Validating Kubernetes Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uninstallation
+    </span>
+  </a>
   
 </li>
       
@@ -2030,25 +2132,29 @@ During the script execution, you will be prompted to provide:</p>
 <ul>
 <li><strong>Landing/Home Page</strong>  </li>
 </ul>
-<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/&quot;</span>
 </span></code></pre></div>
 You should see an HTML landing page or a minimal JSON response with links to the various endpoints.</p>
 <ul>
 <li><strong>Swagger UI (OpenAPI)</strong></li>
 </ul>
-<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openapi?f<span class="o">=</span>html
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openapi?f=html&quot;</span>
 </span></code></pre></div>
 Opens a human-friendly UI showing available endpoints and interactive documentation.  </p>
 <ul>
 <li><strong>OGC API - Records / STAC Collections</strong></li>
 </ul>
-<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/collections
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections&quot;</span>
 </span></code></pre></div>
-Should return a JSON or HTML response listing available collections.</p>
+<p>Should return a JSON or HTML response listing available collections.</p>
 <ul>
 <li><strong>Conformance</strong></li>
 </ul>
-<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>https://resource-catalogue.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/conformance
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/conformance&quot;</span>
 </span></code></pre></div>
 Confirms which OGC API conformance classes and standards are supported by the server.</p>
 <p>If these return meaningful responses (especially HTTP 200 with JSON or HTML data), it indicates that your Resource Discovery instance is operational.</p>
@@ -2066,7 +2172,7 @@ Confirms which OGC API conformance classes and standards are supported by the se
 <li>A successful response should be an XML Capabilities document containing service metadata.  </li>
 </ul>
 <h4 id="33-testing-stac-api">3.3. Testing STAC API<a class="headerlink" href="#33-testing-stac-api" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div>
 <ul>
 <li>You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.</li>
@@ -2075,63 +2181,65 @@ Confirms which OGC API conformance classes and standards are supported by the se
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">   </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s1">        &quot;bbox&quot;: [-180, -90, 180, 90],</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s1">        &quot;datetime&quot;: &quot;2010-01-01T00:00:00Z/2025-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s1">        &quot;limit&quot;: 5</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s1">      }&#39;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s">{</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s">  &quot;bbox&quot;: [-180, -90, 180, 90],</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s">  &quot;datetime&quot;: &quot;2010-01-01T00:00:00Z/2025-12-31T23:59:59Z&quot;,</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s">  &quot;limit&quot;: 5</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="s">}</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <p>You should receive a JSON response listing zero or more STAC items that match the query. If you have not yet ingested any items, you may get an empty result array (<code>"features": []</code>).  </p>
 <h3 id="4-ingesting-sample-records">4. Ingesting Sample Records<a class="headerlink" href="#4-ingesting-sample-records" title="Permanent link">⚓︎</a></h3>
-<p><strong>Find the Resource Catalogue Pod</strong>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-discovery
+<h4 id="41-find-the-resource-catalogue-pod">4.1. Find the Resource Catalogue Pod<a class="headerlink" href="#41-find-the-resource-catalogue-pod" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">catalogue_pod</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>resource-discovery<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>--selector<span class="o">=</span>io.kompose.service<span class="o">=</span>pycsw<span class="w"> </span>--output<span class="o">=</span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[*].metadata.name}&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Catalogue pod: </span><span class="nv">$catalogue_pod</span><span class="s2">&quot;</span>
 </span></code></pre></div>
-<p>Look for a pod name similar to <code>resource-catalogue-service-abcd1234-efgh5678</code>.</p>
-<p><strong>Copy the Sample File</strong> (<code>sample_record.xml</code>) to the pod.</p>
+<h4 id="42-copy-the-sample-file-sample_recordxml-to-the-pod">4.2. Copy the Sample File (<code>sample_record.xml</code>) to the pod<a class="headerlink" href="#42-copy-the-sample-file-sample_recordxml-to-the-pod" title="Permanent link">⚓︎</a></h4>
 <blockquote>
 <p>The sample record is provided in the <code>scripts/resource-discovery</code> directory of the deployment guide repository.</p>
 </blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w"> </span>cp<span class="w"> </span>sample_record.xml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>resource-discovery/&lt;YOUR-RESOURCE-CATALOGUE-POD&gt;:/tmp/sample_record.xml
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>resource-discovery/<span class="si">${</span><span class="nv">catalogue_pod</span><span class="si">}</span>:/tmp/sample_record.xml
 </span></code></pre></div>
-<ol start="3">
-<li><strong>Access the Pod</strong>:</li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;YOUR-RESOURCE-CATALOGUE-POD&gt;<span class="w"> </span>-n<span class="w"> </span>resource-discovery<span class="w"> </span>--<span class="w"> </span>/bin/bash
+<h4 id="43-load-the-sample-record-using-pycsw">4.3. Load the Sample Record using pycsw<a class="headerlink" href="#43-load-the-sample-record-using-pycsw" title="Permanent link">⚓︎</a></h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>resource-discovery<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">catalogue_pod</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>pycsw-admin.py<span class="w"> </span>load-records<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span>--config<span class="w"> </span>/etc/pycsw/pycsw.yml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span>--path<span class="w"> </span>/tmp/sample_record.xml
 </span></code></pre></div>
-<ol start="2">
-<li><strong>Load the Sample Record using pycsw</strong></li>
-</ol>
-<p>From within the container, run:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>pycsw-admin.py<span class="w"> </span>load-records<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>--config<span class="w"> </span>/etc/pycsw/pycsw.yml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>--path<span class="w"> </span>/tmp/sample_record.xml
-</span></code></pre></div>
-<ol start="3">
-<li><strong>Verify the Ingested Record</strong></li>
-</ol>
+<h4 id="44-verify-the-ingested-record">4.4. Verify the Ingested Record<a class="headerlink" href="#44-verify-the-ingested-record" title="Permanent link">⚓︎</a></h4>
 <ul>
 <li>
-<p><strong>Via Web Browser / UI</strong><br />
-    Navigate to:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items
+<p><strong>Via Web Browser / UI</strong></p>
+<p>Navigate to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>source ~/.eoepca/state
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>xdg-open &quot;https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items&quot;
 </span></code></pre></div>
 <p>Confirm that the newly ingested record (titled <code>EOEPCA Sample Record</code>) appears in the search results.</p>
 </li>
 <li>
-<p><strong>Via Command Line</strong><br />
-    You can also use <code>curl</code> or other OGC-compliant requests to verify that the sample record is now discoverable.</p>
+<p><strong>Via Command Line</strong></p>
+<p>You can also use <code>curl</code> or other OGC-compliant requests to verify that the sample record is now discoverable.</p>
 </li>
 </ul>
 <hr />
-<h3 id="validating-kubernetes-resources">Validating Kubernetes Resources<a class="headerlink" href="#validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
+<h3 id="5-validating-kubernetes-resources">5. Validating Kubernetes Resources<a class="headerlink" href="#5-validating-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
 <p>Ensure all Kubernetes resources are running correctly:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-discovery
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>resource-discovery
 </span></code></pre></div>
 <ul>
 <li>All pods should be in <code>Running</code> state.</li>
 <li>No pods should be stuck in <code>CrashLoopBackOff</code> or <code>Error</code>.</li>
 </ul>
+<hr />
+<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
+<p>To uninstall the Resource Discovery Building Block and clean up associated resources:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>resource-discovery<span class="w"> </span>-n<span class="w"> </span>resource-discovery
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-discovery
+</span></code></pre></div>
 <hr />
 <h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
 <ul>
