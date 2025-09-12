@@ -1277,6 +1277,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#delivery-of-data-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delivery of data assets
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Delivery of data assets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-service-for-asset-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example - Service for asset access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualise-with-stac-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualise with STAC Browser
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1971,6 +2004,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#delivery-of-data-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delivery of data assets
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Delivery of data assets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-service-for-asset-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example - Service for asset access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visualise-with-stac-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visualise with STAC Browser
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2170,11 +2236,12 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <p>By way of example, a <code>worker</code> is deployed that harvests <code>Landast</code> data from <a href="https://landsatlook.usgs.gov/stac-server">USGS</a>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Version 2.0.0-rc2-pr-63 pending PR #63 - https://github.com/EOEPCA/helm-charts-dev/pull/63</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2-pr-63<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
 </span></code></pre></div>
 <p>The Landsat harvester relies upon credentials for the USGS service. These can be obtained via free sign-up at the <a href="https://m2m.cr.usgs.gov/">USGS Machine-to-Machine (M2M) API</a>.</p>
 <p>The Landsat harvester worker expects a Kubernetes secret that provides these (and other) credentials.</p>
@@ -2409,15 +2476,27 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections/landsat-ot-c2-l2/items&quot;</span>
 </span></code></pre></div>
 <hr />
+<h3 id="delivery-of-data-assets">Delivery of data <code>assets</code><a class="headerlink" href="#delivery-of-data-assets" title="Permanent link">⚓︎</a></h3>
+<p>The default harvesting approach illustrated above maintains the harvested assets into an <code>eodata</code> persistent volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL <code>https://eodata.${INGRESS_HOST}/</code> - such that the registered <em>STAC Items</em> include asset hrefs that are rooted under this base URL.</p>
+<h4 id="example-service-for-asset-access">Example - Service for asset access<a class="headerlink" href="#example-service-for-asset-access" title="Permanent link">⚓︎</a></h4>
+<p>By way of an example, a simple NGINX service can be deployed to provide access to these assets - under the service URL <code>https://eodata.${INGRESS_HOST}/</code> - to correctly resolve the asset hrefs as registered in the STAC Items.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-eodata-server.yaml
+</span></code></pre></div>
+<h4 id="visualise-with-stac-browser">Visualise with STAC Browser<a class="headerlink" href="#visualise-with-stac-browser" title="Permanent link">⚓︎</a></h4>
+<p>Use STAC Browser to navigate the harvested STAC Collection and the referenced assets.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span>
+</span></code></pre></div>
+<hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Resource Registration Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
-</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
-</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>
-</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>

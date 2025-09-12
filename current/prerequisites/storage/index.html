@@ -1715,6 +1715,19 @@
 </li>
 </ol>
 <p>This provides a storage class called <code>standard</code> that can be used for deployment of the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Building Blocks that require persistent storage.</p>
+<p>The <code>standard</code> StorageClass has a <code>Delete</code> reclaim policy, meaning that when the associated PersistentVolumeClaim is deleted, the underlying storage is also deleted.</p>
+<p>If required, a <code>Retain</code> reclaim policy can also be used by configuration of a variant of the <code>standard</code> StorageClass, by applying the following manifest - which exploits the previously deployed HostPath provisioner:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s">kind: StorageClass</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s">apiVersion: storage.k8s.io/v1</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s">metadata:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s">  name: standard-retain</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">provisioner: k8s.io/minikube-hostpath</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">reclaimPolicy: Retain</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s">volumeBindingMode: Immediate</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<p>This <code>standard-retain</code> StorageClass can then be used in place of <code>standard</code> when deploying <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Building Blocks that require persistent storage, where the underlying storage is to be retained after deletion of the associated PersistentVolumeClaim.</p>
 
 
 
