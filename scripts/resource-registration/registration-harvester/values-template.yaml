@@ -27,17 +27,21 @@ harvester:
   image:
     pullPolicy: Always
     repository: eoepca/registration-harvester
-    tag: 2.0.0-rc2
+    # Pending updates from PR#2 - https://github.com/EOEPCA/registration-harvester/pull/2
+    tag: pr-2
   secret:
     name: landsat-harvester-secret
   container_port: 8080
+  eodata:
+    enabled: true
+    storageClass: standard-retain
   config:
     worker:
       log_level: INFO
       flowable:
         host: {{ getenv "HTTP_SCHEME"}}://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
         tls: true
-        cacert: ""
+        cacert: null
       topics:
         landsat_discover_data:
           module: worker.landsat.tasks
@@ -86,3 +90,6 @@ harvester:
         LandsatRegisterMetadataHandler:
           stac_api_url: https://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac/
           stac_file_deletion: true
+          rewrite_asset_hrefs:
+            prefix_from: "/eodata/"
+            prefix_to: "{{ getenv "HTTP_SCHEME"}}://eodata.{{ getenv "INGRESS_HOST" }}/"

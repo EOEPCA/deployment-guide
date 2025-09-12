@@ -5,11 +5,8 @@ deploy/eoepca/client.yaml
 deploy/eoepca/client-apphub.yaml
 deploy/cluster/s3cfg
 .idea
-generated-values.yaml
-generated-pvc.yaml
+generated-*
 gatekeeper-values.yaml
-generated-gatekeeper-values.yaml
-generated-ingress.yaml
 reference-repo/
 reference-repo*
 /kubeconfig.yaml

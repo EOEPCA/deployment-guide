@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eodata-server
+  namespace: resource-registration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eodata-server
+  template:
+    metadata:
+      labels:
+        app: eodata-server
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: eodata
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: eodata
+        persistentVolumeClaim:
+          claimName: eodata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eodata-server
+  namespace: resource-registration
+spec:
+  selector:
+    app: eodata-server
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: eodata-server
+  namespace: resource-registration
+spec:
+  http:
+    - name: eodata-server
+      match:
+        hosts:
+          - eodata.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /*
+      backends:
+        - serviceName: eodata-server
+          servicePort: 80
+      plugins:
+        # Allow CORS access
+        - name: cors
+          enable: true
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eodata-server
+  namespace: resource-registration
+spec:
+  dnsNames:
+    - eodata.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: eodata-server-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: eodata-server
+  namespace: resource-registration
+spec:
+  hosts:
+    - eodata.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: eodata-server-tls
+    namespace: resource-registration
