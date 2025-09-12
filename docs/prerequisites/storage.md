@@ -58,3 +58,21 @@ For a development/testing environment such as the cluster established via the [K
       ```
 
 This provides a storage class called `standard` that can be used for deployment of the EOEPCA+ Building Blocks that require persistent storage.
+
+The `standard` StorageClass has a `Delete` reclaim policy, meaning that when the associated PersistentVolumeClaim is deleted, the underlying storage is also deleted.
+
+If required, a `Retain` reclaim policy can also be used by configuration of a variant of the `standard` StorageClass, by applying the following manifest - which exploits the previously deployed HostPath provisioner:
+
+```bash
+cat <<EOF | kubectl apply -f -
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: standard-retain
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+EOF
+```
+
+This `standard-retain` StorageClass can then be used in place of `standard` when deploying EOEPCA+ Building Blocks that require persistent storage, where the underlying storage is to be retained after deletion of the associated PersistentVolumeClaim.

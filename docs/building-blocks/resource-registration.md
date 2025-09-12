@@ -156,8 +156,9 @@ By way of example, a `worker` is deployed that harvests `Landast` data from [USG
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
+# Version 2.0.0-rc2-pr-63 pending PR #63 - https://github.com/EOEPCA/helm-charts-dev/pull/63
 helm upgrade -i landsat-harvester-worker eoepca-dev/registration-harvester \
-  --version 2.0.0-rc2 \
+  --version 2.0.0-rc2-pr-63 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml
@@ -489,6 +490,29 @@ Expecting 5 scenes registered into the Landsat collection.
 ```bash
 source ~/.eoepca/state
 xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
+```
+
+---
+
+### Delivery of data `assets`
+
+The default harvesting approach illustrated above maintains the harvested assets into an `eodata` persistent volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL `https://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
+
+#### Example - Service for asset access
+
+By way of an example, a simple NGINX service can be deployed to provide access to these assets - under the service URL `https://eodata.${INGRESS_HOST}/` - to correctly resolve the asset hrefs as registered in the STAC Items.
+
+```bash
+kubectl apply -f registration-harvester/generated-eodata-server.yaml
+```
+
+#### Visualise with STAC Browser
+
+Use STAC Browser to navigate the harvested STAC Collection and the referenced assets.
+
+```bash
+source ~/.eoepca/state
+xdg-open "https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.${INGRESS_HOST}/stac/"
 ```
 
 ---
