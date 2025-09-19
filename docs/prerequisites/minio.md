@@ -170,7 +170,7 @@ This script performs several checks to validate your MinIO deployment:
 
 ## ReadWriteMany Storage using JuiceFS
 
-As described in the [Storage](./storage.md#quick-start---multi-node-with-juicefs) section, JuiceFS offers a ReadWriteMany (RWX) storage solution backed by Object Storage.
+As described in the [Storage](./storage.md#quick-start-multi-node-with-juicefs) section, JuiceFS offers a ReadWriteMany (RWX) storage solution backed by Object Storage.
 
 The steps in this section illustrate the approach to create the storage class `eoepca-rw-many` that can be used by BBs requiring ReadWriteMany persistence.
 

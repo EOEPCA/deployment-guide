@@ -49,9 +49,9 @@ Make sure to check which Building Blocks you plan to deploy and ensure the clust
 
 For a multi-node cluster then a distributed storage solution is required to provide `ReadWriteMany` access. If your cluster has access to an Object Storage solution (e.g. S3, MinIO, etc.), then JuiceFS can exploit this to offer a cloud-native storage solution that provides POSIX-compliant file system access with `ReadWriteMany` capabilities.
 
-JuiceFS is an open-source, high-performance distributed file system that allows all kinds of object storage to be used as massive local disks and to be mounted and accessed on different hosts across platforms.
+JuiceFS is an open-source, high-performance distributed file system that allows all kinds of object storage to be used as massive local disks and to be simulaneously mounted and accessed on different nodes.
 
-JuiceFS achieves this by separation of 'data' and 'metadata' storage. The metadata is stored in a low-latency database (e.g. Redis, TiKV, MySQL, etc.) while the data is stored as chunks in an object storage system (e.g. S3, MinIO, etc.). This allows JuiceFS to provide high performance and scalability while leveraging convenient and cost-effective object storage for data persistence.
+JuiceFS achieves this by separation of 'data' and 'metadata' storage. The metadata is stored in a low-latency database (e.g. Redis, TiKV, MySQL, etc.) while the data is stored as chunks in an Object Storage system - and others such as local-disk, WebDAV, HDFS - see [Supported Storage](https://juicefs.com/docs/community/reference/how_to_set_up_object_storage/#supported-object-storage). This allows JuiceFS to provide high performance and scalability while leveraging convenient and cost-effective object storage for data persistence.
 
 The resultant data volume can then be accessed/mounted through a variety of compatibility layers - including POSIX, HDFS, S3, and a Kubernetes CSI Driver for dynamic provisioning of PersistentVolumes.
 
