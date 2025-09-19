@@ -861,6 +861,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#readwritemany-storage-using-juicefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      ReadWriteMany Storage using JuiceFS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ReadWriteMany Storage using JuiceFS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-juicefs-csi-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy the JuiceFS CSI Driver
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-a-metadata-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy a Metadata Engine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-the-storageclass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the StorageClass
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-storageclass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test the StorageClass
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#juicefs-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      JuiceFS Summary
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     <span class="md-ellipsis">
       Uninstallation
@@ -1755,6 +1815,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#readwritemany-storage-using-juicefs" class="md-nav__link">
+    <span class="md-ellipsis">
+      ReadWriteMany Storage using JuiceFS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ReadWriteMany Storage using JuiceFS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-juicefs-csi-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy the JuiceFS CSI Driver
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-a-metadata-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy a Metadata Engine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-the-storageclass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the StorageClass
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-storageclass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test the StorageClass
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#juicefs-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      JuiceFS Summary
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     <span class="md-ellipsis">
       Uninstallation
@@ -1951,13 +2071,15 @@
 <p><strong>Verify Buckets</strong>:</p>
 <p>You should see the following buckets:</p>
 <ul>
-<li>eoepca</li>
 <li>cache-bucket</li>
+<li>cluster-storage</li>
+<li>eoepca</li>
 <li>gitlab-backup-storage</li>
-<li>gitlab-tmp-storage</li>
 <li>gitlab-lfs-storage</li>
+<li>gitlab-tmp-storage</li>
 <li>mlopbb-mlflow-sharinghub</li>
 <li>mlopbb-sharinghub</li>
+<li>openeo-geotrellis-data</li>
 </ul>
 </li>
 <li>
@@ -1966,10 +2088,155 @@
 </li>
 </ol>
 <hr />
+<h2 id="readwritemany-storage-using-juicefs">ReadWriteMany Storage using JuiceFS<a class="headerlink" href="#readwritemany-storage-using-juicefs" title="Permanent link">⚓︎</a></h2>
+<blockquote>
+<p>This is optional. It is presented here in case you are in need of a <code>ReadWriteMany</code> storage solution, and want to explore the possibility to provide this through object storage.</p>
+</blockquote>
+<p>As described in the <a href="../storage/#quick-start-multi-node-with-juicefs">Storage</a> section, JuiceFS offers a <code>ReadWriteMany</code> (RWX) storage solution backed by Object Storage.</p>
+<p>The steps in this section illustrate the approach to create the storage class <code>eoepca-rw-many</code> that can be used by BBs requiring ReadWriteMany persistence.</p>
+<blockquote>
+<p>The JuiceFS approach is designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case.</p>
+<p>Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner. The approach shown here can be adapted to the object storage of your cloud provider.</p>
+</blockquote>
+<h3 id="deploy-the-juicefs-csi-driver">Deploy the JuiceFS CSI Driver<a class="headerlink" href="#deploy-the-juicefs-csi-driver" title="Permanent link">⚓︎</a></h3>
+<p>Ref. <a href="https://juicefs.com/docs/csi/introduction/">JuiceFS CSI Driver Documentation</a></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>juicefs-csi-driver<span class="w"> </span>juicefs-csi-driver<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>--repo<span class="w"> </span>https://juicedata.github.io/charts/<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--namespace<span class="w"> </span>juicefs<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>--create-namespace
+</span></code></pre></div>
+<h3 id="deploy-a-metadata-engine">Deploy a Metadata Engine<a class="headerlink" href="#deploy-a-metadata-engine" title="Permanent link">⚓︎</a></h3>
+<p>We will create a StorageClass that uses the JuiceFS CSI Driver to dynamically provision PersistentVolumes. But first we need a metadata engine accessible from all cluster nodes. There are many options, but for simplicity we will use Redis.</p>
+<blockquote>
+<p>Redis is an in-memory key-value database with excellent performance but relatively weak reliability. For production there are better alternative to Redis - such as TiKV, PostgreSQL - which should be used in preference to Redis, and aligned with your performance and reliability requirements.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>helm<span class="w"> </span>install<span class="w"> </span>redis<span class="w"> </span>redis<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--repo<span class="w"> </span>https://charts.bitnami.com/bitnami<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--set<span class="w"> </span><span class="nv">architecture</span><span class="o">=</span>standalone<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>--set<span class="w"> </span>auth.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span>--namespace<span class="w"> </span>juicefs<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span>--create-namespace
+</span></code></pre></div>
+<h3 id="create-the-storageclass">Create the StorageClass<a class="headerlink" href="#create-the-storageclass" title="Permanent link">⚓︎</a></h3>
+<p>Now we can create a StorageClass that uses the JuiceFS CSI Driver (provisioner), referencing the Redis metadata engine and an S3-compatible Object Storage solution.</p>
+<blockquote>
+<p>The below configuration uses the bucket <code>cluster-storage</code> in the MinIO instance. It is assumed that this bucket already exists - as will be the case if MinIO was deployed as per this guide.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="s">kind: Secret</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="s">metadata:</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="s">  name: sc-eoepca-rw-many</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="s">  namespace: juicefs</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="s">type: Opaque</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="s">stringData:</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="s">  name: eoepca-rw-many                                     # The JuiceFS file system name</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="s">  access-key: ${S3_ACCESS_KEY}                             # Object storage credentials</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="s">  secret-key: ${S3_SECRET_KEY}                             # Object storage credentials</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="s">  metaurl: redis://redis-master.juicefs.svc.cluster.local  # Connection URL for metadata engine.</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="s">  storage: s3                                              # Object storage type, such as s3, gs, oss.</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="s">  bucket: ${S3_ENDPOINT}/cluster-storage                       # Bucket URL of object storage.</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="s">---</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="s">apiVersion: storage.k8s.io/v1</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="s">kind: StorageClass</span>
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="s">metadata:</span>
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="s">  name: eoepca-rw-many</span>
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="s">reclaimPolicy: Delete  # Specify &quot;Retain&quot; if you want to retain the data after PVC deletion</span>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="s">provisioner: csi.juicefs.com</span>
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="s">parameters:</span>
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="s">  csi.storage.k8s.io/provisioner-secret-name: sc-eoepca-rw-many</span>
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="s">  csi.storage.k8s.io/provisioner-secret-namespace: juicefs</span>
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="s">  csi.storage.k8s.io/node-publish-secret-name: sc-eoepca-rw-many</span>
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="s">  csi.storage.k8s.io/node-publish-secret-namespace: juicefs</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<h3 id="test-the-storageclass">Test the StorageClass<a class="headerlink" href="#test-the-storageclass" title="Permanent link">⚓︎</a></h3>
+<p>We can test the StorageClass and associated provisioner by creating a PersistentVolumeClaim that uses it.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl apply -f -</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="s">kind: PersistentVolumeClaim</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="s">metadata:</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s">  name: juicefs-test-pvc</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s">  namespace: default</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s">spec:</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="s">  accessModes:</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="s">  - ReadWriteMany</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="s">  resources:</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="s">    requests:</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="s">      storage: 10Gi</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="s">  storageClassName: eoepca-rw-many</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="s">---</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="s">kind: Pod</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="s">metadata:</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="s">  name: juicefs-test-app</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="s">  namespace: default</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="s">spec:</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="s">  containers:</span>
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="s">  - args:</span>
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="s">    - -c</span>
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="s">    - while true; do echo $(date -u) &gt;&gt; /data/out.txt; sleep 5; done</span>
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="s">    command:</span>
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="s">    - /bin/sh</span>
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="s">    image: busybox</span>
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="s">    name: app</span>
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a><span class="s">    volumeMounts:</span>
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="s">    - mountPath: /data</span>
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="s">      name: juicefs-test-pv</span>
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a><span class="s">  volumes:</span>
+</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a><span class="s">  - name: juicefs-test-pv</span>
+</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a><span class="s">    persistentVolumeClaim:</span>
+</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a><span class="s">      claimName: juicefs-test-pvc</span>
+</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<p>Check the request PVC is <code>Bound</code> by the <code>eoepca-rw-many</code> StorageClass:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pvc<span class="w"> </span>juicefs-test-pvc
+</span></code></pre></div>
+<p>You can inspect the object storage bucket to see the data chunks being written to the JuiceFS <code>eoepca-rw-many</code> volume by the test pod.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://console-minio.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/browser/cluster-storage/&quot;</span>
+</span></code></pre></div>
+<p>Run another pod to read the data being written by the test pod:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="s">kind: Pod</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="s">metadata:</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="s">  name: juicefs-tail</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="s">  namespace: default</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="s">spec:</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="s">  containers:</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="s">  - name: tailer</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="s">    image: busybox</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="s">    command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;tail -f /data/out.txt&quot;]</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="s">    volumeMounts:</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="s">    - mountPath: /data</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="s">      name: juicefs-test-pv</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="s">  volumes:</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="s">  - name: juicefs-test-pv</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="s">    persistentVolumeClaim:</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="s">      claimName: juicefs-test-pvc</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="s">  restartPolicy: Never</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="s">EOF</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>kubectl<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>--for<span class="o">=</span><span class="nv">condition</span><span class="o">=</span>Ready<span class="w"> </span>pod/juicefs-tail<span class="w"> </span>--timeout<span class="o">=</span>60s
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>juicefs-tail
+</span></code></pre></div>
+<blockquote>
+<p>Use Ctrl-C to exit the log stream.</p>
+</blockquote>
+<p>Remove the test resources when done:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pod<span class="w"> </span>juicefs-tail
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pod<span class="w"> </span>juicefs-test-app
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>juicefs-test-pvc
+</span></code></pre></div>
+<h3 id="juicefs-summary">JuiceFS Summary<a class="headerlink" href="#juicefs-summary" title="Permanent link">⚓︎</a></h3>
+<p>We have created a <em>StorageClass</em> that uses the <code>cluster-storage</code> bucket in the MinIO instance to create a <em>file-system</em> inside this bucket under the path <code>eoepca-rw-many/</code>. This file-system is then used to back <code>ReadWriteMany</code> PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.</p>
+<hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>Remove MinIO and associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns/minio
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>minio<span class="w"> </span>uninstall<span class="w"> </span>minio
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns/minio
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>

@@ -2364,7 +2364,7 @@
 <hr />
 <h2 id="optional-enable-oidc-with-keycloak">Optional: Enable OIDC with Keycloak<a class="headerlink" href="#optional-enable-oidc-with-keycloak" title="Permanent link">⚓︎</a></h2>
 <blockquote>
-<p>This option is only available when using the <strong>APISIX</strong> Ingress Controller as it relies upon APISIX to act as the policy enforcement point.. If you are using a different Ingress Controller, skip to the <a href="#validation">Validation</a> section.</p>
+<p>This option is only available when using the <strong>APISIX</strong> Ingress Controller as it relies upon APISIX to act as the policy enforcement point. If you are using a different Ingress Controller, skip to the <a href="#validation">Validation</a> section.</p>
 </blockquote>
 <p>If you <strong>do not</strong> wish to use OIDC IAM right now, you can skip these steps and proceed directly to the <a href="#validation">Validation</a> section. You can still work with the OAPIP Engine but access will not be restricted.</p>
 <p>If you <strong>do</strong> want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) <strong>and</strong> you enabled <code>OIDC</code> in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).</p>
@@ -2483,7 +2483,7 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div>
 <blockquote>
 <p>This command will omit the <code>Authorization</code> header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the <code>source oapip-utils.sh</code> script to generate the <code>OAPIP_AUTH_HEADER</code> variable.</p>
