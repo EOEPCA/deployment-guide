@@ -154,13 +154,15 @@ This script performs several checks to validate your MinIO deployment:
 
     You should see the following buckets:
 
-    - eoepca
     - cache-bucket
+    - cluster-storage
+    - eoepca
     - gitlab-backup-storage
-    - gitlab-tmp-storage
     - gitlab-lfs-storage
+    - gitlab-tmp-storage
     - mlopbb-mlflow-sharinghub
     - mlopbb-sharinghub
+    - openeo-geotrellis-data
    
 5. **Create a Test Bucket**:
 
