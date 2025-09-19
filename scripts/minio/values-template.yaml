@@ -56,3 +56,4 @@ buckets:
   - name: mlopbb-mlflow-sharinghub
   - name: mlopbb-sharinghub
   - name: openeo-geotrellis-data
+  - name: cluster-storage

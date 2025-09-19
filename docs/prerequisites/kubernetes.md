@@ -207,4 +207,8 @@ EOF
 
 ### Storage Provisioner
 
-As described in the [EOEPCA+ Prerequisites](storage.md), a persistence solution providing `ReadWriteMany` storage is required by some BBs. For this development deployment the single node HostPath Provisioner can be used as described in the [Storage Quick Start](storage.md#quick-start).
+As described in the [EOEPCA+ Prerequisites](storage.md), a persistence solution providing `ReadWriteMany` storage is required by some BBs.
+
+For this development deployment the single node _HostPath Provisioner_ can be used as described in the [Storage - Single-node Quick Start](storage.md#quick-start---single-node-with-hostpath-provisioner).
+
+For a multi-node cluster with access to _Object Storage_, then the [Storage - Multi-node Quick Start](storage.md#quick-start---multi-node-with-juicefs) can be used.
