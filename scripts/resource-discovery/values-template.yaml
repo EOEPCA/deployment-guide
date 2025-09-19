@@ -4,6 +4,7 @@ ingress:
   enabled: false
 db:
   volume_storageclass: {{ getenv "STORAGE_CLASS" }}
+  volume_access_modes: ReadWriteOnce
 pycsw:
   config:
     server:

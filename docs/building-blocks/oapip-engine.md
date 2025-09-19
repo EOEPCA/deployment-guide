@@ -128,7 +128,7 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 ## Optional: Enable OIDC with Keycloak
 
-> This option is only available when using the **APISIX** Ingress Controller as it relies upon APISIX to act as the policy enforcement point.. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
+> This option is only available when using the **APISIX** Ingress Controller as it relies upon APISIX to act as the policy enforcement point. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
 
 If you **do not** wish to use OIDC IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section. You can still work with the OAPIP Engine but access will not be restricted.
 
@@ -306,7 +306,7 @@ Retrieve the list of available (currently deployed) processes.
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
-  -H "Accept: application/json" 
+  -H "Accept: application/json" | jq
 ```
 
 > This command will omit the `Authorization` header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the `source oapip-utils.sh` script to generate the `OAPIP_AUTH_HEADER` variable.
