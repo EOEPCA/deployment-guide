@@ -10,7 +10,7 @@ function is_valid_backend() {
 ask "OPENEO_BACKEND" "Which OpenEO backend would you like to deploy? (geotrellis/dask)" "geotrellis" is_valid_backend
 
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "STORAGE_CLASS" "Enter the storage class name" "standard" is_non_empty
+ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 configure_cert
 
 ask "OPENEO_ENABLE_OIDC" "Enable OIDC authentication for OpenEO? (yes/no)" "yes" is_yes_no

@@ -103,7 +103,7 @@ bash configure-app-hub.sh
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
     - *Example*: `letsencrypt-http01-apisix`
-- **`STORAGE_CLASS`**: Storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
     - *Example*: `kubernetes.io/os`

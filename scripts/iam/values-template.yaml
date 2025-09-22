@@ -6,7 +6,7 @@
 fullnameOverride: iam
 
 global:
-  storageClass: {{ getenv "STORAGE_CLASS" }}
+  storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   security:
     # Required for Keycloak custom image with OPA adapter
     allowInsecureImages: true

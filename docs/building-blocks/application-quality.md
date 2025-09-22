@@ -67,7 +67,7 @@ bash configure-application-quality.sh
 Provide values for:
 
 - **`INGRESS_HOST`**: Your base domain (e.g. `example.org`).
-- **`STORAGE_CLASS`**: Kubernetes storage class name.
+- **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class name.
 - **`CLUSTER_ISSUER`**: Cert-manager issuer name.
 - **`INTERNAL_CLUSTER_ISSUER`**: Internal TLS issuer (default: `eoepca-ca-clusterissuer`).
 

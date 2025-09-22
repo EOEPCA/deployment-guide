@@ -57,7 +57,7 @@ bash configure-minio.sh
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
     - *Example*: `letsencrypt-http01-apisix`
-- **`STORAGE_CLASS`**: Storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 
 ### 2. Deploy MinIO

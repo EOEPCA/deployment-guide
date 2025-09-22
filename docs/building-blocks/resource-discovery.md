@@ -70,7 +70,7 @@ During the script execution, you will be prompted to provide:
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.  
     - *Example*: `letsencrypt-http01-apisix`
-- **`STORAGE_CLASS`**: Storage class for persistent volumes.  
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.  
     - *Example*: `standard`
 
 

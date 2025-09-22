@@ -48,7 +48,7 @@ During this process, you'll be prompted for:
 
 - **`OPENEO_BACKEND`**: Which backend to deploy - currently only `geotrellis` is fully supported (Dask backend is still under development, so don't select it yet)
 - **`INGRESS_HOST`**: Base domain for ingress hosts (e.g. `example.com`)
-- **`STORAGE_CLASS`**: Kubernetes storage class for persistent volumes
+- **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent volumes
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates
 - **`OPENEO_ENABLE_OIDC`**: Whether to enable OIDC authentication (yes/no)
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)

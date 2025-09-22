@@ -16,17 +16,17 @@ expose:
 persistence:
   persistentVolumeClaim:
     registry:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
     chartmuseum:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
     jobservice:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
     database:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
     redis:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
     trivy:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
 externalURL: {{ getenv "HTTP_SCHEME" }}://harbor.{{ getenv "INGRESS_HOST" }}
 harborAdminPassword: {{ getenv "HARBOR_ADMIN_PASSWORD" }}

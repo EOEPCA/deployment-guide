@@ -28,13 +28,13 @@ postgrescluster:
   pgBouncerReplicas: 1
   monitoring: false
   backupsEnabled: true
-  backupsStorageClassName: {{ getenv "STORAGE_CLASS" }}
+  backupsStorageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
   backupsSize: 100Mi
   instances:
     - name: eoapi
       replicas: 1
       dataVolumeClaimSpec:
-        storageClassName: {{ getenv "STORAGE_CLASS" }}
+        storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
         accessModes:
           - "ReadWriteMany"
         resources:

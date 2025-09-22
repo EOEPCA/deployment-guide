@@ -92,7 +92,7 @@ During execution, you will be prompted for:
 
 - **`INGRESS_HOST`**: Hostname.
 - **`INTERNAL_CLUSTER_ISSUER`**: Name of the cert-manager ClusterIssuer for internal TLS. (Default: `eoepca-ca-clusterissuer`)
-- **`STORAGE_CLASS`**: Storage class for persistent volumes. (Default: `standard`)
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes. (Default: `standard`)
 
 ---
 

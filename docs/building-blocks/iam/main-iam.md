@@ -68,7 +68,7 @@ During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - _Example_: `example.com`
-- **`STORAGE_CLASS`**: Kubernetes storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent volumes.
     - _Example_: `standard`
 - **`CLUSTER_ISSUER`**: Issuer for TLS certificates
     - _Example_: `letsencrypt-http01-apisix`
