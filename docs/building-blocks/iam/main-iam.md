@@ -133,17 +133,22 @@ bash ../utils/create-client.sh
 
 When prompted:
 
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user<br>_See `~/.eoepca/state`_
-- **Keycloak base domain**: e.g. `auth.${INGRESS_HOST}`
-- **Realm**: Typically `eoepca`.
+> In many cases the default values (indicated `'-'`) are acceptable.
 
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: For **OPA**, you should use `opa`. For the **Identity API**, use `identity-api`.
-- **Client name** and **description**: Provide any helpful text<br>
-- **Client secret**: Enter the Client Secrets that was generated during the configuration script (check `~/.eoepca/state` if you cleared the terminal).
-- **Subdomain**: Use `opa` for Open Policy Agent. Use `identity-api` for the Identity API.
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
+| Prompt | Description | OPA Client | Identity API Client |
+|--------|-------------|------------|---------------------|
+| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - | - |
+| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - | - |
+| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - | - |
+| Realm | Typically `eoepca` | - | - |
+| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` | `true` |
+| Client ID | Identifier for the client in Keycloak | `opa` | `identity-api` |
+| Client Name | Display name for the client - for example... | `OPA` | `Identity API` |
+| Client Description | Descriptive text for the client - for example... | `OPA OIDC` | `Identity API OIDC` |
+| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `OPA_CLIENT_SECRET` | ref. env `IDENTITY_API_CLIENT_SECRET` |
+| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `opa` | `identity-api` |
+| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` | `<blank>` |
+| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` | `<blank>` |
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
