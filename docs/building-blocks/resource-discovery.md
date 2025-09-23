@@ -191,6 +191,9 @@ You should receive a JSON response listing zero or more STAC items that match th
 
 ### 4. Ingesting Sample Records
 
+For a quick demonstration, we can ingest a sample record into the catalogue - directly via its service pod.
+
+> See the [Resource Registration BB](./resource-registration.md), which is the preferred means to ingest records in a production environment.
     
 #### 4.1. Find the Resource Catalogue Pod
         
@@ -216,6 +219,8 @@ kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
     --config /etc/pycsw/pycsw.yml \
     --path /tmp/sample_record.xml
 ```
+
+> A warning is reported regarding the `geometry` field, but this can be ignored for this example.
     
 #### 4.4. Verify the Ingested Record
     

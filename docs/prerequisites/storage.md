@@ -55,7 +55,9 @@ The following EOEPCA building blocks require `ReadWriteMany` access:
 
     Calrissian orchestrates the execution of the OGC Application Package that comprises a CWL workflow. Calrissian relies upon shared `RWX` storage to stage input data, intermediate files, and output data that is passed between workflow steps (pods) and amongst pods that may be executing concurrently, such as when using scatter-gather patterns.
 
-* Others - TBD
+* Resource Registration BB
+
+    The harvester workflows can download data assets to an `eodata` volume. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets - e.g. to serve the data assets for retrieval via http URLs for access and visualisation.
 
 ### `RWX` Possible Implementations
 
@@ -212,6 +214,8 @@ parameters:
 To complete the demonstration, section [`S3 Storage (MinIO)`](./minio.md#readwritemany-storage-using-juicefs) includes an example that uses the above approach to establish an object storage backed JuiceFS StorageClass providing `ReadWriteMany` access for EOEPCA+ Building Blocks.
 
 The JuiceFS approach described here is really designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case. Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner.
+
+> It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
 
 ---
 
