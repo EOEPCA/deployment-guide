@@ -2032,22 +2032,93 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash<span class="w"> </span>../utils/create-client.sh
 </span></code></pre></div>
 <p>When prompted:</p>
-<ul>
-<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user<br><em>See <code>~/.eoepca/state</code></em></li>
-<li><strong>Keycloak base domain</strong>: e.g. <code>auth.${INGRESS_HOST}</code></li>
-<li>
-<p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
-</li>
-<li>
-<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
-</li>
-<li><strong>Client ID</strong>: For <strong>OPA</strong>, you should use <code>opa</code>. For the <strong>Identity API</strong>, use <code>identity-api</code>.</li>
-<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text<br></li>
-<li><strong>Client secret</strong>: Enter the Client Secrets that was generated during the configuration script (check <code>~/.eoepca/state</code> if you cleared the terminal).</li>
-<li><strong>Subdomain</strong>: Use <code>opa</code> for Open Policy Agent. Use <code>identity-api</code> for the Identity API.</li>
-<li><strong>Additional Subdomains</strong>: Leave blank.</li>
-<li><strong>Additional Hosts</strong>: Leave blank.</li>
-</ul>
+<blockquote>
+<p>In many cases the default values (indicated <code>'-'</code>) are acceptable.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th>Description</th>
+<th>OPA Client</th>
+<th>Identity API Client</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keycloak Admin Username and Password</td>
+<td>Enter the credentials of your Keycloak admin user</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Ingress Host</td>
+<td>Platform base domain - e.g. <code>${INGRESS_HOST}</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Keycloak Host</td>
+<td>e.g. <code>auth.${INGRESS_HOST}</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Realm</td>
+<td>Typically <code>eoepca</code></td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Confidential Client?</td>
+<td>Specify <code>true</code> to create a CONFIDENTIAL client</td>
+<td><code>true</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td>Client ID</td>
+<td>Identifier for the client in Keycloak</td>
+<td><code>opa</code></td>
+<td><code>identity-api</code></td>
+</tr>
+<tr>
+<td>Client Name</td>
+<td>Display name for the client - for example&hellip;</td>
+<td><code>OPA</code></td>
+<td><code>Identity API</code></td>
+</tr>
+<tr>
+<td>Client Description</td>
+<td>Descriptive text for the client - for example&hellip;</td>
+<td><code>OPA OIDC</code></td>
+<td><code>Identity API OIDC</code></td>
+</tr>
+<tr>
+<td>Client secret</td>
+<td>Enter the Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>)</td>
+<td>ref. env <code>OPA_CLIENT_SECRET</code></td>
+<td>ref. env <code>IDENTITY_API_CLIENT_SECRET</code></td>
+</tr>
+<tr>
+<td>Subdomain</td>
+<td>Redirect URL - Main service endpoint hostname as a prefix to <code>INGRESS_HOST</code></td>
+<td><code>opa</code></td>
+<td><code>identity-api</code></td>
+</tr>
+<tr>
+<td>Additional Subdomains</td>
+<td>Redirect URL - Additional <code>Subdomain</code> (prefix to <code>INGRESS_HOST</code>)<br>Comma-separated, or leave empty (e.g. <code>service-api</code>,<code>service-swagger</code>)</td>
+<td><code>&lt;blank&gt;</code></td>
+<td><code>&lt;blank&gt;</code></td>
+</tr>
+<tr>
+<td>Additional Hosts</td>
+<td>Redirect URL - Additional full hostnames (i.e. outside of <code>INGRESS_HOST</code>)<br>Comma-separated, or leave empty (e.g. <code>service.some.platform</code>)</td>
+<td><code>&lt;blank&gt;</code></td>
+<td><code>&lt;blank&gt;</code></td>
+</tr>
+</tbody>
+</table>
 <p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
 <hr />
 <h3 id="6-testing-validation">6. Testing &amp; Validation<a class="headerlink" href="#6-testing-validation" title="Permanent link">⚓︎</a></h3>
