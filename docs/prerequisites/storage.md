@@ -1,47 +1,100 @@
 
 # Storage Requirements
 
-Some EOEPCA Building Blocks, particularly those involved in processing (e.g. the CWL Processing Engine), require shared storage with `ReadWriteMany` access. This allows multiple pods to read and write to the same volume concurrently.
+---
 
-**Key Requirements:**
+## Overview
 
-- **ReadWriteMany Volumes**  
-    - Mandatory for the CWL Processing Engine and potentially other BBs requiring concurrent file access.
-- **Appropriate StorageClass**  
-    - The cluster must have a default or specialized StorageClass that can dynamically provision `ReadWriteMany` volumes.
+Most building blocks require the ability to persist data to maintain the state of the building block beyond the ephemeral life of a pod. This is typically achieved through the use of Persistent Volumes (PVs) in Kubernetes, which are backed by various storage solutions.
 
-## Production vs. Development
+Each BB expresses their storage needs and requests storage resource from the cluster via Persistent Volume Claims (PVCs). The cluster's StorageClass is responsible for dynamically provisioning the appropriate type of storage based on these claims.
 
-- **Production**  
+Kubernetes defines several access modes for volumes, which determine how the volume can be mounted by pods:
 
-    - Use robust solutions like GlusterFS, IBM Spectrum Scale, or fully managed cloud file systems that support `ReadWriteMany`.
-    - Tools like OpenEBS or Longhorn can provide distributed block storage, but ensure they truly support multi-node RWX if your usage demands it.
-    - [JuiceFS](https://juicefs.com/) is another cloud-native option that can be configured for high availability.<br>
-      _See Multi-node Quick Start below_
-    - NFS can be used if carefully configured for high availability and reliability.
+- **ReadWriteOnce (RWO)**: The volume can be mounted as read-write by a single node. This is the most common access mode and is suitable for many applications.
+- **ReadWriteMany (RWX)**: The volume can be mounted as read-write by many nodes. This is required for applications that need to share data between multiple pods or nodes.
+- **ReadOnlyMany (ROX)**: The volume can be mounted as read-only by many nodes. This is less common but can be useful for certain scenarios.
+- **ReadWriteOncePod (RWOP)**: The volume can be mounted as read-write by a single pod. This is a more restrictive access mode introduced in Kubernetes 1.22.
+- **ReadOnlyManyPod (ROOP)**: The volume can be mounted as read-only by a single pod. This is a more restrictive access mode introduced in Kubernetes 1.22.
 
-- **Development / Testing**  
+---
 
-    - A simple NFS server or an OpenEBS/Longhorn single-node install might suffice for demos.
-    - HostPath or local volumes can be acceptable for quick tests, but not recommended for multi-node or production usage.
+## EOEPCA Storage Scenarios
 
-**Which EOEPCA Blocks Require `ReadWriteMany`?**
+For the purposes of the building blocks described in this guide there are two main scenarios to consider, which require either `ReadWriteOnce` or `ReadWriteMany` access.
 
-- **Processing Building Blocks**: For instance, the CWL Processing Engine needs shared file access.
+**Scenario 1: Preservation (RWO)**
 
-Make sure to check which Building Blocks you plan to deploy and ensure the cluster's StorageClass and volume provisioning match these requirements.
+This represents important data that must be preserved beyond the life of a pod, but does not need to be shared between multiple pods. Examples include databases, configuration files, and application state.
 
-## Setting Up Storage Classes
+This includes data that should be well managed and backed up as part of platform operations.
 
-- **NFS Provisioner**: [NFS Subdir External Provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
-- **OpenEBS**: [OpenEBS Documentation](https://openebs.io/)
-- **Longhorn**: [Longhorn Documentation](https://longhorn.io/)
-- **GlusterFS**: [GlusterFS Documentation](https://docs.gluster.org/en/latest/)
+Typically this would be implemented using `ReadWriteOnce` volumes, which can be provided by a variety of storage solutions including local storage, cloud provider block storage (e.g., AWS EBS, GCP Persistent Disks), or network-attached storage (e.g., NFS, iSCSI).
 
-## Additional Resources
+***In this guide this type of volume is referred as `PERSISTENT_STORAGECLASS`.***
 
-- [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
-- [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+**Scenario 2: Sharing (RWX)**
+
+This represents data that needs to be shared between multiple pods, such as input data for processing tasks, shared configuration files, or output data that needs to be accessed by multiple services.
+
+This data may be transient and not require long-term preservation, but it must be accessible to multiple pods concurrently.
+
+Typically this would be implemented using `ReadWriteMany` volumes, which can be provided by storage solutions such as NFS, GlusterFS, or cloud provider file storage services (e.g., AWS EFS, GCP Filestore).
+
+**_In this guide this type of volume is referred as `SHARED_STORAGECLASS`._**
+
+---
+
+## `ReadWriteMany` Volumes
+
+Special consideration is required for `ReadWriteMany` volumes, as not all Kubernetes clusters support this access mode by default.
+
+The following EOEPCA building blocks require `ReadWriteMany` access:
+
+* Processing BB (OGC API Processing via `zoo-project` and Calrissian CWL Engine
+
+    Calrissian orchestrates the execution of the OGC Application Package that comprises a CWL workflow. Calrissian relies upon shared `RWX` storage to stage input data, intermediate files, and output data that is passed between workflow steps (pods) and amongst pods that may be executing concurrently, such as when using scatter-gather patterns.
+
+* Resource Registration BB
+
+    The harvester workflows can download data assets to an `eodata` volume. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets - e.g. to serve the data assets for retrieval via http URLs for access and visualisation.
+
+### `RWX` Possible Implementations
+
+* **Production**
+
+    For use in production environments, consider the following options:
+
+    * GlusterFS, IBM Spectrum Scale, Longhorn, OpenEBS, or fully managed cloud file systems that support `ReadWriteMany`
+    * NFS can be used if carefully configured for high availability and reliability
+    * [JuiceFS](https://juicefs.com/) is another cloud-native option that can be configured for high availability.<br>
+      _See [Multi-node Quick Start](#quick-start-multi-node-with-juicefs) below_
+
+* **Development / Testing**
+
+    For development or testing environments, consider the following options:
+
+    * HostPath provisioner for single-node clusters (e.g., k3d/k3s, Minikube, kind) - suitable for evaluation and demos<br>
+        _See [Quick Start - Single-node with HostPath Provisioner](#quick-start-single-node-with-hostpath-provisioner) below_
+    * A simple NFS server - e.g. running in a virtual machine
+    * If you have access to object storage, then JuiceFS can offer a simple solution - see _See Multi-node Quick Start below_
+
+---
+
+## Reference Documentation
+
+### Storage Classes
+
+* **NFS Provisioner**: [NFS Subdir External Provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
+* **OpenEBS**: [OpenEBS Documentation](https://openebs.io/)
+* **Longhorn**: [Longhorn Documentation](https://longhorn.io/)
+* **GlusterFS**: [GlusterFS Documentation](https://docs.gluster.org/en/latest/)
+* **JuiceFS**: [JuiceFS CSI Driver](https://juicefs.com/docs/csi/introduction/)
+
+### Kubernetes Storage
+
+* [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
+* [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 
 ---
 
@@ -161,6 +214,8 @@ parameters:
 To complete the demonstration, section [`S3 Storage (MinIO)`](./minio.md#readwritemany-storage-using-juicefs) includes an example that uses the above approach to establish an object storage backed JuiceFS StorageClass providing `ReadWriteMany` access for EOEPCA+ Building Blocks.
 
 The JuiceFS approach described here is really designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case. Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner.
+
+> It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
 
 ---
 

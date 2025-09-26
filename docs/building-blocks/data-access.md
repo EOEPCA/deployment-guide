@@ -86,7 +86,7 @@ During the script execution, you will be prompted to provide:
     - _Example_: `example.com`
 - **`CLUSTER_ISSUER`** (optional): Cert-manager Cluster Issuer for TLS certificates.
     - _Example_: `letsencrypt-prod`
-- **`STORAGE_CLASS`**: Storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - _Example_: `standard`
 - **`S3_HOST`**: Host URL for MinIO or S3-compatible storage.
     - _Example_: `minio.example.com`

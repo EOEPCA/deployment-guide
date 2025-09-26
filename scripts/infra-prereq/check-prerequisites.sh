@@ -17,7 +17,8 @@ trap cleanUp EXIT
 
 # Inputs needed for the checks
 ask "INGRESS_HOST" "Enter the base ingress host" "example.com" is_valid_domain
-ask "STORAGE_CLASS" "Specify the Kubernetes storage class for ReadWriteMany persistent volumes" "standard" is_non_empty
+ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
+ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for SHARED data (ReadWriteMany)" "standard" is_non_empty
 
 # Configuration: update these to suit your environment
 EOEPCA_DOMAIN="${INGRESS_HOST}"
@@ -206,7 +207,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: $STORAGE_CLASS
+  storageClassName: $SHARED_STORAGECLASS
 EOF
 
 # Wait to see if it binds

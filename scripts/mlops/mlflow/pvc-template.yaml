@@ -11,7 +11,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ getenv "STORAGE_CLASS" }}
+  storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
   resources:
     requests:
       storage: 10Gi

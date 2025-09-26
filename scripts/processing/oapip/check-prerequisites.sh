@@ -10,6 +10,7 @@ declare -a checks=(
     "check_helm_installed"
     "check_cert_manager_installed"
     "check_ingress_controller_installed"
+    "check_rwx_storage"
 
     # Processing prerequisite check goes on the assumption that stage in and stage out object stores are the same.
     "check_object_store_accessible"

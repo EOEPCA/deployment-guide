@@ -8,7 +8,7 @@ jupyterhub:
       JUPYTERHUB_ENV: "dev"
       JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
       APP_HUB_NAMESPACE: "application-hub"
-      STORAGE_CLASS: {{ getenv "STORAGE_CLASS" }}
+      STORAGE_CLASS: {{ getenv "PERSISTENT_STORAGECLASS" }}
       RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
 
       JUPYTERHUB_CRYPT_KEY: "{{ getenv "APPHUB_JUPYTERHUB_CRYPT_KEY" }}"
@@ -29,7 +29,7 @@ jupyterhub:
 
     db:
       pvc:
-        storageClassName: {{ getenv "STORAGE_CLASS" }}
+        storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
     config:
       JupyterHub:

@@ -43,7 +43,7 @@ prometheus:
       type: ClusterIP
     persistentVolume:
       enabled: true
-      storageClass: "{{ getenv "STORAGE_CLASS" }}"
+      storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
       accessModes:
         - ReadWriteMany
 

@@ -45,7 +45,7 @@ resources:
   requests:
     memory: 1Gi
 persistence:
-  storageClass: {{ getenv "STORAGE_CLASS" }}
+  storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   size: 50Gi
 buckets:
   - name: eoepca
