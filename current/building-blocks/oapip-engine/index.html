@@ -2428,6 +2428,9 @@
 <p>Resource protection is only available when using the APISIX Ingress Controller.</p>
 </blockquote>
 <p>With the resource and permission created, attempts to access the protected endpoint (<code>/eoepcauser/*</code>) without a valid token or with insufficient privileges should be denied. You can test it by:</p>
+<blockquote>
+<p>Wait for the ingress and associated TLS to be established before running the following.</p>
+</blockquote>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash resource-protection-validation.sh
 </span></code></pre></div>
 <p>If this script shows 401 Authorization errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.</p>

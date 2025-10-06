@@ -2149,7 +2149,12 @@
 </span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="s">  csi.storage.k8s.io/provisioner-secret-namespace: juicefs</span>
 </span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="s">  csi.storage.k8s.io/node-publish-secret-name: sc-eoepca-rw-many</span>
 </span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="s">  csi.storage.k8s.io/node-publish-secret-namespace: juicefs</span>
-</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="s">EOF</span>
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="s">  # Use of Mount Pod?</span>
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="s">  # For production then &quot;true&quot; for proper isolation.</span>
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="s">  # For debug/dev then &quot;false&quot; for shared mount pod per node</span>
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a><span class="s">  #   - better if the cluster stop/restarts, e.g. when using k3d</span>
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a><span class="s">  mountPodOnly: &quot;false&quot;  # Convenient for a debug cluster</span>
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <h3 id="test-the-storageclass">Test the StorageClass<a class="headerlink" href="#test-the-storageclass" title="Permanent link">⚓︎</a></h3>
 <p>We can test the StorageClass and associated provisioner by creating a PersistentVolumeClaim that uses it.</p>
