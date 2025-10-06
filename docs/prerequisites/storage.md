@@ -154,6 +154,11 @@ parameters:
   csi.storage.k8s.io/provisioner-secret-namespace: juicefs
   csi.storage.k8s.io/node-publish-secret-name: sc-eoepca-rw-many
   csi.storage.k8s.io/node-publish-secret-namespace: juicefs
+  # Use of Mount Pod?
+  # For production then "true" for proper isolation.
+  # For debug/dev then "false" for shared mount pod per node
+  #   - better if the cluster stop/restarts, e.g. when using k3d
+  mountPodOnly: "false"  # Convenient for a debug cluster
 ```
 
 ### Example using MinIO
