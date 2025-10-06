@@ -215,6 +215,8 @@ kubectl apply -f generated-ingress.yaml
 
 With the resource and permission created, attempts to access the protected endpoint (`/eoepcauser/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
 
+> Wait for the ingress and associated TLS to be established before running the following.
+
 ```
 bash resource-protection-validation.sh
 ```
