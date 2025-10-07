@@ -16,13 +16,16 @@ helm repo update apisix
 The deployment configuration below assumes that the Kubernetes cluster exposes NodePorts `31080` (http) and `31443` (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public `80/443` traffic to these exposed ports on the cluster nodes.
 
 ```bash
+source "$HOME/.eoepca/state"
 helm upgrade -i apisix apisix/apisix \
-  --version 2.9.0 \
+  --version 2.10.0 \
   --namespace ingress-apisix --create-namespace \
   --set service.type=NodePort \
   --set service.http.nodePort=31080 \
   --set service.tls.nodePort=31443 \
+  --set etcd.image.repository=bitnamilegacy/etcd \
   --set etcd.replicaCount=1 \
+  --set etcd.persistence.storageClass="${STORAGE_CLASS}" \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \

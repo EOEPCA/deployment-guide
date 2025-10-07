@@ -193,6 +193,20 @@ helm upgrade -i juicefs-csi-driver juicefs-csi-driver \
   --create-namespace
 ```
 
+#### `Sidecar` Mount Mode
+
+The default deployment uses a `Mount Pod` for each PVC. This is the recommended approach, but does not suit all situations as it relies upon a `DaemonSet`. The alternative [`Sidecar`](https://juicefs.com/docs/csi/getting_started/#sidecar) mode can be used by setting the helm value...
+
+```bash
+  --set mountMode=sidecar
+```
+
+In this case each `namespace` that needs to use the JuiceFS CSI Driver (i.e. whose workloads are using the defined `StorageClass`), must be labelled for webhook injection...
+
+```bash
+kubectl label namespace $NS juicefs.com/enable-injection=true --overwrite
+```
+
 ### Deploy a Metadata Engine
 
 We will create a StorageClass that uses the JuiceFS CSI Driver to dynamically provision PersistentVolumes. But first we need a metadata engine accessible from all cluster nodes. There are many options, but for simplicity we will use Redis.
@@ -242,11 +256,6 @@ parameters:
   csi.storage.k8s.io/provisioner-secret-namespace: juicefs
   csi.storage.k8s.io/node-publish-secret-name: sc-eoepca-rw-many
   csi.storage.k8s.io/node-publish-secret-namespace: juicefs
-  # Use of Mount Pod?
-  # For production then "true" for proper isolation.
-  # For debug/dev then "false" for shared mount pod per node
-  #   - better if the cluster stop/restarts, e.g. when using k3d
-  mountPodOnly: "false"  # Convenient for a debug cluster
 EOF
 ```
 
@@ -305,6 +314,8 @@ You can inspect the object storage bucket to see the data chunks being written t
 source ~/.eoepca/state
 xdg-open "https://console-minio.${INGRESS_HOST}/browser/cluster-storage/"
 ```
+
+> There may be an initial delay before the first writes are reflected in the MinIO UI.
 
 Run another pod to read the data being written by the test pod:
 

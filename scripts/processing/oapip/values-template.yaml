@@ -77,13 +77,20 @@ persistence:
   storageClass: {{ getenv "STORAGE_CLASS" }}
   tmpStorageClass: {{ getenv "STORAGE_CLASS" }}
 postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
   primary:
     persistence:
       storageClass: {{ getenv "STORAGE_CLASS" }}
   readReplicas:
     persistence:
       storageClass: {{ getenv "STORAGE_CLASS" }}
+global:
+  security:
+    allowInsecureImages: true
 rabbitmq:
+  image:
+    repository: bitnamilegacy/rabbitmq
   persistence:
     storageClass: {{ getenv "STORAGE_CLASS" }}
 iam:
