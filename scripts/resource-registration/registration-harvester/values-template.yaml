@@ -16,6 +16,10 @@ rest:
 ingress:
   enabled: false
 
+postgres:
+  image:
+    repository: bitnamilegacy/postgresql
+
 #-------------------------------------------------------------------------------
 # Harvester
 #-------------------------------------------------------------------------------
@@ -34,7 +38,7 @@ harvester:
   container_port: 8080
   eodata:
     enabled: true
-    storageClass: standard-retain
+    storageClass: {{ getenv "STORAGE_CLASS" }}
   config:
     worker:
       log_level: INFO
