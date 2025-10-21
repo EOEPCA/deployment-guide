@@ -25,7 +25,7 @@ helm upgrade -i apisix apisix/apisix \
   --set service.tls.nodePort=31443 \
   --set etcd.image.repository=bitnamilegacy/etcd \
   --set etcd.replicaCount=1 \
-  --set etcd.persistence.storageClass="${STORAGE_CLASS}" \
+  --set etcd.persistence.storageClass="${PERSISTENT_STORAGECLASS}" \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \

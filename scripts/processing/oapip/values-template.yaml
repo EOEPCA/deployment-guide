@@ -53,7 +53,7 @@ workflow:
     {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
     {{ getenv "NODE_SELECTOR_KEY" }}: "{{ getenv "NODE_SELECTOR_VALUE" }}"
     {{- end }}
-  storageClass: {{ getenv "STORAGE_CLASS" }}
+  storageClass: {{ getenv "SHARED_STORAGECLASS" }}
 ingress:
   enabled: {{ getenv "OAPIP_INGRESS_ENABLED" }}
   hosturl: {{ getenv "OAPIP_HOST" }}
@@ -76,12 +76,12 @@ ingress:
     secretName: zoo-tls
   {{ end }}
 persistence:
-  procServicesStorageClass: {{ getenv "STORAGE_CLASS" }}
-  storageClass: {{ getenv "STORAGE_CLASS" }}
-  tmpStorageClass: {{ getenv "STORAGE_CLASS" }}
+  procServicesStorageClass: {{ getenv "SHARED_STORAGECLASS" }}
+  storageClass: {{ getenv "SHARED_STORAGECLASS" }}
+  tmpStorageClass: {{ getenv "SHARED_STORAGECLASS" }}
 postgresql:
   persistence:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 global:
   security:
     allowInsecureImages: true
@@ -89,7 +89,7 @@ rabbitmq:
   autoSetup:
     enabled: false
   persistence:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 iam:
   enabled: false
 documentation:

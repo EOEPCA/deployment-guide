@@ -3,7 +3,7 @@ global:
 ingress:
   enabled: false
 db:
-  volume_storageclass: {{ getenv "STORAGE_CLASS" }}
+  volume_storageclass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   volume_access_modes: ReadWriteOnce
 pycsw:
   config:

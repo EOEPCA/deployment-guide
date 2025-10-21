@@ -20,9 +20,9 @@ postgresql:
   auth:
     existingSecret: mlflow-sharinghub-postgres
   global:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   persistence:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
 
 ingress:

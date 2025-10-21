@@ -1,6 +1,6 @@
 
 global:
-  storageClass: {{ getenv "STORAGE_CLASS" }}
+  storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
 #-------------------------------------------------------------------------------
 # Flowable
@@ -31,14 +31,14 @@ harvester:
   image:
     pullPolicy: Always
     repository: eoepca/registration-harvester
-    # Pending updates from PR#2 - https://github.com/EOEPCA/registration-harvester/pull/2
-    tag: pr-2
+    # TODO - the formal helm chart version should bake-in the correct image tag
+    tag: main
   secret:
     name: landsat-harvester-secret
   container_port: 8080
   eodata:
     enabled: true
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "SHARED_STORAGECLASS" }}
   config:
     worker:
       log_level: INFO

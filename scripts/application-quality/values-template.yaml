@@ -35,7 +35,7 @@ application-quality:
 
   persistence:
     enabled: true
-    storageClassName: {{ getenv "STORAGE_CLASS" }}
+    storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
     createStorageClass: false
     accessMode:
     - ReadWriteOnce
@@ -43,7 +43,7 @@ application-quality:
 
   calrissian:
     image: "terradue/calrissian:0.14.0"
-    storageClassName: {{ getenv "STORAGE_CLASS" }}
+    storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
     volumeSize: "2Gi"
     maxCores: "2"
     maxRam: "2Gi"
@@ -108,7 +108,7 @@ opensearch:
 
   persistence:
     enabled: true
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
     size: 12Gi
 
   sysctl:
