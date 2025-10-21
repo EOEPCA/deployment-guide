@@ -42,4 +42,4 @@ patches:
   patch: |
     - op: replace
       path: /spec/pipeline/2/input/resources/8/base/spec/forProvider/manifest/spec/storageClassName
-      value: {{ getenv "STORAGE_CLASS" }}
+      value: {{ getenv "PERSISTENT_STORAGECLASS" }}

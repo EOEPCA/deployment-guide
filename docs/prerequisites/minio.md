@@ -57,7 +57,7 @@ bash configure-minio.sh
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
     - *Example*: `letsencrypt-http01-apisix`
-- **`STORAGE_CLASS`**: Storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 
 ### 2. Deploy MinIO
@@ -83,6 +83,8 @@ kubectl -n minio apply -f ingress-plugin-config.yaml
 ### 3. Create Access Keys
 
 Access the MinIO Console to create access keys:
+
+> If MinIO has just been deployed, then there may be a short delay before the service is accessible.
 
 1. Navigate to `https://console-minio.${INGRESS_HOST}/access-keys/new-account`<br>
    ```bash
@@ -179,6 +181,8 @@ As described in the [Storage](./storage.md#quick-start-multi-node-with-juicefs) 
 The steps in this section illustrate the approach to create the storage class `eoepca-rw-many` that can be used by BBs requiring ReadWriteMany persistence.
 
 > The JuiceFS approach is designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case.
+>
+> It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
 > 
 > Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner. The approach shown here can be adapted to the object storage of your cloud provider.
 
@@ -263,6 +267,8 @@ EOF
 
 We can test the StorageClass and associated provisioner by creating a PersistentVolumeClaim that uses it.
 
+> The following example creates a `10Gi` RWX PVC, and a pod that writes the current date to a file in the volume every 5 seconds.
+
 ```bash
 cat <<'EOF' | kubectl apply -f -
 apiVersion: v1
@@ -302,13 +308,15 @@ spec:
 EOF
 ```
 
-Check the request PVC is `Bound` by the `eoepca-rw-many` StorageClass:
+Check the requested `RWX` PVC is `Bound` by the `eoepca-rw-many` StorageClass:
 
 ```bash
 kubectl get pvc juicefs-test-pvc
 ```
 
 You can inspect the object storage bucket to see the data chunks being written to the JuiceFS `eoepca-rw-many` volume by the test pod.
+
+> There may be a short delay after first usage before the bucket contents are visible.
 
 ```bash
 source ~/.eoepca/state
@@ -318,6 +326,8 @@ xdg-open "https://console-minio.${INGRESS_HOST}/browser/cluster-storage/"
 > There may be an initial delay before the first writes are reflected in the MinIO UI.
 
 Run another pod to read the data being written by the test pod:
+
+> This pod mounts the same PVC and tails the contents of the `out.txt` file written by the test pod.
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -357,7 +367,7 @@ kubectl delete pvc juicefs-test-pvc
 
 ### JuiceFS Summary
 
-We have created a _StorageClass_ that uses the `cluster-storage` bucket in the MinIO instance to create a _file-system_ inside this bucket under the path `eoepca-rw-many/`. This file-system is then used to back `ReadWriteMany` PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.
+We have created a _StorageClass_ that uses the `cluster-storage` bucket in the MinIO instance to create a _file-system_ inside this bucket under the path `eoepca-rw-many/` (the name of the storage class). This file-system is then used to back `ReadWriteMany` PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.
 
 ---
 

@@ -55,7 +55,7 @@ bash configure-oapip.sh
     - *Example*: `example.com`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
     - *Example*: `letsencrypt-http01-apisix`
-- **`STORAGE_CLASS`**: Storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 
 **Stage-Out S3 Configuration:**

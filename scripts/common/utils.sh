@@ -283,7 +283,7 @@ first_time_setup() {
         configure_http_scheme
         configure_ingress
         ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-        ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
+        ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
         configure_cert
         echo ""
         echo "✅ First time setup complete. These values are stored in the state file which are used to configure the Building Blocks."

@@ -54,7 +54,7 @@ upgradeCheck:
 gitlab:
   gitaly:
     persistence:
-      storageClass: {{ getenv "STORAGE_CLASS" }}
+      storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   webservice:
     ingress:
       tls:
@@ -112,12 +112,12 @@ gitlab-runner:
 
 redis:
   global:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   metrics:
     enabled: false
 
 postgresql:
   global:
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   metrics:
     enabled: false

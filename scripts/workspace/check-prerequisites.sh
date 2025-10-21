@@ -10,6 +10,7 @@ declare -a checks=(
     "check_helm_installed"
     "check_cert_manager_installed"
     "check_apisix_ingress_installed"
+    "check_rwx_storage"
 )
 
 run_validation "${checks[@]}"

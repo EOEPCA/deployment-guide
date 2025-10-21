@@ -94,7 +94,11 @@ During the script execution, you will be prompted to provide:
     - *Default*: `eoepca`
 - **`FLOWABLE_ADMIN_PASSWORD`**: Admin password for Flowable.
     - *Default*: `eoepca`
-
+- **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for `Flowable` database.
+    - *Default*: `local-path`
+- **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.<br>
+    - *Default*: `standard`
+    > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets - such as the EO Data Server shown in example later in this page.
 
 ### 2. Apply Kubernetes Secrets
 
@@ -110,6 +114,8 @@ bash apply-secrets.sh
   _Contains Flowable admin username and password_
 
 ### 3. Deploy the Registration API Using Helm
+
+The Registration API provides a RESTful interface through which resources can be directly registered, updated, or deleted.
 
 Deploy the Registration API using the generated values file.
 
@@ -131,6 +137,8 @@ kubectl apply -f registration-api/generated-ingress.yaml
 
 ### 4. Deploy the Registration Harvester Using Helm
 
+The Registration Harvester automates resource ingestion workflows using Flowable BPMN.
+
 **Deploy Flowable Engine:**
 
 ```bash
@@ -151,14 +159,15 @@ kubectl apply -f registration-harvester/generated-ingress.yaml
 
 **Deploy Registration Harvester Worker:**
 
+The BPMN workflows executed by the Flowable engine are implemented by workers that respond to 'topics' referenced as steps in the BPMN definition. These workers perform tasks such as harvesting data from external sources, processing data, and registering metadata.
+
 By way of example, a `worker` is deployed that harvests `Landast` data from [USGS](https://landsatlook.usgs.gov/stac-server).
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
-# Version 2.0.0-rc2-pr-63 pending PR #63 - https://github.com/EOEPCA/helm-charts-dev/pull/63
 helm upgrade -i landsat-harvester-worker eoepca-dev/registration-harvester \
-  --version 2.0.0-rc2-pr-63 \
+  --version 2.0.0-rc2.1 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml
@@ -360,13 +369,13 @@ curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/servic
 
 Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:
 
-* landsat_discover_data (LandsatDiscoverHandler)
-* landsat_continuous_data_discovery (LandsatContinuousDiscoveryHandler)
-* landsat_get_download_urls (LandsatGetDownloadUrlHandler)
-* landsat_download_data (LandsatDownloadHandler)
-* landsat_untar (LandsatUntarHandler)
-* landsat_extract_metadata (LandsatExtractMetadataHandler)
-* landsat_register_metadata (LandsatRegisterMetadataHandler)
+* `landsat_discover_data` (LandsatDiscoverHandler)
+* `landsat_continuous_data_discovery` (LandsatContinuousDiscoveryHandler)
+* `landsat_get_download_urls` (LandsatGetDownloadUrlHandler)
+* `landsat_download_data` (LandsatDownloadHandler)
+* `landsat_untar` (LandsatUntarHandler)
+* `landsat_extract_metadata` (LandsatExtractMetadataHandler)
+* `landsat_register_metadata` (LandsatRegisterMetadataHandler)
 
 To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.
 
@@ -467,11 +476,13 @@ EOF
 kubectl -n resource-registration logs -f  deploy/landsat-harvester-worker
 ```
 
+> Use `Ctrl-C` to exit the log stream.
+
 **_Process instances..._**
 
-Expecting an instance of the main `Landsat Workflow` process, and for each scene discovered, an instance of the `Landsat Scene Ingestion` process.
+We are expecting an instance of the main `Landsat Workflow` process, and for each scene discovered, an instance of the `Landsat Scene Ingestion` process.
 
-> This may take a few minutes to complete.
+> There may be a delay of a few minutes before all expected workflows are shown.
 
 ```bash
 source ~/.eoepca/state
@@ -483,13 +494,35 @@ curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/servic
 
 #### Check the Catalogue collection
 
-Expecting 5 scenes registered into the Landsat collection.
+We are expecting 5 scenes registered into the Landsat collection.
 
-> This may take a few minutes to complete.
+> This may take some time, depending on your download connection to USGS.<br>
+> Five products are downloaded - each of which is ~850MB.
 
 ```bash
 source ~/.eoepca/state
 xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
+```
+
+#### Retain the `eodata` volume
+
+Given the time/bandwidth required to retrieve the harvested data - you may want to ensure that the Persistent Volume is retained for future reuse. For example, to reconnect with the downloaded data in the case that the Resource Registration BB is re-deployed.
+
+Depending on your `RWX` storage class, the `Retain` reclaim policy may already be set.
+
+Check reclaim policy of the `eodata` persistent volume...
+
+```bash
+ EODATA_PV=$(kubectl get pvc "eodata" -n "resource-registration" -o jsonpath='{.spec.volumeName}')
+ POLICY=$(kubectl get pv "$EODATA_PV" -o jsonpath='{.spec.persistentVolumeReclaimPolicy}')
+ echo -e "\nVolume Reclaim Policy is: $POLICY\n"
+```
+
+Otherwise, you can patch the persistent volume as follows...
+
+```bash
+ EODATA_PV=$(kubectl get pvc "eodata" -n "resource-registration" -o jsonpath='{.spec.volumeName}')
+ kubectl patch pv "$EODATA_PV" -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
 ```
 
 ---

@@ -6,7 +6,7 @@ echo "Configuring the Container Registry..."
 
 # Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "STORAGE_CLASS" "Specify the Kubernetes storage class for persistent volumes" "standard" is_non_empty
+ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 configure_cert
 
 export HARBOR_ADMIN_PASSWORD=$(generate_password)

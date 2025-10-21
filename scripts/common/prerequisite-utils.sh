@@ -235,6 +235,17 @@ function check_internal_certificates() {
     echo "✅ Internal TLS is enabled."
 }
 
+function check_rwx_storage() {
+    if [ -z "$SHARED_STORAGECLASS" ]; then
+        ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for SHARED data (ReadWriteMany)" "standard" is_non_empty
+    fi
+    if ! kubectl get sc "${SHARED_STORAGECLASS}" &>/dev/null; then
+        echo "❌ Storage Class (RWX) '${SHARED_STORAGECLASS}' not found."
+        return 1
+    fi
+    echo "✅ Storage Class (RWX) '${SHARED_STORAGECLASS}' is ready."
+}
+
 function run_validation() {
 
     checks=("$@")

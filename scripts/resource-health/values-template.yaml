@@ -5,7 +5,7 @@ global:
 opensearch:
   persistence:
     enabled: true
-    storageClass: {{ getenv "STORAGE_CLASS" }}
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   securityConfig:
     config:
       data:
