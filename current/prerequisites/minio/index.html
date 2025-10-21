@@ -2024,7 +2024,7 @@
 <li><em>Example</em>: <code>letsencrypt-http01-apisix</code></li>
 </ul>
 </li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.<ul>
+<li><strong><code>PERSISTENT_STORAGECLASS</code></strong>: Storage class for persistent volumes.<ul>
 <li><em>Example</em>: <code>standard</code></li>
 </ul>
 </li>
@@ -2044,6 +2044,9 @@
 </span></code></pre></div>
 <h3 id="3-create-access-keys">3. Create Access Keys<a class="headerlink" href="#3-create-access-keys" title="Permanent link">⚓︎</a></h3>
 <p>Access the MinIO Console to create access keys:</p>
+<blockquote>
+<p>If MinIO has just been deployed, then there may be a short delay before the service is accessible.</p>
+</blockquote>
 <ol>
 <li>Navigate to <code>https://console-minio.${INGRESS_HOST}/access-keys/new-account</code><br>
    <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
@@ -2126,6 +2129,7 @@
 <p>The steps in this section illustrate the approach to create the storage class <code>eoepca-rw-many</code> that can be used by BBs requiring ReadWriteMany persistence.</p>
 <blockquote>
 <p>The JuiceFS approach is designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case.</p>
+<p>It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the &lsquo;native&rsquo; S3 storage of the cloud provider should be used directly with JuiceFS.</p>
 <p>Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner. The approach shown here can be adapted to the object storage of your cloud provider.</p>
 </blockquote>
 <h3 id="deploy-the-juicefs-csi-driver">Deploy the JuiceFS CSI Driver<a class="headerlink" href="#deploy-the-juicefs-csi-driver" title="Permanent link">⚓︎</a></h3>
@@ -2190,6 +2194,9 @@
 </span></code></pre></div>
 <h3 id="test-the-storageclass">Test the StorageClass<a class="headerlink" href="#test-the-storageclass" title="Permanent link">⚓︎</a></h3>
 <p>We can test the StorageClass and associated provisioner by creating a PersistentVolumeClaim that uses it.</p>
+<blockquote>
+<p>The following example creates a <code>10Gi</code> RWX PVC, and a pod that writes the current date to a file in the volume every 5 seconds.</p>
+</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl apply -f -</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="s">apiVersion: v1</span>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="s">kind: PersistentVolumeClaim</span>
@@ -2227,10 +2234,13 @@
 </span><span id="__span-15-35"><a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a><span class="s">      claimName: juicefs-test-pvc</span>
 </span><span id="__span-15-36"><a id="__codelineno-15-36" name="__codelineno-15-36" href="#__codelineno-15-36"></a><span class="s">EOF</span>
 </span></code></pre></div>
-<p>Check the request PVC is <code>Bound</code> by the <code>eoepca-rw-many</code> StorageClass:</p>
+<p>Check the requested <code>RWX</code> PVC is <code>Bound</code> by the <code>eoepca-rw-many</code> StorageClass:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pvc<span class="w"> </span>juicefs-test-pvc
 </span></code></pre></div>
 <p>You can inspect the object storage bucket to see the data chunks being written to the JuiceFS <code>eoepca-rw-many</code> volume by the test pod.</p>
+<blockquote>
+<p>There may be a short delay after first usage before the bucket contents are visible.</p>
+</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://console-minio.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/browser/cluster-storage/&quot;</span>
 </span></code></pre></div>
@@ -2238,6 +2248,9 @@
 <p>There may be an initial delay before the first writes are reflected in the MinIO UI.</p>
 </blockquote>
 <p>Run another pod to read the data being written by the test pod:</p>
+<blockquote>
+<p>This pod mounts the same PVC and tails the contents of the <code>out.txt</code> file written by the test pod.</p>
+</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="s">apiVersion: v1</span>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="s">kind: Pod</span>
@@ -2271,7 +2284,7 @@
 </span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>juicefs-test-pvc
 </span></code></pre></div>
 <h3 id="juicefs-summary">JuiceFS Summary<a class="headerlink" href="#juicefs-summary" title="Permanent link">⚓︎</a></h3>
-<p>We have created a <em>StorageClass</em> that uses the <code>cluster-storage</code> bucket in the MinIO instance to create a <em>file-system</em> inside this bucket under the path <code>eoepca-rw-many/</code>. This file-system is then used to back <code>ReadWriteMany</code> PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.</p>
+<p>We have created a <em>StorageClass</em> that uses the <code>cluster-storage</code> bucket in the MinIO instance to create a <em>file-system</em> inside this bucket under the path <code>eoepca-rw-many/</code> (the name of the storage class). This file-system is then used to back <code>ReadWriteMany</code> PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.</p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>Remove MinIO and associated resources:</p>

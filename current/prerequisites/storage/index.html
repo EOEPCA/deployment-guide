@@ -555,29 +555,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#production-vs-development" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Production vs. Development
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-storage-classes" class="md-nav__link">
+  <a href="#eoepca-storage-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting Up Storage Classes
+      EOEPCA Storage Scenarios
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-resources" class="md-nav__link">
+  <a href="#readwritemany-volumes" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional Resources
+      ReadWriteMany Volumes
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="ReadWriteMany Volumes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rwx-possible-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      RWX Possible Implementations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference Documentation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reference Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storage-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Storage Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kubernetes Storage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1636,29 +1684,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#production-vs-development" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Production vs. Development
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-storage-classes" class="md-nav__link">
+  <a href="#eoepca-storage-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting Up Storage Classes
+      EOEPCA Storage Scenarios
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#additional-resources" class="md-nav__link">
+  <a href="#readwritemany-volumes" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional Resources
+      ReadWriteMany Volumes
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="ReadWriteMany Volumes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rwx-possible-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      RWX Possible Implementations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference Documentation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reference Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#storage-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Storage Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kubernetes Storage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1737,51 +1833,79 @@
 
 
 <h1 id="storage-requirements">Storage Requirements<a class="headerlink" href="#storage-requirements" title="Permanent link">⚓︎</a></h1>
-<p>Some <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Building Blocks, particularly those involved in processing (e.g. the CWL Processing Engine), require shared storage with <code>ReadWriteMany</code> access. This allows multiple pods to read and write to the same volume concurrently.</p>
-<p><strong>Key Requirements:</strong></p>
+<hr />
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">⚓︎</a></h2>
+<p>Most building blocks require the ability to persist data to maintain the state of the building block beyond the ephemeral life of a pod. This is typically achieved through the use of Persistent Volumes (PVs) in Kubernetes, which are backed by various storage solutions.</p>
+<p>Each BB expresses their storage needs and requests storage resource from the cluster via Persistent Volume Claims (PVCs). The cluster&rsquo;s StorageClass is responsible for dynamically provisioning the appropriate type of storage based on these claims.</p>
+<p>Kubernetes defines several access modes for volumes, which determine how the volume can be mounted by pods:</p>
 <ul>
-<li><strong>ReadWriteMany Volumes</strong>  <ul>
-<li>Mandatory for the CWL Processing Engine and potentially other BBs requiring concurrent file access.</li>
+<li><strong>ReadWriteOnce (RWO)</strong>: The volume can be mounted as read-write by a single node. This is the most common access mode and is suitable for many applications.</li>
+<li><strong>ReadWriteMany (RWX)</strong>: The volume can be mounted as read-write by many nodes. This is required for applications that need to share data between multiple pods or nodes.</li>
+<li><strong>ReadOnlyMany (ROX)</strong>: The volume can be mounted as read-only by many nodes. This is less common but can be useful for certain scenarios.</li>
+<li><strong>ReadWriteOncePod (RWOP)</strong>: The volume can be mounted as read-write by a single pod. This is a more restrictive access mode introduced in Kubernetes 1.22.</li>
+<li><strong>ReadOnlyManyPod (ROOP)</strong>: The volume can be mounted as read-only by a single pod. This is a more restrictive access mode introduced in Kubernetes 1.22.</li>
 </ul>
-</li>
-<li><strong>Appropriate StorageClass</strong>  <ul>
-<li>The cluster must have a default or specialized StorageClass that can dynamically provision <code>ReadWriteMany</code> volumes.</li>
-</ul>
-</li>
-</ul>
-<h2 id="production-vs-development">Production vs. Development<a class="headerlink" href="#production-vs-development" title="Permanent link">⚓︎</a></h2>
+<hr />
+<h2 id="eoepca-storage-scenarios"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Storage Scenarios<a class="headerlink" href="#eoepca-storage-scenarios" title="Permanent link">⚓︎</a></h2>
+<p>For the purposes of the building blocks described in this guide there are two main scenarios to consider, which require either <code>ReadWriteOnce</code> or <code>ReadWriteMany</code> access.</p>
+<p><strong>Scenario 1: Preservation (RWO)</strong></p>
+<p>This represents important data that must be preserved beyond the life of a pod, but does not need to be shared between multiple pods. Examples include databases, configuration files, and application state.</p>
+<p>This includes data that should be well managed and backed up as part of platform operations.</p>
+<p>Typically this would be implemented using <code>ReadWriteOnce</code> volumes, which can be provided by a variety of storage solutions including local storage, cloud provider block storage (e.g., AWS EBS, GCP Persistent Disks), or network-attached storage (e.g., NFS, iSCSI).</p>
+<p><strong><em>In this guide this type of volume is referred as <code>PERSISTENT_STORAGECLASS</code>.</em></strong></p>
+<p><strong>Scenario 2: Sharing (RWX)</strong></p>
+<p>This represents data that needs to be shared between multiple pods, such as input data for processing tasks, shared configuration files, or output data that needs to be accessed by multiple services.</p>
+<p>This data may be transient and not require long-term preservation, but it must be accessible to multiple pods concurrently.</p>
+<p>Typically this would be implemented using <code>ReadWriteMany</code> volumes, which can be provided by storage solutions such as NFS, GlusterFS, or cloud provider file storage services (e.g., AWS EFS, GCP Filestore).</p>
+<p><strong><em>In this guide this type of volume is referred as <code>SHARED_STORAGECLASS</code>.</em></strong></p>
+<hr />
+<h2 id="readwritemany-volumes"><code>ReadWriteMany</code> Volumes<a class="headerlink" href="#readwritemany-volumes" title="Permanent link">⚓︎</a></h2>
+<p>Special consideration is required for <code>ReadWriteMany</code> volumes, as not all Kubernetes clusters support this access mode by default.</p>
+<p>The following <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> building blocks require <code>ReadWriteMany</code> access:</p>
 <ul>
 <li>
-<p><strong>Production</strong>  </p>
+<p>Processing BB (OGC API Processing via <code>zoo-project</code> and Calrissian CWL Engine</p>
+<p>Calrissian orchestrates the execution of the OGC Application Package that comprises a CWL workflow. Calrissian relies upon shared <code>RWX</code> storage to stage input data, intermediate files, and output data that is passed between workflow steps (pods) and amongst pods that may be executing concurrently, such as when using scatter-gather patterns.</p>
+</li>
+<li>
+<p>Resource Registration BB</p>
+<p>The harvester workflows can download data assets to an <code>eodata</code> volume. A <code>RWX</code> volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets - e.g. to serve the data assets for retrieval via http URLs for access and visualisation.</p>
+</li>
+</ul>
+<h3 id="rwx-possible-implementations"><code>RWX</code> Possible Implementations<a class="headerlink" href="#rwx-possible-implementations" title="Permanent link">⚓︎</a></h3>
 <ul>
-<li>Use robust solutions like GlusterFS, IBM Spectrum Scale, or fully managed cloud file systems that support <code>ReadWriteMany</code>.</li>
-<li>Tools like OpenEBS or Longhorn can provide distributed block storage, but ensure they truly support multi-node RWX if your usage demands it.</li>
+<li>
+<p><strong>Production</strong></p>
+<p>For use in production environments, consider the following options:</p>
+<ul>
+<li>GlusterFS, IBM Spectrum Scale, Longhorn, OpenEBS, or fully managed cloud file systems that support <code>ReadWriteMany</code></li>
+<li>NFS can be used if carefully configured for high availability and reliability</li>
 <li><a href="https://juicefs.com/">JuiceFS</a> is another cloud-native option that can be configured for high availability.<br>
-  <em>See Multi-node Quick Start below</em></li>
-<li>NFS can be used if carefully configured for high availability and reliability.</li>
+  <em>See <a href="#quick-start-multi-node-with-juicefs">Multi-node Quick Start</a> below</em></li>
 </ul>
 </li>
 <li>
-<p><strong>Development / Testing</strong>  </p>
+<p><strong>Development / Testing</strong></p>
+<p>For development or testing environments, consider the following options:</p>
 <ul>
-<li>A simple NFS server or an OpenEBS/Longhorn single-node install might suffice for demos.</li>
-<li>HostPath or local volumes can be acceptable for quick tests, but not recommended for multi-node or production usage.</li>
+<li>HostPath provisioner for single-node clusters (e.g., k3d/k3s, Minikube, kind) - suitable for evaluation and demos<br>
+    <em>See <a href="#quick-start-single-node-with-hostpath-provisioner">Quick Start - Single-node with HostPath Provisioner</a> below</em></li>
+<li>A simple NFS server - e.g. running in a virtual machine</li>
+<li>If you have access to object storage, then JuiceFS can offer a simple solution - see <em>See Multi-node Quick Start below</em></li>
 </ul>
 </li>
 </ul>
-<p><strong>Which <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> Blocks Require <code>ReadWriteMany</code>?</strong></p>
-<ul>
-<li><strong>Processing Building Blocks</strong>: For instance, the CWL Processing Engine needs shared file access.</li>
-</ul>
-<p>Make sure to check which Building Blocks you plan to deploy and ensure the cluster&rsquo;s StorageClass and volume provisioning match these requirements.</p>
-<h2 id="setting-up-storage-classes">Setting Up Storage Classes<a class="headerlink" href="#setting-up-storage-classes" title="Permanent link">⚓︎</a></h2>
+<hr />
+<h2 id="reference-documentation">Reference Documentation<a class="headerlink" href="#reference-documentation" title="Permanent link">⚓︎</a></h2>
+<h3 id="storage-classes">Storage Classes<a class="headerlink" href="#storage-classes" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><strong>NFS Provisioner</strong>: <a href="https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner">NFS Subdir External Provisioner</a></li>
 <li><strong>OpenEBS</strong>: <a href="https://openebs.io/">OpenEBS Documentation</a></li>
 <li><strong>Longhorn</strong>: <a href="https://longhorn.io/">Longhorn Documentation</a></li>
 <li><strong>GlusterFS</strong>: <a href="https://docs.gluster.org/en/latest/">GlusterFS Documentation</a></li>
+<li><strong>JuiceFS</strong>: <a href="https://juicefs.com/docs/csi/introduction/">JuiceFS CSI Driver</a></li>
 </ul>
-<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">⚓︎</a></h2>
+<h3 id="kubernetes-storage">Kubernetes Storage<a class="headerlink" href="#kubernetes-storage" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/">Dynamic Volume Provisioning</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">Persistent Volumes</a></li>
@@ -1885,6 +2009,9 @@
 <h3 id="example-using-minio">Example using MinIO<a class="headerlink" href="#example-using-minio" title="Permanent link">⚓︎</a></h3>
 <p>To complete the demonstration, section <a href="../minio/#readwritemany-storage-using-juicefs"><code>S3 Storage (MinIO)</code></a> includes an example that uses the above approach to establish an object storage backed JuiceFS StorageClass providing <code>ReadWriteMany</code> access for <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Building Blocks.</p>
 <p>The JuiceFS approach described here is really designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case. Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner.</p>
+<blockquote>
+<p>It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the &lsquo;native&rsquo; S3 storage of the cloud provider should be used directly with JuiceFS.</p>
+</blockquote>
 <hr />
 <h2 id="quick-start-single-node-with-hostpath-provisioner">Quick Start - Single-node with HostPath Provisioner<a class="headerlink" href="#quick-start-single-node-with-hostpath-provisioner" title="Permanent link">⚓︎</a></h2>
 <p>For a development/testing environment such as the cluster established via the <a href="../kubernetes/#quick-start">Kubernetes Quick Start</a>, the HostPath provisioner can be used - noting that this can only be used for single node deployments. </p>

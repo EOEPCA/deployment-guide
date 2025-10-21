@@ -2103,7 +2103,7 @@ During the script execution, you will be prompted to provide:</p>
 <li><em>Example</em>: <code>letsencrypt-http01-apisix</code></li>
 </ul>
 </li>
-<li><strong><code>STORAGE_CLASS</code></strong>: Storage class for persistent volumes.  <ul>
+<li><strong><code>PERSISTENT_STORAGECLASS</code></strong>: Storage class for persistent volumes.  <ul>
 <li><em>Example</em>: <code>standard</code></li>
 </ul>
 </li>
@@ -2191,6 +2191,10 @@ Confirms which OGC API conformance classes and standards are supported by the se
 </span></code></pre></div>
 <p>You should receive a JSON response listing zero or more STAC items that match the query. If you have not yet ingested any items, you may get an empty result array (<code>"features": []</code>).  </p>
 <h3 id="4-ingesting-sample-records">4. Ingesting Sample Records<a class="headerlink" href="#4-ingesting-sample-records" title="Permanent link">⚓︎</a></h3>
+<p>For a quick demonstration, we can ingest a sample record into the catalogue - directly via its service pod.</p>
+<blockquote>
+<p>See the <a href="../resource-registration/">Resource Registration BB</a>, which is the preferred means to ingest records in a production environment.</p>
+</blockquote>
 <h4 id="41-find-the-resource-catalogue-pod">4.1. Find the Resource Catalogue Pod<a class="headerlink" href="#41-find-the-resource-catalogue-pod" title="Permanent link">⚓︎</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">catalogue_pod</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>resource-discovery<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>--selector<span class="o">=</span>io.kompose.service<span class="o">=</span>pycsw<span class="w"> </span>--output<span class="o">=</span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[*].metadata.name}&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Catalogue pod: </span><span class="nv">$catalogue_pod</span><span class="s2">&quot;</span>
@@ -2208,6 +2212,9 @@ Confirms which OGC API conformance classes and standards are supported by the se
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span>--config<span class="w"> </span>/etc/pycsw/pycsw.yml<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span>--path<span class="w"> </span>/tmp/sample_record.xml
 </span></code></pre></div>
+<blockquote>
+<p>A warning is reported regarding the <code>geometry</code> field, but this can be ignored for this example.</p>
+</blockquote>
 <h4 id="44-verify-the-ingested-record">4.4. Verify the Ingested Record<a class="headerlink" href="#44-verify-the-ingested-record" title="Permanent link">⚓︎</a></h4>
 <ul>
 <li>

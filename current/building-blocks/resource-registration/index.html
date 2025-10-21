@@ -1272,6 +1272,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#retain-the-eodata-volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      Retain the eodata volume
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1999,6 +2008,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#retain-the-eodata-volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      Retain the eodata volume
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2196,6 +2214,17 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <li><em>Default</em>: <code>eoepca</code></li>
 </ul>
 </li>
+<li><strong><code>PERSISTENT_STORAGECLASS</code></strong>: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for <code>Flowable</code> database.<ul>
+<li><em>Default</em>: <code>local-path</code></li>
+</ul>
+</li>
+<li><strong><code>SHARED_STORAGECLASS</code></strong>: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested <code>eodata</code>.<br><ul>
+<li><em>Default</em>: <code>standard</code><blockquote>
+<p>Note that <code>RWX</code> is specified for the <code>eodata</code> volume to which the harvester downloads harvested assets. A <code>RWX</code> volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets - such as the <abbr title="Earth Observation">EO</abbr> Data Server shown in example later in this page.</p>
+</blockquote>
+</li>
+</ul>
+</li>
 </ul>
 <h3 id="2-apply-kubernetes-secrets">2. Apply Kubernetes Secrets<a class="headerlink" href="#2-apply-kubernetes-secrets" title="Permanent link">⚓︎</a></h3>
 <p>Create required secrets:</p>
@@ -2207,6 +2236,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
   <em>Contains Flowable admin username and password</em></li>
 </ul>
 <h3 id="3-deploy-the-registration-api-using-helm">3. Deploy the Registration API Using Helm<a class="headerlink" href="#3-deploy-the-registration-api-using-helm" title="Permanent link">⚓︎</a></h3>
+<p>The Registration API provides a RESTful interface through which resources can be directly registered, updated, or deleted.</p>
 <p>Deploy the Registration API using the generated values file.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
@@ -2220,6 +2250,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
 </span></code></pre></div>
 <h3 id="4-deploy-the-registration-harvester-using-helm">4. Deploy the Registration Harvester Using Helm<a class="headerlink" href="#4-deploy-the-registration-harvester-using-helm" title="Permanent link">⚓︎</a></h3>
+<p>The Registration Harvester automates resource ingestion workflows using Flowable BPMN.</p>
 <p><strong>Deploy Flowable Engine:</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>flowable<span class="w"> </span>https://flowable.github.io/helm/
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>flowable
@@ -2233,15 +2264,15 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
 </span></code></pre></div>
 <p><strong>Deploy Registration Harvester Worker:</strong></p>
+<p>The BPMN workflows executed by the Flowable engine are implemented by workers that respond to &lsquo;topics&rsquo; referenced as steps in the BPMN definition. These workers perform tasks such as harvesting data from external sources, processing data, and registering metadata.</p>
 <p>By way of example, a <code>worker</code> is deployed that harvests <code>Landast</code> data from <a href="https://landsatlook.usgs.gov/stac-server">USGS</a>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Version 2.0.0-rc2-pr-63 pending PR #63 - https://github.com/EOEPCA/helm-charts-dev/pull/63</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2-pr-63<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc2.1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/generated-values.yaml
 </span></code></pre></div>
 <p>The Landsat harvester relies upon credentials for the USGS service. These can be obtained via free sign-up at the <a href="https://m2m.cr.usgs.gov/">USGS Machine-to-Machine (M2M) API</a>.</p>
 <p>The Landsat harvester worker expects a Kubernetes secret that provides these (and other) credentials.</p>
@@ -2376,13 +2407,13 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <h4 id="example-deploy-workflow-for-landsat-harvesting">Example - Deploy Workflow for Landsat harvesting<a class="headerlink" href="#example-deploy-workflow-for-landsat-harvesting" title="Permanent link">⚓︎</a></h4>
 <p>Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:</p>
 <ul>
-<li>landsat_discover_data (LandsatDiscoverHandler)</li>
-<li>landsat_continuous_data_discovery (LandsatContinuousDiscoveryHandler)</li>
-<li>landsat_get_download_urls (LandsatGetDownloadUrlHandler)</li>
-<li>landsat_download_data (LandsatDownloadHandler)</li>
-<li>landsat_untar (LandsatUntarHandler)</li>
-<li>landsat_extract_metadata (LandsatExtractMetadataHandler)</li>
-<li>landsat_register_metadata (LandsatRegisterMetadataHandler)</li>
+<li><code>landsat_discover_data</code> (LandsatDiscoverHandler)</li>
+<li><code>landsat_continuous_data_discovery</code> (LandsatContinuousDiscoveryHandler)</li>
+<li><code>landsat_get_download_urls</code> (LandsatGetDownloadUrlHandler)</li>
+<li><code>landsat_download_data</code> (LandsatDownloadHandler)</li>
+<li><code>landsat_untar</code> (LandsatUntarHandler)</li>
+<li><code>landsat_extract_metadata</code> (LandsatExtractMetadataHandler)</li>
+<li><code>landsat_register_metadata</code> (LandsatRegisterMetadataHandler)</li>
 </ul>
 <p>To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.</p>
 <p><strong>Workflow - Landsat Registration (main)</strong></p>
@@ -2457,10 +2488,13 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <p><strong><em>Logs&hellip;</em></strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>resource-registration<span class="w"> </span>logs<span class="w"> </span>-f<span class="w">  </span>deploy/landsat-harvester-worker
 </span></code></pre></div>
-<p><strong><em>Process instances&hellip;</em></strong></p>
-<p>Expecting an instance of the main <code>Landsat Workflow</code> process, and for each scene discovered, an instance of the <code>Landsat Scene Ingestion</code> process.</p>
 <blockquote>
-<p>This may take a few minutes to complete.</p>
+<p>Use <code>Ctrl-C</code> to exit the log stream.</p>
+</blockquote>
+<p><strong><em>Process instances&hellip;</em></strong></p>
+<p>We are expecting an instance of the main <code>Landsat Workflow</code> process, and for each scene discovered, an instance of the <code>Landsat Scene Ingestion</code> process.</p>
+<blockquote>
+<p>There may be a delay of a few minutes before all expected workflows are shown.</p>
 </blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://registration-harvester-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/flowable-rest/service/runtime/process-instances&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2468,35 +2502,48 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.data[] | &quot;\(.startTime) | \(.id) | \(.processDefinitionName)&quot;&#39;</span>
 </span></code></pre></div>
 <h4 id="check-the-catalogue-collection">Check the Catalogue collection<a class="headerlink" href="#check-the-catalogue-collection" title="Permanent link">⚓︎</a></h4>
-<p>Expecting 5 scenes registered into the Landsat collection.</p>
+<p>We are expecting 5 scenes registered into the Landsat collection.</p>
 <blockquote>
-<p>This may take a few minutes to complete.</p>
+<p>This may take some time, depending on your download connection to USGS.<br>
+Five products are downloaded - each of which is ~850MB.</p>
 </blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/collections/landsat-ot-c2-l2/items&quot;</span>
+</span></code></pre></div>
+<h4 id="retain-the-eodata-volume">Retain the <code>eodata</code> volume<a class="headerlink" href="#retain-the-eodata-volume" title="Permanent link">⚓︎</a></h4>
+<p>Given the time/bandwidth required to retrieve the harvested data - you may want to ensure that the Persistent Volume is retained for future reuse. For example, to reconnect with the downloaded data in the case that the Resource Registration BB is re-deployed.</p>
+<p>Depending on your <code>RWX</code> storage class, the <code>Retain</code> reclaim policy may already be set.</p>
+<p>Check reclaim policy of the <code>eodata</code> persistent volume&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="w"> </span><span class="nv">EODATA_PV</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pvc<span class="w"> </span><span class="s2">&quot;eodata&quot;</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;resource-registration&quot;</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.volumeName}&#39;</span><span class="k">)</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w"> </span><span class="nv">POLICY</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$EODATA_PV</span><span class="s2">&quot;</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.persistentVolumeReclaimPolicy}&#39;</span><span class="k">)</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;\nVolume Reclaim Policy is: </span><span class="nv">$POLICY</span><span class="s2">\n&quot;</span>
+</span></code></pre></div>
+<p>Otherwise, you can patch the persistent volume as follows&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="w"> </span><span class="nv">EODATA_PV</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pvc<span class="w"> </span><span class="s2">&quot;eodata&quot;</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;resource-registration&quot;</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.volumeName}&#39;</span><span class="k">)</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w"> </span>kubectl<span class="w"> </span>patch<span class="w"> </span>pv<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$EODATA_PV</span><span class="s2">&quot;</span><span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;persistentVolumeReclaimPolicy&quot;:&quot;Retain&quot;}}&#39;</span>
 </span></code></pre></div>
 <hr />
 <h3 id="delivery-of-data-assets">Delivery of data <code>assets</code><a class="headerlink" href="#delivery-of-data-assets" title="Permanent link">⚓︎</a></h3>
 <p>The default harvesting approach illustrated above maintains the harvested assets into an <code>eodata</code> persistent volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL <code>https://eodata.${INGRESS_HOST}/</code> - such that the registered <em>STAC Items</em> include asset hrefs that are rooted under this base URL.</p>
 <h4 id="example-service-for-asset-access">Example - Service for asset access<a class="headerlink" href="#example-service-for-asset-access" title="Permanent link">⚓︎</a></h4>
 <p>By way of an example, a simple NGINX service can be deployed to provide access to these assets - under the service URL <code>https://eodata.${INGRESS_HOST}/</code> - to correctly resolve the asset hrefs as registered in the STAC Items.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-eodata-server.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-eodata-server.yaml
 </span></code></pre></div>
 <h4 id="visualise-with-stac-browser">Visualise with STAC Browser<a class="headerlink" href="#visualise-with-stac-browser" title="Permanent link">⚓︎</a></h4>
 <p>Use STAC Browser to navigate the harvested STAC Collection and the referenced assets.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Resource Registration Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
-</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
-</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>
-</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>landsat-harvester-worker<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
