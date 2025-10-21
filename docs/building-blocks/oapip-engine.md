@@ -118,7 +118,7 @@ For Toil:
 helm repo add zoo-project https://zoo-project.github.io/charts/
 helm repo update zoo-project
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.4.14 \
+  --version 0.8.0 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace
