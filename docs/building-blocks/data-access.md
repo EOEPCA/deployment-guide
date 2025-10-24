@@ -1,4 +1,3 @@
-
 # Data Access Deployment Guide
 
 The **Data Access** Building Block provides feature-rich and reliable interfaces to geospatial data assets stored in the platform, addressing both human and machine users. This guide provides step-by-step instructions to deploy the Data Access BB in your Kubernetes cluster.
@@ -11,10 +10,12 @@ The Data Access Building Block provides STAC data discovery, OGC API Features an
 
 The building block offers:
 
-- STAC API for data discovery
+- STAC API for data discovery with optional transaction support
 - Support for retrieval and visualisation of raster and vector data via standard OGC APIs
 - Dynamic specification of which datasets should be delivered with which data access services
 - Integration with other building blocks through shared databases (e.g. pgSTAC)
+- Optional IAM integration for secure access control
+- Event-driven architecture support via CloudEvents
 
 ---
 
@@ -24,16 +25,26 @@ The Data Access BB consists of the following main components:
 
 1. **eoAPI**: A set of microservices for geospatial data access, including:
 
-    - **stac**: STAC API for accessing geospatial metadata.
-    - **raster**: Access to raster data via OGC APIs.
-    - **vector**: Access to vector data via OGC APIs.
+    - **stac**: STAC API for accessing geospatial metadata with transaction extensions
+    - **raster**: Access to raster data via OGC APIs
+    - **vector**: Access to vector data via OGC APIs
+    - **multidim**: Support for multidimensional data access
 
 2. **PostgreSQL with PostGIS and pgSTAC**<br>
-   Database for storing geospatial metadata and data managed by the [Crunchy Data Postgres Operator (pgo)](https://access.crunchydata.com/documentation/postgres-operator).
+   Database for storing geospatial metadata and data. Can be deployed as:
+   - Internal cluster managed by [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+   - External PostgreSQL accessed via External Secrets Operator
     
-3. **eoapi-support**<br>
-   Optional but recommended monitoring stack (Grafana, Prometheus, metrics server) to observe and manage the Data Access services.
-    
+3. **STAC Manager UI**<br>
+   Web interface for managing STAC collections and items with optional OAuth integration
+   
+4. **EOAPI Maps Plugin**<br>
+   PyGeoAPI-based service for OGC API Maps implementation
+
+5. **Optional Components:**
+   - **eoapi-support**: Monitoring stack (Grafana, Prometheus, metrics server)
+   - **eoapi-notifier**: CloudEvents integration for event-driven workflows
+   - **IAM Integration**: Keycloak authentication and OPA authorization
 
 ---
 
@@ -46,13 +57,20 @@ Before deploying the Data Access Building Block, ensure you have the following:
 | Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller   | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md)  |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
-| Object Store                 | Accessible object store (i.e. MinIO)   | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
+| Ingress Controller | Properly installed (NGINX or APISIX)   | [Installation Guide](../prerequisites/ingress/overview.md)       |
+| TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)      |
+| Object Store       | Accessible object store (i.e. MinIO)   | [MinIO Deployment Guide](../prerequisites/minio.md)              |
 
+**Optional Prerequisites (for advanced features):**
+
+| Component                | Requirement                    | Required For                        |
+| ------------------------ | ------------------------------ | ----------------------------------- |
+| External Secrets Operator | If using external PostgreSQL   | Production deployments              |
+| Keycloak                 | For IAM integration            | Secure access control               |
+| OPA (Open Policy Agent)  | For authorization              | Fine-grained access policies        |
+| Knative Eventing         | For CloudEvents                | Event-driven workflows              |
 
 **Clone the Deployment Guide Repository:**
-
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/data-access
@@ -61,7 +79,6 @@ cd deployment-guide/scripts/data-access
 **Validate your environment:**
 
 Run the validation script to ensure all prerequisites are met:
-
 ```bash
 bash check-prerequisites.sh
 ```
@@ -73,90 +90,109 @@ bash check-prerequisites.sh
 ### 1. Run the Configuration Script
 
 The configuration script will prompt you for necessary configuration values, generate configuration files, and prepare for deployment.
-
 ```bash
 bash configure-data-access.sh
 ```
 
-**Configuration Parameters**
+**Core Configuration Parameters**
 
 During the script execution, you will be prompted to provide:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts.
+- **`INGRESS_HOST`**: Base domain for ingress hosts
     - _Example_: `example.com`
-- **`CLUSTER_ISSUER`** (optional): Cert-manager Cluster Issuer for TLS certificates.
-    - _Example_: `letsencrypt-prod`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes
     - _Example_: `standard`
-- **`S3_HOST`**: Host URL for MinIO or S3-compatible storage.
+- **`S3_HOST`**: Host URL for MinIO or S3-compatible storage
     - _Example_: `minio.example.com`
-- **`S3_ACCESS_KEY`**: Access key for your S3 storage.
-- **`S3_SECRET_KEY`**: Secret key for S3 storage.
+- **`S3_ACCESS_KEY`**: Access key for your S3 storage
+- **`S3_SECRET_KEY`**: Secret key for S3 storage
+- **`S3_ENDPOINT`**: S3 endpoint for EOAPI services
+    - _Example_: `eodata.cloudferro.com` or `minio.example.com`
+
+**Advanced Configuration Options**
+
+- **`USE_EXTERNAL_POSTGRES`**: Use external PostgreSQL with External Secrets Operator (yes/no)
+    - If yes, you'll be prompted for:
+        - **`POSTGRES_EXTERNAL_SECRET_NAME`**: External secret name (default: `default-pguser-eoapi`)
+    - If no, you'll configure:
+        - **`POSTGRES_REPLICAS`**: Number of PostgreSQL replicas
+        - **`POSTGRES_STORAGE_SIZE`**: Storage size for PostgreSQL
+
+- **`ENABLE_IAM`**: Enable IAM/Keycloak integration (yes/no)
+    - If yes, you'll configure:
+        - **`KEYCLOAK_URL`**: Keycloak server URL
+        - **`KEYCLOAK_REALM`**: Keycloak realm name
+        - **`KEYCLOAK_CLIENT_ID`**: Client ID for EOAPI
+        - **`OPA_URL`**: OPA server URL for authorization
+
+- **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
+- **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no)
 
 
-### 2. Apply Secrets
-The script will create a Kubernetes secret for the S3 credentials. Ensure you have the `S3_ACCESS_KEY` and `S3_SECRET_KEY` set in your environment.
+### 3. Deployment
 
+#### Apply Secrets
 ```bash
 bash apply-secrets.sh
 ```
 
-### 3. Deploy PostgreSQL Operator and eoAPI
-
-1. **Install the PostgreSQL Operator (pgo) from the Crunchy Data OCI registry:**
-    
+#### Deploy PostgreSQL (if using internal)
 ```bash
-helm upgrade -i pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
+helm repo add postgres-operator https://postgres-operator-examples.github.io/charts
+helm repo update
+
+helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
   --version 5.6.0 \
   --namespace data-access \
   --create-namespace \
-  --values postgres/generated-values.yaml
+  --values postgres/generated-values.yaml \
+  --wait
 ```
-    
-2. **Install `eoAPI`:**
-    
+
+#### Deploy eoAPI
 ```bash
 helm repo add eoapi https://devseed.com/eoapi-k8s/
-helm repo update eoapi
+helm repo update
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.6.0 \
+  --version 0.7.12 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
 ```
 
-3. **Deploy STAC Admin Manager**
-
-> Note: The STAC Manager may not deploy fully, if you see `CrashLoopBackOff` errors, this is expected. The STAC Manager is not required for the Data Access Building Block to function
- 
+#### Deploy STAC Manager
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i stac-manager eoepca-dev/stac-manager \
-  --version 0.0.3 \
+helm repo add stac-manager https://stac-manager.ds.io/
+helm repo update
+helm upgrade -i stac-manager stac-manager/stac-manager \
+  --version 0.0.11 \
   --namespace data-access \
   --values stac-manager/generated-values.yaml
 ```
 
-4. **Deploy the Ingress (APISIX Only):**
-
-If you are using `nginx` then you can **skip** this step as the ingress will be deployed as part of the `eoapi` chart.
-
+#### Deploy EOAPI Maps Plugin
 ```bash
-kubectl apply -f eoapi/generated-ingress.yaml
-```
-
-5. **Deploy EOAPI Maps Plugin**
-
-```bash
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
+helm repo update
 helm upgrade -i eoapi-maps-plugin eoepca-dev/eoapi-maps-plugin \
   --version 0.0.21 \
   --namespace data-access \
   --values eoapi-maps-plugin/generated-values.yaml
 ```
 
+#### Configure Ingress/Routes
 
-6. **(Optional) Install `eoapi-support`** for Grafana, Prometheus, and the metrics server:
-    
+For APISIX with IAM:
+```bash
+kubectl apply -f iam/generated-iam.yaml  # If IAM enabled
+kubectl apply -f routes/generated-apisix-route.yaml  # APISIX routes
+```
+
+For APISIX without IAM or NGINX:
+```bash
+kubectl apply -f eoapi/generated-ingress.yaml
+```
+
+#### (Optional) Deploy Monitoring
 ```bash
 helm upgrade -i eoapi-support eoapi/eoapi-support \
   --version 0.1.7 \
@@ -164,50 +200,49 @@ helm upgrade -i eoapi-support eoapi/eoapi-support \
   --values eoapi-support/generated-values.yaml
 ```
 
-> **Note**: If you prefer to monitor Data Access with your own monitoring solution, you can skip this step.
-
-
 ---
 
 ### 4. Monitoring the Deployment
 
-After deploying, you can monitor the status of the deployments:
-
+After deploying, monitor the status:
 ```bash
 kubectl get all -n data-access
 ```
 
-Check that all pods are in the `Running` state and that services/ingresses are properly exposed.
+Run validation:
+```bash
+bash validation.sh
+```
 
 ---
 
 ### 5. Accessing the Data Access Services
 
-Once the deployment is complete and all pods are running, you can access the services:
+Once deployment is complete:
 
-- **eoAPI STAC API:**  
-    `https://eoapi.${INGRESS_HOST}/stac/`
-    
-- **Grafana** (if `eoapi-support` is installed and ingress is enabled):  
-    `https://eoapisupport.${INGRESS_HOST}/`
+**Core Services:**
+- **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/`
+- **Raster API:** `https://eoapi.${INGRESS_HOST}/raster/`
+- **Vector API:** `https://eoapi.${INGRESS_HOST}/vector/`
+- **Multidim API:** `https://eoapi.${INGRESS_HOST}/multidim/`
+- **STAC Manager UI:** `https://eoapi.${INGRESS_HOST}/manager/`
+- **Maps API:** `https://eoapi.${INGRESS_HOST}/maps/`
 
-- **eoAPI Maps Plugin:**  
-    `https://maps.${INGRESS_HOST}/`
+**Optional Services:**
+- **Grafana** (if monitoring enabled): `https://eoapisupport.${INGRESS_HOST}/`
 
 ---
 
 ## Load Sample Collection
 
-The following steps load a sample `Sentinel2-L2A-Iceland` collection into eoAPI.
-
+Load the sample `Sentinel-2-L2A-Iceland` collection:
 ```bash
 cd collections/sentinel-2-iceland
 ../ingest.sh
 cd ../..
 ```
 
-Check the loaded collection via STAC Browser...
-
+Check the loaded collection via STAC Browser:
 ```bash
 source ~/.eoepca/state
 xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_HOST}/stac/collections/sentinel-2-iceland
@@ -217,97 +252,61 @@ xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_
 
 ## Testing and Validation
 
-Below are some quick ways to test and validate the Data Access services.
-
 ### 1. Access the Swagger UI
 
-The Data Access Building Block provides Swagger UI documentation for its APIs, allowing you to interact with the APIs directly from your browser.
+- **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/api.html`
+- **Raster API:** `https://eoapi.${INGRESS_HOST}/raster/api.html`
+- **Vector API:** `https://eoapi.${INGRESS_HOST}/vector/api.html`
+- **Multidim API:** `https://eoapi.${INGRESS_HOST}/multidim/api.html`
 
-- **eoAPI STAC API Swagger UI**:  
-    `https://eoapi.${INGRESS_HOST}/stac/api.html`
-    
-- **eoAPI Raster API Swagger UI**:  
-    `https://eoapi.${INGRESS_HOST}/raster/api.html`
-    
-- **eoAPI Vector API Swagger UI**:  
-    `https://eoapi.${INGRESS_HOST}/vector/api.html`
+### 2. Access the STAC Browser UI
 
-Replace `${INGRESS_HOST}` with your actual ingress host domain.
-
-### 2. Access the STAC Manager UI
+> There is a sample collection loaded in the previous step.
 
 ```bash
 source ~/.eoepca/state
-xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}"
+xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
 ```
-
-### 3. Run Demo Jupyter Notebooks
-
-The [EOEPCA/demo](https://github.com/EOEPCA/demo) Jupyter Notebooks showcase how to interact with the Data Access services programmatically, including examples for data discovery, visualization, and data download using the Data Access APIs. See the [04 Data Access Notebook](https://github.com/EOEPCA/demo/blob/main/demoroot/notebooks/04%20Data%20Access.ipynb) for usage examples.
-
-- Before running the notebooks, ensure that sample data is registered into the Data Access component. Follow the [Resource Registration Guide](./resource-registration.md).
-
-- In the notebooks, set the `base_domain` variable to reflect your endpoint:
-    
-```python
-base_domain = "${INGRESS_HOST}"
-```
-
-For more information on how to run the demo Jupyter Notebooks, please visit the [EOEPCA/demo Readme](https://github.com/EOEPCA/demo/blob/main/README.md).
 
 ### 3. Perform Basic API Tests
 
-You can perform basic tests using tools like `curl` or directly through the Swagger UI.
-
-**Example: Retrieve STAC API Landing Page**
-
+**Retrieve STAC API Landing Page:**
 ```bash
 source ~/.eoepca/state
 curl -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json"
 ```
 
-**Example: Search STAC Items**
+**Search STAC Items:**
 
 ```bash
-source ~/.eoepca/state
 curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
-    "bbox": [-10, 35, 0, 45],
-    "datetime": "2021-01-01T00:00:00Z/2021-12-31T23:59:59Z",
+    "bbox": [-130.0, 20.0, -60.0, 55.0],
+    "datetime": "2001-01-01T00:00:00Z/2021-12-31T23:59:59Z",
     "limit": 10
   }'
 ```
-
-### 4. Test Suite Execution
-
-Run the _Data Access_ tests from the system test suite.
-
-```bash
-../../test-suite.sh test/data-access
-```
-
-**_The test results are summarised to the file `test-report.xml`._**
 
 ---
 
 ## Uninstallation
 
-To uninstall the Data Access Building Block and clean up associated resources:
-
+To uninstall the Data Access Building Block:
 ```bash
 helm uninstall eoapi -n data-access
 helm uninstall eoapi-maps-plugin -n data-access
 helm uninstall stac-manager -n data-access
-helm uninstall pgo -n data-access
+helm uninstall postgres-operator -n data-access  # or pgo if using Crunchy
+helm uninstall eoapi-support -n data-access  # if monitoring was installed
 
 kubectl delete namespace data-access
 ```
-
----
 
 ## Further Reading
 
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
-- [Crunchy Data Postgres Operator Documentation](https://access.crunchydata.com/documentation/postgres-operator/)
+- [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
+- [External Secrets Operator](https://external-secrets.io/)
+- [APISIX Ingress Controller](https://apisix.apache.org/docs/ingress-controller/getting-started/)

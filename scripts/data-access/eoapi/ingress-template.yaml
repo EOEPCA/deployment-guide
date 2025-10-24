@@ -1,131 +1,322 @@
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
 metadata:
-  name: eoapi-raster
+  name: stac
   namespace: data-access
-  annotations:
-    k8s.apisix.apache.org/enable-cors: "true"
-    k8s.apisix.apache.org/http-to-https: "true"
-    k8s.apisix.apache.org/use-regex: "true"
-    k8s.apisix.apache.org/rewrite-target-regex: "/raster(/|$)(.*)"
-    k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
 spec:
-  ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  rules:
-  - host: eoapi.{{ getenv "INGRESS_HOST" }}
-    http:
+  http:
+  - name: manager-redirect
+    websocket: true
+    backends:
+    - serviceName: stac-manager
+      servicePort: 80
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-      - path: /raster(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: raster
-            port:
-              number: 8080
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-  - hosts:
-    - eoapi.{{ getenv "INGRESS_HOST" }}
-    secretName: eoapi-tls
-  {{- end }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: eoapi-stac
-  namespace: data-access
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-    k8s.apisix.apache.org/enable-cors: "true"
-    k8s.apisix.apache.org/http-to-https: "true"
-    k8s.apisix.apache.org/use-regex: "true"
-    k8s.apisix.apache.org/rewrite-target-regex: "/stac(/|$)(.*)"
-    k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
-spec:
-  ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  rules:
-  - host: eoapi.{{ getenv "INGRESS_HOST" }}
-    http:
+      - /manager
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /manager/
+  - name: manager-route
+    websocket: true
+    backends:
+    - serviceName: stac-manager
+      servicePort: 80
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-      - path: /stac(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: stac
-            port:
-              number: 8080
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-  - hosts:
-    - eoapi.{{ getenv "INGRESS_HOST" }}
-    secretName: eoapi-tls
-  {{- end }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: eoapi-vector
-  namespace: data-access
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-    k8s.apisix.apache.org/enable-cors: "true"
-    k8s.apisix.apache.org/http-to-https: "true"
-    k8s.apisix.apache.org/use-regex: "true"
-    k8s.apisix.apache.org/rewrite-target-regex: "/vector(/|$)(.*)"
-    k8s.apisix.apache.org/rewrite-target-regex-template: "/$2"
-spec:
-  ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  rules:
-  - host: eoapi.{{ getenv "INGRESS_HOST" }}
-    http:
+      - /manager/
+      - /manager/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/manager)($|/.*)
+        - $2
+      enable: true
+  - name: browser-redirect
+    backends:
+    - serviceName: eoapi-browser
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-      - path: /vector(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: vector
-            port:
-              number: 8080
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-  - hosts:
-    - eoapi.{{ getenv "INGRESS_HOST" }}
-    secretName: eoapi-tls
-  {{- end }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: eoapi-stac-manager
-  namespace: data-access
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-    k8s.apisix.apache.org/enable-cors: "true"
-    k8s.apisix.apache.org/http-to-https: "true"
-    k8s.apisix.apache.org/enable-websocket: "true"
-spec:
-  ingressClassName: {{ getenv "INGRESS_CLASS" }}
-  rules:
-  - host: eoapi.{{ getenv "INGRESS_HOST" }}
-    http:
+      - /browser
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /browser/
+  - name: browser-route
+    backends:
+    - serviceName: eoapi-browser
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: stac-manager
-            port:
-              number: 9000
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-  - hosts:
-    - eoapi.{{ getenv "INGRESS_HOST" }}
-    secretName: eoapi-tls
-  {{- end }}
+      - /browser/
+      - /browser/*
+  - name: vector-redirect
+    backends:
+    - serviceName: eoapi-vector
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /vector
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /vector/
+  - name: vector-route
+    backends:
+    - serviceName: eoapi-vector
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /vector/
+      - /vector/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/vector)($|/.*)
+        - $2
+      enable: true
+  - name: multidim-redirect
+    backends:
+    - serviceName: eoapi-multidim
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /multidim
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /multidim/
+  - name: multidim-route
+    backends:
+    - serviceName: eoapi-multidim
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /multidim/
+      - /multidim/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/multidim)($|/.*)
+        - $2
+      enable: true
+  - name: raster-redirect
+    backends:
+    - serviceName: eoapi-raster
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /raster
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /raster/
+  - name: raster-route
+    backends:
+    - serviceName: eoapi-raster
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /raster/
+      - /raster/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/raster)($|/.*)
+        - $2
+      enable: true
+  - name: stac-redirect
+    backends:
+    - serviceName: eoapi-stac
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      methods:
+      - GET
+      paths:
+      - /stac
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /stac/
+    - name: cors
+      enable: true
+  - name: stac-open-route
+    backends:
+    - serviceName: eoapi-stac
+      servicePort: 8080
+    match:
+      hosts:
+        - eoapi.{{ getenv "INGRESS_HOST" }}
+      methods:
+        - GET
+      paths:
+        - /stac/
+        - /stac/api*
+        - /stac/collections
+        - /stac/collections/*
+      exprs:
+      - subject:
+          scope: Path
+          name: uri
+        op: RegexNotMatch
+        value: '^/stac/collections/ws-.*'
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/stac)($|/.*)
+        - $2
+      enable: true
+    - name: cors
+      enable: true
+  - name: stac-open-search-route
+    backends:
+    - serviceName: eoapi-stac
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      methods:
+      - POST
+      paths:
+      - /stac/search
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/stac)($|/.*)
+        - $2
+      enable: true
+    - name: cors
+      enable: true
+  - name: stac-protected-route
+    backends:
+    - serviceName: eoapi-stac
+      servicePort: 8080
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /stac/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/stac)($|/.*)
+        - $2
+      enable: true
+    - name: openid-connect
+      enable: true
+      config:
+        discovery: "{{ getenv "KEYCLOAK_URL" }}/realms/{{ getenv "KEYCLOAK_REALM" }}/.well-known/openid-configuration"
+        use_jwks: true
+        bearer_only: false # as we want to redirect to login screen (default: false)
+        set_access_token_header: true # required for subsequent OPA check (default: true)
+        access_token_in_authorization_header: true # required for subsequent OPA check (default: false)
+        set_id_token_header: false # not needed (default: true)
+        set_userinfo_header: false # not needed (default: true)
+        client_id: {{ getenv "KEYCLOAK_CLIENT_ID" }}
+        client_secret: ""
+    - name: opa
+      enable: true
+      config:
+        host: {{ getenv "OPA_URL" }}
+        policy: eoepca/dataaccess/eoapi
+    - name: cors
+      enable: true
+  - name: maps-redirect
+    backends:
+    - serviceName: eoapi-maps-plugin
+      servicePort: 5000
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /maps
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /maps/
+  - name: maps-route
+    backends:
+    - serviceName: eoapi-maps-plugin
+      servicePort: 5000
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /maps/
+      - /maps/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/maps)($|/.*)
+        - $2
+      enable: true
+  - name: docs-redirect
+    backends:
+    - serviceName: eoapi-doc-server
+      servicePort: 80
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /docs
+      - /
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /docs/
+  - name: docs-route
+    backends:
+    - serviceName: eoapi-doc-server
+      servicePort: 80
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /docs/
+      - /docs/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/docs)($|/.*)
+        - $2
+      enable: true
