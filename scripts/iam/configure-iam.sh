@@ -45,7 +45,6 @@ echo "IDENTITY_API_CLIENT_ID: $IDENTITY_API_CLIENT_ID"
 echo "IDENTITY_API_CLIENT_SECRET: $IDENTITY_API_CLIENT_SECRET"
 echo ""
 
-
 add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
 add_to_state_file "OIDC_ISSUER_URL" "${HTTP_SCHEME}://auth.$INGRESS_HOST/realms/$REALM"
 
@@ -54,7 +53,7 @@ echo "Generating configuration files..."
 
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 if [ "$INGRESS_CLASS" == "apisix" ]; then
-    gomplate -f "apisix-tls-template.yaml" -o "apisix-tls.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "apisix-tls-template.yaml" -o "apisix-tls.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 echo "✅ Configuration files generated."

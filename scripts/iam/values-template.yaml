@@ -89,7 +89,7 @@ iam: &iam
     {{- end }}
 
     # "Official" OPA URL (used as root URL for the client if one is created)
-    url: {{ getenv "INGRESS_SCHEME" }}://opa.{{ getenv "INGRESS_HOST" }}
+    url: {{ getenv "HTTP_SCHEME" }}://opa.{{ getenv "INGRESS_HOST" }}
     hosts:
       - opa.{{ getenv "INGRESS_HOST" }}
     paths:
@@ -112,7 +112,7 @@ iam: &iam
     {{- else }}
     createRoute: false
     {{- end }}
-    url: {{ getenv "INGRESS_SCHEME" }}://identity-api.{{ getenv "INGRESS_HOST" }}
+    url: {{ getenv "HTTP_SCHEME" }}://identity-api.{{ getenv "INGRESS_HOST" }}
     hosts:
       - identity-api.{{ getenv "INGRESS_HOST" }}
     paths:
@@ -419,14 +419,14 @@ opal:
           "force_cache": true,
           "force_cache_duration_seconds": 3600 # Cache response for an hour
         })
-        jwks := jwks_request("{{ getenv "OIDC_ISSUER_URL" }}/protocol/openid-connect/certs").raw_body
+        # FIXED: Use internal Keycloak service URL for JWKS
+        jwks := jwks_request("http://iam-keycloak.iam.svc.cluster.local/realms/eoepca/protocol/openid-connect/certs").raw_body
         echo := input if {
           print(input)
         }
         default allow_policy_evaluation := false
         allow_policy_evaluation if {
           # Generally allow GET and POST on /v1/data/**
-          #"GET" == input.method
           input.method in ["GET", "POST"]
           "v1" == input.path[0]
           "data" == input.path[1]
