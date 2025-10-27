@@ -4,75 +4,39 @@
 
 The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps
 
-***
+---
 
-### Key Features
+## Introduction
 
-- **JupyterLab** for interactive analysis of EO data.
-- **Code Server** for browser-based coding environments.
-- **Custom Dashboards** for specialized visualizations or user-defined apps.
-- **Multi-User, Multi-Profile** environment—users can be grouped, assigned different resource quotas, and use different container images.
+The Application Hub Building Block provides JupyterLab notebooks, Code Server and custom web applications for EO data analysis and processing.
 
-### Architecture Overview
+The building block offers:
 
-1. **JupyterHub** at the core, spawning user-specific pods.
-2. **OIDC** for authentication & authorization.
-3. **Profiles** to define CPU/RAM limits, images, volumes, environment variables, etc.
-4. **Group-based Access** controlling which profiles are visible to which user groups.
+- JupyterLab for interactive data analysis and notebook execution
+- Code Server for browser-based development environments
+- Multi-user support with profile-based resource allocation
+- Group-based access control for different user categories
+- Integration with OIDC for authentication
+- Persistent storage for user workspaces
+- Customisable container images per profile
 
-***
+---
 
-## User Scenarios
-
-The Application Hub accommodates various user roles and scenarios:
-
-### Development Scenario
-
-**Stakeholders**: Service Providers and Developers
-
-Developers access the Application Hub to utilise a software development environment in a Software-as-a-Service (SaaS) model. They can create EO applications using programming languages like Python, R, or Java and leverage libraries such as SNAP and GDAL for processing and analysis. The platform supports:
-
-- **Application Packaging**: Bundle EO applications with necessary configurations and dependencies.
-- **Version Control**: Integrate with tools like Git for source code management.
-- **Continuous Integration**: Use CI/CD pipelines for automated testing and deployment.
-- **Collaboration**: Share code and resources within teams.
-
-### Execution Scenario
-
-**Stakeholders**: End-users (Scientists, Researchers, EO Community Members)
-
-End-users can execute operational applications made available on the platform. They benefit from:
-
-- **Data Access**: Utilise the platform's data holdings and data catalog to find compatible datasets.
-- **Parameter Specification**: Input parameters required for application execution.
-- **Monitoring**: Receive real-time updates on processing status, resource consumption estimates, and expected completion times.
-- **Resource Management**: The platform handles resource allocation and scalability for application execution.
-
-### Exploratory Analysis
-
-**Stakeholders**: End-users and Developers
-
-Users engage with the Application Hub's SaaS products designed for in-depth interaction, analysis, and execution of EO applications:
-
-- **Interactive Graphical Applications (IGAs)**: Containerised applications for geospatial data exploration.
-- **Web Apps and Notebooks**: Specialised tools for data analysis and visualisation.
-- **Customisable Dashboards**: Tailored interfaces to meet specific analytical needs.
-- **In-Environment Execution**: Ability to execute new analyses or applications within the same environment.
-
-***
 ## Prerequisites
 
-| Component        | Requirement                            | Documentation Link                                                                            |
-| ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
-| Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
-| kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
-| APISIX Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/apisix.md) |
-| TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
-| OIDC Provider             | An OIDC Provider must be available              | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
+Before deploying the Application Hub, ensure you have the following:
+
+| Component          | Requirement                            | Documentation Link                                                |
+| ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
+| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
+| Helm               | Version 3.8 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
+| kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
+| Ingress Controller | Properly installed (NGINX or APISIX)   | [Installation Guide](../prerequisites/ingress/overview.md)       |
+| TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)      |
+| OIDC Provider      | Keycloak or compatible                 | [IAM Deployment Guide](../building-blocks/iam/main-iam.md)       |
+| Storage Class      | For persistent volumes                 | Default or custom storage class                                  |
 
 **Clone the Deployment Guide Repository:**
-
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/app-hub
@@ -81,41 +45,42 @@ cd deployment-guide/scripts/app-hub
 **Validate your environment:**
 
 Run the validation script to ensure all prerequisites are met:
-
 ```bash
 bash check-prerequisites.sh
 ```
 
-***
+---
 
-## Deployment
+## Deployment Steps
 
-
-1. **Run the Setup Script**:
+### 1. Run the Configuration Script
 
 ```bash
 bash configure-app-hub.sh
 ```
 
-**Key Configuration Parameters**:
+**Core Configuration Parameters**
+
+During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
-- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-http01-apisix`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
+- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
+    - *Example*: `letsencrypt-http01-apisix`
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
     - *Example*: `kubernetes.io/os`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
     - *Example*: `linux`
 
-**OIDC Configuration**:
+**OIDC Configuration (We will set this up in the next step)**:
 
-- **`KEYCLOAK_HOST`**: OIDC provider base domain. JupyterHub requires an OIDC provider for authentication.
+- **`KEYCLOAK_HOST`**: OIDC provider base domain will be asked if this hasn't been set. JupyterHub requires an OIDC provider for authentication.
     - *Example*: `auth.example.com` 
-
+- **`APPHUB_CLIENT_ID`**: Client ID for the OIDC provider.
+    - *Example*: `application-hub`
 
 ---
 
@@ -137,7 +102,7 @@ When prompted:
 
 - **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
 - **Client ID**: `application-hub`.
-- **Client name** and **description**: Provide any helpful text (e.g., `Application Hub Client`).
+- **Client name** and **description**: Provide any helpful text (e.g `Application Hub Client`).
 - **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
 - **Subdomain**: Use `app-hub` for the OAPIP engine. 
 - **Additional Subdomains**: Leave blank.
@@ -149,8 +114,6 @@ After it completes, you should see a JSON snippet confirming the newly created c
 
 3. **Deploy the Application Hub Using Helm**
 
-Return to the `deployment-guide/scripts/app-hub` directory and deploy the Application Hub using Helm:
-
 ```bash
 helm repo add eoepca https://eoepca.github.io/helm-charts
 helm repo update eoepca
@@ -161,8 +124,7 @@ helm upgrade -i application-hub eoepca/application-hub \
 --create-namespace
 ```
 
-Deploy the ingress:
-
+#### Configure Ingress
 ```bash
 kubectl apply -f generated-ingress.yaml
 ```
@@ -224,15 +186,15 @@ Select one of the profiles to launch a profile. You will then be redirected to t
 
 ![Launch a Profile](../img/apphub/launch.jpeg)
 
-> **Note**: This default setup is primarily for **testing or demonstrations**. In production, we strongly recommend managing users and groups via Keycloak (or another OIDC provider) and assigning roles accordingly. This ensures a more secure and maintainable approach to user management. For more details, see the [Jupyter Hub Documentation](https://eoepca.github.io/application-hub-context/configuration/) section below on configuring additional users, groups, and profiles.
-
 
 ***
+---
 
 ## 5. Validation
 
 ### 5.1 Automated Validation
 
+Run validation:
 ```bash
 bash validation.sh
 ```
@@ -260,7 +222,7 @@ Ensure the JupyterHub pod(s) and other components are in the `Running` state.
 - If you have multiple **Profiles**, pick one.
 - Wait for the container to start. You should end up in a JupyterLab interface.
 
-If something fails (e.g., a 401 from Keycloak or a "profile list is empty" error), review the logs:
+If something fails (e.g. a 401 from Keycloak or a "profile list is empty" error), review the logs:
 
 ```bash
 kubectl logs -n application-hub <application-hub-pod-name>
