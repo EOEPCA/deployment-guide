@@ -89,6 +89,8 @@ opensearch-dashboards:
 ## Example health checks to deploy with the resource health BB itself
 resource-health:
   telemetry_api:
+    image:
+      pullPolicy: Always
     replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
@@ -97,41 +99,47 @@ resource-health:
         value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
       - name: OPEN_ID_CONNECT_AUDIENCE
         value: "account"
+      - name: RH_TELEMETRY_API_DEFAULT_PAGE_SIZE
+        value: "100"
+      - name: RH_TELEMETRY_API_MAX_PAGE_SIZE
+        value: "10000"
 
     use_hook_configmap: True
     hooks:
       oidc_auth_hooks.py: |
-        from python_opentelemetry_access.telemetry_hooks.utils import *
+        from fastapi import Request
+        import python_opentelemetry_access.telemetry_hooks.utils as hu
         from eoepca_security import OIDCProxyScheme, Tokens
         from typing import TypedDict
         import os
+
 
         class UserInfo(TypedDict):
             username: str | None
             access_token: str
 
-        def get_fastapi_security() -> OIDCProxyScheme:
-            return OIDCProxyScheme(
-                openIdConnectUrl=os.environ["OPEN_ID_CONNECT_URL"],
-                audience=os.environ["OPEN_ID_CONNECT_AUDIENCE"],
-                id_token_header="x-id-token",
-                refresh_token_header="x-refresh-token",
-                auth_token_header="Authorization",
-                auth_token_in_authorization=True,
-                auto_error=True,  ## Set False to allow unauthenticated access!
-                scheme_name="OIDC behind auth proxy",
-            )
+
+        oidc_proxy_scheme = OIDCProxyScheme(
+            openIdConnectUrl=os.environ["OPEN_ID_CONNECT_URL"],
+            audience=os.environ["OPEN_ID_CONNECT_AUDIENCE"],
+            id_token_header="x-id-token",
+            refresh_token_header="x-refresh-token",
+            auth_token_header="Authorization",
+            auth_token_in_authorization=True,
+            auto_error=True,  ## Set False to allow unauthenticated access!
+            scheme_name="OIDC behind auth proxy",
+        )
+
+
+        async def get_fastapi_security(request: Request) -> Tokens | None:
+            return await oidc_proxy_scheme(request)
 
 
         def on_auth(tokens: Tokens | None) -> UserInfo:
             if tokens is None or tokens["auth"] is None:
-                raise APIException(
-                    Error(
-                        status="403",
-                        code="MissingTokens",
-                        title="Missing authentication token",
-                        detail="Potentially missing authenticating proxy",
-                    )
+                raise hu.APIForbiddenError(
+                    title="Missing authentication token",
+                    detail="Potentially missing authenticating proxy",
                 )
 
             username_claim = (
@@ -145,10 +153,12 @@ resource-health:
                 access_token=tokens["auth"].raw,
             )
 
+
         ## For the OpenSearch proxy/backend
 
-        def get_opensearch_config(userinfo: UserInfo) -> OpensearchConfig:
-            return OpensearchConfig(
+
+        def get_opensearch_config(userinfo: UserInfo) -> hu.OpensearchConfig:
+            return hu.OpensearchConfig(
                 ## Host to connect to
                 # hosts=[{"host": "localhost", "port": 9200}],
                 hosts=[{"host": "opensearch-cluster-master-headless", "port": 9200}],
@@ -165,7 +175,6 @@ resource-health:
                 # client_key = "/certs/tls.key"
                 # Authenticate by forwarding user token
                 extra_headers={"Authorization": f"Bearer {userinfo['access_token']}"},
-            )
 
 
   check_api:
@@ -180,12 +189,74 @@ resource-health:
 
     use_hook_configmap: True
     hooks:
+      disallow_frequent_check_hooks.py: |
+        from datetime import datetime, timedelta
+        from typing import TYPE_CHECKING, Any
+        from cron_converter import Cron
+
+        import check_hooks.hook_utils as hu
+
+        # The hooks are loaded one file at a time, so importing things from one file to another will not work.
+        # This trick ensures that UserInfo is imported only for type checking - and it can only be used for that
+        if TYPE_CHECKING:
+            from auth_hooks import UserInfo
+        else:
+            type UserInfo = Any
+
+
+        def on_check_create(userinfo: UserInfo, check: hu.InCheckAttributes) -> None:
+            print("ON CHECK CREATE from disallow_frequent_check_hooks.py")
+            min_allowed_days_between_runs = 3
+            if check.metadata.template_id == "telemetry_access_template":
+                raise_error_if_schedule_too_frequent(
+                    check.schedule,
+                    min_allowed_days_between_runs=3,
+                    error_detail=f"Check from template {check.metadata.template_id} must run at most once in {min_allowed_days_between_runs} day period.",
+                )
+
+
+        # This is not a hook
+        def raise_error_if_schedule_too_frequent(
+            cron_schedule: str, min_allowed_days_between_runs: int, error_detail: str
+        ) -> None:
+            # For now we don't know if the cron_schedule is valid
+            # We need to raise something derived from APIException as otherwise user will see
+            # "500 Internal Server Error"
+            try:
+                cron_instance = Cron(cron_schedule)
+            except ValueError:
+                raise hu.APIUserInputError(
+                    title="Invalid schedule", detail="Invalid cron expression"
+                )
+            error = hu.APIUserInputError(title="Schedule Too Frequent", detail=error_detail)
+            [minutes, hours, days, months, weekdays] = cron_instance.to_list()
+            if len(minutes) > 1:
+                # Means this will sometimes run at twice or more in one hour, which is too frequent
+                raise error
+            if len(hours) > 1:
+                # Means this will sometimes run at twice or more in one day, which is too frequent
+                raise error
+            start_date = datetime.now()
+            schedule = cron_instance.schedule(start_date)
+            prev_date = schedule.next()
+            # At this point we know that the schedule is not more frequence than once per day
+            # This just creates schedules for next year (or more) and checks if any two consecutive
+            # schedules have enough of a gap between them
+            for i in range(365):
+                date = schedule.next()
+                if date - prev_date < timedelta(days=min_allowed_days_between_runs):
+                    raise error
+                if date - start_date > timedelta(days=365):
+                    # Haven't found too frequent scheduled times in a year from now, that's enough
+                    return
+                prev_date = date
       oidc_auth_hooks.py: |
-        from check_hooks.hook_utils import *
+        import check_hooks.hook_utils as hu
 
         from eoepca_security import OIDCProxyScheme, Tokens
         from typing import TypedDict
         import os
+        from fastapi import Request
 
 
         class UserInfo(TypedDict):
@@ -195,30 +266,29 @@ resource-health:
             refresh_token: str | None
 
 
-        def get_fastapi_security() -> OIDCProxyScheme:
-            return OIDCProxyScheme(
-                openIdConnectUrl=os.environ["OPEN_ID_CONNECT_URL"],
-                audience=os.environ["OPEN_ID_CONNECT_AUDIENCE"],
-                id_token_header="x-id-token",
-                refresh_token_header="x-refresh-token",
-                auth_token_header="Authorization",
-                auth_token_in_authorization=True,
-                auto_error=True,  ## Set False to allow unauthenticated access!
-                scheme_name="OIDC behind auth proxy",
-            )
+        oidc_proxy_scheme = OIDCProxyScheme(
+            openIdConnectUrl=os.environ["OPEN_ID_CONNECT_URL"],
+            audience=os.environ["OPEN_ID_CONNECT_AUDIENCE"],
+            id_token_header="x-id-token",
+            refresh_token_header="x-refresh-token",
+            auth_token_header="Authorization",
+            auth_token_in_authorization=True,
+            auto_error=True,  ## Set False to allow unauthenticated access!
+            scheme_name="OIDC behind auth proxy",
+        )
+
+
+        async def get_fastapi_security(request: Request) -> Tokens | None:
+            return await oidc_proxy_scheme(request)
 
 
         def on_auth(tokens: Tokens | None) -> UserInfo:
             print("ON AUTH")
 
             if tokens is None or tokens["auth"] is None:  # or tokens['id'] is None:
-                raise APIException(
-                    Error(
-                        status="403",
-                        code="MissingTokens",
-                        title="Missing authentication or ID token",
-                        detail="Potentially missing authenticating proxy",
-                    )
+                hu.APIForbiddenError(
+                    title="Missing authentication or ID token",
+                    detail="Potentially missing authenticating proxy",
                 )
 
             claims = {}
@@ -234,13 +304,9 @@ resource-health:
 
             if user_id is None or username is None:
                 print(claims)
-                raise APIException(
-                    Error(
-                        status="401",
-                        code="Missing user id/name",
-                        title="Missing user identification",
-                        detail="Username or user id missing",
-                    )
+                raise hu.APIUnauthorizedError(
+                    title="Missing user identification",
+                    detail="Username or user id missing",
                 )
 
             return UserInfo(
@@ -251,41 +317,61 @@ resource-health:
             )
 
 
-        def on_template_access(userinfo: UserInfo, template: CheckTemplate) -> bool:
+        def on_template_access(userinfo: UserInfo, template: hu.CheckTemplate) -> None:
             print("ON TEMPLATE_ACCESS")
 
             ## Only bob can use/access unsafe templates
             if userinfo["username"] != "bob" and template.id != "simple_ping":
-                return False
+                return hu.CheckTemplateIdError(template.id)
 
-            return True
+            ## Only bob, alice, and eric can access the templates
+            if userinfo["username"] not in ["bob", "alice", "eric"]:
+                raise hu.CheckTemplateIdError(template.id)
+
+
+        def on_check_create(userinfo: UserInfo, check: hu.InCheckAttributes) -> None:
+            if userinfo["username"] == "eric" and check.metadata.template_id == "simple_ping":
+                raise hu.APIForbiddenError(
+                    title="Check creation disallowed",
+                    detail="You are not authorized to create this check",
+                )
+
 
         ## For the k8s backend
 
-        async def get_k8s_config(userinfo: UserInfo) -> K8sConfiguration:
-            return await k8s_config_from_cluster()
+        async def get_k8s_config(userinfo: UserInfo) -> hu.K8sConfiguration:
+            return await hu.k8s_config_from_cluster()
 
 
         def get_k8s_namespace(userinfo: UserInfo) -> str:
             return "resource-health"
 
 
-        def on_k8s_cronjob_access(
-            userinfo: UserInfo, client: K8sClient, cronjob: K8sCronJob
-        ) -> bool:
-            return cronjob.metadata.annotations.get("owner") == userinfo["username"]
+        async def on_k8s_cronjob_access(
+            userinfo: UserInfo,
+            check_id: hu.CheckId,
+            client: hu.K8sClient,
+            cronjob: hu.K8sCronJob,
+        ) -> None:
+            print("on_k8s_cronjob_access")
+
+            if cronjob.metadata.annotations.get("owner") != userinfo["username"]:
+                raise hu.CheckIdError(check_id)
 
 
         async def on_k8s_cronjob_create(
-            userinfo: UserInfo, client: K8sClient, cronjob: K8sCronJob
-        ) -> bool:
+            userinfo: UserInfo, client: hu.K8sClient, cronjob: hu.K8sCronJob
+        ) -> None:
             ## Ensure cronjob is tagged with correct owner
 
             if (
                 "owner" in cronjob.metadata.annotations
                 and cronjob.metadata.annotations["owner"] != userinfo["username"]
             ):
-                return False
+                raise hu.APIForbiddenError(
+                    title="Unauthorized check create",
+                    detail="Permission denied to create health check cronjob",
+                )
 
             cronjob.metadata.annotations["owner"] = userinfo["username"]
 
@@ -294,7 +380,7 @@ resource-health:
             secret_name = f"resource-health-{userinfo['username']}-offline-secret"
             secret_namespace = get_k8s_namespace(userinfo)
 
-            offline_secret = await lookup_k8s_secret(
+            offline_secret = await hu.lookup_k8s_secret(
                 client=client,
                 namespace=secret_namespace,
                 name=secret_name
@@ -302,12 +388,13 @@ resource-health:
 
             if offline_secret is None:
                 if userinfo['refresh_token'] is None:
-                    raise APIException(Error(
+                    raise hu.APIException(
                         status="404",
                         code="MissingOfflineToken",
-                        title="Missing offline token, please create at least one check using the website",
-                    ))
-                await create_k8s_secret(
+                        title="Missing Offline Token",
+                        detail="Missing offline token, please create at least one check using the website",
+                    )
+                await hu.create_k8s_secret(
                     client=client,
                     name=secret_name,
                     namespace=secret_namespace,
@@ -315,9 +402,6 @@ resource-health:
                         "offline_token": userinfo['refresh_token']
                     }
                 )
-
-            return True
-
   web:
     replicaCount: 1
     environmentFixed:
@@ -325,3 +409,101 @@ resource-health:
         value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/v1
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
         value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/v1
+      - name: NEXT_PUBLIC_RELOGIN_URL
+        value: https://resource-health.develop.eoepca.org/login
+      - name: NEXT_PUBLIC_QUERY_PAGE_SIZE
+        value: "1000"
+  healthchecks:
+    use_template_configmap: True
+    templates:
+      ping_template.py: |
+        import check_backends.k8s_backend.template_utils as tu
+
+        SIMPLE_PING_SRC = """from os import environ
+        import requests
+
+        GENERIC_ENDPOINT: str = environ["GENERIC_ENDPOINT"]
+        EXPECTED_STATUS_CODE: int = int(environ["EXPECTED_STATUS_CODE"])
+
+
+        def test_ping() -> None:
+            response = requests.get(
+                GENERIC_ENDPOINT,
+            )
+            assert response.status_code == EXPECTED_STATUS_CODE
+        """
+
+
+        class SimplePingArguments(tu.BaseModel):
+            model_config = tu.ConfigDict(extra="forbid")
+            endpoint: str = tu.Field(json_schema_extra={"format": "textarea"})
+            expected_status_code: int = tu.Field(ge=100, lt=600, default=200)
+
+
+        SimplePing = tu.simple_runner_template(
+            template_id="simple_ping",
+            argument_type=SimplePingArguments,
+            label="Simple ping template",
+            description="Simple template with preset script for pinging single endpoint.",
+            script_url=tu.src_to_data_url(SIMPLE_PING_SRC),
+            runner_env=lambda template_args, userinfo: {
+                "GENERIC_ENDPOINT": template_args.endpoint,
+                "EXPECTED_STATUS_CODE": str(template_args.expected_status_code),
+            },
+            user_id=lambda template_args, userinfo: userinfo["username"],
+            otlp_tls_secret="resource-health-healthchecks-certificate",
+        )
+
+      script_template.py: |
+        import check_backends.k8s_backend.template_utils as tu
+
+
+        class ScriptTemplateArguments(tu.BaseModel):
+            model_config = tu.ConfigDict(extra="forbid")
+            script: str = tu.Field(json_schema_extra={"format": "textarea"})
+            requirements: str = tu.Field(json_schema_extra={"format": "textarea"}, default="")
+
+
+        GenericScriptTemplate = tu.simple_runner_template(
+            template_id="generic_script_template",
+            argument_type=ScriptTemplateArguments,
+            label="Generic script template",
+            description="Runs a user-provided pytest script from a specified remote or data url",
+            script_url=lambda template_args, userinfo: template_args.script,
+            requirements_url=lambda template_args, userinfo: template_args.requirements,
+            user_id=lambda template_args, userinfo: userinfo["username"],
+            otlp_tls_secret="resource-health-healthchecks-certificate",
+        )
+
+      telemetry_access.py: |
+        import check_backends.k8s_backend.template_utils as tu
+        import os
+
+
+        class TelemetryAccessArguments(tu.BaseModel):
+            model_config = tu.ConfigDict(extra="forbid")
+            script: str = tu.Field(json_schema_extra={"format": "textarea"})
+            requirements: str = tu.Field(json_schema_extra={"format": "textarea"}, default="")
+
+
+        TelemetryAccessTemplate = tu.simple_runner_template(
+            template_id="telemetry_access_template",
+            argument_type=TelemetryAccessArguments,
+            label="Script with telemetry access",
+            description="Health check template that runs a userscript with telemetry access on localhost:8080",
+            script_url=lambda template_args, userinfo: template_args.script,
+            requirements_url=lambda template_args, userinfo: template_args.requirements,
+            user_id=lambda template_args, userinfo: userinfo["username"],
+            otlp_tls_secret="resource-health-healthchecks-certificate",
+            proxy=True,
+            proxy_oidc_client_secret=(
+                "resource-health-iam-client-credentials",
+                "client_id",
+                "client_secret",
+            ),
+            proxy_oidc_refresh_token_secret=lambda template_args, userinfo: (
+                f"resource-health-{userinfo['username']}-offline-secret",
+                "offline_token",
+            ),
+            proxy_oidc_url=os.environ.get("OPEN_ID_CONNECT_URL"),
+        )

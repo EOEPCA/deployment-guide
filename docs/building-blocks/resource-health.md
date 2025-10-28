@@ -138,7 +138,7 @@ This script creates the necessary secrets for the Resource Health BB.
 
 - Clone the Resource Health repository and update dependencies:
 ```bash
-git clone -b 2.0.0-rc1 https://github.com/EOEPCA/resource-health.git reference-repo
+git clone -b 2.0.0 https://github.com/EOEPCA/resource-health.git reference-repo
 helm dependency update reference-repo/resource-health-reference-deployment
 ```
 
@@ -161,17 +161,17 @@ For the purpose of this guide, the configuration script created a sample Ingress
 
 - **APISIX**
 
-    ```bash
-    kubectl apply -f apisix/plugin-api-auth.yaml -n resource-health
-    kubectl apply -f apisix/plugin-browser-auth.yaml -n resource-health
-    kubectl apply -f generated-ingress.yaml -n resource-health
-    ```
+```bash
+kubectl apply -f apisix/plugin-api-auth.yaml -n resource-health
+kubectl apply -f apisix/plugin-browser-auth.yaml -n resource-health
+kubectl apply -f generated-ingress.yaml -n resource-health
+```
 
 - **Nginx**
 
-    ```bash
-    kubectl apply -f generated-ingress.yaml -n resource-health
-    ```
+```bash
+kubectl apply -f generated-ingress.yaml -n resource-health
+```
 
 ---
 
@@ -183,7 +183,7 @@ To ensure your Keycloak user has proper permissions in OpenSearch, you must conf
 
 * Log into your Keycloak (`auth.${INGRESS_HOST}`).
 * Navigate to your realm (`eoepca`).
-* Click on **Roles**, then click **Add Role**.
+* Click on **Realm Roles**, then click **Create Role**.
 * Create a new role named `opensearch_user`
 
 #### Step 2: Assign the Role to your Keycloak User
@@ -257,7 +257,7 @@ https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/
 
 ### 1. Defining Health Checks
 
-Health checks are typically defined in the Helm chart's values under `resource-health.healthchecks.checks`. Each check has:
+Health checks can either be defined in the Helm chart's values under `resource-health.healthchecks.checks` or via the UI. Each check has:
 
 - **name**
 - **schedule** (a cron expression like `"@hourly"` or `"0 8 * * *"`)
@@ -267,7 +267,7 @@ Health checks are typically defined in the Helm chart's values under `resource-h
 
 ## Defining Health Checks
 
-**Helm-based** (preferred for GitOps or static config):
+**Helm-based** (check inside the `generated-values.yaml`):
 
 ```yaml
 resource-health:
@@ -288,13 +288,11 @@ Apply with:
 helm upgrade -i resource-health reference-repo/resource-health-reference-deployment -f generated-values.yaml -n resource-health
 ```
 
-**UI-based** (via the Resource Health Web):
+**UI-based**:
 
-Visit the Resource Health Web dashboard and select the **Create new check** dropdown to define a new health check.
+Visit the Resource Health Web dashboard (`resource-health.${INGRESS_HOST}`) and select the **Create new check** dropdown to define a new health check.
 
-Fill in the form similarly to the Helm-based approach, including the template, schedule, name, script and requirements.
-
-![New Check](../img/resource-health/new-check.jpeg)
+Fill in the form similarly to the Helm-based approach or create a test script like this
 
 ---
 
