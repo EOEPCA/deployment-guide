@@ -79,7 +79,7 @@ helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i datacube-access eoepca-dev/datacube-access \
   --values generated-values.yaml \
-  --version 0.0.2 \
+  --version 2.0.0-rc2 \
   --namespace datacube-access \
   --create-namespace
 ```
