@@ -137,9 +137,12 @@ bash apply-secrets.sh
 ```
 
 #### Deploy PostgreSQL (if using internal)
+
+> If using the external PostgreSQL option, skip this step.
+
 ```bash
 helm repo add postgres-operator https://postgres-operator-examples.github.io/charts
-helm repo update
+helm repo update postgres-operator
 
 helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
   --version 5.6.0 \
@@ -152,7 +155,7 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 #### Deploy eoAPI
 ```bash
 helm repo add eoapi https://devseed.com/eoapi-k8s/
-helm repo update
+helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
   --version 0.7.12 \
   --namespace data-access \
@@ -162,7 +165,7 @@ helm upgrade -i eoapi eoapi/eoapi \
 #### Deploy STAC Manager
 ```bash
 helm repo add stac-manager https://stac-manager.ds.io/
-helm repo update
+helm repo update stac-manager
 helm upgrade -i stac-manager stac-manager/stac-manager \
   --version 0.0.11 \
   --namespace data-access \
@@ -172,7 +175,7 @@ helm upgrade -i stac-manager stac-manager/stac-manager \
 #### Deploy EOAPI Maps Plugin
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
-helm repo update
+helm repo update eoepca-dev
 helm upgrade -i eoapi-maps-plugin eoepca-dev/eoapi-maps-plugin \
   --version 0.0.21 \
   --namespace data-access \

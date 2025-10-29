@@ -320,3 +320,53 @@ spec:
         - ^(/docs)($|/.*)
         - $2
       enable: true
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: eoapi-tls
+  namespace: data-access
+spec:
+  hosts:
+  - eoapi.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: eoapi-tls-cert
+    namespace: data-access
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eoapi-tls-cert
+  namespace: data-access
+spec:
+  secretName: eoapi-tls-cert
+  dnsNames:
+  - eoapi.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    name: {{ getenv "CLUSTER_ISSUER" }}
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eoapisupport-tls-cert
+  namespace: data-access
+spec:
+  secretName: eoapisupport-tls-cert
+  dnsNames:
+  - eoapisupport.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    name: {{ getenv "CLUSTER_ISSUER" }}
+    kind: ClusterIssuer
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: eoapisupport-tls
+  namespace: data-access
+spec:
+  hosts:
+  - eoapisupport.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: eoapisupport-tls-cert
+    namespace: data-access
