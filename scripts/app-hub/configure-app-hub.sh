@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Configuring the App Hub..."
+echo "Configuring the Application Hub..."
 source ../common/utils.sh
 
 # Collect user inputs
@@ -11,7 +11,7 @@ ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run 
 ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 
 # OAuth2 configuration
-ask "APPHUB_CLIENT_ID" "Enter the Client ID for the OAPIP" "application-hub" is_non_empty
+ask "APPHUB_CLIENT_ID" "Enter the Client ID for the OAuth provider" "application-hub" is_non_empty
 
 if [ -z "$APPHUB_CLIENT_SECRET" ]; then
     APPHUB_CLIENT_SECRET=$(generate_aes_key 32)
@@ -24,7 +24,7 @@ if [ -z "$APPHUB_JUPYTERHUB_CRYPT_KEY" ]; then
 fi
 
 if [ -z "KEYCLOAK_HOST" ]; then
-    ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.example.com" is_valid_domain
+    ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g. auth.example.com)" "auth.example.com" is_valid_domain
 fi
 
 if [ -z "REALM" ]; then

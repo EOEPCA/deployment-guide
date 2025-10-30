@@ -27,7 +27,7 @@ config:
     bind:
       host: 0.0.0.0
       port: 5000
-    url: https://maps.{{ getenv "INGRESS_HOST" }}
+    url: {{ getenv "HTTP_SCHEME" }}://maps.{{ getenv "INGRESS_HOST" }}
     mimetype: application/json; charset=UTF-8
     encoding: utf-8
     gzip: false
@@ -102,7 +102,7 @@ config:
         - type: text/html
           rel: canonical
           title: information
-          href: https://eoapi.{{ getenv "INGRESS_HOST" }}/
+          href: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/
           hreflang: en-US
       extents:
         spatial:
@@ -111,7 +111,7 @@ config:
       providers:
         - type: map
           name: eoapi_maps_plugin.EOAPIProvider
-          data: https://eoapi.{{ getenv "INGRESS_HOST" }}/stac/collections/sentinel-2-l2a
+          data: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/collections/sentinel-2-l2a
           format:
             name: png
             mimetype: image/png
@@ -119,8 +119,8 @@ config:
 sync:
   enabled: true
   schedule: "*/10 * * * *"
-  eoapiUrl: "https://eoapi.{{ getenv "INGRESS_HOST" }}"
-  pygeoapiUrl: "https://maps.{{ getenv "INGRESS_HOST" }}"
+  eoapiUrl: "{{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}"
+  pygeoapiUrl: "{{ getenv "HTTP_SCHEME" }}://maps.{{ getenv "INGRESS_HOST" }}"
   create: true
   update: true
   delete: true

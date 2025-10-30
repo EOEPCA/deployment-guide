@@ -1,0 +1,66 @@
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: eoapi
+spec:
+  providerConfigRef:
+    name: provider-keycloak
+  forProvider:
+    realmId: { ? { getenv "KEYCLOAK_REALM" } }
+    name: eoapi
+    accessType: PUBLIC
+    clientId: { ? { getenv "KEYCLOAK_CLIENT_ID" } }
+    standardFlowEnabled: true
+    implicitFlowEnabled: true
+    directAccessGrantsEnabled: true # allow for now to simplify testing
+    serviceAccountsEnabled: false
+    oauth2DeviceAuthorizationGrantEnabled: true
+    rootUrl: https://eoapi.{{ getenv "INGRESS_HOST" }}
+    webOrigins:
+    - '*'
+    validRedirectUris:
+    - '*'
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: stac-editor
+spec:
+  providerConfigRef:
+    name: provider-keycloak
+  forProvider:
+    realmId: { ? { getenv "KEYCLOAK_REALM" } }
+    name: stac_editor
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+---
+apiVersion: group.keycloak.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: data-access-admin
+spec:
+  providerConfigRef:
+    name: provider-keycloak
+  forProvider:
+    realmId: { ? { getenv "KEYCLOAK_REALM" } }
+    name: data-access-admin
+---
+apiVersion: group.keycloak.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: data-access-admin
+spec:
+  providerConfigRef:
+    name: provider-keycloak
+  forProvider:
+    realmId: { ? { getenv "KEYCLOAK_REALM" } }
+    groupIdRef:
+      name: data-access-admin
+      policy:
+        resolution: Required
+    roleIdsRefs:
+    - name: stac-editor
+      policy:
+        resolution: Required

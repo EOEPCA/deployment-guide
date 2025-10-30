@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eso-store
+  namespace: data-access
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eso-store-reader
+  namespace: infra
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["selfsubjectrulesreviews"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eso-store-reader-binding
+  namespace: infra
+subjects:
+  - kind: ServiceAccount
+    name: eso-store
+    namespace: data-access
+roleRef:
+  kind: Role
+  name: eso-store-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: infra
+  namespace: data-access
+spec:
+  provider:
+    kubernetes:
+      remoteNamespace: infra
+      server:
+        caProvider:
+          type: ConfigMap
+          name: kube-root-ca.crt
+          key: ca.crt
+      auth:
+        serviceAccount:
+          name: eso-store
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+  namespace: data-access
+spec:
+  refreshInterval: 5m
+  secretStoreRef:
+    kind: SecretStore
+    name: infra
+  target:
+    name: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+    creationPolicy: Owner
+  data:
+    - secretKey: dbname
+      remoteRef:
+        key: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+        property: dbname
+    - secretKey: host
+      remoteRef:
+        key: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+        property: host
+    - secretKey: password
+      remoteRef:
+        key: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+        property: password
+    - secretKey: port
+      remoteRef:
+        key: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+        property: port
+    - secretKey: uri
+      remoteRef:
+        key: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+        property: uri
+    - secretKey: user
+      remoteRef:
+        key: {{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}
+        property: user

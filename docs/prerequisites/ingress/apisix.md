@@ -7,7 +7,7 @@ For full installation instructions for the APISIX Ingress Controller see the off
 > **Disclaimer:** We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
 
 ```
-helm repo add apisix https://charts.apiseven.com
+helm repo add apisix https://apache.github.io/apisix-helm-chart
 helm repo update apisix
 ```
 
@@ -25,7 +25,7 @@ helm upgrade -i apisix apisix/apisix \
   --set service.tls.nodePort=31443 \
   --set etcd.image.repository=bitnamilegacy/etcd \
   --set etcd.replicaCount=1 \
-  --set etcd.persistence.storageClass="${PERSISTENT_STORAGECLASS}" \
+  --set etcd.persistence.storageClass="${PERSISTENT_STORAGECLASS:-local-path}" \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \

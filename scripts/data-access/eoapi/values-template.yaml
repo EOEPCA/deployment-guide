@@ -17,14 +17,27 @@ ingress:
 ingress:
   enabled: false
 {{- end }}
-
-db:
+{{- if eq (getenv "USE_EXTERNAL_POSTGRES") "yes" }}
+postgresql:
+  type: "external-secret"
+  external:
+    existingSecret:
+      name: "{{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}"
+      keys:
+        username: "user"
+        password: "password"
+        host: "host"
+        port: "port"
+        database: "dbname"
+postgrescluster:
   enabled: false
-
+{{- else }}
+postgresql:
+  type: "postgrescluster"
 postgrescluster:
   enabled: true
   postgresVersion: 16
-  postGISVersion: 3.4
+  postGISVersion: "3.4"
   pgBouncerReplicas: 1
   monitoring: false
   backupsEnabled: true
@@ -32,14 +45,15 @@ postgrescluster:
   backupsSize: 100Mi
   instances:
     - name: eoapi
-      replicas: 1
+      replicas: {{ getenv "POSTGRES_REPLICAS" | default "1" }}
       dataVolumeClaimSpec:
         storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
         accessModes:
-          - "ReadWriteMany"
+          - "ReadWriteOnce"
         resources:
           requests:
-            storage: 1Gi
+            storage: {{ getenv "POSTGRES_STORAGE_SIZE" | default "1Gi" }}
+{{- end }}
 
 pgstacBootstrap:
   enabled: true
@@ -49,37 +63,47 @@ pgstacBootstrap:
 
 raster:
   enabled: true
+  ingress:
+    path: "/raster"
+  overrideRootPath: "/"
   image:
     tag: "1.4.0"
   settings:
     envVars:
-      AWS_S3_ENDPOINT: {{ getenv "S3_HOST" }}
-      AWS_ACCESS_KEY_ID: {{ getenv "S3_ACCESS_KEY" }}
-      AWS_SECRET_ACCESS_KEY: {{ getenv "S3_SECRET_KEY" }}
+      AWS_S3_ENDPOINT: "{{ getenv "S3_ENDPOINT" }}"
       AWS_VIRTUAL_HOSTING: "FALSE"
+    envSecrets:
+      - data-access
     resources:
       requests:
         memory: "3072Mi"
+
 multidim:
   enabled: true
+  ingress:
+    path: "/multidim"
+  overrideRootPath: "/"
   settings:
     envSecrets:
-          - data-access
+      - data-access
     resources:
       requests:
         memory: "1024Mi"
+
 stac:
   enabled: true
   settings:
     envVars:
-      EOAPI_STAC_EXTENSIONS: "filter,query,sort,fields,pagination,transaction"
-      EOAPI_STAC_CORS_METHODS: "GET,POST,PUT,OPTIONS"
+      {{- if eq (getenv "ENABLE_TRANSACTIONS") "yes" }}
+      ENABLE_TRANSACTIONS_EXTENSIONS: "TRUE"
+      {{- end }}
     resources:
       limits:
         cpu: "1280m"
         memory: "1536Mi"
       requests:
         cpu: "512m"
+
 vector:
   enabled: true
   settings:
@@ -89,6 +113,50 @@ vector:
       requests:
         memory: "1024Mi"
     envVars:
-      # needs to on so we can call /refresh for integration tests
       TIPG_DEBUG: "True"
       TIPG_CATALOG_TTL: "30"
+{{- if eq (getenv "ENABLE_EOAPI_NOTIFIER") "yes" }}
+eoapi-notifier:
+  enabled: true
+  config:
+    sources:
+      - type: pgstac
+        config:
+          channel: "pgstac_items_change"
+          connection:
+            {{- if eq (getenv "USE_EXTERNAL_POSTGRES") "yes" }}
+            existingSecret:
+              name: "{{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}"
+              keys:
+                username: "user"
+                password: "password"
+                host: "host"
+                port: "port"
+                database: "dbname"
+            {{- else }}
+            # For internal PostgreSQL, reference the secret created by postgres operator
+            existingSecret:
+              name: "eoapi-pguser-eoapi"
+              keys:
+                username: "user"
+                password: "password"
+                host: "host"
+                port: "port"
+                database: "dbname"
+            {{- end }}
+    outputs:
+      - type: cloudevents
+        config:
+          source: /eoapi/pgstac
+          event_type: org.eoapi.stac.item
+          destination:
+            ref:
+              apiVersion: eventing.knative.dev/v1
+              kind: Broker
+              name: primary
+              namespace: default
+{{- else }}
+# eoapi-notifier disabled
+eoapi-notifier:
+  enabled: false
+{{- end }}
