@@ -2131,7 +2131,7 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <ul>
 <li>
 <p>Clone the Resource Health repository and update dependencies:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.0.0-rc1<span class="w"> </span>https://github.com/EOEPCA/resource-health.git<span class="w"> </span>reference-repo
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span>https://github.com/EOEPCA/resource-health.git<span class="w"> </span>reference-repo
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>reference-repo/resource-health-reference-deployment
 </span></code></pre></div></p>
 </li>
@@ -2151,19 +2151,17 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <p>By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.</p>
 <p>For the purpose of this guide, the configuration script created a sample Ingress resource in <code>generated-ingress.yaml</code> that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the <code>~/.eoepca/state</code> file.</p>
 <ul>
-<li>
-<p><strong>APISIX</strong></p>
+<li><strong>APISIX</strong></li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>apisix/plugin-api-auth.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>apisix/plugin-browser-auth.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span></code></pre></div>
-</li>
-<li>
-<p><strong>Nginx</strong></p>
+<ul>
+<li><strong>Nginx</strong></li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span></code></pre></div>
-</li>
-</ul>
 <hr />
 <h3 id="4-configure-keycloak-client">4. Configure Keycloak Client<a class="headerlink" href="#4-configure-keycloak-client" title="Permanent link">⚓︎</a></h3>
 <p>To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.</p>
@@ -2171,7 +2169,7 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <ul>
 <li>Log into your Keycloak (<code>auth.${INGRESS_HOST}</code>).</li>
 <li>Navigate to your realm (<code>eoepca</code>).</li>
-<li>Click on <strong>Roles</strong>, then click <strong>Add Role</strong>.</li>
+<li>Click on <strong>Realm Roles</strong>, then click <strong>Create Role</strong>.</li>
 <li>Create a new role named <code>opensearch_user</code></li>
 </ul>
 <h4 id="step-2-assign-the-role-to-your-keycloak-user">Step 2: Assign the Role to your Keycloak User<a class="headerlink" href="#step-2-assign-the-role-to-your-keycloak-user" title="Permanent link">⚓︎</a></h4>
@@ -2256,7 +2254,7 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <hr />
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">⚓︎</a></h2>
 <h3 id="1-defining-health-checks">1. Defining Health Checks<a class="headerlink" href="#1-defining-health-checks" title="Permanent link">⚓︎</a></h3>
-<p>Health checks are typically defined in the Helm chart&rsquo;s values under <code>resource-health.healthchecks.checks</code>. Each check has:</p>
+<p>Health checks can either be defined in the Helm chart&rsquo;s values under <code>resource-health.healthchecks.checks</code> or via the UI. Each check has:</p>
 <ul>
 <li><strong>name</strong></li>
 <li><strong>schedule</strong> (a cron expression like <code>"@hourly"</code> or <code>"0 8 * * *"</code>)</li>
@@ -2265,7 +2263,7 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <li><strong>env</strong> (environment variables, e.g. references to external services)</li>
 </ul>
 <h2 id="defining-health-checks">Defining Health Checks<a class="headerlink" href="#defining-health-checks" title="Permanent link">⚓︎</a></h2>
-<p><strong>Helm-based</strong> (preferred for GitOps or static config):</p>
+<p><strong>Helm-based</strong> (check inside the <code>generated-values.yaml</code>):</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">resource-health</span><span class="p">:</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">healthchecks</span><span class="p">:</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">checks</span><span class="p">:</span>
@@ -2280,10 +2278,9 @@ This script creates the necessary secrets for the Resource Health BB.</p>
 <p>Apply with:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>resource-health<span class="w"> </span>reference-repo/resource-health-reference-deployment<span class="w"> </span>-f<span class="w"> </span>generated-values.yaml<span class="w"> </span>-n<span class="w"> </span>resource-health
 </span></code></pre></div>
-<p><strong>UI-based</strong> (via the Resource Health Web):</p>
-<p>Visit the Resource Health Web dashboard and select the <strong>Create new check</strong> dropdown to define a new health check.</p>
-<p>Fill in the form similarly to the Helm-based approach, including the template, schedule, name, script and requirements.</p>
-<p><img alt="New Check" src="../../img/resource-health/new-check.jpeg" /></p>
+<p><strong>UI-based</strong>:</p>
+<p>Visit the Resource Health Web dashboard (<code>resource-health.${INGRESS_HOST}</code>) and select the <strong>Create new check</strong> dropdown to define a new health check.</p>
+<p>Fill in the form similarly to the Helm-based approach or create a test script like this</p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To remove all Resource Health components and the namespace:</p>
