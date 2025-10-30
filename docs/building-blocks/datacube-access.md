@@ -10,22 +10,6 @@ The **Datacube Access** building block allows users to access and explore multi-
 
 Datacube Access gives users simple ways to discover, access, and process large Earth Observation datasets, known as "datacubes." These datacubes are structured, multi-dimensional sets of data, useful for various analytics and visualisation tasks.
 
-### Key Features
-
-- **Easy Data Access**: Quickly access and manage large EO datacubes.
-- **Uses Open Standards**: STAC, openEO, OGC API Processes, OGC Application Packages
-- **Data Discovery**: Easily discover data with STAC API integration.
-- **Flexible Data Storage**: Works with common storage solutions like S3, HTTP or local file systems.
-- **Data Processing**: Execute custom processing jobs using openEO and OGC API Processes.
-
-### Interfaces
-
-Datacube Access provides the following APIs:
-
-- **OGC API Coverages**
-- **OGC API Features**
-- **STAC API**
-- **openEO API for process discovery and execution**
 
 ---
 
@@ -127,17 +111,6 @@ https://datacube-access.${INGRESS_HOST}/conformance
 ```
 Confirm OGC API conformance classes and supported standards.
 
-### 3. Manual Validation via cURL
-
-Quick command-line checks:
-
-#### Basic API Check
-
-_Returns response headers only..._
-
-```bash
-curl -s -D - -o /dev/null "https://datacube-access.${INGRESS_HOST}/"
-```
 
 #### Collection Access Test
 
@@ -147,15 +120,36 @@ curl "https://datacube-access.${INGRESS_HOST}/collections"
 
 ---
 
-### Validating Kubernetes Resources
+## Usage and Testing
 
-Check Kubernetes resource health:
+The Datacube Access BB filters your STAC catalog to expose only collections that include the [STAC Datacube Extension](https://github.com/stac-extensions/datacube) - specifically those with `cube:dimensions` or `cube:variables` defined. This ensures processing tools like openEO only see properly-structured, analysis-ready collections.
+
+### Understanding Datacube-Ready Collections
+
+Standard STAC collections describe what data exists and where. Datacube-ready collections add structural metadata: dimensions (x, y, time, bands), coordinate reference systems, and dimension relationships. This metadata tells processing tools how to interpret and load the data as a multidimensional datacube.
+
+### Loading a Test Collection
+
+Add a sample datacube-ready collection to your STAC catalog. There is a provided script in the `deployment-guide/scripts/datacube-access/collections/datacube-ready-collection/` directory. This is setup to work automatically with the `eoapi` component of the `Data Access` BB, but this can be adapted to other STAC catalogs, i.e. A `POST` request using the `collections.json` and `items.json` provided.
 
 ```bash
-kubectl get pods -n datacube-access
+cd collections/datacube-ready-collection
+../ingest.sh
+cd ../..
 ```
 
-- Ensure all pods are `Running`.
+View the collection at
+```
+https://datacube-access.${INGRESS_HOST}/collections/sentinel-2-datacube
+```
+
+### Testing with Processing Tools
+A test script is provided to demonstrate loading the datacube using Python libraries like `pystac-client` and `odc-stac`. This script connects to the Datacube Access STAC API, searches for the datacube-ready collection, and loads it into an `xarray` datacube.
+
+```bash
+cd tests
+python processing-tools.py
+```
 
 ---
 
@@ -163,5 +157,5 @@ kubectl get pods -n datacube-access
 
 - [EOEPCA Datacube Access Documentation](https://eoepca.readthedocs.io/projects/datacube-access/en/latest/)
 - [OGC GeoDataCube API](https://m-mohr.github.io/geodatacube-api/)
+- [STAC Datacube Extension](https://github.com/stac-extensions/datacube)
 - [openEO Documentation](https://openeo.org/documentation/1.0/)
-
