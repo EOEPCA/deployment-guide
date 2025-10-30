@@ -23,7 +23,7 @@ FOUND_NAMESPACE=""
 
 # Discover the pod name from both namespaces
 for NS in "${NAMESPACES[@]}"; do
-    EOAPI_POD_RASTER=$(kubectl get pods -n "$NS" -l app=raster-eoapi -o jsonpath="{.items[0].metadata.name}" 2>/dev/null)
+    EOAPI_POD_RASTER=$(kubectl get pods -n "$NS" -l app=eoapi-raster -o jsonpath="{.items[0].metadata.name}" 2>/dev/null)
     if [ -n "$EOAPI_POD_RASTER" ]; then
         FOUND_NAMESPACE="$NS"
         echo "Found raster-eoapi pod: $EOAPI_POD_RASTER in namespace: $FOUND_NAMESPACE"

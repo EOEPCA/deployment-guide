@@ -97,6 +97,7 @@ stac:
       {{- if eq (getenv "ENABLE_TRANSACTIONS") "yes" }}
       ENABLE_TRANSACTIONS_EXTENSIONS: "TRUE"
       {{- end }}
+      STAC_API_URL: "https://eoapi.${INGRESS_HOST}/stac"
     resources:
       limits:
         cpu: "1280m"
