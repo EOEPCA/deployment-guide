@@ -58,4 +58,9 @@ kubectl create secret generic mlflow-sharinghub-postgres \
   --dry-run=client -oyaml | kubectl apply -f -
 
 
+kubectl create secret generic mlflow-sharinghub-backend \
+  --from-literal=backend-store-uri="postgresql://$MLFLOW_POSTGRES_USERNAME:$MLFLOW_POSTGRES_PASSWORD@mlflow-postgres.sharinghub.svc.cluster.local:5432/mlflow" \
+  --namespace sharinghub \
+  --dry-run=client -o yaml | kubectl apply -f -
+
 echo "✅ Secrets applied."

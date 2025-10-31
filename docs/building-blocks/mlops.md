@@ -11,10 +11,9 @@ The **MLOps Building Block** provides integrated services for training and manag
 ### Key Features
 
 - **End-to-End** ML Workflow: Data versioning, model training, experiment logging, model deployment or registry.  
-- **GitLab Integration**: Automatic linking of GitLab projects (public or private) into SharingHub for discoverability. Optional LFS or DVC for large files/datasets.  
+- **GitLab Integration**: Automatic linking of GitLab projects (public or private) into SharingHub for discoverability. 
 - **OIDC Authentication**: Via Keycloak or compatible OIDC provider (optional but highly recommended).  
 - **S3 / MinIO Storage**: Flexible object storage for large data and model artifacts.  
-- **STAC-Based Discoverability**: SharingHub implements a STAC API over GitLab projects for dataset/ML model catalogs.
 
 
 ---
@@ -143,7 +142,7 @@ Deploy GitLab using the generated configuration file. This deployment can take u
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update gitlab
 helm upgrade -i gitlab gitlab/gitlab \
-  --version 8.1.8 \
+  --version 9.1.4 \
   --namespace gitlab \
   --create-namespace \
   --values gitlab/generated-values.yaml
@@ -176,7 +175,7 @@ Save this password securely for the next step.
 
 #### 4.3 Access the OAuth Application Settings
 
-1. In the bottom-left corner of GitLab, select **Admin Area**.
+1. In the bottom-left corner of GitLab, select **Admin**.
 2. In the Admin Area sidebar, click on **Applications**.
 3. Then click **Add New Application** to create a new OAuth app.
 
@@ -222,7 +221,7 @@ This script prompts you for `GITLAB_APP_ID` and `GITLAB_APP_SECRET` from the ste
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.4.0"
+helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.4.1"
 helm repo update sharinghub
 helm upgrade -i sharinghub sharinghub/sharinghub \
   --namespace sharinghub \
@@ -258,8 +257,13 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
 kubectl apply -f mlflow/generated-ingress.yaml
 ```
 
----
+### 8. Deploy Postgres for MLflow SharingHub (if not using an external database)
 
+```
+kubectl apply -f mlflow/postgres-deployment.yaml
+```
+
+---
 
 ### 1. Validate the Deployment
 
@@ -328,8 +332,8 @@ This section walks you through a minimal scenario of creating a GitLab project, 
     > These steps assume that the `eoepcauser` test user was created in the earlier IAM setup steps, and that the Gitlab instance has been integrated with Keycloak via OIDC.
 
     * Open the Gitlab UI - `https://gitlab.${INGRESS_HOST}/`
-    * Select to `Sign in with EOEPCA`
-    * Login as user `eoepcauser`
+    * Select to `Sign in with EOEPCA` (Sign out of `root` user if necessary)
+    * Login as user `eoepcauser` (or another user, visit the IAM deployment guide for user creation steps)
     
 2. **Create the Project**
     

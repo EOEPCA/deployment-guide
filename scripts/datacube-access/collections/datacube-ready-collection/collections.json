@@ -1,0 +1,68 @@
+{
+  "type": "Collection",
+  "stac_version": "1.0.0",
+  "stac_extensions": [
+    "https://stac-extensions.github.io/datacube/v2.2.0/schema.json",
+    "https://stac-extensions.github.io/eo/v1.0.0/schema.json"
+  ],
+  "id": "sentinel-2-datacube",
+  "title": "Sentinel-2 L2A Datacube",
+  "description": "Sentinel-2 Level-2A surface reflectance datacube",
+  "license": "proprietary",
+  "extent": {
+    "spatial": {"bbox": [[-34.2, 39.65, -32.88, 41.55]]},
+    "temporal": {"interval": [["2025-10-30T00:00:00Z", "2025-10-30T23:59:59Z"]]}
+  },
+  "cube:dimensions": {
+    "x": {
+      "type": "spatial",
+      "axis": "x",
+      "extent": [399960, 509760],
+      "reference_system": 32625
+    },
+    "y": {
+      "type": "spatial",
+      "axis": "y",
+      "extent": [4390220, 4600020],
+      "reference_system": 32625
+    },
+    "time": {
+      "type": "temporal",
+      "extent": ["2025-10-30T00:00:00Z", "2025-10-30T23:59:59Z"]
+    },
+    "bands": {
+      "type": "bands",
+      "values": ["B04", "B08", "SCL"]
+    }
+  },
+  "cube:variables": {
+    "B04": {
+      "type": "data",
+      "description": "Red band (665nm)",
+      "dimensions": ["x", "y", "time"],
+      "unit": "1"
+    },
+    "B08": {
+      "type": "data",
+      "description": "NIR band (842nm)",
+      "dimensions": ["x", "y", "time"],
+      "unit": "1"
+    },
+    "SCL": {
+      "type": "auxiliary",
+      "description": "Scene Classification Layer",
+      "dimensions": ["x", "y", "time"],
+      "unit": "1"
+    }
+  },
+  "summaries": {
+    "eo:bands": [
+      {"name": "B04", "common_name": "red", "center_wavelength": 0.665},
+      {"name": "B08", "common_name": "nir", "center_wavelength": 0.842}
+    ],
+    "platform": ["sentinel-2c"],
+    "instruments": ["msi"],
+    "gsd": [10, 20]
+  },
+  "links": []
+}

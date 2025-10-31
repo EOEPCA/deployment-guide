@@ -4,7 +4,7 @@ image:
 
 mlflowSharinghub:
   sharinghubUrl: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}
-  sharinghubStacCollection: ai-model
+  sharinghubStacCollection: ai-model 
   sharinghubAuthDefaultToken: false
   artifactsDestination: s3://{{ getenv "S3_BUCKET_MLFLOW" }}
 
@@ -16,7 +16,7 @@ s3:
   endpointUrl: {{ getenv "S3_ENDPOINT" }}
 
 postgresql:
-  enabled: true
+  enabled: false
   auth:
     existingSecret: mlflow-sharinghub-postgres
   global:
