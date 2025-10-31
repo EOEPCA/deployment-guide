@@ -1509,6 +1509,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#8-deploy-postgres-for-mlflow-sharinghub-if-not-using-an-external-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Deploy Postgres for MLflow SharingHub (if not using an external database)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#1-validate-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       1. Validate the Deployment
@@ -2053,6 +2062,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#8-deploy-postgres-for-mlflow-sharinghub-if-not-using-an-external-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Deploy Postgres for MLflow SharingHub (if not using an external database)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#1-validate-the-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       1. Validate the Deployment
@@ -2175,10 +2193,9 @@
 <h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><strong>End-to-End</strong> ML Workflow: Data versioning, model training, experiment logging, model deployment or registry.  </li>
-<li><strong>GitLab Integration</strong>: Automatic linking of GitLab projects (public or private) into SharingHub for discoverability. Optional LFS or DVC for large files/datasets.  </li>
+<li><strong>GitLab Integration</strong>: Automatic linking of GitLab projects (public or private) into SharingHub for discoverability. </li>
 <li><strong>OIDC Authentication</strong>: Via Keycloak or compatible OIDC provider (optional but highly recommended).  </li>
 <li><strong>S3 / MinIO Storage</strong>: Flexible object storage for large data and model artifacts.  </li>
-<li><strong>STAC-Based Discoverability</strong>: SharingHub implements a STAC API over GitLab projects for dataset/ML model catalogs.</li>
 </ul>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
@@ -2328,7 +2345,7 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>gitlab<span class="w"> </span>https://charts.gitlab.io/
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>gitlab
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>gitlab<span class="w"> </span>gitlab/gitlab<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">8</span>.1.8<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">9</span>.1.4<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--namespace<span class="w"> </span>gitlab<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--values<span class="w"> </span>gitlab/generated-values.yaml
@@ -2352,7 +2369,7 @@
 </ol>
 <h4 id="43-access-the-oauth-application-settings">4.3 Access the OAuth Application Settings<a class="headerlink" href="#43-access-the-oauth-application-settings" title="Permanent link">⚓︎</a></h4>
 <ol>
-<li>In the bottom-left corner of GitLab, select <strong>Admin Area</strong>.</li>
+<li>In the bottom-left corner of GitLab, select <strong>Admin</strong>.</li>
 <li>In the Admin Area sidebar, click on <strong>Applications</strong>.</li>
 <li>Then click <strong>Add New Application</strong> to create a new OAuth app.</li>
 </ol>
@@ -2391,7 +2408,7 @@
 </span></code></pre></div>
 <p>This script prompts you for <code>GITLAB_APP_ID</code> and <code>GITLAB_APP_SECRET</code> from the step above, then creates a Kubernetes secret (<code>sharinghub-oidc</code>) in the <code>sharinghub</code> namespace. This allows SharingHub to use GitLab-based OIDC sign-in.</p>
 <h3 id="6-deploy-sharinghub-using-helm">6. Deploy SharingHub Using Helm<a class="headerlink" href="#6-deploy-sharinghub-using-helm" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>sharinghub<span class="w"> </span><span class="s2">&quot;git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.4.0&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>sharinghub<span class="w"> </span><span class="s2">&quot;git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.4.1&quot;</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>sharinghub
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>sharinghub<span class="w"> </span>sharinghub/sharinghub<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>--namespace<span class="w"> </span>sharinghub<span class="w"> </span><span class="se">\</span>
@@ -2414,14 +2431,17 @@
 <p><strong>Note:</strong> The following ingress configuration applies to both <strong>NGINX</strong> and <strong>APISIX</strong> ingress controllers. Ensure your ingress controller is properly set up before applying the configuration.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl apply -f mlflow/generated-ingress.yaml
 </span></code></pre></div>
+<h3 id="8-deploy-postgres-for-mlflow-sharinghub-if-not-using-an-external-database">8. Deploy Postgres for MLflow SharingHub (if not using an external database)<a class="headerlink" href="#8-deploy-postgres-for-mlflow-sharinghub-if-not-using-an-external-database" title="Permanent link">⚓︎</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl apply -f mlflow/postgres-deployment.yaml
+</span></code></pre></div>
 <hr />
 <h3 id="1-validate-the-deployment">1. Validate the Deployment<a class="headerlink" href="#1-validate-the-deployment" title="Permanent link">⚓︎</a></h3>
 <p>Before contiuning to the <strong>Basic Usage Walkthrough</strong>, run a few checks:</p>
 <ol>
 <li>
 <p><strong>Check Pods</strong>:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>gitlab
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>sharinghub
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>gitlab
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>sharinghub
 </span></code></pre></div>
 All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p>
 </li>
@@ -2452,12 +2472,12 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <p><strong>Confirm S3 Access</strong>:</p>
 <p>Using <code>s3cmd</code> CLI&hellip;<br>
 <em>If credentials or bucket aren&rsquo;t set correctly, then you&rsquo;ll see an error</em></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span>s3://mlopbb-sharinghub<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>--access_key<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MINIO_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>--secret_key<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MINIO_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>s3cmd<span class="w"> </span>ls<span class="w"> </span>s3://mlopbb-sharinghub<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>--host<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>--host-bucket<span class="w"> </span>minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>--access_key<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MINIO_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>--secret_key<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MINIO_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <p>Repeat for bucket <code>s3://mlopbb-mlflow-sharinghub</code>.</p>
 </li>
@@ -2465,7 +2485,7 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <hr />
 <h3 id="2-test-suite-execution">2. Test Suite Execution<a class="headerlink" href="#2-test-suite-execution" title="Permanent link">⚓︎</a></h3>
 <p>Run the <em>MLOps</em> tests from the system test suite.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>../../test-suite.sh<span class="w"> </span>test/mlops
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>../../test-suite.sh<span class="w"> </span>test/mlops
 </span></code></pre></div>
 <p><strong><em>The test results are summarised to the file <code>test-report.xml</code>.</em></strong></p>
 <hr />
@@ -2480,8 +2500,8 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </blockquote>
 <ul>
 <li>Open the Gitlab UI - <code>https://gitlab.${INGRESS_HOST}/</code></li>
-<li>Select to <code>Sign in with EOEPCA</code></li>
-<li>Login as user <code>eoepcauser</code></li>
+<li>Select to <code>Sign in with EOEPCA</code> (Sign out of <code>root</code> user if necessary)</li>
+<li>Login as user <code>eoepcauser</code> (or another user, visit the IAM deployment guide for user creation steps)</li>
 </ul>
 </li>
 <li>
@@ -2545,12 +2565,12 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </li>
 <li>
 <p>The link will resemble:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>https://sharinghub.${INGRESS_HOST}/mlflow/eoepcauser/mlops-test-project/tracking/
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>https://sharinghub.${INGRESS_HOST}/mlflow/eoepcauser/mlops-test-project/tracking/
 </span></code></pre></div>
 </li>
 <li>
 <p>Set this as an environment variable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s2">&quot;https://sharinghub.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/mlflow/eoepcauser/mlops-test-project/tracking/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_URI</span><span class="o">=</span><span class="s2">&quot;https://sharinghub.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/mlflow/eoepcauser/mlops-test-project/tracking/&quot;</span>
 </span></code></pre></div>
 </li>
 </ul>
@@ -2571,7 +2591,7 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 </li>
 <li>
 <p>Set the token as an environment variable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_TOKEN</span><span class="o">=</span><span class="s2">&quot;&lt;YOUR-TOKEN&gt;&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLFLOW_TRACKING_TOKEN</span><span class="o">=</span><span class="s2">&quot;&lt;YOUR-TOKEN&gt;&quot;</span>
 </span></code></pre></div>
 </li>
 </ul>
@@ -2581,20 +2601,20 @@ All pods should be in <code>Running</code> (or <code>Completed</code>) state.</p
 <blockquote>
 <p>It is assumed that a python virtual environment is established for the following steps.<br>
 For example, using the <code>venv</code> module&hellip;
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
 </span></code></pre></div></p>
 </blockquote>
 <ul>
 <li>
 <p>Ensure you have the required packages:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>pip<span class="w"> </span>install<span class="w"> </span>mlflow<span class="w"> </span>scikit-learn
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>pip<span class="w"> </span>install<span class="w"> </span>mlflow<span class="w"> </span>scikit-learn
 </span></code></pre></div>
 </li>
 <li>
 <p>Run the provided example script located in the <code>data/</code> directory of <code>deployment-guide/scripts/mlops</code>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>data/
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>python<span class="w"> </span>example-script.py
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">cd</span><span class="w"> </span>data/
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>python<span class="w"> </span>example-script.py
 </span></code></pre></div>
 </li>
 <li>
@@ -2634,10 +2654,10 @@ For example, using the <code>venv</code> module&hellip;
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the MLOps Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>gitlab<span class="w"> </span>-n<span class="w"> </span>gitlab
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>sharinghub<span class="w"> </span>mlflow-sharinghub<span class="w"> </span>-n<span class="w"> </span>sharinghub
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>bash<span class="w"> </span>utils/uninstallation-cleanup.sh
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>gitlab<span class="w"> </span>sharinghub
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>gitlab<span class="w"> </span>-n<span class="w"> </span>gitlab
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>sharinghub<span class="w"> </span>mlflow-sharinghub<span class="w"> </span>-n<span class="w"> </span>sharinghub
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>bash<span class="w"> </span>utils/uninstallation-cleanup.sh
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>gitlab<span class="w"> </span>sharinghub
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
