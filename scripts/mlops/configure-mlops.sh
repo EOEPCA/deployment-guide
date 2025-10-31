@@ -62,7 +62,7 @@ fi
 gomplate  -f "gitlab/$TEMPLATE_PATH" -o "gitlab/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "sharinghub/$TEMPLATE_PATH" -o "sharinghub/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "mlflow/$TEMPLATE_PATH" -o "mlflow/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-
+gomplate  -f "mlflow/postgres-deployment-template.yaml" -o "mlflow/postgres-deployment.yaml"
 
 # Generate configuration files for secrets
 gomplate -f "mlflow/pvc-template.yaml" -o "mlflow/generated-pvc.yaml" --datasource omniauth="gitlab/omniauth.yaml"
