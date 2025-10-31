@@ -136,7 +136,7 @@ During the script execution, you will be prompted to provide:
 bash apply-secrets.sh
 ```
 
-#### Deploy PostgreSQL (if using internal)
+#### Deploy PostgreSQL Operator (if using internal)
 
 > If using the external PostgreSQL option, skip this step.
 
