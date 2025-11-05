@@ -10,9 +10,5 @@ region: "{{ getenv "S3_REGION" }}"
 forwardedAllowIps: "*"
 sessionMode: "auto"
 useVcluster: "true"
-gunicornWorkers: 4
-uiMode: ui
-workspaceSecretName: "bucket"
-harborUrl: "{{ getenv "HTTP_SCHEME" }}://harbor.{{ getenv "INGRESS_HOST" }}"
-harborUsername: "admin"
-harborPasswordSecretName: "harbor-admin-password"
+gunicornWorkers: "4"
+uiMode: "ui"
