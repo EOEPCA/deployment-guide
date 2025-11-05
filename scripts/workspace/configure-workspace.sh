@@ -13,11 +13,6 @@ ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HO
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
-ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
-
-# Educates configuration
-# ask "CLUSTER_INGRESS_DOMAIN" "Enter the cluster ingress domain for Educates" "ngx.${INGRESS_HOST}" is_valid_domain
-# ask "CLUSTER_INGRESS_CLASS" "Enter the ingress class for workspace environments" "nginx" is_non_empty
 
 # OIDC
 ask "OIDC_WORKSPACE_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
