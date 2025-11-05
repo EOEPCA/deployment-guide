@@ -30,11 +30,7 @@ if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
     --namespace workspace \
     --dry-run=client -o yaml | kubectl apply -f -
     
-  kubectl create secret generic workspace-pipeline \
-    --from-literal=client_id="$WORKSPACE_PIPELINE_CLIENT_ID" \
-    --from-literal=client_secret="$WORKSPACE_PIPELINE_CLIENT_SECRET" \
-    --namespace workspace \
-    --dry-run=client -o yaml | kubectl apply -f -
+
 fi
 
 echo "✅ Secrets applied."
