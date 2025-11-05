@@ -6,7 +6,7 @@ The **Workspace** Building Block provides a comprehensive solution for storing a
 
 ## Introduction
 
-The **Workspace** Building Block provides a comprehensive environment where users can store, organise, and process data. It leverages Kubernetes and GitOps principles to create isolated and customisable workspaces for projects or individual users.
+The **Workspace** Building Block provides a comprehensive environment where users can store, organise, and process data.
 
 ---
 
@@ -20,7 +20,11 @@ The Workspace BB comprises the following key components:
 
 3. **Workspace Services**: An extensible set of services that can be provisioned within the workspace, such as resource discovery, data access, and visualisation tools.
 
-4. **Workspace User Interface**: A web-based interface for workspace lifecycle management and resource management.
+4. **Workspace Dependencies**: Includes CSI-RClone for storage mounting and Educates framework for workspace environments.
+
+5. **Workspace Pipeline**: Manages the templating and provisioning of workspace resources including storage, datalab configurations, and environment settings.
+
+6. **Workspace User Interface**: A web-based interface for workspace lifecycle management and resource management.
 
 ---
 
@@ -35,7 +39,7 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 | APISIX Ingress Controller | Properly installed                         | [Installation Guide](../prerequisites/ingress/overview.md#apisix-ingress-controller)      |
-| Container Registry     | ECR or Harbor (for images)                        | [Installation Guide](../prerequisites/container-registry.md)      
+| Container Registry     | ECR or Harbor (for images)                        | [Installation Guide](../prerequisites/container-registry.md)      |
 
 
 **Clone the Deployment Guide Repository:**
@@ -119,37 +123,63 @@ while ! kubectl -n workspace apply -f https://raw.githubusercontent.com/EOEPCA/w
 
 > _Due to dependencies, it is necessary to take multiple (`while`) passes to `apply` the providers._
 
-### 5. Deploy the Workspace API
+### 5. Deploy Workspace Dependencies
+
+The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i workspace-api eoepca-dev/rm-workspace-api \
-  --version 2.0.0 \
+# Deploy CSI-RClone
+helm upgrade -i workspace-dependencies-csi-rclone \
+  oci://ghcr.io/eoepca/workspace/workspace-dependencies-csi-rclone \
+  --version 2.0.0-rc.12 \
+  --namespace workspace
+
+# Deploy Educates
+helm upgrade -i workspace-dependencies-educates \
+  oci://ghcr.io/eoepca/workspace/workspace-dependencies-educates \
+  --version 2.0.0-rc.12 \
   --namespace workspace \
-  --values workspace-api/generated-values.yaml
+  --values workspace-dependencies/educates-values.yaml
+```
+
+### 6. Deploy the Workspace API
+
+```bash
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
+helm upgrade -i workspace-api eoepca/rm-workspace-api \
+  --version 2.0.0-rc.7 \
+  --namespace workspace \
+  --values workspace-api/generated-values.yaml \
+  --set image.tag=2.0.0-rc.8
 ```
 
 > Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
 > If you have enabled OIDC, we will set up the APISIX route/ingress in later steps.
 
-### 6. Deploy the Workspace Pipelines
+### 7. Deploy the Workspace Pipeline
 
-The Workspace Pipelines define the template that specifies the services provisioned within newly created Workspaces.
-
-Some example pipelines are provided in the [Workspace Git Repository](https://github.com/EOEPCA/workspace) under the path `setup/`.
-
-These example pipelines are deployed here using `kustomize` (`kubectl -k`) with inline patching to apply the values configured via the `configure-workspace.sh` script.
-
-**Apply the Pipelines:**
+The Workspace Pipeline manages the templating and provisioning of resources within newly created workspaces.
 
 ```bash
-while ! kubectl -n workspace apply -k workspace-api 2>/dev/null; do sleep 1; done
+helm upgrade -i workspace-pipeline \
+  oci://ghcr.io/eoepca/workspace/workspace-pipeline \
+  --version 2.0.0-rc.12 \
+  --namespace workspace \
+  --values workspace-pipeline/generated-values.yaml
 ```
 
-> _Due to dependencies, it is necessary to take multiple (`while`) passes to `apply` the pipelines._
+### 8. Deploy the DataLab Session Cleaner
 
-### 7. Deploy the Workspace Admin Dashboard
+Deploy a CronJob that automatically cleans up inactive DataLab sessions:
+
+```bash
+kubectl apply -f workspace-cleanup/datalab-cleaner.yaml
+```
+
+This runs daily at 8 PM UTC and removes all sessions except the default ones.
+
+### 9. Deploy the Workspace Admin Dashboard
 
 **Install the Workspace Admin Dashboard:**
 
@@ -164,7 +194,7 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
 
 > There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding.
 
-### 8. Optional: Enable OIDC with Keycloak
+### 10. Optional: Enable OIDC with Keycloak
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
@@ -172,7 +202,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-### 8.1 Create Keycloak Clients
+### 10.1 Create Keycloak Clients
 
 The Workspace requires two Keycloak clients:
 
@@ -180,7 +210,7 @@ The Workspace requires two Keycloak clients:
 2. `workspace-pipeline` - used by the `workspace-api` to perform administrative actions against the Keycloak API to properly protect newly created workspaces<br>
    > NOTE that this client is configured with additional roles to support this function
 
-#### 8.1.1 `workspace` Client
+#### 10.1.1 `workspace` Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -204,7 +234,7 @@ When prompted:
 
 After it completes, you should see a JSON snippet confirming the newly created client.
 
-#### 8.1.2 `workspace-pipeline` Client
+#### 10.1.2 `workspace-pipeline` Client
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -243,7 +273,7 @@ Under tab `Service account roles`, assign the following `realm management` roles
 
 ---
 
-### 8.2 Create APISIX Route Ingress
+### 10.2 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 
@@ -418,11 +448,14 @@ kubectl -n workspace delete workspaces ws-eoepcauser
 To uninstall the Workspace Building Block and clean up associated resources:
 
 ```bash
+kubectl delete -f workspace-cleanup/datalab-cleaner.yaml ; \
 helm uninstall workspace-admin -n workspace ; \
 kubectl -n workspace delete -f workspace-api/generated-ingress.yaml; \
 helm uninstall workspace-api -n workspace ; \
+helm uninstall workspace-pipeline -n workspace ; \
+helm uninstall workspace-dependencies-educates -n workspace ; \
+helm uninstall workspace-dependencies-csi-rclone -n workspace ; \
 helm uninstall workspace-crossplane -n workspace ; \
-kubectl delete -k workspace-pipelines -n workspace ; \
 kubectl delete namespace workspace
 ```
 
@@ -432,6 +465,6 @@ kubectl delete namespace workspace
 
 - [EOEPCA+ Workspace GitHub Repository](https://github.com/EOEPCA/workspace)
 - [Crossplane Documentation](https://crossplane.io/docs/)
-- [Flux GitOps Documentation](https://fluxcd.io/docs/)
-- [vCluster Documentation](https://www.vcluster.com/docs/what-is-vcluster)
+- [Educates Documentation](https://docs.educates.dev/)
+- [CSI-RClone Documentation](https://github.com/wunderio/csi-rclone)
 - [Kubernetes Dashboard Documentation](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)

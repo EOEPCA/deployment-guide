@@ -1,0 +1,5 @@
+clusterIngressDomain: {{ getenv "INGRESS_HOST" }}
+clusterIngressClass: {{ getenv "INGRESS_CLASS" }}
+tlsCertificateRef:
+  name: workspace-tls
+  namespace: workspace
