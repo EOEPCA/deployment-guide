@@ -42,7 +42,7 @@ Before deploying the Container Registry, make sure you have:
 
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Deployment Guide](kubernetes.md)                                         |
+| Kubernetes       | Cluster (tested on v1.32)              | [Deployment Guide](kubernetes.md)                                         |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | Ingress          | Properly installed                     | [Documentation](../prerequisites/ingress/overview.md) |
