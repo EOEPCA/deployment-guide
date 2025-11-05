@@ -93,28 +93,7 @@ Run the script to create the necessary Kubernetes secrets.
 bash apply-secrets.sh
 ```
 
-**Secrets Created in the `workspace` namespace:**
-
-- `harbor-admin-password`
-- `minio-secret`
-- `workspace-api`  _(if OIDC is enabled for the workspace)_
-- `workspace-pipeline`  _(if OIDC is enabled for the workspace)_
-
-
-### 3. Deploy Crossplane
-
-Crossplane is used for managing cloud resources within Kubernetes.
-
-```bash
-helm repo add crossplane https://charts.crossplane.io/stable
-helm repo update crossplane
-helm upgrade -i workspace-crossplane crossplane/crossplane \
-  --version v1.18.1 \
-  --namespace workspace \
-  --create-namespace
-```
-
-### 5. Deploy Workspace Dependencies
+### 3. Deploy Workspace Dependencies
 
 The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
 
@@ -224,43 +203,6 @@ When prompted:
 - **Additional Hosts**: Leave blank.
 
 After it completes, you should see a JSON snippet confirming the newly created client.
-
-#### 10.1.2 `workspace-pipeline` Client
-
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
-
-```bash
-bash ../utils/create-client.sh
-```
-
-When prompted:
-
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`.
-
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: You should use `workspace-pipeline` or what you set in the configuration script.
-- **Client name** and **description**: Provide any helpful text (e.g., `Workspace Pipelines`).
-- **Client secret**: Enter the Workspace Pipeline Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `workspace-api`.
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
-
-After it completes, you should see a JSON snippet confirming the newly created client.
-
-**Assign Service Account Roles**
-
-Login to the Keycloak Admin Console as the `admin` user.
-
-Under the realm for your deployment, navigate to the settings for the `workspace-pipeline` client.
-
-Under tab `Service account roles`, assign the following `realm management` roles:
-
-* `manage-clients`
-* `create-client`
-* `manage-users`
-* `manage-authorization`
 
 ---
 
