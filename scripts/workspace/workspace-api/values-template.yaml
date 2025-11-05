@@ -1,12 +1,18 @@
 fullnameOverride: workspace-api
-existingSecret: harbor
 image:
-  tag: 2.0.0
+  tag: 2.0.0-rc.8
   pullPolicy: Always
 ingress:
   enabled: false
-prefixForName: "ws"
-workspaceSecretName: "workspace"
+prefixForName: ws
+endpoint: "{{ getenv "S3_ENDPOINT" }}"
+region: "{{ getenv "S3_REGION" }}"
+forwardedAllowIps: "*"
+sessionMode: "auto"
+useVcluster: "{{ getenv "WORKSPACE_USE_VCLUSTER" }}"
+gunicornWorkers: 4
+uiMode: ui
+workspaceSecretName: "bucket"
 harborUrl: "{{ getenv "HTTP_SCHEME" }}://harbor.{{ getenv "INGRESS_HOST" }}"
 harborUsername: "admin"
 harborPasswordSecretName: "harbor-admin-password"
