@@ -33,7 +33,7 @@ Before deploying the Application Quality Building Block, ensure you have the fol
 
 | Component        | Requirement                            | Documentation Link                                                                                  |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)                                               |
+| Kubernetes       | Cluster (tested on v1.32)              | [Installation Guide](../prerequisites/kubernetes.md)                                               |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                           |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                       |
 | OIDC Provider             | An OIDC Provider must be available              | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |

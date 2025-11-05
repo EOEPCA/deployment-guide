@@ -19,7 +19,7 @@ Before you begin, make sure you have the following:
 
 | Component        | Requirement                            | Documentation Link                                                |
 | ---------------- | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes       | Cluster (tested on v1.28)              | [Installation Guide](kubernetes.md)             |
+| Kubernetes       | Cluster (tested on v1.32)              | [Installation Guide](kubernetes.md)             |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress          | Properly installed                     | [Ingress Controller Setup Guide](../prerequisites/ingress/overview.md)     |
