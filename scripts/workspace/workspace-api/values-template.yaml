@@ -9,7 +9,7 @@ endpoint: "{{ getenv "S3_ENDPOINT" }}"
 region: "{{ getenv "S3_REGION" }}"
 forwardedAllowIps: "*"
 sessionMode: "auto"
-useVcluster: "{{ getenv "WORKSPACE_USE_VCLUSTER" }}"
+useVcluster: "true"
 gunicornWorkers: 4
 uiMode: ui
 workspaceSecretName: "bucket"

@@ -114,15 +114,6 @@ helm upgrade -i workspace-crossplane crossplane/crossplane \
   --create-namespace
 ```
 
-### 4. Initialise the Core Crossplane Providers
-
-```bash
-while ! kubectl -n workspace apply -f https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/v2025.06.05/setup/common/init/providers.yaml 2>/dev/null; do sleep 1; done
-while ! kubectl -n workspace apply -f https://raw.githubusercontent.com/EOEPCA/workspace/refs/tags/v2025.06.05/setup/common/main/providerConfigs.yaml 2>/dev/null; do sleep 1; done
-```
-
-> _Due to dependencies, it is necessary to take multiple (`while`) passes to `apply` the providers._
-
 ### 5. Deploy Workspace Dependencies
 
 The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
