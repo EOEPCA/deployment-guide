@@ -13,8 +13,8 @@ environmentconfig:
   iam:
     realm: {{ getenv "REALM" "eoepca" }}
   ingress:
-    class: {{ getenv "CLUSTER_INGRESS_CLASS" }}
-    domain: {{ getenv "CLUSTER_INGRESS_DOMAIN" }}
+    class: {{ getenv "INGRESS_CLASS" }}
+    domain: {{ getenv "INGRESS_HOST" }}
     secret: wildcard-tls
   storage:
     endpoint: {{ getenv "S3_ENDPOINT" }}
