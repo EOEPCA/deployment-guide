@@ -82,8 +82,11 @@ Deploy Apache ZooKeeper, which is required for internal coordination:
 helm upgrade -i openeo-geotrellis-zookeeper \
     https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz \
     --namespace openeo-geotrellis \
-    --create-namespace \
-    --values zookeeper/generated-values.yaml
+    --values zookeeper/generated-values.yaml \
+    --set image.registry=docker.io \
+    --set image.repository=bitnamilegacy/zookeeper \
+    --set image.tag=3.8.1-debian-11-r18 \
+    --wait --timeout 5m
 ```
 
 For full configuration details, see the [values.yaml](https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml).
@@ -97,7 +100,7 @@ Provides an API that simplifies connecting to EO cloud back-ends, running on Apa
 ```bash
 helm upgrade -i openeo-geotrellis-openeo sparkapplication \
     --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 0.16.3 \
+    --version 1.0.2 \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values openeo-geotrellis/generated-values.yaml
