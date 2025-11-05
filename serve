@@ -16,4 +16,5 @@ exec docker run --name mkdocs-serve --rm -it \
   -p 8000:8000 \
   -v ${PWD}:/docs \
   eoepca/mkdocs-material \
-  serve --dev-addr 0.0.0.0:8000
+  serve --dev-addr 0.0.0.0:8000 \
+  --livereload
