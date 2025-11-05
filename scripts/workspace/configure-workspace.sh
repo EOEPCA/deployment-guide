@@ -15,6 +15,10 @@ ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 ask "HARBOR_ADMIN_PASSWORD" "Enter the Harbor admin password" "" is_non_empty
 
+# Educates configuration
+# ask "CLUSTER_INGRESS_DOMAIN" "Enter the cluster ingress domain for Educates" "ngx.${INGRESS_HOST}" is_valid_domain
+# ask "CLUSTER_INGRESS_CLASS" "Enter the ingress class for workspace environments" "nginx" is_non_empty
+
 # OIDC
 ask "OIDC_WORKSPACE_ENABLED" "Do you want to enable authentication using the IAM Building Block?" "true" is_boolean
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
@@ -42,11 +46,13 @@ if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
 fi
 
 # Generate configuration files
-gomplate  -f "workspace-api/kustomization-template.yaml" -o "workspace-api/kustomization.yaml"
-gomplate  -f "workspace-api/$TEMPLATE_PATH" -o "workspace-api/$OUTPUT_PATH"
-gomplate  -f "workspace-api/$INGRESS_TEMPLATE_PATH" -o "workspace-api/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-gomplate  -f "workspace-api/environment-template.yaml" -o "workspace-api/generated-environment.yaml"
-gomplate  -f "workspace-admin/$TEMPLATE_PATH" -o "workspace-admin/$OUTPUT_PATH"
+gomplate -f "workspace-api/values-template.yaml" -o "workspace-api/generated-values.yaml"
+gomplate -f "workspace-api/ingress-template.yaml" -o "workspace-api/generated-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "workspace-admin/values-template.yaml" -o "workspace-admin/generated-values.yaml"
+gomplate -f "workspace-dependencies/educates-values-template.yaml" -o "workspace-dependencies/educates-values.yaml"
+gomplate -f "workspace-pipeline/values-template.yaml" -o "workspace-pipeline/generated-values.yaml"
+gomplate -f "workspace-cleanup/datalab-cleaner-template.yaml" -o "workspace-cleanup/datalab-cleaner.yaml"
 
-
+echo ""
+echo "✅ Configuration complete!"
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
