@@ -40,7 +40,8 @@ nav:
         - Processing:
           - Overview: building-blocks/processing.md
           - OGC API Processes: building-blocks/oapip-engine.md
-          - openEO: building-blocks/openeo-engine.md
+          - openEO Geotrellis: building-blocks/openeo-geotrellis.md
+          - openEO Argo Workflows (Dask): building-blocks/openeo-argo.md
         - MLOps: building-blocks/mlops.md
 
     - User Environments:

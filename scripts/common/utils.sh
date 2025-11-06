@@ -212,6 +212,10 @@ is_number() {
     [[ "$1" =~ ^[0-9]+$ ]]
 }
 
+is_optional() {
+    return 0
+}
+
 configure_http_scheme() {
     if [ -z "${HTTP_SCHEME-}" ]; then
         ask "HTTP_SCHEME" "Specify the HTTP scheme for the EOEPCA services (http/https)" "https" is_non_empty
