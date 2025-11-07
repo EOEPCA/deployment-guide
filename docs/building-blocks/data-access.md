@@ -54,7 +54,7 @@ Before deploying the Data Access Building Block, ensure you have the following:
 
 | Component          | Requirement                            | Documentation Link                                                |
 | ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.28)              | [Installation Guide](../prerequisites/kubernetes.md)             |
+| Kubernetes         | Cluster (tested on v1.32)              | [Installation Guide](../prerequisites/kubernetes.md)             |
 | Helm               | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress Controller | Properly installed (NGINX or APISIX)   | [Installation Guide](../prerequisites/ingress/overview.md)       |

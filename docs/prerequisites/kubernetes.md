@@ -87,7 +87,7 @@ Cluster creation is initiated by the following command.
 ```bash
 export KUBECONFIG="$PWD/kubeconfig.yaml"
 k3d cluster create eoepca \
-  --image rancher/k3s:v1.28.15-k3s1 \
+  --image rancher/k3s:v1.32.9-k3s1 \
   --k3s-arg="--disable=traefik@server:0" \
   --k3s-arg="--tls-san=$(hostname -f)@server:0" \
   --servers 1 --agents 0 \
@@ -131,7 +131,7 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
     ```bash
     export KUBECONFIG="$PWD/kubeconfig.yaml"
     k3d cluster create eoepca \
-      --image rancher/k3s:v1.28.15-k3s1 \
+      --image rancher/k3s:v1.32.9-k3s1 \
       --k3s-arg="--disable=traefik@server:0" \
       --k3s-arg="--tls-san=$(hostname -f)@server:0" \
       --servers 1 --agents 0 \
