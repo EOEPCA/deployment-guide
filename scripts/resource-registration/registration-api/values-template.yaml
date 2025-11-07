@@ -9,7 +9,12 @@ pygeoapi:
   image:
     repository: eoepca/registration-api
     pullPolicy: Always
-    tag: "2.0.0-rc1"
+    tag: "latest"
+  secret:
+    name: "registration-api-secret"
+  iam_endpoint: "{{ getenv "KEYCLOAK_URL" }}"
+  iam_realm: "{{ getenv "KEYCLOAK_REALM" }}"
+  iam_grant_type: "client_credentials"
   config:
     server:
       url: {{ getenv "HTTP_SCHEME" }}://registration-api.{{ getenv "INGRESS_HOST" }}
