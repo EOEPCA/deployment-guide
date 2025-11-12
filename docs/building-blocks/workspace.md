@@ -120,8 +120,7 @@ helm repo update eoepca
 helm upgrade -i workspace-api eoepca/rm-workspace-api \
   --version 2.0.0-rc.7 \
   --namespace workspace \
-  --values workspace-api/generated-values.yaml \
-  --set image.tag=2.0.0-rc.8
+  --values workspace-api/generated-values.yaml
 ```
 
 > Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
