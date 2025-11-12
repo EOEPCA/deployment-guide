@@ -11,6 +11,7 @@ spec:
         - "*.notifications.{{ getenv "INGRESS_HOST" }}"
         - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
         - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
+        - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
       paths:
         - "/*"
     backends:
@@ -29,14 +30,11 @@ metadata:
 spec:
   dnsNames:
     - "*.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"  # Add this
   issuerRef:
     kind: ClusterIssuer
     name: {{ getenv "CLUSTER_ISSUER" }}
   secretName: notifications-wildcard-tls
-  usages:
-    - digital signature
-    - key encipherment
-    - server auth
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
