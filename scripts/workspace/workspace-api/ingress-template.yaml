@@ -26,6 +26,7 @@ spec:
       backends:
         - serviceName: workspace-api
           servicePort: 8080
+{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
       plugins:
         - name: openid-connect
           enable: true
@@ -38,6 +39,7 @@ spec:
             set_id_token_header: true
             set_userinfo_header: true
           secretRef: workspace-api
+{{- end }}
     - name: workspace-api-docs
       match:
         hosts:
