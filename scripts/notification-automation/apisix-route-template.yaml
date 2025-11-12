@@ -1,0 +1,52 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: notifications-wildcard-route
+  namespace: knative-serving
+spec:
+  http:
+  - name: knative-serving-default
+    match:
+      hosts:
+        - "*.notifications.{{ getenv "INGRESS_HOST" }}"
+        - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
+        - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
+      paths:
+        - "/*"
+    backends:
+    - serviceName: kourier
+      servicePort: 80
+    plugins:
+      - name: cors
+        enable: true
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: notifications-wildcard
+  namespace: knative-serving
+spec:
+  dnsNames:
+    - "*.notifications.{{ getenv "INGRESS_HOST" }}"
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: notifications-wildcard-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: notifications-wildcard
+  namespace: knative-serving
+spec:
+  hosts:
+    - "*.notifications.{{ getenv "INGRESS_HOST" }}"
+  secret:
+    name: notifications-wildcard-tls
+    namespace: knative-serving
+{{- end }}
