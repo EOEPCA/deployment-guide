@@ -1,0 +1,30 @@
+{
+  "id": "example-collection",
+  "stac_version": "1.0.0",
+  "type": "Collection",
+  "links": [],
+  "title": "Example Collection",
+  "description": "Example collection",
+  "assets": {},
+  "license": "proprietary",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -180,
+          -90,
+          180,
+          90
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2013-03-19T08:27:32Z",
+          "2023-06-05T12:22:20Z"
+        ]
+      ]
+    }
+  }
+}
