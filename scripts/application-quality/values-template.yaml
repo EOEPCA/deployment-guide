@@ -444,7 +444,7 @@ opensearch-dashboards:
         maxPayloadBytes: 1048576
         ssl:
           # Enables SSL communication between the OpenSearch Dashboards server and the user’s web browser.
-          enabled: true
+          enabled: {{ eq (getenv "INGRESS_CLASS") "nginx" }}
           certificateAuthorities: [ "/usr/share/opensearch-dashboards/certs/ca.crt" ]
           certificate: /usr/share/opensearch-dashboards/certs/tls.crt
           key: /usr/share/opensearch-dashboards/certs/tls.key
