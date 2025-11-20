@@ -413,7 +413,7 @@ opensearch-dashboards:
 
   ingress:
     enabled: true
-    className: {{ getenv "INGRESS_CLASS" }}
+    ingressClassName: {{ getenv "INGRESS_CLASS" }}
     domain: application-quality.{{ getenv "INGRESS_HOST" }}
     annotations:
       kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
