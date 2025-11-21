@@ -64,11 +64,25 @@ git clone https://github.com/jzvolensky/charts
 # Deploy OpenEO ArgoWorkflows
 helm dependency update charts/eodc/openeo-argo
 helm dependency build charts/eodc/openeo-argo
+
+
 helm upgrade -i openeo charts/eodc/openeo-argo \
     --namespace openeo \
     --create-namespace \
     --values generated-values.yaml \
     --wait --timeout 10m
+
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openeo-argo-access-sa.service-account-token
+  namespace: openeo
+  annotations:
+    kubernetes.io/service-account.name: openeo-argo-access-sa
+type: kubernetes.io/service-account-token
+EOF
 ```
 
 #### Step 3: Deploy Ingress

@@ -41,9 +41,17 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: openeo-argoworkflows
+                {{- if eq ( getenv "OPENEO_ARGO_ENABLE_OIDC" ) "no" }}
+                name: openeo-proxy
+                {{- else }}
+                name: openeo-openeo-argo
+                {{- end }}
                 port:
+                  {{- if eq ( getenv "OPENEO_ARGO_ENABLE_OIDC" ) "no" }}
+                  number: 8080
+                  {{- else }}
                   number: 8000
+                  {{- end }}
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
