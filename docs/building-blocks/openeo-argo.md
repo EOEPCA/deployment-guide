@@ -71,8 +71,11 @@ helm upgrade -i openeo charts/eodc/openeo-argo \
     --create-namespace \
     --values generated-values.yaml \
     --wait --timeout 10m
+```
 
+Then ctrl-c out and run:
 
+```bash
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Secret
@@ -83,6 +86,11 @@ metadata:
     kubernetes.io/service-account.name: openeo-argo-access-sa
 type: kubernetes.io/service-account-token
 EOF
+```
+
+If you disabled OIDC authentication, deploy the basic auth proxy:
+```bash
+kubectl apply -f generated-proxy-auth.yaml
 ```
 
 #### Step 3: Deploy Ingress
