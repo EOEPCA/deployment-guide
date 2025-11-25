@@ -25,13 +25,18 @@ application-quality:
     image:
       repository: eoepca/eoepca-appquality-backend
       tag: 2.0.0-rc1
+    extraEnv:
+      - name: ENABLE_AUTH
+        value: "{{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" "false" }}"
+      - name: OIDC_ENABLED
+        value: "{{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" "false" }}"
 
   # Application Quality frontend
   web:
     image:
       repository: eoepca/eoepca-appquality-frontend
       tag: 2.0.0-rc1
-    publicUrl: "https://application-quality.{{ getenv "INGRESS_HOST" }}"
+    publicUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}"
 
   persistence:
     enabled: true
