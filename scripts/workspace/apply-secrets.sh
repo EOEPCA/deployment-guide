@@ -45,17 +45,14 @@ fi
 
 # Workspace Pipelines Keycloak client credentials
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-  kubectl create secret generic keycloak-secret \
-    --from-literal=client_id="$WORKSPACE_PIPELINE_CLIENT_ID" \
-    --from-literal=client_secret="$WORKSPACE_PIPELINE_CLIENT_SECRET" \
+  kubectl create secret generic workspace-pipeline-client \
     --from-literal=credentials="$(cat <<EOF
 {
   "client_id": "$WORKSPACE_PIPELINE_CLIENT_ID",
   "client_secret": "$WORKSPACE_PIPELINE_CLIENT_SECRET",
   "url": "http://iam-keycloak.iam",
-  "base_path": "/",
-  "realm": "$REALM",
-  "root_ca_certificate" : "" 
+  "base_path": "",
+  "realm": "$REALM"
 }
 EOF
 )" \

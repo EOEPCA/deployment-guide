@@ -103,7 +103,84 @@ Run the script to create the necessary Kubernetes secrets.
 bash apply-secrets.sh
 ```
 
-### 3. Deploy Configurations for Crossplane Providers
+### 3. Deploy Workspace Dependencies
+
+The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
+
+```bash
+# Deploy CSI-RClone
+helm upgrade -i workspace-dependencies-csi-rclone \
+  oci://ghcr.io/eoepca/workspace/workspace-dependencies-csi-rclone \
+  --version 2.0.0-rc.12 \
+  --namespace workspace
+
+# Deploy Educates
+helm upgrade -i workspace-dependencies-educates \
+  oci://ghcr.io/eoepca/workspace/workspace-dependencies-educates \
+  --version 2.0.0-rc.12 \
+  --namespace workspace \
+  --values workspace-dependencies/educates-values.yaml
+```
+
+### 4. Deploy the Workspace API
+
+```bash
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
+helm upgrade -i workspace-api eoepca/rm-workspace-api \
+  --version 2.0.0-rc.7 \
+  --namespace workspace \
+  --values workspace-api/generated-values.yaml
+```
+
+> Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
+> If you have enabled OIDC, we will set up the APISIX route/ingress in later steps.
+
+### 5. Deploy the Workspace Pipeline
+
+The Workspace Pipeline manages the templating and provisioning of resources within newly created workspaces.
+
+```bash
+helm upgrade -i workspace-pipeline \
+  oci://ghcr.io/eoepca/workspace/workspace-pipeline \
+  --version 2.0.0-rc.12 \
+  --namespace workspace \
+  --values workspace-pipeline/generated-values.yaml
+```
+
+### 6. Deploy the DataLab Session Cleaner
+
+Deploy a CronJob that automatically cleans up inactive DataLab sessions:
+
+```bash
+kubectl apply -f workspace-cleanup/datalab-cleaner.yaml
+```
+
+This runs daily at 8 PM UTC and removes all sessions except the default ones.
+
+### 7. Deploy the Workspace Admin Dashboard
+
+The Kubernetes Dashboard provides a web-based interface for managing Kubernetes resources.
+
+```bash
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo update kubernetes-dashboard
+helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
+  --version 7.10.1 \
+  --namespace workspace \
+  --values workspace-admin/generated-values.yaml
+```
+
+> There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding. For example:
+> ```bash
+> kubectl -n workspace port-forward svc/workspace-admin 8000
+> ```
+
+---
+
+### 8. Deploy Configurations for Crossplane Providers
+
+#### 8.1. Provider Configurations
 
 The Workspace BB uses several Crossplane providers to manage resources - each of which requires a corresponding ProviderConfig to be deployed in the `workspace` namespace. The exception is the MinIO provider, which requires a cluster-wide ProviderConfig.
 
@@ -131,7 +208,7 @@ metadata:
   namespace: workspace
 spec:
   credentialsSecretRef:
-    name: keycloak-secret
+    name: workspace-pipeline-client
     key: credentials
 ---
 apiVersion: helm.m.crossplane.io/v1beta1
@@ -145,97 +222,13 @@ spec:
 EOF
 ```
 
-### 4. Deploy Workspace Dependencies
+#### 8.2. Keycloak Client for Crossplane Provider
 
-The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
+Create a Keycloak client for the Crossplane Keycloak provider to allow it to interface with Keycloak. We create the client `workspace-pipeline`, which is used by the workspace pipelines to perform administrative actions against the Keycloak API to properly protect newly created workspaces.
 
-```bash
-# Deploy CSI-RClone
-helm upgrade -i workspace-dependencies-csi-rclone \
-  oci://ghcr.io/eoepca/workspace/workspace-dependencies-csi-rclone \
-  --version 2.0.0-rc.12 \
-  --namespace workspace
+> The above `ProviderConfig` relies upon the secret `workspace-pipeline-client` that provides the credentials for this client.
 
-# Deploy Educates
-helm upgrade -i workspace-dependencies-educates \
-  oci://ghcr.io/eoepca/workspace/workspace-dependencies-educates \
-  --version 2.0.0-rc.12 \
-  --namespace workspace \
-  --values workspace-dependencies/educates-values.yaml
-```
-
-### 5. Deploy the Workspace API
-
-```bash
-helm repo add eoepca https://eoepca.github.io/helm-charts
-helm repo update eoepca
-helm upgrade -i workspace-api eoepca/rm-workspace-api \
-  --version 2.0.0-rc.7 \
-  --namespace workspace \
-  --values workspace-api/generated-values.yaml
-```
-
-> Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
-> If you have enabled OIDC, we will set up the APISIX route/ingress in later steps.
-
-### 6. Deploy the Workspace Pipeline
-
-The Workspace Pipeline manages the templating and provisioning of resources within newly created workspaces.
-
-```bash
-helm upgrade -i workspace-pipeline \
-  oci://ghcr.io/eoepca/workspace/workspace-pipeline \
-  --version 2.0.0-rc.12 \
-  --namespace workspace \
-  --values workspace-pipeline/generated-values.yaml
-```
-
-### 7. Deploy the DataLab Session Cleaner
-
-Deploy a CronJob that automatically cleans up inactive DataLab sessions:
-
-```bash
-kubectl apply -f workspace-cleanup/datalab-cleaner.yaml
-```
-
-This runs daily at 8 PM UTC and removes all sessions except the default ones.
-
-### 8. Deploy the Workspace Admin Dashboard
-
-The Kubernetes Dashboard provides a web-based interface for managing Kubernetes resources.
-
-```bash
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-helm repo update kubernetes-dashboard
-helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
-  --version 7.10.1 \
-  --namespace workspace \
-  --values workspace-admin/generated-values.yaml
-```
-
-> There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding.
-
-### 9. Optional: Enable OIDC with Keycloak
-
-If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
-
-If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak and optionally define resource-protection rules (e.g. restricting who can list jobs).
-
-> Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
-
-### 9.1 Create Keycloak Clients
-
-The Workspace requires two Keycloak clients:
-
-* `workspace-api`
-
-    Used by the Workspace API to interface with Keycloak and OPA for authentication and authorization.
-
-* `workspace-pipeline`
-
-    Used by the workspace pipelines to perform administrative actions against the Keycloak API to properly protect newly created workspaces.
-
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm. Make sure that you **run this script twice**, once for each client as both clients are required.
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm.
 
 ```bash
 bash ../utils/create-client.sh
@@ -245,26 +238,75 @@ When prompted:
 
 > In many cases the default values (indicated `'-'`) are acceptable.
 
-| Prompt | Description | `workspace-api` | `workspace-pipeline` |
-|--------|-------------|------------|---------------------|
-| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - | - |
-| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - | - |
-| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - | - |
-| Realm | Typically `eoepca` | - | - |
-| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` | `true` |
-| Client ID | Identifier for the client in Keycloak | `workspace-api` | `workspace-pipelines` |
-| Client Name | Display name for the client - for example... | `Workspace API` | `Workspace Pipelines` |
-| Client Description | Descriptive text for the client - for example... | `Workspace API OIDC` | `Workspace Pipelines Admin` |
-| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `WORKSPACE_API_CLIENT_SECRET` | ref. env `WORKSPACE_PIPELINE_CLIENT_SECRET` |
-| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `workspace-api` | `workspace-pipelines` |
-| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` | `<blank>` |
-| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` | `<blank>` |
+| Prompt | Description | `workspace-pipeline` |
+|--------|-------------|---------------------|
+| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - |
+| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - |
+| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - |
+| Realm | Typically `eoepca` | - |
+| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` |
+| Client ID | Identifier for the client in Keycloak | `workspace-pipeline` |
+| Client Name | Display name for the client - for example... | `Workspace Pipelines` |
+| Client Description | Descriptive text for the client - for example... | `Workspace Pipelines Admin` |
+| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `WORKSPACE_PIPELINE_CLIENT_SECRET` |
+| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `workspace-pipeline` |
+| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` |
+| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` |
 
-After it completes, you should see JSON snippets confirming the newly created clients.
+After it completes, you should see a JSON snippet confirming the newly created client.
+
+The `workspace-pipeline` client requires specific `realm-management` roles to perform administrative actions against Keycloak.
+
+Run the `crossplane-client-roles.sh` script in the `/scripts/utils/` directory, providing the `workspace-pipeline` client ID as an argument:
+
+```bash
+bash ../utils/crossplane-client-roles.sh workspace-pipeline
+```
+
+> The client is updated with the required roles.
 
 ---
 
-### 9.2 Create APISIX Route Ingress
+### 9. Optional: Enable OIDC with Keycloak
+
+If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
+
+If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak and optionally define resource-protection rules (e.g. restricting who can list jobs).
+
+> Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
+
+#### 9.1 Create Keycloak Client
+
+We create the client `workspace-api`, which is used by the Workspace API to interface with Keycloak and OPA for authentication and authorization.
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm.
+
+```bash
+bash ../utils/create-client.sh
+```
+
+When prompted:
+
+> In many cases the default values (indicated `'-'`) are acceptable.
+
+| Prompt | Description | `workspace-api` |
+|--------|-------------|-----------------|
+| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - |
+| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - |
+| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - |
+| Realm | Typically `eoepca` | - |
+| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` |
+| Client ID | Identifier for the client in Keycloak | `workspace-api` |
+| Client Name | Display name for the client - for example... | `Workspace API` |
+| Client Description | Descriptive text for the client - for example... | `Workspace API OIDC` |
+| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `WORKSPACE_API_CLIENT_SECRET` |
+| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `workspace-api` |
+| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` |
+| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` |
+
+After it completes, you should see a JSON snippet confirming the newly created client.
+
+#### 9.2 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 

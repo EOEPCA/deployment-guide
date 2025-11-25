@@ -59,30 +59,7 @@ spec:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
           secretRef: workspace-api
 {{- end }}
-    - name: workspace-api-admin
-      match:  
-        hosts:
-          - workspace-api.{{ getenv "INGRESS_HOST" }}
-        paths:
-          - /workspaces
-          - /workspaces/*
-        methods:
-          - POST
-          - DELETE
-      backends:
-        - serviceName: workspace-api
-          servicePort: 8080
-{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
-      plugins:
-        - name: authz-keycloak
-          enable: true
-          config:
-            discovery: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration
-            lazy_load_paths: true
-            ssl_verify: false
-          secretRef: workspace-api
-{{- end }}
-    - name: workspace-api-user
+    - name: workspace-api-auth
       match:
         hosts:
           - workspace-api.{{ getenv "INGRESS_HOST" }}
