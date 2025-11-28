@@ -5,9 +5,15 @@ global:
     apiTLS: {{ if eq (getenv "HTTP_SCHEME") "https" }}true{{ else }}false{{ end }}
     apiTitle: "OpenEO ArgoWorkflows"
     apiDescription: "OpenEO API implementation using Dask for distributed processing"
+    {{- if eq (getenv "OPENEO_ARGO_ENABLE_OIDC") "yes" }}
     oidcUrl: "{{ getenv "OIDC_ISSUER_URL" }}"
     oidcOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
     oidcPolicies: "{{ getenv "OIDC_POLICIES" }}"
+    {{- else }}
+    oidcUrl: "http://dummy-oidc.local/realms/eoepca"
+    oidcOrganisation: "eoepca"
+    oidcPolicies: ""
+    {{- end }}
     stacCatalogueUrl: "{{ getenv "STAC_CATALOG_ENDPOINT" }}"
     workspaceRoot: "/user_workspaces"
     executorImage: "ghcr.io/eodcgmbh/openeo-argoworkflows:executor-2025.5.1"
@@ -52,7 +58,7 @@ service:
   port: 8000
 
 ingress:
-  enabled: false  # We use separate ingress configuration
+  enabled: false
 
 resources:
   limits:

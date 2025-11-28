@@ -15,9 +15,11 @@ if [ "$OPENEO_ARGO_ENABLE_OIDC" == "no" ]; then
     export OPENEO_ARGO_BASIC_AUTH_USERNAME="eoepcauser"
     export OPENEO_ARGO_BASIC_AUTH_PASSWORD="eoepcapass"
     BASIC_AUTH_HASH=$(openssl passwd -apr1 "${OPENEO_ARGO_BASIC_AUTH_PASSWORD}")
-    echo "BASIC_AUTH_HASH: $BASIC_AUTH_HASH"
     export OPENEO_ARGO_BASIC_AUTH_HTPASSWD="${OPENEO_ARGO_BASIC_AUTH_USERNAME}:${BASIC_AUTH_HASH}"
+    # Add base64 encoding for the Authorization header
+    export OPENEO_ARGO_BASIC_AUTH_B64=$(echo -n "${OPENEO_ARGO_BASIC_AUTH_USERNAME}:${OPENEO_ARGO_BASIC_AUTH_PASSWORD}" | base64)
     add_to_state_file "OPENEO_ARGO_BASIC_AUTH_HTPASSWD" "$OPENEO_ARGO_BASIC_AUTH_HTPASSWD"
+    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_B64" "$OPENEO_ARGO_BASIC_AUTH_B64"
 fi
 if [ "$OPENEO_ARGO_ENABLE_OIDC" == "yes" ]; then
     ask "OIDC_ISSUER_URL" "Enter OIDC issuer URL" "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}" is_valid_url
