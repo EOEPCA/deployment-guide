@@ -34,7 +34,8 @@ if [ -z "$OPA_CLIENT_SECRET" ]; then
 fi
 
 ask "KEYCLOAK_TEST_USER" "Enter the username for the example user" "eoepcauser"
-ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the example user" "eoepcapassword"
+ask "KEYCLOAK_TEST_ADMIN" "Enter the username for the example ADMIN user" "eoepcaadmin"
+ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the example users" "eoepcapassword"
 
 echo ""
 echo "❗  Generated passwords:"

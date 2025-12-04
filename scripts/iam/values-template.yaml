@@ -95,12 +95,7 @@ iam: &iam
     paths:
       - /*
     # Client credentials:
-    # clientId is mandatory if clientSecretRef is *not* specified.
-    clientId: {{ getenv "OPA_CLIENT_ID" }}
-    clientSecret: {{ getenv "OPA_CLIENT_SECRET" }}
-    #clientSecret:
-    # clientSecretRef: Name of an existing secret that contains the client secret and maybe further values like the client ID
-    #clientSecretRef: opa-route
+    clientSecretRef: opa-keycloak-client
   identityApi:
     # Note: The use of Identity API in conjunction with the IAM BB is deprecated.
     # Installing Identity API as part of the IAM BB is still supported, but neither
