@@ -173,8 +173,9 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
 
 > There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding. For example:
 > ```bash
-> kubectl -n workspace port-forward svc/workspace-admin 8000
+> kubectl -n workspace port-forward svc/workspace-admin-web 8000
 > ```
+> Then access it at `http://localhost:8000/`.
 
 ---
 
@@ -222,52 +223,306 @@ spec:
 EOF
 ```
 
-#### 8.2. Keycloak Client for Crossplane Provider
+#### 8.2. Create the Keycloak Client for Crossplane Keycloak Provider
 
 Create a Keycloak client for the Crossplane Keycloak provider to allow it to interface with Keycloak. We create the client `workspace-pipeline`, which is used by the workspace pipelines to perform administrative actions against the Keycloak API to properly protect newly created workspaces.
 
-> The above `ProviderConfig` relies upon the secret `workspace-pipeline-client` that provides the credentials for this client.
+##### 8.2.1. Create the Keycloak Client
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm.
+The client is created via the Crossplane `Client` CRD using the Keycloak Provider offered by the `iam-management` namespace. This bootstraps the ability of the Workspace to self-serve its own Keycloak resources for workspace isolation.
 
-```bash
-bash ../utils/create-client.sh
-```
+To this end we create:
 
-When prompted:
+* In namespace `iam-management`:
+    * A Keycloak client `workspace-pipeline` with appropriate `realm-management` roles.
+    * A Kubernetes secret `workspace-pipeline-keycloak-client` containing the client secret supporting client creation.
+* In namespace `workspace`:
+    * A Kubernetes secret `workspace-pipeline-client` containing the client credentials for the Crossplane Keycloak provider.
 
-> In many cases the default values (indicated `'-'`) are acceptable.
+**Create the `workspace-pipeline` Keycloak client**
 
-| Prompt | Description | `workspace-pipeline` |
-|--------|-------------|---------------------|
-| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - |
-| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - |
-| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - |
-| Realm | Typically `eoepca` | - |
-| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` |
-| Client ID | Identifier for the client in Keycloak | `workspace-pipeline` |
-| Client Name | Display name for the client - for example... | `Workspace Pipelines` |
-| Client Description | Descriptive text for the client - for example... | `Workspace Pipelines Admin` |
-| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `WORKSPACE_PIPELINE_CLIENT_SECRET` |
-| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `workspace-pipeline` |
-| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` |
-| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` |
-
-After it completes, you should see a JSON snippet confirming the newly created client.
-
-The `workspace-pipeline` client requires specific `realm-management` roles to perform administrative actions against Keycloak.
-
-Run the `crossplane-client-roles.sh` script in the `/scripts/utils/` directory, providing the `workspace-pipeline` client ID as an argument:
+This relies upon the Keycloak Provider in the `iam-management` namespace.
 
 ```bash
-bash ../utils/crossplane-client-roles.sh workspace-pipeline
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+# Secret providing client_secret for Client creation.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: workspace-pipeline-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: "${WORKSPACE_PIPELINE_CLIENT_SECRET}"
+---
+# Create the Keycloak Client
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: "${WORKSPACE_PIPELINE_CLIENT_ID}"
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${WORKSPACE_PIPELINE_CLIENT_ID}
+    name: Workspace Pipelines
+    description: Workspace Pipelines Admin
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://workspace-pipeline.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://workspace-pipeline.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://workspace-pipeline.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: workspace-pipeline-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-> The client is updated with the required roles.
+**Client credentials for the Workspace-dedicated Keycloak Provider**
+
+Create the secret with the client credentials for the _Crossplane Keycloak Provider_ in the `workspace` namespace.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+# Secret providing credentials for Crossplane Keycloak Provider.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: workspace-pipeline-client
+  namespace: workspace
+stringData:
+  credentials: |
+    {
+      "client_id": "${WORKSPACE_PIPELINE_CLIENT_ID}",
+      "client_secret": "${WORKSPACE_PIPELINE_CLIENT_SECRET}",
+      "url": "http://iam-keycloak.iam",
+      "base_path": "",
+      "realm": "${REALM}"
+    }
+EOF
+```
+
+##### 8.2.2. Add the realm management roles to the Client
+
+The `workspace-pipeline` client requires specific `realm-management` roles to perform administrative actions against Keycloak - namely: `manage-users`, `manage-authorization`, `manage-clients`, and `create-client`.
+
+First register a Crossplane-managed representation of the built-in the `realm-management` Client.
+
+> Note that this client already exists in Keycloak by default - but we need a k8s Custom Resource in order to reference the client by name.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: realm-management
+  namespace: iam-management
+spec:
+  managementPolicies:
+    - Observe
+  forProvider:
+    realmId: ${REALM}
+    clientId: realm-management
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
+Now we can add the required roles to the `workspace-pipeline` client.
+
+> Note this is actually modelled as a specific Custom Resource for each role assignment.
+
+```bash
+source ~/.eoepca/state
+for role in manage-users manage-authorization manage-clients create-client; do
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientServiceAccountRole
+metadata:
+  name: workspace-pipeline-client-${role}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    serviceAccountUserClientIdRef:
+      name: ${WORKSPACE_PIPELINE_CLIENT_ID}
+      namespace: iam-management
+    clientIdRef:
+      name: realm-management
+      namespace: iam-management
+    role: ${role}
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+done
+```
 
 ---
 
-### 9. Optional: Enable OIDC with Keycloak
+### 9. Configure TLS Certificates for Workspace Datalab
+
+The default Workspace pipelines include, within each created Workspace, a Datalab component. This is configured to expect the secret `workspace-tls` that is used to provide the TLS Certificate for each workspace ingress.
+
+The deployment anticipates the use of a wildcard certificate that is reused for each created workspace. Thus, the `workspace-tls` secret is created in the `workspace` namespace, from where it is automatically copied to each `ws-XXX` namespace that is created for each instantiated workspace.
+
+Section [`Wildcard Certificate Generation`](#91-wildcard-certificate-generation) below provides an illustration of wildcard certificate generation using _Cert Manager_. This can be adapted for your DNS provider.
+
+Section [`Workspace Certificate Workaround`](#92-workspace-certificate-workaround) below provides a workaround, in the case that your are unable to obtain a wildcard certificate.
+
+#### 9.1. Wildcard Certificate Generation
+
+This approach relies upon a `Certificate` resource with the wildcard DNS name `*.${INGRESS_HOST}`. In order for this to be satisfied it is necessary to use a `ClusterIssuer` that uses the `DNS01` solver.
+
+**Create `ClusterIssuer`**
+
+The following illustrates an example that uses Cloudflare DNS provider.
+
+> Set your email address in the resource definition.
+
+```bash
+cat - <<'EOF' | kubectl apply -f -
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-dns01
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: <your-email-address>
+    privateKeySecretRef:
+      name: letsencrypt-dns01
+    solvers:
+      - dns01:
+           cloudflare:
+              apiTokenSecretRef:
+                 key: api-token
+                 name: cloudflare-api-token
+EOF
+```
+
+For other supported DNS providers see the [Cert Manager DNS01 Documentation](https://cert-manager.io/docs/configuration/acme/dns01/).
+
+**Cloudflare Credentials `Secret`**
+
+Create the secret `cloudflare-api-token` (as per above) with your Cloudflare API token.
+
+> Set your API token in the resource definition.
+
+```bash
+cat - <<'EOF' | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: cloudflare-api-token
+  namespace: cert-manager
+stringData:
+  api-token: <your-api-token>
+EOF
+```
+
+**Create Wildcard `Certificate`**
+
+Now the `DNS01` cluster issuer is in place we can create the `Certificate` to generate the `workspace-tls` secret.
+
+```bash
+source ~/.eoepca/state
+cat - <<EOF | kubectl apply -f -
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: workspace-tls
+  namespace: workspace
+spec:
+  secretName: workspace-tls
+  issuerRef:
+    name: letsencrypt-dns01
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.${INGRESS_HOST}"
+EOF
+```
+
+In response, Cert Manager should trigger the certificate request via DNS01 - resulting in the `workspace-tls` secret. This secret is then available 
+
+#### 9.2. Workspace Certificate Workaround
+
+In case you are unable to provision a reusable wildcard certificate as described above then, as a workaround, we can modify the `Ingress` definition of each workspace to instead trigger its own dedicated certificate generation.
+
+This approach involves using a _Mutating Admission Policy_ to patch the `Ingress` resource with appropriate annotations to integrate with Cert Manager.
+
+**Deploy Kyverno**
+
+The approach relies upon _Kyverno Policy Engine_ - which is also referenced in section [Suppress Resource Requests](../prerequisites/kubernetes.md#suppress-resource-requests).
+
+If not already deployed, install _Kyverno_ using helm...
+
+```bash
+helm repo add kyverno https://kyverno.github.io/kyverno/
+helm repo update kyverno
+helm upgrade -i kyverno kyverno/kyverno \
+  --version 3.4.1 \
+  --namespace kyverno \
+  --create-namespace
+```
+
+**Workspace Ingress Policy**
+
+Then we apply a policy that patches any `Ingress` resource in namespaces matching the `ws-` prefix used for workspaces. The patch adds annotations that are relevant to the Apisix Ingress Controller, and specifically adds the annotation `cert-manager.io/cluster-issuer` to trigger `Certificate` generation.
+
+```bash
+source ~/.eoepca/state
+cat - <<EOF | kubectl apply -f -
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: workspace-ingress
+spec:
+  rules:
+    - name: workspace-ingress-annotations
+      match:
+        resources:
+          kinds:
+            - Ingress
+          name: "ws-*"
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            annotations:
+              +(cert-manager.io/cluster-issuer): "${CLUSTER_ISSUER}"
+              +(apisix.ingress.kubernetes.io/use-regex): "true"
+              +(ingress.kubernetes.io/force-ssl-redirect): "true"
+              +(k8s.apisix.apache.org/enable-cors): "true"
+              +(k8s.apisix.apache.org/enable-websocket): "true"
+              +(k8s.apisix.apache.org/http-to-https): "true"
+              +(k8s.apisix.apache.org/upstream-read-timeout): 3600s
+EOF
+```
+
+---
+
+### 10. Optional: Enable OIDC with Keycloak
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
@@ -275,43 +530,117 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-#### 9.1 Create Keycloak Client
+#### 10.1 Create Keycloak Client
 
-We create the client `workspace-api`, which is used by the Workspace API to interface with Keycloak and OPA for authentication and authorization.
-
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm.
+A Keycloak client is required for the ingress protection of the Workspace API. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${WORKSPACE_API_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${WORKSPACE_API_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${WORKSPACE_API_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${WORKSPACE_API_CLIENT_ID}
+    name: Workspace API
+    description: Workspace API OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${WORKSPACE_API_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
-
-> In many cases the default values (indicated `'-'`) are acceptable.
-
-| Prompt | Description | `workspace-api` |
-|--------|-------------|-----------------|
-| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - |
-| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - |
-| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - |
-| Realm | Typically `eoepca` | - |
-| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` |
-| Client ID | Identifier for the client in Keycloak | `workspace-api` |
-| Client Name | Display name for the client - for example... | `Workspace API` |
-| Client Description | Descriptive text for the client - for example... | `Workspace API OIDC` |
-| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `WORKSPACE_API_CLIENT_SECRET` |
-| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `workspace-api` |
-| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` |
-| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` |
-
-After it completes, you should see a JSON snippet confirming the newly created client.
-
-#### 9.2 Create APISIX Route Ingress
+#### 10.2 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 
 ```bash
 kubectl apply -f workspace-api/generated-ingress.yaml
+```
+
+#### 10.3. Assign `admin` role to the _Test Admin User_
+
+The above `ApisixRoute` ingress enforces this [OPA policy](https://github.com/EOEPCA/iam-policies/blob/main/policies/eoepca/workspace/wsapi.rego) - which requires users to have the `admin` role in order to access certain endpoints (e.g. workspace creation).
+
+First we create the `admin` role in the `workspace-api` Keycloak client...`
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: role.keycloak.m.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: ${WORKSPACE_API_CLIENT_ID}-admin
+  namespace: iam-management
+spec:
+  forProvider:
+    name: admin
+    realmId: ${REALM}
+    clientIdRef:
+      name: ${WORKSPACE_API_CLIENT_ID}
+    description: "Admin role for ${WORKSPACE_API_CLIENT_ID} client"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
+Then we assign the `admin` role to our test admin user (e.g. `eoepcaadmin`):
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: ${KEYCLOAK_TEST_ADMIN}-${WORKSPACE_API_CLIENT_ID}-admin
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    userIdRef:
+      name: ${KEYCLOAK_TEST_ADMIN}
+    roleIdsRefs:
+      - name: ${WORKSPACE_API_CLIENT_ID}-admin
+    exhaustive: false
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
 ---
@@ -355,69 +684,128 @@ xdg-open "https://workspace-api.${INGRESS_HOST}/docs"
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
 
-> NOTE that the ingress integrates with IAM via OIDC, and so expects an authenticated user - for example `eoepcauser` created earlier.
+> NOTE that the ingress integrates with IAM via OIDC, and so expects an authenticated user - for example `eoepcaadmin` created earlier.
 
 ---
 
 ### Creating and Testing a Workspace
 
-#### 1. Create a New Workspace
+The Workspace API can be used to create a new workspace. In accordance with the `ApisixRoute` ingress and associated OPA policies, the user must have the `admin` role in order to create workspaces.
 
-Apply a sample `Workspace` resource definition:
+#### 1. Obtain an Access Token as `eoepcaadmin`
+
+`eoepcaadmin` was registered earlier as a Workspace `admin` user. Obtain an access token for this user:
 
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: epca.eo/v1beta1
-kind: Workspace
-metadata:
-  name: ws-eoepcauser
-  namespace: workspace
-spec:
-  subscription: bronze
-  owner: eoepcauser
-  extraBuckets:
-    - ws-eoepcauser-shared
+source ~/.eoepca/state
+# Authenticate as test admin `eoepcaadmin`
+ACCESS_TOKEN=$( \
+  curl -X POST "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    --silent --show-error \
+    -d "username=${KEYCLOAK_TEST_ADMIN}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${WORKSPACE_API_CLIENT_ID}" \
+    -d "client_secret=${WORKSPACE_API_CLIENT_SECRET}" \
+    | jq -r '.access_token' \
+)
+echo "Access Token: ${ACCESS_TOKEN:0:20}..."
+```
+
+#### 2. Create a New Workspace via the Workspace API
+
+Create a new workspace for the test user `eoepcauser`.
+
+```bash
+source ~/.eoepca/state
+curl -X POST "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d @- <<EOF
+{
+  "preferred_name": "${KEYCLOAK_TEST_USER}",
+  "default_owner": "${KEYCLOAK_TEST_USER}"
+}
 EOF
 ```
 
-Check that a new namespace was created:
+#### 3. Check Workspace Creation
+
+**Namespace**
+
+Check creation of new namespace for the workspace.
 
 ```bash
-kubectl get ns ws-eoepcauser
+source ~/.eoepca/state
+kubectl get ns ws-${KEYCLOAK_TEST_USER}
 ```
 
-#### 2. Verify Storage Buckets
+**Custom Resources**
 
-Confirm that the workspace's storage buckets - `ws-eoepcauser` _(default)_ and `ws-eoepcauser-shared` _(additional)_ - were created:
+Check creation of the `Storage` Custom Resource for the workspace.
 
 ```bash
-kubectl -n ws-eoepcauser get bucket
+source ~/.eoepca/state
+kubectl get storage/ws-${KEYCLOAK_TEST_USER} -n workspace
 ```
 
-#### 3. Query the Workspace API
-
-Port-forward the Workspace API service:<br>
-_Use of port forward allows to bypass the IAM to simplify the test_
+Check creation of the `Datalab` Custom Resource for the workspace.
 
 ```bash
-kubectl -n workspace port-forward svc/workspace-api 8080:8080
+source ~/.eoepca/state
+kubectl get datalab/ws-${KEYCLOAK_TEST_USER} -n workspace
 ```
 
-From another terminal window, call the Workspace API to get details for the newly created workspace:
+> Both resources should show a `True` status for `SYNCED` and `READY` conditions.<br>
+> Note that state can take a little time to be reached as Crossplane provisions the underlying resources.
+
+#### 4. Get New Workspace Details
+
+**Authenticate as `eoepcauser` - the owner of the newly created workspace**
 
 ```bash
-curl http://localhost:8080/workspaces/ws-eoepcauser -H 'accept: application/json'
+source ~/.eoepca/state
+ACCESS_TOKEN=$( \
+  curl -X POST "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    --silent --show-error \
+    -d "username=${KEYCLOAK_TEST_USER}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${WORKSPACE_API_CLIENT_ID}" \
+    -d "client_secret=${WORKSPACE_API_CLIENT_SECRET}" \
+    | jq -r '.access_token' \
+)
+echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 ```
 
-Record the secret from the response for S3 access:
+**Call the Workspace API to get details for the newly created workspace**
 
 ```bash
-SECRET="$(curl -s http://localhost:8080/workspaces/ws-eoepcauser -H 'accept: application/json' | jq -r '.storage.credentials.secret')"
+source ~/.eoepca/state
+curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}" \
+  --silent --show-error \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  | jq
 ```
 
-Now the `port-forward` to the Workspace API service can be stopped - `Ctrl-C` in original terminal window.
+> The details of the `storage` and the `datalab` associated with the workspace are returneed.
 
-#### 4. Interacting with S3 Buckets
+**Record the secret from the response for S3 access**
+
+```bash
+source ~/.eoepca/state
+SECRET=$( \
+  curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}" \
+    --silent --show-error \
+    -H "Accept: application/json" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+    | jq -r '.storage.credentials.secret'
+)
+echo "S3 Secret: ${SECRET}"
+```
+
+#### 5. S3 Bucket Access
 
 Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate objects in the workspace's S3 buckets.
 
@@ -428,7 +816,7 @@ source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-eoepcauser \
+  --access_key ${KEYCLOAK_TEST_USER} \
   --secret_key $SECRET
 ```
 
@@ -441,7 +829,7 @@ source ~/.eoepca/state
 s3cmd put validation.sh s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-eoepcauser \
+  --access_key ${KEYCLOAK_TEST_USER} \
   --secret_key $SECRET
 ```
 
@@ -452,7 +840,7 @@ source ~/.eoepca/state
 s3cmd ls s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-eoepcauser \
+  --access_key ${KEYCLOAK_TEST_USER} \
   --secret_key $SECRET
 ```
 
@@ -463,16 +851,52 @@ source ~/.eoepca/state
 s3cmd del s3://ws-eoepcauser/validation.sh \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ws-eoepcauser \
+  --access_key ${KEYCLOAK_TEST_USER} \
   --secret_key $SECRET
 ```
 
-#### 5. Delete the Test Workspace
+#### 6. Datalabs UI
 
-To remove the test workspace:
+Open the web UI for the created workspace.
 
 ```bash
-kubectl -n workspace delete workspaces ws-eoepcauser
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}"
+```
+
+The home page for `Workspace: ws-eoepcauser` opens.
+
+Select `Datalab (default)` to open the default session. This opens a new window with the Datalabs session.
+
+> First time this may take a little time whilst the session is created.
+
+Navigate between each of the tabs:
+
+* **Terminal**<br>
+  _Provides a terminal within the session._
+* **Editor**<br>
+  _Provides a `vscode` style editor._
+* **Data**<br>
+  _Provides a file browser onto the object storage bucket(s) the user has access to._
+
+#### 7. (optional) Delete Workspace via the Workspace API
+
+> The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.
+
+The workspace for the `eoepcauser` test user can be deleted via the Workspace API.
+
+This must be performed by a workspace `admin` user (e.g. `eoepcaadmin`).
+
+**Authenticate as `eoepcaadmin`**
+
+TBD
+
+**Delete the workspace**
+
+```bash
+source ~/.eoepca/state
+curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 ---

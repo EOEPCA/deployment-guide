@@ -40,6 +40,10 @@ if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
     echo ""
 fi
 
+ask "KEYCLOAK_TEST_USER" "Enter the username for the example user" "eoepcauser"
+ask "KEYCLOAK_TEST_ADMIN" "Enter the username for the example ADMIN user" "eoepcaadmin"
+ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the example users" "eoepcapassword"
+
 # Deduce the service CIDR from the cluster
 export SERVICE_CIDR=$(kubectl get svc kubernetes -n default -o json | jq -r '.spec.clusterIP' | awk -F. '{printf "%d.%d.0.0/12", $1, $2}')
 

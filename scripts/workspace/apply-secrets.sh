@@ -16,46 +16,11 @@ kubectl create secret generic minio-secret \
   --namespace workspace \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Create wildcard TLS certificate secret for Educates
-kubectl create secret generic workspace-tls \
-  --from-literal=tls.crt="" \
-  --from-literal=tls.key="" \
-  --namespace workspace \
-  --dry-run=client -o yaml | kubectl apply -f - 2>/dev/null || true
-
 # Workspace API Keycloak client credentials
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-  kubectl create secret generic workspace-api \
+  kubectl create secret generic workspace-api-keycloak-client \
     --from-literal=client_id="$WORKSPACE_API_CLIENT_ID" \
     --from-literal=client_secret="$WORKSPACE_API_CLIENT_SECRET" \
-    --from-literal=credentials="$(cat <<EOF
-{
-  "client_id": "$WORKSPACE_API_CLIENT_ID",
-  "client_secret": "$WORKSPACE_API_CLIENT_SECRET",
-  "url": "http://iam-keycloak.iam",
-  "base_path": "/",
-  "realm": "$REALM",
-  "root_ca_certificate" : "" 
-}
-EOF
-)" \
-    --namespace workspace \
-    --dry-run=client -o yaml | kubectl apply -f -
-fi
-
-# Workspace Pipelines Keycloak client credentials
-if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-  kubectl create secret generic workspace-pipeline-client \
-    --from-literal=credentials="$(cat <<EOF
-{
-  "client_id": "$WORKSPACE_PIPELINE_CLIENT_ID",
-  "client_secret": "$WORKSPACE_PIPELINE_CLIENT_SECRET",
-  "url": "http://iam-keycloak.iam",
-  "base_path": "",
-  "realm": "$REALM"
-}
-EOF
-)" \
     --namespace workspace \
     --dry-run=client -o yaml | kubectl apply -f -
 fi

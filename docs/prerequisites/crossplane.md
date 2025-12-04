@@ -4,6 +4,13 @@ Crossplane is a Kubernetes add-on that enables the management of cloud infrastru
 
 The Crossplane deployment comprises a core system deployment, which is then extended via the installation of Providers. Each Provider enables the management of a specific type of infrastructure or service, such as Kubernetes clusters, cloud storage, databases, etc.
 
+Crossplane is currently relied upon by several Building Blocks in this Deployment Guide, including:
+
+* IAM Building Block<br>
+  _Declarative provisioning of Clients, Users, Groups, and Roles in Keycloak._
+* Workspace Building Block<br>
+  _Declarative provisioning of workspaces and associated IAM resources._
+
 ## Crossplane Core
 
 The first step is to deploy the Crossplane core system using Helm:
