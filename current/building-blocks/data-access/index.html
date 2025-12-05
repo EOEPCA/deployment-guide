@@ -2216,69 +2216,127 @@
 </li>
 <li><strong><code>ENABLE_EOAPI_NOTIFIER</code></strong>: Enable CloudEvents notifier (yes/no)</li>
 </ul>
+<p><strong>PgSTAC Configuration Options</strong></p>
+<p>Configure via <code>pgstacBootstrap.settings.pgstacSettings</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Values Key</th>
+<th>Description</th>
+<th>Default</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queue_timeout</code></td>
+<td>Timeout for queued queries</td>
+<td><code>"10 minutes"</code></td>
+<td>PostgreSQL interval</td>
+</tr>
+<tr>
+<td><code>use_queue</code></td>
+<td>Enable query queue mechanism</td>
+<td><code>"false"</code></td>
+<td>boolean string</td>
+</tr>
+<tr>
+<td><code>update_collection_extent</code></td>
+<td>Auto-update collection extents</td>
+<td><code>"true"</code></td>
+<td>boolean string</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CronJobs Configuration</strong></p>
+<p>CronJobs are conditionally created based on PgSTAC settings:</p>
+<ul>
+<li><strong>Queue Processor</strong> (created when <code>use_queue: "true"</code>):</li>
+<li>Schedule: <code>"0 * * * *"</code> (hourly)</li>
+<li>Processes queries that exceeded timeout</li>
+<li>
+<p>Configurable via <code>queueProcessor.schedule</code></p>
+</li>
+<li>
+<p><strong>Extent Updater</strong> (created when <code>update_collection_extent: "false"</code>):</p>
+</li>
+<li>Schedule: <code>"0 2 * * *"</code> (daily at 2 AM)</li>
+<li>Updates collection spatial/temporal boundaries</li>
+<li>Configurable via <code>extentUpdater.schedule</code></li>
+</ul>
+<p>By default, no CronJobs are created (<code>use_queue=false</code>, <code>update_collection_extent=true</code>). Both schedules are customizable using standard cron format.</p>
+<p><strong>Example PgSTAC Configuration:</strong></p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">pgstacBootstrap</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">settings</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">pgstacSettings</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">      </span><span class="c1"># Performance tuning for large datasets</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">      </span><span class="nt">queue_timeout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;20</span><span class="nv"> </span><span class="s">minutes&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="nt">use_queue</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="nt">update_collection_extent</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
+</span></code></pre></div>
 <h3 id="3-deployment">3. Deployment<a class="headerlink" href="#3-deployment" title="Permanent link">⚓︎</a></h3>
 <h4 id="apply-secrets">Apply Secrets<a class="headerlink" href="#apply-secrets" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash<span class="w"> </span>apply-secrets.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>apply-secrets.sh
 </span></code></pre></div>
 <h4 id="deploy-postgresql-operator-if-using-internal">Deploy PostgreSQL Operator (if using internal)<a class="headerlink" href="#deploy-postgresql-operator-if-using-internal" title="Permanent link">⚓︎</a></h4>
 <blockquote>
 <p>If using the external PostgreSQL option, skip this step.</p>
 </blockquote>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>postgres-operator<span class="w"> </span>https://postgres-operator-examples.github.io/charts
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>postgres-operator
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>pgo<span class="w"> </span>oci://registry.developers.crunchydata.com/crunchydata/pgo<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">5</span>.6.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span>--values<span class="w"> </span>postgres/generated-values.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span>--wait
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>postgres-operator<span class="w"> </span>https://postgres-operator-examples.github.io/charts
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>postgres-operator
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>pgo<span class="w"> </span>oci://registry.developers.crunchydata.com/crunchydata/pgo<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">5</span>.6.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span>--values<span class="w"> </span>postgres/generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span>--wait
 </span></code></pre></div>
 <h4 id="deploy-eoapi">Deploy eoAPI<a class="headerlink" href="#deploy-eoapi" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoapi<span class="w"> </span>https://devseed.com/eoapi-k8s/
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoapi
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi<span class="w"> </span>eoapi/eoapi<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.7.12<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoapi<span class="w"> </span>https://devseed.com/eoapi-k8s/
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoapi
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi<span class="w"> </span>eoapi/eoapi<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.7.12<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi/generated-values.yaml
 </span></code></pre></div>
 <h4 id="deploy-stac-manager">Deploy STAC Manager<a class="headerlink" href="#deploy-stac-manager" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>stac-manager<span class="w"> </span>https://stac-manager.ds.io/
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>stac-manager
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>stac-manager<span class="w"> </span>stac-manager/stac-manager<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.11<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--values<span class="w"> </span>stac-manager/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>stac-manager<span class="w"> </span>https://stac-manager.ds.io/
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>stac-manager
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>stac-manager<span class="w"> </span>stac-manager/stac-manager<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.11<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span>--values<span class="w"> </span>stac-manager/generated-values.yaml
 </span></code></pre></div>
 <h4 id="deploy-eoapi-maps-plugin">Deploy EOAPI Maps Plugin<a class="headerlink" href="#deploy-eoapi-maps-plugin" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev/
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-maps-plugin<span class="w"> </span>eoepca-dev/eoapi-maps-plugin<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.21<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-maps-plugin/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev/
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-maps-plugin<span class="w"> </span>eoepca-dev/eoapi-maps-plugin<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.0.21<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-maps-plugin/generated-values.yaml
 </span></code></pre></div>
 <h4 id="configure-ingressroutes">Configure Ingress/Routes<a class="headerlink" href="#configure-ingressroutes" title="Permanent link">⚓︎</a></h4>
 <p>For APISIX with IAM:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>iam/generated-iam.yaml<span class="w">  </span><span class="c1"># If IAM enabled</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>routes/generated-apisix-route.yaml<span class="w">  </span><span class="c1"># APISIX routes</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>iam/generated-iam.yaml<span class="w">  </span><span class="c1"># If IAM enabled</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>routes/generated-apisix-route.yaml<span class="w">  </span><span class="c1"># APISIX routes</span>
 </span></code></pre></div></p>
 <p>For APISIX without IAM or NGINX:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>eoapi/generated-ingress.yaml
 </span></code></pre></div></p>
 <h4 id="optional-deploy-monitoring">(Optional) Deploy Monitoring<a class="headerlink" href="#optional-deploy-monitoring" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-support<span class="w"> </span>eoapi/eoapi-support<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.1.7<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-support/generated-values.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>eoapi-support<span class="w"> </span>eoapi/eoapi-support<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.1.7<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--namespace<span class="w"> </span>data-access<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>--values<span class="w"> </span>eoapi-support/generated-values.yaml
 </span></code></pre></div>
 <hr />
 <h3 id="4-monitoring-the-deployment">4. Monitoring the Deployment<a class="headerlink" href="#4-monitoring-the-deployment" title="Permanent link">⚓︎</a></h3>
 <p>After deploying, monitor the status:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>data-access
 </span></code></pre></div></p>
 <p>Run validation:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div></p>
 <hr />
 <h3 id="5-accessing-the-data-access-services">5. Accessing the Data Access Services<a class="headerlink" href="#5-accessing-the-data-access-services" title="Permanent link">⚓︎</a></h3>
@@ -2295,13 +2353,13 @@
 <hr />
 <h2 id="load-sample-collection">Load Sample Collection<a class="headerlink" href="#load-sample-collection" title="Permanent link">⚓︎</a></h2>
 <p>Load the sample <code>Sentinel-2-L2A-Iceland</code> collection:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>../ingest.sh
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nb">cd</span><span class="w"> </span>../..
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span>collections/sentinel-2-iceland
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>../ingest.sh
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nb">cd</span><span class="w"> </span>../..
 </span></code></pre></div></p>
 <p>Check the loaded collection via STAC Browser:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>xdg-open<span class="w"> </span>https://radiantearth.github.io/stac-browser/#/external/eoapi.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/stac/collections/sentinel-2-iceland
 </span></code></pre></div></p>
 <hr />
 <h2 id="testing-and-validation">Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Permanent link">⚓︎</a></h2>
@@ -2316,33 +2374,33 @@
 <blockquote>
 <p>There is a sample collection loaded in the previous step.</p>
 </blockquote>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/browser/&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/browser/&quot;</span>
 </span></code></pre></div>
 <h3 id="3-perform-basic-api-tests">3. Perform Basic API Tests<a class="headerlink" href="#3-perform-basic-api-tests" title="Permanent link">⚓︎</a></h3>
 <p><strong>Retrieve STAC API Landing Page:</strong>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;accept: application/json&quot;</span>
 </span></code></pre></div></p>
 <p><strong>Search STAC Items:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="s1">    &quot;bbox&quot;: [-130.0, 20.0, -60.0, 55.0],</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="s1">    &quot;datetime&quot;: &quot;2001-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s1">    &quot;limit&quot;: 10</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s1">  }&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://eoapi.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/search&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="s1">    &quot;bbox&quot;: [-130.0, 20.0, -60.0, 55.0],</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="s1">    &quot;datetime&quot;: &quot;2001-01-01T00:00:00Z/2021-12-31T23:59:59Z&quot;,</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="s1">    &quot;limit&quot;: 10</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="s1">  }&#39;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Data Access Building Block:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-maps-plugin<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>stac-manager<span class="w"> </span>-n<span class="w"> </span>data-access
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>postgres-operator<span class="w"> </span>-n<span class="w"> </span>data-access<span class="w">  </span><span class="c1"># or pgo if using Crunchy</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access<span class="w">  </span><span class="c1"># if monitoring was installed</span>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-maps-plugin<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>stac-manager<span class="w"> </span>-n<span class="w"> </span>data-access
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>postgres-operator<span class="w"> </span>-n<span class="w"> </span>data-access<span class="w">  </span><span class="c1"># or pgo if using Crunchy</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>eoapi-support<span class="w"> </span>-n<span class="w"> </span>data-access<span class="w">  </span><span class="c1"># if monitoring was installed</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>data-access
 </span></code></pre></div></p>
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
 <ul>
