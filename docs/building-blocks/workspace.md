@@ -884,14 +884,29 @@ curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${K
 To uninstall the Workspace Building Block and clean up associated resources:
 
 ```bash
-kubectl delete -f workspace-cleanup/datalab-cleaner.yaml ; \
-helm uninstall workspace-admin -n workspace ; \
-kubectl -n workspace delete -f workspace-api/generated-ingress.yaml; \
-helm uninstall workspace-api -n workspace ; \
-helm uninstall workspace-pipeline -n workspace ; \
-helm uninstall workspace-dependencies-educates -n workspace ; \
-helm uninstall workspace-dependencies-csi-rclone -n workspace ; \
-helm uninstall workspace-crossplane -n workspace ; \
+source ~/.eoepca/state
+kubectl delete roles.user.keycloak.m.crossplane.io/${KEYCLOAK_TEST_ADMIN}-${WORKSPACE_API_CLIENT_ID}-admin -n iam-management
+kubectl delete role.role.keycloak.m.crossplane.io/${WORKSPACE_API_CLIENT_ID}-admin -n iam-management
+kubectl delete -f workspace-api/generated-ingress.yaml
+kubectl delete client.openidclient.keycloak.m.crossplane.io/${WORKSPACE_API_CLIENT_ID} -n iam-management
+kubectl delete secret/${WORKSPACE_API_CLIENT_ID}-keycloak-client -n iam-management
+kubectl delete ClusterPolicy/workspace-ingress
+kubectl delete secret/workspace-tls -n workspace
+for role in manage-users manage-authorization manage-clients create-client; do
+  kubectl delete ClientServiceAccountRole.openidclient.keycloak.m.crossplane.io/workspace-pipeline-client-${role} -n iam-management
+done
+kubectl delete client.openidclient.keycloak.m.crossplane.io/${WORKSPACE_PIPELINE_CLIENT_ID} -n iam-management
+kubectl delete secret/workspace-pipeline-client -n workspace
+kubectl delete secret/workspace-pipeline-keycloak-client -n iam-management
+kubectl delete providerconfig.kubernetes.m.crossplane.io/provider-kubernetes -n workspace
+kubectl delete providerconfig.keycloak.m.crossplane.io/provider-keycloak -n workspace
+kubectl delete providerconfig.helm.m.crossplane.io/provider-helm -n workspace
+helm uninstall workspace-admin -n workspace
+kubectl delete -f workspace-cleanup/datalab-cleaner.yaml
+helm uninstall workspace-pipeline -n workspace
+helm uninstall workspace-api -n workspace
+helm uninstall workspace-dependencies-educates -n workspace
+helm uninstall workspace-dependencies-csi-rclone -n workspace
 kubectl delete namespace workspace
 ```
 
