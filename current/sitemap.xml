@@ -91,6 +91,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/crossplane/</loc>
+         <lastmod>2025-12-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress-controller/</loc>
          <lastmod>2025-12-05</lastmod>
          <changefreq>daily</changefreq>
