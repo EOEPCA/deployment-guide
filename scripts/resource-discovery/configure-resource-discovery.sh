@@ -16,7 +16,8 @@ gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPL
 if [ "$INGRESS_CLASS" == "apisix" ]; then
   gomplate  -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 elif [ "$INGRESS_CLASS" == "nginx" ]; then
-  gomplate  -f "nginx-$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+  NGINX_INGRESS_TEMPLATE_PATH="$(dirname "${INGRESS_TEMPLATE_PATH}")/nginx-$(basename "${INGRESS_TEMPLATE_PATH}")"
+  gomplate  -f "$NGINX_INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 echo "✅ Configuration file generated: $OUTPUT_PATH"
