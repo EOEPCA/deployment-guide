@@ -324,31 +324,7 @@ EOF
 
 The `workspace-pipeline` client requires specific `realm-management` roles to perform administrative actions against Keycloak - namely: `manage-users`, `manage-authorization`, `manage-clients`, and `create-client`.
 
-First register a Crossplane-managed representation of the built-in the `realm-management` Client.
-
-> Note that this client already exists in Keycloak by default - but we need a k8s Custom Resource in order to reference the client by name.
-
-```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: realm-management
-  namespace: iam-management
-spec:
-  managementPolicies:
-    - Observe
-  forProvider:
-    realmId: ${REALM}
-    clientId: realm-management
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
-```
-
-Now we can add the required roles to the `workspace-pipeline` client.
+We can add the required roles to the `workspace-pipeline` client.
 
 > Note this is actually modelled as a specific Custom Resource for each role assignment.
 
@@ -377,6 +353,8 @@ spec:
 EOF
 done
 ```
+
+> Note that the above relies upon the `realm-management` client that was established [during IAM BB deployment](./iam/main-iam.md#53-create-realm-management-client).
 
 ---
 

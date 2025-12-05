@@ -234,6 +234,32 @@ spec:
 EOF
 ```
 
+#### 5.3. Create `realm-management` Client
+
+Register a Crossplane-managed representation of the built-in the `realm-management` Client.
+
+> Note that this client already exists in Keycloak by default - but we need a k8s Custom Resource in order to reference the client by name in other CRDs supported by the Keycloak Provider.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: realm-management
+  namespace: iam-management
+spec:
+  managementPolicies:
+    - Observe
+  forProvider:
+    realmId: ${REALM}
+    clientId: realm-management
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
 ---
 
 ### 6. Create Test Users
