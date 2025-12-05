@@ -12,7 +12,6 @@ check_statefulset_ready "iam" "iam-postgresql"
 
 check_service_exists "iam" "iam-keycloak-headless"
 check_service_exists "iam" "iam-keycloak"
-check_service_exists "iam" "identity-api"
 
 # Validate Keycloak realm 'eoepca'
 echo "Validating Keycloak realm 'eoepca' exists..."
@@ -52,22 +51,6 @@ if [ -n "$OPA_CLIENT_ID" ]; then
   echo "✅ Keycloak client 'opa' exists."
 else
   echo "❌ Keycloak client 'opa' does not exist."
-fi
-
-# Validate Keycloak client 'identity-api'
-echo "Validating Keycloak client 'identity-api' exists..."
-IDENTITY_API_CLIENT_ID="$( \
-  curl -k --silent --show-error \
-    -X GET \
-    -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
-    | jq -r '.[] | select(.clientId == "identity-api") | .id' \
-)"
-
-if [ -n "$IDENTITY_API_CLIENT_ID" ]; then
-  echo "✅ Keycloak client 'identity-api' exists."
-else
-  echo "❌ Keycloak client 'identity-api' does not exist."
 fi
 
 echo
