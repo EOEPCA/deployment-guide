@@ -227,6 +227,21 @@ kubectl get all -n resource-health
 
 ---
 
+## Deployment Guide Documentation (Improved Usage Section)
+
+```markdown
+### 4. Monitor the Deployment
+
+Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
+
+After the Helm installation finishes, check that all pods are running in the **resource-health** namespace:
+
+```bash
+kubectl get all -n resource-health
+```
+
+---
+
 ## Validation
 
 1. **Run the validation script**:
@@ -235,64 +250,194 @@ kubectl get all -n resource-health
 bash validation.sh
 ```
 
-2. **Access the Resource Health Web**:
+2. **Verify the APIs are responding**:
+
+```bash
+# Check the Health Checks API
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/" | jq
+
+# Check available templates
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" | jq '.data[].id'
+
+# Check the Telemetry API
+curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/" | jq
+```
+
+3. **Access the Resource Health Web**:
 
 Access the Resource Health Web dashboard at:
 
-```url
+```
 https://resource-health.${INGRESS_HOST}
 ```
 
 ![Dashboard](../img/resource-health/dashboard.jpeg)
 
-Access the Health Checks at:
-
-```url
-https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/
-```
-
 ---
 
 ## Usage
 
-### 1. Defining Health Checks
+### Understanding Health Check Templates
 
-Health checks can either be defined in the Helm chart's values under `resource-health.healthchecks.checks` or via the UI. Each check has:
+Health check templates define reusable patterns for common monitoring scenarios. View available templates:
 
-- **name**
-- **schedule** (a cron expression like `"@hourly"` or `"0 8 * * *"`)
-- **requirements** (optional Python packages)
-- **script** (the actual test logic)
-- **env** (environment variables, e.g. references to external services)
+```bash
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" | jq '.data[] | {id: .id, label: .attributes.metadata.label, description: .attributes.metadata.description}'
+```
 
-## Defining Health Checks
+The default deployment includes:
+- **simple_ping** - Checks if an endpoint responds with an expected HTTP status code
+- **generic_script_template** - Runs custom pytest scripts for advanced health checks
 
-**Helm-based** (check inside the `generated-values.yaml`):
+### Creating Health Checks via API
+
+The Resource Health API uses [JSON:API](https://jsonapi.org/) format. Here's how to create a health check:
+
+**1. Create a health check definition:**
+
+```bash
+cat <<EOF > healthcheck.json
+{
+  "data": {
+    "type": "check",
+    "attributes": {
+      "schedule": "*/5 * * * *",
+      "metadata": {
+        "name": "my-service-check",
+        "description": "Check if my service is responding",
+        "template_id": "simple_ping",
+        "template_args": {
+          "endpoint": "https://my-service.example.com/health",
+          "expected_status_code": 200
+        }
+      }
+    }
+  }
+}
+EOF
+```
+
+**2. Register the health check:**
+
+```bash
+curl -X POST "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+  -H "Content-Type: application/vnd.api+json" \
+  -d @healthcheck.json | jq
+```
+
+**3. Verify the check was created:**
+
+```bash
+# List all checks
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq '.data[] | {id: .id, name: .attributes.metadata.name, schedule: .attributes.schedule}'
+
+# View the corresponding CronJob in Kubernetes
+kubectl get cronjobs -n resource-health
+```
+
+### Triggering Health Checks Manually
+
+Instead of waiting for the scheduled time, you can trigger a health check immediately:
+
+```bash
+# Get the check ID
+CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq -r '.data[0].id')
+
+# Create a manual job from the CronJob
+kubectl create job --from=cronjob/${CHECK_ID} manual-check -n resource-health
+
+# Wait for completion and view results
+kubectl wait --for=condition=complete job/manual-check -n resource-health --timeout=120s
+kubectl logs job/manual-check -n resource-health --all-containers | tail -20
+```
+
+### Viewing Health Check Results
+
+**Via Telemetry API:**
+
+```bash
+curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans/" | jq
+```
+
+**Via Web Dashboard:**
+
+Visit `https://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
+
+### Deleting Health Checks
+
+```bash
+# Get the check ID you want to delete
+CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq -r '.data[] | select(.attributes.metadata.name=="my-service-check") | .id')
+
+# Delete the check
+curl -X DELETE "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}"
+
+# Verify deletion
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq '.data[].attributes.metadata.name'
+```
+
+### Defining Health Checks via Helm
+
+Health checks can also be pre-configured in the Helm values. Add templates under `resource-health.healthchecks.templates`:
 
 ```yaml
 resource-health:
   healthchecks:
-    checks:
-      - name: daily-trivial-check
-        schedule: "0 8 * * *"
-        requirements: "https://example.com/requirements.txt"
-        script: "https://example.com/trivial_check.py"
-        env:
-          - name: SOME_HOST
-            value: "https://some-endpoint.example.com"
+    use_template_configmap: True
+    templates:
+      my_custom_template.py: |
+        import check_backends.k8s_backend.template_utils as tu
+
+        CUSTOM_SCRIPT = """
+        import requests
+        from os import environ
+
+        def test_custom_check():
+            response = requests.get(environ["TARGET_URL"])
+            assert response.status_code == 200
+            assert "expected_content" in response.text
+        """
+
+        class CustomCheckArguments(tu.BaseModel):
+            model_config = tu.ConfigDict(extra="forbid")
+            target_url: str = tu.Field(json_schema_extra={"format": "textarea"})
+
+        CustomCheck = tu.simple_runner_template(
+            template_id="custom_check",
+            argument_type=CustomCheckArguments,
+            label="Custom Check Template",
+            description="A custom health check template",
+            script_url=tu.src_to_data_url(CUSTOM_SCRIPT),
+            runner_env=lambda template_args, userinfo: {
+                "TARGET_URL": template_args.target_url,
+            },
+            user_id=lambda template_args, userinfo: userinfo["username"],
+            otlp_tls_secret="resource-health-healthchecks-certificate",
+        )
 ```
 
-Apply with:
+Apply the updated configuration:
 
 ```bash
-helm upgrade -i resource-health reference-repo/resource-health-reference-deployment -f generated-values.yaml -n resource-health
+helm upgrade resource-health reference-repo/resource-health-reference-deployment \
+  -f generated-values.yaml \
+  -n resource-health
 ```
 
-**UI-based**:
+### Creating Health Checks via Web UI
 
-Visit the Resource Health Web dashboard (`resource-health.${INGRESS_HOST}`) and select the **Create new check** dropdown to define a new health check.
+1. Visit the Resource Health Web dashboard at `https://resource-health.${INGRESS_HOST}`
+2. Click on **Create new check**
+3. Select a template (e.g., "Simple ping template")
+4. Fill in the required fields:
+   - **Name**: A descriptive name for your check
+   - **Description**: What this check monitors
+   - **Schedule**: A cron expression (e.g., `*/5 * * * *` for every 5 minutes)
+   - **Template Arguments**: Endpoint URL, expected status code, etc.
+5. Click **Create** to register the health check
 
-Fill in the form similarly to the Helm-based approach or create a test script like this
+The check will immediately appear in the dashboard and begin running according to its schedule.
+```
 
 ---
 

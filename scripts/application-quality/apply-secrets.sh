@@ -22,4 +22,11 @@ kubectl create secret generic application-quality-opensearch-dashboards-openid-c
     --namespace "$NAMESPACE" \
     --dry-run=client -o yaml | kubectl apply -f -
 
+kubectl create secret generic application-quality-grafana-dashboards-admin-creds \
+    --from-literal=GRAFANA_SECURITY_ADMIN_USER="admin" \
+    --from-literal=GRAFANA_SECURITY_ADMIN_PASSWORD="admin" \
+    --namespace "$NAMESPACE" \
+    --dry-run=client -o yaml | kubectl apply -f -
+
+
 echo "✅ Secrets applied in namespace: $NAMESPACE"

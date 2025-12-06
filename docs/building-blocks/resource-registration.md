@@ -35,7 +35,7 @@ The Resource Registration BB comprises three main components:
 An OGC API Processes interface for registering, updating, or deleting resources on the local platform.
     
 2. **Harvester**  
-Automates workflows (via Flowable BPMN) to harvest data from external sources and register them in the platform.
+Automates workflows (via Flowable BPMN) to harvest data from external sources. This guide demonstrates harvesting Landsat data from USGS.
     
 3. **Common Registration Library**  
 A Python library consolidating upstream packages (e.g. STAC tools, eometa tools) for business logic in workflows and resource handling.
@@ -52,11 +52,10 @@ Before deploying the Resource Registration Building Block, ensure you have the f
 | Helm               | Version 3.7 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
-| Ingress Controller | Properly installed (e.g., NGINX)       | [Installation Guide](../prerequisites/ingress/overview.md)      |
+| Ingress Controller | Properly installed (e.g., NGINX, APISIX) | [Installation Guide](../prerequisites/ingress/overview.md)      |
 
 
 **Clone the Deployment Guide Repository:**
-
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/resource-registration
@@ -65,7 +64,6 @@ cd deployment-guide/scripts/resource-registration
 **Validate your environment:**
 
 Run the validation script to ensure all prerequisites are met:
-
 ```bash
 bash check-prerequisites.sh
 ```
@@ -77,7 +75,6 @@ bash check-prerequisites.sh
 ### 1. Run the Configuration Script
 
 Generate configuration files and prepare deployment:
-
 ```bash
 bash configure-resource-registration.sh
 ```
@@ -96,51 +93,56 @@ During the script execution, you will be prompted to provide:
     - *Default*: `eoepca`
 - **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for `Flowable` database.
     - *Default*: `local-path`
-- **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.<br>
+- **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
     - *Default*: `standard`
-    > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets - such as the EO Data Server shown in example later in this page.
+    > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
 
 ### 2. Apply Kubernetes Secrets
 
-Create required secrets:
+Create required secrets for the Registration API and Harvester components:
 
 ```bash
 bash apply-secrets.sh
 ```
 
-**Secrets Created:**
+During the script execution, you'll be prompted for optional external service credentials:
 
-- `flowable-admin-credentials`:<br>
-  _Contains Flowable admin username and password_
+#### USGS M2M Credentials (for Landsat harvesting)
+
+> For the purpose of this demonstration, we advise you to create this account so we can showcase the Landsat harvesting capabilities of the Registration Harvester.
+
+If you want to harvest Landsat data, you'll need credentials from [USGS Machine-to-Machine (M2M) API](https://m2m.cr.usgs.gov/):
+
+1. Register for a free account at USGS
+2. Use the [Generate Application Token](https://ers.cr.usgs.gov/password/appgenerate) page 
+3. Create a token with the `M2M API` scope
+4. Enter these credentials when prompted by the script
 
 ### 3. Deploy the Registration API Using Helm
 
 The Registration API provides a RESTful interface through which resources can be directly registered, updated, or deleted.
 
-Deploy the Registration API using the generated values file.
-
+Deploy the Registration API using the generated values file:
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-rc2 \
+  --version 2.0.0-dev11 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
 ```
 
-Deploy the ingress for the Registration API:
-
+Deploy the ingress routes:
 ```bash
 kubectl apply -f registration-api/generated-ingress.yaml
 ```
 
-### 4. Deploy the Registration Harvester Using Helm
+### 4. Deploy the Registration Harvester Components
 
-The Registration Harvester automates resource ingestion workflows using Flowable BPMN.
+The Registration Harvester consists of the Flowable engine and worker deployments.
 
-**Deploy Flowable Engine:**
-
+#### Deploy Flowable Engine
 ```bash
 helm repo add flowable https://flowable.github.io/helm/
 helm repo update flowable
@@ -152,107 +154,58 @@ helm upgrade -i registration-harvester-api-engine flowable/flowable \
 ```
 
 Deploy the ingress for the Flowable Engine:
-
 ```bash
 kubectl apply -f registration-harvester/generated-ingress.yaml
 ```
 
-**Deploy Registration Harvester Worker:**
+#### Deploy Landsat Harvester Worker
 
-The BPMN workflows executed by the Flowable engine are implemented by workers that respond to 'topics' referenced as steps in the BPMN definition. These workers perform tasks such as harvesting data from external sources, processing data, and registering metadata.
-
-By way of example, a `worker` is deployed that harvests `Landast` data from [USGS](https://landsatlook.usgs.gov/stac-server).
+Deploy the worker that executes Landsat harvesting tasks:
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i landsat-harvester-worker eoepca-dev/registration-harvester \
-  --version 2.0.0-rc2.1 \
+helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-harvester \
+  --version 2.0.0-rc2 \
   --namespace resource-registration \
   --create-namespace \
-  --values registration-harvester/generated-values.yaml
-```
-
-The Landsat harvester relies upon credentials for the USGS service. These can be obtained via free sign-up at the [USGS Machine-to-Machine (M2M) API](https://m2m.cr.usgs.gov/).
-
-The Landsat harvester worker expects a Kubernetes secret that provides these (and other) credentials.
-
-The [Generate Application Token](https://ers.cr.usgs.gov/password/appgenerate) page should be used to create a token with the `M2M API` scope - which can then be set into the following environment variables for inclusion in the secret.
-
-```bash
-export M2M_USER='your-username'
-export M2M_PASSWORD='your-generated-token'
-```
-
-Now we can create the `landsat-harvester-secret` Kubernetes secret that is expected by the Landsat harvester worker.
-
-```bash
-source ~/.eoepca/state
-kubectl create secret generic landsat-harvester-secret \
-  --from-literal=FLOWABLE_USER="$FLOWABLE_ADMIN_USER" \
-  --from-literal=FLOWABLE_PASSWORD="$FLOWABLE_ADMIN_PASSWORD" \
-  --from-literal=M2M_USER="${M2M_USER}" \
-  --from-literal=M2M_PASSWORD="${M2M_PASSWORD}" \
-  --namespace resource-registration \
-  --dry-run=client -o yaml | kubectl apply -f -
+  --values registration-harvester/harvester-values/values-landsat.yaml
 ```
 
 ### 5. Monitor the Deployment
 
-Check the status of the deployments:
-
+Check the status of all deployments:
 ```bash
 kubectl get all -n resource-registration
+```
+
+Verify all pods are running:
+```bash
+kubectl get pods -n resource-registration
 ```
 
 ---
 
 ## Validation and Usage
 
-**Check Kubernetes Resources:**
+### Automated Validation
 
-Ensure that all Kubernetes resources are running correctly.
-
-```bash
-kubectl get pods -n resource-registration
-```
-
-* All pods should be in the `Running` state.
-* No pods should be in `CrashLoopBackOff` or `Error` states.
-
-**Automated Validation:**
-
-This script performs a series of automated tests to validate the deployment.
-
+Run the validation script to verify the deployment:
 ```bash
 bash validation.sh
 ```
 
----
+### Access Points
 
-**Registration API Home:**
-
-This page provides basic information about the Registration API.
-
+**Registration API:**
 ```bash
 source ~/.eoepca/state
+# Open API endpoint
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/"
-```
- 
 
-**Swagger UI Documentation:**
-
-Interactive API documentation allowing you to explore and test the Registration API endpoints.
-
-```bash
-source ~/.eoepca/state
+# API documentation
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/openapi?f=html"
-``` 
+```
 
-**Flowable REST API Swagger UI:**
-
-Provides Swagger UI documentation for the Flowable REST API.
-
+**Flowable REST API:**
 ```bash
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/"
@@ -262,23 +215,14 @@ xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-r
 
 ### Registering Resources
 
-Resource Registration relies on an **OGC API Processes** interface, through which it provides the _Registration API_ interfaces:
+The Registration API provides OGC API Processes interfaces:
 
 * Registration: `POST /processes/register/execution`
 * De-registration: `POST /processes/deregister/execution`
 
-These interfaces are illustrated below.
-
 #### Example - Registering a Collection
 
-This example registers a `Collection` resource into the EOEPCA Resource Catalogue instance.
-
-> This assumes that the [Resource Discovery](resource-discovery.md) Building Block has been deployed - offering a STAC endpoint.
-
-Use the following command to register an STAC Collection `landsat-ot-c2-l2` - representing the `Landsat 8-9 OLI/TIRS Collection 2 Level-2`.
-
-> This collection is used in later steps as a target for harvesting of some example Landsat data.
-
+Register a STAC Collection for Landsat data:
 ```bash
 source ~/.eoepca/state
 curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
@@ -293,76 +237,41 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
 EOF
 ```
 
-- **source**: A valid STAC Collection URL (in this example, hosted on GitHub).<br>
-  _(Adjust this path according to your input.)_
-- **target**: Your STAC server endpoint where the resource is to be registered.
+#### Validate Registration
 
-#### Validating the Registration
-
+Check job status:
 ```bash
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/jobs"
 ```
 
-You should see a new job with the status `COMPLETED`. 
-
-If you have deployed the [**Resource Discovery**](./resource-discovery.md) Building Block, then the registered `Collection` will also be available at:
-
+If you have deployed the [Resource Discovery](./resource-discovery.md) Building Block, verify the collection:
 ```bash
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2"
 ```
 
-#### Collection De-registration
-
-Demonstrates use of the API for resource deregistration...
-
-> Skip this step if you are intending to perform the example harvesting of Landsat data - as is illustrated in later steps.
-
-```bash
-source ~/.eoepca/state
-curl -X POST "https://registration-api.${INGRESS_HOST}/processes/deregister/execution" \
-  -H "Content-Type: application/json" \
-  -d @- <<EOF
-{
-    "inputs": {
-        "id": "landsat-ot-c2-l2",
-        "rel": "collection",
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
-    }
-}
-EOF
-```
+---
 
 ### Using the Registration Harvester
 
-The Registration Harvester leverages Flowable to automate resource harvesting workflows.
+#### Deploy Harvesting Workflows
 
-**Access the Flowable REST API Swagger UI:**
-
-```bash
-source ~/.eoepca/state
-xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/"
-```
-
-**List Deployed Workflows**
-
-Initially only the built-in `Demo processes` workflow is deployed.
+Deploy the Landsat harvesting workflows to Flowable:
 
 ```bash
 source ~/.eoepca/state
-curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+# Main workflow
+curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
   -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  | jq -r '.data[] | "\(.deploymentTime): \(.name)" '
-```
+  -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
 
-The `Demo processes` workflow provides a number of example processes.
-
-```bash
-source ~/.eoepca/state
-curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
+# Sub-workflow for scene ingestion
+curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
   -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  | jq -r '.data[] | "\(.key): \(.name)" '
+  -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
 ```
 
 #### Example - Deploy Workflow for Landsat harvesting
@@ -379,68 +288,21 @@ Earlier in this page we deployed the Landsat harvester worker, which is implemen
 
 To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.
 
-**Workflow - Landsat Registration (main)**
 
-Deploy the BPMN workflow `landsat.bpmn` by `POST` to the Flowable service...
+#### Execute Landsat Harvesting
 
-```bash
-source ~/.eoepca/state
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
-```
-
-![Landsat Registration](images/landsat-workflow-bpmn.png)
-
-**Sub-Workflow Landsat Scene Ingestion**
-
-Deploy the BPMN sub-workflow `landsat-scene-ingestion.bpmn` by `POST` to the Flowable service...
+Start a Landsat harvesting job:
 
 ```bash
 source ~/.eoepca/state
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
-```
-
-![Landsat Registration](images/landsat-scene-ingestion.png)
-
-**List Deployed Workflows**
-
-Now the landsat **_workflows_** and associated **_processes_** should be listed as deployed.
-
-_Workflows..._
-
-```bash
-source ~/.eoepca/state
-curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  | jq -r '.data[] | "\(.deploymentTime): \(.name)" '
-```
-
-_Processes..._
-
-```bash
-# Retrieve processes
+# Get process ID
 processes="$( \
   curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
     -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
   )"
-
-echo -e "\nProcess listing..."
-echo "$processes" | jq -r '.data[] | "\(.key): \(.name)"'
-
-# Extract Landsat Workflow process ID
 landsat_process_id="$(echo "$processes" | jq -r '[.data[] | select(.name == "Landsat Workflow")][0].id')"
-echo -e "\nLandsat process ID: ${landsat_process_id}"
-```
 
-#### Invoke Landsat Harvesting Workflow
-
-```bash
-source ~/.eoepca/state
+# Start harvesting
 curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
   -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
   -H "Content-Type: application/json" \
@@ -468,41 +330,32 @@ curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-res
 EOF
 ```
 
-#### Monitor the job progress
+#### Monitor Harvesting Progress
 
-**_Logs..._**
-
+**Check worker logs:**
 ```bash
-kubectl -n resource-registration logs -f  deploy/landsat-harvester-worker
+kubectl -n resource-registration logs -f deploy/registration-harvester-worker-landsat
 ```
 
-> Use `Ctrl-C` to exit the log stream.
+Use `Ctrl-C` to exit the log stream.
 
-**_Process instances..._**
-
-We are expecting an instance of the main `Landsat Workflow` process, and for each scene discovered, an instance of the `Landsat Scene Ingestion` process.
-
-> There may be a delay of a few minutes before all expected workflows are shown.
-
+**Monitor process instances:**
 ```bash
 source ~/.eoepca/state
 curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
   -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
   | jq -r '.data[] | "\(.startTime) | \(.id) | \(.processDefinitionName)"'
-
 ```
 
-#### Check the Catalogue collection
+**Check registered items:**
 
-We are expecting 5 scenes registered into the Landsat collection.
-
-> This may take some time, depending on your download connection to USGS.<br>
-> Five products are downloaded - each of which is ~850MB.
-
+Once harvesting completes (this may take time depending on download speeds), check the catalogue:
 ```bash
 source ~/.eoepca/state
 xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
 ```
+
+---
 
 #### Retain the `eodata` volume
 
@@ -550,17 +403,34 @@ xdg-open "https://radiantearth.github.io/stac-browser/#/external/resource-catalo
 
 ---
 
+## Additional Harvester Types
+
+The Registration Harvester supports additional data sources beyond Landsat:
+
+- **Sentinel data** from Copernicus Data Space Ecosystem (CDSE)
+- **Generic STAC catalogues**
+
+Deployment of these additional harvesters follows a similar pattern but requires specific configuration and credentials. Refer to the [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester) for details.
+
+---
+
 ## Uninstallation
 
-To uninstall the Resource Registration Building Block and clean up associated resources:
-
+Remove all Resource Registration components:
 ```bash
-helm uninstall landsat-harvester-worker -n resource-registration
+# Remove workers
+helm uninstall registration-harvester-worker-landsat -n resource-registration
+
+# Remove ingresses
 kubectl delete -f registration-harvester/generated-ingress.yaml
-helm uninstall registration-harvester-api-engine -n resource-registration
 kubectl delete -f registration-api/generated-ingress.yaml
+kubectl delete -f registration-harvester/generated-eodata-server.yaml 2>/dev/null
+
+# Remove core components
+helm uninstall registration-harvester-api-engine -n resource-registration
 helm uninstall registration-api -n resource-registration
 
+# Remove namespace (optional - will delete all data)
 kubectl delete namespace resource-registration
 ```
 
@@ -569,6 +439,7 @@ kubectl delete namespace resource-registration
 ## Further Reading
 
 - [EOEPCA+ Resource Registration GitHub Repository](https://github.com/EOEPCA/resource-registration)
+- [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester)
 - [Flowable BPMN Platform](https://flowable.com/open-source/)
 - [pygeoapi Documentation](https://pygeoapi.io/)
 - [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts-dev)

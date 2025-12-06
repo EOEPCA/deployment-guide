@@ -12,10 +12,12 @@ metadata:
 
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
   tls:
     - hosts:
         - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
+  {{- end }}
   rules:
     - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
@@ -42,10 +44,12 @@ metadata:
 
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
   tls:
     - hosts:
         - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
+  {{- end }}
   rules:
     - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:
@@ -70,10 +74,12 @@ metadata:
 
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
   tls:
     - hosts:
         - resource-health.{{ getenv "INGRESS_HOST" }}
       secretName: resource-health-tls
+  {{- end }}
   rules:
     - host: resource-health.{{ getenv "INGRESS_HOST" }}
       http:

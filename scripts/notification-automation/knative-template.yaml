@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: knative-serving
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: knative-eventing
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: notifications
+---
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+  namespace: knative-serving
+spec:
+  version: "1.17"
+  ingress:
+    kourier:
+      enabled: true
+  config:
+    domain:
+      notifications.{{ getenv "INGRESS_HOST" }}: ""
+    network:
+      ingress-class: "kourier.ingress.networking.knative.dev"
+    autoscaler:
+      container-concurrency-target-default: "100"
+      enable-scale-to-zero: "true"
+      scale-to-zero-grace-period: "30s"
+---
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeEventing
+metadata:
+  name: knative-eventing
+  namespace: knative-eventing
+spec:
+  version: "1.18"
+  config:
+    features:
+      delivery-retries: "enabled"
+      delivery-timeout: "enabled"

@@ -23,6 +23,6 @@ if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
     --from-literal=client_secret="$WORKSPACE_API_CLIENT_SECRET" \
     --namespace workspace \
     --dry-run=client -o yaml | kubectl apply -f -
-fi
+    
 
 echo "✅ Secrets applied."

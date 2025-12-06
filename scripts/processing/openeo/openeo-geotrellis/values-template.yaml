@@ -1,5 +1,5 @@
-image: eoepca/openeo-geotrellis-kube
-imageVersion: 2.0-beta2
+image: vito-docker.artifactory.vgt.vito.be/openeo-geotrellis-kube
+imageVersion: latest
 imagePullPolicy: Always
 sparkVersion: 3.2.0
 configMaps:
@@ -44,39 +44,6 @@ configMaps:
                 }
             ],
         ),
-        OidcProvider(
-            id="egi",
-            title="EGI Check-in",
-            issuer="https://aai.egi.eu/auth/realms/egi/",
-            scopes=["openid", "email"],
-            default_clients=[
-                {
-                    "id": "vito-default-client",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
-        OidcProvider(
-            id="egi-dev",
-            title="EGI Check-in (dev)",
-            issuer="https://aai-dev.egi.eu/auth/realms/egi/",
-            default_clients=[
-                {
-                    "id": "openeo-eoepca-demo",
-                    "grant_types": [
-                        "authorization_code+pkce",
-                        "urn:ietf:params:oauth:grant-type:device_code+pkce",
-                        "refresh_token",
-                    ],
-                    "redirect_urls": ["https://editor.openeo.org"],
-                }
-            ],
-        ),
     ]
     {{- else }}
     oidc_providers = []
@@ -88,8 +55,12 @@ configMaps:
         capabilities_description="openEO backend based on GeoPyspark stack for EOEPCA+ demo",
         capabilities_deploy_metadata=capabilities_deploy_metadata,
         oidc_providers=oidc_providers,
+        {{- if eq ( getenv "OPENEO_ENABLE_OIDC" ) "no" }}
         enable_basic_auth=True,
         valid_basic_auth=lambda u, p: p == f"{u}123"
+        {{- else }}
+        enable_basic_auth=False,
+        {{- end }}
     )
   layerCatalog: |
     [
@@ -125,6 +96,42 @@ configMaps:
         }
       }
     ]
+  log4j2: |
+    <Configuration>
+        <Appenders>
+            <Console name="stdout" target="SYSTEM_OUT">
+                <JsonTemplateLayout eventTemplateUri="classpath:OpenEOJsonLogLayout.json"  locationInfoEnabled="true"/>
+                <Filters>
+                    <!-- this filter allows to print 1 log (maxBurst) every minute (rate) -->
+                    <BurstFilter level="warn" rate="0.0166" maxBurst="1"/>
+                </Filters>
+            </Console>
+        </Appenders>
+        <Loggers>
+            <Logger name="org.openeo.geotrellis.OpenEOProcessScriptBuilder" level="warn"/>
+            <Logger name="com.amazonaws.latency" level="warn"/>
+            <Logger name="com.amazonaws.request" level="warn"/>
+            <Logger name="org.apache.curator" level="warn"/>
+            <Logger name="org.apache.hadoop" level="error"/>
+            <Logger name="org.apache.spark" level="info"/>
+            <Logger name="org.apache.spark.deploy.yarn.ApplicationMaster" level="off"/> <!-- Ignore this: "User application exited with status 1" -->
+            <Logger name="org.apache.spark.executor.Executor" level="info"/>
+            <Logger name="org.apache.spark.network.server.TransportRequestHandler" level="off"/> <!-- Ignore this: "Could not find CoarseGrainedScheduler." -->
+            <Logger name="org.apache.spark.scheduler.TaskSetManager" level="warn"/>
+            <Logger name="org.apache.spark.storage.DiskBlockObjectWriter" level="off"/>
+            <Logger name="org.apache.zookeeper" level="warn"/>
+            <Logger name="org.apache.zookeeper.ClientCnxn" level="error"/> <!-- Ignore this: "Unable to read additional data from server sessionid 0x..., likely server has closed socket" -->
+            <Logger name="org.openeo.geotrellis.layers.OpenSearch" level="debug"/>
+            <Logger name="org.sparkproject.jetty.server" level="warn"/>
+            <Logger name="ucar.nc2.jni.netcdf.Nc4Iosp" level="warn"/>
+            <Logger name="software.amazon.awssdk.requestId" level="warn"/>
+            <Logger name="software.amazon.awssdk" level="warn"/>
+            <Root level="info">
+                <AppenderRef ref="stdout"/>
+            </Root>
+        </Loggers>
+    </Configuration>
+
 driver:
   # Limit cores - uncomment for a small (dev) cluster
   # coreRequest: 250m
@@ -133,6 +140,7 @@ driver:
     KUBE_OPENEO_API_PORT: "50001"
     PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
     ZOOKEEPERNODES: openeo-geotrellis-zookeeper.openeo-geotrellis.svc.cluster.local:2181
+    # Do we need SWIFT_URL?
   podSecurityContext:
     fsGroup: 18585
     fsGroupChangePolicy: Always
@@ -143,12 +151,13 @@ executor:
     PYTHONPATH: $PYTHONPATH:/opt/tensorflow/python38/2.3.0/:/opt/openeo/lib/python3.8/site-packages/
 existingConfigMaps: false
 fileDependencies:
-- local:///opt/layercatalog/layercatalog.json
+- local:///opt/layercatalog.json
 - local:///opt/log4j2.xml
 ingress:
   enabled: false
 jarDependencies:
-- local:///opt/geotrellis-extensions-static.jar
+  - local:///opt/geotrellis-extensions-static.jar
+  - local:///opt/geotrellis-dependencies-static.jar
 mainApplicationFile: local:///opt/openeo/lib64/python3.8/site-packages/openeogeotrellis/deploy/kube.py
 sparkConf:
   spark.executorEnv.DRIVER_IMPLEMENTATION_PACKAGE: openeogeotrellis

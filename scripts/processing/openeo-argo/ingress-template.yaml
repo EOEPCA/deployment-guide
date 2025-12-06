@@ -1,0 +1,75 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openeo-argoworkflows
+  namespace: openeo
+  annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
+    {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    {{- end }}
+
+    {{- if eq (getenv "INGRESS_CLASS") "traefik" }}
+    traefik.ingress.kubernetes.io/router.middlewares: default-cors@kubernetescrd
+    {{- end }}
+
+    {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
+    k8s.apisix.apache.org/enable-cors: "true"
+    k8s.apisix.apache.org/cors-allow-origin: "*"
+    k8s.apisix.apache.org/cors-allow-methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    k8s.apisix.apache.org/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+    k8s.apisix.apache.org/http-to-https: "true"
+    {{- end }}
+
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  rules:
+    - host: openeo.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                {{- if eq ( getenv "OPENEO_ARGO_ENABLE_OIDC" ) "no" }}
+                name: openeo-proxy
+                {{- else }}
+                name: openeo-openeo-argo
+                {{- end }}
+                port:
+                  {{- if eq ( getenv "OPENEO_ARGO_ENABLE_OIDC" ) "no" }}
+                  number: 8080
+                  {{- else }}
+                  number: 8000
+                  {{- end }}
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - openeo.{{ getenv "INGRESS_HOST" }}
+      secretName: openeo-argoworkflows-tls
+  {{- end }}
+---
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: openeo-argoworkflows-cert
+  namespace: openeo
+spec:
+  secretName: openeo-argoworkflows-tls
+  issuerRef:
+    name: {{ getenv "CLUSTER_ISSUER" }}
+    kind: ClusterIssuer
+  dnsNames:
+    - openeo.{{ getenv "INGRESS_HOST" }}
+{{- end }}

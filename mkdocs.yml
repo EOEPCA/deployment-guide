@@ -36,12 +36,14 @@ nav:
       - Resource Registration: building-blocks/resource-registration.md
       - Data Access: building-blocks/data-access.md
       - Datacube Access: building-blocks/datacube-access.md
+      - Data Gateway: building-blocks/data-gateway.md
 
     - Processing & Analysis:
         - Processing:
           - Overview: building-blocks/processing.md
           - OGC API Processes: building-blocks/oapip-engine.md
-          - openEO: building-blocks/openeo-engine.md
+          - openEO Geotrellis: building-blocks/openeo-geotrellis.md
+          - openEO Argo Workflows (Dask): building-blocks/openeo-argo.md
         - MLOps: building-blocks/mlops.md
 
     - User Environments:

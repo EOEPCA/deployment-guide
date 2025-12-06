@@ -130,7 +130,8 @@ helm repo update eoepca
 helm upgrade -i workspace-api eoepca/rm-workspace-api \
   --version 2.0.0-rc.7 \
   --namespace workspace \
-  --values workspace-api/generated-values.yaml
+  --values workspace-api/generated-values.yaml \
+  --set image.tag=2.0.0-rc.8
 ```
 
 > Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
@@ -158,7 +159,7 @@ kubectl apply -f workspace-cleanup/datalab-cleaner.yaml
 
 This runs daily at 8 PM UTC and removes all sessions except the default ones.
 
-### 7. Deploy the Workspace Admin Dashboard
+### 9. Deploy the Workspace Admin Dashboard
 
 The Kubernetes Dashboard provides a web-based interface for managing Kubernetes resources.
 

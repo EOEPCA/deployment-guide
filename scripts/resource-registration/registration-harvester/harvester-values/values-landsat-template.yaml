@@ -1,0 +1,67 @@
+harvester:
+  service:
+    name: registration-harvester
+    type: ClusterIP
+    port: 8080
+  image:
+    repository: eoepca/registration-harvester
+    pullPolicy: Always
+    tag: main
+  secret:
+    name: registration-harvester-secret
+  container_port: 8080
+  config:
+    worker:
+      log_level: INFO
+      flowable:
+        host: https://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
+        tls: true
+        cacert: ./etc/eoepca-ca-chain.pem
+      topics:
+        landsat_discover_data:
+          module: worker.landsat.tasks
+          handler: LandsatDiscoverHandler
+        landsat_continuous_data_discovery:
+          module: worker.landsat.tasks
+          handler: LandsatContinuousDiscoveryHandler
+        landsat_get_download_urls:
+          module: worker.landsat.tasks
+          handler: LandsatGetDownloadUrlHandler
+        landsat_download_data:
+          module: worker.landsat.tasks
+          handler: LandsatDownloadHandler
+        landsat_untar:
+          module: worker.landsat.tasks
+          handler: LandsatUntarHandler 
+        landsat_extract_metadata:
+          module: worker.landsat.tasks
+          handler: LandsatExtractMetadataHandler
+        landsat_register_metadata:
+          module: worker.landsat.tasks
+          handler: LandsatRegisterMetadataHandler
+      handlers:
+        LandsatDiscoverHandler:
+          usgs_api_url: https://landsatlook.usgs.gov/stac-server
+          page_size: 100
+        LandsatContinuousDiscoveryHandler:
+          enabled: false
+          usgs_api_url: https://landsatlook.usgs.gov/stac-server
+          page_size: 100      
+          datetime_property: created
+          timewindow_hours: 1
+          bbox: "8,40,18,60"
+          collections: landsat-c2l2-sr
+        LandsatGetDownloadUrlHandler:
+          m2m_use_token: true
+          m2m_api_url: https://m2m.cr.usgs.gov/api/api/json/stable/
+        LandsatDownloadHandler:
+          subscription:
+            lock_duration: PT30M
+          download_base_dir: "/harvesteddata/landsat"
+          download_timeout: 300
+        LandsatUntarHandler:
+          remove_tar: false
+          create_folder: true
+        LandsatRegisterMetadataHandler:
+          stac_api_url: https://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac/
+          stac_file_deletion: true
