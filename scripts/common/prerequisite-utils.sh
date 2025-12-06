@@ -149,6 +149,17 @@ function check_apisix_ingress_installed() {
     fi
 }
 
+function check_crossplane_installed() {
+    if kubectl get deployments -A --no-headers | awk '{print $2}' | grep -q '^crossplane$'; then
+        echo "✅ Crossplane is installed."
+        return 0
+    else
+        echo "⚠️  Crossplane is not installed in the cluster."
+        echo "   Please install Crossplane: https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/crossplane/"
+        return 1
+    fi
+}
+
 function check_keycloak_accessible() {
     local KEYCLOAK_URL="$1"
     if curl -s -o /dev/null -w "%{http_code}" $HTTP_SCHEME://"$KEYCLOAK_URL" | grep -qE "200"; then

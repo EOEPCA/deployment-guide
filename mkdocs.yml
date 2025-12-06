@@ -21,6 +21,7 @@ nav:
           - Multiple Ingress Controllers: prerequisites/ingress/multi.md
       - TLS Management: prerequisites/tls.md
       - Optional Components:
+          - Crossplane: prerequisites/crossplane.md
           - S3 Storage (MinIO): prerequisites/minio.md
           - Container Registry: prerequisites/container-registry.md
       - Application Deployment →: building-blocks/overview.md

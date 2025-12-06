@@ -16,21 +16,13 @@ kubectl create secret generic minio-secret \
   --namespace workspace \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Create wildcard TLS certificate secret for Educates
-kubectl create secret generic workspace-tls \
-  --from-literal=tls.crt="" \
-  --from-literal=tls.key="" \
-  --namespace workspace \
-  --dry-run=client -o yaml | kubectl apply -f - 2>/dev/null || true
-
+# Workspace API Keycloak client credentials
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-  kubectl create secret generic workspace-api \
+  kubectl create secret generic workspace-api-keycloak-client \
     --from-literal=client_id="$WORKSPACE_API_CLIENT_ID" \
     --from-literal=client_secret="$WORKSPACE_API_CLIENT_SECRET" \
     --namespace workspace \
     --dry-run=client -o yaml | kubectl apply -f -
     
-
-fi
 
 echo "✅ Secrets applied."

@@ -1,15 +1,4 @@
-storage:
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-datalab:
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 environmentconfig:
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   iam:
     realm: {{ getenv "REALM" "eoepca" }}
   ingress:
@@ -24,7 +13,7 @@ environmentconfig:
     secretNamespace: workspace
     type: s3
   network:
-    serviceCIDR: "10.43.0.0/12"
+    serviceCIDR: {{ getenv "SERVICE_CIDR" }}
   packages:
     - name: awscli
       files:

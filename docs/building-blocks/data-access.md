@@ -34,10 +34,10 @@ The Data Access BB consists of the following main components:
    Database for storing geospatial metadata and data. Can be deployed as:
    - Internal cluster managed by [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
    - External PostgreSQL accessed via External Secrets Operator
-    
+
 3. **STAC Manager UI**<br>
    Web interface for managing STAC collections and items with optional OAuth integration
-   
+
 4. **EOAPI Maps Plugin**<br>
    PyGeoAPI-based service for OGC API Maps implementation
 
@@ -128,6 +128,43 @@ During the script execution, you will be prompted to provide:
 - **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
 - **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no)
 
+**PgSTAC Configuration Options**
+
+Configure via `pgstacBootstrap.settings.pgstacSettings`:
+
+| Values Key | Description | Default | Format |
+|------------|-------------|---------|--------|
+| `queue_timeout` | Timeout for queued queries | `"10 minutes"` | PostgreSQL interval |
+| `use_queue` | Enable query queue mechanism | `"false"` | boolean string |
+| `update_collection_extent` | Auto-update collection extents | `"true"` | boolean string |
+
+**CronJobs Configuration**
+
+CronJobs are conditionally created based on PgSTAC settings:
+
+- **Queue Processor** (created when `use_queue: "true"`):
+  - Schedule: `"0 * * * *"` (hourly)
+  - Processes queries that exceeded timeout
+  - Configurable via `queueProcessor.schedule`
+
+- **Extent Updater** (created when `update_collection_extent: "false"`):
+  - Schedule: `"0 2 * * *"` (daily at 2 AM)
+  - Updates collection spatial/temporal boundaries
+  - Configurable via `extentUpdater.schedule`
+
+By default, no CronJobs are created (`use_queue=false`, `update_collection_extent=true`). Both schedules are customizable using standard cron format.
+
+**Example PgSTAC Configuration:**
+
+```yaml
+pgstacBootstrap:
+  settings:
+    pgstacSettings:
+      # Performance tuning for large datasets
+      queue_timeout: "20 minutes"
+      use_queue: "true"
+      update_collection_extent: "false"
+```
 
 ### 3. Deployment
 
