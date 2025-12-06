@@ -1117,6 +1117,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-gateway/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Gateway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1257,11 +1278,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../openeo-engine/" class="md-nav__link">
+      <a href="../openeo-geotrellis/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    openEO
+    openEO Geotrellis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openeo-argo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    openEO Argo Workflows (Dask)
   </span>
   
 
@@ -1488,9 +1530,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#7-deploy-the-workspace-admin-dashboard" class="md-nav__link">
+  <a href="#9-deploy-the-workspace-admin-dashboard" class="md-nav__link">
     <span class="md-ellipsis">
-      7. Deploy the Workspace Admin Dashboard
+      9. Deploy the Workspace Admin Dashboard
     </span>
   </a>
   
@@ -2029,9 +2071,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#7-deploy-the-workspace-admin-dashboard" class="md-nav__link">
+  <a href="#9-deploy-the-workspace-admin-dashboard" class="md-nav__link">
     <span class="md-ellipsis">
-      7. Deploy the Workspace Admin Dashboard
+      9. Deploy the Workspace Admin Dashboard
     </span>
   </a>
   
@@ -2459,7 +2501,8 @@
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>workspace-api<span class="w"> </span>eoepca/rm-workspace-api<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc.7<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--namespace<span class="w"> </span>workspace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>workspace-api/generated-values.yaml
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--values<span class="w"> </span>workspace-api/generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--set<span class="w"> </span>image.tag<span class="o">=</span><span class="m">2</span>.0.0-rc.8
 </span></code></pre></div>
 <blockquote>
 <p>Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
@@ -2478,7 +2521,7 @@ If you have enabled OIDC, we will set up the APISIX route/ingress in later steps
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>workspace-cleanup/datalab-cleaner.yaml
 </span></code></pre></div>
 <p>This runs daily at 8 PM UTC and removes all sessions except the default ones.</p>
-<h3 id="7-deploy-the-workspace-admin-dashboard">7. Deploy the Workspace Admin Dashboard<a class="headerlink" href="#7-deploy-the-workspace-admin-dashboard" title="Permanent link">⚓︎</a></h3>
+<h3 id="9-deploy-the-workspace-admin-dashboard">9. Deploy the Workspace Admin Dashboard<a class="headerlink" href="#9-deploy-the-workspace-admin-dashboard" title="Permanent link">⚓︎</a></h3>
 <p>The Kubernetes Dashboard provides a web-based interface for managing Kubernetes resources.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>kubernetes-dashboard<span class="w"> </span>https://kubernetes.github.io/dashboard/
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>kubernetes-dashboard

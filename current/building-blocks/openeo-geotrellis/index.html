@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/openeo-engine/">
+        <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/openeo-geotrellis/">
       
       
         <link rel="prev" href="../oapip-engine/">
       
       
-        <link rel="next" href="../mlops/">
+        <link rel="next" href="../openeo-argo/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>openEO - EOEPCA Deployment Guide</title>
+        <title>openEO Geotrellis - EOEPCA Deployment Guide</title>
       
     
     
@@ -101,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              openEO
+              openEO Geotrellis
             
           </span>
         </div>
@@ -1117,6 +1117,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-gateway/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Gateway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1274,7 +1295,7 @@
           
   
   <span class="md-ellipsis">
-    openEO
+    openEO Geotrellis
   </span>
   
 
@@ -1285,7 +1306,7 @@
         
   
   <span class="md-ellipsis">
-    openEO
+    openEO Geotrellis
   </span>
   
 
@@ -1460,23 +1481,38 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#4-usage-openeo-web-editor" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Usage - openEO Web Editor
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openeo-web-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      openEO Web Editor
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-usage-openeo-api-calls" class="md-nav__link">
+  <a href="#openeo-api-calls" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Usage - openEO API calls
+      openEO API Calls
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="5. Usage - openEO API calls">
+    <nav class="md-nav" aria-label="openEO API Calls">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1507,9 +1543,105 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#experiment-with-other-processes" class="md-nav__link">
+  <a href="#explore-available-processes" class="md-nav__link">
     <span class="md-ellipsis">
-      Experiment with Other Processes
+      Explore Available Processes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#openeo-python-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      openEO Python Client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="openEO Python Client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-and-authenticate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connect and Authenticate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service Discovery
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execute-simple-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execute Simple Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-and-download-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Load and Download Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-complex-processing-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build Complex Processing Chains
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#band-mathematics-and-normalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Band Mathematics and Normalisation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify Calculations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clean-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clean Up
     </span>
   </a>
   
@@ -1538,6 +1670,27 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openeo-argo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    openEO Argo Workflows (Dask)
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1973,23 +2126,38 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#4-usage-openeo-web-editor" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Usage - openEO Web Editor
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#openeo-web-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      openEO Web Editor
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-usage-openeo-api-calls" class="md-nav__link">
+  <a href="#openeo-api-calls" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Usage - openEO API calls
+      openEO API Calls
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="5. Usage - openEO API calls">
+    <nav class="md-nav" aria-label="openEO API Calls">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2020,9 +2188,105 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#experiment-with-other-processes" class="md-nav__link">
+  <a href="#explore-available-processes" class="md-nav__link">
     <span class="md-ellipsis">
-      Experiment with Other Processes
+      Explore Available Processes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#openeo-python-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      openEO Python Client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="openEO Python Client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-and-authenticate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connect and Authenticate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service Discovery
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execute-simple-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execute Simple Processes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-and-download-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Load and Download Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-complex-processing-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build Complex Processing Chains
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#band-mathematics-and-normalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Band Mathematics and Normalisation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify Calculations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clean-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clean Up
     </span>
   </a>
   
@@ -2062,7 +2326,7 @@
                   
 
   
-    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/openeo-engine.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/EOEPCA/deployment-guide/edit/main/docs/building-blocks/openeo-geotrellis.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -2161,8 +2425,11 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-zookeeper<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span>--values<span class="w"> </span>zookeeper/generated-values.yaml
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--values<span class="w"> </span>zookeeper/generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span>--set<span class="w"> </span>image.registry<span class="o">=</span>docker.io<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span>--set<span class="w"> </span>image.repository<span class="o">=</span>bitnamilegacy/zookeeper<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span>--set<span class="w"> </span>image.tag<span class="o">=</span><span class="m">3</span>.8.1-debian-11-r18<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span>--wait<span class="w"> </span>--timeout<span class="w"> </span>5m
 </span></code></pre></div>
 <p>For full configuration details, see the <a href="https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml">values.yaml</a>.</p>
 <h4 id="step-3-deploy-openeo-geotrellis-using-helm">Step 3: Deploy openEO Geotrellis Using Helm<a class="headerlink" href="#step-3-deploy-openeo-geotrellis-using-helm" title="Permanent link">⚓︎</a></h4>
@@ -2172,7 +2439,7 @@
 <p>Provides an API that simplifies connecting to <abbr title="Earth Observation">EO</abbr> cloud back-ends, running on Apache Spark in a Kubernetes environment.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>openeo-geotrellis-openeo<span class="w"> </span>sparkapplication<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span>--repo<span class="w"> </span>https://artifactory.vgt.vito.be/artifactory/helm-charts<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">0</span>.16.3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>--version<span class="w"> </span><span class="m">1</span>.0.2<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>--namespace<span class="w"> </span>openeo-geotrellis<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span>--values<span class="w"> </span>openeo-geotrellis/generated-values.yaml
@@ -2269,39 +2536,36 @@
 </span></code></pre></div>
 <p><em>Expected output:</em> A JSON object with an array of processes. Use your terminal&rsquo;s scroll or <code>jq</code> to inspect the output.</p>
 <hr />
-<h3 id="4-usage-openeo-web-editor">4. Usage - openEO Web Editor<a class="headerlink" href="#4-usage-openeo-web-editor" title="Permanent link">⚓︎</a></h3>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">⚓︎</a></h2>
+<h3 id="openeo-web-editor">openEO Web Editor<a class="headerlink" href="#openeo-web-editor" title="Permanent link">⚓︎</a></h3>
 <p>The deployment can be tested using the openEO Web Editor as a client.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>xdg-open<span class="w"> </span>https://editor.openeo.org?server<span class="o">=</span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/
 </span></code></pre></div>
-<p><strong>Alternatively</strong></p>
+<p><strong>Alternatively:</strong></p>
 <ul>
 <li>Open the <a href="https://editor.openeo.org/">openEO Web Editor</a></li>
-<li>Enter the <code>URL</code> of the server - <code>https://openeo.${INGRESS_HOST}</code> - e.g. <code>https://openeo.myplatform.mydomain</code></li>
+<li>Enter the <code>URL</code> of the server - <code>https://openeo.${INGRESS_HOST}</code> (e.g. <code>https://openeo.myplatform.mydomain</code>)</li>
 <li>Select <code>Connect</code></li>
 </ul>
 <p><strong>Login to service</strong></p>
 <p>If OIDC authentication is enabled:
 * Select <code>EOEPCA</code>
 * Select <code>Log in with EOEPCA</code><br />
-  This should redirect to authenticate via the IAM BB Keycloak instance
+  This redirects to authenticate via the IAM BB Keycloak instance
 * Authenticate as a user - such as <code>eoepcauser</code></p>
-<p>If basic authentication is configured
-* Use the basic authentication credentials configured in your deployment
-* The system will handle authentication without requiring external identity providers</p>
 <p><strong>openEO Web Editor</strong></p>
-<p>Successful login should redirect to the <code>Welcome</code> page of the openEO Web Editor.</p>
-<p>The web editor can be used to explore the capabilities of the openEO instance.</p>
-<p>For example, use the <code>Wizard</code> to download some data from the default collection.</p>
+<p>Successful login redirects to the <code>Welcome</code> page of the openEO Web Editor.</p>
+<p>The web editor can be used to explore the capabilities of the openEO instance. For example, use the <code>Wizard</code> to download data from the default collection.</p>
 <hr />
-<h3 id="5-usage-openeo-api-calls">5. Usage - openEO API calls<a class="headerlink" href="#5-usage-openeo-api-calls" title="Permanent link">⚓︎</a></h3>
+<h3 id="openeo-api-calls">openEO API Calls<a class="headerlink" href="#openeo-api-calls" title="Permanent link">⚓︎</a></h3>
 <p>The authentication method depends on whether you enabled OIDC during configuration.</p>
 <h4 id="get-an-access-token-oidc-authentication">Get an Access Token (OIDC Authentication)<a class="headerlink" href="#get-an-access-token-oidc-authentication" title="Permanent link">⚓︎</a></h4>
 <blockquote>
-<p><strong>Note:</strong> This section applies only if you enabled OIDC authentication. For basic authentication deployments, you can skip directly to submitting jobs using basic auth headers.</p>
+<p><strong>Note:</strong> This section applies only if you enabled OIDC authentication. For basic authentication deployments, skip directly to submitting jobs using basic auth headers.</p>
 </blockquote>
 <p>This assumes use of the previously created <code>KEYCLOAK_TEST_USER</code> (default <code>eoepcauser</code>).<br />
 If needed, run the <code>create-user.sh</code> script to create a test user:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>bash ../../utils/create-user.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>bash<span class="w"> </span>../../utils/create-user.sh
 </span></code></pre></div></p>
 <p>Request the access token:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
@@ -2321,15 +2585,17 @@ If needed, run the <code>create-user.sh</code> script to create a test user:
 </span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>
 </span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="nv">AUTH_TOKEN</span><span class="o">=</span><span class="s2">&quot;oidc/eoepca/</span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
-<p>If the Access Token is empty, please make sure that the Keycloak client and user are correctly set up.</p>
-<p>We need to format the token as <code>oidc/eoepca/${ACCESS_TOKEN}</code> to comply with the <code>oidc_providers</code> variable seen in the Helm values.</p>
+<p>If the Access Token is empty, ensure that the Keycloak client and user are correctly set up.</p>
+<p>We format the token as <code>oidc/eoepca/${ACCESS_TOKEN}</code> to comply with the <code>oidc_providers</code> variable in the Helm values.</p>
 <h4 id="get-an-access-token-basic-authentication">Get an Access Token (Basic Authentication)<a class="headerlink" href="#get-an-access-token-basic-authentication" title="Permanent link">⚓︎</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>export BASIC_AUTH=$(echo -n &quot;testuser:testuser123&quot; | base64)
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>AUTH_TOKEN=&quot;basic/openeo/${BASIC_AUTH}&quot;
+<blockquote>
+<p>Skip this section if you enabled OIDC authentication.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">BASIC_AUTH</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;testuser:testuser123&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="k">)</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nv">AUTH_TOKEN</span><span class="o">=</span><span class="s2">&quot;basic/openeo/</span><span class="si">${</span><span class="nv">BASIC_AUTH</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <h4 id="submit-a-job-using-the-sum-process">Submit a Job Using the &ldquo;sum&rdquo; Process<a class="headerlink" href="#submit-a-job-using-the-sum-process" title="Permanent link">⚓︎</a></h4>
-<p>Submit a job that adds 5 and 6.5 by sending a process graph to the <code>/jobs</code> endpoint.</p>
-<p>For OIDC authentication:
+<p>Submit a job that adds 5 and 6.5 by sending a process graph to the <code>/result</code> endpoint.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/openeo/1.2/result&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">AUTH_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -2346,19 +2612,158 @@ If needed, run the <code>create-user.sh</code> script to create a test user:
 </span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="s1">          }</span>
 </span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="s1">        }</span>
 </span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="s1">      }&#39;</span>
-</span></code></pre></div></p>
+</span></code></pre></div>
 <p><strong>Expected output:</strong><br />
-A simple numeric result:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="mf">11.5</span>
-</span></code></pre></div>
+</span></code></pre></div></p>
 <p>This confirms that the &ldquo;sum&rdquo; process is operational and returning the correct computed sum.</p>
-<h4 id="experiment-with-other-processes">Experiment with Other Processes<a class="headerlink" href="#experiment-with-other-processes" title="Permanent link">⚓︎</a></h4>
-<p>To see more available processes you can run, navigate to:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>https://openeo.${INGRESS_HOST}/openeo/1.2/processes
+<h4 id="explore-available-processes">Explore Available Processes<a class="headerlink" href="#explore-available-processes" title="Permanent link">⚓︎</a></h4>
+<p>To see available processes, navigate to:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>curl<span class="w"> </span>-L<span class="w"> </span>https://openeo.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/openeo/1.2/processes<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </span></code></pre></div>
-<p>You should see a JSON object with an array of processes. Each with example usage and descriptions. Follow the same process as above to submit a job using any of these processes.</p>
-<p>Your Access Token will eventually expire (if using OIDC). If you receive a 401 error, you&rsquo;ll need to obtain a new token by running the <code>Get an Access Token</code> section again.</p>
+<p>You&rsquo;ll see a JSON object with an array of processes, each with example usage and descriptions. Follow the same process as above to submit jobs using any of these processes.</p>
+<p>Your Access Token will eventually expire (if using OIDC). If you receive a 401 error, obtain a new token by running the <code>Get an Access Token</code> section again.</p>
 <hr />
+<h3 id="openeo-python-client">openEO Python Client<a class="headerlink" href="#openeo-python-client" title="Permanent link">⚓︎</a></h3>
+<p>The Python client provides a more comprehensive interface for working with openEO services.</p>
+<h4 id="install-dependencies">Install Dependencies<a class="headerlink" href="#install-dependencies" title="Permanent link">⚓︎</a></h4>
+<p>Create a virtual environment and install required packages:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>ppa:deadsnakes/ppa
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12<span class="w"> </span>python3.12-venv
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>pip<span class="w"> </span>install<span class="w"> </span>openeo<span class="w"> </span>xarray<span class="w"> </span>netCDF4<span class="w"> </span>h5netcdf
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENEO_URL</span><span class="o">=</span><span class="s2">&quot;https://openeo.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h4 id="connect-and-authenticate">Connect and Authenticate<a class="headerlink" href="#connect-and-authenticate" title="Permanent link">⚓︎</a></h4>
+<p>Start a Python session and establish connection:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>python
+</span></code></pre></div>
+<p>And then run:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="kn">import</span> <span class="nn">openeo</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="kn">import</span> <span class="nn">json</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="kn">import</span> <span class="nn">os</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="kn">import</span> <span class="nn">xarray</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="c1"># Connect to openEO service</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="n">openeo_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;OPENEO_URL&#39;</span><span class="p">,</span> <span class="s1">&#39;https://openeo.$</span><span class="si">{INGRESS_HOST}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="n">connection</span> <span class="o">=</span> <span class="n">openeo</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">openeo_url</span><span class="p">)</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="n">connection</span><span class="o">.</span><span class="n">authenticate_oidc</span><span class="p">()</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="c1"># Authenticate (basic auth example - adjust for OIDC if enabled)</span>
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="c1"># connection.authenticate_basic(&quot;testuser&quot;, &quot;testuser123&quot;)</span>
+</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>
+</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="c1"># Or for OIDC:</span>
+</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>
+</span><span id="__span-25-17"><a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="c1"># Define parameters for data access</span>
+</span><span id="__span-25-18"><a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="n">collection_id</span> <span class="o">=</span> <span class="s2">&quot;TestCollection-LonLat16x16&quot;</span>
+</span><span id="__span-25-19"><a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="n">temporal_extent</span> <span class="o">=</span> <span class="s2">&quot;2024-09&quot;</span>
+</span><span id="__span-25-20"><a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="n">spatial_extent</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;west&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;south&quot;</span><span class="p">:</span> <span class="mi">51</span><span class="p">,</span> <span class="s2">&quot;east&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;north&quot;</span><span class="p">:</span> <span class="mi">53</span><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="service-discovery">Service Discovery<a class="headerlink" href="#service-discovery" title="Permanent link">⚓︎</a></h4>
+<p>Quickly explore available collections and processes:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collections: </span><span class="si">{</span><span class="n">connection</span><span class="o">.</span><span class="n">list_collection_ids</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Process count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">list_processes</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="execute-simple-processes">Execute Simple Processes<a class="headerlink" href="#execute-simple-processes" title="Permanent link">⚓︎</a></h4>
+<p>Test basic arithmetic operations:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>    <span class="s2">&quot;add&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>        <span class="s2">&quot;process_id&quot;</span><span class="p">:</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>        <span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>        <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="p">}</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="p">})</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3 + 5 = </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="load-and-download-data">Load and Download Data<a class="headerlink" href="#load-and-download-data" title="Permanent link">⚓︎</a></h4>
+<p>Retrieve data from collections and save locally:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">cube_original</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">load_collection</span><span class="p">(</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>    <span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>    <span class="n">temporal_extent</span><span class="o">=</span><span class="n">temporal_extent</span><span class="p">,</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>    <span class="n">spatial_extent</span><span class="o">=</span><span class="n">spatial_extent</span><span class="p">,</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>    <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Longitude&quot;</span><span class="p">,</span> <span class="s2">&quot;Latitude&quot;</span><span class="p">,</span> <span class="s2">&quot;Day&quot;</span><span class="p">],</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="p">)</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="n">cube_original</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;original.nc&quot;</span><span class="p">)</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="c1"># Inspect downloaded data</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">xarray</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;original.nc&quot;</span><span class="p">)</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="build-complex-processing-chains">Build Complex Processing Chains<a class="headerlink" href="#build-complex-processing-chains" title="Permanent link">⚓︎</a></h4>
+<p>Construct multi-step processing workflows:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># Load collection with specific temporal range</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="n">cube_processed</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">load_collection</span><span class="p">(</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>    <span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>    <span class="n">temporal_extent</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2024-09-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2024-09-30&quot;</span><span class="p">],</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>    <span class="n">spatial_extent</span><span class="o">=</span><span class="n">spatial_extent</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="p">)</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="c1"># Apply processing steps</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="n">cube_processed</span> <span class="o">=</span> <span class="n">cube_processed</span><span class="o">.</span><span class="n">filter_temporal</span><span class="p">([</span><span class="s2">&quot;2024-09-10&quot;</span><span class="p">,</span> <span class="s2">&quot;2024-09-20&quot;</span><span class="p">])</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="n">cube_processed</span> <span class="o">=</span> <span class="n">cube_processed</span><span class="o">.</span><span class="n">reduce_dimension</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="n">reducer</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="n">cube_processed</span> <span class="o">=</span> <span class="n">cube_processed</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="c1"># Export process graph</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="n">graph</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cube_processed</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing chain: </span><span class="si">{</span><span class="s1">&#39; → &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s1">&#39;process_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="c1"># Validate and save</span>
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="n">connection</span><span class="o">.</span><span class="n">validate_process_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;workflow.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-29-20"><a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a>    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-29-21"><a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Graph validated and saved&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="band-mathematics-and-normalisation">Band Mathematics and Normalisation<a class="headerlink" href="#band-mathematics-and-normalisation" title="Permanent link">⚓︎</a></h4>
+<p>Perform calculations across multiple bands, such as computing a normalised index:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1"># Load specific bands</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="n">cube_bands</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">load_collection</span><span class="p">(</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>    <span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>    <span class="n">temporal_extent</span><span class="o">=</span><span class="s2">&quot;2024-09&quot;</span><span class="p">,</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>    <span class="n">spatial_extent</span><span class="o">=</span><span class="n">spatial_extent</span><span class="p">,</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>    <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Longitude&quot;</span><span class="p">,</span> <span class="s2">&quot;Latitude&quot;</span><span class="p">]</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="p">)</span>
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="c1"># Calculate normalised difference: (Longitude - Latitude) / (Longitude + Latitude)</span>
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="n">lon</span> <span class="o">=</span> <span class="n">cube_bands</span><span class="o">.</span><span class="n">band</span><span class="p">(</span><span class="s2">&quot;Longitude&quot;</span><span class="p">)</span>
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="n">lat</span> <span class="o">=</span> <span class="n">cube_bands</span><span class="o">.</span><span class="n">band</span><span class="p">(</span><span class="s2">&quot;Latitude&quot;</span><span class="p">)</span>
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="n">normalised_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span> <span class="o">-</span> <span class="n">lat</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">lon</span> <span class="o">+</span> <span class="n">lat</span><span class="p">)</span>
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a>
+</span><span id="__span-30-14"><a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a><span class="c1"># Save results</span>
+</span><span id="__span-30-15"><a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="n">cube_bands</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;bands.nc&quot;</span><span class="p">)</span>
+</span><span id="__span-30-16"><a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="n">normalised_diff</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;normalised.nc&quot;</span><span class="p">)</span>
+</span><span id="__span-30-17"><a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a>
+</span><span id="__span-30-18"><a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="c1"># Export processing graph</span>
+</span><span id="__span-30-19"><a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a><span class="n">nd_graph</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">normalised_diff</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+</span><span id="__span-30-20"><a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;normalised_workflow.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-30-21"><a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a>    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">nd_graph</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="verify-calculations">Verify Calculations<a class="headerlink" href="#verify-calculations" title="Permanent link">⚓︎</a></h4>
+<p>Validate that band mathematics produced expected results:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">ds_bands</span> <span class="o">=</span> <span class="n">xarray</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;bands.nc&quot;</span><span class="p">)</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="n">ds_norm</span> <span class="o">=</span> <span class="n">xarray</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;normalised.nc&quot;</span><span class="p">)</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># Sample first pixel values</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="n">lon_val</span> <span class="o">=</span> <span class="n">ds_bands</span><span class="o">.</span><span class="n">Longitude</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="n">lat_val</span> <span class="o">=</span> <span class="n">ds_bands</span><span class="o">.</span><span class="n">Latitude</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">expected</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon_val</span> <span class="o">-</span> <span class="n">lat_val</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">lon_val</span> <span class="o">+</span> <span class="n">lat_val</span><span class="p">)</span>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="n">actual</span> <span class="o">=</span> <span class="n">ds_norm</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Longitude: </span><span class="si">{</span><span class="n">lon_val</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, Latitude: </span><span class="si">{</span><span class="n">lat_val</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected normalised value: </span><span class="si">{</span><span class="n">expected</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, Actual: </span><span class="si">{</span><span class="n">actual</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-31-12"><a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Calculation correct&quot;</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">expected</span> <span class="o">-</span> <span class="n">actual</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.001</span> <span class="k">else</span> <span class="s2">&quot;✗ Mismatch&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="clean-up">Clean Up<a class="headerlink" href="#clean-up" title="Permanent link">⚓︎</a></h4>
+<p>Exit Python and deactivate the virtual environment:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">exit</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>ls<span class="w"> </span>-lh<span class="w"> </span>*.nc<span class="w"> </span>*.json
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>deactivate
+</span></code></pre></div>
+<p>The downloaded files contain the processed data cubes and workflow definitions that can be reused or shared with other openEO deployments.</p>
 <h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
 <ul>
 <li><a href="https://open-eo.github.io/openeo-api/">openEO Documentation</a></li>
@@ -2416,13 +2821,13 @@ A simple numeric result:</p>
         
         
           
-          <a href="../mlops/" class="md-footer__link md-footer__link--next" aria-label="Next: MLOps">
+          <a href="../openeo-argo/" class="md-footer__link md-footer__link--next" aria-label="Next: openEO Argo Workflows (Dask)">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                MLOps
+                openEO Argo Workflows (Dask)
               </div>
             </div>
             <div class="md-footer__button md-icon">
