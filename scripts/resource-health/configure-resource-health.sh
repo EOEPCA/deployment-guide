@@ -11,9 +11,9 @@ ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 configure_cert
 
 # Ask about OIDC authentication
-ask_yes_no "RESOURCE_HEALTH_ENABLE_OIDC" "Do you want to enable OIDC authentication for Resource Health?" "yes"
+ask "RESOURCE_HEALTH_ENABLE_OIDC" "Enable OIDC protection for Resource Health? (yes/no)" "yes" is_yes_no
 
-if [ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]; then
+if [[ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]]; then
     ask "RESOURCE_HEALTH_CLIENT_ID" "Enter the Resource Health Keycloak Client ID" "resource-health" is_non_empty
 
     if [ -z "$RESOURCE_HEALTH_CLIENT_SECRET" ]; then

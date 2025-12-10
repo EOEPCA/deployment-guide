@@ -12,9 +12,7 @@ ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for inter
 
 
 # OIDC configuration - now optional
-ask_yes_no "APP_QUALITY_ENABLE_OIDC" "Enable OIDC authentication?" "no"
-
-if [ "$APP_QUALITY_ENABLE_OIDC" = "yes" ]; then
+if ask_yes_no "Enable OIDC authentication?"; then
     export OIDC_APPLICATION_QUALITY_ENABLED="true"
     
     if [ -z "$OIDC_ISSUER_URL" ]; then
