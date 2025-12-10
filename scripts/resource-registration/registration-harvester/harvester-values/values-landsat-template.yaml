@@ -1,20 +1,14 @@
 harvester:
-  service:
-    name: registration-harvester
-    type: ClusterIP
-    port: 8080
-  image:
-    repository: eoepca/registration-harvester
-    pullPolicy: Always
-    tag: main
   secret:
     name: registration-harvester-secret
-  container_port: 8080
+  eodata:
+    enabled: true
+    storageClass: {{ getenv "SHARED_STORAGECLASS" }}
   config:
     worker:
       log_level: INFO
       flowable:
-        host: https://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
+        host: {{ getenv "HTTP_SCHEME"}}://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
         tls: true
         cacert: ./etc/eoepca-ca-chain.pem
       topics:
@@ -57,7 +51,7 @@ harvester:
         LandsatDownloadHandler:
           subscription:
             lock_duration: PT30M
-          download_base_dir: "/harvesteddata/landsat"
+          download_base_dir: "/eodata/landsat"
           download_timeout: 300
         LandsatUntarHandler:
           remove_tar: false
@@ -65,3 +59,6 @@ harvester:
         LandsatRegisterMetadataHandler:
           stac_api_url: https://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac/
           stac_file_deletion: true
+          rewrite_asset_hrefs:
+            prefix_from: "/eodata/"
+            prefix_to: "{{ getenv "HTTP_SCHEME"}}://eodata.{{ getenv "INGRESS_HOST" }}/"
