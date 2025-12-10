@@ -5,17 +5,19 @@ metadata:
   namespace: resource-registration
 spec:
   http:
-{{ if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_ENDPOINTS") "y" }}
-  - name: registration-api-protected
+  - name: registration-api
     match:
       hosts:
-        - registration-api-protected.{{ getenv "INGRESS_HOST" }}
+        - registration-api.{{ getenv "INGRESS_HOST" }}
       paths:
         - /*
     backends:
       - serviceName: registration-api-service
         servicePort: 80
     plugins:
+      - name: cors
+        enable: true
+{{- if eq (getenv "RESOURCE_REGISTRATION_ENABLE_OIDC") "yes" }}
       # Authn - expect JWT in `Authorization: Bearer` header
       - name: openid-connect
         enable: true
@@ -37,22 +39,7 @@ spec:
           discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/uma2-configuration"
           lazy_load_paths: true
           ssl_verify: false
-      # Allow CORS access
-      - name: cors
-        enable: true
-{{ end }}
-  - name: registration-api-open
-    match:
-      hosts:
-        - registration-api.{{ getenv "INGRESS_HOST" }}
-      paths:
-        - /*
-    backends:
-      - serviceName: registration-api-service
-        servicePort: 80
-    plugins:
-      - name: cors
-        enable: true
+{{- end }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -61,9 +48,6 @@ metadata:
   namespace: resource-registration
 spec:
   dnsNames:
-{{ if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_ENDPOINTS") "y" }}
-    - registration-api-protected.{{ getenv "INGRESS_HOST" }}
-{{ end }}
     - registration-api.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     kind: ClusterIssuer
@@ -81,9 +65,6 @@ metadata:
   namespace: resource-registration
 spec:
   hosts:
-{{ if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_ENDPOINTS") "y" }}
-    - registration-api-protected.{{ getenv "INGRESS_HOST" }}
-{{ end }}
     - registration-api.{{ getenv "INGRESS_HOST" }}
   secret:
     name: registration-api-tls
