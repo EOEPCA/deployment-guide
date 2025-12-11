@@ -12,12 +12,11 @@ spec:
         hosts:
           - zoo.{{ getenv "INGRESS_HOST" }}
         paths:
-          - /*
-        exprs:
-          - subject:
-              scope: Path
-            op: RegexMatch
-            value: "^/(ogc-api/api.*|swagger-ui.*|conformance.*)"
+          - /ogc-api
+          - /ogc-api/
+          - /ogc-api/api*
+          - /swagger-ui*
+          - /conformance*
       backends:
         - serviceName: zoo-project-dru-service
           servicePort: 80
