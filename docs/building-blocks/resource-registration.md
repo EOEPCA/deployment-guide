@@ -103,8 +103,6 @@ During the script execution, you will be prompted to provide:
 - **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
     - *Default*: `resource-registration`
 
-> TODO - setting `RESOURCE_REGISTRATION_PROTECTED_TARGETS=no` seems to break the helm chart
-
 ### 2. Apply Kubernetes Secrets
 
 Create required secrets for the Registration API and Harvester components:
@@ -141,7 +139,7 @@ Deploy the Registration API using the generated values file:
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-dev11 \
+  --version 2.0.0-dev12 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -345,8 +343,6 @@ EOF
 ```
 
 #### Validate Registration
-
-> TODO: outstanding bug - the `/jobs` endpoint is broken
 
 Check job status:
 
