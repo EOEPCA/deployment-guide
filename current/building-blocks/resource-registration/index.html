@@ -2451,9 +2451,6 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </ul>
 </li>
 </ul>
-<blockquote>
-<p>TODO - setting <code>RESOURCE_REGISTRATION_PROTECTED_TARGETS=no</code> seems to break the helm chart</p>
-</blockquote>
 <h3 id="2-apply-kubernetes-secrets">2. Apply Kubernetes Secrets<a class="headerlink" href="#2-apply-kubernetes-secrets" title="Permanent link">⚓︎</a></h3>
 <p>Create required secrets for the Registration API and Harvester components:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash<span class="w"> </span>apply-secrets.sh
@@ -2479,7 +2476,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-api<span class="w"> </span>eoepca-dev/registration-api<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-dev11<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-dev12<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-api/generated-values.yaml
@@ -2636,9 +2633,6 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <h4 id="validate-registration">Validate Registration<a class="headerlink" href="#validate-registration" title="Permanent link">⚓︎</a></h4>
-<blockquote>
-<p>TODO: outstanding bug - the <code>/jobs</code> endpoint is broken</p>
-</blockquote>
 <p>Check job status:</p>
 <blockquote>
 <p>If required, authenticate to the Registration API - e.g. as user <code>eoepcauser</code>.<br>
