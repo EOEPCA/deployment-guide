@@ -106,26 +106,59 @@ Then apply the **APISIX TLS** resource:
 kubectl apply -f apisix-tls.yaml
 ```
 
-### 4. Create a Test User
+---
 
-**Create a Test User in the `eoepca` Realm**<br>
-_The `eoepca` realm should already be set up from the helm deployment. Create a test user with a username and password of your choice. This user will be used for testing purposes throughout the deployment of other Building Blocks (BBs)._
+### 4. Create the `eoepca` Realm
 
+**Get admin token**
 
 ```bash
-bash ../utils/create-user.sh
+source ~/.eoepca/state
+ACCESS_TOKEN=$( \
+  curl -X POST "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
+    --silent --show-error \
+    -d "username=${KEYCLOAK_ADMIN_USER=}" \
+    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    | jq -r '.access_token' \
+)
+echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 ```
 
-- Example username: `eoepcauser`
-- Example password: `eoepcapassword`
+**Create realm**
 
-You can configure the username and password as per your requirements.
+```bash
+source ~/.eoepca/state
+curl -X POST "${HTTP_SCHEME}://auth.${INGRESS_HOST}/admin/realms" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d @- <<EOF
+{
+  "realm": "${REALM}",
+  "enabled": true,
+  "displayName": "EOEPCA"
+}
+EOF
+```
 
+---
 
+### 5. Establish Keycloak Management via Crossplane
 
-### 5. Create the `opa` and `identity-api` Client
+Using the Crossplane Keycloak provider, we create a Keycloak client that allows Crossplane to manage Keycloak resources declaratively via CRDs. This is established via the following steps:
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm. Make sure that you **run this script twice**, once for each client as both clients are required.
+* Create a dedicated Keycloak client `iam-management` for Crossplane, with the necessary _Realm Management_ roles (`manage-users`, `manage-clients`, `manage-authorization`, `create-client`)
+* Create the namespace `iam-management` for Crossplane Keycloak resources
+* Establish Crossplane Keycloak provider configuration to connect to Keycloak using the `iam-management` client - serving resources in the `iam-management` namespace
+
+> This provides the framework through which to manage the `eoepca` realm and its clients, by creation of Crossplane Keycloak resources in the `iam-management` namespace that will be satisfied by the Crossplane Keycloak provider.
+
+#### 5.1. Keycloak Client for Crossplane Provider
+
+Create a Keycloak client for the Crossplane Keycloak provider to allow it to interface with Keycloak. We create the client `iam-management`, which is used to perform administrative actions against the Keycloak API.
+
+Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm.
 
 ```bash
 bash ../utils/create-client.sh
@@ -135,22 +168,208 @@ When prompted:
 
 > In many cases the default values (indicated `'-'`) are acceptable.
 
-| Prompt | Description | OPA Client | Identity API Client |
-|--------|-------------|------------|---------------------|
-| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - | - |
-| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - | - |
-| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - | - |
-| Realm | Typically `eoepca` | - | - |
-| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` | `true` |
-| Client ID | Identifier for the client in Keycloak | `opa` | `identity-api` |
-| Client Name | Display name for the client - for example... | `OPA` | `Identity API` |
-| Client Description | Descriptive text for the client - for example... | `OPA OIDC` | `Identity API OIDC` |
-| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `OPA_CLIENT_SECRET` | ref. env `IDENTITY_API_CLIENT_SECRET` |
-| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `opa` | `identity-api` |
-| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` | `<blank>` |
-| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` | `<blank>` |
+| Prompt | Description | `iam-management` |
+|--------|-------------|------------------|
+| Keycloak Admin Username and Password | Enter the credentials of your Keycloak admin user | - |
+| Ingress Host | Platform base domain - e.g. `${INGRESS_HOST}` | - |
+| Keycloak Host | e.g. `auth.${INGRESS_HOST}` | - |
+| Realm | Typically `eoepca` | - |
+| Confidential Client? | Specify `true` to create a CONFIDENTIAL client | `true` |
+| Client ID | Identifier for the client in Keycloak | `iam-management` |
+| Client Name | Display name for the client - for example... | `IAM Management` |
+| Client Description | Descriptive text for the client - for example... | `Management of Keycloak resource via Crossplane` |
+| Client secret | Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`) | ref. env `IAM_MANAGEMENT_CLIENT_SECRET` |
+| Subdomain | Redirect URL - Main service endpoint hostname as a prefix to `INGRESS_HOST` | `iam-management` |
+| Additional Subdomains | Redirect URL - Additional `Subdomain` (prefix to `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service-api`,`service-swagger`) | `<blank>` |
+| Additional Hosts | Redirect URL - Additional full hostnames (i.e. outside of `INGRESS_HOST`)<br>Comma-separated, or leave empty (e.g. `service.some.platform`) | `<blank>` |
 
 After it completes, you should see a JSON snippet confirming the newly created client.
+
+The `iam-management` client requires specific `realm-management` roles to perform administrative actions against Keycloak.
+
+Run the `crossplane-client-roles.sh` script in the `/scripts/utils/` directory, providing the `iam-management` client ID as an argument:
+
+```bash
+bash ../utils/crossplane-client-roles.sh iam-management
+```
+
+> The client is updated with the required roles.
+
+#### 5.2. Create Crossplane Keycloak Provider Configuration
+
+Now the Keycloak client is created, we can set up the Crossplane Keycloak provider configuration to connect to Keycloak using this client.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: iam-management
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: iam-management-client
+  namespace: iam-management
+stringData:
+  credentials: |
+    {
+      "client_id": "$IAM_MANAGEMENT_CLIENT_ID",
+      "client_secret": "$IAM_MANAGEMENT_CLIENT_SECRET",
+      "url": "http://iam-keycloak.iam",
+      "base_path": "",
+      "realm": "$REALM"
+    }
+---
+apiVersion: keycloak.m.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: provider-keycloak
+  namespace: iam-management
+spec:
+  credentialsSecretRef:
+    name: iam-management-client
+    key: credentials
+EOF
+```
+
+#### 5.3. Create `realm-management` Client
+
+Register a Crossplane-managed representation of the built-in the `realm-management` Client.
+
+> Note that this client already exists in Keycloak by default - but we need a k8s Custom Resource in order to reference the client by name in other CRDs supported by the Keycloak Provider.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: realm-management
+  namespace: iam-management
+spec:
+  managementPolicies:
+    - Observe
+  forProvider:
+    realmId: ${REALM}
+    clientId: realm-management
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
+---
+
+### 6. Create Test Users
+
+> Test users (admin and normal user) are created with the usernames and password that were specified during IAM configuration. These users will be used for testing purposes throughout the deployment of other Building Blocks (BBs). You can configure the usernames and password as per your requirements. Defaults:
+> 
+> - Admin User: `eoepcaadmin`
+> - Normal User: `eoepcauser`
+> - Password: `eoepcapassword` (both)
+
+The users are created declaratively using the CRD defined by the Crossplane Keycloak provider. A `Secret` is used to inject the password securely.
+
+**Secret**
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-user-password
+  namespace: iam-management
+stringData:
+  password: ${KEYCLOAK_TEST_PASSWORD}
+EOF
+```
+**Users**
+
+```bash
+source ~/.eoepca/state
+for username in ${KEYCLOAK_TEST_ADMIN} ${KEYCLOAK_TEST_USER}; do
+cat <<EOF | kubectl apply -f -
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: ${username}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    username: ${username}
+    email: ${username}@eoepca.org
+    emailVerified: true
+    firstName: ${username}
+    lastName: Testuser
+    initialPassword:
+      - temporary: false
+        valueSecretRef:
+          name: test-user-password
+          key: password
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+done
+```
+
+### 7. Create the Keycloak Client for OPA
+
+A Keycloak client is required for the ingress protection of the OPA service. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${OPA_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${OPA_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${OPA_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${OPA_CLIENT_ID}
+    name: Open Policy Agent
+    description: Open Policy Agent OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://opa.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://opa.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://opa.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${OPA_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
 
 ---
 
@@ -264,6 +483,7 @@ ACCESS_TOKEN=$( \
     -d "client_secret=${OPA_CLIENT_SECRET}" \
     "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
 )
+echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 ```
 
 Simple `allow all` test query...

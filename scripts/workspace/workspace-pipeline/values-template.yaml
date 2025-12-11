@@ -1,0 +1,31 @@
+environmentconfig:
+  iam:
+    realm: {{ getenv "REALM" "eoepca" }}
+  ingress:
+    class: {{ getenv "INGRESS_CLASS" }}
+    domain: {{ getenv "INGRESS_HOST" }}
+    secret: wildcard-tls
+  storage:
+    endpoint: {{ getenv "S3_ENDPOINT" }}
+    forcePathStyle: true
+    provider: Other
+    region: {{ getenv "S3_REGION" }}
+    secretNamespace: workspace
+    type: s3
+  network:
+    serviceCIDR: {{ getenv "SERVICE_CIDR" }}
+  packages:
+    - name: awscli
+      files:
+        - image:
+            url: ghcr.io/versioneer-tech/educates-extension-packages/awscli:v2.29.0
+    - name: rclone
+      files:
+        - image:
+            url: ghcr.io/versioneer-tech/educates-extension-packages/rclone:v1.71.0
+  auth:
+    type: none
+  defaults:
+    quota:
+      storage: 8Gi
+      budget: x-large

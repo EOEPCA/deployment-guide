@@ -15,6 +15,12 @@ global:
     ## INSTRUCTION: Set to name of certificate issuer for published services
     name: {{ getenv "CLUSTER_ISSUER" }}
 
+  grafana:
+    enabled: false
+
+grafana:
+  enabled: false
+
 application-quality:
   # Values for deploying the Application Quality Building Block in the EOEPCA Develop cluster.
 
@@ -25,13 +31,18 @@ application-quality:
     image:
       repository: eoepca/eoepca-appquality-backend
       tag: 2.0.0-rc1
+    extraEnv:
+      - name: ENABLE_AUTH
+        value: "{{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" "false" }}"
+      - name: OIDC_ENABLED
+        value: "{{ getenv "OIDC_APPLICATION_QUALITY_ENABLED" "false" }}"
 
   # Application Quality frontend
   web:
     image:
       repository: eoepca/eoepca-appquality-frontend
       tag: 2.0.0-rc1
-    publicUrl: "https://application-quality.{{ getenv "INGRESS_HOST" }}"
+    publicUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}"
 
   persistence:
     enabled: true
@@ -40,6 +51,9 @@ application-quality:
     accessMode:
     - ReadWriteOnce
     size: 2Gi
+
+  grafana:
+    enabled: false
 
   calrissian:
     image: "terradue/calrissian:0.14.0"
@@ -90,10 +104,14 @@ application-quality:
       {{- range $key, $value := (datasource "annotations") }}
       {{ $key }}: "{{ $value }}"
       {{- end }}
+    {{- if eq (getenv "HTTP_SCHEME") "https" }}
     tls:
       - hosts:
         - application-quality.{{ getenv "INGRESS_HOST" }}
         secretName: application-quality-tls
+  {{- else }}
+    tls: []
+  {{- end }}
 
   service:
     type: ClusterIP
@@ -413,7 +431,7 @@ opensearch-dashboards:
 
   ingress:
     enabled: true
-    className: {{ getenv "INGRESS_CLASS" }}
+    ingressClassName: {{ getenv "INGRESS_CLASS" }}
     domain: application-quality.{{ getenv "INGRESS_HOST" }}
     annotations:
       kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
@@ -428,10 +446,12 @@ opensearch-dashboards:
             backend:
               serviceName: application-quality-opensearch-dashboards
               servicePort: 5601
+    {{- if eq (getenv "HTTP_SCHEME") "https" }}
     tls:
       - hosts:
         - application-quality.{{ getenv "INGRESS_HOST" }}
         secretName: application-quality-tls
+    {{- end }}
 
   config:
     opensearch_dashboards.yml:
@@ -444,7 +464,7 @@ opensearch-dashboards:
         maxPayloadBytes: 1048576
         ssl:
           # Enables SSL communication between the OpenSearch Dashboards server and the user’s web browser.
-          enabled: true
+          enabled: {{ eq (getenv "INGRESS_CLASS") "nginx" }}
           certificateAuthorities: [ "/usr/share/opensearch-dashboards/certs/ca.crt" ]
           certificate: /usr/share/opensearch-dashboards/certs/tls.crt
           key: /usr/share/opensearch-dashboards/certs/tls.key

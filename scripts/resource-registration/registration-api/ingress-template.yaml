@@ -5,41 +5,7 @@ metadata:
   namespace: resource-registration
 spec:
   http:
-  - name: registration-api-protected
-    match:
-      hosts:
-        - registration-api-protected.{{ getenv "INGRESS_HOST" }}
-      paths:
-        - /*
-    backends:
-      - serviceName: registration-api-service
-        servicePort: 80
-    plugins:
-      # Authn - expect JWT in `Authorization: Bearer` header
-      - name: openid-connect
-        enable: true
-        config:
-          client_id: "registration-api"
-          client_secret: "TBD"
-          discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/openid-configuration"
-          realm: eoepca
-          use_jwks: true
-          bearer_only: false # as we want to redirect to login screen (default: false)
-          set_access_token_header: true  # (default: true)
-          access_token_in_authorization_header: true  # (default: false)
-      # Authz
-      - name: authz-keycloak
-        enable: true
-        config:
-          client_id: "registration-api"
-          client_secret: "TBD"
-          discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/uma2-configuration"
-          lazy_load_paths: true
-          ssl_verify: false
-      # Allow CORS access
-      - name: cors
-        enable: true
-  - name: registration-api-open
+  - name: registration-api
     match:
       hosts:
         - registration-api.{{ getenv "INGRESS_HOST" }}
@@ -51,6 +17,29 @@ spec:
     plugins:
       - name: cors
         enable: true
+{{- if eq (getenv "RESOURCE_REGISTRATION_ENABLE_OIDC") "yes" }}
+      # Authn - expect JWT in `Authorization: Bearer` header
+      - name: openid-connect
+        enable: true
+        config:
+          client_id: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}"
+          client_secret: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" }}"
+          discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/openid-configuration"
+          realm: eoepca
+          use_jwks: true
+          bearer_only: false # as we want to redirect to login screen (default: false)
+          set_access_token_header: true  # (default: true)
+          access_token_in_authorization_header: true  # (default: false)
+      # Authz
+      - name: authz-keycloak
+        enable: true
+        config:
+          client_id: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}"
+          client_secret: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" }}"
+          discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/uma2-configuration"
+          lazy_load_paths: true
+          ssl_verify: false
+{{- end }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -59,7 +48,6 @@ metadata:
   namespace: resource-registration
 spec:
   dnsNames:
-    - registration-api-protected.{{ getenv "INGRESS_HOST" }}
     - registration-api.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     kind: ClusterIssuer
@@ -77,7 +65,6 @@ metadata:
   namespace: resource-registration
 spec:
   hosts:
-    - registration-api-protected.{{ getenv "INGRESS_HOST" }}
     - registration-api.{{ getenv "INGRESS_HOST" }}
   secret:
     name: registration-api-tls

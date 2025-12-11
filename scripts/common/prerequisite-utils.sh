@@ -149,6 +149,17 @@ function check_apisix_ingress_installed() {
     fi
 }
 
+function check_crossplane_installed() {
+    if kubectl get deployments -A --no-headers | awk '{print $2}' | grep -q '^crossplane$'; then
+        echo "✅ Crossplane is installed."
+        return 0
+    else
+        echo "⚠️  Crossplane is not installed in the cluster."
+        echo "   Please install Crossplane: https://eoepca.readthedocs.io/projects/deploy/en/latest/prerequisites/crossplane/"
+        return 1
+    fi
+}
+
 function check_keycloak_accessible() {
     local KEYCLOAK_URL="$1"
     if curl -s -o /dev/null -w "%{http_code}" $HTTP_SCHEME://"$KEYCLOAK_URL" | grep -qE "200"; then
@@ -239,11 +250,60 @@ function check_rwx_storage() {
     if [ -z "$SHARED_STORAGECLASS" ]; then
         ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for SHARED data (ReadWriteMany)" "standard" is_non_empty
     fi
+    
     if ! kubectl get sc "${SHARED_STORAGECLASS}" &>/dev/null; then
         echo "❌ Storage Class (RWX) '${SHARED_STORAGECLASS}' not found."
         return 1
     fi
-    echo "✅ Storage Class (RWX) '${SHARED_STORAGECLASS}' is ready."
+    
+    # Check if the storage class supports ReadWriteMany access mode
+    local access_modes
+    access_modes=$(kubectl get sc "${SHARED_STORAGECLASS}" -o jsonpath='{.allowVolumeExpansion}' 2>/dev/null)
+    
+    # Create a test PVC to verify RWX support
+    local test_pvc_name="rwx-test-pvc-$(date +%s)"
+    local test_manifest="/tmp/${test_pvc_name}.yaml"
+    
+    cat > "${test_manifest}" << EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${test_pvc_name}
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ${SHARED_STORAGECLASS}
+EOF
+
+    if kubectl apply -f "${test_manifest}" &>/dev/null; then
+        # Wait a moment and check if PVC is bound or pending (not failed)
+        sleep 7
+        local pvc_status
+        pvc_status=$(kubectl get pvc "${test_pvc_name}" -o jsonpath='{.status.phase}' 2>/dev/null)
+        
+        # Cleanup test PVC
+        kubectl delete -f "${test_manifest}" &>/dev/null
+        rm -f "${test_manifest}"
+
+        
+        if [[ "$pvc_status" == "Bound" || "$pvc_status" == "Pending" ]]; then
+            echo "✅ Storage Class (RWX) '${SHARED_STORAGECLASS}' supports ReadWriteMany access mode."
+            return 0
+        else
+            echo "❌ Storage Class '${SHARED_STORAGECLASS}' does not support ReadWriteMany access mode."
+            echo "   PVC test failed with status: ${pvc_status}"
+            return 1
+        fi
+    else
+        rm -f "${test_manifest}"
+        echo "❌ Failed to create test PVC for storage class '${SHARED_STORAGECLASS}'."
+        echo "   This may indicate the storage class doesn't support ReadWriteMany."
+        return 1
+    fi
 }
 
 function run_validation() {

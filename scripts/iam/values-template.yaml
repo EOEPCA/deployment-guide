@@ -95,36 +95,13 @@ iam: &iam
     paths:
       - /*
     # Client credentials:
-    # clientId is mandatory if clientSecretRef is *not* specified.
-    clientId: {{ getenv "OPA_CLIENT_ID" }}
-    clientSecret: {{ getenv "OPA_CLIENT_SECRET" }}
-    #clientSecret:
-    # clientSecretRef: Name of an existing secret that contains the client secret and maybe further values like the client ID
-    #clientSecretRef: opa-route
+    clientSecretRef: opa-keycloak-client
   identityApi:
     # Note: The use of Identity API in conjunction with the IAM BB is deprecated.
     # Installing Identity API as part of the IAM BB is still supported, but neither
     # well-tested nor fully automated. Additional manual Keycloak configuration may
     # thus be required.
-    enabled: &identityApiEnabled true
-    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
-    createRoute: true
-    {{- else }}
-    createRoute: false
-    {{- end }}
-    url: {{ getenv "HTTP_SCHEME" }}://identity-api.{{ getenv "INGRESS_HOST" }}
-    hosts:
-      - identity-api.{{ getenv "INGRESS_HOST" }}
-    paths:
-      - /*
-    docsPath: /docs/*
-    # Client credentials:
-    # clientId is mandatory if clientSecretRef is *not* specified.
-    clientId: {{ getenv "IDENTITY_API_CLIENT_ID" }}
-    clientSecret: {{ getenv "IDENTITY_API_CLIENT_SECRET" }}
-    #clientSecret:
-    # clientSecretRef: Name of an existing secret that contains the client secret and maybe further values
-    #clientSecretRef: identity-api-route
+    enabled: &identityApiEnabled false
   apisix:
     enabled: &apisixEnabled false
   config:
@@ -536,24 +513,3 @@ identity-service:
     enabled: false
   identity-api:
     enabled: *identityApiEnabled
-    secrets: {}
-      # Values for secret 'identity-api'
-      # Note - if omitted, these can instead be set by creating the secret independently
-      # e.g. as a SealedSecret via GitOps.
-      #adminPassword: *adminPwd
-    deployment:
-      # Config values that can be passed via env vars
-      extraEnv:
-        - name: AUTH_SERVER_URL  # see configMap.authServerUrl instead
-          value: "http://iam-keycloak.iam.svc.cluster.local"
-        - name: ADMIN_USERNAME
-          # Use dedicated identity-api user
-          value: *adminUser
-        - name: ADMIN_PASSWORD
-          value: {{ getenv "KEYCLOAK_ADMIN_PASSWORD" }}
-        - name: REALM
-          value: {{ getenv "REALM" }}
-        # - name: VERSION
-        #   value: v1.0.0
-        - name: LOG_LEVEL
-          value: DEBUG

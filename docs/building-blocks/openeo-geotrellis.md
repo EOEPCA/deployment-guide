@@ -82,8 +82,11 @@ Deploy Apache ZooKeeper, which is required for internal coordination:
 helm upgrade -i openeo-geotrellis-zookeeper \
     https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz \
     --namespace openeo-geotrellis \
-    --create-namespace \
-    --values zookeeper/generated-values.yaml
+    --values zookeeper/generated-values.yaml \
+    --set image.registry=docker.io \
+    --set image.repository=bitnamilegacy/zookeeper \
+    --set image.tag=3.8.1-debian-11-r18 \
+    --wait --timeout 5m
 ```
 
 For full configuration details, see the [values.yaml](https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml).
@@ -97,7 +100,7 @@ Provides an API that simplifies connecting to EO cloud back-ends, running on Apa
 ```bash
 helm upgrade -i openeo-geotrellis-openeo sparkapplication \
     --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 0.16.3 \
+    --version 1.0.2 \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values openeo-geotrellis/generated-values.yaml
@@ -237,8 +240,9 @@ curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
 _Expected output:_ A JSON object with an array of processes. Use your terminal's scroll or `jq` to inspect the output.
 
 ---
+## Usage
 
-### 4. Usage - openEO Web Editor
+### openEO Web Editor
 
 The deployment can be tested using the openEO Web Editor as a client.
 
@@ -246,10 +250,10 @@ The deployment can be tested using the openEO Web Editor as a client.
 xdg-open https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.2/
 ```
 
-**Alternatively**
+**Alternatively:**
 
 * Open the [openEO Web Editor](https://editor.openeo.org/)
-* Enter the `URL` of the server - `https://openeo.${INGRESS_HOST}` - e.g. `https://openeo.myplatform.mydomain`
+* Enter the `URL` of the server - `https://openeo.${INGRESS_HOST}` (e.g. `https://openeo.myplatform.mydomain`)
 * Select `Connect`
 
 **Login to service**
@@ -257,34 +261,28 @@ xdg-open https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/
 If OIDC authentication is enabled:
 * Select `EOEPCA`
 * Select `Log in with EOEPCA`  
-  This should redirect to authenticate via the IAM BB Keycloak instance
+  This redirects to authenticate via the IAM BB Keycloak instance
 * Authenticate as a user - such as `eoepcauser`
-
-If basic authentication is configured
-* Use the basic authentication credentials configured in your deployment
-* The system will handle authentication without requiring external identity providers
 
 **openEO Web Editor**
 
-Successful login should redirect to the `Welcome` page of the openEO Web Editor.
+Successful login redirects to the `Welcome` page of the openEO Web Editor.
 
-The web editor can be used to explore the capabilities of the openEO instance.
-
-For example, use the `Wizard` to download some data from the default collection.
+The web editor can be used to explore the capabilities of the openEO instance. For example, use the `Wizard` to download data from the default collection.
 
 ---
 
-### 5. Usage - openEO API calls
+### openEO API Calls
 
 The authentication method depends on whether you enabled OIDC during configuration.
 
 #### Get an Access Token (OIDC Authentication)
 
-> **Note:** This section applies only if you enabled OIDC authentication. For basic authentication deployments, you can skip directly to submitting jobs using basic auth headers.
+> **Note:** This section applies only if you enabled OIDC authentication. For basic authentication deployments, skip directly to submitting jobs using basic auth headers.
 
 This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`).  
 If needed, run the `create-user.sh` script to create a test user:
-```
+```bash
 bash ../../utils/create-user.sh
 ```
 
@@ -309,23 +307,23 @@ echo "Access token: ${ACCESS_TOKEN}"
 AUTH_TOKEN="oidc/eoepca/${ACCESS_TOKEN}"
 ```
 
-If the Access Token is empty, please make sure that the Keycloak client and user are correctly set up.
+If the Access Token is empty, ensure that the Keycloak client and user are correctly set up.
 
-We need to format the token as `oidc/eoepca/${ACCESS_TOKEN}` to comply with the `oidc_providers` variable seen in the Helm values.
+We format the token as `oidc/eoepca/${ACCESS_TOKEN}` to comply with the `oidc_providers` variable in the Helm values.
 
 #### Get an Access Token (Basic Authentication)
 
-```
+> Skip this section if you enabled OIDC authentication.
+
+```bash
 export BASIC_AUTH=$(echo -n "testuser:testuser123" | base64)
 AUTH_TOKEN="basic/openeo/${BASIC_AUTH}"
 ```
 
-
 #### Submit a Job Using the "sum" Process
 
-Submit a job that adds 5 and 6.5 by sending a process graph to the `/jobs` endpoint.
+Submit a job that adds 5 and 6.5 by sending a process graph to the `/result` endpoint.
 
-For OIDC authentication:
 ```bash
 curl -X POST "https://openeo.${INGRESS_HOST}/openeo/1.2/result" \
   -H "Content-Type: application/json" \
@@ -345,29 +343,210 @@ curl -X POST "https://openeo.${INGRESS_HOST}/openeo/1.2/result" \
       }'
 ```
 
-
 **Expected output:**  
-A simple numeric result:
-
 ```json
 11.5
 ```
 
 This confirms that the "sum" process is operational and returning the correct computed sum.
 
-#### Experiment with Other Processes
+#### Explore Available Processes
 
-To see more available processes you can run, navigate to:
+To see available processes, navigate to:
 
-```url
-https://openeo.${INGRESS_HOST}/openeo/1.2/processes
+```bash
+curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
 ```
 
-You should see a JSON object with an array of processes. Each with example usage and descriptions. Follow the same process as above to submit a job using any of these processes.
+You'll see a JSON object with an array of processes, each with example usage and descriptions. Follow the same process as above to submit jobs using any of these processes.
 
-Your Access Token will eventually expire (if using OIDC). If you receive a 401 error, you'll need to obtain a new token by running the `Get an Access Token` section again.
+Your Access Token will eventually expire (if using OIDC). If you receive a 401 error, obtain a new token by running the `Get an Access Token` section again.
 
 ---
+
+### openEO Python Client
+
+The Python client provides a more comprehensive interface for working with openEO services.
+
+#### Install Dependencies
+
+Create a virtual environment and install required packages:
+
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install -y python3.12 python3.12-venv
+python3.12 -m venv venv
+source venv/bin/activate
+pip install openeo xarray netCDF4 h5netcdf
+
+export OPENEO_URL="https://openeo.${INGRESS_HOST}"
+```
+
+#### Connect and Authenticate
+
+Start a Python session and establish connection:
+
+```
+python
+```
+
+And then run:
+
+```python
+import openeo
+import json
+import os
+import xarray
+
+# Connect to openEO service
+openeo_url = os.environ.get('OPENEO_URL', 'https://openeo.${INGRESS_HOST}')
+connection = openeo.connect(openeo_url)
+
+connection.authenticate_oidc()
+
+# Authenticate (basic auth example - adjust for OIDC if enabled)
+# connection.authenticate_basic("testuser", "testuser123")
+
+# Or for OIDC:
+
+# Define parameters for data access
+collection_id = "TestCollection-LonLat16x16"
+temporal_extent = "2024-09"
+spatial_extent = {"west": 3, "south": 51, "east": 5, "north": 53}
+```
+
+#### Service Discovery
+
+Quickly explore available collections and processes:
+
+```python
+print(f"Collections: {connection.list_collection_ids()}")
+print(f"Process count: {len(connection.list_processes())}")
+```
+
+#### Execute Simple Processes
+
+Test basic arithmetic operations:
+
+```python
+result = connection.execute({
+    "add": {
+        "process_id": "add",
+        "arguments": {"x": 3, "y": 5},
+        "result": True,
+    }
+})
+print(f"3 + 5 = {result}")
+```
+
+#### Load and Download Data
+
+Retrieve data from collections and save locally:
+
+```python
+cube_original = connection.load_collection(
+    collection_id=collection_id,
+    temporal_extent=temporal_extent,
+    spatial_extent=spatial_extent,
+    bands=["Longitude", "Latitude", "Day"],
+)
+cube_original.download("original.nc")
+
+# Inspect downloaded data
+ds = xarray.load_dataset("original.nc")
+print(ds)
+```
+
+#### Build Complex Processing Chains
+
+Construct multi-step processing workflows:
+
+```python
+# Load collection with specific temporal range
+cube_processed = connection.load_collection(
+    collection_id=collection_id,
+    temporal_extent=["2024-09-01", "2024-09-30"],
+    spatial_extent=spatial_extent
+)
+
+# Apply processing steps
+cube_processed = cube_processed.filter_temporal(["2024-09-10", "2024-09-20"])
+cube_processed = cube_processed.reduce_dimension(dimension="t", reducer="max")
+cube_processed = cube_processed.apply(lambda x: x * 100)
+
+# Export process graph
+graph = json.loads(cube_processed.to_json())
+print(f"Processing chain: {' → '.join(graph['process_graph'].keys())}")
+
+# Validate and save
+connection.validate_process_graph(graph)
+with open("workflow.json", "w") as f:
+    json.dump(graph, f, indent=2)
+print("✓ Graph validated and saved")
+```
+
+#### Band Mathematics and Normalisation
+
+Perform calculations across multiple bands, such as computing a normalised index:
+
+```python
+# Load specific bands
+cube_bands = connection.load_collection(
+    collection_id=collection_id,
+    temporal_extent="2024-09",
+    spatial_extent=spatial_extent,
+    bands=["Longitude", "Latitude"]
+)
+
+# Calculate normalised difference: (Longitude - Latitude) / (Longitude + Latitude)
+lon = cube_bands.band("Longitude")
+lat = cube_bands.band("Latitude")
+normalised_diff = (lon - lat) / (lon + lat)
+
+# Save results
+cube_bands.download("bands.nc")
+normalised_diff.download("normalised.nc")
+
+# Export processing graph
+nd_graph = json.loads(normalised_diff.to_json())
+with open("normalised_workflow.json", "w") as f:
+    json.dump(nd_graph, f, indent=2)
+```
+
+#### Verify Calculations
+
+Validate that band mathematics produced expected results:
+
+```python
+ds_bands = xarray.load_dataset("bands.nc")
+ds_norm = xarray.load_dataset("normalised.nc")
+
+# Sample first pixel values
+lon_val = ds_bands.Longitude.values[0, 0, 0]
+lat_val = ds_bands.Latitude.values[0, 0, 0]
+expected = (lon_val - lat_val) / (lon_val + lat_val)
+actual = ds_norm['var'].values[0, 0, 0]
+
+print(f"Longitude: {lon_val:.2f}, Latitude: {lat_val:.2f}")
+print(f"Expected normalised value: {expected:.4f}, Actual: {actual:.4f}")
+print(f"✓ Calculation correct" if abs(expected - actual) < 0.001 else "✗ Mismatch")
+```
+
+#### Clean Up
+
+Exit Python and deactivate the virtual environment:
+
+```python
+exit()
+```
+
+```bash
+ls -lh *.nc *.json
+deactivate
+```
+
+The downloaded files contain the processed data cubes and workflow definitions that can be reused or shared with other openEO deployments.
 
 ## Further Reading & Official Docs
 

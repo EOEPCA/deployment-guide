@@ -12,6 +12,7 @@ spec:
         paths:
           - "/metrics*"
           - "/probe*"
+          - "/ui*"
       backends:
         - serviceName: workspace-api
           servicePort: 8080
@@ -25,19 +26,20 @@ spec:
       backends:
         - serviceName: workspace-api
           servicePort: 8080
+{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
       plugins:
         - name: openid-connect
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            use_jwks: true
+            bearer_only: false
+            set_access_token_header: false
+            access_token_in_authorization_header: false
             set_id_token_header: true
             set_userinfo_header: true
-            # Following settings to enable support for both interactive and API access
-            use_jwks: true                              # (default: false)
-            bearer_only: false                          # (default: false)
-            set_access_token_header: true               # (default: true)
-            access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
+          secretRef: workspace-api-keycloak-client
+{{- end }}
     - name: workspace-api-docs
       match:
         hosts:
@@ -48,52 +50,16 @@ spec:
       backends:
         - serviceName: workspace-api
           servicePort: 8080
+{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
       plugins:
         - name: openid-connect
           enable: true
           config:
+            access_token_in_authorization_header: true
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            # Following settings to enable support for both interactive and API access
-            use_jwks: true                              # (default: false)
-            bearer_only: false                          # (default: false)
-            set_access_token_header: true               # (default: true)
-            access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
-    - name: workspace-api-admin
-      match:  
-        hosts:
-          - workspace-api.{{ getenv "INGRESS_HOST" }}
-        paths:
-          - /workspaces
-          - /workspaces/*
-        methods:
-          - POST
-          - DELETE
-      backends:
-        - serviceName: workspace-api
-          servicePort: 8080
-      plugins:
-        # Authenticate - expect JWT in `Authorization: Bearer` header
-        - name: openid-connect
-          enable: true
-          config:
-            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            realm: eoepca
-            # Following settings to enable support for both interactive and API access
-            use_jwks: true                              # (default: false)
-            bearer_only: false                          # (default: false)
-            set_access_token_header: true               # (default: true)
-            access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
-        # Authorization - required for access to API
-        - name: authz-keycloak
-          enable: true
-          config:
-            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
-            lazy_load_paths: true
-            ssl_verify: false
-          secretRef: workspace-api
-    - name: workspace-api-user
+          secretRef: workspace-api-keycloak-client
+{{- end }}
+    - name: workspace-api-auth
       match:
         hosts:
           - workspace-api.{{ getenv "INGRESS_HOST" }}
@@ -102,24 +68,25 @@ spec:
       backends:
         - serviceName: workspace-api
           servicePort: 8080
+{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
       plugins:
         - name: openid-connect
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            use_jwks: true
+            bearer_only: false
+            set_access_token_header: true
+            access_token_in_authorization_header: true
             set_id_token_header: false
             set_userinfo_header: false
-            # Following settings to enable support for both interactive and API access
-            use_jwks: true                              # (default: false)
-            bearer_only: false                          # (default: false)
-            set_access_token_header: true               # (default: true)
-            access_token_in_authorization_header: true  # (default: false)
-          secretRef: workspace-api
+          secretRef: workspace-api-keycloak-client
         - name: opa
           enable: true
           config:
             host: http://iam-opal-client.iam:8181
             policy: eoepca/workspace/wsapi
+{{- end }}
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: cert-manager.io/v1

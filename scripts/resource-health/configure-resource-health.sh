@@ -10,8 +10,10 @@ ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTE
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 configure_cert
 
-# APISIX-specific templating
-if [ "$INGRESS_CLASS" == "apisix" ]; then
+# Ask about OIDC authentication
+ask "RESOURCE_HEALTH_ENABLE_OIDC" "Enable OIDC protection for Resource Health? (yes/no)" "yes" is_yes_no
+
+if [[ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]]; then
     ask "RESOURCE_HEALTH_CLIENT_ID" "Enter the Resource Health Keycloak Client ID" "resource-health" is_non_empty
 
     if [ -z "$RESOURCE_HEALTH_CLIENT_SECRET" ]; then
@@ -38,7 +40,10 @@ if [ "$INGRESS_CLASS" == "apisix" ]; then
     if [ -z "$KEYCLOAK_TEST_PASSWORD" ]; then
         ask "KEYCLOAK_TEST_PASSWORD" "Enter your Keycloak test user password" "" is_non_empty
     fi
+fi
 
+# APISIX-specific templating
+if [ "$INGRESS_CLASS" == "apisix" ]; then
     gomplate -f "apisix/apisix-ingress-template.yaml" -o "$INGRESS_OUTPUT_PATH"
     gomplate -f "apisix/apisix-route-browser-auth-plugin-template.yaml" -o "apisix/plugin-browser-auth.yaml"
     gomplate -f "apisix/apisix-route-plugin-template.yaml" -o "apisix/plugin-api-auth.yaml"

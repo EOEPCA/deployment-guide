@@ -9,7 +9,6 @@ declare -a checks=(
     "check_kubectl_installed"
     "check_helm_installed"
     "check_git_installed"
-    "check_helm_git_plugin_installed"
     "check_cert_manager_installed"
     "check_ingress_controller_installed"
     "check_internal_certificates"

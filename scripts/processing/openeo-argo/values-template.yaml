@@ -1,0 +1,75 @@
+global:
+  env:
+    alembicDir: "/opt/openeo_argoworkflows_api/psql"
+    apiDns: "openeo.{{ getenv "INGRESS_HOST" }}"
+    apiTLS: {{ if eq (getenv "HTTP_SCHEME") "https" }}true{{ else }}false{{ end }}
+    apiTitle: "OpenEO ArgoWorkflows"
+    apiDescription: "OpenEO API implementation using Dask for distributed processing"
+    {{- if eq (getenv "OPENEO_ARGO_ENABLE_OIDC") "yes" }}
+    oidcUrl: "{{ getenv "OIDC_ISSUER_URL" }}"
+    oidcOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
+    oidcPolicies: "{{ getenv "OIDC_POLICIES" }}"
+    {{- else }}
+    oidcUrl: "http://dummy-oidc.local/realms/eoepca"
+    oidcOrganisation: "eoepca"
+    oidcPolicies: ""
+    {{- end }}
+    stacCatalogueUrl: "{{ getenv "STAC_CATALOG_ENDPOINT" }}"
+    workspaceRoot: "/user_workspaces"
+    executorImage: "ghcr.io/eodcgmbh/openeo-argoworkflows:executor-2025.5.1"
+    daskWorkerCores: "4"
+    daskWorkerMemory: "8"
+    daskWorkerLimit: "6"
+    daskClusterTimeout: "3600"
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/eodcgmbh/openeo-argoworkflows
+  pullPolicy: IfNotPresent
+  tag: "api-2025.5.1"
+
+postgresql:
+  enabled: true
+  image:
+    repository: bitnamilegacy/postgresql
+  auth:
+    username: "postgres"
+    password: "changeme"
+    database: "openeo"
+  persistence:
+    storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
+    size: "4Gi"
+
+redis:
+  enabled: true
+  image:
+    repository: bitnamilegacy/redis
+  auth:
+    enabled: false
+  persistence:
+    storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
+    size: "8Gi"
+  replica:
+    replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80

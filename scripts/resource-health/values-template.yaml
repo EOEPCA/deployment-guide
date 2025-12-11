@@ -6,6 +6,14 @@ opensearch:
   persistence:
     enabled: true
     storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "no" }}
+  singleNode: true
+  replicas: 1
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "200m"
+{{- end }}
   securityConfig:
     config:
       data:
@@ -16,7 +24,11 @@ opensearch:
 
           all_access:
             backend_roles:
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
               - "opensearch_user"
+{{- else }}
+              - "admin"
+{{- end }}
               - "all_access"
         config.yml: |-
           _meta:
@@ -26,7 +38,11 @@ opensearch:
           config:
             dynamic:
               kibana:
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                 multitenancy_enabled: true
+{{- else }}
+                multitenancy_enabled: false
+{{- end }}
                 server_username: 'dashboards-client'
                 index: '.opensearch-dashboards'
               do_not_fail_on_forbidden: false
@@ -38,7 +54,11 @@ opensearch:
                   description: "Authenticate via HTTP Basic against internal users database"
                   http_enabled: true
                   transport_enabled: true
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                   order: 2
+{{- else }}
+                  order: 1
+{{- end }}
                   http_authenticator:
                     type: basic
                     challenge: true
@@ -48,7 +68,11 @@ opensearch:
                   description: "Authenticate via SSL client certificates"
                   http_enabled: true
                   transport_enabled: false
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                   order: 1
+{{- else }}
+                  order: 2
+{{- end }}
                   http_authenticator:
                     type: clientcert
                     config:
@@ -56,6 +80,7 @@ opensearch:
                     challenge: false
                   authentication_backend:
                     type: noop
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                 openid_auth_domain:
                   http_enabled: true
                   transport_enabled: true
@@ -66,10 +91,10 @@ opensearch:
                     config:
                       subject_key: preferred_username
                       roles_key: roles
-                      # jwt_header: X-Access-Token
                       openid_connect_url: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
                   authentication_backend:
                     type: noop
+{{- end }}
 
 opensearch-dashboards:
   config:
@@ -79,14 +104,15 @@ opensearch-dashboards:
         ssl:
           enabled: false
       opensearch:
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
         requestHeadersAllowlist: [ authorization,securitytenant,x-access-token,x-id-token,x-userinfo,x-refresh-token ]
       opensearch_security:
         auth:
-          #type: "basicauth"
           type: "jwt"
-          #multiple_auth_enabled: true
+{{- else }}
+        requestHeadersAllowlist: [ authorization,securitytenant ]
+{{- end }}
 
-## Example health checks to deploy with the resource health BB itself
 resource-health:
   telemetry_api:
     image:
@@ -95,10 +121,12 @@ resource-health:
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/telemetry"
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       - name: OPEN_ID_CONNECT_URL
         value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
       - name: OPEN_ID_CONNECT_AUDIENCE
         value: "account"
+{{- end }}
       - name: RH_TELEMETRY_API_DEFAULT_PAGE_SIZE
         value: "100"
       - name: RH_TELEMETRY_API_MAX_PAGE_SIZE
@@ -106,6 +134,7 @@ resource-health:
 
     use_hook_configmap: True
     hooks:
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       oidc_auth_hooks.py: |
         from fastapi import Request
         import python_opentelemetry_access.telemetry_hooks.utils as hu
@@ -126,7 +155,7 @@ resource-health:
             refresh_token_header="x-refresh-token",
             auth_token_header="Authorization",
             auth_token_in_authorization=True,
-            auto_error=True,  ## Set False to allow unauthenticated access!
+            auto_error=True,
             scheme_name="OIDC behind auth proxy",
         )
 
@@ -154,41 +183,63 @@ resource-health:
             )
 
 
-        ## For the OpenSearch proxy/backend
-
-
         def get_opensearch_config(userinfo: UserInfo) -> hu.OpensearchConfig:
             return hu.OpensearchConfig(
-                ## Host to connect to
-                # hosts=[{"host": "localhost", "port": 9200}],
                 hosts=[{"host": "opensearch-cluster-master-headless", "port": 9200}],
                 use_ssl=True,
-                ## For unverified tls
-                # verify_certs=False,
-                # ssl_show_warn=False,
-                ## For verified tls
                 verify_certs=True,
                 ssl_show_warn=True,
                 ca_certs="/certs/ca.crt",
-                ## For mTLS auth
-                # client_cert = "/certs/tls.crt"
-                # client_key = "/certs/tls.key"
-                # Authenticate by forwarding user token
                 extra_headers={"Authorization": f"Bearer {userinfo['access_token']}"},
+            )
+{{- else }}
+      noauth_hooks.py: |
+        from fastapi import Request
+        import python_opentelemetry_access.telemetry_hooks.utils as hu
+        from typing import TypedDict
 
+
+        class UserInfo(TypedDict):
+            username: str | None
+
+
+        async def get_fastapi_security(request: Request) -> None:
+            """No authentication required - return None."""
+            return None
+
+
+        def on_auth(tokens: None) -> UserInfo:
+            """Return a default demo user for unauthenticated access."""
+            return UserInfo(username="demo-user")
+
+
+        def get_opensearch_config(userinfo: UserInfo) -> hu.OpensearchConfig:
+            """Configure OpenSearch connection with basic auth."""
+            return hu.OpensearchConfig(
+                hosts=[{"host": "opensearch-cluster-master-headless", "port": 9200}],
+                use_ssl=True,
+                verify_certs=True,
+                ssl_show_warn=True,
+                ca_certs="/certs/ca.crt",
+                http_auth=("admin", "admin"),
+            )
+{{- end }}
 
   check_api:
     replicaCount: 1
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       - name: OPEN_ID_CONNECT_URL
         value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
       - name: OPEN_ID_CONNECT_AUDIENCE
         value: "account"
+{{- end }}
 
     use_hook_configmap: True
     hooks:
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       disallow_frequent_check_hooks.py: |
         from datetime import datetime, timedelta
         from typing import TYPE_CHECKING, Any
@@ -196,8 +247,6 @@ resource-health:
 
         import check_hooks.hook_utils as hu
 
-        # The hooks are loaded one file at a time, so importing things from one file to another will not work.
-        # This trick ensures that UserInfo is imported only for type checking - and it can only be used for that
         if TYPE_CHECKING:
             from auth_hooks import UserInfo
         else:
@@ -215,13 +264,9 @@ resource-health:
                 )
 
 
-        # This is not a hook
         def raise_error_if_schedule_too_frequent(
             cron_schedule: str, min_allowed_days_between_runs: int, error_detail: str
         ) -> None:
-            # For now we don't know if the cron_schedule is valid
-            # We need to raise something derived from APIException as otherwise user will see
-            # "500 Internal Server Error"
             try:
                 cron_instance = Cron(cron_schedule)
             except ValueError:
@@ -231,23 +276,17 @@ resource-health:
             error = hu.APIUserInputError(title="Schedule Too Frequent", detail=error_detail)
             [minutes, hours, days, months, weekdays] = cron_instance.to_list()
             if len(minutes) > 1:
-                # Means this will sometimes run at twice or more in one hour, which is too frequent
                 raise error
             if len(hours) > 1:
-                # Means this will sometimes run at twice or more in one day, which is too frequent
                 raise error
             start_date = datetime.now()
             schedule = cron_instance.schedule(start_date)
             prev_date = schedule.next()
-            # At this point we know that the schedule is not more frequence than once per day
-            # This just creates schedules for next year (or more) and checks if any two consecutive
-            # schedules have enough of a gap between them
             for i in range(365):
                 date = schedule.next()
                 if date - prev_date < timedelta(days=min_allowed_days_between_runs):
                     raise error
                 if date - start_date > timedelta(days=365):
-                    # Haven't found too frequent scheduled times in a year from now, that's enough
                     return
                 prev_date = date
       oidc_auth_hooks.py: |
@@ -273,7 +312,7 @@ resource-health:
             refresh_token_header="x-refresh-token",
             auth_token_header="Authorization",
             auth_token_in_authorization=True,
-            auto_error=True,  ## Set False to allow unauthenticated access!
+            auto_error=True,
             scheme_name="OIDC behind auth proxy",
         )
 
@@ -285,7 +324,7 @@ resource-health:
         def on_auth(tokens: Tokens | None) -> UserInfo:
             print("ON AUTH")
 
-            if tokens is None or tokens["auth"] is None:  # or tokens['id'] is None:
+            if tokens is None or tokens["auth"] is None:
                 hu.APIForbiddenError(
                     title="Missing authentication or ID token",
                     detail="Potentially missing authenticating proxy",
@@ -320,11 +359,9 @@ resource-health:
         def on_template_access(userinfo: UserInfo, template: hu.CheckTemplate) -> None:
             print("ON TEMPLATE_ACCESS")
 
-            ## Only bob can use/access unsafe templates
             if userinfo["username"] != "bob" and template.id != "simple_ping":
                 return hu.CheckTemplateIdError(template.id)
 
-            ## Only bob, alice, and eric can access the templates
             if userinfo["username"] not in ["bob", "alice", "eric"]:
                 raise hu.CheckTemplateIdError(template.id)
 
@@ -336,8 +373,6 @@ resource-health:
                     detail="You are not authorized to create this check",
                 )
 
-
-        ## For the k8s backend
 
         async def get_k8s_config(userinfo: UserInfo) -> hu.K8sConfiguration:
             return await hu.k8s_config_from_cluster()
@@ -362,8 +397,6 @@ resource-health:
         async def on_k8s_cronjob_create(
             userinfo: UserInfo, client: hu.K8sClient, cronjob: hu.K8sCronJob
         ) -> None:
-            ## Ensure cronjob is tagged with correct owner
-
             if (
                 "owner" in cronjob.metadata.annotations
                 and cronjob.metadata.annotations["owner"] != userinfo["username"]
@@ -375,8 +408,6 @@ resource-health:
 
             cronjob.metadata.annotations["owner"] = userinfo["username"]
 
-            ## Ensure the user has an offline token set
-            ## Note: Would be more robust to check on every access but use a cache
             secret_name = f"resource-health-{userinfo['username']}-offline-secret"
             secret_namespace = get_k8s_namespace(userinfo)
 
@@ -402,6 +433,68 @@ resource-health:
                         "offline_token": userinfo['refresh_token']
                     }
                 )
+{{- else }}
+      noauth_hooks.py: |
+        import check_hooks.hook_utils as hu
+        from typing import TypedDict
+        from fastapi import Request
+
+
+        class UserInfo(TypedDict):
+            userid: str
+            username: str
+
+
+        async def get_fastapi_security(request: Request) -> None:
+            """No authentication required - return None."""
+            return None
+
+
+        def on_auth(tokens: None) -> UserInfo:
+            """Return a default demo user for unauthenticated access."""
+            return UserInfo(
+                userid="demo-user-id",
+                username="demo-user",
+            )
+
+
+        def on_template_access(userinfo: UserInfo, template: hu.CheckTemplate) -> None:
+            """Allow access to all templates."""
+            pass
+
+
+        def on_check_create(userinfo: UserInfo, check: hu.InCheckAttributes) -> None:
+            """Allow creation of all checks."""
+            pass
+
+
+        async def get_k8s_config(userinfo: UserInfo) -> hu.K8sConfiguration:
+            """Get Kubernetes configuration from within the cluster."""
+            return await hu.k8s_config_from_cluster()
+
+
+        def get_k8s_namespace(userinfo: UserInfo) -> str:
+            """Return the namespace for health check resources."""
+            return "resource-health"
+
+
+        async def on_k8s_cronjob_access(
+            userinfo: UserInfo,
+            check_id: hu.CheckId,
+            client: hu.K8sClient,
+            cronjob: hu.K8sCronJob,
+        ) -> None:
+            """Allow access to all cronjobs."""
+            pass
+
+
+        async def on_k8s_cronjob_create(
+            userinfo: UserInfo, client: hu.K8sClient, cronjob: hu.K8sCronJob
+        ) -> None:
+            """Tag cronjob with owner on creation."""
+            cronjob.metadata.annotations["owner"] = userinfo["username"]
+{{- end }}
+
   web:
     replicaCount: 1
     environmentFixed:
@@ -410,9 +503,10 @@ resource-health:
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
         value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/v1
       - name: NEXT_PUBLIC_RELOGIN_URL
-        value: https://resource-health.develop.eoepca.org/login
+        value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/
       - name: NEXT_PUBLIC_QUERY_PAGE_SIZE
         value: "1000"
+
   healthchecks:
     use_template_configmap: True
     templates:
@@ -474,6 +568,7 @@ resource-health:
             user_id=lambda template_args, userinfo: userinfo["username"],
             otlp_tls_secret="resource-health-healthchecks-certificate",
         )
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
 
       telemetry_access.py: |
         import check_backends.k8s_backend.template_utils as tu
@@ -507,3 +602,4 @@ resource-health:
             ),
             proxy_oidc_url=os.environ.get("OPEN_ID_CONNECT_URL"),
         )
+{{- end }}
