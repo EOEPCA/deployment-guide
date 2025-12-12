@@ -1383,51 +1383,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-create-a-keycloak-client" class="md-nav__link">
+  <a href="#create-a-keycloak-client" class="md-nav__link">
     <span class="md-ellipsis">
-      2.1 Create a Keycloak Client
+      Create a Keycloak Client
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-define-resource-protection-optional" class="md-nav__link">
+  <a href="#protect-the-users-processing-context" class="md-nav__link">
     <span class="md-ellipsis">
-      2.2 Define Resource Protection (Optional)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2.2 Define Resource Protection (Optional)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#protect-the-users-zoo-context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Protect the user&rsquo;s zoo context
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23-create-apisix-route-ingress" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.3 Create APISIX Route Ingress
+      Protect the user&rsquo;s processing context
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#24-confirm-protection-apisix-only" class="md-nav__link">
+  <a href="#create-apisix-route-ingress" class="md-nav__link">
     <span class="md-ellipsis">
-      2.4 Confirm Protection (APISIX Only)
+      Create APISIX Route Ingress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirm-protection-apisix-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Confirm Protection (APISIX Only)
     </span>
   </a>
   
@@ -1573,21 +1558,6 @@
       Uninstallation
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Uninstallation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#additional-cleanup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Cleanup
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2013,51 +1983,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-create-a-keycloak-client" class="md-nav__link">
+  <a href="#create-a-keycloak-client" class="md-nav__link">
     <span class="md-ellipsis">
-      2.1 Create a Keycloak Client
+      Create a Keycloak Client
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-define-resource-protection-optional" class="md-nav__link">
+  <a href="#protect-the-users-processing-context" class="md-nav__link">
     <span class="md-ellipsis">
-      2.2 Define Resource Protection (Optional)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2.2 Define Resource Protection (Optional)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#protect-the-users-zoo-context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Protect the user&rsquo;s zoo context
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#23-create-apisix-route-ingress" class="md-nav__link">
-    <span class="md-ellipsis">
-      2.3 Create APISIX Route Ingress
+      Protect the user&rsquo;s processing context
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#24-confirm-protection-apisix-only" class="md-nav__link">
+  <a href="#create-apisix-route-ingress" class="md-nav__link">
     <span class="md-ellipsis">
-      2.4 Confirm Protection (APISIX Only)
+      Create APISIX Route Ingress
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirm-protection-apisix-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Confirm Protection (APISIX Only)
     </span>
   </a>
   
@@ -2204,21 +2159,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Uninstallation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#additional-cleanup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Cleanup
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2347,6 +2287,21 @@
 </ul>
 </li>
 </ul>
+<p><strong>Workspace Integration Configuration:</strong></p>
+<p>The OAPIP engine supports two possible integrations with object storage for stage-out of processing results:</p>
+<ul>
+<li>With the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Workspace BB - in which case results are written directly to the user&rsquo;s workspace bucket.</li>
+<li>With a dedicated S3 bucket - in which case results are written to a pre-configured (shared) S3 bucket.</li>
+</ul>
+<p>Workspace integration is controlled via the following parameter:</p>
+<ul>
+<li><strong><code>USE_WORKSPACE_API</code></strong>: Whether the processing stage-out should integrate with the user&rsquo;s Workspace object storage for persistence of processing results</li>
+</ul>
+<p>Assumptions regarding integration with the Workspace BB:</p>
+<ul>
+<li>The Workspace BB has already been deployed in the cluster.</li>
+<li>The <code>username</code> of the user invoking the processing execution is used to select the appropriate workspace bucket - via the workspace following the naming convention <code>ws-&lt;username&gt;</code>. The processing engine determines the username from the JWT <code>Bearer</code> token presented in the <code>Authorization</code> header of the request. In the case that no token is presented (i.e. open service), then the username is taken from the path prefix of the request - e.g. <code>/&lt;username&gt;/ogc-api/processes/...</code>.</li>
+</ul>
 <p><strong>Stage-Out S3 Configuration:</strong></p>
 <p>Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the <a href="../../prerequisites/minio/">MinIO Deployment Guide</a>. These values should already be in your <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file if you followed the main deployment steps.</p>
 <ul>
@@ -2434,59 +2389,82 @@
 <blockquote>
 <p>Before starting this please ensure that you have followed our <a href="../iam/main-iam/">IAM Deployment Guide</a> and have a Keycloak instance running.</p>
 </blockquote>
-<h3 id="21-create-a-keycloak-client">2.1 Create a Keycloak Client<a class="headerlink" href="#21-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
-<p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>../../utils/create-client.sh
+<h3 id="create-a-keycloak-client">Create a Keycloak Client<a class="headerlink" href="#create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
+<p>A Keycloak client is required for the ingress protection of the Processing BB OAPIP Engine. The client can be created using the Crossplane Keycloak provider via the <code>Client</code> CRD.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s">kind: Secret</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s">metadata:</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s">  name: ${OAPIP_CLIENT_ID}-keycloak-client</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s">stringData:</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="s">  client_secret: ${OAPIP_CLIENT_SECRET}</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="s">---</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="s">apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="s">kind: Client</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="s">metadata:</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="s">  name: ${OAPIP_CLIENT_ID}</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="s">spec:</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="s">  forProvider:</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="s">    realmId: ${REALM}</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="s">    clientId: ${OAPIP_CLIENT_ID}</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="s">    name: Processing OAPIP Engine</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="s">    description: Processing OAPIP Engine OIDC</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="s">    enabled: true</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="s">    accessType: CONFIDENTIAL</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="s">    rootUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="s">    baseUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="s">    adminUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="s">    serviceAccountsEnabled: true</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="s">    directAccessGrantsEnabled: true</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="s">    standardFlowEnabled: true</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="s">    oauth2DeviceAuthorizationGrantEnabled: true</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="s">    useRefreshTokens: true</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="s">    authorization:</span>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="s">      - allowRemoteResourceManagement: false</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="s">        decisionStrategy: UNANIMOUS</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="s">        keepDefaults: true</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="s">        policyEnforcementMode: ENFORCING</span>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="s">    validRedirectUris:</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="s">      - &quot;/*&quot;</span>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="s">    webOrigins:</span>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="s">      - &quot;/*&quot;</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="s">    clientSecretSecretRef:</span>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="s">      name: ${OAPIP_CLIENT_ID}-keycloak-client</span>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="s">      key: client_secret</span>
+</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="s">  providerConfigRef:</span>
+</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="s">    name: provider-keycloak</span>
+</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="s">    kind: ProviderConfig</span>
+</span><span id="__span-4-47"><a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="s">EOF</span>
 </span></code></pre></div>
-<p>When prompted:</p>
-<ul>
-<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set).</li>
-<li><strong>Keycloak base domain</strong>: e.g. <code>auth.example.com</code></li>
-<li>
-<p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
-</li>
-<li>
-<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
-</li>
-<li><strong>Client ID</strong>: For the OAPIP engine, you should use <code>oapip-engine</code>.</li>
-<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g. <code>OAPIP Engine Client</code>).</li>
-<li><strong>Client secret</strong>: Enter the OAPIP Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
-<li><strong>Subdomain</strong>: Use <code>zoo</code> for the OAPIP engine. </li>
-<li><strong>Additional Subdomains</strong>: Leave blank.</li>
-<li><strong>Additional Hosts</strong>: Leave blank.</li>
-</ul>
-<p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
-<hr />
-<h3 id="22-define-resource-protection-optional">2.2 Define Resource Protection (Optional)<a class="headerlink" href="#22-define-resource-protection-optional" title="Permanent link">⚓︎</a></h3>
-<p>By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to <strong>restrict</strong> or <strong>fine-tune</strong> access to certain endpoints (like <code>/ogc-api/jobs/</code>).</p>
-<p>Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don&rsquo;t have a user, you can create one using:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bash<span class="w"> </span>../../utils/create-user.sh
-</span></code></pre></div>
-<hr />
-<h4 id="protect-the-users-zoo-context">Protect the user&rsquo;s zoo context<a class="headerlink" href="#protect-the-users-zoo-context" title="Permanent link">⚓︎</a></h4>
-<p>Zoo uses a path prefix to establish a context within the processing service - such as <code>/&lt;username&gt;</code> or <code>/&lt;project&gt;</code>.</p>
+<p>The <code>Client</code> should be created successfully.</p>
+<h3 id="protect-the-users-processing-context">Protect the user&rsquo;s processing context<a class="headerlink" href="#protect-the-users-processing-context" title="Permanent link">⚓︎</a></h3>
+<p>The OAPIP Engine is provided by the <a href="https://zoo-project.org/">ZOO-Project</a> implementation, which uses a path prefix to establish a context within the processing service - such as <code>/&lt;username&gt;</code> or <code>/&lt;project&gt;</code>.</p>
 <p>Protection can be applied so that the context is accessible only by the owning user(s).</p>
-<p>For the purposes of this example we can assume the user <code>eoepcauser</code> - adjust for your own purposes.</p>
-<ol>
-<li>Use the <code>protect-resource.sh</code>:</li>
-</ol>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>../../utils/protect-resource.sh
-</span></code></pre></div>
-<p>When prompted (adjust values for your needs):</p>
+<p>To demonstrate, we will apply protection for the <code>KEYCLOAK_TEST_USER</code> used in this guide - nominal username <code>eoepcauser</code>. See <code>IAM</code> section <a href="../iam/main-iam/#6-create-test-users">Create Test Users</a> for creation of the test users assumed by this guide.</p>
+<p>Similarly to the <code>Client</code> creation, we will use the Crossplane Keycloak provider to establish the protection using CRDs. The protection comprises:</p>
 <ul>
-<li><strong>Client ID</strong>: <code>oapip-engine</code> (the client you created in the previous step)</li>
-<li><strong>Username</strong>: e.g. <code>eoepcauser</code> </li>
-<li><strong>Display Name</strong>: <code>eoepcauser</code></li>
-<li><strong>Resource Type</strong>: <code>urn:oapip-engine:resources:default</code></li>
-<li><strong>Resource URI</strong>: <code>/eoepcauser/*</code> </li>
+<li>Create a Keycloak group <code>&lt;username&gt;-group</code></li>
+<li>Add the user (<code>eoepcauser</code>) to the group</li>
+<li>Configure the <code>oapip-engine</code> Keycloak client <code>Authorization</code>, comprising:<ul>
+<li>A <code>Resource</code> representing the user&rsquo;s processing context - i.e. <code>/&lt;username&gt;/*</code></li>
+<li>A <code>Policy</code> requiring membership of the group <code>&lt;username&gt;-group</code></li>
+<li>A <code>Permission</code> attaching the <code>Policy</code> to the <code>Resource</code> - and so completing the protection</li>
 </ul>
-<hr />
-<h3 id="23-create-apisix-route-ingress">2.3 Create APISIX Route Ingress<a class="headerlink" href="#23-create-apisix-route-ingress" title="Permanent link">⚓︎</a></h3>
-<p>If you are using APISIX Ingress controller, apply the ingress:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
 </span></code></pre></div>
-<hr />
-<h3 id="24-confirm-protection-apisix-only">2.4 Confirm Protection (APISIX Only)<a class="headerlink" href="#24-confirm-protection-apisix-only" title="Permanent link">⚓︎</a></h3>
+<p>This should indicate successful creation of the resources: <code>eoepcauser-group</code>, <code>eoepcauser-membership</code>, <code>eoepcauser-resource</code>, <code>eoepcauser-policy</code>, <code>eoepcauser-access</code>.</p>
+<h3 id="create-apisix-route-ingress">Create APISIX Route Ingress<a class="headerlink" href="#create-apisix-route-ingress" title="Permanent link">⚓︎</a></h3>
+<p>If you are using APISIX Ingress controller, apply the ingress:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span></code></pre></div>
+<h3 id="confirm-protection-apisix-only">Confirm Protection (APISIX Only)<a class="headerlink" href="#confirm-protection-apisix-only" title="Permanent link">⚓︎</a></h3>
 <blockquote>
 <p>Resource protection is only available when using the APISIX Ingress Controller.</p>
 </blockquote>
@@ -2494,15 +2472,15 @@
 <blockquote>
 <p>Wait for the ingress and associated TLS to be established before running the following.</p>
 </blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash resource-protection-validation.sh
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash resource-protection-validation.sh
 </span></code></pre></div>
-<p>If this script shows 401 Authorization errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.</p>
+<p>If this script shows <code>401 Authorization</code> errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.</p>
 <p>For more detailed Keycloak testing (device flow, tokens, etc.), refer to <a href="../iam/advanced-iam/#resource-protection-with-keycloak-policies">Resource Protection with Keycloak Policies</a>.</p>
 <hr />
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
 <h3 id="automated-validation">Automated Validation<a class="headerlink" href="#automated-validation" title="Permanent link">⚓︎</a></h3>
 <p>This script performs a series of automated tests to validate the deployment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
 <h3 id="web-endpoints">Web Endpoints<a class="headerlink" href="#web-endpoints" title="Permanent link">⚓︎</a></h3>
 <p>Check access to the service web endpoints:</p>
@@ -2512,7 +2490,7 @@
 </ul>
 <h3 id="expected-kubernetes-resources">Expected Kubernetes Resources<a class="headerlink" href="#expected-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
 <p>Ensure that all Kubernetes resources are running correctly.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>processing
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>processing
 </span></code></pre></div>
 <p><strong>Expected Output:</strong></p>
 <ul>
@@ -2528,6 +2506,14 @@
 </ul>
 <hr />
 <h3 id="using-the-api">Using the API<a class="headerlink" href="#using-the-api" title="Permanent link">⚓︎</a></h3>
+<p>This section provides a walkthrough the OGC API Processes endpoints to deploy, execute, monitor, and retrieve results from a sample application.</p>
+<blockquote>
+<p><strong>Alternative Notebook Validation</strong></p>
+<p>You can, instead, perform the walkthrough via a Jupyter Notebook - which can be invoked via the script:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>../../../notebooks/run.sh
+</span></code></pre></div>
+<p>This runs a local Jupyter server at <code>http://localhost:8888</code>. Open the <a href="http://localhost:8888/lab/tree/oapip/oapip.ipynb" target="_blank">OAPIP Engine Validation notebook</a> at path <code>/oapip/oapip.ipynb</code>.</p>
+</blockquote>
 <h4 id="initialise-environment">Initialise Environment<a class="headerlink" href="#initialise-environment" title="Permanent link">⚓︎</a></h4>
 <p>The following example commands assume use of <code>bash</code> shell.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>bash<span class="w"> </span>-l
@@ -2624,15 +2610,15 @@
 </span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
-<p>To remove the Processing Building Block from your cluster:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
-</span></code></pre></div>
-<h3 id="additional-cleanup">Additional Cleanup<a class="headerlink" href="#additional-cleanup" title="Permanent link">⚓︎</a></h3>
-<ul>
-<li><strong>Delete Persistent Volume Claims (PVCs):</strong></li>
-</ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>delete<span class="w"> </span>pvc<span class="w"> </span>-l<span class="w"> </span>app.kubernetes.io/instance<span class="o">=</span>zoo-project-dru
+<p>To remove the Processing BB OAPIP Engine from your cluster:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>-
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>-keycloak-client
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
