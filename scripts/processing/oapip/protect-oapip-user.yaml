@@ -1,0 +1,94 @@
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: ${OAPIP_USER}-group
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    name: ${OAPIP_USER}-group
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Memberships
+metadata:
+  name: ${OAPIP_USER}-membership
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    groupIdRef:
+      name: ${OAPIP_USER}-group
+      namespace: iam-management
+    members:
+      - ${OAPIP_USER}
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientAuthorizationResource
+metadata:
+  name: ${OAPIP_USER}-resource
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    resourceServerIdRef:
+      name: ${OAPIP_CLIENT_ID}
+      namespace: iam-management
+    name: ${OAPIP_USER}-resource
+    type: urn:${OAPIP_CLIENT_ID}:resources:default
+    ownerManagedAccess: true
+    uris:
+      - "/${OAPIP_USER}/*"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientGroupPolicy
+metadata:
+  name: ${OAPIP_USER}-policy
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    resourceServerIdRef:
+      name: ${OAPIP_CLIENT_ID}
+      namespace: iam-management
+    name: ${OAPIP_USER}-policy
+    description: Group ${OAPIP_USER}-group policy
+    logic: POSITIVE
+    decisionStrategy: UNANIMOUS
+    groups:
+      - path: /${OAPIP_USER}-group
+        extendChildren: false
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientAuthorizationPermission
+metadata:
+  name: ${OAPIP_USER}-access
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    resourceServerIdRef:
+      name: ${OAPIP_CLIENT_ID}
+      namespace: iam-management
+    name: ${OAPIP_USER}-access
+    description: Group ${OAPIP_USER}-group access to /${OAPIP_USER}/*
+    type: resource
+    decisionStrategy: UNANIMOUS
+    resources:
+      - ${OAPIP_USER}-resource
+    policies:
+      - ${OAPIP_USER}-policy
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
