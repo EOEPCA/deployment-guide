@@ -255,6 +255,8 @@ function check_rwx_storage() {
         echo "❌ Storage Class (RWX) '${SHARED_STORAGECLASS}' not found."
         return 1
     fi
+
+    echo "🔍 Checking support for ReadWriteMany persistent volumes (takes a few seconds)..."
     
     # Check if the storage class supports ReadWriteMany access mode
     local access_modes
