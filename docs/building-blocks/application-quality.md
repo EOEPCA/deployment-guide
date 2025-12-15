@@ -101,6 +101,7 @@ git clone https://github.com/EOEPCA/application-quality.git reference-repo \
     
 ```bash
 helm dependency update reference-repo/application-quality-reference-deployment
+helm dependency build reference-repo/application-quality-reference-deployment
 
 helm upgrade -i application-quality reference-repo/application-quality-reference-deployment \
   --namespace application-quality \
