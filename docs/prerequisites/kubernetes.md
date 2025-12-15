@@ -163,6 +163,8 @@ helm upgrade -i kyverno kyverno/kyverno \
 
 **Create the ClusterPolicy**
 
+> Note that, rather than zero, we actually set minimal cpu/memory requests to avoid potential issues with certain workloads that may not handle zero resource requests gracefully.
+
 ```yaml
 cat - <<'EOF' | kubectl apply -f -
 apiVersion: kyverno.io/v1
@@ -186,8 +188,8 @@ spec:
                   - name: "{{ element.name }}"
                     resources:
                       requests:
-                        cpu: "0"
-                        memory: "0"
+                        cpu: "1m"
+                        memory: "1M"
           - list: "request.object.spec.initContainers || []"
             preconditions:
               all:
@@ -200,8 +202,8 @@ spec:
                   - name: "{{ element.name }}"
                     resources:
                       requests:
-                        cpu: "0"
-                        memory: "0"
+                        cpu: "1m"
+                        memory: "1M"
 EOF
 ```
 
