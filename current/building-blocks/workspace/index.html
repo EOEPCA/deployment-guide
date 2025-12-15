@@ -1768,9 +1768,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#7-optional-delete-workspace-via-the-workspace-api" class="md-nav__link">
+  <a href="#7-workspace-vcluster" class="md-nav__link">
     <span class="md-ellipsis">
-      7. (optional) Delete Workspace via the Workspace API
+      7. Workspace vCluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-optional-delete-workspace-via-the-workspace-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. (optional) Delete Workspace via the Workspace API
     </span>
   </a>
   
@@ -2309,9 +2318,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#7-optional-delete-workspace-via-the-workspace-api" class="md-nav__link">
+  <a href="#7-workspace-vcluster" class="md-nav__link">
     <span class="md-ellipsis">
-      7. (optional) Delete Workspace via the Workspace API
+      7. Workspace vCluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-optional-delete-workspace-via-the-workspace-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. (optional) Delete Workspace via the Workspace API
     </span>
   </a>
   
@@ -3083,46 +3101,125 @@ Note that state can take a little time to be reached as Crossplane provisions th
 <li><strong>Data</strong><br>
   <em>Provides a file browser onto the object storage bucket(s) the user has access to.</em></li>
 </ul>
-<h4 id="7-optional-delete-workspace-via-the-workspace-api">7. (optional) Delete Workspace via the Workspace API<a class="headerlink" href="#7-optional-delete-workspace-via-the-workspace-api" title="Permanent link">⚓︎</a></h4>
+<h4 id="7-workspace-vcluster">7. Workspace vCluster<a class="headerlink" href="#7-workspace-vcluster" title="Permanent link">⚓︎</a></h4>
+<p>If the workspace was created with a vCluster-enabled Datalab, you can access the vCluster from within the Datalab terminal and VS Code (<code>Editor</code>) environments. Kubernetes tooling such as <code>kubectl</code> and <code>helm</code> are pre-installed within the Datalab environment.</p>
+<h5 id="explore-vcluster-access-via-terminal">Explore vCluster Access via <code>Terminal</code><a class="headerlink" href="#explore-vcluster-access-via-terminal" title="Permanent link">⚓︎</a></h5>
+<p>In the <code>Terminal</code> tab, you can verify access to the vCluster by running:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+</span></code></pre></div>
+<p>You should see (at minimum) the <code>kube-system</code> pods of the vCluster.</p>
+<h5 id="create-a-custom-workload-via-editor">Create a Custom Workload via <code>Editor</code><a class="headerlink" href="#create-a-custom-workload-via-editor" title="Permanent link">⚓︎</a></h5>
+<p>Using the <code>Editor</code> tab we can use the web IDE to create and apply some Kubernetes yaml within the vCluster.</p>
+<p>Open the terminal view with the key sequence <code>Ctrl-`</code> (Control and backtick).</p>
+<p>Create the new file <code>nginx-test.yaml</code> with the following content:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a><span class="nt">spec</span><span class="p">:</span>
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span>
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
+</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a><span class="w">          </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a><span class="w">          </span><span class="nt">ports</span><span class="p">:</span>
+</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a><span class="nn">---</span>
+</span><span id="__span-40-23"><a id="__codelineno-40-23" name="__codelineno-40-23" href="#__codelineno-40-23"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+</span><span id="__span-40-24"><a id="__codelineno-40-24" name="__codelineno-40-24" href="#__codelineno-40-24"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
+</span><span id="__span-40-25"><a id="__codelineno-40-25" name="__codelineno-40-25" href="#__codelineno-40-25"></a><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-40-26"><a id="__codelineno-40-26" name="__codelineno-40-26" href="#__codelineno-40-26"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-27"><a id="__codelineno-40-27" name="__codelineno-40-27" href="#__codelineno-40-27"></a><span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+</span><span id="__span-40-28"><a id="__codelineno-40-28" name="__codelineno-40-28" href="#__codelineno-40-28"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-29"><a id="__codelineno-40-29" name="__codelineno-40-29" href="#__codelineno-40-29"></a><span class="nt">spec</span><span class="p">:</span>
+</span><span id="__span-40-30"><a id="__codelineno-40-30" name="__codelineno-40-30" href="#__codelineno-40-30"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+</span><span id="__span-40-31"><a id="__codelineno-40-31" name="__codelineno-40-31" href="#__codelineno-40-31"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx-test</span>
+</span><span id="__span-40-32"><a id="__codelineno-40-32" name="__codelineno-40-32" href="#__codelineno-40-32"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
+</span><span id="__span-40-33"><a id="__codelineno-40-33" name="__codelineno-40-33" href="#__codelineno-40-33"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
+</span><span id="__span-40-34"><a id="__codelineno-40-34" name="__codelineno-40-34" href="#__codelineno-40-34"></a><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+</span><span id="__span-40-35"><a id="__codelineno-40-35" name="__codelineno-40-35" href="#__codelineno-40-35"></a><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+</span><span id="__span-40-36"><a id="__codelineno-40-36" name="__codelineno-40-36" href="#__codelineno-40-36"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterIP</span>
+</span></code></pre></div>
+<p>Deploy the test nginx deployment and service to the vCluster:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>nginx-test.yaml
+</span></code></pre></div>
+<blockquote>
+<p>deployment.apps/nginx-test created<br>
+service/nginx-test created</p>
+</blockquote>
+<p>Check the deployment is running:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>svc,deploy,pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>nginx-test
+</span></code></pre></div>
+<p>Once running, you can port-forward and use the VS Code Ports tab to connect with the nginx service:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>kubectl<span class="w"> </span>port-forward<span class="w"> </span>svc/nginx-test<span class="w"> </span><span class="m">5000</span>:80
+</span></code></pre></div>
+<p>VS Code automatically detects the forwarded port and adds it to the <code>Ports</code> tab - exposed via the URL <code>https://editor-ws-&lt;username&gt;-default.&lt;ingress-host&gt;/proxy/5000/</code>.</p>
+<p>Open the forwarded port by following the link in the <code>Ports</code> tab or open directly.</p>
+<p>Cleanup test resources&hellip;</p>
+<p>Stop the port-forwarding (<code>Ctrl-C</code> in the terminal) and delete the test resources:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>nginx-test.yaml
+</span></code></pre></div>
+<h4 id="8-optional-delete-workspace-via-the-workspace-api">8. (optional) Delete Workspace via the Workspace API<a class="headerlink" href="#8-optional-delete-workspace-via-the-workspace-api" title="Permanent link">⚓︎</a></h4>
 <blockquote>
 <p>The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.</p>
 </blockquote>
 <p>The workspace for the <code>eoepcauser</code> test user can be deleted via the Workspace API.</p>
 <p>This must be performed by a workspace <code>admin</code> user (e.g. <code>eoepcaadmin</code>).</p>
 <p><strong>Authenticate as <code>eoepcaadmin</code></strong></p>
-<p>TBD</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="w">  </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://auth.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/realms/</span><span class="si">${</span><span class="nv">REALM</span><span class="si">}</span><span class="s2">/protocol/openid-connect/token&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="w">    </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;username=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_ADMIN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a><span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;password=</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=password&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="w">    </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-10"><a id="__codelineno-45-10" name="__codelineno-45-10" href="#__codelineno-45-10"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a><span class="k">)</span>
+</span><span id="__span-45-12"><a id="__codelineno-45-12" name="__codelineno-45-12" href="#__codelineno-45-12"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Access Token: </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">20</span><span class="si">}</span><span class="s2">...&quot;</span>
+</span></code></pre></div>
 <p><strong>Delete the workspace</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://workspace-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/workspaces/ws-</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://workspace-api.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/workspaces/ws-</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>To uninstall the Workspace Building Block and clean up associated resources:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>roles.user.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">KEYCLOAK_TEST_ADMIN</span><span class="si">}</span>-<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span>-admin<span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>role.role.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span>-admin<span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>workspace-api/generated-ingress.yaml
-</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span>-keycloak-client<span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ClusterPolicy/workspace-ingress
-</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/workspace-tls<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a><span class="k">for</span><span class="w"> </span>role<span class="w"> </span><span class="k">in</span><span class="w"> </span>manage-users<span class="w"> </span>manage-authorization<span class="w"> </span>manage-clients<span class="w"> </span>create-client<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a><span class="w">  </span>kubectl<span class="w"> </span>delete<span class="w"> </span>ClientServiceAccountRole.openidclient.keycloak.m.crossplane.io/workspace-pipeline-client-<span class="si">${</span><span class="nv">role</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a><span class="k">done</span>
-</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">WORKSPACE_PIPELINE_CLIENT_ID</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/workspace-pipeline-client<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/workspace-pipeline-keycloak-client<span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>providerconfig.kubernetes.m.crossplane.io/provider-kubernetes<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>providerconfig.keycloak.m.crossplane.io/provider-keycloak<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>providerconfig.helm.m.crossplane.io/provider-helm<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-admin<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>workspace-cleanup/datalab-cleaner.yaml
-</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-pipeline<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-api<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-dependencies-educates<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-23"><a id="__codelineno-40-23" name="__codelineno-40-23" href="#__codelineno-40-23"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-dependencies-csi-rclone<span class="w"> </span>-n<span class="w"> </span>workspace
-</span><span id="__span-40-24"><a id="__codelineno-40-24" name="__codelineno-40-24" href="#__codelineno-40-24"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>workspace
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>roles.user.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">KEYCLOAK_TEST_ADMIN</span><span class="si">}</span>-<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span>-admin<span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>role.role.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span>-admin<span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-4"><a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>workspace-api/generated-ingress.yaml
+</span><span id="__span-47-5"><a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-6"><a id="__codelineno-47-6" name="__codelineno-47-6" href="#__codelineno-47-6"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/<span class="si">${</span><span class="nv">WORKSPACE_API_CLIENT_ID</span><span class="si">}</span>-keycloak-client<span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-7"><a id="__codelineno-47-7" name="__codelineno-47-7" href="#__codelineno-47-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ClusterPolicy/workspace-ingress
+</span><span id="__span-47-8"><a id="__codelineno-47-8" name="__codelineno-47-8" href="#__codelineno-47-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/workspace-tls<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-9"><a id="__codelineno-47-9" name="__codelineno-47-9" href="#__codelineno-47-9"></a><span class="k">for</span><span class="w"> </span>role<span class="w"> </span><span class="k">in</span><span class="w"> </span>manage-users<span class="w"> </span>manage-authorization<span class="w"> </span>manage-clients<span class="w"> </span>create-client<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-47-10"><a id="__codelineno-47-10" name="__codelineno-47-10" href="#__codelineno-47-10"></a><span class="w">  </span>kubectl<span class="w"> </span>delete<span class="w"> </span>ClientServiceAccountRole.openidclient.keycloak.m.crossplane.io/workspace-pipeline-client-<span class="si">${</span><span class="nv">role</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-11"><a id="__codelineno-47-11" name="__codelineno-47-11" href="#__codelineno-47-11"></a><span class="k">done</span>
+</span><span id="__span-47-12"><a id="__codelineno-47-12" name="__codelineno-47-12" href="#__codelineno-47-12"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">WORKSPACE_PIPELINE_CLIENT_ID</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-13"><a id="__codelineno-47-13" name="__codelineno-47-13" href="#__codelineno-47-13"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/workspace-pipeline-client<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-14"><a id="__codelineno-47-14" name="__codelineno-47-14" href="#__codelineno-47-14"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/workspace-pipeline-keycloak-client<span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-47-15"><a id="__codelineno-47-15" name="__codelineno-47-15" href="#__codelineno-47-15"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>providerconfig.kubernetes.m.crossplane.io/provider-kubernetes<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-16"><a id="__codelineno-47-16" name="__codelineno-47-16" href="#__codelineno-47-16"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>providerconfig.keycloak.m.crossplane.io/provider-keycloak<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-17"><a id="__codelineno-47-17" name="__codelineno-47-17" href="#__codelineno-47-17"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>providerconfig.helm.m.crossplane.io/provider-helm<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-18"><a id="__codelineno-47-18" name="__codelineno-47-18" href="#__codelineno-47-18"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-admin<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-19"><a id="__codelineno-47-19" name="__codelineno-47-19" href="#__codelineno-47-19"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>workspace-cleanup/datalab-cleaner.yaml
+</span><span id="__span-47-20"><a id="__codelineno-47-20" name="__codelineno-47-20" href="#__codelineno-47-20"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-pipeline<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-21"><a id="__codelineno-47-21" name="__codelineno-47-21" href="#__codelineno-47-21"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-api<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-22"><a id="__codelineno-47-22" name="__codelineno-47-22" href="#__codelineno-47-22"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-dependencies-educates<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-23"><a id="__codelineno-47-23" name="__codelineno-47-23" href="#__codelineno-47-23"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>workspace-dependencies-csi-rclone<span class="w"> </span>-n<span class="w"> </span>workspace
+</span><span id="__span-47-24"><a id="__codelineno-47-24" name="__codelineno-47-24" href="#__codelineno-47-24"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>workspace
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>

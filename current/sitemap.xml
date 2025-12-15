@@ -2,162 +2,162 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/application-hub/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/application-quality/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/data-access/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/data-gateway/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/datacube-access/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/mlops/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/notification-automation/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/oapip-engine/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/openeo-argo/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/openeo-geotrellis/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/overview/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/processing/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-discovery/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-health/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/resource-registration/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/workspace/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/iam/advanced-iam/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/iam/client-management/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/building-blocks/iam/main-iam/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/container-registry/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/crossplane/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress-controller/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/kubernetes/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/minio/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/prerequisites-overview/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/storage/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/tls/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress/apisix/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress/multi/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress/nginx/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/ingress/overview/</loc>
-         <lastmod>2025-12-12</lastmod>
+         <lastmod>2025-12-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
