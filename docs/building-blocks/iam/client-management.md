@@ -6,7 +6,110 @@ This document details how to manage Keycloak clients programmatically, obtain to
 
 ## Creating a Keycloak Client
 
-### Using the Script
+Three alternative paths are offered for creation of Keycloak clients:
+
+1. Using the Keycloak Provider for Crossplane (recommended for infrastructure as code setups)
+2. Using the provided script (suitable for quick setups or manual processes)
+3. Manually via Keycloak's REST API (for advanced users needing fine control)
+
+### Approach 1: Using the Keycloak Provider for Crossplane (Recommended)
+
+If you have Crossplane set up with the Keycloak provider, you can create a Keycloak client using a Kubernetes Custom Resource Definition (CRD). This assumes you have followed the steps:
+
+* [Crossplane deployment](../../prerequisites/crossplane.md)
+* [Keycloak Management via Crossplane](../iam/main-iam.md#5-establish-keycloak-management-via-crossplane)
+
+> Note the use of placeholders such as `<client-name>`, `<client-secret>`, `<service-name>`, etc.. Replace these with actual values relevant to your setup.
+
+**Confidential Client**
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <client-name>-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: <client-secret>
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: <client-name>
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: <client-name>
+    name: <Descriptive Client Name>
+    description: <Description of the Client Purpose>
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: <client-name>-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
+**Public Client**
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: <client-name>
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: <client-name>
+    name: <Descriptive Client Name>
+    description: <Description of the Client Purpose>
+    enabled: true
+    accessType: PUBLIC
+    rootUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    validRedirectUris:
+      - "/*"
+      - "https://editor.openeo.org/*"
+    webOrigins:
+      - "+"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
+### Approach 2: Using the Script
 
 Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
@@ -30,7 +133,7 @@ When prompted:
 After it completes, you should see a JSON snippet confirming the newly created client.
 
 
-### Manually
+### Approach 3: Manually
 
 **Obtain Admin Token**:
 
@@ -96,6 +199,18 @@ curl --silent --show-error \
 ```
 
 ## Deleting a Client
+
+**Managed Resource**
+
+In the case that the Client was created via Crossplane CRD (`Approach 1`), then it is a managed Kubernetes resource. In this case, simply delete the CRD resource, which will trigger the Keycloak Provider to delete the client from Keycloak:
+
+```bash
+kubectl delete client.openidclient.keycloak.m.crossplane.io <client-name> -n iam-management
+```
+
+**Keycloak API**
+
+Otherwise (`Approaches 2/3`), the client can be deleted manually via the Keycloak REST API.
 
 First, get the client's unique ID:
 

@@ -84,35 +84,65 @@ During the script execution, you will be prompted to provide:
 
 ---
 
-2. **Configure OIDC Provider**:
+### 2. **Create a Keycloak Client**:
 
-To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider:
+To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider. This requires creation of a `Client` in Keycloak (part of IAM BB).
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${APPHUB_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${APPHUB_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${APPHUB_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${APPHUB_CLIENT_ID}
+    name: Application Hub
+    description: Application Hub OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${APPHUB_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
+The `Client` should be created successfully.
 
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`.
-
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: `application-hub`.
-- **Client name** and **description**: Provide any helpful text (e.g `Application Hub Client`).
-- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `app-hub` for the OAPIP engine. 
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
-
-After it completes, you should see a JSON snippet confirming the newly created client.
-
----
-
-3. **Deploy the Application Hub Using Helm**
+### 3. **Deploy the Application Hub Using Helm**
 
 ```bash
 helm repo add eoepca https://eoepca.github.io/helm-charts
@@ -124,28 +154,55 @@ helm upgrade -i application-hub eoepca/application-hub \
 --create-namespace
 ```
 
-#### Configure Ingress
+#### 3.1. Configure Ingress
+
 ```bash
 kubectl apply -f generated-ingress.yaml
 ```
 
----
-
-4. **Create an admin user**
+### 4. **Create an admin user**
 
 By default, the Application Hub has a **demo** admin user named `eric`. You will need to create this user in Keycloak (or your OIDC provider) to access the Application Hub admin.
 
-```
-bash ../utils/create-user.sh
-```
+The user can be created declaratively using the CRD defined by the Crossplane Keycloak provider. A `Secret` is used to inject the password securely.
 
-When prompted, fill out the general Keycloak authentication details (if not already set) and then:
-
-- **Username**: `eric`
-- **Password**: Choose a secure password.
+```bash
+source ~/.eoepca/state
+username="eric"
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${username}-user-password
+  namespace: iam-management
+stringData:
+  password: ${KEYCLOAK_TEST_PASSWORD}
+---
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: ${username}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    username: ${username}
+    email: ${username}@eoepca.org
+    emailVerified: true
+    firstName: ${username}
+    lastName: Testuser
+    initialPassword:
+      - temporary: false
+        valueSecretRef:
+          name: ${username}-user-password
+          key: password
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
 
 > Alternatively you can create this user through the Keycloak admin interface.
-
 
 5. **Create Groups in AppHub**
 

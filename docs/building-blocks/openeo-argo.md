@@ -102,14 +102,43 @@ kubectl apply -f generated-ingress.yaml
 
 #### Step 4: Configure OIDC Client (if using custom OIDC)
 
-If you're using your own OIDC provider rather than EGI AAI, create the client:
+A Keycloak client is required for the ingress protection of the Processing BB openEO Argo Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+
 ```bash
-bash ../../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: openeo-argo
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: openeo-argo
+    name: openEO Argo Engine
+    description: openEO Argo Engine OIDC
+    enabled: true
+    accessType: PUBLIC
+    rootUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    validRedirectUris:
+      - "/*"
+      - "https://editor.openeo.org/*"
+    webOrigins:
+      - "+"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
-- **Client ID**: Use `openeo-argo` 
-- **Redirect URLs**: Include `https://openeo.${INGRESS_HOST}` and `https://editor.openeo.org`
+The `Client` should be created successfully.
 
 ---
 
