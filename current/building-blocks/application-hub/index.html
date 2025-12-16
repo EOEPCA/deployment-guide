@@ -1503,13 +1503,31 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Run the Configuration Script">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-a-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create a Keycloak Client:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-deploy-the-application-hub-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Deploy the Application Hub Using Helm
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Deploy the Application Hub Using Helm">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#configure-ingress" class="md-nav__link">
+  <a href="#31-configure-ingress" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure Ingress
+      3.1. Configure Ingress
     </span>
   </a>
   
@@ -1517,6 +1535,15 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-an-admin-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create an admin user
+    </span>
+  </a>
   
 </li>
         
@@ -1801,13 +1828,31 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Run the Configuration Script">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-a-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create a Keycloak Client:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-deploy-the-application-hub-using-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Deploy the Application Hub Using Helm
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Deploy the Application Hub Using Helm">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#configure-ingress" class="md-nav__link">
+  <a href="#31-configure-ingress" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure Ingress
+      3.1. Configure Ingress
     </span>
   </a>
   
@@ -1815,6 +1860,15 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-an-admin-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create an admin user
+    </span>
+  </a>
   
 </li>
         
@@ -2041,35 +2095,59 @@
 </li>
 </ul>
 <hr />
-<ol start="2">
-<li><strong>Configure OIDC Provider</strong>:</li>
-</ol>
-<p>To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider:</p>
-<p>Use the <code>create-client.sh</code> script in the <code>/scripts/utils/</code> directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash<span class="w"> </span>../utils/create-client.sh
+<h3 id="2-create-a-keycloak-client">2. <strong>Create a Keycloak Client</strong>:<a class="headerlink" href="#2-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
+<p>To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider. This requires creation of a <code>Client</code> in Keycloak (part of IAM BB).</p>
+<p>The client can be created using the Crossplane Keycloak provider via the <code>Client</code> CRD.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s">kind: Secret</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">metadata:</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s">  name: ${APPHUB_CLIENT_ID}-keycloak-client</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s">stringData:</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="s">  client_secret: ${APPHUB_CLIENT_SECRET}</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="s">---</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="s">apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="s">kind: Client</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="s">metadata:</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="s">  name: ${APPHUB_CLIENT_ID}</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="s">spec:</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="s">  forProvider:</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="s">    realmId: ${REALM}</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="s">    clientId: ${APPHUB_CLIENT_ID}</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="s">    name: Application Hub</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="s">    description: Application Hub OIDC</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="s">    enabled: true</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="s">    accessType: CONFIDENTIAL</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="s">    rootUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="s">    baseUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="s">    adminUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="s">    serviceAccountsEnabled: true</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="s">    directAccessGrantsEnabled: true</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="s">    standardFlowEnabled: true</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="s">    oauth2DeviceAuthorizationGrantEnabled: true</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="s">    useRefreshTokens: true</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="s">    authorization:</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="s">      - allowRemoteResourceManagement: false</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="s">        decisionStrategy: UNANIMOUS</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="s">        keepDefaults: true</span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="s">        policyEnforcementMode: ENFORCING</span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="s">    validRedirectUris:</span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="s">      - &quot;/*&quot;</span>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="s">    webOrigins:</span>
+</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="s">      - &quot;/*&quot;</span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="s">    clientSecretSecretRef:</span>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="s">      name: ${APPHUB_CLIENT_ID}-keycloak-client</span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="s">      key: client_secret</span>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="s">  providerConfigRef:</span>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="s">    name: provider-keycloak</span>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="s">    kind: ProviderConfig</span>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="s">EOF</span>
 </span></code></pre></div>
-<p>When prompted:</p>
-<ul>
-<li><strong>Keycloak Admin Username and Password</strong>: Enter the credentials of your Keycloak admin user (these are also in <code>~/.eoepca/state</code> if you have them set).</li>
-<li><strong>Keycloak base domain</strong>: e.g. <code>auth.example.com</code></li>
-<li>
-<p><strong>Realm</strong>: Typically <code>eoepca</code>.</p>
-</li>
-<li>
-<p><strong>Confidential Client?</strong>: specify <code>true</code> to create a CONFIDENTIAL client</p>
-</li>
-<li><strong>Client ID</strong>: <code>application-hub</code>.</li>
-<li><strong>Client name</strong> and <strong>description</strong>: Provide any helpful text (e.g <code>Application Hub Client</code>).</li>
-<li><strong>Client secret</strong>: Enter the Client Secret that was generated during the configuration script (check <code>~/.eoepca/state</code>).</li>
-<li><strong>Subdomain</strong>: Use <code>app-hub</code> for the OAPIP engine. </li>
-<li><strong>Additional Subdomains</strong>: Leave blank.</li>
-<li><strong>Additional Hosts</strong>: Leave blank.</li>
-</ul>
-<p>After it completes, you should see a JSON snippet confirming the newly created client.</p>
-<hr />
-<ol start="3">
-<li><strong>Deploy the Application Hub Using Helm</strong></li>
-</ol>
+<p>The <code>Client</code> should be created successfully.</p>
+<h3 id="3-deploy-the-application-hub-using-helm">3. <strong>Deploy the Application Hub Using Helm</strong><a class="headerlink" href="#3-deploy-the-application-hub-using-helm" title="Permanent link">⚓︎</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca<span class="w"> </span>https://eoepca.github.io/helm-charts
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>application-hub<span class="w"> </span>eoepca/application-hub<span class="w"> </span><span class="se">\</span>
@@ -2078,21 +2156,46 @@
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>--namespace<span class="w"> </span>application-hub<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>--create-namespace
 </span></code></pre></div>
-<h4 id="configure-ingress">Configure Ingress<a class="headerlink" href="#configure-ingress" title="Permanent link">⚓︎</a></h4>
+<h4 id="31-configure-ingress">3.1. Configure Ingress<a class="headerlink" href="#31-configure-ingress" title="Permanent link">⚓︎</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
 </span></code></pre></div>
-<hr />
-<ol start="4">
-<li><strong>Create an admin user</strong></li>
-</ol>
+<h3 id="4-create-an-admin-user">4. <strong>Create an admin user</strong><a class="headerlink" href="#4-create-an-admin-user" title="Permanent link">⚓︎</a></h3>
 <p>By default, the Application Hub has a <strong>demo</strong> admin user named <code>eric</code>. You will need to create this user in Keycloak (or your OIDC provider) to access the Application Hub admin.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash ../utils/create-user.sh
+<p>The user can be created declaratively using the CRD defined by the Crossplane Keycloak provider. A <code>Secret</code> is used to inject the password securely.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nv">username</span><span class="o">=</span><span class="s2">&quot;eric&quot;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="s">kind: Secret</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="s">metadata:</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="s">  name: ${username}-user-password</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="s">stringData:</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="s">  password: ${KEYCLOAK_TEST_PASSWORD}</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="s">---</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="s">apiVersion: user.keycloak.m.crossplane.io/v1alpha1</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="s">kind: User</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="s">metadata:</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="s">  name: ${username}</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="s">spec:</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="s">  forProvider:</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="s">    realmId: eoepca</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="s">    username: ${username}</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="s">    email: ${username}@eoepca.org</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="s">    emailVerified: true</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="s">    firstName: ${username}</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="s">    lastName: Testuser</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="s">    initialPassword:</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="s">      - temporary: false</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="s">        valueSecretRef:</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="s">          name: ${username}-user-password</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="s">          key: password</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="s">  providerConfigRef:</span>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="s">    name: provider-keycloak</span>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="s">    kind: ProviderConfig</span>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="s">EOF</span>
 </span></code></pre></div>
-<p>When prompted, fill out the general Keycloak authentication details (if not already set) and then:</p>
-<ul>
-<li><strong>Username</strong>: <code>eric</code></li>
-<li><strong>Password</strong>: Choose a secure password.</li>
-</ul>
 <blockquote>
 <p>Alternatively you can create this user through the Keycloak admin interface.</p>
 </blockquote>
