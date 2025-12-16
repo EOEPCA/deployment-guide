@@ -108,30 +108,61 @@ helm upgrade -i application-quality reference-repo/application-quality-reference
   --values generated-values.yaml
 ```
 
-
 ### 4 Create a Keycloak Client
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+A Keycloak client is required for the ingress protection of the Application Quality BB. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${APP_QUALITY_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${APP_QUALITY_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${APP_QUALITY_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${APP_QUALITY_CLIENT_ID}
+    name: Application Quality
+    description: Application Quality OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://application-quality.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://application-quality.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://application-quality.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${APP_QUALITY_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
-
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`.
-
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: You should use the client ID you inputted in the configuration script (`application-quality`).
-- **Client name** and **description**: Provide any helpful text (e.g. Application Quality)
-- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `application-quality`.
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
-
-After it completes, you should see a JSON snippet confirming the newly created client.
+The `Client` should be created successfully.
 
 ---
 

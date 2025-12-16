@@ -7,9 +7,131 @@ This document covers advanced IAM configurations beyond the basic setup. Use the
 
 ## Resource Protection with Keycloak Policies
 
+Three alternative paths are offered for creation of Keycloak clients:
 
+1. Using the Keycloak Provider for Crossplane (recommended for infrastructure as code setups)
+2. Using the provided script (suitable for quick setups or manual processes)
+3. Manually via Keycloak's REST API (for advanced users needing fine control)
 
-#### Scripted Approach
+### Approach 1: Using the Keycloak Provider for Crossplane (Recommended)
+
+If you have Crossplane set up with the Keycloak provider, you can create a Keycloak client using a Kubernetes Custom Resource Definition (CRD). This assumes you have followed the steps:
+
+* [Crossplane deployment](../../prerequisites/crossplane.md)
+* [Keycloak Management via Crossplane](../iam/main-iam.md#5-establish-keycloak-management-via-crossplane)
+
+> Note the use of placeholders such as `<client-name>`, `<username>`, etc.. Replace these with actual values relevant to your setup.
+
+We can use the Crossplane Keycloak provider to establish the protection using CRDs. This example protection comprises:
+
+* Create a Keycloak group `<username>-group`
+* Add the user (`<username>`) to the group
+* Configure the `<client-name>` Keycloak client `Authorization`, comprising:
+    * A `Resource` representing the user's context - i.e. `/<username>/*`
+    * A `Policy` requiring membership of the group `<username>-group`
+    * A `Permission` attaching the `Policy` to the `Resource` - and so completing the protection
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: <username>-group
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    name: <username>-group
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Memberships
+metadata:
+  name: <username>-membership
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    groupIdRef:
+      name: <username>-group
+      namespace: iam-management
+    members:
+      - <username>
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientAuthorizationResource
+metadata:
+  name: <username>-resource
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    resourceServerIdRef:
+      name: <client-name>
+      namespace: iam-management
+    name: <username>-resource
+    type: urn:<client-name>:resources:default
+    ownerManagedAccess: true
+    uris:
+      - "/<username>/*"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientGroupPolicy
+metadata:
+  name: <username>-policy
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    resourceServerIdRef:
+      name: <client-name>
+      namespace: iam-management
+    name: <username>-policy
+    description: Group <username>-group policy
+    logic: POSITIVE
+    decisionStrategy: UNANIMOUS
+    groups:
+      - path: /<username>-group
+        extendChildren: false
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientAuthorizationPermission
+metadata:
+  name: <username>-access
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    resourceServerIdRef:
+      name: <client-name>
+      namespace: iam-management
+    name: <username>-access
+    description: Group <username>-group access to /<username>/*
+    type: resource
+    decisionStrategy: UNANIMOUS
+    resources:
+      - <username>-resource
+    policies:
+      - <username>-policy
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
+### Approach 2: Scripted
 
 ```bash
 cd deployment-guide/scripts/utils
@@ -26,7 +148,7 @@ When prompted:
 
 ---
 
-#### Manual Approach
+### Approach 3: Manually
 
 If you choose to perform the steps manually, follow the instructions below.
 
