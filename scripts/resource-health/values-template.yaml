@@ -30,6 +30,9 @@ opensearch:
               - "admin"
 {{- end }}
               - "all_access"
+            users:
+              - "admin"
+              - "otel-collector"
         config.yml: |-
           _meta:
             type: "config"
