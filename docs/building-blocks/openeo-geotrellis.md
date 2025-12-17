@@ -2,8 +2,6 @@
 
 OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.
 
-> **Note:** OIDC authentication is now optional for OpenEO deployments. If you choose to enable OIDC during configuration, you'll need a valid OIDC Provider. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set one up.
-
 ---
 
 ## Prerequisites

@@ -8,7 +8,10 @@ global:
     {{- if eq (getenv "OPENEO_ARGO_ENABLE_OIDC") "yes" }}
     oidcUrl: "{{ getenv "OIDC_ISSUER_URL" }}"
     oidcOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
+    odicOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
     oidcPolicies: "{{ getenv "OIDC_POLICIES" }}"
+    oidcClientId: "openeo-argo"
+    odicClientId: "openeo-argo"
     {{- else }}
     oidcUrl: "http://dummy-oidc.local/realms/eoepca"
     oidcOrganisation: "eoepca"
