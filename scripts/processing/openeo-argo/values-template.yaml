@@ -19,7 +19,7 @@ global:
     {{- end }}
     stacCatalogueUrl: "{{ getenv "STAC_CATALOG_ENDPOINT" }}"
     workspaceRoot: "/user_workspaces"
-    executorImage: "ghcr.io/eodcgmbh/openeo-argoworkflows:executor-2025.5.1"
+    executorImage: "eoepcaci/openeo-argoworkflows:executor-2025.5.1-fixed"
     daskWorkerCores: "4"
     daskWorkerMemory: "8"
     daskWorkerLimit: "6"
