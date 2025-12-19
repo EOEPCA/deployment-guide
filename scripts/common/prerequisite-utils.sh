@@ -262,11 +262,38 @@ function check_rwx_storage() {
     local access_modes
     access_modes=$(kubectl get sc "${SHARED_STORAGECLASS}" -o jsonpath='{.allowVolumeExpansion}' 2>/dev/null)
     
-    # Create a test PVC to verify RWX support
+    # Create a test PVC (with associated workload) to verify RWX support
     local test_pvc_name="rwx-test-pvc-$(date +%s)"
     local test_manifest="/tmp/${test_pvc_name}.yaml"
     
     cat > "${test_manifest}" << EOF
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pvc-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pvc-consumer
+  template:
+    metadata:
+      labels:
+        app: pvc-consumer
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["sleep", "3600"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ${test_pvc_name}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -282,17 +309,20 @@ spec:
 EOF
 
     if kubectl apply -f "${test_manifest}" &>/dev/null; then
-        # Wait a moment and check if PVC is bound or pending (not failed)
-        sleep 7
-        local pvc_status
-        pvc_status=$(kubectl get pvc "${test_pvc_name}" -o jsonpath='{.status.phase}' 2>/dev/null)
+
+        # Wait for the deployment to be ready - which goes a long way to proving the PVC is usable
+        # Also check the PVC status directly
+        local pvc_status=""
+        if kubectl rollout status deployment/pvc-consumer --timeout=20s &>/dev/null; then
+            pvc_status=$(kubectl get pvc "${test_pvc_name}" -o jsonpath='{.status.phase}' 2>/dev/null)
+        fi
         
         # Cleanup test PVC
         kubectl delete -f "${test_manifest}" &>/dev/null
         rm -f "${test_manifest}"
 
         
-        if [[ "$pvc_status" == "Bound" || "$pvc_status" == "Pending" ]]; then
+        if [[ "$pvc_status" == "Bound" ]]; then
             echo "✅ Storage Class (RWX) '${SHARED_STORAGECLASS}' supports ReadWriteMany access mode."
             return 0
         else
