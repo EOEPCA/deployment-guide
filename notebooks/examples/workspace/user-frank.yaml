@@ -1,0 +1,21 @@
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: frank
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    username: frank
+    email: frank@eoepca.org
+    emailVerified: true
+    firstName: Frank
+    lastName: Testuser
+    initialPassword:
+      - temporary: false
+        valueSecretRef:
+          name: frank-password
+          key: password
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig

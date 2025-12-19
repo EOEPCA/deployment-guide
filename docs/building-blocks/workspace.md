@@ -876,7 +876,7 @@ You should see (at minimum) the `kube-system` pods of the vCluster.
 
 Using the `Editor` tab we can use the web IDE to create and apply some Kubernetes yaml within the vCluster.
 
-Open the terminal view with the key sequence ``Ctrl-` `` (Control and backtick).
+Open the terminal view with the key sequence <kbd>Ctrl-`</kbd> (backtick).
 
 Create the new file `nginx-test.yaml` with the following content:
 
@@ -946,7 +946,7 @@ Open the forwarded port by following the link in the `Ports` tab or open directl
 
 Cleanup test resources...
 
-Stop the port-forwarding (`Ctrl-C` in the terminal) and delete the test resources:
+Stop the port-forwarding (<kbd>Ctrl-C</kbd> in the terminal) and delete the test resources:
 
 ```bash
 kubectl delete -f nginx-test.yaml
