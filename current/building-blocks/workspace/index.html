@@ -3110,7 +3110,7 @@ Note that state can take a little time to be reached as Crossplane provisions th
 <p>You should see (at minimum) the <code>kube-system</code> pods of the vCluster.</p>
 <h5 id="create-a-custom-workload-via-editor">Create a Custom Workload via <code>Editor</code><a class="headerlink" href="#create-a-custom-workload-via-editor" title="Permanent link">⚓︎</a></h5>
 <p>Using the <code>Editor</code> tab we can use the web IDE to create and apply some Kubernetes yaml within the vCluster.</p>
-<p>Open the terminal view with the key sequence <code>Ctrl-`</code> (Control and backtick).</p>
+<p>Open the terminal view with the key sequence <kbd>Ctrl-`</kbd> (backtick).</p>
 <p>Create the new file <code>nginx-test.yaml</code> with the following content:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
 </span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
@@ -3165,7 +3165,7 @@ service/nginx-test created</p>
 <p>VS Code automatically detects the forwarded port and adds it to the <code>Ports</code> tab - exposed via the URL <code>https://editor-ws-&lt;username&gt;-default.&lt;ingress-host&gt;/proxy/5000/</code>.</p>
 <p>Open the forwarded port by following the link in the <code>Ports</code> tab or open directly.</p>
 <p>Cleanup test resources&hellip;</p>
-<p>Stop the port-forwarding (<code>Ctrl-C</code> in the terminal) and delete the test resources:</p>
+<p>Stop the port-forwarding (<kbd>Ctrl-C</kbd> in the terminal) and delete the test resources:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>nginx-test.yaml
 </span></code></pre></div>
 <h4 id="8-optional-delete-workspace-via-the-workspace-api">8. (optional) Delete Workspace via the Workspace API<a class="headerlink" href="#8-optional-delete-workspace-via-the-workspace-api" title="Permanent link">⚓︎</a></h4>
