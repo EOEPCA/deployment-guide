@@ -28,8 +28,8 @@ else
 fi
 
 # IAM/Keycloak Configuration
-ask "ENABLE_IAM" "Enable IAM/Keycloak integration? (yes/no)" "no" is_yes_no
-if [ "$ENABLE_IAM" = "yes" ]; then
+ask "DATA_ACCESS_ENABLE_IAM" "Enable IAM/Keycloak integration? (yes/no)" "no" is_yes_no
+if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     ask "KEYCLOAK_URL" "Enter Keycloak URL" "https://iam-auth.${INGRESS_HOST}" is_non_empty
     ask "KEYCLOAK_REALM" "Enter Keycloak realm" "eoepca" is_non_empty
     ask "KEYCLOAK_CLIENT_ID" "Enter Keycloak client ID for EOAPI" "eoapi" is_non_empty
@@ -58,7 +58,7 @@ gomplate -f "eoapi-maps-plugin/$TEMPLATE_PATH" -o "eoapi-maps-plugin/$OUTPUT_PAT
 
 # Generate ingress/routes based on ingress controller
 if [ "$INGRESS_CLASS" == "apisix" ]; then
-    if [ "$ENABLE_IAM" = "yes" ]; then
+    if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
         gomplate -f "routes/$APISIX_ROUTE_TEMPLATE_PATH" -o "routes/$APISIX_ROUTE_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
     else
         gomplate -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
@@ -71,7 +71,7 @@ if [ "$USE_EXTERNAL_POSTGRES" = "yes" ]; then
 fi
 
 # Generate IAM resources if enabled
-if [ "$ENABLE_IAM" = "yes" ]; then
+if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     gomplate -f "iam/iam-template.yaml" -o "iam/generated-iam" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 

@@ -17,6 +17,7 @@ ingress:
 ingress:
   enabled: false
 {{- end }}
+
 {{- if eq (getenv "USE_EXTERNAL_POSTGRES") "yes" }}
 postgresql:
   type: "external-secret"
