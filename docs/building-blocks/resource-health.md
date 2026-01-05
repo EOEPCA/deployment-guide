@@ -98,27 +98,59 @@ During execution, you will be prompted for:
 
 ### 2. Create a Keycloak Client
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+A Keycloak client is required for the ingress protection of the Processing BB OAPIP Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${RESOURCE_HEALTH_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${RESOURCE_HEALTH_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${RESOURCE_HEALTH_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${RESOURCE_HEALTH_CLIENT_ID}
+    name: Resource Health
+    description: Resource Health OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://resource-health.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://resource-health.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://resource-health.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${RESOURCE_HEALTH_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
-
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`.
-
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: For the Resource Health, you should use `resource-health`.
-- **Client name** and **description**: Provide any helpful text (e.g. `Resource Health`).
-- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `resource-health`. 
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
-
-After it completes, you should see a JSON snippet confirming the newly created client.
+The `Client` should be created successfully.
 
 ---
 

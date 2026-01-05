@@ -103,28 +103,59 @@ For instructions on how to set up IAM, you can follow the [IAM Building Block](.
 
 If you **don't** want to enable OIDC or you are **not** using the APISIX ingress controller, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+A Keycloak client is required for the ingress protection of the MLOps. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${MLOPS_OIDC_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${MLOPS_OIDC_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${MLOPS_OIDC_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${MLOPS_OIDC_CLIENT_ID}
+    name: Gitlab
+    description: Gitlab OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${MLOPS_OIDC_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
-
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`.
-
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: You should use `gitlab`.
-- **Client name** and **description**: Provide any helpful text (e.g., `GitLab OIDC Client`).
-- **Client secret**: Enter the Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `gitlab`
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
-
-After it completes, you should see a JSON snippet confirming the newly created client.
-
+The `Client` should be created successfully.
 
 ### 3. Create Required Kubernetes Secrets
 

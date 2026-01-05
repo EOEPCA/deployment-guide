@@ -11,10 +11,17 @@ check_service_exists "resource-registration" "registration-api-service"
 check_service_exists "resource-registration" "registration-harvester-api-engine-postgres-hl"
 check_service_exists "resource-registration" "registration-harvester-api-engine-flowable-rest"
 check_service_exists "resource-registration" "registration-harvester-api-engine-postgres"
-check_service_exists "resource-registration" "landsat-harvester-worker-service"
+check_service_exists "resource-registration" "registration-harvester-worker-landsat-service"
 
 # Check ingress
-check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "200"
+#
+# Registration API
+if [ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" ]; then
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "302"
+else
+    check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "200"
+fi
+# Flowable
 CHECK_USER=${FLOWABLE_ADMIN_USER} CHECK_PASSWORD=${FLOWABLE_ADMIN_PASSWORD} check_url_status_code "$HTTP_SCHEME://registration-harvester-api.$INGRESS_HOST/flowable-rest/service/repository/deployments" "200"
 
 echo

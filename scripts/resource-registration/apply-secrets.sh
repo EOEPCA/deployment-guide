@@ -52,7 +52,7 @@ create_secret() {
     kubectl_cmd="$kubectl_cmd --from-literal=CDSE_PASSWORD=\"$CDSE_PASSWORD\""
   fi
 
-  if [[ "$RESOURCE_REGISTRATION_PROTECTED_ENDPOINTS" == "y" || "$RESOURCE_REGISTRATION_PROTECTED_ENDPOINTS" == "Y" ]]; then
+  if [[ "$RESOURCE_REGISTRATION_PROTECTED_TARGETS" == "yes" ]]; then
     kubectl_cmd="$kubectl_cmd --from-literal=IAM_CLIENT_ID=\"$RESOURCE_REGISTRATION_IAM_CLIENT_ID\""
     kubectl_cmd="$kubectl_cmd --from-literal=IAM_CLIENT_SECRET=\"$RESOURCE_REGISTRATION_IAM_CLIENT_SECRET\""
   fi

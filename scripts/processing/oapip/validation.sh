@@ -7,17 +7,18 @@ if [ -z "$OIDC_OAPIP_ENABLED" ]; then
 fi
 
 check_pods_running "processing" "app.kubernetes.io/name=zoo-project-dru-kubeproxy" 1
-check_pods_running "processing" "app.kubernetes.io/instance=zoo-project-dru" 3
+check_pods_running "processing" "app=zoo-project-dru-postgresql" 1
+check_pods_running "processing" "app.kubernetes.io/instance=zoo-project-dru" 2
+check_pods_running "processing" "app.kubernetes.io/instance=zoo-project-dru-zoofpm" 1
 
 check_deployment_ready "processing" "zoo-project-dru-kubeproxy"
 check_deployment_ready "processing" "zoo-project-dru-zoofpm"
 check_deployment_ready "processing" "zoo-project-dru-zookernel"
 
-check_service_exists "processing" "zoo-project-dru-rabbitmq-headless"
-check_service_exists "processing" "zoo-project-dru-postgresql-hl"
-check_service_exists "processing" "zoo-project-dru-service"
-check_service_exists "processing" "zoo-project-dru-postgresql"
+check_service_exists "processing" "zoo-project-dru-kubeproxy"
+check_service_exists "processing" "zoo-project-dru-postgresql-service"
 check_service_exists "processing" "zoo-project-dru-rabbitmq"
+check_service_exists "processing" "zoo-project-dru-service"
 
 if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
     CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "302"
@@ -27,7 +28,7 @@ else
     check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "200"
 fi
 
-check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
+CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
 
 echo
 echo "All Resources:"

@@ -57,6 +57,22 @@ bash configure-oapip.sh
     - *Example*: `letsencrypt-http01-apisix`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
+    
+**Workspace Integration Configuration:**
+
+The OAPIP engine supports two possible integrations with object storage for stage-out of processing results:
+
+* With the EOEPCA+ Workspace BB - in which case results are written directly to the user's workspace bucket.
+* With a dedicated S3 bucket - in which case results are written to a pre-configured (shared) S3 bucket.
+
+Workspace integration is controlled via the following parameter:
+
+- **`USE_WORKSPACE_API`**: Whether the processing stage-out should integrate with the user's Workspace object storage for persistence of processing results
+
+Assumptions regarding integration with the Workspace BB:
+
+* The Workspace BB has already been deployed in the cluster.
+* The `username` of the user invoking the processing execution is used to select the appropriate workspace bucket - via the workspace following the naming convention `ws-<username>`. The processing engine determines the username from the JWT `Bearer` token presented in the `Authorization` header of the request. In the case that no token is presented (i.e. open service), then the username is taken from the path prefix of the request - e.g. `/<username>/ogc-api/processes/...`.
 
 **Stage-Out S3 Configuration:**
 
@@ -136,69 +152,88 @@ If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Ke
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-### 2.1 Create a Keycloak Client
+### Create a Keycloak Client
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
-
-```bash
-bash ../../utils/create-client.sh
-```
-
-When prompted:
-
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set).
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`.
-
-- **Confidential Client?**: specify `true` to create a CONFIDENTIAL client
-- **Client ID**: For the OAPIP engine, you should use `oapip-engine`.
-- **Client name** and **description**: Provide any helpful text (e.g. `OAPIP Engine Client`).
-- **Client secret**: Enter the OAPIP Client Secret that was generated during the configuration script (check `~/.eoepca/state`).
-- **Subdomain**: Use `zoo` for the OAPIP engine. 
-- **Additional Subdomains**: Leave blank.
-- **Additional Hosts**: Leave blank.
-
-After it completes, you should see a JSON snippet confirming the newly created client.
-
----
-
-### 2.2 Define Resource Protection (Optional)
-
-By default, once the OAPIP engine is connected to Keycloak, it can accept OIDC tokens. If you want to **restrict** or **fine-tune** access to certain endpoints (like `/ogc-api/jobs/`).
-
-Before protecting the resource, please ensure that you have a user in Keycloak other than the admin user. If you don't have a user, you can create one using:
+A Keycloak client is required for the ingress protection of the Processing BB OAPIP Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../../utils/create-user.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${OAPIP_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${OAPIP_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${OAPIP_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${OAPIP_CLIENT_ID}
+    name: Processing OAPIP Engine
+    description: Processing OAPIP Engine OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${OAPIP_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
----
+The `Client` should be created successfully.
 
-#### Protect the user's zoo context
+### Protect the user's processing context
 
-Zoo uses a path prefix to establish a context within the processing service - such as `/<username>` or `/<project>`.
+The OAPIP Engine is provided by the [ZOO-Project](https://zoo-project.org/) implementation, which uses a path prefix to establish a context within the processing service - such as `/<username>` or `/<project>`.
 
 Protection can be applied so that the context is accessible only by the owning user(s).
 
-For the purposes of this example we can assume the user `eoepcauser` - adjust for your own purposes.
+To demonstrate, we will apply protection for the `KEYCLOAK_TEST_USER` used in this guide - nominal username `eoepcauser`. See `IAM` section [Create Test Users](./iam/main-iam.md#6-create-test-users) for creation of the test users assumed by this guide.
 
-1. Use the `protect-resource.sh`:
-        
+Similarly to the `Client` creation, we will use the Crossplane Keycloak provider to establish the protection using CRDs. The protection comprises:
+
+* Create a Keycloak group `<username>-group`
+* Add the user (`eoepcauser`) to the group
+* Configure the `oapip-engine` Keycloak client `Authorization`, comprising:
+    * A `Resource` representing the user's processing context - i.e. `/<username>/*`
+    * A `Policy` requiring membership of the group `<username>-group`
+    * A `Permission` attaching the `Policy` to the `Resource` - and so completing the protection
+
 ```bash
-bash ../../utils/protect-resource.sh
+source ~/.eoepca/state
+export OAPIP_USER="${KEYCLOAK_TEST_USER}"
+envsubst < protect-oapip-user.yaml | kubectl apply -f -
 ```
-        
-When prompted (adjust values for your needs):
 
-- **Client ID**: `oapip-engine` (the client you created in the previous step)
-- **Username**: e.g. `eoepcauser` 
-- **Display Name**: `eoepcauser`
-- **Resource Type**: `urn:oapip-engine:resources:default`
-- **Resource URI**: `/eoepcauser/*` 
+This should indicate successful creation of the resources: `eoepcauser-group`, `eoepcauser-membership`, `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
 
----
-
-### 2.3 Create APISIX Route Ingress
+### Create APISIX Route Ingress
 
 If you are using APISIX Ingress controller, apply the ingress:
 
@@ -206,10 +241,7 @@ If you are using APISIX Ingress controller, apply the ingress:
 kubectl apply -f generated-ingress.yaml
 ```
 
----
-
-
-### 2.4 Confirm Protection (APISIX Only)
+### Confirm Protection (APISIX Only)
 
 > Resource protection is only available when using the APISIX Ingress Controller.
 
@@ -221,7 +253,7 @@ With the resource and permission created, attempts to access the protected endpo
 bash resource-protection-validation.sh
 ```
 
-If this script shows 401 Authorization errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.
+If this script shows `401 Authorization` errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.
 
 For more detailed Keycloak testing (device flow, tokens, etc.), refer to [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
 
@@ -268,10 +300,21 @@ We offer a sample application that can be used to exercise the deployed service:
 
 * `convert` - a very simple 'hello world' application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment
 
-
 ---
 
 ### Using the API
+
+This section provides a walkthrough the OGC API Processes endpoints to deploy, execute, monitor, and retrieve results from a sample application.
+
+> **Alternative Notebook Validation**
+> 
+> You can, instead, perform the walkthrough via a Jupyter Notebook - which can be invoked via the script:
+> 
+> ```bash
+> ../../../notebooks/run.sh
+> ```
+> 
+> This runs a local Jupyter server at `http://localhost:8888`. Open the <a href="http://localhost:8888/lab/tree/oapip/oapip.ipynb" target="_blank">OAPIP Engine Validation notebook</a> at path `/oapip/oapip.ipynb`.
 
 #### Initialise Environment
 
@@ -408,25 +451,22 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-
 ---
 
 ## Uninstallation
 
-To remove the Processing Building Block from your cluster:
+To remove the Processing BB OAPIP Engine from your cluster:
 
 ```bash
+source ~/.eoepca/state
+export OAPIP_USER="${KEYCLOAK_TEST_USER}"
+kubectl delete -f generated-ingress.yaml
+envsubst < protect-oapip-user.yaml | kubectl delete -f -
+kubectl -n iam-management delete client.openidclient.keycloak.m.crossplane.io ${OAPIP_CLIENT_ID}
+kubectl -n iam-management delete secret ${OAPIP_CLIENT_ID}-keycloak-client
 helm -n processing uninstall zoo-project-dru
 kubectl delete ns processing
 ```
-
-### Additional Cleanup
-
-- **Delete Persistent Volume Claims (PVCs):**
-
-  ```bash
-  kubectl -n processing delete pvc -l app.kubernetes.io/instance=zoo-project-dru
-  ```
 
 ---
 ## Further Reading

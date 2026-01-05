@@ -858,7 +858,101 @@ Navigate between each of the tabs:
 * **Data**<br>
   _Provides a file browser onto the object storage bucket(s) the user has access to._
 
-#### 7. (optional) Delete Workspace via the Workspace API
+#### 7. Workspace vCluster
+
+If the workspace was created with a vCluster-enabled Datalab, you can access the vCluster from within the Datalab terminal and VS Code (`Editor`) environments. Kubernetes tooling such as `kubectl` and `helm` are pre-installed within the Datalab environment.
+
+##### Explore vCluster Access via `Terminal`
+
+In the `Terminal` tab, you can verify access to the vCluster by running:
+
+```bash
+kubectl get pods -A
+```
+
+You should see (at minimum) the `kube-system` pods of the vCluster.
+
+##### Create a Custom Workload via `Editor`
+
+Using the `Editor` tab we can use the web IDE to create and apply some Kubernetes yaml within the vCluster.
+
+Open the terminal view with the key sequence <kbd>Ctrl-`</kbd> (backtick).
+
+Create the new file `nginx-test.yaml` with the following content:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test
+  labels:
+    app: nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+        - name: nginx-test
+          image: nginx
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-test
+  labels:
+    app: nginx-test
+spec:
+  selector:
+    app: nginx-test
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+```
+
+Deploy the test nginx deployment and service to the vCluster:
+
+```bash
+kubectl apply -f nginx-test.yaml
+```
+
+> deployment.apps/nginx-test created<br>
+> service/nginx-test created
+
+Check the deployment is running:
+
+```bash
+kubectl get svc,deploy,pods -l app=nginx-test
+```
+
+Once running, you can port-forward and use the VS Code Ports tab to connect with the nginx service:
+
+```bash
+kubectl port-forward svc/nginx-test 5000:80
+```
+
+VS Code automatically detects the forwarded port and adds it to the `Ports` tab - exposed via the URL `https://editor-ws-<username>-default.<ingress-host>/proxy/5000/`.
+
+Open the forwarded port by following the link in the `Ports` tab or open directly.
+
+Cleanup test resources...
+
+Stop the port-forwarding (<kbd>Ctrl-C</kbd> in the terminal) and delete the test resources:
+
+```bash
+kubectl delete -f nginx-test.yaml
+```
+
+#### 8. (optional) Delete Workspace via the Workspace API
 
 > The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.
 
@@ -868,7 +962,20 @@ This must be performed by a workspace `admin` user (e.g. `eoepcaadmin`).
 
 **Authenticate as `eoepcaadmin`**
 
-TBD
+```bash
+source ~/.eoepca/state
+ACCESS_TOKEN=$( \
+  curl -X POST "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    --silent --show-error \
+    -d "username=${KEYCLOAK_TEST_ADMIN}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${WORKSPACE_API_CLIENT_ID}" \
+    -d "client_secret=${WORKSPACE_API_CLIENT_SECRET}" \
+    | jq -r '.access_token' \
+)
+echo "Access Token: ${ACCESS_TOKEN:0:20}..."
+```
 
 **Delete the workspace**
 

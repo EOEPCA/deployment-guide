@@ -96,6 +96,12 @@ During the script execution, you will be prompted to provide:
 - **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
     - *Default*: `standard`
     > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
+- **`RESOURCE_REGISTRATION_ENABLE_OIDC`**: Whether the Resource Registration endpoints should be protected via OIDC authentication.
+    - *Default*: `yes`
+- **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`**: Whether the Resource Registration target services for resource registration are protected via OIDC authentication. In this case the Resource Registration (API and harvester) must act as OIDC clients to authenticate against these services.
+    - *Default*: `yes`
+- **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
+    - *Default*: `resource-registration`
 
 ### 2. Apply Kubernetes Secrets
 
@@ -118,6 +124,12 @@ If you want to harvest Landsat data, you'll need credentials from [USGS Machine-
 3. Create a token with the `M2M API` scope
 4. Enter these credentials when prompted by the script
 
+#### CDSE Credentials (for Sentinel harvesting)
+
+If you plan to harvest Sentinel data from the Copernicus Data Space Ecosystem (CDSE), you'll need to provide CDSE credentials:
+
+TBD
+
 ### 3. Deploy the Registration API Using Helm
 
 The Registration API provides a RESTful interface through which resources can be directly registered, updated, or deleted.
@@ -127,7 +139,7 @@ Deploy the Registration API using the generated values file:
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-dev11 \
+  --version 2.0.0-dev12 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -164,7 +176,7 @@ Deploy the worker that executes Landsat harvesting tasks:
 
 ```bash
 helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-harvester \
-  --version 2.0.0-rc2 \
+  --version 2.0.0-rc3 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-landsat.yaml
@@ -182,6 +194,69 @@ Verify all pods are running:
 kubectl get pods -n resource-registration
 ```
 
+### 6. Create the Keycloak Client for Resource Registration
+
+A Keycloak client is required for Resource Registration for two purposes:
+
+1. We want to protect the Resource Registration endpoints via OIDC<br>
+   _Ref. `RESOURCE_REGISTRATION_ENABLE_OIDC`_
+2. The Resource Registration needs to connect with other services that are protected via OIDC (e.g., resource-catalogue, eoapi)<br>
+   _Ref. `RESOURCE_REGISTRATION_PROTECTED_TARGETS`_
+
+> If neither of these apply, you can skip this step.
+
+The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: ${RESOURCE_REGISTRATION_IAM_CLIENT_SECRET}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
+    name: Resource Registration
+    description: Resource Registration OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: ${HTTP_SCHEME}://registration-api.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://registration-api.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://registration-api.${INGRESS_HOST}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
+```
+
 ---
 
 ## Validation and Usage
@@ -196,12 +271,18 @@ bash validation.sh
 ### Access Points
 
 **Registration API:**
+
+Service root:
+
 ```bash
 source ~/.eoepca/state
-# Open API endpoint
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/"
+```
 
-# API documentation
+Swagger / OpenAPI documentation:
+
+```bash
+source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/openapi?f=html"
 ```
 
@@ -215,17 +296,41 @@ xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-r
 
 ### Registering Resources
 
-The Registration API provides OGC API Processes interfaces:
+The Registration API provides an OGC API Processes service, through which it exposes the _Registration API_ interfaces:
 
 * Registration: `POST /processes/register/execution`
 * De-registration: `POST /processes/deregister/execution`
 
+#### (if needed) Obtain an Access Token as `eoepcauser`
+
+If the Resource Registration endpoints are protected via OIDC, obtain an access token for the `eoepcauser`:
+
+```bash
+source ~/.eoepca/state
+# Authenticate as test user `eoepcauser`
+ACCESS_TOKEN=$( \
+  curl --silent --show-error \
+    -X POST \
+    -d "username=${KEYCLOAK_TEST_USER}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${RESOURCE_REGISTRATION_IAM_CLIENT_ID}" \
+    -d "client_secret=${RESOURCE_REGISTRATION_IAM_CLIENT_SECRET}" \
+    "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" | jq -r '.access_token' \
+)
+echo "Access Token: ${ACCESS_TOKEN:0:20}..."
+```
+
 #### Example - Registering a Collection
 
-Register a STAC Collection for Landsat data:
+This example registers the STAC Collection `landsat-ot-c2-l2` resource into the EOEPCA Resource Catalogue instance - representing the `Landsat 8-9 OLI/TIRS Collection 2 Level-2`. This collection is used in later steps as a target for harvesting of some example Landsat data.
+
+The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block.
+
 ```bash
 source ~/.eoepca/state
 curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
+  ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
   -d @- <<EOF
 {
@@ -240,6 +345,10 @@ EOF
 #### Validate Registration
 
 Check job status:
+
+> If required, authenticate to the Registration API - e.g. as user `eoepcauser`.<br>
+> You should see a new job with the status `COMPLETED`. 
+
 ```bash
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/jobs"
@@ -255,26 +364,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/landsa
 
 ### Using the Registration Harvester
 
-#### Deploy Harvesting Workflows
-
-Deploy the Landsat harvesting workflows to Flowable:
-
-```bash
-source ~/.eoepca/state
-# Main workflow
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
-
-# Sub-workflow for scene ingestion
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
-```
-
-#### Example - Deploy Workflow for Landsat harvesting
+#### Deploy Workflow for Landsat harvesting
 
 Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:
 
@@ -288,6 +378,25 @@ Earlier in this page we deployed the Landsat harvester worker, which is implemen
 
 To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.
 
+**Main workflow `landsat.bpmn`**
+
+```bash
+source ~/.eoepca/state
+curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+  -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
+```
+
+**Sub-workflow `landsat-scene-ingestion.bpmn` for individual scene ingestion**
+
+```bash
+source ~/.eoepca/state
+curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+  -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
+```
 
 #### Execute Landsat Harvesting
 
@@ -333,11 +442,14 @@ EOF
 #### Monitor Harvesting Progress
 
 **Check worker logs:**
+
 ```bash
 kubectl -n resource-registration logs -f deploy/registration-harvester-worker-landsat
 ```
 
 Use `Ctrl-C` to exit the log stream.
+
+> Note that the harvesting may take some time, depending on download speeds and the number of scenes to be harvested. Therefore the following monitoring steps may be subject to delay.
 
 **Monitor process instances:**
 ```bash
@@ -417,7 +529,10 @@ Deployment of these additional harvesters follows a similar pattern but requires
 ## Uninstallation
 
 Remove all Resource Registration components:
+
 ```bash
+source ~/.eoepca/state
+
 # Remove workers
 helm uninstall registration-harvester-worker-landsat -n resource-registration
 
@@ -429,6 +544,10 @@ kubectl delete -f registration-harvester/generated-eodata-server.yaml 2>/dev/nul
 # Remove core components
 helm uninstall registration-harvester-api-engine -n resource-registration
 helm uninstall registration-api -n resource-registration
+
+# Remove IAM resources
+kubectl delete client.openidclient.keycloak.m.crossplane.io/${RESOURCE_REGISTRATION_IAM_CLIENT_ID} -n iam-management
+kubectl delete secret/${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client -n iam-management
 
 # Remove namespace (optional - will delete all data)
 kubectl delete namespace resource-registration

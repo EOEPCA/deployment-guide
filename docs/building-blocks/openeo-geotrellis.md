@@ -145,25 +145,43 @@ oidc_providers = [
 ]
 ```
 
-To support this configuration, create the `openeo-public` client in Keycloak using the `create-client.sh` script:
+A Keycloak client is required for the ingress protection of the Processing BB openEO Geotrellis Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
-bash ../../utils/create-client.sh
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: ${OPENEO_CLIENT_ID}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: ${OPENEO_CLIENT_ID}
+    name: openEO Geotrellis Engine
+    description: openEO Geotrellis Engine OIDC
+    enabled: true
+    accessType: PUBLIC
+    rootUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    validRedirectUris:
+      - "/*"
+      - "https://editor.openeo.org/*"
+    webOrigins:
+      - "+"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+EOF
 ```
 
-When prompted:
-
-- **Keycloak Admin Username and Password**: Enter the credentials of your Keycloak admin user (these are also in `~/.eoepca/state` if you have them set)
-- **Keycloak base domain**: e.g. `auth.example.com`
-- **Realm**: Typically `eoepca`
-- **Confidential Client?**: specify `false` to create a PUBLIC client
-- **Client ID**: Use `openeo-public` or what you named the client in the configuration script (check `~/.eoepca/state`)
-- **Client name** and **description**: Provide any helpful text (e.g., "OpenEO Public Client")
-- **Subdomain**: Use `openeo`
-- **Additional Subdomains**: Leave blank
-- **Additional Hosts**: Add `editor.openeo.org` to allow integration with the openEO Web Editor
-
-After it completes, you should see a JSON snippet confirming the newly created client.
+The `Client` should be created successfully.
 
 ---
 
@@ -278,11 +296,7 @@ The authentication method depends on whether you enabled OIDC during configurati
 
 > **Note:** This section applies only if you enabled OIDC authentication. For basic authentication deployments, skip directly to submitting jobs using basic auth headers.
 
-This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`).  
-If needed, run the `create-user.sh` script to create a test user:
-```bash
-bash ../../utils/create-user.sh
-```
+This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`). See `IAM` section [Create Test Users](./iam/main-iam.md#6-create-test-users) for creation of the test users assumed by this guide.
 
 Request the access token:
 
