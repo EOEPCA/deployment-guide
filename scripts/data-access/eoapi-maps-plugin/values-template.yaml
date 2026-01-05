@@ -10,10 +10,12 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
       - maps.{{ getenv "INGRESS_HOST" }}
     secretName: data-access-maps-tls
+  {{- end }}
 resources:
   requests:
     memory: "256Mi"

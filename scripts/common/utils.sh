@@ -162,11 +162,14 @@ check() {
 
 ask_yes_no() {
     local message="$1"
+
     while true; do
         read -p "$message (yes/no): " RESPONSE
         if [[ "$RESPONSE" == "yes" ]]; then
+            add_to_state_file "$message" "yes"
             return 0
         elif [[ "$RESPONSE" == "no" ]]; then
+            add_to_state_file "$message" "no"
             return 1
         else
             echo "Please answer 'yes' or 'no'."

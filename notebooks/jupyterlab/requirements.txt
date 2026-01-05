@@ -6,3 +6,6 @@ folium
 geolinks
 tifffile
 pystac
+pystac-client
+odc
+odc-stac

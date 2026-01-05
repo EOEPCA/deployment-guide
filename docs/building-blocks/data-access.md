@@ -102,6 +102,8 @@ During the script execution, you will be prompted to provide:
     - _Example_: `example.com`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes
     - _Example_: `standard`
+- **`CLUSTER_ISSUER`**: Cluster issuer for TLS certificates
+    - _Example_: `letsencrypt-prod`
 - **`S3_HOST`**: Host URL for MinIO or S3-compatible storage
     - _Example_: `minio.example.com`
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage
@@ -173,7 +175,7 @@ pgstacBootstrap:
 bash apply-secrets.sh
 ```
 
-#### Deploy PostgreSQL Operator (if using internal)
+#### Deploy PostgreSQL Operator (if using internal database)
 
 > If using the external PostgreSQL option, skip this step.
 

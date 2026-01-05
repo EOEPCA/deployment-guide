@@ -38,7 +38,7 @@ publicUrl: https://eoapi.{{ getenv "INGRESS_HOST" }}/manager/
 stacApi: https://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
 primaryColor: "#005ACD"
 secondaryColor: "#048A81"
-{{- if eq (getenv "ENABLE_IAM") "yes" }}
+{{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
   providerUrl: {{ getenv "KEYCLOAK_URL" }}
   clientId: {{ getenv "KEYCLOAK_CLIENT_ID" }}
@@ -58,7 +58,7 @@ publicUrl: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/manage
 stacApi: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
 primaryColor: "#005ACD"
 secondaryColor: "#048A81"
-{{- if eq (getenv "ENABLE_IAM") "yes" }}
+{{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
   providerUrl: {{ getenv "KEYCLOAK_URL" }}
   clientId: {{ getenv "KEYCLOAK_CLIENT_ID" }}

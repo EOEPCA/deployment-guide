@@ -7,10 +7,10 @@ source "$HOME/.eoepca/state"
 check_pods_running "data-access" "" 5
 
 # Check services
-check_service_exists "data-access" "raster"
-check_service_exists "data-access" "stac"
-check_service_exists "data-access" "vector"
-check_service_exists "data-access" "doc-server-eoapi"
+check_service_exists "data-access" "eoapi-raster"
+check_service_exists "data-access" "eoapi-stac"
+check_service_exists "data-access" "eoapi-vector"
+check_service_exists "data-access" "eoapi-doc-server"
 
 check_service_exists "data-access" "eoapi-support-prometheus-server" "Skipping: eoapi-support not found." || true
 check_service_exists "data-access" "eoapi-support-grafana" "Skipping: eoapi-support not found." || true

@@ -259,21 +259,6 @@ kubectl get all -n resource-health
 
 ---
 
-## Deployment Guide Documentation (Improved Usage Section)
-
-```markdown
-### 4. Monitor the Deployment
-
-Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
-
-After the Helm installation finishes, check that all pods are running in the **resource-health** namespace:
-
-```bash
-kubectl get all -n resource-health
-```
-
----
-
 ## Validation
 
 1. **Run the validation script**:

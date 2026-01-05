@@ -206,6 +206,8 @@ Save this password securely for the next step.
 
 #### 4.3 Access the OAuth Application Settings
 
+Navigate to `/admin/applications/new` or follow these steps:
+
 1. In the bottom-left corner of GitLab, select **Admin**.
 2. In the Admin Area sidebar, click on **Applications**.
 3. Then click **Add New Application** to create a new OAuth app.
