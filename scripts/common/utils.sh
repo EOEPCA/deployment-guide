@@ -166,10 +166,8 @@ ask_yes_no() {
     while true; do
         read -p "$message (yes/no): " RESPONSE
         if [[ "$RESPONSE" == "yes" ]]; then
-            add_to_state_file "$message" "yes"
             return 0
         elif [[ "$RESPONSE" == "no" ]]; then
-            add_to_state_file "$message" "no"
             return 1
         else
             echo "Please answer 'yes' or 'no'."
@@ -227,7 +225,7 @@ configure_http_scheme() {
 
 configure_cert() {
     if [ -z "${USE_CERT_MANAGER-}" ]; then
-        ask_yes_no "Do you use automatic certificate issuance with cert-manager (yes/no)?"
+        ask_yes_no "Do you use automatic certificate issuance with cert-manager?"
         if [ "$?" == 1 ]; then
             add_to_state_file "USE_CERT_MANAGER" "no"
         else
