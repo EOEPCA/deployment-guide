@@ -151,6 +151,15 @@ cd tests
 python processing-tools.py
 ```
 
+### Relevance to OpenEO
+
+Datacube Access acts as a filtered data layer for [openEO](https://openeo.org/) backends by exposing only collections with proper datacube metadata (`cube:dimensions`, `cube:variables`). This ensures openEO can reliably load data into multi-dimensional arrays and perform operations.
+
+The dimensional metadata (spatial, temporal, spectral) enables openEO to validate process graphs and maintain dimension compatibility throughout processing chains. Without this filtering, openEO backends would encounter heterogeneous STAC collections lacking the structure needed for multi-dimensional processing.
+
+For example, an openEO workflow calculating NDVI time series needs to know exact band names, temporal resolution, and dimension relationships - all provided by the datacube metadata.
+
+
 ---
 
 ## Further Reading & Official Docs
@@ -159,3 +168,4 @@ python processing-tools.py
 - [OGC GeoDataCube API](https://m-mohr.github.io/geodatacube-api/)
 - [STAC Datacube Extension](https://github.com/stac-extensions/datacube)
 - [openEO Documentation](https://openeo.org/documentation/1.0/)
+
