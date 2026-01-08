@@ -41,6 +41,7 @@ spec:
           ssl_verify: false
 {{- end }}
 ---
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -69,3 +70,4 @@ spec:
   secret:
     name: registration-api-tls
     namespace: resource-registration
+{{- end }}
