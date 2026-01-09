@@ -461,7 +461,7 @@ If not already deployed, install _Kyverno_ using helm...
 helm repo add kyverno https://kyverno.github.io/kyverno/
 helm repo update kyverno
 helm upgrade -i kyverno kyverno/kyverno \
-  --version 3.4.1 \
+  --version 3.6.2 \
   --namespace kyverno \
   --create-namespace
 ```
@@ -495,7 +495,7 @@ spec:
               +(k8s.apisix.apache.org/enable-cors): "true"
               +(k8s.apisix.apache.org/enable-websocket): "true"
               +(k8s.apisix.apache.org/http-to-https): "true"
-              +(k8s.apisix.apache.org/upstream-read-timeout): 3600s
+              +(k8s.apisix.apache.org/upstream-read-timeout): "3600s"
 EOF
 ```
 
@@ -768,7 +768,7 @@ curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYC
   | jq
 ```
 
-> The details of the `storage` and the `datalab` associated with the workspace are returneed.
+> The details of the `storage` and the `datalab` associated with the workspace are returned.
 
 **Record the secret from the response for S3 access**
 
