@@ -2,17 +2,22 @@
 
 ## Introduction
 
-The **OGC API Processes Engine** provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the [ZOO-Project](https://zoo-project.github.io/docs/intro.html#what-is-zoo-project) `zoo-project-dru` implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 & 2.
+The **OGC API Processes Engine** lets users deploy, manage, and execute OGC Application Packages through a standardised API. It's built on the [ZOO-Project](https://zoo-project.github.io/docs/intro.html#what-is-zoo-project) `zoo-project-dru` implementation, which supports OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 & 2.
 
-- **Standardised Interfaces**: Implements OGC API Processes standards for interoperability.
-- **Application Deployment**: Supports deployment, replacement, and undeployment of applications.
-- **Execution Engine**: Applications execution backend. Can be Kubernetes/Calrissian, HPC/Toil and others.
+The engine supports multiple execution backends depending on your infrastructure:
+
+| Execution Engine | Backend | Best For |
+| --- | --- | --- |
+| **Calrissian** | Kubernetes jobs in dedicated namespaces | Pure Kubernetes environments |
+| **Toil** | HPC batch schedulers (HTCondor, Slurm, PBS, LSF, etc.) | Hybrid Kubernetes + HPC environments |
+
+Both backends use the same OGC API Processes interface - the difference is where the actual computation runs.
 
 ---
 
 ## Prerequisites
 
-Before deploying the **OGC API Processes Engine**, ensure you have the following:
+### Common Requirements
 
 | Component        | Requirement                            | Documentation Link                                                                            |
 | ---------------- | -------------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -21,21 +26,182 @@ Before deploying the **OGC API Processes Engine**, ensure you have the following
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
-| Stage-In S3      | Accessible                             |             [MinIO Deployment Guide](../prerequisites/minio.md)                                                                                  |
-| Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                                                      |
+| Stage-In S3      | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
+| Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
 
-**Clone the Deployment Guide Repository:**
+### Calrissian-Specific Requirements
 
+No additional requirements beyond the common prerequisites. Calrissian runs CWL workflows as Kubernetes jobs, so everything stays within your cluster.
+
+### Toil/HPC-Specific Requirements
+
+You'll need an HPC cluster with:
+
+- Container support ([Docker](https://www.docker.com/) or [Apptainer/Singularity](https://apptainer.org/))
+- Internet access from compute nodes (or local container registries and data repositories)
+- A [Toil WES service](https://toil.readthedocs.io/en/master/running/server/wes.html) endpoint
+
+Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/htcondor/), [Slurm](https://www.schedmd.com/), [PBS/Torque/PBS Pro](#TODO) [LSF](https://en.wikipedia.org/wiki/Platform_LSF), and [Grid Engine](http://www.univa.com/oracle).
+
+#### Setting up a Local HTCondor (Development/Testing Only)
+
+> **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead.
+
+If you don't have access to an HPC cluster and want to test the Toil integration locally, you can install [MiniHTCondor](https://htcondor.org/), a single-node HTCondor package designed for testing.
+
+**Install HTCondor using the official script:**
+```bash
+# Download and run the HTCondor installer (installs minicondor by default)
+curl -fsSL https://get.htcondor.org | sudo /bin/bash -s -- --no-dry-run
+
+# Verify HTCondor is running
+condor_status
 ```
+
+You should see output showing your local machine as a condor slot. If `condor_status` returns an error, check that the condor service is running:
+```bash
+sudo systemctl status condor
+```
+
+**Configure Docker for HTCondor jobs:**
+
+HTCondor needs to run containers for CWL workflows. Add your user to the docker group and create a wrapper to mount `/etc/hosts` for DNS resolution:
+
+```bash
+# Add your user to the docker group
+sudo usermod -a -G docker $USER
+
+# Create a docker wrapper for DNS resolution in containers
+sudo tee /usr/local/bin/docker > /dev/null << 'EOF'
+#!/usr/bin/python3
+import sys, os
+n = sys.argv
+n[0] = "/usr/bin/docker"
+if "run" in n:
+    n.insert(n.index("run") + 1, "-v=/etc/hosts:/etc/hosts:ro")
+os.execv(n[0], n)
+EOF
+sudo chmod +x /usr/local/bin/docker
+
+# Log out and back in for the docker group change to take effect
+```
+
+After logging back in, verify HTCondor can see your machine:
+```bash
+condor_status
+```
+
+#### Setting up Toil WES
+
+> **Already have a Toil WES service?** Skip to [Clone the Deployment Guide Repository](#clone-the-deployment-guide-repository).
+
+If you need to set up Toil WES on your HPC cluster (or local MiniCondor), follow these steps. The examples use HTCondor, but the process is similar for other schedulers.
+
+**Install Toil**
+
+Install Toil in a Python virtual environment on storage accessible to all compute nodes:
+```bash
+# Create directories for Toil venv and job storage
+mkdir -p ~/toil ~/toil/storage
+python3 -m venv --prompt toil ~/toil/venv
+
+# Activate and install Toil with required extras
+source ~/toil/venv/bin/activate
+python3 -m pip install toil[cwl,htcondor,server,aws] htcondor
+```
+
+> **Note:** Replace `htcondor` with your batch system if different (e.g., `toil[cwl,slurm,server,aws]` for Slurm).
+
+**Test the Installation**
+
+Run a sample CWL workflow to verify everything works:
+```bash
+source ~/toil/venv/bin/activate
+
+# Download a test application
+wget https://github.com/EOEPCA/deployment-guide/raw/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl
+
+# Create test directories and parameters
+jobid=$(uuidgen)
+mkdir -p ~/toil/storage/test/{work_dir,job_store}
+cat <<EOF > ~/toil/storage/test/work_dir/$jobid.params.yaml
+fn: resize
+url: https://eoepca.org/media_portal/images/logo6_med.original.png
+size: 50%
+EOF
+
+# Run the test (adjust --batchSystem for your scheduler)
+toil-cwl-runner \
+    --batchSystem htcondor \
+    --workDir ~/toil/storage/test/work_dir \
+    --jobStore ~/toil/storage/test/job_store/$jobid \
+    convert-url-app.cwl#convert-url \
+    ~/toil/storage/test/work_dir/$jobid.params.yaml
+```
+
+If successful, you'll see JSON output representing a STAC Item. Clean up:
+```bash
+rm -rf ~/toil/storage/test convert-url-app.cwl
+```
+
+**Start the Toil WES Service**
+
+The WES service needs RabbitMQ for job queuing and Celery for queue management.
+
+Start RabbitMQ:
+
+```bash
+docker run -d --restart=always --name toil-wes-rabbitmq -p 127.0.0.1:5672:5672 rabbitmq:alpine
+```
+
+Start Celery:
+
+```bash
+source ~/toil/venv/bin/activate
+celery --broker=amqp://guest:guest@127.0.0.1:5672// -A toil.server.celery_app multi start w1 \
+   --loglevel=INFO --pidfile=$HOME/celery.pid --logfile=$HOME/celery.log
+```
+
+Start the Toil WES server:
+
+```bash
+source ~/toil/venv/bin/activate
+mkdir -p $HOME/toil/storage/workdir $HOME/toil/storage/workflows
+
+TOIL_WES_BROKER_URL=amqp://guest:guest@127.0.0.1:5672// nohup toil server \
+    --host 0.0.0.0 \
+    --work_dir $HOME/toil/storage/workflows \
+    --opt=--batchSystem=htcondor \
+    --opt=--workDir=$HOME/toil/storage/workdir \
+    --logFile $HOME/toil.log \
+    --logLevel INFO \
+    -w 1 &>$HOME/toil_run.log </dev/null &
+
+echo "$!" > $HOME/toil.pid
+sleep 5
+```
+
+> **Note:** Adjust `--batchSystem=htcondor` to match your scheduler.
+
+**Verify the WES Service**
+
+```bash
+curl -s http://localhost:8080/ga4gh/wes/v1/service-info | jq
+```
+
+You should see JSON service information. Your WES endpoint URL will be:
+```
+http://<your-hpc-host>:8080/ga4gh/wes/v1/
+```
+
+## Clone the Deployment Guide Repository
+```bash
 git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/processing/oapip
 ```
 
-**Validate your environment:**
-
-Run the validation script to ensure all prerequisites are met:
-
-```
+Validate your environment:
+```bash
 bash check-prerequisites.sh
 ```
 
@@ -44,12 +210,11 @@ bash check-prerequisites.sh
 ## Deployment
 
 ### Run the Configuration Script
-
 ```bash
 bash configure-oapip.sh
 ```
 
-**Configuration Parameters**
+### Common Configuration Parameters
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
@@ -57,84 +222,76 @@ bash configure-oapip.sh
     - *Example*: `letsencrypt-http01-apisix`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
-    
-**Workspace Integration Configuration:**
 
-The OAPIP engine supports two possible integrations with object storage for stage-out of processing results:
+### Workspace Integration
 
-* With the EOEPCA+ Workspace BB - in which case results are written directly to the user's workspace bucket.
-* With a dedicated S3 bucket - in which case results are written to a pre-configured (shared) S3 bucket.
+The engine supports two options for stage-out of processing results:
 
-Workspace integration is controlled via the following parameter:
+* **With the EOEPCA+ Workspace BB** - results go directly to the user's workspace bucket
+* **With a dedicated S3 bucket** - results go to a pre-configured shared bucket
 
-- **`USE_WORKSPACE_API`**: Whether the processing stage-out should integrate with the user's Workspace object storage for persistence of processing results
+This is controlled by:
 
-Assumptions regarding integration with the Workspace BB:
+- **`USE_WORKSPACE_API`**: Set to `true` to integrate with user Workspace storage
 
-* The Workspace BB has already been deployed in the cluster.
-* The `username` of the user invoking the processing execution is used to select the appropriate workspace bucket - via the workspace following the naming convention `ws-<username>`. The processing engine determines the username from the JWT `Bearer` token presented in the `Authorization` header of the request. In the case that no token is presented (i.e. open service), then the username is taken from the path prefix of the request - e.g. `/<username>/ogc-api/processes/...`.
+If using Workspace integration:
 
-**Stage-Out S3 Configuration:**
+* The Workspace BB must already be deployed
+* The username from the JWT Bearer token (or path prefix for open services) determines which workspace bucket to use, following the `ws-<username>` naming convention
 
-Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the [MinIO Deployment Guide](../prerequisites/minio.md). These values should already be in your EOEPCA+ state file if you followed the main deployment steps.
+### Stage-Out S3 Configuration
 
-- **`S3_ENDPOINT`**, **`S3_ACCESS_KEY`**, **`S3_SECRET_KEY`**, **`S3_REGION`**: Credentials and location details for the S3 bucket used as Stage-Out storage.
+Ensure you have an S3-compatible object store set up. See the [MinIO Deployment Guide](../prerequisites/minio.md) if needed.
 
-**Stage-In S3 Configuration:**
+- **`S3_ENDPOINT`**, **`S3_ACCESS_KEY`**, **`S3_SECRET_KEY`**, **`S3_REGION`**: Credentials for Stage-Out storage
 
-If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), specify these separately:
+### Stage-In S3 Configuration
+
+If your input data is hosted separately from output storage:
 
 - **`STAGEIN_S3_ENDPOINT`**, **`STAGEIN_S3_ACCESS_KEY`**, **`STAGEIN_S3_SECRET_KEY`**, **`STAGEIN_S3_REGION`**
 
-**OIDC Configuration:**
+### OIDC Configuration
 
-If you are using the APISIX Ingress Controller, you will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the [OIDC Configuration](#optional-oidc-configuration) section after deployment.
+> **Note:** OIDC protection requires the **APISIX** Ingress Controller. If you're using a different ingress controller, OIDC will not be available and you can skip this configuration.
 
-When prompted for the `Client ID` we recommend setting it to `oapip-engine`.
+If using APISIX, you can enable OIDC authentication during configuration. When prompted for the `Client ID`, we recommend `oapip-engine`.
 
-For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
+See the [IAM Building Block](./iam/main-iam.md) guide for IAM setup, and [Enable OIDC with Keycloak](#optional-enable-oidc-with-keycloak) below for post-deployment configuration.
 
-**Execution Engine Configuration:**
+### Calrissian Configuration
 
-Different Execution Engines can be selected, according to the type of backend. The currently supported engines and their additional dependencies are the following:
+When prompted for execution engine, select `calrissian`. You'll need to configure:
 
-| Execution Engine | Backend | Additional dependencies |
-| --- | --- | --- |
-| calrissian | Executes applications as Kubernetes jobs in dedicated namespaces, using [Calrissian](https://duke-gcb.github.io/calrissian/) | None |
-| toil | Executes application as HPC jobs on a variety of HPC batch scedulers, using [Toil](https://toil.ucsc-cgl.org/) | A [Toil WES Service](https://toil.readthedocs.io/en/master/running/server/wes.html) |
-
-The following Execution Engine specific configuration parameters needs to be setup:
-
-For Calrissian:
-
-- **`NODE_SELECTOR_KEY`**: Determine which nodes will run the processing workflows.
+- **`NODE_SELECTOR_KEY`**: Determines which nodes run processing workflows
     - *Example*: `kubernetes.io/os`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
-- **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
+- **`NODE_SELECTOR_VALUE`**: Value for the node selector
     - *Example*: `linux`
 
-For Toil:
+### Toil Configuration
 
-- **`OAPIP_TOIL_WES_URL`**: The Toil WES service endpoint, including the path. Must be ending with `/ga4gh/wes/v1/`
-    - *Example*: `https://toil.hpc.host/ga4gh/wes/v1/`
-    - *Read more*: [Zoo Wes Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
-- **`OAPIP_TOIL_WES_USER`**: The Toil WES service user
+When prompted for execution engine, select `toil`. You'll need to configure:
+
+- **`OAPIP_TOIL_WES_URL`**: Your Toil WES endpoint, must end with `/ga4gh/wes/v1/`
+    - *Example*: `http://toil.hpc.local:8080/ga4gh/wes/v1/`
+    - *Read more*: [Zoo WES Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
+- **`OAPIP_TOIL_WES_USER`**: WES service username
     - *Example*: `test`
-- **`OAPIP_TOIL_WES_PASSWORD`**: The Toil WES service password (must but be in htpasswd format)
+- **`OAPIP_TOIL_WES_PASSWORD`**: WES service password (htpasswd format)
     - *Example*: `$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG`
 
+> **Note:** If you set up Toil WES without authentication (as in the setup guide above), use placeholder credentials - they'll be ignored.
 
----
-
-### Deploy the OAPIP Engine
-
-#### Deploy the Helm Chart
-
+### Deploy the Helm Chart
 ```bash
 helm repo add zoo-project https://zoo-project.github.io/charts/
 helm repo update zoo-project
+```
+
+```bash
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.8.0 \
+  --version 0.8.3 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace
@@ -144,18 +301,15 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 ## Optional: Enable OIDC with Keycloak
 
-> This option is only available when using the **APISIX** Ingress Controller as it relies upon APISIX to act as the policy enforcement point. If you are using a different Ingress Controller, skip to the [Validation](#validation) section.
+> This requires the **APISIX** Ingress Controller. If you're using a different Ingress Controller, skip to [Validation](#validation).
 
-If you **do not** wish to use OIDC IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section. You can still work with the OAPIP Engine but access will not be restricted.
+Skip this section if you don't need IAM protection right now - the engine will work, just without access restrictions.
 
-If you **do** want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).
+To protect OAPIP endpoints with Keycloak tokens and policies, follow these steps after enabling OIDC in the configuration script.
 
-> Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
+> First, ensure you've followed the [IAM Deployment Guide](./iam/main-iam.md) and have Keycloak running.
 
 ### Create a Keycloak Client
-
-A Keycloak client is required for the ingress protection of the Processing BB OAPIP Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
-
 ```bash
 source ~/.eoepca/state
 cat <<EOF | kubectl apply -f -
@@ -206,147 +360,78 @@ spec:
 EOF
 ```
 
-The `Client` should be created successfully.
+### Protect the User's Processing Context
 
-### Protect the user's processing context
+The ZOO-Project uses a path prefix to establish user context (e.g., `/<username>/ogc-api/processes/...`). You can protect this so only the owning user can access it.
 
-The OAPIP Engine is provided by the [ZOO-Project](https://zoo-project.org/) implementation, which uses a path prefix to establish a context within the processing service - such as `/<username>` or `/<project>`.
-
-Protection can be applied so that the context is accessible only by the owning user(s).
-
-To demonstrate, we will apply protection for the `KEYCLOAK_TEST_USER` used in this guide - nominal username `eoepcauser`. See `IAM` section [Create Test Users](./iam/main-iam.md#6-create-test-users) for creation of the test users assumed by this guide.
-
-Similarly to the `Client` creation, we will use the Crossplane Keycloak provider to establish the protection using CRDs. The protection comprises:
-
-* Create a Keycloak group `<username>-group`
-* Add the user (`eoepcauser`) to the group
-* Configure the `oapip-engine` Keycloak client `Authorization`, comprising:
-    * A `Resource` representing the user's processing context - i.e. `/<username>/*`
-    * A `Policy` requiring membership of the group `<username>-group`
-    * A `Permission` attaching the `Policy` to the `Resource` - and so completing the protection
-
+This example protects the context for `eoepcauser` (see [Create Test Users](./iam/main-iam.md#6-create-test-users)):
 ```bash
 source ~/.eoepca/state
 export OAPIP_USER="${KEYCLOAK_TEST_USER}"
 envsubst < protect-oapip-user.yaml | kubectl apply -f -
 ```
 
-This should indicate successful creation of the resources: `eoepcauser-group`, `eoepcauser-membership`, `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
+This creates: `eoepcauser-group`, `eoepcauser-membership`, `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
 
 ### Create APISIX Route Ingress
-
-If you are using APISIX Ingress controller, apply the ingress:
-
 ```bash
 kubectl apply -f generated-ingress.yaml
 ```
 
-### Confirm Protection (APISIX Only)
+### Confirm Protection
 
-> Resource protection is only available when using the APISIX Ingress Controller.
-
-With the resource and permission created, attempts to access the protected endpoint (`/eoepcauser/*`) without a valid token or with insufficient privileges should be denied. You can test it by:
-
-> Wait for the ingress and associated TLS to be established before running the following.
-
-```
+> Wait for the ingress and TLS to be established first.
+```bash
 bash resource-protection-validation.sh
 ```
 
-If this script shows `401 Authorization` errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.
+If you see `401 Authorization` errors when using a valid token, check your token and resource protection configuration.
 
-For more detailed Keycloak testing (device flow, tokens, etc.), refer to [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
+For more detailed testing, see [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
 
 ---
 
 ## Validation
 
 ### Automated Validation
-
-This script performs a series of automated tests to validate the deployment.
-
 ```bash
 bash validation.sh
 ```
 
 ### Web Endpoints
 
-Check access to the service web endpoints:
+Check these are accessible:
 
 * **ZOO-Project Swagger UI** - `https://zoo.${INGRESS_HOST}/swagger-ui/oapip/`
 * **OGC API Processes Landing Page** - `https://zoo.${INGRESS_HOST}/ogc-api/processes/`
 
-
 ### Expected Kubernetes Resources
-
-Ensure that all Kubernetes resources are running correctly.
-
 ```bash
 kubectl get pods -n processing
 ```
 
-**Expected Output:**
-
-- All pods should be in the `Running` state.
-- No pods should be in `CrashLoopBackOff` or `Error` states.
-
----
-
-### Via OGC API Processes
-
-Validate the operation of the `zoo` service via its OGC API Processes interfaces.
-
-We offer a sample application that can be used to exercise the deployed service:
-
-* `convert` - a very simple 'hello world' application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment
-
----
+All pods should be `Running` with no `CrashLoopBackOff` or `Error` states.
 
 ### Using the API
 
-This section provides a walkthrough the OGC API Processes endpoints to deploy, execute, monitor, and retrieve results from a sample application.
+This walkthrough covers deploying, executing, monitoring, and retrieving results from a sample application.
 
-> **Alternative Notebook Validation**
-> 
-> You can, instead, perform the walkthrough via a Jupyter Notebook - which can be invoked via the script:
-> 
-> ```bash
-> ../../../notebooks/run.sh
-> ```
-> 
-> This runs a local Jupyter server at `http://localhost:8888`. Open the <a href="http://localhost:8888/lab/tree/oapip/oapip.ipynb" target="_blank">OAPIP Engine Validation notebook</a> at path `/oapip/oapip.ipynb`.
+> **Prefer a notebook?** Run `../../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/oapip/oapip.ipynb" target="_blank">OAPIP Engine Validation notebook</a> at `http://localhost:8888`.
 
 #### Initialise Environment
-
-The following example commands assume use of `bash` shell.
-
 ```bash
 bash -l
-```
-
-Initialise environment variables used by the example commands.
-
-```bash
 source ~/.eoepca/state
-echo ${OAPIP_HOST}
 ```
 
-If you have OIDC enabled, run the `oapip-utils.sh` to generate a valid OIDC token that will be temporarily stored in your environment variables.
-
-This will ask you for the username and password for the user you added to the group to generate an access token.
-
+If OIDC is enabled, generate a token:
 ```bash
 source oapip-utils.sh
 ```
 
-> **_NOTE that the token is short-lived - so it may be necessary to repeat this step to refresh the token - in the case that the following commands fail unexpectedly_**
-
----
+> **Note:** Tokens are short-lived. Re-run this if later commands fail unexpectedly.
 
 #### List Processes
-
-Retrieve the list of available (currently deployed) processes.
-
 ```bash
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
@@ -354,14 +439,7 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-> This command will omit the `Authorization` header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the `source oapip-utils.sh` script to generate the `OAPIP_AUTH_HEADER` variable.
-
----
-
 #### Deploy Process `convert`
-
-Deploy the `convert` app...
-
 ```bash
 curl --silent --show-error \
   -X POST "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
@@ -378,8 +456,7 @@ curl --silent --show-error \
 EOF
 ```
 
-Check the `convert` application is deployed...
-
+Verify it's deployed:
 ```bash
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
@@ -387,10 +464,7 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
----
-
 #### Execute Process `convert`
-
 ```bash
 JOB_ID=$(
   curl --silent --show-error \
@@ -413,12 +487,7 @@ EOF
 echo "JOB ID: ${JOB_ID}"
 ```
 
----
-
 #### Check Execution Status
-
-The `JOB ID` is used to monitor the progress of the job execution - most notably the status field that indicates whether the job is in-progress (`running`), or its completion status (`successful` / `failed`). Note that the full URL for job monitoring is also returned in the `Location` header of the http response to the execution request.
-
 ```bash
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/jobs/${JOB_ID}" \
@@ -426,12 +495,11 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
----
+The `status` field shows `running`, `successful`, or `failed`.
 
 #### Check Execution Results
 
-Similarly, once the job is completed successfully, then details of the results (outputs) can be retrieved.
-
+Once the job completes successfully:
 ```bash
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/jobs/${JOB_ID}/results" \
@@ -439,24 +507,40 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
----
-
 #### Undeploy Process `convert`
-
 ```bash
-
 curl --silent --show-error \
   -X DELETE "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
 
+### Monitoring Jobs on HPC (Toil only)
+
+When using Toil, you can also monitor jobs directly on the HPC cluster:
+
+**Toil WES logs:**
+```bash
+tail -n 20 ~/celery.log
+```
+
+**HPC queue status:**
+
+For HTCondor:
+```bash
+condor_q -all
+```
+
+For Slurm:
+```bash
+squeue -u $USER
+```
+
 ---
 
 ## Uninstallation
 
-To remove the Processing BB OAPIP Engine from your cluster:
-
+### Remove the OAPIP Engine
 ```bash
 source ~/.eoepca/state
 export OAPIP_USER="${KEYCLOAK_TEST_USER}"
@@ -468,18 +552,47 @@ helm -n processing uninstall zoo-project-dru
 kubectl delete ns processing
 ```
 
+### Stop Toil WES (Toil only)
+
+If you set up Toil WES on your HPC cluster:
+```bash
+# Stop Toil server
+kill $(cat $HOME/toil.pid)
+
+# Stop Celery
+celery --broker=amqp://guest:guest@127.0.0.1:5672// -A toil.server.celery_app multi stop w1 \
+   --pidfile=$HOME/celery.pid
+
+# Stop RabbitMQ
+docker stop toil-wes-rabbitmq
+docker rm toil-wes-rabbitmq
+```
+
 ---
+
 ## Further Reading
 
+**General:**
+
 - [ZOO-Project DRU Helm Chart](https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru)
-- [EOEPCA+ Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
 - [EOEPCA+ Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
 - [OGC API Processes Standards](https://www.ogc.org/standards/ogcapi-processes)
 - [Common Workflow Language (CWL)](https://www.commonwl.org/)
+
+**Calrissian:**
+
 - [Calrissian Documentation](https://github.com/Duke-GCB/calrissian)
+- [EOEPCA+ Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
+
+**Toil:**
+
+- [Toil Documentation](https://toil.ucsc-cgl.org/)
+- [Toil WES Server Documentation](https://toil.readthedocs.io/en/master/running/server/wes.html)
+- [Zoo WES Runner Documentation](https://zoo-project.github.io/zoo-wes-runner/)
+- [EOEPCA+ Cookiecutter Template (WES)](https://github.com/EOEPCA/eoepca-proc-service-template-wes)
 
 ---
+
 ## Feedback
 
-If you have any issues or suggestions, please open an issue on the [EOEPCA+Deployment Guide GitHub Repository](https://github.com/EOEPCA/deployment-guide/issues).
-
+If you have any issues or suggestions, please open an issue on the [EOEPCA+ Deployment Guide GitHub Repository](https://github.com/EOEPCA/deployment-guide/issues).
