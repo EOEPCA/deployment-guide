@@ -19,6 +19,7 @@ pygeoapi:
 {{- else }}
   secret: {}
 {{- end }}
+  container_port: 8080
   config:
     server:
       url: {{ getenv "HTTP_SCHEME" }}://registration-api.{{ getenv "INGRESS_HOST" }}

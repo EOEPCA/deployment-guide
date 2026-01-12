@@ -13,7 +13,7 @@ spec:
         - /*
     backends:
       - serviceName: registration-api-service
-        servicePort: 80
+        servicePort: 8080
     plugins:
       - name: cors
         enable: true
