@@ -139,7 +139,7 @@ Deploy the Registration API using the generated values file:
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-dev12 \
+  --version 2.0.0-rc5 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
