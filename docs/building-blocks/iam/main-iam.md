@@ -117,13 +117,17 @@ source ~/.eoepca/state
 ACCESS_TOKEN=$( \
   curl -X POST "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/master/protocol/openid-connect/token" \
     --silent --show-error \
-    -d "username=${KEYCLOAK_ADMIN_USER=}" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     | jq -r '.access_token' \
 )
-echo "Access Token: ${ACCESS_TOKEN:0:20}..."
+if [ $? -eq 0 -a -n "$ACCESS_TOKEN" -a "$ACCESS_TOKEN" != "null" ]; then
+  echo "Access Token: ${ACCESS_TOKEN:0:20}..."
+else
+  echo "Error obtaining access token"
+fi
 ```
 
 **Create realm**
