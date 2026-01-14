@@ -12,6 +12,7 @@ check_service_exists "resource-registration" "registration-harvester-api-engine-
 check_service_exists "resource-registration" "registration-harvester-api-engine-flowable-rest"
 check_service_exists "resource-registration" "registration-harvester-api-engine-postgres"
 check_service_exists "resource-registration" "registration-harvester-worker-landsat-service"
+check_service_exists "resource-registration" "registration-harvester-worker-sentinel-service"
 
 # Check ingress
 #
