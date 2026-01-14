@@ -172,11 +172,36 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
   --values workspace-admin/generated-values.yaml
 ```
 
-> There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding. For example:
-> ```bash
-> kubectl -n workspace port-forward svc/workspace-admin-web 8000
-> ```
-> Then access it at `http://localhost:8000/`.
+Apply the APISIX route ingress:
+
+```bash
+kubectl apply -f workspace-admin/generated-ingress.yaml
+```
+
+Create a _ServiceAccount_ for accessing the Dashboard with 'viewing` permissions:
+
+```bash
+kubectl create serviceaccount dashboard-viewer -n workspace
+kubectl create rolebinding dashboard-viewer \
+  --clusterrole=view \
+  --serviceaccount=workspace:dashboard-viewer \
+  -n workspace
+```
+
+Generate a token for the `dashboard-viewer` ServiceAccount:
+
+```bash
+kubectl -n workspace create token dashboard-viewer
+```
+
+Copy the token to your clipboard and use it to log in to the Dashboard at:
+
+```bash
+source ~/.eoepca/state
+xdg-open "https://workspace-admin.${INGRESS_HOST}"
+```
+
+Switch to the namespace `workspace` using the selection box.
 
 ---
 

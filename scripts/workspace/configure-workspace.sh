@@ -51,6 +51,7 @@ export SERVICE_CIDR=$(kubectl get svc kubernetes -n default -o json | jq -r '.sp
 gomplate -f "workspace-api/values-template.yaml" -o "workspace-api/generated-values.yaml"
 gomplate -f "workspace-api/ingress-template.yaml" -o "workspace-api/generated-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate -f "workspace-admin/values-template.yaml" -o "workspace-admin/generated-values.yaml"
+gomplate -f "workspace-admin/ingress-template.yaml" -o "workspace-admin/generated-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate -f "workspace-dependencies/educates-values-template.yaml" -o "workspace-dependencies/educates-values.yaml"
 gomplate -f "workspace-pipeline/values-template.yaml" -o "workspace-pipeline/generated-values.yaml"
 
