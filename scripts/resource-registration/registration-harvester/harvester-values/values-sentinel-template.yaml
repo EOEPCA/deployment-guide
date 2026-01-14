@@ -3,7 +3,8 @@ harvester:
     name: registration-harvester-secret
   eodata:
     enabled: true
-    storageClass: {{ getenv "SHARED_STORAGECLASS" }}
+    reuseExistingVolume: eodata-sentinel
+    claimName: eodata-sentinel
   config:
     worker:
       log_level: INFO

@@ -4,7 +4,7 @@ source ../common/validation-utils.sh
 source "$HOME/.eoepca/state"
 
 # Check pods in resource-registration namespace
-check_pods_running "resource-registration" "" 4
+check_pods_running "resource-registration" "" 5
 
 # Check services
 check_service_exists "resource-registration" "registration-api-service"
