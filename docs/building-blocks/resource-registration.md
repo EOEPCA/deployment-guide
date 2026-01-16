@@ -188,7 +188,7 @@ helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-ha
 Deploy the worker that harvests Sentinel data from CDSE:
 
 ```bash
-helm upgrade -i registration-harvester-worker-sentinel eoepca/registration-harvester \
+helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-harvester \
   --version 2.0.0-rc3 \
   --namespace resource-registration \
   --create-namespace \
