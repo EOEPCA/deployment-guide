@@ -171,6 +171,47 @@ Deploy the ingress for the Flowable Engine:
 kubectl apply -f registration-harvester/generated-ingress.yaml
 ```
 
+#### Create an eodata Volume
+
+Harvested data will be stored into a ReadWriteMany volume shared by all harvester workers. This must be created first. In this example we use the hostpath provisioner, which is suitable for single-node development installations, but for production use this should be substituted with a scalable and reliable shared storage volume.
+
+To create the PV and PVC for this example use:
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: eodata
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ${SHARED_STORAGECLASS}
+  volumeMode: Filesystem
+  hostPath:
+    type: DirectoryOrCreate
+    path: /tmp/hostpath-provisioner/resource-registration/eodata
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eodata
+  namespace: resource-registration
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  volumeMode: Filesystem
+  volumeName: eodata
+EOF
+```
+
 #### Deploy Landsat Harvester Worker
 
 Deploy the worker that executes Landsat harvesting tasks:
@@ -401,51 +442,6 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 ---
 
 ### Using the Registration Harvester
-
-#### Create an eodata Volume
-
-Harvested data will be stored into a ReadWriteMany volume shared by all harvester workers. This must be created first. In this example we use the hostpath provisioner, which is suitable for single-node development installations, but for production use this should be substituted with a scalable and reliable shared storage volume. Due to Kubernetes' model of a one-to-one mapping between PersistentVolumes and PersistentVolumeClaims (and PVCs and Pods), one PersistentVolume must be created for each harvester but with all of them pointing to the same underlying storage.
-
-To create the Landsat and Sentinel harvester PVs for this guide:
-
-```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: eodata-landsat
-spec:
-  accessModes:
-  - ReadWriteMany
-  capacity:
-    storage: 100Gi
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: ${SHARED_STORAGECLASS}
-  volumeMode: Filesystem
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    type: DirectoryOrCreate
-    path: /tmp/hostpath-provisioner/resource-registration/eodata
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: eodata-sentinel
-spec:
-  accessModes:
-  - ReadWriteMany
-  capacity:
-    storage: 100Gi
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: ${SHARED_STORAGECLASS}
-  volumeMode: Filesystem
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    type: DirectoryOrCreate
-    path: /tmp/hostpath-provisioner/resource-registration/eodata
-EOF
-```
 
 #### Deploy Workflow for Landsat harvesting
 
