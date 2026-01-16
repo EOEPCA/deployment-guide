@@ -27,8 +27,8 @@ customConfig:
       workspace_prefix=ws
       workspace_catalog_register=false
 workflow:
-  defaultMaxRam: 1024
-  defaultMaxCores: 2
+  defaultMaxRam: "1024"
+  defaultMaxCores: "2"
   inputs:
   {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "toil" }}
     WES_URL: {{ getenv "OAPIP_TOIL_WES_URL" }}
