@@ -312,7 +312,7 @@ EOF
 
         # Wait for the deployment to be ready - which goes a long way to proving the PVC is usable
         # Also check the PVC status directly
-        local pvc_status=""
+        local pvc_status="Unbound"
         if kubectl rollout status deployment/pvc-consumer --timeout=20s &>/dev/null; then
             pvc_status=$(kubectl get pvc "${test_pvc_name}" -o jsonpath='{.status.phase}' 2>/dev/null)
         fi
