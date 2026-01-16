@@ -3,8 +3,8 @@ harvester:
     name: registration-harvester-secret
   eodata:
     enabled: true
-    reuseExistingVolume: eodata-landsat
-    claimName: eodata-landsat
+    createPVC: false
+    claimName: eodata
   config:
     worker:
       log_level: INFO

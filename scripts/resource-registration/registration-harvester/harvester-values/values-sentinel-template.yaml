@@ -3,8 +3,8 @@ harvester:
     name: registration-harvester-secret
   eodata:
     enabled: true
-    reuseExistingVolume: eodata-sentinel
-    claimName: eodata-sentinel
+    createPVC: false
+    claimName: eodata
   config:
     worker:
       log_level: INFO
@@ -18,7 +18,7 @@ harvester:
           handler: SentinelDiscoverHandler
         sentinel_continuous_data_discovery:
           module: worker.sentinel.tasks
-          handler: SentinelContinuousDiscoveryHandler      
+          handler: SentinelContinuousDiscoveryHandler
         sentinel_download_data:
           module: worker.sentinel.tasks
           handler: SentinelDownloadHandler
@@ -33,7 +33,7 @@ harvester:
           handler: SentinelExtractMetadataHandler
         sentinel_register_metadata:
           module: worker.sentinel.tasks
-          handler: SentinelRegisterMetadataHandler  
+          handler: SentinelRegisterMetadataHandler
       handlers:
         SentinelDiscoverHandler:
           api_url: https://datahub.creodias.eu/odata/v1
@@ -60,3 +60,6 @@ harvester:
         SentinelRegisterMetadataHandler:
           stac_api_url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac/
           stac_file_deletion: true
+          rewrite_asset_hrefs:
+            prefix_from: "/eodata/"
+            prefix_to: "{{ getenv "HTTP_SCHEME"}}://eodata.{{ getenv "INGRESS_HOST" }}/"
