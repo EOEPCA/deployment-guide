@@ -253,7 +253,7 @@ If your input data is hosted separately from output storage:
 
 ### OIDC Configuration
 
-> **Note:** OIDC protection requires the **APISIX** Ingress Controller. If you're using a different ingress controller, OIDC will not be available and you can skip this configuration.
+> **Note:** The EOEPCA OIDC protection requires the **APISIX** Ingress Controller. If you're using a different ingress controller, OIDC will not be available and you can skip this configuration.
 
 If using APISIX, you can enable OIDC authentication during configuration. When prompted for the `Client ID`, we recommend `oapip-engine`.
 
@@ -274,7 +274,7 @@ When prompted for execution engine, select `calrissian`. You'll need to configur
 When prompted for execution engine, select `toil`. You'll need to configure:
 
 - **`OAPIP_TOIL_WES_URL`**: Your Toil WES endpoint, must end with `/ga4gh/wes/v1/`
-    - *Example*: `http://toil.hpc.local:8080/ga4gh/wes/v1/`
+    - *Example*: `http://192.168.1.100:8080/ga4gh/wes/v1/`
     - *Read more*: [Zoo WES Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
 - **`OAPIP_TOIL_WES_USER`**: WES service username
     - *Example*: `test`
@@ -282,6 +282,19 @@ When prompted for execution engine, select `toil`. You'll need to configure:
     - *Example*: `$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG`
 
 > **Note:** If you set up Toil WES without authentication (as in the setup guide above), use placeholder credentials - they'll be ignored.
+
+> **Important: Network Reachability**
+> 
+> The WES URL must be reachable from within the Kubernetes cluster.
+> 
+> - If Toil runs on the same machine as Kubernetes, use the host's IP address (e.g., `http://192.168.1.100:8080/ga4gh/wes/v1/`)
+> - If Toil runs on a separate HPC system, ensure network routing and firewall rules allow traffic from the Kubernetes pod network to the WES endpoint
+> 
+> You can verify connectivity from within the cluster:
+> ```bash
+> kubectl run -it --rm debug --image=alpine --restart=Never -- \
+>   wget -qO- http://<your-wes-host>:8080/ga4gh/wes/v1/service-info
+> ```
 
 ### Deploy the Helm Chart
 ```bash
