@@ -401,13 +401,14 @@ EOF
 This registers a STAC Collection for Sentinel 2 L2a Collection 1, which is also used later to demonstrate Sentinel harvesting.
 
 ```bash
-curl -X POST "http://registration-api.eoepca.local/processes/register/execution" \
+curl -X POST "https://registration-api.eoepca.local/processes/register/execution" \
+  ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
   -d @- <<EOF
 {
     "inputs": {
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/sentinel/sentinel-2-c1-l2a.json"},
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "http://resource-catalogue.eoepca.local/stac"}
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.eoepca.local/stac"}
     }
 }
 EOF
@@ -553,7 +554,7 @@ As above for the Landsat harvester, for Sentinel harvesting two workflows must b
 ```bash
 source ~/.eoepca/state
 curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel.bpmn | \
-curl -s -X POST "http://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
   -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
   -F "sentinel.bpmn=@-;filename=sentinel.bpmn;type=text/xml" | jq
 ```
@@ -562,7 +563,7 @@ and
 
 ```bash
 curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel-scene-ingestion.bpmn | \
-curl -s -X POST "http://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
   -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
   -F "sentinel-scene-ingestion.bpmn=@-;filename=sentinel-scene-ingestion.bpmn;type=text/xml" | jq
 ```
@@ -576,13 +577,13 @@ Start a Sentinel harvesting job (for a small time period - this should match thr
 source ~/.eoepca/state
 # Get process ID
 processes="$( \
-  curl -s "http://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
+  curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
     -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
   )"
 sentinel_process_id="$(echo "$processes" | jq -r '[.data[] | select(.name == "Sentinel Registration")][0].id')"
 
 # Start harvesting
-curl -s -X POST "http://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
   -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
   -H "Content-Type: application/json" \
   -d @- <<EOF | jq
@@ -592,7 +593,7 @@ curl -s -X POST "http://registration-harvester-api.${INGRESS_HOST}/flowable-rest
     {
       "name": "filter",
       "type": "string",
-      "value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:01:00Z and Online eq true"
+      "value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true"
     }
   ]
 }
