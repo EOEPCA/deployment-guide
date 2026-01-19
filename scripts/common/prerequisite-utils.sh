@@ -327,6 +327,7 @@ EOF
             return 0
         else
             echo "❌ Storage Class '${SHARED_STORAGECLASS}' does not support ReadWriteMany access mode."
+            echo "Sometimes this shows up as a False Negative, if you are sure the storage class supports RWX, please ignore this message."
             echo "   PVC test failed with status: ${pvc_status}"
             return 1
         fi

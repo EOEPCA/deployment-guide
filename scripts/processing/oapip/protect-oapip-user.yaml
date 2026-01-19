@@ -64,7 +64,10 @@ spec:
     logic: POSITIVE
     decisionStrategy: UNANIMOUS
     groups:
-      - path: /${OAPIP_USER}-group
+      - idRef:
+          name: ${OAPIP_USER}-group
+          namespace: iam-management
+        path: /${OAPIP_USER}-group
         extendChildren: false
   providerConfigRef:
     name: provider-keycloak
