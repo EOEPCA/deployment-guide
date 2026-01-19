@@ -49,8 +49,13 @@ echo "OPA_CLIENT_ID: $OPA_CLIENT_ID"
 echo "OPA_CLIENT_SECRET: $OPA_CLIENT_SECRET"
 echo ""
 
-add_to_state_file "KEYCLOAK_HOST" "auth.$INGRESS_HOST"
-add_to_state_file "OIDC_ISSUER_URL" "${HTTP_SCHEME}://auth.$INGRESS_HOST/realms/$REALM"
+# Allow override of KEYCLOAK_HOST - which represents the 'external' URL of Keycloak
+# This override is useful in the case that Keycloak is being accessed via a proxy with a different hostname.
+# For example, this is relied upon for the IAM killercoda tutorial.
+KEYCLOAK_HOST=${KEYCLOAK_HOST:-"auth.$INGRESS_HOST"}
+
+add_to_state_file "KEYCLOAK_HOST" "$KEYCLOAK_HOST"
+add_to_state_file "OIDC_ISSUER_URL" "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/$REALM"
 
 # Generate configuration files
 echo "Generating configuration files..."
