@@ -1322,6 +1322,72 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calrissian-specific-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calrissian-Specific Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toilhpc-specific-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Toil/HPC-Specific Requirements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Toil/HPC-Specific Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-a-local-htcondor-developmenttesting-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a Local HTCondor (Development/Testing Only)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-toil-wes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up Toil WES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clone-the-deployment-guide-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clone the Deployment Guide Repository
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1344,14 +1410,67 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#deploy-the-oapip-engine" class="md-nav__link">
+  <a href="#common-configuration-parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      Deploy the OAPIP Engine
+      Common Configuration Parameters
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Deploy the OAPIP Engine">
-      <ul class="md-nav__list">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workspace-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workspace Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-out-s3-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stage-Out S3 Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-in-s3-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stage-In S3 Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oidc-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      OIDC Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calrissian-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calrissian Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toil-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Toil Configuration
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#deploy-the-helm-chart" class="md-nav__link">
@@ -1359,11 +1478,6 @@
       Deploy the Helm Chart
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1394,7 +1508,7 @@
           <li class="md-nav__item">
   <a href="#protect-the-users-processing-context" class="md-nav__link">
     <span class="md-ellipsis">
-      Protect the user&rsquo;s processing context
+      Protect the User&rsquo;s Processing Context
     </span>
   </a>
   
@@ -1410,9 +1524,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#confirm-protection-apisix-only" class="md-nav__link">
+  <a href="#confirm-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      Confirm Protection (APISIX Only)
+      Confirm Protection
     </span>
   </a>
   
@@ -1455,15 +1569,6 @@
   <a href="#expected-kubernetes-resources" class="md-nav__link">
     <span class="md-ellipsis">
       Expected Kubernetes Resources
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#via-ogc-api-processes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Via OGC API Processes
     </span>
   </a>
   
@@ -1547,6 +1652,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#monitoring-jobs-on-hpc-toil-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring Jobs on HPC (Toil only)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1558,6 +1672,30 @@
       Uninstallation
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Uninstallation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remove-the-oapip-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove the OAPIP Engine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop-toil-wes-toil-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop Toil WES (Toil only)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1922,6 +2060,72 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calrissian-specific-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calrissian-Specific Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toilhpc-specific-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Toil/HPC-Specific Requirements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Toil/HPC-Specific Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-a-local-htcondor-developmenttesting-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up a Local HTCondor (Development/Testing Only)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-toil-wes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up Toil WES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clone-the-deployment-guide-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clone the Deployment Guide Repository
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1944,14 +2148,67 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#deploy-the-oapip-engine" class="md-nav__link">
+  <a href="#common-configuration-parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      Deploy the OAPIP Engine
+      Common Configuration Parameters
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Deploy the OAPIP Engine">
-      <ul class="md-nav__list">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workspace-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workspace Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-out-s3-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stage-Out S3 Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-in-s3-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stage-In S3 Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oidc-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      OIDC Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calrissian-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calrissian Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toil-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Toil Configuration
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#deploy-the-helm-chart" class="md-nav__link">
@@ -1959,11 +2216,6 @@
       Deploy the Helm Chart
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1994,7 +2246,7 @@
           <li class="md-nav__item">
   <a href="#protect-the-users-processing-context" class="md-nav__link">
     <span class="md-ellipsis">
-      Protect the user&rsquo;s processing context
+      Protect the User&rsquo;s Processing Context
     </span>
   </a>
   
@@ -2010,9 +2262,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#confirm-protection-apisix-only" class="md-nav__link">
+  <a href="#confirm-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      Confirm Protection (APISIX Only)
+      Confirm Protection
     </span>
   </a>
   
@@ -2055,15 +2307,6 @@
   <a href="#expected-kubernetes-resources" class="md-nav__link">
     <span class="md-ellipsis">
       Expected Kubernetes Resources
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#via-ogc-api-processes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Via OGC API Processes
     </span>
   </a>
   
@@ -2147,6 +2390,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#monitoring-jobs-on-hpc-toil-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring Jobs on HPC (Toil only)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2158,6 +2410,30 @@
       Uninstallation
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Uninstallation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remove-the-oapip-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove the OAPIP Engine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop-toil-wes-toil-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop Toil WES (Toil only)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2204,15 +2480,33 @@
 
 <h1 id="processing-ogc-api-processes-engine">Processing - OGC API Processes Engine<a class="headerlink" href="#processing-ogc-api-processes-engine" title="Permanent link">⚓︎</a></h1>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">⚓︎</a></h2>
-<p>The <strong>OGC API Processes Engine</strong> provides an OGC API Processes execution engine through which users can deploy, manage, and execute OGC Application Packages. The OAPIP engine is provided by the <a href="https://zoo-project.github.io/docs/intro.html#what-is-zoo-project">ZOO-Project</a> <code>zoo-project-dru</code> implementation - supporting OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 &amp; 2.</p>
-<ul>
-<li><strong>Standardised Interfaces</strong>: Implements OGC API Processes standards for interoperability.</li>
-<li><strong>Application Deployment</strong>: Supports deployment, replacement, and undeployment of applications.</li>
-<li><strong>Execution Engine</strong>: Applications execution backend. Can be Kubernetes/Calrissian, HPC/Toil and others.</li>
-</ul>
+<p>The <strong>OGC API Processes Engine</strong> lets users deploy, manage, and execute OGC Application Packages through a standardised API. It&rsquo;s built on the <a href="https://zoo-project.github.io/docs/intro.html#what-is-zoo-project">ZOO-Project</a> <code>zoo-project-dru</code> implementation, which supports OGC WPS 1.0.0/2.0.0 and OGC API Processes Parts 1 &amp; 2.</p>
+<p>The engine supports multiple execution backends depending on your infrastructure:</p>
+<table>
+<thead>
+<tr>
+<th>Execution Engine</th>
+<th>Backend</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Calrissian</strong></td>
+<td>Kubernetes jobs in dedicated namespaces</td>
+<td>Pure Kubernetes environments</td>
+</tr>
+<tr>
+<td><strong>Toil</strong></td>
+<td>HPC batch schedulers (HTCondor, Slurm, PBS, LSF, etc.)</td>
+<td>Hybrid Kubernetes + HPC environments</td>
+</tr>
+</tbody>
+</table>
+<p>Both backends use the same OGC API Processes interface - the difference is where the actual computation runs.</p>
 <hr />
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">⚓︎</a></h2>
-<p>Before deploying the <strong>OGC API Processes Engine</strong>, ensure you have the following:</p>
+<h3 id="common-requirements">Common Requirements<a class="headerlink" href="#common-requirements" title="Permanent link">⚓︎</a></h3>
 <table>
 <thead>
 <tr>
@@ -2259,20 +2553,146 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Clone the Deployment Guide Repository:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone https://github.com/EOEPCA/deployment-guide
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cd deployment-guide/scripts/processing/oapip
+<h3 id="calrissian-specific-requirements">Calrissian-Specific Requirements<a class="headerlink" href="#calrissian-specific-requirements" title="Permanent link">⚓︎</a></h3>
+<p>No additional requirements beyond the common prerequisites. Calrissian runs CWL workflows as Kubernetes jobs, so everything stays within your cluster.</p>
+<h3 id="toilhpc-specific-requirements">Toil/HPC-Specific Requirements<a class="headerlink" href="#toilhpc-specific-requirements" title="Permanent link">⚓︎</a></h3>
+<p>You&rsquo;ll need an HPC cluster with:</p>
+<ul>
+<li>Container support (<a href="https://www.docker.com/">Docker</a> or <a href="https://apptainer.org/">Apptainer/Singularity</a>)</li>
+<li>Internet access from compute nodes (or local container registries and data repositories)</li>
+<li>A <a href="https://toil.readthedocs.io/en/master/running/server/wes.html">Toil WES service</a> endpoint</li>
+</ul>
+<p>Toil supports several batch schedulers: <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a>, <a href="https://www.schedmd.com/">Slurm</a>, <a href="#TODO">PBS/Torque/PBS Pro</a> <a href="https://en.wikipedia.org/wiki/Platform_LSF">LSF</a>, and <a href="http://www.univa.com/oracle">Grid Engine</a>.</p>
+<h4 id="setting-up-a-local-htcondor-developmenttesting-only">Setting up a Local HTCondor (Development/Testing Only)<a class="headerlink" href="#setting-up-a-local-htcondor-developmenttesting-only" title="Permanent link">⚓︎</a></h4>
+<blockquote>
+<p><strong>Warning:</strong> This setup is for development and testing purposes only. Do not use this in production - use your organisation&rsquo;s HPC infrastructure instead.</p>
+</blockquote>
+<p>If you don&rsquo;t have access to an HPC cluster and want to test the Toil integration locally, you can install <a href="https://htcondor.org/">MiniHTCondor</a>, a single-node HTCondor package designed for testing.</p>
+<p><strong>Install HTCondor using the official script:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Download and run the HTCondor installer (installs minicondor by default)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://get.htcondor.org<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>/bin/bash<span class="w"> </span>-s<span class="w"> </span>--<span class="w"> </span>--no-dry-run
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Verify HTCondor is running</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>condor_status
+</span></code></pre></div></p>
+<p>You should see output showing your local machine as a condor slot. If <code>condor_status</code> returns an error, check that the condor service is running:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>condor
+</span></code></pre></div></p>
+<p><strong>Configure Docker for HTCondor jobs:</strong></p>
+<p>HTCondor needs to run containers for CWL workflows. Add your user to the docker group and create a wrapper to mount <code>/etc/hosts</code> for DNS resolution:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Add your user to the docker group</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>docker<span class="w"> </span><span class="nv">$USER</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Create a docker wrapper for DNS resolution in containers</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>sudo<span class="w"> </span>tee<span class="w"> </span>/usr/local/bin/docker<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">#!/usr/bin/python3</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">import sys, os</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s">n = sys.argv</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">n[0] = &quot;/usr/bin/docker&quot;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">if &quot;run&quot; in n:</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s">    n.insert(n.index(&quot;run&quot;) + 1, &quot;-v=/etc/hosts:/etc/hosts:ro&quot;)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s">os.execv(n[0], n)</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s">EOF</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/docker
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="c1"># Log out and back in for the docker group change to take effect</span>
 </span></code></pre></div>
-<p><strong>Validate your environment:</strong></p>
-<p>Run the validation script to ensure all prerequisites are met:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash check-prerequisites.sh
+<p>After logging back in, verify HTCondor can see your machine:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>condor_status
+</span></code></pre></div></p>
+<h4 id="setting-up-toil-wes">Setting up Toil WES<a class="headerlink" href="#setting-up-toil-wes" title="Permanent link">⚓︎</a></h4>
+<blockquote>
+<p><strong>Already have a Toil WES service?</strong> Skip to <a href="#clone-the-deployment-guide-repository">Clone the Deployment Guide Repository</a>.</p>
+</blockquote>
+<p>If you need to set up Toil WES on your HPC cluster (or local MiniCondor), follow these steps. The examples use HTCondor, but the process is similar for other schedulers.</p>
+<p><strong>Install Toil</strong></p>
+<p>Install Toil in a Python virtual environment on storage accessible to all compute nodes:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Create directories for Toil venv and job storage</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/toil<span class="w"> </span>~/toil/storage
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>toil<span class="w"> </span>~/toil/venv
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Activate and install Toil with required extras</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nb">source</span><span class="w"> </span>~/toil/venv/bin/activate
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>toil<span class="o">[</span>cwl,htcondor,server,aws<span class="o">]</span><span class="w"> </span>htcondor
+</span></code></pre></div></p>
+<blockquote>
+<p><strong>Note:</strong> Replace <code>htcondor</code> with your batch system if different (e.g., <code>toil[cwl,slurm,server,aws]</code> for Slurm).</p>
+</blockquote>
+<p><strong>Test the Installation</strong></p>
+<p>Run a sample CWL workflow to verify everything works:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">source</span><span class="w"> </span>~/toil/venv/bin/activate
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Download a test application</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>wget<span class="w"> </span>https://github.com/EOEPCA/deployment-guide/raw/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># Create test directories and parameters</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nv">jobid</span><span class="o">=</span><span class="k">$(</span>uuidgen<span class="k">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/toil/storage/test/<span class="o">{</span>work_dir,job_store<span class="o">}</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; ~/toil/storage/test/work_dir/$jobid.params.yaml</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="s">fn: resize</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="s">url: https://eoepca.org/media_portal/images/logo6_med.original.png</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="s">size: 50%</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="s">EOF</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1"># Run the test (adjust --batchSystem for your scheduler)</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>toil-cwl-runner<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span>--batchSystem<span class="w"> </span>htcondor<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span>--workDir<span class="w"> </span>~/toil/storage/test/work_dir<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span>--jobStore<span class="w"> </span>~/toil/storage/test/job_store/<span class="nv">$jobid</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">    </span>convert-url-app.cwl#convert-url<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span>~/toil/storage/test/work_dir/<span class="nv">$jobid</span>.params.yaml
+</span></code></pre></div></p>
+<p>If successful, you&rsquo;ll see JSON output representing a STAC Item. Clean up:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>~/toil/storage/test<span class="w"> </span>convert-url-app.cwl
+</span></code></pre></div></p>
+<p><strong>Start the Toil WES Service</strong></p>
+<p>The WES service needs RabbitMQ for job queuing and Celery for queue management.</p>
+<p>Start RabbitMQ:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--restart<span class="o">=</span>always<span class="w"> </span>--name<span class="w"> </span>toil-wes-rabbitmq<span class="w"> </span>-p<span class="w"> </span><span class="m">127</span>.0.0.1:5672:5672<span class="w"> </span>rabbitmq:alpine
 </span></code></pre></div>
+<p>Start Celery:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">source</span><span class="w"> </span>~/toil/venv/bin/activate
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>celery<span class="w"> </span>--broker<span class="o">=</span>amqp://guest:guest@127.0.0.1:5672//<span class="w"> </span>-A<span class="w"> </span>toil.server.celery_app<span class="w"> </span>multi<span class="w"> </span>start<span class="w"> </span>w1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">   </span>--loglevel<span class="o">=</span>INFO<span class="w"> </span>--pidfile<span class="o">=</span><span class="nv">$HOME</span>/celery.pid<span class="w"> </span>--logfile<span class="o">=</span><span class="nv">$HOME</span>/celery.log
+</span></code></pre></div>
+<p>Start the Toil WES server:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">source</span><span class="w"> </span>~/toil/venv/bin/activate
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$HOME</span>/toil/storage/workdir<span class="w"> </span><span class="nv">$HOME</span>/toil/storage/workflows
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nv">TOIL_WES_BROKER_URL</span><span class="o">=</span>amqp://guest:guest@127.0.0.1:5672//<span class="w"> </span>nohup<span class="w"> </span>toil<span class="w"> </span>server<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span>--work_dir<span class="w"> </span><span class="nv">$HOME</span>/toil/storage/workflows<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span>--opt<span class="o">=</span>--batchSystem<span class="o">=</span>htcondor<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span>--opt<span class="o">=</span>--workDir<span class="o">=</span><span class="nv">$HOME</span>/toil/storage/workdir<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span>--logFile<span class="w"> </span><span class="nv">$HOME</span>/toil.log<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span>--logLevel<span class="w"> </span>INFO<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span>-w<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>&gt;<span class="nv">$HOME</span>/toil_run.log<span class="w"> </span>&lt;/dev/null<span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$!</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$HOME</span>/toil.pid
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>sleep<span class="w"> </span><span class="m">5</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Adjust <code>--batchSystem=htcondor</code> to match your scheduler.</p>
+</blockquote>
+<p><strong>Verify the WES Service</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8080/ga4gh/wes/v1/service-info<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<p>You should see JSON service information. Your WES endpoint URL will be:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>http://&lt;your-hpc-host&gt;:8080/ga4gh/wes/v1/
+</span></code></pre></div></p>
+<h2 id="clone-the-deployment-guide-repository">Clone the Deployment Guide Repository<a class="headerlink" href="#clone-the-deployment-guide-repository" title="Permanent link">⚓︎</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/EOEPCA/deployment-guide
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/processing/oapip
+</span></code></pre></div>
+<p>Validate your environment:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>bash<span class="w"> </span>check-prerequisites.sh
+</span></code></pre></div></p>
 <hr />
 <h2 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Permanent link">⚓︎</a></h2>
 <h3 id="run-the-configuration-script">Run the Configuration Script<a class="headerlink" href="#run-the-configuration-script" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>configure-oapip.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>bash<span class="w"> </span>configure-oapip.sh
 </span></code></pre></div>
-<p><strong>Configuration Parameters</strong></p>
+<h3 id="common-configuration-parameters">Common Configuration Parameters<a class="headerlink" href="#common-configuration-parameters" title="Permanent link">⚓︎</a></h3>
 <ul>
 <li><strong><code>INGRESS_HOST</code></strong>: Base domain for ingress hosts.<ul>
 <li><em>Example</em>: <code>example.com</code></li>
@@ -2287,352 +2707,327 @@
 </ul>
 </li>
 </ul>
-<p><strong>Workspace Integration Configuration:</strong></p>
-<p>The OAPIP engine supports two possible integrations with object storage for stage-out of processing results:</p>
+<h3 id="workspace-integration">Workspace Integration<a class="headerlink" href="#workspace-integration" title="Permanent link">⚓︎</a></h3>
+<p>The engine supports two options for stage-out of processing results:</p>
 <ul>
-<li>With the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Workspace BB - in which case results are written directly to the user&rsquo;s workspace bucket.</li>
-<li>With a dedicated S3 bucket - in which case results are written to a pre-configured (shared) S3 bucket.</li>
+<li><strong>With the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Workspace BB</strong> - results go directly to the user&rsquo;s workspace bucket</li>
+<li><strong>With a dedicated S3 bucket</strong> - results go to a pre-configured shared bucket</li>
 </ul>
-<p>Workspace integration is controlled via the following parameter:</p>
+<p>This is controlled by:</p>
 <ul>
-<li><strong><code>USE_WORKSPACE_API</code></strong>: Whether the processing stage-out should integrate with the user&rsquo;s Workspace object storage for persistence of processing results</li>
+<li><strong><code>USE_WORKSPACE_API</code></strong>: Set to <code>true</code> to integrate with user Workspace storage</li>
 </ul>
-<p>Assumptions regarding integration with the Workspace BB:</p>
+<p>If using Workspace integration:</p>
 <ul>
-<li>The Workspace BB has already been deployed in the cluster.</li>
-<li>The <code>username</code> of the user invoking the processing execution is used to select the appropriate workspace bucket - via the workspace following the naming convention <code>ws-&lt;username&gt;</code>. The processing engine determines the username from the JWT <code>Bearer</code> token presented in the <code>Authorization</code> header of the request. In the case that no token is presented (i.e. open service), then the username is taken from the path prefix of the request - e.g. <code>/&lt;username&gt;/ogc-api/processes/...</code>.</li>
+<li>The Workspace BB must already be deployed</li>
+<li>The username from the JWT Bearer token (or path prefix for open services) determines which workspace bucket to use, following the <code>ws-&lt;username&gt;</code> naming convention</li>
 </ul>
-<p><strong>Stage-Out S3 Configuration:</strong></p>
-<p>Before proceeding, ensure you have an S3-compatible object store set up. If not, refer to the <a href="../../prerequisites/minio/">MinIO Deployment Guide</a>. These values should already be in your <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ state file if you followed the main deployment steps.</p>
+<h3 id="stage-out-s3-configuration">Stage-Out S3 Configuration<a class="headerlink" href="#stage-out-s3-configuration" title="Permanent link">⚓︎</a></h3>
+<p>Ensure you have an S3-compatible object store set up. See the <a href="../../prerequisites/minio/">MinIO Deployment Guide</a> if needed.</p>
 <ul>
-<li><strong><code>S3_ENDPOINT</code></strong>, <strong><code>S3_ACCESS_KEY</code></strong>, <strong><code>S3_SECRET_KEY</code></strong>, <strong><code>S3_REGION</code></strong>: Credentials and location details for the S3 bucket used as Stage-Out storage.</li>
+<li><strong><code>S3_ENDPOINT</code></strong>, <strong><code>S3_ACCESS_KEY</code></strong>, <strong><code>S3_SECRET_KEY</code></strong>, <strong><code>S3_REGION</code></strong>: Credentials for Stage-Out storage</li>
 </ul>
-<p><strong>Stage-In S3 Configuration:</strong></p>
-<p>If your Stage-In storage differs from Stage-Out (e.g., data hosted externally), specify these separately:</p>
+<h3 id="stage-in-s3-configuration">Stage-In S3 Configuration<a class="headerlink" href="#stage-in-s3-configuration" title="Permanent link">⚓︎</a></h3>
+<p>If your input data is hosted separately from output storage:</p>
 <ul>
 <li><strong><code>STAGEIN_S3_ENDPOINT</code></strong>, <strong><code>STAGEIN_S3_ACCESS_KEY</code></strong>, <strong><code>STAGEIN_S3_SECRET_KEY</code></strong>, <strong><code>STAGEIN_S3_REGION</code></strong></li>
 </ul>
-<p><strong>OIDC Configuration:</strong></p>
-<p>If you are using the APISIX Ingress Controller, you will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the <a href="#optional-oidc-configuration">OIDC Configuration</a> section after deployment.</p>
-<p>When prompted for the <code>Client ID</code> we recommend setting it to <code>oapip-engine</code>.</p>
-<p>For instructions on how to set up IAM, you can follow the <a href="../iam/main-iam/">IAM Building Block</a> guide.</p>
-<p><strong>Execution Engine Configuration:</strong></p>
-<p>Different Execution Engines can be selected, according to the type of backend. The currently supported engines and their additional dependencies are the following:</p>
-<table>
-<thead>
-<tr>
-<th>Execution Engine</th>
-<th>Backend</th>
-<th>Additional dependencies</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>calrissian</td>
-<td>Executes applications as Kubernetes jobs in dedicated namespaces, using <a href="https://duke-gcb.github.io/calrissian/">Calrissian</a></td>
-<td>None</td>
-</tr>
-<tr>
-<td>toil</td>
-<td>Executes application as HPC jobs on a variety of HPC batch scedulers, using <a href="https://toil.ucsc-cgl.org/">Toil</a></td>
-<td>A <a href="https://toil.readthedocs.io/en/master/running/server/wes.html">Toil WES Service</a></td>
-</tr>
-</tbody>
-</table>
-<p>The following Execution Engine specific configuration parameters needs to be setup:</p>
-<p>For Calrissian:</p>
+<h3 id="oidc-configuration">OIDC Configuration<a class="headerlink" href="#oidc-configuration" title="Permanent link">⚓︎</a></h3>
+<blockquote>
+<p><strong>Note:</strong> The <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> OIDC protection requires the <strong>APISIX</strong> Ingress Controller. If you&rsquo;re using a different ingress controller, OIDC will not be available and you can skip this configuration.</p>
+</blockquote>
+<p>If using APISIX, you can enable OIDC authentication during configuration. When prompted for the <code>Client ID</code>, we recommend <code>oapip-engine</code>.</p>
+<p>See the <a href="../iam/main-iam/">IAM Building Block</a> guide for IAM setup, and <a href="#optional-enable-oidc-with-keycloak">Enable OIDC with Keycloak</a> below for post-deployment configuration.</p>
+<h3 id="calrissian-configuration">Calrissian Configuration<a class="headerlink" href="#calrissian-configuration" title="Permanent link">⚓︎</a></h3>
+<p>When prompted for execution engine, select <code>calrissian</code>. You&rsquo;ll need to configure:</p>
 <ul>
-<li><strong><code>NODE_SELECTOR_KEY</code></strong>: Determine which nodes will run the processing workflows.<ul>
+<li><strong><code>NODE_SELECTOR_KEY</code></strong>: Determines which nodes run processing workflows<ul>
 <li><em>Example</em>: <code>kubernetes.io/os</code></li>
 <li><em>Read more</em>: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">Node Selector Documentation</a></li>
 </ul>
 </li>
-<li><strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector key.<ul>
+<li><strong><code>NODE_SELECTOR_VALUE</code></strong>: Value for the node selector<ul>
 <li><em>Example</em>: <code>linux</code></li>
 </ul>
 </li>
 </ul>
-<p>For Toil:</p>
+<h3 id="toil-configuration">Toil Configuration<a class="headerlink" href="#toil-configuration" title="Permanent link">⚓︎</a></h3>
+<p>When prompted for execution engine, select <code>toil</code>. You&rsquo;ll need to configure:</p>
 <ul>
-<li><strong><code>OAPIP_TOIL_WES_URL</code></strong>: The Toil WES service endpoint, including the path. Must be ending with <code>/ga4gh/wes/v1/</code><ul>
-<li><em>Example</em>: <code>https://toil.hpc.host/ga4gh/wes/v1/</code></li>
-<li><em>Read more</em>: <a href="https://zoo-project.github.io/zoo-wes-runner/">Zoo Wes Runner documentation</a></li>
+<li><strong><code>OAPIP_TOIL_WES_URL</code></strong>: Your Toil WES endpoint, must end with <code>/ga4gh/wes/v1/</code><ul>
+<li><em>Example</em>: <code>http://192.168.1.100:8080/ga4gh/wes/v1/</code></li>
+<li><em>Read more</em>: <a href="https://zoo-project.github.io/zoo-wes-runner/">Zoo WES Runner documentation</a></li>
 </ul>
 </li>
-<li><strong><code>OAPIP_TOIL_WES_USER</code></strong>: The Toil WES service user<ul>
+<li><strong><code>OAPIP_TOIL_WES_USER</code></strong>: WES service username<ul>
 <li><em>Example</em>: <code>test</code></li>
 </ul>
 </li>
-<li><strong><code>OAPIP_TOIL_WES_PASSWORD</code></strong>: The Toil WES service password (must but be in htpasswd format)<ul>
+<li><strong><code>OAPIP_TOIL_WES_PASSWORD</code></strong>: WES service password (htpasswd format)<ul>
 <li><em>Example</em>: <code>$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG</code></li>
 </ul>
 </li>
 </ul>
-<hr />
-<h3 id="deploy-the-oapip-engine">Deploy the OAPIP Engine<a class="headerlink" href="#deploy-the-oapip-engine" title="Permanent link">⚓︎</a></h3>
-<h4 id="deploy-the-helm-chart">Deploy the Helm Chart<a class="headerlink" href="#deploy-the-helm-chart" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>zoo-project<span class="w"> </span>https://zoo-project.github.io/charts/
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>zoo-project
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>zoo-project-dru<span class="w"> </span>zoo-project/zoo-project-dru<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.8.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--namespace<span class="w"> </span>processing<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--create-namespace
+<blockquote>
+<p><strong>Note:</strong> If you set up Toil WES without authentication (as in the setup guide above), use placeholder credentials - they&rsquo;ll be ignored.</p>
+<p><strong>Important: Network Reachability</strong></p>
+<p>The WES URL must be reachable from within the Kubernetes cluster.</p>
+<ul>
+<li>If Toil runs on the same machine as Kubernetes, use the host&rsquo;s IP address (e.g., <code>http://192.168.1.100:8080/ga4gh/wes/v1/</code>)</li>
+<li>If Toil runs on a separate HPC system, ensure network routing and firewall rules allow traffic from the Kubernetes pod network to the WES endpoint</li>
+</ul>
+<p>You can verify connectivity from within the cluster:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>debug<span class="w"> </span>--image<span class="o">=</span>alpine<span class="w"> </span>--restart<span class="o">=</span>Never<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>wget<span class="w"> </span>-qO-<span class="w"> </span>http://&lt;your-wes-host&gt;:8080/ga4gh/wes/v1/service-info
+</span></code></pre></div></p>
+</blockquote>
+<h3 id="deploy-the-helm-chart">Deploy the Helm Chart<a class="headerlink" href="#deploy-the-helm-chart" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>zoo-project<span class="w"> </span>https://zoo-project.github.io/charts/
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>zoo-project
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>zoo-project-dru<span class="w"> </span>zoo-project/zoo-project-dru<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">0</span>.8.3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>--namespace<span class="w"> </span>processing<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span>--create-namespace
 </span></code></pre></div>
 <hr />
 <h2 id="optional-enable-oidc-with-keycloak">Optional: Enable OIDC with Keycloak<a class="headerlink" href="#optional-enable-oidc-with-keycloak" title="Permanent link">⚓︎</a></h2>
 <blockquote>
-<p>This option is only available when using the <strong>APISIX</strong> Ingress Controller as it relies upon APISIX to act as the policy enforcement point. If you are using a different Ingress Controller, skip to the <a href="#validation">Validation</a> section.</p>
+<p>This requires the <strong>APISIX</strong> Ingress Controller. If you&rsquo;re using a different Ingress Controller, skip to <a href="#validation">Validation</a>.</p>
 </blockquote>
-<p>If you <strong>do not</strong> wish to use OIDC IAM right now, you can skip these steps and proceed directly to the <a href="#validation">Validation</a> section. You can still work with the OAPIP Engine but access will not be restricted.</p>
-<p>If you <strong>do</strong> want to protect OAPIP endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) <strong>and</strong> you enabled <code>OIDC</code> in the configuration script then follow these steps. You will create a new client in Keycloak for the OAPIP engine and optionally define resource-protection rules (e.g. restricting who can list jobs).</p>
+<p>Skip this section if you don&rsquo;t need IAM protection right now - the engine will work, just without access restrictions.</p>
+<p>To protect OAPIP endpoints with Keycloak tokens and policies, follow these steps after enabling OIDC in the configuration script.</p>
 <blockquote>
-<p>Before starting this please ensure that you have followed our <a href="../iam/main-iam/">IAM Deployment Guide</a> and have a Keycloak instance running.</p>
+<p>First, ensure you&rsquo;ve followed the <a href="../iam/main-iam/">IAM Deployment Guide</a> and have Keycloak running.</p>
 </blockquote>
 <h3 id="create-a-keycloak-client">Create a Keycloak Client<a class="headerlink" href="#create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
-<p>A Keycloak client is required for the ingress protection of the Processing BB OAPIP Engine. The client can be created using the Crossplane Keycloak provider via the <code>Client</code> CRD.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="s">apiVersion: v1</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s">kind: Secret</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="s">metadata:</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="s">  name: ${OAPIP_CLIENT_ID}-keycloak-client</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="s">  namespace: iam-management</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="s">stringData:</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="s">  client_secret: ${OAPIP_CLIENT_SECRET}</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="s">---</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="s">apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="s">kind: Client</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="s">metadata:</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="s">  name: ${OAPIP_CLIENT_ID}</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="s">  namespace: iam-management</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="s">spec:</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="s">  forProvider:</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="s">    realmId: ${REALM}</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="s">    clientId: ${OAPIP_CLIENT_ID}</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="s">    name: Processing OAPIP Engine</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="s">    description: Processing OAPIP Engine OIDC</span>
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="s">    enabled: true</span>
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="s">    accessType: CONFIDENTIAL</span>
-</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="s">    rootUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
-</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="s">    baseUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
-</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="s">    adminUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
-</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="s">    serviceAccountsEnabled: true</span>
-</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="s">    directAccessGrantsEnabled: true</span>
-</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="s">    standardFlowEnabled: true</span>
-</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="s">    oauth2DeviceAuthorizationGrantEnabled: true</span>
-</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="s">    useRefreshTokens: true</span>
-</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="s">    authorization:</span>
-</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="s">      - allowRemoteResourceManagement: false</span>
-</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="s">        decisionStrategy: UNANIMOUS</span>
-</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="s">        keepDefaults: true</span>
-</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="s">        policyEnforcementMode: ENFORCING</span>
-</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="s">    validRedirectUris:</span>
-</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="s">      - &quot;/*&quot;</span>
-</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="s">    webOrigins:</span>
-</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="s">      - &quot;/*&quot;</span>
-</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="s">    clientSecretSecretRef:</span>
-</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="s">      name: ${OAPIP_CLIENT_ID}-keycloak-client</span>
-</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="s">      key: client_secret</span>
-</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="s">  providerConfigRef:</span>
-</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="s">    name: provider-keycloak</span>
-</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="s">    kind: ProviderConfig</span>
-</span><span id="__span-4-47"><a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="s">EOF</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>cat<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="s">apiVersion: v1</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="s">kind: Secret</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="s">metadata:</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="s">  name: ${OAPIP_CLIENT_ID}-keycloak-client</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="s">stringData:</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="s">  client_secret: ${OAPIP_CLIENT_SECRET}</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="s">---</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="s">apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="s">kind: Client</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="s">metadata:</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="s">  name: ${OAPIP_CLIENT_ID}</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="s">  namespace: iam-management</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="s">spec:</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="s">  forProvider:</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="s">    realmId: ${REALM}</span>
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="s">    clientId: ${OAPIP_CLIENT_ID}</span>
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="s">    name: Processing OAPIP Engine</span>
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="s">    description: Processing OAPIP Engine OIDC</span>
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="s">    enabled: true</span>
+</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="s">    accessType: CONFIDENTIAL</span>
+</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a><span class="s">    rootUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
+</span><span id="__span-18-25"><a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a><span class="s">    baseUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
+</span><span id="__span-18-26"><a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a><span class="s">    adminUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}</span>
+</span><span id="__span-18-27"><a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a><span class="s">    serviceAccountsEnabled: true</span>
+</span><span id="__span-18-28"><a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a><span class="s">    directAccessGrantsEnabled: true</span>
+</span><span id="__span-18-29"><a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a><span class="s">    standardFlowEnabled: true</span>
+</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a><span class="s">    oauth2DeviceAuthorizationGrantEnabled: true</span>
+</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="s">    useRefreshTokens: true</span>
+</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a><span class="s">    authorization:</span>
+</span><span id="__span-18-33"><a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a><span class="s">      - allowRemoteResourceManagement: false</span>
+</span><span id="__span-18-34"><a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a><span class="s">        decisionStrategy: UNANIMOUS</span>
+</span><span id="__span-18-35"><a id="__codelineno-18-35" name="__codelineno-18-35" href="#__codelineno-18-35"></a><span class="s">        keepDefaults: true</span>
+</span><span id="__span-18-36"><a id="__codelineno-18-36" name="__codelineno-18-36" href="#__codelineno-18-36"></a><span class="s">        policyEnforcementMode: ENFORCING</span>
+</span><span id="__span-18-37"><a id="__codelineno-18-37" name="__codelineno-18-37" href="#__codelineno-18-37"></a><span class="s">    validRedirectUris:</span>
+</span><span id="__span-18-38"><a id="__codelineno-18-38" name="__codelineno-18-38" href="#__codelineno-18-38"></a><span class="s">      - &quot;/*&quot;</span>
+</span><span id="__span-18-39"><a id="__codelineno-18-39" name="__codelineno-18-39" href="#__codelineno-18-39"></a><span class="s">    webOrigins:</span>
+</span><span id="__span-18-40"><a id="__codelineno-18-40" name="__codelineno-18-40" href="#__codelineno-18-40"></a><span class="s">      - &quot;/*&quot;</span>
+</span><span id="__span-18-41"><a id="__codelineno-18-41" name="__codelineno-18-41" href="#__codelineno-18-41"></a><span class="s">    clientSecretSecretRef:</span>
+</span><span id="__span-18-42"><a id="__codelineno-18-42" name="__codelineno-18-42" href="#__codelineno-18-42"></a><span class="s">      name: ${OAPIP_CLIENT_ID}-keycloak-client</span>
+</span><span id="__span-18-43"><a id="__codelineno-18-43" name="__codelineno-18-43" href="#__codelineno-18-43"></a><span class="s">      key: client_secret</span>
+</span><span id="__span-18-44"><a id="__codelineno-18-44" name="__codelineno-18-44" href="#__codelineno-18-44"></a><span class="s">  providerConfigRef:</span>
+</span><span id="__span-18-45"><a id="__codelineno-18-45" name="__codelineno-18-45" href="#__codelineno-18-45"></a><span class="s">    name: provider-keycloak</span>
+</span><span id="__span-18-46"><a id="__codelineno-18-46" name="__codelineno-18-46" href="#__codelineno-18-46"></a><span class="s">    kind: ProviderConfig</span>
+</span><span id="__span-18-47"><a id="__codelineno-18-47" name="__codelineno-18-47" href="#__codelineno-18-47"></a><span class="s">EOF</span>
 </span></code></pre></div>
-<p>The <code>Client</code> should be created successfully.</p>
-<h3 id="protect-the-users-processing-context">Protect the user&rsquo;s processing context<a class="headerlink" href="#protect-the-users-processing-context" title="Permanent link">⚓︎</a></h3>
-<p>The OAPIP Engine is provided by the <a href="https://zoo-project.org/">ZOO-Project</a> implementation, which uses a path prefix to establish a context within the processing service - such as <code>/&lt;username&gt;</code> or <code>/&lt;project&gt;</code>.</p>
-<p>Protection can be applied so that the context is accessible only by the owning user(s).</p>
-<p>To demonstrate, we will apply protection for the <code>KEYCLOAK_TEST_USER</code> used in this guide - nominal username <code>eoepcauser</code>. See <code>IAM</code> section <a href="../iam/main-iam/#6-create-test-users">Create Test Users</a> for creation of the test users assumed by this guide.</p>
-<p>Similarly to the <code>Client</code> creation, we will use the Crossplane Keycloak provider to establish the protection using CRDs. The protection comprises:</p>
-<ul>
-<li>Create a Keycloak group <code>&lt;username&gt;-group</code></li>
-<li>Add the user (<code>eoepcauser</code>) to the group</li>
-<li>Configure the <code>oapip-engine</code> Keycloak client <code>Authorization</code>, comprising:<ul>
-<li>A <code>Resource</code> representing the user&rsquo;s processing context - i.e. <code>/&lt;username&gt;/*</code></li>
-<li>A <code>Policy</code> requiring membership of the group <code>&lt;username&gt;-group</code></li>
-<li>A <code>Permission</code> attaching the <code>Policy</code> to the <code>Resource</code> - and so completing the protection</li>
-</ul>
-</li>
-</ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
-</span></code></pre></div>
-<p>This should indicate successful creation of the resources: <code>eoepcauser-group</code>, <code>eoepcauser-membership</code>, <code>eoepcauser-resource</code>, <code>eoepcauser-policy</code>, <code>eoepcauser-access</code>.</p>
+<h3 id="protect-the-users-processing-context">Protect the User&rsquo;s Processing Context<a class="headerlink" href="#protect-the-users-processing-context" title="Permanent link">⚓︎</a></h3>
+<p>The ZOO-Project uses a path prefix to establish user context (e.g., <code>/&lt;username&gt;/ogc-api/processes/...</code>). You can protect this so only the owning user can access it.</p>
+<p>This example protects the context for <code>eoepcauser</code> (see <a href="../iam/main-iam/#6-create-test-users">Create Test Users</a>):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>-
+</span></code></pre></div></p>
+<p>This creates: <code>eoepcauser-group</code>, <code>eoepcauser-membership</code>, <code>eoepcauser-resource</code>, <code>eoepcauser-policy</code>, <code>eoepcauser-access</code>.</p>
 <h3 id="create-apisix-route-ingress">Create APISIX Route Ingress<a class="headerlink" href="#create-apisix-route-ingress" title="Permanent link">⚓︎</a></h3>
-<p>If you are using APISIX Ingress controller, apply the ingress:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
 </span></code></pre></div>
-<h3 id="confirm-protection-apisix-only">Confirm Protection (APISIX Only)<a class="headerlink" href="#confirm-protection-apisix-only" title="Permanent link">⚓︎</a></h3>
+<h3 id="confirm-protection">Confirm Protection<a class="headerlink" href="#confirm-protection" title="Permanent link">⚓︎</a></h3>
 <blockquote>
-<p>Resource protection is only available when using the APISIX Ingress Controller.</p>
+<p>Wait for the ingress and TLS to be established first.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>bash<span class="w"> </span>resource-protection-validation.sh
+</span></code></pre></div></p>
 </blockquote>
-<p>With the resource and permission created, attempts to access the protected endpoint (<code>/eoepcauser/*</code>) without a valid token or with insufficient privileges should be denied. You can test it by:</p>
-<blockquote>
-<p>Wait for the ingress and associated TLS to be established before running the following.</p>
-</blockquote>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash resource-protection-validation.sh
-</span></code></pre></div>
-<p>If this script shows <code>401 Authorization</code> errors when the request is made with a token, then there must be an issue with the token or the resource protection configuration.</p>
-<p>For more detailed Keycloak testing (device flow, tokens, etc.), refer to <a href="../iam/advanced-iam/#resource-protection-with-keycloak-policies">Resource Protection with Keycloak Policies</a>.</p>
+<p>If you see <code>401 Authorization</code> errors when using a valid token, check your token and resource protection configuration.</p>
+<p>For more detailed testing, see <a href="../iam/advanced-iam/#resource-protection-with-keycloak-policies">Resource Protection with Keycloak Policies</a>.</p>
 <hr />
 <h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">⚓︎</a></h2>
 <h3 id="automated-validation">Automated Validation<a class="headerlink" href="#automated-validation" title="Permanent link">⚓︎</a></h3>
-<p>This script performs a series of automated tests to validate the deployment.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bash<span class="w"> </span>validation.sh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>bash<span class="w"> </span>validation.sh
 </span></code></pre></div>
 <h3 id="web-endpoints">Web Endpoints<a class="headerlink" href="#web-endpoints" title="Permanent link">⚓︎</a></h3>
-<p>Check access to the service web endpoints:</p>
+<p>Check these are accessible:</p>
 <ul>
 <li><strong>ZOO-Project Swagger UI</strong> - <code>https://zoo.${INGRESS_HOST}/swagger-ui/oapip/</code></li>
 <li><strong>OGC API Processes Landing Page</strong> - <code>https://zoo.${INGRESS_HOST}/ogc-api/processes/</code></li>
 </ul>
 <h3 id="expected-kubernetes-resources">Expected Kubernetes Resources<a class="headerlink" href="#expected-kubernetes-resources" title="Permanent link">⚓︎</a></h3>
-<p>Ensure that all Kubernetes resources are running correctly.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>processing
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>processing
 </span></code></pre></div>
-<p><strong>Expected Output:</strong></p>
-<ul>
-<li>All pods should be in the <code>Running</code> state.</li>
-<li>No pods should be in <code>CrashLoopBackOff</code> or <code>Error</code> states.</li>
-</ul>
-<hr />
-<h3 id="via-ogc-api-processes">Via OGC API Processes<a class="headerlink" href="#via-ogc-api-processes" title="Permanent link">⚓︎</a></h3>
-<p>Validate the operation of the <code>zoo</code> service via its OGC API Processes interfaces.</p>
-<p>We offer a sample application that can be used to exercise the deployed service:</p>
-<ul>
-<li><code>convert</code> - a very simple &lsquo;hello world&rsquo; application that is quick to run, with low resource requirements, that can be used as a smoke test to validate the deployment</li>
-</ul>
-<hr />
+<p>All pods should be <code>Running</code> with no <code>CrashLoopBackOff</code> or <code>Error</code> states.</p>
 <h3 id="using-the-api">Using the API<a class="headerlink" href="#using-the-api" title="Permanent link">⚓︎</a></h3>
-<p>This section provides a walkthrough the OGC API Processes endpoints to deploy, execute, monitor, and retrieve results from a sample application.</p>
+<p>This walkthrough covers deploying, executing, monitoring, and retrieving results from a sample application.</p>
 <blockquote>
-<p><strong>Alternative Notebook Validation</strong></p>
-<p>You can, instead, perform the walkthrough via a Jupyter Notebook - which can be invoked via the script:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>../../../notebooks/run.sh
-</span></code></pre></div>
-<p>This runs a local Jupyter server at <code>http://localhost:8888</code>. Open the <a href="http://localhost:8888/lab/tree/oapip/oapip.ipynb" target="_blank">OAPIP Engine Validation notebook</a> at path <code>/oapip/oapip.ipynb</code>.</p>
+<p><strong>Prefer a notebook?</strong> Run <code>../../../notebooks/run.sh</code> and open the <a href="http://localhost:8888/lab/tree/oapip/oapip.ipynb" target="_blank">OAPIP Engine Validation notebook</a> at <code>http://localhost:8888</code>.</p>
 </blockquote>
 <h4 id="initialise-environment">Initialise Environment<a class="headerlink" href="#initialise-environment" title="Permanent link">⚓︎</a></h4>
-<p>The following example commands assume use of <code>bash</code> shell.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>bash<span class="w"> </span>-l
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>bash<span class="w"> </span>-l
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span></code></pre></div>
-<p>Initialise environment variables used by the example commands.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span>
-</span></code></pre></div>
-<p>If you have OIDC enabled, run the <code>oapip-utils.sh</code> to generate a valid OIDC token that will be temporarily stored in your environment variables.</p>
-<p>This will ask you for the username and password for the user you added to the group to generate an access token.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>oapip-utils.sh
-</span></code></pre></div>
+<p>If OIDC is enabled, generate a token:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">source</span><span class="w"> </span>oapip-utils.sh
+</span></code></pre></div></p>
 <blockquote>
-<p><strong><em>NOTE that the token is short-lived - so it may be necessary to repeat this step to refresh the token - in the case that the following commands fail unexpectedly</em></strong></p>
+<p><strong>Note:</strong> Tokens are short-lived. Re-run this if later commands fail unexpectedly.</p>
 </blockquote>
-<hr />
 <h4 id="list-processes">List Processes<a class="headerlink" href="#list-processes" title="Permanent link">⚓︎</a></h4>
-<p>Retrieve the list of available (currently deployed) processes.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div>
-<blockquote>
-<p>This command will omit the <code>Authorization</code> header if OIDC is not enabled. If you have OIDC enabled, and it is failing, please ensure you have run the <code>source oapip-utils.sh</code> script to generate the <code>OAPIP_AUTH_HEADER</code> variable.</p>
-</blockquote>
-<hr />
 <h4 id="deploy-process-convert">Deploy Process <code>convert</code><a class="headerlink" href="#deploy-process-convert" title="Permanent link">⚓︎</a></h4>
-<p>Deploy the <code>convert</code> app&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s">{</span>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="s">  &quot;executionUnit&quot;: {</span>
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s">    &quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl&quot;,</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="s">    &quot;type&quot;: &quot;application/cwl&quot;</span>
-</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="s">  }</span>
-</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="s">}</span>
-</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="s">EOF</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">  </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="s">{</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="s">  &quot;executionUnit&quot;: {</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="s">    &quot;href&quot;: &quot;https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl&quot;,</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="s">    &quot;type&quot;: &quot;application/cwl&quot;</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="s">  }</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="s">}</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="s">EOF</span>
 </span></code></pre></div>
-<p>Check the <code>convert</code> application is deployed&hellip;</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
-</span></code></pre></div>
-<hr />
+<p>Verify it&rsquo;s deployed:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div></p>
 <h4 id="execute-process-convert">Execute Process <code>convert</code><a class="headerlink" href="#execute-process-convert" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nv">JOB_ID</span><span class="o">=</span><span class="k">$(</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url/execution&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Prefer: respond-async&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq -r &#39;.jobID&#39;</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s">  {</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="s">    &quot;inputs&quot;: {</span>
-</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="s">      &quot;fn&quot;: &quot;resize&quot;,</span>
-</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="s">      &quot;url&quot;:  &quot;https://eoepca.org/media_portal/images/logo6_med.original.png&quot;,</span>
-</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="s">      &quot;size&quot;: &quot;50%&quot;</span>
-</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="s">    }</span>
-</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="s">  }</span>
-</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="s">EOF</span>
-</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="k">)</span>
-</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>
-</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;JOB ID: </span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nv">JOB_ID</span><span class="o">=</span><span class="k">$(</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="w">  </span>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url/execution&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">    </span>-H<span class="w"> </span><span class="s2">&quot;Prefer: respond-async&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">    </span>-d<span class="w"> </span>@-<span class="w"> </span><span class="s">&lt;&lt;EOF | jq -r &#39;.jobID&#39;</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="s">  {</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="s">    &quot;inputs&quot;: {</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="s">      &quot;fn&quot;: &quot;resize&quot;,</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="s">      &quot;url&quot;:  &quot;https://eoepca.org/media_portal/images/logo6_med.original.png&quot;,</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="s">      &quot;size&quot;: &quot;50%&quot;</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="s">    }</span>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="s">  }</span>
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a><span class="s">EOF</span>
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="k">)</span>
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a>
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;JOB ID: </span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
-<hr />
 <h4 id="check-execution-status">Check Execution Status<a class="headerlink" href="#check-execution-status" title="Permanent link">⚓︎</a></h4>
-<p>The <code>JOB ID</code> is used to monitor the progress of the job execution - most notably the status field that indicates whether the job is in-progress (<code>running</code>), or its completion status (<code>successful</code> / <code>failed</code>). Note that the full URL for job monitoring is also returned in the <code>Location</code> header of the http response to the execution request.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/jobs/</span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/jobs/</span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div>
-<hr />
+<p>The <code>status</code> field shows <code>running</code>, <code>successful</code>, or <code>failed</code>.</p>
 <h4 id="check-execution-results">Check Execution Results<a class="headerlink" href="#check-execution-results" title="Permanent link">⚓︎</a></h4>
-<p>Similarly, once the job is completed successfully, then details of the results (outputs) can be retrieved.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/jobs/</span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">/results&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
-</span></code></pre></div>
-<hr />
+<p>Once the job completes successfully:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="w">  </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/jobs/</span><span class="si">${</span><span class="nv">JOB_ID</span><span class="si">}</span><span class="s2">/results&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div></p>
 <h4 id="undeploy-process-convert">Undeploy Process <code>convert</code><a class="headerlink" href="#undeploy-process-convert" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">  </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div>
+<h3 id="monitoring-jobs-on-hpc-toil-only">Monitoring Jobs on HPC (Toil only)<a class="headerlink" href="#monitoring-jobs-on-hpc-toil-only" title="Permanent link">⚓︎</a></h3>
+<p>When using Toil, you can also monitor jobs directly on the HPC cluster:</p>
+<p><strong>Toil WES logs:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">20</span><span class="w"> </span>~/celery.log
+</span></code></pre></div></p>
+<p><strong>HPC queue status:</strong></p>
+<p>For HTCondor:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>condor_q<span class="w"> </span>-all
+</span></code></pre></div></p>
+<p>For Slurm:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>squeue<span class="w"> </span>-u<span class="w"> </span><span class="nv">$USER</span>
+</span></code></pre></div></p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
-<p>To remove the Processing BB OAPIP Engine from your cluster:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>-
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>-keycloak-client
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
-</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
+<h3 id="remove-the-oapip-engine">Remove the OAPIP Engine<a class="headerlink" href="#remove-the-oapip-engine" title="Permanent link">⚓︎</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>-
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>-keycloak-client
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
 </span></code></pre></div>
+<h3 id="stop-toil-wes-toil-only">Stop Toil WES (Toil only)<a class="headerlink" href="#stop-toil-wes-toil-only" title="Permanent link">⚓︎</a></h3>
+<p>If you set up Toil WES on your HPC cluster:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="c1"># Stop Toil server</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="nb">kill</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span><span class="nv">$HOME</span>/toil.pid<span class="k">)</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="c1"># Stop Celery</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>celery<span class="w"> </span>--broker<span class="o">=</span>amqp://guest:guest@127.0.0.1:5672//<span class="w"> </span>-A<span class="w"> </span>toil.server.celery_app<span class="w"> </span>multi<span class="w"> </span>stop<span class="w"> </span>w1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w">   </span>--pidfile<span class="o">=</span><span class="nv">$HOME</span>/celery.pid
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a>
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="c1"># Stop RabbitMQ</span>
+</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>docker<span class="w"> </span>stop<span class="w"> </span>toil-wes-rabbitmq
+</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>docker<span class="w"> </span>rm<span class="w"> </span>toil-wes-rabbitmq
+</span></code></pre></div></p>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
+<p><strong>General:</strong></p>
 <ul>
 <li><a href="https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru">ZOO-Project DRU Helm Chart</a></li>
-<li><a href="https://github.com/EOEPCA/eoepca-proc-service-template"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Cookiecutter Template</a></li>
 <li><a href="https://github.com/EOEPCA/deployment-guide"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide Repository</a></li>
 <li><a href="https://www.ogc.org/standards/ogcapi-processes">OGC API Processes Standards</a></li>
 <li><a href="https://www.commonwl.org/">Common Workflow Language (CWL)</a></li>
+</ul>
+<p><strong>Calrissian:</strong></p>
+<ul>
 <li><a href="https://github.com/Duke-GCB/calrissian">Calrissian Documentation</a></li>
+<li><a href="https://github.com/EOEPCA/eoepca-proc-service-template"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Cookiecutter Template</a></li>
+</ul>
+<p><strong>Toil:</strong></p>
+<ul>
+<li><a href="https://toil.ucsc-cgl.org/">Toil Documentation</a></li>
+<li><a href="https://toil.readthedocs.io/en/master/running/server/wes.html">Toil WES Server Documentation</a></li>
+<li><a href="https://zoo-project.github.io/zoo-wes-runner/">Zoo WES Runner Documentation</a></li>
+<li><a href="https://github.com/EOEPCA/eoepca-proc-service-template-wes"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Cookiecutter Template (WES)</a></li>
 </ul>
 <hr />
 <h2 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">⚓︎</a></h2>
-<p>If you have any issues or suggestions, please open an issue on the <a href="https://github.com/EOEPCA/deployment-guide/issues"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+Deployment Guide GitHub Repository</a>.</p>
+<p>If you have any issues or suggestions, please open an issue on the <a href="https://github.com/EOEPCA/deployment-guide/issues"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Deployment Guide GitHub Repository</a>.</p>
 
 
 

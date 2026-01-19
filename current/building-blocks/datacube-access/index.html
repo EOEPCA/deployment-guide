@@ -1262,6 +1262,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#relevance-to-openeo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relevance to OpenEO
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1869,6 +1878,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#relevance-to-openeo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relevance to OpenEO
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2043,6 +2061,10 @@ Confirm OGC API conformance classes and supported standards.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>tests
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>python<span class="w"> </span>processing-tools.py
 </span></code></pre></div>
+<h3 id="relevance-to-openeo">Relevance to OpenEO<a class="headerlink" href="#relevance-to-openeo" title="Permanent link">⚓︎</a></h3>
+<p>Datacube Access acts as a filtered data layer for <a href="https://openeo.org/">openEO</a> backends by exposing only collections with proper datacube metadata (<code>cube:dimensions</code>, <code>cube:variables</code>). This ensures openEO can reliably load data into multi-dimensional arrays and perform operations.</p>
+<p>The dimensional metadata (spatial, temporal, spectral) enables openEO to validate process graphs and maintain dimension compatibility throughout processing chains. Without this filtering, openEO backends would encounter heterogeneous STAC collections lacking the structure needed for multi-dimensional processing.</p>
+<p>For example, an openEO workflow calculating NDVI time series needs to know exact band names, temporal resolution, and dimension relationships - all provided by the datacube metadata.</p>
 <hr />
 <h2 id="further-reading-official-docs">Further Reading &amp; Official Docs<a class="headerlink" href="#further-reading-official-docs" title="Permanent link">⚓︎</a></h2>
 <ul>
