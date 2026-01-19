@@ -28,33 +28,125 @@ The Data Gateway is utilised by other building blocks rather than deployed stand
 
 ---
 
-## Configuration
+## Installation
 
-### Basic Setup
+### Basic Installation
 
-1. **Install EODAG**:
 ```bash
 pip install eodag
 ```
 
-2. **Configure Provider Credentials**:
+### Installation with STAC Server Support
 
-EODAG automatically creates a configuration file at `~/.config/eodag/eodag.yml` on first run. Add your provider credentials:
+To enable STAC REST API functionality:
 
-```yaml
-providers:
-  cop_dataspace:
-    auth:
-      credentials:
-        username: your_username
-        password: your_password
+```bash
+pip install eodag[server]
+```
+
+### Verify Installation
+
+```bash
+eodag version
+eodag --help
 ```
 
 ---
 
-## Usage Example
+## Configuration
 
-### Python Integration
+### Initial Setup
+
+The first time EODAG runs, it creates a configuration file at `~/.config/eodag/eodag.yml`. Trigger this by running:
+
+```bash
+eodag list --no-fetch | head -5
+```
+
+### Configure Provider Credentials
+
+Edit `~/.config/eodag/eodag.yml` to add your provider credentials:
+
+```yaml
+cop_dataspace:
+  priority: 2
+  download:
+    extract: False
+    outputs_prefix: /home/user/eodata/
+  auth:
+    credentials:
+      username: your_username
+      password: your_password
+```
+
+Key configuration options:
+- **priority**: Higher values mean the provider is tried first (default: 1)
+- **extract**: Whether to automatically extract downloaded archives (default: True)
+- **outputs_prefix**: Directory for downloaded products (default: system temp directory)
+
+---
+
+## Usage: Command Line Interface
+
+### List Available Product Types
+
+```bash
+# List all product types (without fetching remote catalogues)
+eodag list --no-fetch
+
+# Filter by provider
+eodag list --provider cop_dataspace --no-fetch
+
+# Filter by platform
+eodag list --platform SENTINEL2 --no-fetch
+
+# Filter by sensor type
+eodag list --sensorType OPTICAL --no-fetch
+```
+
+### Search for Products
+
+```bash
+# Basic search
+eodag search \
+  --productType S2_MSI_L1C \
+  --box 1 43 2 44 \
+  --start 2024-01-01 \
+  --end 2024-01-15
+
+# Search with cloud cover filter
+eodag search \
+  --productType S2_MSI_L1C \
+  --box 1 43 2 44 \
+  --start 2024-06-01 \
+  --end 2024-06-30 \
+  --cloudCover 20 \
+  --storage low_cloud_results.geojson
+
+# Get all matching results (not just first page)
+eodag search \
+  --productType S2_MSI_L1C \
+  --box 1 43 2 44 \
+  --start 2024-01-01 \
+  --end 2024-01-05 \
+  --all
+```
+
+### Download Products
+
+```bash
+eodag download --search-results search_results.geojson
+```
+
+### Discover New Product Types
+
+```bash
+eodag discover -p earth_search --storage /tmp/earth_search_products.json
+```
+
+---
+
+## Usage: Python API
 
 ```python
 from eodag import EODataAccessGateway
@@ -62,38 +154,88 @@ from eodag import EODataAccessGateway
 # Initialise EODAG
 dag = EODataAccessGateway()
 
+# List available providers
+providers = dag.available_providers()
+print(f"Found {len(providers)} providers")
+
 # Search for Sentinel-2 products
-search_results = dag.search(
-    collection='S2_MSI_L1C',
+results = dag.search(
+    productType="S2_MSI_L1C",
     geom={'lonmin': 1, 'latmin': 43.5, 'lonmax': 2, 'latmax': 44},
-    start='2021-01-01',
-    end='2021-01-15',
-    provider='cop_dataspace'  # Optional: specify provider
+    start='2024-01-01',
+    end='2024-01-15',
+    provider='earth_search',  # Optional: specify provider
+    items_per_page=10
 )
 
-# Download all results
-product_paths = dag.download_all(search_results)
+print(f"Found {len(results)} products")
 
-# Or download specific item
-if search_results:
-    first_product = search_results[0]
-    path = dag.download(first_product)
+# Inspect a product
+if results:
+    product = results[0]
+    print(f"ID: {product.properties.get('id')}")
+    print(f"Cloud cover: {product.properties.get('cloudCover'):.1f}%")
+
+# Download all results
+product_paths = dag.download_all(results)
+
+# Or download a specific product
+if results:
+    path = dag.download(results[0])
     print(f"Downloaded to: {path}")
 ```
 
-### Command Line Interface
+### Search with Cloud Cover Filter
+
+```python
+results = dag.search(
+    productType="S2_MSI_L1C",
+    geom={"lonmin": 1, "latmin": 43, "lonmax": 2, "latmax": 44},
+    start="2024-06-01",
+    end="2024-06-30",
+    cloudCover=20,
+    items_per_page=5
+)
+```
+
+### Search with WKT Geometry
+
+```python
+wkt = "POLYGON((1 43, 2 43, 2 44, 1 44, 1 43))"
+results = dag.search(
+    productType="S2_MSI_L1C",
+    geom=wkt,
+    start="2024-01-01",
+    end="2024-01-05"
+)
+```
+
+---
+
+## STAC Server Mode
+
+> **Note**: The `serve-rest` command is deprecated since EODAG v3.9.0 and will be removed in a future version. For production deployments, use [stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag). The built-in server remains functional for development and testing.
+
+### Start the STAC Server
 
 ```bash
-# List available product types
-eodag list
+eodag serve-rest --world --port 5000
+```
+
+### Query the STAC API
+
+```bash
+# Root endpoint
+curl -s http://localhost:5000 | jq .
+
+# List all collections
+curl -s "http://localhost:5000/collections" | jq .
+
+# Filter collections by provider
+curl -s "http://localhost:5000/collections?provider=earth_search" | jq .
 
 # Search for products
-eodag search --productType S2_MSI_L1C \
-  --box 1 43 2 44 \
-  --start 2021-01-01 --end 2021-01-15
-
-# Download search results
-eodag download --search-results search_results.geojson
+curl -s "http://localhost:5000/search?collections=S2_MSI_L1C&bbox=1,43,2,44&datetime=2024-01-01/2024-01-15&limit=5" | jq .
 ```
 
 ---
@@ -101,28 +243,81 @@ eodag download --search-results search_results.geojson
 ## Supported Providers
 
 EODAG comes pre-configured with many providers including:
-- Copernicus Data Space
-- AWS/GCS (Sentinel on cloud storage)
-- CREODIAS, Mundi, ONDA, WEkEO (DIAS platforms)
-- USGS (Landsat products)
-- Destination Earth Data Lake
+- **cop_dataspace**: Copernicus Data Space Ecosystem
+- **earth_search**: Element 84's Earth Search on AWS
+- **planetary_computer**: Microsoft Planetary Computer
+- **usgs_satapi_aws**: USGS via AWS
+- **creodias**: CREODIAS platform
+- **dedl**: Destination Earth Data Lake
 
-View the complete list and their configurations in the [EODAG Providers Documentation](https://eodag.readthedocs.io/en/stable/providers.html).
+View available providers in Python:
+
+```python
+dag = EODataAccessGateway()
+print(dag.available_providers())
+```
+
+See the complete list in the [EODAG Providers Documentation](https://eodag.readthedocs.io/en/stable/providers.html).
 
 ---
 
-## Extending EODAG
+## Extending EODAG with Custom Providers
 
-Add custom providers by creating a configuration:
+You can add custom providers either via the YAML configuration file or programmatically.
+
+### Method 1: YAML Configuration
+
+Add to `~/.config/eodag/eodag.yml`:
 
 ```yaml
+my_custom_stac_provider:
+  search:
+    type: StacSearch
+    api_endpoint: https://my-stac-api.example.com/search
+    need_auth: false
+  products:
+    GENERIC_PRODUCT_TYPE:
+      productType: '{productType}'
+  download:
+    type: HTTPDownload
+```
+
+### Method 2: Python API
+
+```python
+from eodag import EODataAccessGateway
+
+dag = EODataAccessGateway()
+
+# Using add_provider() for simple STAC providers
+dag.add_provider(
+    name="my_stac_provider",
+    url="https://my-stac-api.example.com/search"
+)
+
+# Or using update_providers_config() for more control
+dag.update_providers_config("""
 my_custom_provider:
   search:
     type: StacSearch
-    api_endpoint: https://my-stac-api.com
+    api_endpoint: https://my-stac-api.example.com/search
+    need_auth: false
   products:
-    S2_L2A:
-      productType: sentinel-2-l2a
+    GENERIC_PRODUCT_TYPE:
+      productType: '{productType}'
+  download:
+    type: HTTPDownload
+""")
+
+# Set as preferred provider
+dag.set_preferred_provider("my_custom_provider")
+
+# Now search using the custom provider
+results = dag.search(
+    productType="sentinel-2-l2a",
+    start="2024-01-01",
+    end="2024-01-15"
+)
 ```
 
 ---
@@ -132,5 +327,6 @@ my_custom_provider:
 - **[EODAG Documentation](https://eodag.readthedocs.io/)** - Comprehensive guide and API reference
 - **[EODAG GitHub Repository](https://github.com/CS-SI/eodag)** - Source code and examples
 - **[EOEPCA Data Gateway Architecture](https://eoepca.readthedocs.io/projects/architecture/en/latest/reference-architecture/data-gateway-BB/)** - Architectural design and integration patterns
+- **[stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag)** - Production STAC server implementation
 - **[EODAG JupyterLab Extension](https://github.com/CS-SI/eodag-labextension)** - GUI for searching and browsing EO products
 - **[Provider Configuration Guide](https://eodag.readthedocs.io/en/stable/getting_started_guide/configure.html)** - Detailed provider setup instructions
