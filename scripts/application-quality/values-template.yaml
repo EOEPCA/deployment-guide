@@ -57,7 +57,7 @@ application-quality:
 
   calrissian:
     image: "terradue/calrissian:0.14.0"
-    storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
+    storageClassName: {{ getenv "SHARED_STORAGECLASS" }}
     volumeSize: "2Gi"
     maxCores: "2"
     maxRam: "2Gi"

@@ -11,6 +11,7 @@ declare -a checks=(
     "check_cert_manager_installed"
     "check_ingress_controller_installed"
     "check_internal_certificates"
+    "check_rwx_storage"
 )
 
 run_validation "${checks[@]}"

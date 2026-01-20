@@ -6,8 +6,10 @@ global:
     configureCertmanager: false
     class: {{ getenv "INGRESS_CLASS" }}
     provider: {{ getenv "INGRESS_CLASS" }}
+    {{- if eq (getenv "HTTP_SCHEME") "https" }}
     tls:
       external: true
+    {{- end }}
     annotations:
       {{- range $key, $value := (datasource "annotations") }}
       {{ $key }}: "{{ $value }}"
@@ -55,6 +57,8 @@ gitlab:
   gitaly:
     persistence:
       storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
+
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
   webservice:
     ingress:
       tls:
@@ -70,6 +74,8 @@ gitlab:
     ingress:
       tls:
         secretName: kas-tls
+  {{- end }}
+
 
   toolbox:
     backups:
@@ -90,10 +96,12 @@ registry:
     tls:
       secretName: registry-tls
 
+{{- if eq (getenv "HTTP_SCHEME") "https" }}
 minio:
   ingress:
     tls:
       secretName: minio-tls
+{{- end }}
 
 certmanager:
   install: false
