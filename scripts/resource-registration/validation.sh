@@ -4,7 +4,7 @@ source ../common/validation-utils.sh
 source "$HOME/.eoepca/state"
 
 # Check pods in resource-registration namespace
-check_pods_running "resource-registration" "" 4
+check_pods_running "resource-registration" "" 5
 
 # Check services
 check_service_exists "resource-registration" "registration-api-service"
@@ -12,6 +12,7 @@ check_service_exists "resource-registration" "registration-harvester-api-engine-
 check_service_exists "resource-registration" "registration-harvester-api-engine-flowable-rest"
 check_service_exists "resource-registration" "registration-harvester-api-engine-postgres"
 check_service_exists "resource-registration" "registration-harvester-worker-landsat-service"
+check_service_exists "resource-registration" "registration-harvester-worker-sentinel-service"
 
 # Check ingress
 #

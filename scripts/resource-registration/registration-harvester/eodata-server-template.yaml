@@ -60,6 +60,7 @@ spec:
         # Allow CORS access
         - name: cors
           enable: true
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -89,3 +90,4 @@ spec:
   secret:
     name: eodata-server-tls
     namespace: resource-registration
+{{- end }}

@@ -37,6 +37,7 @@ gomplate  -f "registration-api/$INGRESS_TEMPLATE_PATH" -o "registration-api/$ING
 gomplate  -f "registration-harvester/$TEMPLATE_PATH" -o "registration-harvester/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/$INGRESS_TEMPLATE_PATH" -o "registration-harvester/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/harvester-values/values-landsat-template.yaml" -o "registration-harvester/harvester-values/values-landsat.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "registration-harvester/harvester-values/values-sentinel-template.yaml" -o "registration-harvester/harvester-values/values-sentinel.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 # eodata-server - Generate deployment yaml from template
 gomplate  -f "registration-harvester/eodata-server-template.yaml" -o "registration-harvester/generated-eodata-server.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

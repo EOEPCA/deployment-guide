@@ -1,0 +1,65 @@
+harvester:
+  secret:
+    name: registration-harvester-secret
+  eodata:
+    enabled: true
+    createPVC: false
+    claimName: eodata
+  config:
+    worker:
+      log_level: INFO
+      flowable:
+        host: {{ getenv "HTTP_SCHEME"}}://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
+        tls: true
+        cacert: ./etc/eoepca-ca-chain.pem
+      topics:
+        sentinel_discover_data:
+          module: worker.sentinel.tasks
+          handler: SentinelDiscoverHandler
+        sentinel_continuous_data_discovery:
+          module: worker.sentinel.tasks
+          handler: SentinelContinuousDiscoveryHandler
+        sentinel_download_data:
+          module: worker.sentinel.tasks
+          handler: SentinelDownloadHandler
+        sentinel_unzip:
+          module: worker.sentinel.tasks
+          handler: SentinelUnzipHandler
+        sentinel_check_integrity:
+          module: worker.sentinel.tasks
+          handler: SentinelCheckIntegrityHandler
+        sentinel_extract_metadata:
+          module: worker.sentinel.tasks
+          handler: SentinelExtractMetadataHandler
+        sentinel_register_metadata:
+          module: worker.sentinel.tasks
+          handler: SentinelRegisterMetadataHandler
+      handlers:
+        SentinelDiscoverHandler:
+          api_url: https://datahub.creodias.eu/odata/v1
+          limit: 1000
+        SentinelContinuousDiscoveryHandler:
+          enabled: false
+          api_url: https://datahub.creodias.eu/odata/v1
+          limit: 1000
+          timewindow_hours: 1
+          filter: (startswith(Name,'S2') and contains(Name,'L2A') and not contains(Name,'_N9999')) and (intersects(area=geography'SRID=4326;POLYGON((3 55, 3 47, 18 47, 18 55, 3 55))'))
+        SentinelDownloadHandler:
+          subscription:
+            lock_duration: PT30M  # 30 minute lock duration
+          base_dir: /eodata/sentinel
+          retryTimeout: 10
+        SentinelUnzipHandler:
+          remove_zip: false
+        SentinelCheckIntegrityHandler:
+          subscription:
+            number_of_retries: 3
+            lock_duration: PT10M  # 10 minute lock duration
+        SentinelExtractMetadataHandler:
+          collections_dir: ./etc/collections
+        SentinelRegisterMetadataHandler:
+          stac_api_url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac
+          stac_file_deletion: true
+          rewrite_asset_hrefs:
+            prefix_from: "/eodata/"
+            prefix_to: "{{ getenv "HTTP_SCHEME"}}://eodata.{{ getenv "INGRESS_HOST" }}/"

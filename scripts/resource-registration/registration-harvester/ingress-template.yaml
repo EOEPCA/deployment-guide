@@ -32,6 +32,7 @@ spec:
       backends:
         - serviceName: registration-harvester-api-engine-flowable-rest
           servicePort: 8080
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -61,3 +62,4 @@ spec:
   secret:
     name: registration-harvester-api-tls
     namespace: resource-registration
+{{- end }}
