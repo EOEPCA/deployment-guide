@@ -172,11 +172,36 @@ helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
   --values workspace-admin/generated-values.yaml
 ```
 
-> There is currently no ingress set up for the Workspace Admin Dashboard. To access it, you can use port-forwarding. For example:
-> ```bash
-> kubectl -n workspace port-forward svc/workspace-admin-web 8000
-> ```
-> Then access it at `http://localhost:8000/`.
+Apply the APISIX route ingress:
+
+```bash
+kubectl apply -f workspace-admin/generated-ingress.yaml
+```
+
+Create a _ServiceAccount_ for accessing the Dashboard with 'viewing` permissions:
+
+```bash
+kubectl create serviceaccount dashboard-viewer -n workspace
+kubectl create rolebinding dashboard-viewer \
+  --clusterrole=view \
+  --serviceaccount=workspace:dashboard-viewer \
+  -n workspace
+```
+
+Generate a token for the `dashboard-viewer` ServiceAccount:
+
+```bash
+kubectl -n workspace create token dashboard-viewer
+```
+
+Copy the token to your clipboard and use it to log in to the Dashboard at:
+
+```bash
+source ~/.eoepca/state
+xdg-open "https://workspace-admin.${INGRESS_HOST}"
+```
+
+Switch to the namespace `workspace` using the selection box.
 
 ---
 
@@ -461,7 +486,7 @@ If not already deployed, install _Kyverno_ using helm...
 helm repo add kyverno https://kyverno.github.io/kyverno/
 helm repo update kyverno
 helm upgrade -i kyverno kyverno/kyverno \
-  --version 3.4.1 \
+  --version 3.6.2 \
   --namespace kyverno \
   --create-namespace
 ```
@@ -495,7 +520,7 @@ spec:
               +(k8s.apisix.apache.org/enable-cors): "true"
               +(k8s.apisix.apache.org/enable-websocket): "true"
               +(k8s.apisix.apache.org/http-to-https): "true"
-              +(k8s.apisix.apache.org/upstream-read-timeout): 3600s
+              +(k8s.apisix.apache.org/upstream-read-timeout): "3600s"
 EOF
 ```
 
@@ -768,7 +793,7 @@ curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYC
   | jq
 ```
 
-> The details of the `storage` and the `datalab` associated with the workspace are returneed.
+> The details of the `storage` and the `datalab` associated with the workspace are returned.
 
 **Record the secret from the response for S3 access**
 
