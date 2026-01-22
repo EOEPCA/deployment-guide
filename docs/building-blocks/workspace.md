@@ -198,7 +198,7 @@ Copy the token to your clipboard and use it to log in to the Dashboard at:
 
 ```bash
 source ~/.eoepca/state
-xdg-open "https://workspace-admin.${INGRESS_HOST}"
+xdg-open "https://workspace-admin.${INGRESS_HOST}/#/pod?namespace=workspace"
 ```
 
 Switch to the namespace `workspace` using the selection box.
