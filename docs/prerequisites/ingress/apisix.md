@@ -2,6 +2,8 @@
 
 For full installation instructions for the APISIX Ingress Controller see the official [Installation Guide](https://apisix.apache.org/docs/apisix/installation-guide/).
 
+> See also [Ingress Gateway](./gateway.md) for more advanced ingress scenarios.
+
 ## Quickstart Installation
 
 > **Disclaimer:** We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
@@ -114,7 +116,7 @@ spec:
 EOF
 ```
 
-### APISIX Uninstallation
+## APISIX Uninstallation
 
 ```bash
 helm -n ingress-apisix uninstall apisix
