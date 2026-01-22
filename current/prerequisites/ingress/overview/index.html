@@ -621,9 +621,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#two-ingress-options" class="md-nav__link">
+  <a href="#ingress-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Two Ingress Options
+      Ingress Options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Scenarios
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-proceeding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before proceeding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -687,11 +714,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi/" class="md-nav__link">
+      <a href="../gateway/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Multiple Ingress Controllers
+    Ingress Gateway
   </span>
   
 
@@ -1632,9 +1659,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#two-ingress-options" class="md-nav__link">
+  <a href="#ingress-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Two Ingress Options
+      Ingress Options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Scenarios
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-proceeding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before proceeding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -1665,11 +1719,12 @@
 
 <h1 id="ingress-overview">Ingress Overview<a class="headerlink" href="#ingress-overview" title="Permanent link">⚓︎</a></h1>
 <p><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ requires an Ingress Controller to route external traffic into the platform&rsquo;s services. This setup typically depends on <strong>Wildcard DNS</strong> so that multiple services (hostnames) can be exposed under a single domain (e.g. <code>*.example.com</code>).</p>
-<h2 id="two-ingress-options">Two Ingress Options<a class="headerlink" href="#two-ingress-options" title="Permanent link">⚓︎</a></h2>
+<h2 id="ingress-options">Ingress Options<a class="headerlink" href="#ingress-options" title="Permanent link">⚓︎</a></h2>
+<p>This guide supports two primary ingress controller options:</p>
 <ol>
 <li>
 <p><a href="../apisix/">APISIX Ingress</a><br>
-   <strong>Recommended</strong> if following the IAM aspects of this guide which relies upon APISIX plugins for IAM integration, with policy-based access control.</p>
+   <strong>Required</strong> if following the IAM aspects of this guide which relies upon APISIX plugins for IAM integration, with policy-based access control.</p>
 </li>
 <li>
 <p><a href="../nginx/">Nginx Ingress</a><br>
@@ -1677,17 +1732,24 @@
 </li>
 </ol>
 <p>You must choose one of these ingress controllers based on your security and access control requirements:</p>
+<blockquote>
+<p>You can install <strong>either</strong> one for a basic deployment.</p>
+</blockquote>
 <ul>
 <li>For deployments <strong>requiring <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>&rsquo;s IAM-based authorization</strong>, you must use <strong>APISIX</strong>.</li>
 <li>For deployments that are <strong>fully open or have their own authorization approach</strong>, <strong>NGINX</strong> can be used.</li>
 </ul>
-<p>You can install <strong>either</strong> one for a basic deployment. If your deployment demands multiple ingress controllers simultaneously, see <a href="ingress-multi.md">Multiple Ingress Controllers</a>.</p>
-<p><strong>Before proceeding:</strong><br />
-- Ensure a wildcard DNS entry is pointing to your cluster&rsquo;s load balancer or external IP, e.g., <code>*.myplatform.com</code>.<br />
-- Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  </p>
+<h2 id="advanced-scenarios">Advanced Scenarios<a class="headerlink" href="#advanced-scenarios" title="Permanent link">⚓︎</a></h2>
+<p>If your ingress needs are more complex, for example you have an existing ingress controller or require use of multiple ingress controllers - then you might consider exposing the entrypoint to your cluster via an ingress gateway - see section <a href="../gateway/">Ingress Gateway</a> for an example approach.</p>
+<h2 id="before-proceeding">Before proceeding<a class="headerlink" href="#before-proceeding" title="Permanent link">⚓︎</a></h2>
+<ul>
+<li>Ensure a wildcard DNS entry is pointing to your cluster&rsquo;s load balancer or external IP, e.g., <code>*.myplatform.com</code>.  </li>
+<li>Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  </li>
+</ul>
 <blockquote>
 <p><em>For testing, wildcard DNS can be simulated using IP-address-based <code>nip.io</code> hostnames, using the entrypoint IP-address of your cluster that routes to your ingress controller.</em></p>
 </blockquote>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">⚓︎</a></h2>
 <p>Continue with the approach best suited for your environment:</p>
 <ul>
 <li><strong><a href="../apisix/">Install APISIX →</a></strong>  </li>

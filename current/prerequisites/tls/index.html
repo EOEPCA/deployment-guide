@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://eoepca.readthedocs.io/projects/deploy/en/latest/current/prerequisites/tls/">
       
       
-        <link rel="prev" href="../ingress/multi/">
+        <link rel="prev" href="../ingress/gateway/">
       
       
         <link rel="next" href="../crossplane/">
@@ -636,11 +636,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../ingress/multi/" class="md-nav__link">
+      <a href="../ingress/gateway/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Multiple Ingress Controllers
+    Ingress Gateway
   </span>
   
 
@@ -778,21 +778,45 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Using Cert Manager">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#global-wildcard-certificate" class="md-nav__link">
+  <a href="#wildcard-dns" class="md-nav__link">
     <span class="md-ellipsis">
-      Global Wildcard Certificate
+      Wildcard DNS
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#internal-tls_1" class="md-nav__link">
+  <a href="#deploy-cert-manager" class="md-nav__link">
     <span class="md-ellipsis">
-      Internal TLS
+      Deploy Cert Manager
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-clusterissuer-for-lets-encrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a ClusterIssuer for Let&rsquo;s Encrypt
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-wildcard-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Wildcard Certificate
     </span>
   </a>
   
@@ -1781,21 +1805,45 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Using Cert Manager">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#global-wildcard-certificate" class="md-nav__link">
+  <a href="#wildcard-dns" class="md-nav__link">
     <span class="md-ellipsis">
-      Global Wildcard Certificate
+      Wildcard DNS
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#internal-tls_1" class="md-nav__link">
+  <a href="#deploy-cert-manager" class="md-nav__link">
     <span class="md-ellipsis">
-      Internal TLS
+      Deploy Cert Manager
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-clusterissuer-for-lets-encrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a ClusterIssuer for Let&rsquo;s Encrypt
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-wildcard-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Wildcard Certificate
     </span>
   </a>
   
@@ -1860,12 +1908,12 @@
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">⚓︎</a></h2>
 <h3 id="using-cert-manager">Using Cert Manager<a class="headerlink" href="#using-cert-manager" title="Permanent link">⚓︎</a></h3>
 <p>As a quick start we include instructions to bootstrap <em>Cert Manager</em> into your cluster.</p>
-<p><strong>Wildcard DNS</strong></p>
+<h4 id="wildcard-dns">Wildcard DNS<a class="headerlink" href="#wildcard-dns" title="Permanent link">⚓︎</a></h4>
 <p>Use of Cert Manager presumes that your cluster is reachable over the internet via a publicly routable IP - with an associated wildcard DNS record that is needed for correct routing of dynamic host-based routes established via Ingress resources for cluster services. For example&hellip;</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>*.your-domain.    300     IN      CNAME   your-domain.
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>your-domain.      300     IN      A       your-external-ip-addr
 </span></code></pre></div>
-<p><strong>Deploy Cert Manager</strong></p>
+<h4 id="deploy-cert-manager">Deploy Cert Manager<a class="headerlink" href="#deploy-cert-manager" title="Permanent link">⚓︎</a></h4>
 <p>Cert Manager is deployed via helm chart&hellip;</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>jetstack<span class="w"> </span>https://charts.jetstack.io
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>jetstack
@@ -1874,28 +1922,33 @@
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>--version<span class="w"> </span>v1.16.1<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>--set<span class="w"> </span>crds.enabled<span class="o">=</span><span class="nb">true</span>
 </span></code></pre></div>
-<p><strong>Create a ClusterIssuer for Let&rsquo;s Encrypt</strong></p>
+<h4 id="create-a-clusterissuer-for-lets-encrypt">Create a ClusterIssuer for Let&rsquo;s Encrypt<a class="headerlink" href="#create-a-clusterissuer-for-lets-encrypt" title="Permanent link">⚓︎</a></h4>
 <ol>
 <li>
-<p>Using <strong>HTTP01 Challenge</strong> via APISIX ingress <a href="https://letsencrypt.org/docs/challenge-types/#http-01-challenge">[ref]</a></p>
+<p>Using <strong>HTTP01 Challenge</strong> <a href="https://letsencrypt.org/docs/challenge-types/#http-01-challenge">[ref]</a></p>
+<p>We create a <code>ClusterIssuer</code> for each of APISIX and for NGINX - that will use the <code>HTTP01</code> challenge to verify domain ownership via each respective ingress controller.</p>
+<blockquote>
 <p>Set your details for email and the ingress class (apisix/nginx)</p>
 <p>You can also change the <code>metadata.name</code> and <code>spec.acme.privateKeySecretRef.name</code> to something more meaningful.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39; | kubectl apply -f -</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="s">apiVersion: cert-manager.io/v1</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s">kind: ClusterIssuer</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s">metadata:</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s">  name: letsencrypt-http01-apisix</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">spec:</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">  acme:</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s">    server: https://acme-v02.api.letsencrypt.org/directory</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">    email: your_email@your-domain</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">    privateKeySecretRef:</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s">      name: letsencrypt-http01-apisix</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s">    solvers:</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s">      - http01:</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="s">          ingress:</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="s">            class: apisix</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="s">EOF</span>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">for</span><span class="w"> </span>ingress_class<span class="w"> </span><span class="k">in</span><span class="w"> </span>apisix<span class="w"> </span>nginx<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>cat<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;EOF | kubectl apply -f -</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="s">apiVersion: cert-manager.io/v1</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s">kind: ClusterIssuer</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="s">metadata:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="s">  name: letsencrypt-http01-${ingress_class}</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="s">spec:</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="s">  acme:</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="s">    server: https://acme-v02.api.letsencrypt.org/directory</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="s">    email: your_email@your-domain</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="s">    privateKeySecretRef:</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="s">      name: letsencrypt-http01-${ingress_class}</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="s">    solvers:</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="s">      - http01:</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="s">          ingress:</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="s">            class: ${ingress_class}</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="s">EOF</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="k">done</span>
 </span></code></pre></div>
 </li>
 <li>
@@ -1950,18 +2003,6 @@
 </span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">global-tls-certificate</span>
 </span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-apisix</span>
 </span></code></pre></div>
-<hr />
-<h3 id="internal-tls_1">Internal TLS<a class="headerlink" href="#internal-tls_1" title="Permanent link">⚓︎</a></h3>
-<p><strong>Clone the Deployment Guide Repository:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/EOEPCA/deployment-guide
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/internal-tls
-</span></code></pre></div>
-<p><strong>Run the Internal TLS Setup Script:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash<span class="w"> </span>setup-internal-tls.sh
-</span></code></pre></div>
-<blockquote>
-<p>This may not work perfectly for all environments, please adjust the script as needed.</p>
-</blockquote>
 
 
 
@@ -1997,7 +2038,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../ingress/multi/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Multiple Ingress Controllers">
+          <a href="../ingress/gateway/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Ingress Gateway">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -2007,7 +2048,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Multiple Ingress Controllers
+                Ingress Gateway
               </div>
             </div>
           </a>
