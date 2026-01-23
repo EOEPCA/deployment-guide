@@ -215,7 +215,7 @@ kubectl cp sample_record.xml \
         
 ```bash
 kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
-  pycsw-admin.py load-records \
+  /venv/bin/pycsw-admin.py load-records \
     --config /etc/pycsw/pycsw.yml \
     --path /tmp/sample_record.xml
 ```

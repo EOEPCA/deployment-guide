@@ -1,4 +1,6 @@
 harvester:
+  image:
+    tag: pr-5
   secret:
     name: registration-harvester-secret
   eodata:

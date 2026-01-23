@@ -171,46 +171,65 @@ Deploy the ingress for the Flowable Engine:
 kubectl apply -f registration-harvester/generated-ingress.yaml
 ```
 
-#### Create an eodata Volume
+#### Shared `eodata` Volume
 
-Harvested data will be stored into a ReadWriteMany volume shared by all harvester workers. This must be created first. In this example we use the hostpath provisioner, which is suitable for single-node development installations, but for production use this should be substituted with a scalable and reliable shared storage volume.
+Each harvester worker stores their harvested data into a kubernetes persistent volume. We establish a single shared `eodata` volume to collate the outputs of all workers - and also to provide a single asset location to facilitate delivery of data through external services.
 
-To create the PV and PVC for this example use:
+The volume must be created as `ReadWriteMany` - and thus should use the `SHARED_STORAGECLASS` specified at the earlier configuration step.
 
 ```bash
 source ~/.eoepca/state
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: eodata
-spec:
-  accessModes:
-  - ReadWriteMany
-  capacity:
-    storage: 100Gi
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: ${SHARED_STORAGECLASS}
-  volumeMode: Filesystem
-  hostPath:
-    type: DirectoryOrCreate
-    path: /tmp/hostpath-provisioner/resource-registration/eodata
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: eodata
   namespace: resource-registration
+  labels:
+    app.kubernetes.io/name: registration-harvester
+    app.kubernetes.io/component: eodata-storage
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteMany
+  storageClassName: ${SHARED_STORAGECLASS}
   resources:
     requests:
       storage: 100Gi
-  volumeMode: Filesystem
-  volumeName: eodata
 EOF
 ```
+
+Each worker instance is then configured to use this persistent volume via helm values - for example, see helm values file `registration-harvester/harvester-values/values-landsat.yaml`...
+
+```
+harvester:
+  eodata:
+    enabled: true
+    createPVC: false
+    claimName: eodata
+```
+
+> Note that, alternative to directly creating the volume as above, the worker helm chart can be configured to create the volume itself...
+>
+> ```
+> harvester:
+>   eodata:
+>     enabled: true
+>     createPVC: true
+>     claimName: eodata
+>     storageClass: ${SHARED_STORAGECLASS}
+> ```
+>
+> Subsequent worker instances should then be configured to use (rather than create) this extsing volume...
+> 
+> ```
+> harvester:
+>   eodata:
+>     enabled: true
+>     createPVC: false
+>     claimName: eodata
+> ```
 
 #### Deploy Landsat Harvester Worker
 
@@ -326,6 +345,11 @@ bash validation.sh
 
 **Registration API:**
 
+> Authenticate as the configured _Test User_:
+> 
+> * Username: `eoepcauser` (ref. `KEYCLOAK_TEST_USER`)
+> * Password: `eoepcapassword` (ref. `KEYCLOAK_TEST_PASSWORD`)
+
 Service root:
 
 ```bash
@@ -401,14 +425,15 @@ EOF
 This registers a STAC Collection for Sentinel 2 L2a Collection 1, which is also used later to demonstrate Sentinel harvesting.
 
 ```bash
-curl -X POST "https://registration-api.eoepca.local/processes/register/execution" \
+source ~/.eoepca/state
+curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
   ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
   -d @- <<EOF
 {
     "inputs": {
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/sentinel/sentinel-2-c1-l2a.json"},
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.eoepca.local/stac"}
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
     }
 }
 EOF
@@ -632,7 +657,7 @@ xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l
 
 ### Delivery of data `assets`
 
-The default harvesting approach illustrated above maintains the harvested assets into persistent volumes. The metadata records registered with the catalogue assume delivery of these assets via the base URL `https://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
+The default harvesting approach illustrated above maintains the harvested assets into a persistent `eodata` volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL `https://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
 
 #### Example - Service for asset access
 
