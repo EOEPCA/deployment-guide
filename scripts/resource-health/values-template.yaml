@@ -360,13 +360,7 @@ resource-health:
 
 
         def on_template_access(userinfo: UserInfo, template: hu.CheckTemplate) -> None:
-            print("ON TEMPLATE_ACCESS")
-
-            if userinfo["username"] != "bob" and template.id != "simple_ping":
-                return hu.CheckTemplateIdError(template.id)
-
-            if userinfo["username"] not in ["bob", "alice", "eric"]:
-                raise hu.CheckTemplateIdError(template.id)
+            pass
 
 
         def on_check_create(userinfo: UserInfo, check: hu.InCheckAttributes) -> None:
@@ -410,32 +404,6 @@ resource-health:
                 )
 
             cronjob.metadata.annotations["owner"] = userinfo["username"]
-
-            secret_name = f"resource-health-{userinfo['username']}-offline-secret"
-            secret_namespace = get_k8s_namespace(userinfo)
-
-            offline_secret = await hu.lookup_k8s_secret(
-                client=client,
-                namespace=secret_namespace,
-                name=secret_name
-            )
-
-            if offline_secret is None:
-                if userinfo['refresh_token'] is None:
-                    raise hu.APIException(
-                        status="404",
-                        code="MissingOfflineToken",
-                        title="Missing Offline Token",
-                        detail="Missing offline token, please create at least one check using the website",
-                    )
-                await hu.create_k8s_secret(
-                    client=client,
-                    name=secret_name,
-                    namespace=secret_namespace,
-                    string_data={
-                        "offline_token": userinfo['refresh_token']
-                    }
-                )
 {{- else }}
       noauth_hooks.py: |
         import check_hooks.hook_utils as hu

@@ -76,7 +76,7 @@ else
 fi
 
 # Resolve multiple role UUIDs
-ROLES=("manage-users" "manage-clients" "manage-authorization" "create-client")
+ROLES=("manage-users" "manage-clients" "manage-authorization" "create-client" "manage-realm")
 
 ROLE_PAYLOAD="[]"
 for ROLE_NAME in "${ROLES[@]}"; do

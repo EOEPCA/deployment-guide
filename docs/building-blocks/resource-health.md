@@ -172,6 +172,7 @@ This script creates the necessary secrets for the Resource Health BB.
 ```bash
 git clone -b 2.0.0 https://github.com/EOEPCA/resource-health.git reference-repo
 helm dependency update reference-repo/resource-health-reference-deployment
+helm dependency build reference-repo/resource-health-reference-deployment
 ```
 
 - Install or upgrade the Resource Health Helm chart:
@@ -210,6 +211,14 @@ kubectl apply -f generated-ingress.yaml -n resource-health
 ### 4. Configure Keycloak Client
 
 To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.
+
+#### If you are using Crossplane:
+
+```
+kubectl apply -f keycloak.yaml
+```
+
+#### OR If you are configuring Keycloak manually, follow these steps:
 
 #### Step 1: Create a Keycloak Realm Role
 
@@ -267,64 +276,84 @@ kubectl get all -n resource-health
 bash validation.sh
 ```
 
-2. **Verify the APIs are responding**:
-
-```bash
-# Check the Health Checks API
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/" | jq
-
-# Check available templates
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" | jq '.data[].id'
-
-# Check the Telemetry API
-curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/" | jq
-```
-
-3. **Access the Resource Health Web**:
-
-Access the Resource Health Web dashboard at:
-
-```
-https://resource-health.${INGRESS_HOST}
-```
-
-![Dashboard](../img/resource-health/dashboard.jpeg)
-
 ---
 
 ## Usage
 
-### Understanding Health Check Templates
+### Authentication
 
-Health check templates define reusable patterns for common monitoring scenarios. View available templates:
+The Resource Health APIs are protected by OIDC authentication. Before making API requests, obtain an access token:
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" | jq '.data[] | {id: .id, label: .attributes.metadata.label, description: .attributes.metadata.description}'
+source ~/.eoepca/state
+
+ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
+  -d "client_secret=${RESOURCE_HEALTH_CLIENT_SECRET}" \
+  -d "username=${KEYCLOAK_TEST_USER}" \
+  -d "password=${KEYCLOAK_TEST_PASSWORD}" \
+  | jq -r '.access_token')
+
+echo "Access Token: ${ACCESS_TOKEN:0:50}..."
+```
+
+Alternatively, for machine-to-machine access without a user context, use the client credentials grant:
+
+```bash
+ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
+  -d "client_secret=${RESOURCE_HEALTH_CLIENT_SECRET}" \
+  | jq -r '.access_token')
+```
+
+> **Note**: If you are not using OIDC authentication, skip this section and omit the `-H "Authorization: Bearer ${ACCESS_TOKEN}"` header from all curl commands below.
+
+---
+
+### View Available Templates
+
+Health check templates define reusable patterns for common monitoring scenarios:
+
+```bash
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  | jq '.data[].id'
 ```
 
 The default deployment includes:
 - **simple_ping** - Checks if an endpoint responds with an expected HTTP status code
 - **generic_script_template** - Runs custom pytest scripts for advanced health checks
 
-### Creating Health Checks via API
-
-The Resource Health API uses [JSON:API](https://jsonapi.org/) format. Here's how to create a health check:
-
-**1. Create a health check definition:**
+To view details of a specific template:
 
 ```bash
-cat <<EOF > healthcheck.json
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/simple_ping" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
+```
+
+---
+
+### Create a Health Check
+
+The Resource Health API uses [JSON:API](https://jsonapi.org/) format. Let's create a health check that verifies Google is reachable:
+
+```bash
+cat <<EOF | tee healthcheck-google.json | jq
 {
   "data": {
     "type": "check",
     "attributes": {
-      "schedule": "*/5 * * * *",
+      "schedule": "*/1 * * * *",
       "metadata": {
-        "name": "my-service-check",
-        "description": "Check if my service is responding",
+        "name": "google-ping-check",
+        "description": "Check if Google is reachable",
         "template_id": "simple_ping",
         "template_args": {
-          "endpoint": "https://my-service.example.com/health",
+          "endpoint": "https://www.google.com",
           "expected_status_code": 200
         }
       }
@@ -334,64 +363,107 @@ cat <<EOF > healthcheck.json
 EOF
 ```
 
-**2. Register the health check:**
+Register the health check:
 
 ```bash
 curl -X POST "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/vnd.api+json" \
-  -d @healthcheck.json | jq
+  -d @healthcheck-google.json | jq
 ```
 
-**3. Verify the check was created:**
+Note the `id` field in the response - this is the UUID assigned to your health check.
+
+---
+
+### List Health Checks
+
+View all registered health checks:
 
 ```bash
-# List all checks
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq '.data[] | {id: .id, name: .attributes.metadata.name, schedule: .attributes.schedule}'
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  | jq '.data[] | {id: .id, name: .attributes.metadata.name, schedule: .attributes.schedule}'
+```
 
-# View the corresponding CronJob in Kubernetes
+The health check is implemented as a Kubernetes CronJob:
+
+```bash
 kubectl get cronjobs -n resource-health
 ```
 
-### Triggering Health Checks Manually
+The CronJob name matches the UUID of the health check.
 
-Instead of waiting for the scheduled time, you can trigger a health check immediately:
+---
+
+### Trigger a Health Check Manually
+
+Rather than waiting for the scheduled time, you can trigger a health check immediately:
 
 ```bash
 # Get the check ID
-CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq -r '.data[0].id')
+CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  | jq -r '.data[0].id')
+echo "Check ID: $CHECK_ID"
 
 # Create a manual job from the CronJob
-kubectl create job --from=cronjob/${CHECK_ID} manual-check -n resource-health
+kubectl create job --from=cronjob/${CHECK_ID} manual-google-check -n resource-health
 
-# Wait for completion and view results
-kubectl wait --for=condition=complete job/manual-check -n resource-health --timeout=120s
-kubectl logs job/manual-check -n resource-health --all-containers | tail -20
+# Wait for completion
+kubectl wait --for=condition=complete job/manual-google-check -n resource-health --timeout=120s
+
+# View results
+kubectl logs job/manual-google-check -n resource-health --all-containers 2>/dev/null | tail -15
 ```
 
-### Viewing Health Check Results
+You should see pytest output showing the test passed.
+
+---
+
+### View Health Check Results
 
 **Via Telemetry API:**
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans/" | jq
+curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
 ```
+
+If no data appears yet, wait a moment for the checks to complete and telemetry to be collected.
 
 **Via Web Dashboard:**
 
 Visit `https://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
 
-### Deleting Health Checks
+---
+
+### Delete a Health Check
 
 ```bash
-# Get the check ID you want to delete
-CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq -r '.data[] | select(.attributes.metadata.name=="my-service-check") | .id')
+# Get the check ID
+CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  | jq -r '.data[] | select(.attributes.metadata.name=="google-ping-check") | .id')
+echo "Deleting check: $CHECK_ID"
 
 # Delete the check
-curl -X DELETE "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}"
+curl -X DELETE "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 
 # Verify deletion
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" | jq '.data[].attributes.metadata.name'
+curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  | jq '.data[].attributes.metadata.name'
 ```
+
+The corresponding CronJob should also be deleted:
+
+```bash
+kubectl get cronjobs -n resource-health
+```
+
+---
 
 ### Defining Health Checks via Helm
 
@@ -441,6 +513,8 @@ helm upgrade resource-health reference-repo/resource-health-reference-deployment
   -n resource-health
 ```
 
+---
+
 ### Creating Health Checks via Web UI
 
 1. Visit the Resource Health Web dashboard at `https://resource-health.${INGRESS_HOST}`
@@ -454,20 +528,7 @@ helm upgrade resource-health reference-repo/resource-health-reference-deployment
 5. Click **Create** to register the health check
 
 The check will immediately appear in the dashboard and begin running according to its schedule.
-```
 
----
-
-## Uninstallation
-
-To remove all Resource Health components and the namespace:
-
-```bash
-helm uninstall resource-health -n resource-health
-kubectl delete namespace resource-health
-```
-
----
 
 ## Further Reading
 
