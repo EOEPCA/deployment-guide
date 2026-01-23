@@ -45,7 +45,9 @@ Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/
 
 #### Setting up a Local HTCondor (Development/Testing Only)
 
-> **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead.
+> This is only for Toil, if you are using Calrissian, skip this section.
+
+> **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead. 
 
 If you don't have access to an HPC cluster and want to test the Toil integration locally, you can install [MiniHTCondor](https://htcondor.org/), a single-node HTCondor package designed for testing.
 
@@ -193,6 +195,10 @@ You should see JSON service information. Your WES endpoint URL will be:
 ```
 http://<your-hpc-host>:8080/ga4gh/wes/v1/
 ```
+
+---
+
+> For both Calrissian and Toil
 
 ## Clone the Deployment Guide Repository
 ```bash
@@ -519,6 +525,13 @@ curl --silent --show-error \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
+
+Use the Minio `mc` CLI or the MinIO console (installed as per the [MinIO Deployment Guide](../prerequisites/minio.md)) to access the output file in the Stage-Out bucket.
+
+```bash
+https://console-minio.${INGRESS_HOST}/browser/eoepca/processing-results
+```
+
 
 #### Undeploy Process `convert`
 ```bash
