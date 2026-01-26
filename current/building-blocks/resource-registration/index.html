@@ -2482,6 +2482,11 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <td>Properly installed (e.g., NGINX, APISIX)</td>
 <td><a href="../../prerequisites/ingress/overview/">Installation Guide</a></td>
 </tr>
+<tr>
+<td>Crossplane</td>
+<td>Properly installed (if OIDC protected)</td>
+<td><a href="../../prerequisites/crossplane/">Installation Guide</a></td>
+</tr>
 </tbody>
 </table>
 <p><strong>Clone the Deployment Guide Repository:</strong>
@@ -2538,6 +2543,10 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </li>
 <li><strong><code>RESOURCE_REGISTRATION_IAM_CLIENT_ID</code></strong>: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated <code>CLIENT_SECRET</code> will be generated.<ul>
 <li><em>Default</em>: <code>resource-registration</code></li>
+</ul>
+</li>
+<li><strong><code>EODATA_ASSET_BASE_URL</code></strong>: The base URL through which harvested &lsquo;eodata&rsquo; assets will be accessed<ul>
+<li><em>Default</em>: <code>"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"</code></li>
 </ul>
 </li>
 </ul>
