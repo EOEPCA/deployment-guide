@@ -64,4 +64,4 @@ harvester:
           stac_file_deletion: true
           rewrite_asset_hrefs:
             prefix_from: "/eodata/"
-            prefix_to: "{{ getenv "HTTP_SCHEME"}}://eodata.{{ getenv "INGRESS_HOST" }}/"
+            prefix_to: "{{ getenv "EODATA_ASSET_BASE_URL" }}"

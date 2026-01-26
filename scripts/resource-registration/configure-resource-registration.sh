@@ -11,6 +11,9 @@ configure_cert
 ask "FLOWABLE_ADMIN_USER" "Set what you'd like your Flowable admin username to be" "eoepca" is_non_empty
 ask "FLOWABLE_ADMIN_PASSWORD" "Set what you'd like your Flowable admin password to be" "eoepca" is_non_empty
 
+# eodata base URL
+ask "EODATA_ASSET_BASE_URL" "Set the base URL through which harvested 'eodata' assets will be accessed" "${HTTP_SCHEME}://eodata.${INGRESS_HOST}/" is_non_empty
+
 # IAM integration
 # Two cases:
 #   1. We want to protect the Resource Registration endpoints via OIDC

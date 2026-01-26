@@ -46,14 +46,14 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 
 Before deploying the Resource Registration Building Block, ensure you have the following:
 
-| Component          | Requirement                            | Documentation Link                                                |
-| ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.32)              | [Installation Guide](../prerequisites/kubernetes.md)             |
-| Helm               | Version 3.7 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
-| kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
+| Component          | Requirement                              | Documentation Link                                                |
+| ------------------ | ---------------------------------------- | ----------------------------------------------------------------- |
+| Kubernetes         | Cluster (tested on v1.32)                | [Installation Guide](../prerequisites/kubernetes.md)             |
+| Helm               | Version 3.7 or newer                     | [Installation Guide](https://helm.sh/docs/intro/install/)         |
+| kubectl            | Configured for cluster access            | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
+| TLS Certificates   | Managed via `cert-manager` or manually   | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 | Ingress Controller | Properly installed (e.g., NGINX, APISIX) | [Installation Guide](../prerequisites/ingress/overview.md)      |
-
+| Crossplane         | Properly installed (if OIDC protected)   | [Installation Guide](../prerequisites/crossplane.md) |
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -102,6 +102,8 @@ During the script execution, you will be prompted to provide:
     - *Default*: `yes`
 - **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
     - *Default*: `resource-registration`
+- **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
+    - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
 
 ### 2. Apply Kubernetes Secrets
 
