@@ -1,0 +1,55 @@
+---
+apiVersion: role.keycloak.m.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: opensearch-user-role
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    name: opensearch_user
+    description: Role for OpenSearch access via Resource Health
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: resource-health-realm-roles-mapper
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    clientIdRef:
+      name: resource-health
+    name: realm roles
+    protocol: openid-connect
+    protocolMapper: oidc-usermodel-realm-role-mapper
+    config:
+      multivalued: "true"
+      claim.name: roles
+      jsonType.label: String
+      id.token.claim: "true"
+      access.token.claim: "true"
+      userinfo.token.claim: "true"
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+---
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: eoepcauser-opensearch-role
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: eoepca
+    exhaustive: false
+    userIdRef:
+      name: eoepcauser
+    roleIdsRefs:
+      - name: opensearch-user-role
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig

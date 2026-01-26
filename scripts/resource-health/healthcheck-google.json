@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "check",
+    "attributes": {
+      "schedule": "*/1 * * * *",
+      "metadata": {
+        "name": "google-ping-check",
+        "description": "Check if Google is reachable",
+        "template_id": "simple_ping",
+        "template_args": {
+          "endpoint": "https://www.google.com",
+          "expected_status_code": 200
+        }
+      }
+    }
+  }
+}
