@@ -60,7 +60,7 @@ harvester:
           remove_tar: false
           create_folder: true
         LandsatRegisterMetadataHandler:
-          stac_api_url: https://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac
+          stac_api_url: {{ getenv "HTTP_SCHEME"}}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac
           stac_file_deletion: true
           rewrite_asset_hrefs:
             prefix_from: "/eodata/"
