@@ -2565,7 +2565,8 @@
 <p>Toil supports several batch schedulers: <a href="https://research.cs.wisc.edu/htcondor/">HTCondor</a>, <a href="https://www.schedmd.com/">Slurm</a>, <a href="#TODO">PBS/Torque/PBS Pro</a> <a href="https://en.wikipedia.org/wiki/Platform_LSF">LSF</a>, and <a href="http://www.univa.com/oracle">Grid Engine</a>.</p>
 <h4 id="setting-up-a-local-htcondor-developmenttesting-only">Setting up a Local HTCondor (Development/Testing Only)<a class="headerlink" href="#setting-up-a-local-htcondor-developmenttesting-only" title="Permanent link">⚓︎</a></h4>
 <blockquote>
-<p><strong>Warning:</strong> This setup is for development and testing purposes only. Do not use this in production - use your organisation&rsquo;s HPC infrastructure instead.</p>
+<p>This is only for Toil, if you are using Calrissian, skip this section.</p>
+<p><strong>Warning:</strong> This setup is for development and testing purposes only. Do not use this in production - use your organisation&rsquo;s HPC infrastructure instead. </p>
 </blockquote>
 <p>If you don&rsquo;t have access to an HPC cluster and want to test the Toil integration locally, you can install <a href="https://htcondor.org/">MiniHTCondor</a>, a single-node HTCondor package designed for testing.</p>
 <p><strong>Install HTCondor using the official script:</strong>
@@ -2680,6 +2681,10 @@
 <p>You should see JSON service information. Your WES endpoint URL will be:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>http://&lt;your-hpc-host&gt;:8080/ga4gh/wes/v1/
 </span></code></pre></div></p>
+<hr />
+<blockquote>
+<p>For both Calrissian and Toil</p>
+</blockquote>
 <h2 id="clone-the-deployment-guide-repository">Clone the Deployment Guide Repository<a class="headerlink" href="#clone-the-deployment-guide-repository" title="Permanent link">⚓︎</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/EOEPCA/deployment-guide
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">cd</span><span class="w"> </span>deployment-guide/scripts/processing/oapip
@@ -2961,48 +2966,51 @@
 </span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div></p>
+<p>Use the Minio <code>mc</code> CLI or the MinIO console (installed as per the <a href="../../prerequisites/minio/">MinIO Deployment Guide</a>) to access the output file in the Stage-Out bucket.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>https://console-minio.<span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span>/browser/eoepca/processing-results
+</span></code></pre></div>
 <h4 id="undeploy-process-convert">Undeploy Process <code>convert</code><a class="headerlink" href="#undeploy-process-convert" title="Permanent link">⚓︎</a></h4>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">  </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>curl<span class="w"> </span>--silent<span class="w"> </span>--show-error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OAPIP_HOST</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">OAPIP_USER</span><span class="si">}</span><span class="s2">/ogc-api/processes/convert-url&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">  </span><span class="si">${</span><span class="nv">OAPIP_AUTH_HEADER</span><span class="p">:+-H </span><span class="s2">&quot;</span><span class="nv">$OAPIP_AUTH_HEADER</span><span class="s2">&quot;</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
 </span></code></pre></div>
 <h3 id="monitoring-jobs-on-hpc-toil-only">Monitoring Jobs on HPC (Toil only)<a class="headerlink" href="#monitoring-jobs-on-hpc-toil-only" title="Permanent link">⚓︎</a></h3>
 <p>When using Toil, you can also monitor jobs directly on the HPC cluster:</p>
 <p><strong>Toil WES logs:</strong>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">20</span><span class="w"> </span>~/celery.log
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">20</span><span class="w"> </span>~/celery.log
 </span></code></pre></div></p>
 <p><strong>HPC queue status:</strong></p>
 <p>For HTCondor:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>condor_q<span class="w"> </span>-all
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>condor_q<span class="w"> </span>-all
 </span></code></pre></div></p>
 <p>For Slurm:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>squeue<span class="w"> </span>-u<span class="w"> </span><span class="nv">$USER</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>squeue<span class="w"> </span>-u<span class="w"> </span><span class="nv">$USER</span>
 </span></code></pre></div></p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <h3 id="remove-the-oapip-engine">Remove the OAPIP Engine<a class="headerlink" href="#remove-the-oapip-engine" title="Permanent link">⚓︎</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
-</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>-
-</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>
-</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>-keycloak-client
-</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
-</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OAPIP_USER</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">KEYCLOAK_TEST_USER</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>generated-ingress.yaml
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>envsubst<span class="w"> </span>&lt;<span class="w"> </span>protect-oapip-user.yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>-
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>iam-management<span class="w"> </span>delete<span class="w"> </span>secret<span class="w"> </span><span class="si">${</span><span class="nv">OAPIP_CLIENT_ID</span><span class="si">}</span>-keycloak-client
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a>helm<span class="w"> </span>-n<span class="w"> </span>processing<span class="w"> </span>uninstall<span class="w"> </span>zoo-project-dru
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>ns<span class="w"> </span>processing
 </span></code></pre></div>
 <h3 id="stop-toil-wes-toil-only">Stop Toil WES (Toil only)<a class="headerlink" href="#stop-toil-wes-toil-only" title="Permanent link">⚓︎</a></h3>
 <p>If you set up Toil WES on your HPC cluster:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="c1"># Stop Toil server</span>
-</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="nb">kill</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span><span class="nv">$HOME</span>/toil.pid<span class="k">)</span>
-</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
-</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="c1"># Stop Celery</span>
-</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>celery<span class="w"> </span>--broker<span class="o">=</span>amqp://guest:guest@127.0.0.1:5672//<span class="w"> </span>-A<span class="w"> </span>toil.server.celery_app<span class="w"> </span>multi<span class="w"> </span>stop<span class="w"> </span>w1<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w">   </span>--pidfile<span class="o">=</span><span class="nv">$HOME</span>/celery.pid
-</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a>
-</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="c1"># Stop RabbitMQ</span>
-</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>docker<span class="w"> </span>stop<span class="w"> </span>toil-wes-rabbitmq
-</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>docker<span class="w"> </span>rm<span class="w"> </span>toil-wes-rabbitmq
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="c1"># Stop Toil server</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="nb">kill</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span><span class="nv">$HOME</span>/toil.pid<span class="k">)</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="c1"># Stop Celery</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>celery<span class="w"> </span>--broker<span class="o">=</span>amqp://guest:guest@127.0.0.1:5672//<span class="w"> </span>-A<span class="w"> </span>toil.server.celery_app<span class="w"> </span>multi<span class="w"> </span>stop<span class="w"> </span>w1<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">   </span>--pidfile<span class="o">=</span><span class="nv">$HOME</span>/celery.pid
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="c1"># Stop RabbitMQ</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>docker<span class="w"> </span>stop<span class="w"> </span>toil-wes-rabbitmq
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a>docker<span class="w"> </span>rm<span class="w"> </span>toil-wes-rabbitmq
 </span></code></pre></div></p>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
