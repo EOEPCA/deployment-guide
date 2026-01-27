@@ -310,7 +310,7 @@ helm repo update zoo-project
 
 ```bash
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.8.3 \
+  --version 0.9.1 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace

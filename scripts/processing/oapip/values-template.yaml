@@ -125,8 +125,11 @@ files:
       outputs:
         StacCatalogUri:
           outputBinding:
-            outputEval: ${  return "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.sub_path + "/catalog.json"; }
-          type: string
+            outputEval: |
+              ${ 
+                return { "value": "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.sub_path + "/catalog.json", "type": "https://raw.githubusercontent.com/eoap/schemas/main/string_format.yaml#URI" };
+              }
+          type: https://raw.githubusercontent.com/eoap/schemas/main/string_format.yaml#URI
       baseCommand:
         - python
         - stageout.py
