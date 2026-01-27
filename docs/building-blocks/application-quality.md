@@ -102,6 +102,7 @@ git clone https://github.com/EOEPCA/application-quality.git reference-repo \
 ```bash
 helm dependency update reference-repo/application-quality-reference-deployment
 helm dependency build reference-repo/application-quality-reference-deployment
+kubectl apply -f https://github.com/knative/eventing/releases/download/knative-v1.20.0/eventing-crds.yaml
 
 helm upgrade -i application-quality reference-repo/application-quality-reference-deployment \
   --namespace application-quality \
