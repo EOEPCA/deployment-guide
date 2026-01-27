@@ -2126,11 +2126,12 @@
 </ol>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>helm<span class="w"> </span>dependency<span class="w"> </span>update<span class="w"> </span>reference-repo/application-quality-reference-deployment
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>helm<span class="w"> </span>dependency<span class="w"> </span>build<span class="w"> </span>reference-repo/application-quality-reference-deployment
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>application-quality<span class="w"> </span>reference-repo/application-quality-reference-deployment<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--namespace<span class="w"> </span>application-quality<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://github.com/knative/eventing/releases/download/knative-v1.20.0/eventing-crds.yaml
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>application-quality<span class="w"> </span>reference-repo/application-quality-reference-deployment<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--namespace<span class="w"> </span>application-quality<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span>--values<span class="w"> </span>generated-values.yaml
 </span></code></pre></div>
 <h3 id="4-create-a-keycloak-client">4 Create a Keycloak Client<a class="headerlink" href="#4-create-a-keycloak-client" title="Permanent link">⚓︎</a></h3>
 <p>A Keycloak client is required for the ingress protection of the Application Quality BB. The client can be created using the Crossplane Keycloak provider via the <code>Client</code> CRD.</p>
