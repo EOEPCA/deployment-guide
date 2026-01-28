@@ -64,6 +64,7 @@ spec:
     kubernetes:
       envoyService:
         type: NodePort
+        externalTrafficPolicy: Cluster
         patch:
           type: StrategicMerge
           value:
