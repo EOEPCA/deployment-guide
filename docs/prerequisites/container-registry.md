@@ -103,7 +103,12 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
 
 4. **Log In**
 
-    Navigate to `https://harbor.${INGRESS_HOST}` in your browser.
+    Navigate to `harbor.${INGRESS_HOST}` in your browser.
+
+    ```bash
+    source ~/.eoepca/local
+    xdg-open "${HTTP_SCHEME}://harbor.${INGRESS_HOST}"
+    ```
 
     - **Username**: `admin`
     - **Password**: The password that was generated during configuration<br>
@@ -154,13 +159,14 @@ bash validation.sh
 2. **Access Container Registry Dashboard:**
 
 ```
-https://harbor.${INGRESS_HOST}
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://harbor.${INGRESS_HOST}"
 ```
 
  3. **Log In:**
 
     - **Username**: `admin`
-    - **Password**: The password you set during configuration.
+    - **Password**: The password you set during configuration (`HARBOR_ADMIN_PASSWORD`)
 
  4. **Test Harbor:**
 
@@ -205,6 +211,8 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 **Configure Kubernetes to Pull Images from Harbor:**
 
 The following steps provide an example of how to configure a pod with _Image Pull Secrets_ to use images from the deployed _Container Registry_.
+
+> Example steps must be adapted for your needs
 
 1. **Create an image pull secret**:
 
