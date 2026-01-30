@@ -1,49 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eodata-server
+  name: stac-browser
   namespace: resource-registration
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: eodata-server
+      app: stac-browser
   template:
     metadata:
       labels:
-        app: eodata-server
+        app: stac-browser
     spec:
       containers:
-      - name: nginx
-        image: nginx:stable
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: eodata
-          mountPath: /usr/share/nginx/html
-      volumes:
-      - name: eodata
-        persistentVolumeClaim:
-          claimName: eodata
+        - name: stac-browser
+          image: ghcr.io/radiantearth/stac-browser:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SB_catalogUrl
+              value: "{{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac"
+            - name: SB_catalogTitle
+              value: "EOEPCA Catalogue"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: eodata-server
+  name: stac-browser
   namespace: resource-registration
 spec:
   selector:
-    app: eodata-server
+    app: stac-browser
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: eodata-server
+  name: stac-browser
   namespace: resource-registration
   annotations:
     {{- range $key, $value := (datasource "annotations") }}
@@ -53,19 +51,19 @@ metadata:
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: eodata.{{ getenv "INGRESS_HOST" }}
+    - host: stac-browser.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: eodata-server
+                name: stac-browser
                 port:
-                  number: 80
+                  number: 8080
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
-        - eodata.{{ getenv "INGRESS_HOST" }}
-      secretName: eodata-server-tls
+        - stac-browser.{{ getenv "INGRESS_HOST" }}
+      secretName: stac-browser-tls
   {{- end }}
