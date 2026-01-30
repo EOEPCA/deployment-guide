@@ -106,6 +106,16 @@ Then apply the **APISIX TLS** resource:
 kubectl apply -f apisix-tls.yaml
 ```
 
+Before proceeding - wait for Keycloak to be ready to accept API requests...
+
+```bash
+while ! kubectl wait --for=condition=Ready --all=true -n iam pod --timeout=1m &>/dev/null; do
+  sleep 10
+  echo "Waiting for Keycloak readiness"
+done
+echo -e "\nKeycloak is READY"
+```
+
 ---
 
 ### 4. Create the `eoepca` Realm
