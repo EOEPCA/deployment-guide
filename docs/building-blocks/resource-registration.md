@@ -223,7 +223,7 @@ harvester:
 >     storageClass: ${SHARED_STORAGECLASS}
 > ```
 >
-> Subsequent worker instances should then be configured to use (rather than create) this extsing volume...
+> Subsequent worker instances should then be configured to use (rather than create) this existing volume...
 > 
 > ```
 > harvester:
@@ -673,11 +673,36 @@ Once started, the asset links in the STAC Items viewed earlier should work.
 
 #### Visualise with STAC Browser
 
-Use STAC Browser to navigate the harvested STAC Collection and the referenced assets.
+STAC Browser can be used to visualise the harvested STAC Collection and the referenced assets.
+
+Use either the [On-line Radiant Earth instance](#using-on-line-radiant-earth-service), or a [dedicated local instance](#using-local-stac-browser).
+
+##### Using On-line Radiant Earth service
+
+[Radiant Earth](https://radiant.earth/) provide a [public STAC Browser client](https://radiantearth.github.io/stac-browser).
+
+> If your Resource Catalogue deployment uses `http` (rather than `https`) then this will not work. Instead use the [local STAC Browser deployment](#using-local-stac-browser)
 
 ```bash
 source ~/.eoepca/state
 xdg-open "https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.${INGRESS_HOST}/stac/"
+```
+
+##### Using Local STAC Browser
+
+**Deploy STAC Browser**
+
+Deploy...
+
+```bash
+kubectl apply -f registration-harvester/generated-stac-browser.yaml
+```
+
+Open...
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://stac-browser.${INGRESS_HOST}"
 ```
 
 ---

@@ -42,7 +42,8 @@ gomplate  -f "registration-harvester/$INGRESS_TEMPLATE_PATH" -o "registration-ha
 gomplate  -f "registration-harvester/harvester-values/values-landsat-template.yaml" -o "registration-harvester/harvester-values/values-landsat.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/harvester-values/values-sentinel-template.yaml" -o "registration-harvester/harvester-values/values-sentinel.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
-# eodata-server - Generate deployment yaml from template
+# eodata-server + STAC browser
 gomplate  -f "registration-harvester/eodata-server-template.yaml" -o "registration-harvester/generated-eodata-server.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "registration-harvester/stac-browser-template.yaml" -o "registration-harvester/generated-stac-browser.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."
