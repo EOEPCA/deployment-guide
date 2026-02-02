@@ -40,6 +40,9 @@ fi
 ask "ENABLE_TRANSACTIONS" "Enable STAC transactions extension? (yes/no)" "yes" is_yes_no
 ask "ENABLE_EOAPI_NOTIFIER" "Enable EOAPI notifier for CloudEvents? (yes/no)" "no" is_yes_no
 
+# Allow override for public-facing host through which eoAPI is accessed
+export EOAPI_PUBLIC_HOST="${EOAPI_PUBLIC_HOST:-"eoapi.${INGRESS_HOST}"}"
+
 # Generate templated configuration files
 echo "Generating configuration files..."
 

@@ -36,8 +36,8 @@ resources:
 image:
   tag: latest
   pullPolicy: Always
-publicUrl: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/manager/
-stacApi: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+publicUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/manager/
+stacApi: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/stac/
 primaryColor: "#005ACD"
 secondaryColor: "#048A81"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
