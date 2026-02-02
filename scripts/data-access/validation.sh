@@ -24,7 +24,7 @@ check_service_exists "data-access" "eoapi-stac"
 check_service_exists "data-access" "eoapi-vector"
 check_service_exists "data-access" "eoapi-doc-server"
 
-if [ "$NO_MONITORING" = "true" ]; then
+if [ "$NO_MONITORING" = "false" ]; then
   check_service_exists "data-access" "eoapi-support-prometheus-server" "Skipping: eoapi-support not found." || true
   check_service_exists "data-access" "eoapi-support-grafana" "Skipping: eoapi-support not found." || true
 fi
