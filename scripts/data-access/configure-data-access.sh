@@ -30,10 +30,10 @@ fi
 # IAM/Keycloak Configuration
 ask "DATA_ACCESS_ENABLE_IAM" "Enable IAM/Keycloak integration? (yes/no)" "no" is_yes_no
 if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
-    ask "KEYCLOAK_URL" "Enter Keycloak URL" "https://iam-auth.${INGRESS_HOST}" is_non_empty
-    ask "KEYCLOAK_REALM" "Enter Keycloak realm" "eoepca" is_non_empty
-    ask "KEYCLOAK_CLIENT_ID" "Enter Keycloak client ID for EOAPI" "eoapi" is_non_empty
-    ask "OPA_URL" "Enter OPA URL for authorization" "http://iam-opa.iam:8181" is_non_empty
+    ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
+    ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
+    ask "EOAPI_CLIENT_ID" "Enter Keycloak client ID for EOAPI" "eoapi" is_non_empty
+    ask "OPA_URL" "Enter OPA URL for authorization" "http://iam-opal-client.iam:8181" is_non_empty
 fi
 
 # EOAPI Configuration
@@ -58,11 +58,7 @@ gomplate -f "eoapi-maps-plugin/$TEMPLATE_PATH" -o "eoapi-maps-plugin/$OUTPUT_PAT
 
 # Generate ingress/routes based on ingress controller
 if [ "$INGRESS_CLASS" == "apisix" ]; then
-    if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
-        gomplate -f "routes/$APISIX_ROUTE_TEMPLATE_PATH" -o "routes/$APISIX_ROUTE_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-    else
-        gomplate -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-    fi
+    gomplate -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 # Generate External Secrets configuration if using external PostgreSQL
@@ -72,7 +68,7 @@ fi
 
 # Generate IAM resources if enabled
 if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
-    gomplate -f "iam/iam-template.yaml" -o "iam/generated-iam" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "iam/iam-template.yaml" -o "iam/generated-iam.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 echo "Configuration complete!"

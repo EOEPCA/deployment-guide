@@ -1,4 +1,5 @@
 ingress:
+  {{- if eq ( getenv "INGRESS_CLASS" ) "nginx" }}
   enabled: true
   className: {{ getenv "INGRESS_CLASS" }}
   annotations:
@@ -6,15 +7,18 @@ ingress:
     {{ $key }}: "{{ $value }}"
     {{- end }}
   hosts:
-    - host: maps.{{ getenv "INGRESS_HOST" }}
+    - host: eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
         - path: /
-          pathType: ImplementationSpecific
+          pathType: Prefix
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
-      - maps.{{ getenv "INGRESS_HOST" }}
+      - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: data-access-maps-tls
+  {{- end }}
+  {{- else }}
+  enabled: false
   {{- end }}
 resources:
   requests:
@@ -29,7 +33,7 @@ config:
     bind:
       host: 0.0.0.0
       port: 5000
-    url: {{ getenv "HTTP_SCHEME" }}://maps.{{ getenv "INGRESS_HOST" }}
+    url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/maps
     mimetype: application/json; charset=UTF-8
     encoding: utf-8
     gzip: false
@@ -122,7 +126,7 @@ sync:
   enabled: true
   schedule: "*/10 * * * *"
   eoapiUrl: "{{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}"
-  pygeoapiUrl: "{{ getenv "HTTP_SCHEME" }}://maps.{{ getenv "INGRESS_HOST" }}"
+  pygeoapiUrl: "{{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/maps"
   create: true
   update: true
   delete: true

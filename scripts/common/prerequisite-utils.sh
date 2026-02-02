@@ -161,14 +161,14 @@ function check_crossplane_installed() {
 }
 
 function check_keycloak_accessible() {
-    local KEYCLOAK_URL="$1"
-    if curl -s -o /dev/null -w "%{http_code}" $HTTP_SCHEME://"$KEYCLOAK_URL" | grep -qE "200"; then
-        echo "✅ Keycloak (Identity Service) is accessible at $KEYCLOAK_URL"
+    local KEYCLOAK_HOST="$1"
+    if curl -s -o /dev/null -w "%{http_code}" $HTTP_SCHEME://"$KEYCLOAK_HOST" | grep -qE "200"; then
+        echo "✅ Keycloak (IAM) is accessible at $HTTP_SCHEME://$KEYCLOAK_HOST"
         return 0
     else
-        echo "❌ Keycloak (Identity Service) is not accessible at $HTTP_SCHEME://$KEYCLOAK_URL"
-        echo "   Please ensure the Identity Service is deployed and accessible."
-        echo "   Deployment guide: $HTTP_SCHEME://eoepca.github.io/deployment-guide/identity-service-deployment"
+        echo "❌ Keycloak (IAM) is not accessible at $HTTP_SCHEME://$KEYCLOAK_HOST"
+        echo "   Please ensure the IAM BB is deployed and accessible."
+        echo "   Deployment guide: https://eoepca.readthedocs.io/projects/deploy/en/latest/building-blocks/iam/main-iam/
         return 1
     fi
 }

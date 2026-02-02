@@ -238,25 +238,27 @@ spec:
         - ^(/stac)($|/.*)
         - $2
       enable: true
+    - name: cors
+      enable: true
+    {{- if eq ( getenv "DATA_ACCESS_ENABLE_IAM" ) "yes" }}
     - name: openid-connect
       enable: true
       config:
-        discovery: "{{ getenv "KEYCLOAK_URL" }}/realms/{{ getenv "KEYCLOAK_REALM" }}/.well-known/openid-configuration"
+        discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
         use_jwks: true
         bearer_only: false # as we want to redirect to login screen (default: false)
         set_access_token_header: true # required for subsequent OPA check (default: true)
         access_token_in_authorization_header: true # required for subsequent OPA check (default: false)
         set_id_token_header: false # not needed (default: true)
         set_userinfo_header: false # not needed (default: true)
-        client_id: {{ getenv "KEYCLOAK_CLIENT_ID" }}
+        client_id: {{ getenv "EOAPI_CLIENT_ID" }}
         client_secret: ""
     - name: opa
       enable: true
       config:
         host: {{ getenv "OPA_URL" }}
         policy: eoepca/dataaccess/eoapi
-    - name: cors
-      enable: true
+    {{- end }}
   - name: maps-redirect
     backends:
     - serviceName: eoapi-maps-plugin
