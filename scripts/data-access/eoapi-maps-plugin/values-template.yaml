@@ -6,11 +6,13 @@ ingress:
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
   hosts:
     - host: eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-        - path: /maps
-          pathType: Prefix
+        - path: /maps(/|$)(.*)
+          pathType: ImplementationSpecific
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
