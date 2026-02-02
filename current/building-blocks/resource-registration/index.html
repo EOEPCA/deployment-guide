@@ -2640,7 +2640,7 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    claimName: eodata
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    storageClass: ${SHARED_STORAGECLASS}
 </span></code></pre></div>
-<p>Subsequent worker instances should then be configured to use (rather than create) this extsing volume&hellip;</p>
+<p>Subsequent worker instances should then be configured to use (rather than create) this existing volume&hellip;</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>harvester:
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  eodata:
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    enabled: true
@@ -2982,9 +2982,24 @@ You should see a new job with the status <code>COMPLETED</code>. </p>
 </span></code></pre></div>
 <p>Once started, the asset links in the STAC Items viewed earlier should work.</p>
 <h4 id="visualise-with-stac-browser">Visualise with STAC Browser<a class="headerlink" href="#visualise-with-stac-browser" title="Permanent link">⚓︎</a></h4>
-<p>Use STAC Browser to navigate the harvested STAC Collection and the referenced assets.</p>
+<p>STAC Browser can be used to visualise the harvested STAC Collection and the referenced assets.</p>
+<p>Use either the <a href="#using-on-line-radiant-earth-service">On-line Radiant Earth instance</a>, or a <a href="#using-local-stac-browser">dedicated local instance</a>.</p>
+<h5 id="using-on-line-radiant-earth-service">Using On-line Radiant Earth service<a class="headerlink" href="#using-on-line-radiant-earth-service" title="Permanent link">⚓︎</a></h5>
+<p><a href="https://radiant.earth/">Radiant Earth</a> provide a <a href="https://radiantearth.github.io/stac-browser">public STAC Browser client</a>.</p>
+<blockquote>
+<p>If your Resource Catalogue deployment uses <code>http</code> (rather than <code>https</code>) then this will not work. Instead use the <a href="#using-local-stac-browser">local STAC Browser deployment</a></p>
+</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
 </span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">/stac/&quot;</span>
+</span></code></pre></div>
+<h5 id="using-local-stac-browser">Using Local STAC Browser<a class="headerlink" href="#using-local-stac-browser" title="Permanent link">⚓︎</a></h5>
+<p><strong>Deploy STAC Browser</strong></p>
+<p>Deploy&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-stac-browser.yaml
+</span></code></pre></div>
+<p>Open&hellip;</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>xdg-open<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HTTP_SCHEME</span><span class="si">}</span><span class="s2">://stac-browser.</span><span class="si">${</span><span class="nv">INGRESS_HOST</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="additional-harvester-types">Additional Harvester Types<a class="headerlink" href="#additional-harvester-types" title="Permanent link">⚓︎</a></h2>
@@ -2997,26 +3012,26 @@ You should see a new job with the status <code>COMPLETED</code>. </p>
 <hr />
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">⚓︎</a></h2>
 <p>Remove all Resource Registration components:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
-</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>
-</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="c1"># Remove workers</span>
-</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-worker-landsat<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>
-</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="c1"># Remove ingresses</span>
-</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
-</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
-</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-eodata-server.yaml<span class="w"> </span><span class="m">2</span>&gt;/dev/null
-</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a>
-</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a><span class="c1"># Remove core components</span>
-</span><span id="__span-41-12"><a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-41-13"><a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
-</span><span id="__span-41-14"><a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a>
-</span><span id="__span-41-15"><a id="__codelineno-41-15" name="__codelineno-41-15" href="#__codelineno-41-15"></a><span class="c1"># Remove IAM resources</span>
-</span><span id="__span-41-16"><a id="__codelineno-41-16" name="__codelineno-41-16" href="#__codelineno-41-16"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">RESOURCE_REGISTRATION_IAM_CLIENT_ID</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-41-17"><a id="__codelineno-41-17" name="__codelineno-41-17" href="#__codelineno-41-17"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/<span class="si">${</span><span class="nv">RESOURCE_REGISTRATION_IAM_CLIENT_ID</span><span class="si">}</span>-keycloak-client<span class="w"> </span>-n<span class="w"> </span>iam-management
-</span><span id="__span-41-18"><a id="__codelineno-41-18" name="__codelineno-41-18" href="#__codelineno-41-18"></a>
-</span><span id="__span-41-19"><a id="__codelineno-41-19" name="__codelineno-41-19" href="#__codelineno-41-19"></a><span class="c1"># Remove namespace (optional - will delete all data)</span>
-</span><span id="__span-41-20"><a id="__codelineno-41-20" name="__codelineno-41-20" href="#__codelineno-41-20"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="nb">source</span><span class="w"> </span>~/.eoepca/state
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a><span class="c1"># Remove workers</span>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-worker-landsat<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a>
+</span><span id="__span-43-6"><a id="__codelineno-43-6" name="__codelineno-43-6" href="#__codelineno-43-6"></a><span class="c1"># Remove ingresses</span>
+</span><span id="__span-43-7"><a id="__codelineno-43-7" name="__codelineno-43-7" href="#__codelineno-43-7"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-ingress.yaml
+</span><span id="__span-43-8"><a id="__codelineno-43-8" name="__codelineno-43-8" href="#__codelineno-43-8"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-api/generated-ingress.yaml
+</span><span id="__span-43-9"><a id="__codelineno-43-9" name="__codelineno-43-9" href="#__codelineno-43-9"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>registration-harvester/generated-eodata-server.yaml<span class="w"> </span><span class="m">2</span>&gt;/dev/null
+</span><span id="__span-43-10"><a id="__codelineno-43-10" name="__codelineno-43-10" href="#__codelineno-43-10"></a>
+</span><span id="__span-43-11"><a id="__codelineno-43-11" name="__codelineno-43-11" href="#__codelineno-43-11"></a><span class="c1"># Remove core components</span>
+</span><span id="__span-43-12"><a id="__codelineno-43-12" name="__codelineno-43-12" href="#__codelineno-43-12"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-harvester-api-engine<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-43-13"><a id="__codelineno-43-13" name="__codelineno-43-13" href="#__codelineno-43-13"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>registration-api<span class="w"> </span>-n<span class="w"> </span>resource-registration
+</span><span id="__span-43-14"><a id="__codelineno-43-14" name="__codelineno-43-14" href="#__codelineno-43-14"></a>
+</span><span id="__span-43-15"><a id="__codelineno-43-15" name="__codelineno-43-15" href="#__codelineno-43-15"></a><span class="c1"># Remove IAM resources</span>
+</span><span id="__span-43-16"><a id="__codelineno-43-16" name="__codelineno-43-16" href="#__codelineno-43-16"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>client.openidclient.keycloak.m.crossplane.io/<span class="si">${</span><span class="nv">RESOURCE_REGISTRATION_IAM_CLIENT_ID</span><span class="si">}</span><span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-43-17"><a id="__codelineno-43-17" name="__codelineno-43-17" href="#__codelineno-43-17"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>secret/<span class="si">${</span><span class="nv">RESOURCE_REGISTRATION_IAM_CLIENT_ID</span><span class="si">}</span>-keycloak-client<span class="w"> </span>-n<span class="w"> </span>iam-management
+</span><span id="__span-43-18"><a id="__codelineno-43-18" name="__codelineno-43-18" href="#__codelineno-43-18"></a>
+</span><span id="__span-43-19"><a id="__codelineno-43-19" name="__codelineno-43-19" href="#__codelineno-43-19"></a><span class="c1"># Remove namespace (optional - will delete all data)</span>
+</span><span id="__span-43-20"><a id="__codelineno-43-20" name="__codelineno-43-20" href="#__codelineno-43-20"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>namespace<span class="w"> </span>resource-registration
 </span></code></pre></div>
 <hr />
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">⚓︎</a></h2>
