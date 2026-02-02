@@ -40,9 +40,9 @@ primaryColor: "#005ACD"
 secondaryColor: "#048A81"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
-  providerUrl: {{ getenv "KEYCLOAK_URL" }}
-  clientId: {{ getenv "KEYCLOAK_CLIENT_ID" }}
-  realm: {{ getenv "KEYCLOAK_REALM" }}
+  providerUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
+  clientId: {{ getenv "EOAPI_CLIENT_ID" }}
+  realm: {{ getenv "REALM" }}
 {{- end }}
 resources:
   requests:
@@ -60,7 +60,7 @@ primaryColor: "#005ACD"
 secondaryColor: "#048A81"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
-  providerUrl: {{ getenv "KEYCLOAK_URL" }}
-  clientId: {{ getenv "KEYCLOAK_CLIENT_ID" }}
-  realm: {{ getenv "KEYCLOAK_REALM" }}
+  providerUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
+  clientId: {{ getenv "EOAPI_CLIENT_ID" }}
+  realm: {{ getenv "REALM" }}
 {{- end }}
