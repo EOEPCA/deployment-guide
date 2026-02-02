@@ -168,7 +168,7 @@ function check_keycloak_accessible() {
     else
         echo "❌ Keycloak (IAM) is not accessible at $HTTP_SCHEME://$KEYCLOAK_HOST"
         echo "   Please ensure the IAM BB is deployed and accessible."
-        echo "   Deployment guide: https://eoepca.readthedocs.io/projects/deploy/en/latest/building-blocks/iam/main-iam/
+        echo "   Deployment guide: https://eoepca.readthedocs.io/projects/deploy/en/latest/building-blocks/iam/main-iam/"
         return 1
     fi
 }
