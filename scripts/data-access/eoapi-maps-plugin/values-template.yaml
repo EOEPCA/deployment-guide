@@ -9,7 +9,7 @@ ingress:
   hosts:
     - host: eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-        - path: /
+        - path: /maps
           pathType: Prefix
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
