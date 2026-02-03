@@ -101,7 +101,7 @@ The characteristics of the created cluster are:
 * Cluster name is `eoepca`. Change as desired
 * Single node that provides all Kubernetes roles (control-place, master, worker, etc.)
 * No ingress controller (which is established elsewhere is this guide)
-* Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired
+* Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired, but note that some components like the workspace building block will not work correctly with non-standard ports (ie, not 80 and 443).
 * The (optional) `--tls-san` is used to facilitate cluster administration (`kubectl`) from other hosts - by including the hostname in the `kubeconfig` client certificate
 
 The Kubernetes version of the cluster can be selected via the `--image` option - taking account of:

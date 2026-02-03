@@ -89,7 +89,7 @@ Access the MinIO Console to create access keys:
 1. Navigate to `https://console-minio.${INGRESS_HOST}/access-keys/new-account`<br>
    ```bash
    source ~/.eoepca/state
-   xdg-open https://console-minio.${INGRESS_HOST}/access-keys/new-account
+   xdg-open "https://console-minio.${INGRESS_HOST}/access-keys/new-account"
    ```
 2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step - see file `~/.eoepca/state`.
 3. Under `Access Keys` select to `Create access key +`
