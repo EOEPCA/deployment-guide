@@ -159,55 +159,11 @@ kubectl apply -f workspace-cleanup/datalab-cleaner.yaml
 
 This runs daily at 8 PM UTC and removes all sessions except the default ones.
 
-### 9. Deploy the Workspace Admin Dashboard
-
-The Kubernetes Dashboard provides a web-based interface for managing Kubernetes resources.
-
-```bash
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-helm repo update kubernetes-dashboard
-helm upgrade -i workspace-admin kubernetes-dashboard/kubernetes-dashboard \
-  --version 7.10.1 \
-  --namespace workspace \
-  --values workspace-admin/generated-values.yaml
-```
-
-Apply the APISIX route ingress:
-
-```bash
-kubectl apply -f workspace-admin/generated-ingress.yaml
-```
-
-Create a _ServiceAccount_ for accessing the Dashboard with 'viewing` permissions:
-
-```bash
-kubectl create serviceaccount dashboard-viewer -n workspace
-kubectl create rolebinding dashboard-viewer \
-  --clusterrole=view \
-  --serviceaccount=workspace:dashboard-viewer \
-  -n workspace
-```
-
-Generate a token for the `dashboard-viewer` ServiceAccount:
-
-```bash
-kubectl -n workspace create token dashboard-viewer
-```
-
-Copy the token to your clipboard and use it to log in to the Dashboard at:
-
-```bash
-source ~/.eoepca/state
-xdg-open "https://workspace-admin.${INGRESS_HOST}/#/pod?namespace=workspace"
-```
-
-Switch to the namespace `workspace` using the selection box.
-
 ---
 
-### 8. Deploy Configurations for Crossplane Providers
+### 7. Deploy Configurations for Crossplane Providers
 
-#### 8.1. Provider Configurations
+#### 7.1. Provider Configurations
 
 The Workspace BB uses several Crossplane providers to manage resources - each of which requires a corresponding ProviderConfig to be deployed in the `workspace` namespace. The exception is the MinIO provider, which requires a cluster-wide ProviderConfig.
 
@@ -249,11 +205,11 @@ spec:
 EOF
 ```
 
-#### 8.2. Create the Keycloak Client for Crossplane Keycloak Provider
+#### 7.2. Create the Keycloak Client for Crossplane Keycloak Provider
 
 Create a Keycloak client for the Crossplane Keycloak provider to allow it to interface with Keycloak. We create the client `workspace-pipeline`, which is used by the workspace pipelines to perform administrative actions against the Keycloak API to properly protect newly created workspaces.
 
-##### 8.2.1. Create the Keycloak Client
+##### 7.2.1. Create the Keycloak Client
 
 The client is created via the Crossplane `Client` CRD using the Keycloak Provider offered by the `iam-management` namespace. This bootstraps the ability of the Workspace to self-serve its own Keycloak resources for workspace isolation.
 
@@ -346,7 +302,7 @@ stringData:
 EOF
 ```
 
-##### 8.2.2. Add the realm management roles to the Client
+##### 7.2.2. Add the realm management roles to the Client
 
 The `workspace-pipeline` client requires specific `realm-management` roles to perform administrative actions against Keycloak - namely: `manage-users`, `manage-authorization`, `manage-clients`, and `create-client`.
 
@@ -384,7 +340,7 @@ done
 
 ---
 
-### 9. Configure TLS Certificates for Workspace Datalab
+### 8. Configure TLS Certificates for Workspace Datalab
 
 The default Workspace pipelines include, within each created Workspace, a Datalab component. This is configured to expect the secret `workspace-tls` that is used to provide the TLS Certificate for each workspace ingress.
 
@@ -394,7 +350,7 @@ Section [`Wildcard Certificate Generation`](#91-wildcard-certificate-generation)
 
 Section [`Workspace Certificate Workaround`](#92-workspace-certificate-workaround) below provides a workaround, in the case that your are unable to obtain a wildcard certificate.
 
-#### 9.1. Wildcard Certificate Generation
+#### 8.1. Wildcard Certificate Generation
 
 This approach relies upon a `Certificate` resource with the wildcard DNS name `*.${INGRESS_HOST}`. In order for this to be satisfied it is necessary to use a `ClusterIssuer` that uses the `DNS01` solver.
 
@@ -470,7 +426,7 @@ EOF
 
 In response, Cert Manager should trigger the certificate request via DNS01 - resulting in the `workspace-tls` secret. This secret is then available 
 
-#### 9.2. Workspace Certificate Workaround
+#### 8.2. Workspace Certificate Workaround
 
 In case you are unable to provision a reusable wildcard certificate as described above then, as a workaround, we can modify the `Ingress` definition of each workspace to instead trigger its own dedicated certificate generation.
 
@@ -526,7 +482,7 @@ EOF
 
 ---
 
-### 10. Optional: Enable OIDC with Keycloak
+### 9. Optional: Enable OIDC with Keycloak
 
 If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
 
@@ -534,7 +490,7 @@ If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak
 
 > Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
-#### 10.1 Create Keycloak Client
+#### 9.1 Create Keycloak Client
 
 A Keycloak client is required for the ingress protection of the Workspace API. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
@@ -588,7 +544,7 @@ spec:
 EOF
 ```
 
-#### 10.2 Create APISIX Route Ingress
+#### 9.2 Create APISIX Route Ingress
 
 Apply the APISIX route ingress:
 
@@ -596,7 +552,7 @@ Apply the APISIX route ingress:
 kubectl apply -f workspace-api/generated-ingress.yaml
 ```
 
-#### 10.3. Assign `admin` role to the _Test Admin User_
+#### 9.3. Assign `admin` role to the _Test Admin User_
 
 The above `ApisixRoute` ingress enforces this [OPA policy](https://github.com/EOEPCA/iam-policies/blob/main/policies/eoepca/workspace/wsapi.rego) - which requires users to have the `admin` role in order to access certain endpoints (e.g. workspace creation).
 
@@ -1051,4 +1007,3 @@ kubectl delete namespace workspace
 - [Crossplane Documentation](https://crossplane.io/docs/)
 - [Educates Documentation](https://docs.educates.dev/)
 - [CSI-RClone Documentation](https://github.com/wunderio/csi-rclone)
-- [Kubernetes Dashboard Documentation](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
