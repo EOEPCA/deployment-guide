@@ -43,11 +43,12 @@ helm upgrade -i apisix apisix/apisix \
 
 ```bash
 helm upgrade -i apisix apisix/apisix \
-  --version 2.9.0 \
+  --version 2.10.0 \
   --namespace ingress-apisix --create-namespace \
   --set service.type=LoadBalancer \
   --set service.http.port=80 \
   --set service.tls.port=443 \
+  --set etcd.image.repository=bitnamilegacy/etcd \
   --set apisix.enableIPv6=false \
   --set apisix.enableServerTokens=false \
   --set apisix.ssl.enabled=true \
