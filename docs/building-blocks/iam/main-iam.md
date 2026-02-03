@@ -91,10 +91,10 @@ This creates Kubernetes secrets from the credentials generated earlier.
 
 ### 3. Deploy IAM Building Block
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i iam eoepca-dev/iam-bb \
-  --version 2.0.0-rc2 \
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
+helm upgrade -i iam eoepca/iam-bb \
+  --version 2.0.0 \
   --namespace iam \
   --values generated-values.yaml \
   --create-namespace
