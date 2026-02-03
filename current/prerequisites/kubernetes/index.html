@@ -1913,7 +1913,7 @@
 <li>Cluster name is <code>eoepca</code>. Change as desired</li>
 <li>Single node that provides all Kubernetes roles (control-place, master, worker, etc.)</li>
 <li>No ingress controller (which is established elsewhere is this guide)</li>
-<li>Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired</li>
+<li>Cluster exposes ports 31080 (http) and 31443 (https) as entrypoint. Change as desired, but note that some components like the workspace building block will not work correctly with non-standard ports (ie, not 80 and 443).</li>
 <li>The (optional) <code>--tls-san</code> is used to facilitate cluster administration (<code>kubectl</code>) from other hosts - by including the hostname in the <code>kubeconfig</code> client certificate</li>
 </ul>
 <p>The Kubernetes version of the cluster can be selected via the <code>--image</code> option - taking account of:</p>
