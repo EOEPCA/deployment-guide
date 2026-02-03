@@ -2154,8 +2154,32 @@
 <li><em>Example</em>: <code>standard</code></li>
 </ul>
 </li>
+<li><strong><code>REALM</code></strong>: The name of the Keycloak realm which will authenticate end users.<ul>
+<li><em>Example</em>: <code>eoepca</code></li>
+</ul>
+</li>
 <li><strong><code>CLUSTER_ISSUER</code></strong>: Issuer for TLS certificates<ul>
 <li><em>Example</em>: <code>letsencrypt-http01-apisix</code></li>
+</ul>
+</li>
+<li><strong><code>IAM_MANAGEMENT_CLIENT_ID</code></strong>: OIDC client ID for Crossplane&rsquo;s management of Keycloak<ul>
+<li><em>Example</em>: <code>iam-management</code></li>
+</ul>
+</li>
+<li><strong><code>OPA_CLIENT_ID</code></strong>: OIDC client ID for Open Policy Agent<ul>
+<li><em>Example</em>: <code>opa</code></li>
+</ul>
+</li>
+<li><strong><code>KEYCLOAK_TEST_USER</code></strong>: Username of Keycloak example user to create for testing<ul>
+<li><em>Example</em>: <code>eoepcauser</code></li>
+</ul>
+</li>
+<li><strong><code>KEYCLOAK_TEST_ADMIN</code></strong>: Initial admin username to pre-create in Keycloak<ul>
+<li><em>Example</em>: <code>eoepcaadmin</code></li>
+</ul>
+</li>
+<li><strong><code>KEYCLOAK_TEST_PASSWORD</code></strong>: Example user&rsquo;s Keycloak password<ul>
+<li><em>Example</em>: <code>eoepcapassword</code></li>
 </ul>
 </li>
 </ul>
@@ -2164,6 +2188,8 @@
 <li><strong><code>KEYCLOAK_ADMIN_PASSWORD</code></strong>: Password for the Keycloak admin account.</li>
 <li><strong><code>KEYCLOAK_POSTGRES_PASSWORD</code></strong>: Password for the Keycloak PostgreSQL database.</li>
 <li><strong><code>OPA_CLIENT_SECRET</code></strong>: Secret for the <code>opa</code> (Open Policy Agent) client in Keycloak</li>
+<li><strong><code>IAM_MANAGEMENT_CLIENT_SECRET</code></strong>: Client secret for Crossplane&rsquo;s management of Keycloak</li>
+<li><strong><code>OPA_CLIENT_SECRET</code></strong>: OIDC client secret for Open Policy Agent</li>
 </ul>
 <p>These credentials will be stored in a state file at <code>~/.eoepca/state</code>.</p>
 <h3 id="2-apply-secrets">2. Apply Secrets<a class="headerlink" href="#2-apply-secrets" title="Permanent link">⚓︎</a></h3>
