@@ -26,7 +26,6 @@ Before deploying the MLOps Building Block, ensure you have the following:
 | Kubernetes       | Cluster (tested on v1.32)              | [Installation Guide](../prerequisites/kubernetes.md)                                         |
 | Git              | Properly installed                     | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)                                     |
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                     |
-| Helm plugins     | `helm-git`: Version 1.3.0 tested       | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install)                                     |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                 |
 | Ingress          | Properly installed                     | [Installation Guide](../prerequisites/ingress/overview.md) |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                             |
@@ -254,9 +253,8 @@ This script prompts you for `GITLAB_APP_ID` and `GITLAB_APP_SECRET` from the ste
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-helm repo add sharinghub "git+https://github.com/csgroup-oss/sharinghub@deploy/helm?ref=0.4.1"
-helm repo update sharinghub
-helm upgrade -i sharinghub sharinghub/sharinghub \
+git clone --depth 1 --branch 0.4.1 https://github.com/csgroup-oss/sharinghub.git /tmp/sharinghub
+helm upgrade -i sharinghub /tmp/sharinghub/deploy/helm/sharinghub \
   --namespace sharinghub \
   --create-namespace \
   --values sharinghub/generated-values.yaml
@@ -273,9 +271,9 @@ kubectl apply -f sharinghub/generated-ingress.yaml
 ### 7. Deploy MLflow SharingHub Using Helm
 
 ```bash
-helm repo add mlflow-sharinghub "git+https://github.com/csgroup-oss/mlflow-sharinghub@deploy/helm?ref=0.2.0"
-helm repo update mlflow-sharinghub
-helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
+git clone --depth 1 --branch 0.2.0 https://github.com/csgroup-oss/mlflow-sharinghub.git /tmp/mlflow-sharinghub
+helm dependency build /tmp/mlflow-sharinghub/deploy/helm/mlflow-sharinghub
+helm upgrade -i mlflow-sharinghub /tmp/mlflow-sharinghub/deploy/helm/mlflow-sharinghub \
   --namespace sharinghub \
   --create-namespace \
   --values mlflow/generated-values.yaml
@@ -459,7 +457,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
     - Ensure you have the required packages:
         
         ```bash
-        pip install mlflow scikit-learn
+        pip install mlflow==2.10.0 scikit-learn==1.7.2
         ```
         
     - Run the provided example script located in the `data/` directory of `deployment-guide/scripts/mlops`:
