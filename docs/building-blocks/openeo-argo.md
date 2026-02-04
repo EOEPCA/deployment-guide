@@ -1,5 +1,7 @@
 # Processing - OpenEO ArgoWorkflows with Dask
 
+> **Note**: This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.
+
 OpenEO ArgoWorkflows provides a Kubernetes-native implementation of the OpenEO API specification using Dask for distributed processing. This deployment offers an alternative to the GeoTrellis backend, leveraging Dask's parallel computing capabilities for Earth observation data processing.
 
 > **Note:** OIDC authentication is configured by default for OpenEO ArgoWorkflows. The deployment integrates with external OIDC providers (e.g., EGI AAI) for authentication. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set up your own OIDC Provider.
