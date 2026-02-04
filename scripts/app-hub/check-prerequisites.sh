@@ -11,6 +11,7 @@ declare -a checks=(
     "check_cert_manager_installed"
     "check_apisix_ingress_installed"
     "check_oidc_provider_accessible"
+    "check_crossplane_installed"
 )
 
 run_validation "${checks[@]}"

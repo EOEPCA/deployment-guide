@@ -26,15 +26,16 @@ The building block offers:
 
 Before deploying the Application Hub, ensure you have the following:
 
-| Component          | Requirement                            | Documentation Link                                                |
-| ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
+| Component          | Requirement                            | Documentation Link                                               |
+| ------------------ | -------------------------------------- | ---------------------------------------------------------------- |
 | Kubernetes         | Cluster (tested on v1.32)              | [Installation Guide](../prerequisites/kubernetes.md)             |
-| Helm               | Version 3.8 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
-| kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
+| Helm               | Version 3.8 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)        |
+| kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)    |
 | Ingress Controller | Properly installed (NGINX or APISIX)   | [Installation Guide](../prerequisites/ingress/overview.md)       |
 | TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)      |
 | OIDC Provider      | Keycloak or compatible                 | [IAM Deployment Guide](../building-blocks/iam/main-iam.md)       |
 | Storage Class      | For persistent volumes                 | Default or custom storage class                                  |
+| Crossplane         | Properly installed                     | [Installation Guide](../prerequisites/crossplane.md)             |
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -204,15 +205,16 @@ EOF
 
 > Alternatively you can create this user through the Keycloak admin interface.
 
-5. **Create Groups in AppHub**
+### 5. **Create Groups in AppHub**
 
 Once `eric` has been created, navigate to the Application Hub admin panel: 
 
-```
-https://app-hub.${INGRESS_HOST}/hub/admin
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://app-hub.${INGRESS_HOST}/hub/admin"
 ```
 
-- **Log in** with the `eric` user.
+- **Log in** as the `eric` user - using the password from the state file (`~/.eoepca/state`) variable `KEYCLOAK_TEST_PASSWORD`.
 
 - Select **> Manage Groups** and create the following groups with this exact naming:
 
@@ -220,43 +222,45 @@ https://app-hub.${INGRESS_HOST}/hub/admin
     - `group-2`
     - `group-3`
 
+> These groups are simply examples that are configured into the default deployment. This default configuration should be adapted for your platform deployment.
+
 ![Create Groups](../img/apphub/groups.jpeg)
 
-6. **Assign Users to Groups**
+### 6. **Assign Users to Groups**
 
 Individually assign the `eric` user to each group and hit **Apply**.
 
 ![Assign Users to Groups](../img/apphub/assign-users.jpeg)
 
 
-7. **Select a Profile**
+### 7. **Select a Profile**
 
 Return to the primary Application Hub interface (`https://app-hub.${INGRESS_HOST}/`) and log in as `eric`.
 
-You should now see a list of the preconfigured profiles. Select one to spawn an application profile.
+Selecting `Start My Server` - you should now see a list of the preconfigured profiles. Select one to spawn an application profile.
+
+> These preconfigured profiles are simply examples that are configured into the default deployment. These default profiles should be adapted for your platform deployment.
 
 ![Select a Profile](../img/apphub/profiles.jpeg)
 
-8. **Launch a Profile**
+### 8. **Launch a Profile**
 
 Select one of the profiles to launch a profile. You will then be redirected to the relevant tooling environment.
 
 ![Launch a Profile](../img/apphub/launch.jpeg)
 
-
-***
 ---
 
-## 5. Validation
+## Validation
 
-### 5.1 Automated Validation
+### 1 Automated Validation
 
 Run validation:
 ```bash
 bash validation.sh
 ```
 
-### 5.2 Manual Validation
+### 2 Manual Validation
 
 1. **Check Kubernetes Resources**:
     
@@ -287,7 +291,7 @@ kubectl logs -n application-hub <application-hub-pod-name>
 
 ---
 
-## 6. Advanced Configuration
+## Advanced Configuration
 
 Check the [JupyterHub Configuration Reference](https://eoepca.github.io/application-hub-context/configuration/) for more advanced settings and options.
 
