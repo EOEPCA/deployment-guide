@@ -183,12 +183,28 @@ helm upgrade -i gitlab gitlab/gitlab \
 
 > **Note**: The provided GitLab deployment uses built-in PostgreSQL, Redis, and Gitaly. These are **evaluation-only** components. For production setups, reference GitLab's official docs on external databases, Redis clusters, etc.
 
+#### Wait for GitLab Readiness
 
-### 4. Set Up GitLab OAuth Application for SharingHub
+Before proceeding, wait for GitLab to be ready.
+
+```bash
+source ~/.eoepca/state
+echo "Waiting for GitLab pods to become Ready..."
+kubectl wait --for=condition=ready pod -n gitlab --timeout=900s --selector='app!=migrations'
+
+echo "Waiting for GitLab HTTP endpoint..."
+until curl -sf ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}/users/sign_in >/dev/null; do
+  sleep 10
+done
+
+echo "GitLab is fully ready."
+```
+
+### 5. Set Up GitLab OAuth Application for SharingHub
 
 Once GitLab is deployed and accessible (this may take about 5 minutes), follow these steps to configure an OAuth application for SharingHub authentication.
 
-#### 4.1 Retrieve the GitLab Root Password
+#### 5.1 Retrieve the GitLab Root Password
 
 Before logging in, fetch the GitLab root password:
 
@@ -198,13 +214,16 @@ kubectl get secret gitlab-gitlab-initial-root-password --template={{.data.passwo
 
 Save this password securely for the next step.
 
-#### 4.2 Log In to GitLab
+#### 5.2 Log In to GitLab
 
-1. Open your browser and navigate to:  
-    `https://gitlab.${INGRESS_HOST}`
+1. Open your browser and navigate to `https://gitlab.${INGRESS_HOST}`:
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://gitlab.${INGRESS_HOST}"
+    ```
 2. Log in using the username `root` and the retrieved password.
 
-#### 4.3 Access the OAuth Application Settings
+#### 5.3 Access the OAuth Application Settings
 
 Navigate to `/admin/applications/new` or follow these steps:
 
@@ -212,7 +231,7 @@ Navigate to `/admin/applications/new` or follow these steps:
 2. In the Admin Area sidebar, click on **Applications**.
 3. Then click **Add New Application** to create a new OAuth app.
 
-#### 4.4 Configure the OAuth Application
+#### 5.4 Configure the OAuth Application
 
 Fill out the new application form with the following details:
 
@@ -220,9 +239,11 @@ Fill out the new application form with the following details:
     Enter a descriptive name, e.g., `SharingHub`.
     
 - **Redirect URI**:
+
+    > Substitute your value for `<INGRESS_HOST>`.
     
     ```
-    https://sharinghub.${INGRESS_HOST}/api/auth/login/callback
+    https://sharinghub.<INGRESS_HOST>/api/auth/login/callback
     ```
     
 - **Scopes**:  
@@ -239,11 +260,11 @@ Fill out the new application form with the following details:
 
 After confirming all details, click **Save Application**.
 
-#### 4.5 Save the Application Credentials
+#### 5.5 Save the Application Credentials
 
 Once the application is created, GitLab will display the **Application ID** and **Secret**. **Record these credentials securely**, as they are required later to configure SharingHub's OAuth integration.
 
-### 5 Store the GitLab OAuth App Credentials
+#### 5.6 Store the GitLab OAuth App Credentials
 
 ```bash
 bash utils/save-application-credentials-to-state.sh
@@ -262,7 +283,7 @@ helm upgrade -i sharinghub sharinghub/sharinghub \
   --values sharinghub/generated-values.yaml
 ```
 
-#### Deploy Ingress for the SharingHub
+#### 6.1 Deploy Ingress for the SharingHub
 
 **APISIX only** - If you are using NGINX or another ingress controller, you can skip this step.
 
@@ -282,7 +303,7 @@ helm upgrade -i mlflow-sharinghub mlflow-sharinghub/mlflow-sharinghub \
 ```
 
 
-#### Deploy Ingress for the MLFlow
+#### 7.1 Deploy Ingress for the MLFlow
 
 **Note:** The following ingress configuration applies to both **NGINX** and **APISIX** ingress controllers. Ensure your ingress controller is properly set up before applying the configuration.
 
@@ -298,6 +319,8 @@ kubectl apply -f mlflow/postgres-deployment.yaml
 
 ---
 
+## Validation
+
 ### 1. Validate the Deployment
 
 Before contiuning to the **Basic Usage Walkthrough**, run a few checks:
@@ -311,18 +334,38 @@ All pods should be in `Running` (or `Completed`) state.
 
 2. **Visit GitLab**:
 
-- `https://gitlab.${INGRESS_HOST}/`
-- Log in with `root` user.
+    Open the GitLab web UI at `https://gitlab.<INGRESS_HOST>/`.
+
+    > Login as user `root` using the password gathered earlier.
+
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://gitlab.${INGRESS_HOST}/"
+    ```
 
 3. **Visit SharingHub**:
 
-- `https://sharinghub.${INGRESS_HOST}/`
-- If you set up GitLab OAuth for SharingHub, you should see a sign-in flow redirecting to GitLab.
+    Open the SharingHub web UI at `https://sharinghub.<INGRESS_HOST>/`.
+
+    > If you set up GitLab OAuth for SharingHub, then you can Login via your 'EOEPCA' Keycloak Identity Provider.
+    >
+    > Logout if you are already logged in - e.g. as the `root` (Administrator) user.
+    >
+    > Then select to Login, and choose the 'sign in with `EOEPCA`' option.
+
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://sharinghub.${INGRESS_HOST}/"
+    ```
 
 4. **Visit MLflow**:
 
-- `https://sharinghub.${INGRESS_HOST}/mlflow/`
-- Confirm the MLflow UI loads.
+    Open the MLflow web UI at `https://sharinghub.<INGRESS_HOST>/mlflow/`.
+
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://sharinghub.${INGRESS_HOST}/mlflow/"
+    ```
 
 5. **Confirm S3 Access**:
 
@@ -358,7 +401,7 @@ Run the _MLOps_ tests from the system test suite.
 
 This section walks you through a minimal scenario of creating a GitLab project, tagging it for discovery in SharingHub, and running a simple MLflow training job.
 
-#### 2.1 Create a New GitLab Project
+#### 3.1 Create a New GitLab Project
 
 1. **Log into GitLab**
 
@@ -382,7 +425,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         `sharinghub:aimodel`  
     - Click **Save changes**.
 
-#### 2.2 Verify that the Project Appears in SharingHub
+#### 3.2 Verify that the Project Appears in SharingHub
 
 4. **Open SharingHub**  
     `https://sharinghub.${INGRESS_HOST}/`
@@ -408,7 +451,7 @@ This section walks you through a minimal scenario of creating a GitLab project, 
     _If you do not see your project, double-check that the GitLab topic matches the configuration in `sharinghub/generated-values.yaml` (under `config.stac.categories.ai-model.gitlab_topic`)._
     
 
-#### 2.3 MLflow Setup & Training
+#### 3.3 MLflow Setup & Training
 
 7. **Obtain the MLflow Tracking URI**
     
