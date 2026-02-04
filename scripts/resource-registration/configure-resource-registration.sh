@@ -46,4 +46,9 @@ gomplate  -f "registration-harvester/harvester-values/values-sentinel-template.y
 gomplate  -f "registration-harvester/eodata-server-template.yaml" -o "registration-harvester/generated-eodata-server.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/stac-browser-template.yaml" -o "registration-harvester/generated-stac-browser.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
+if [[ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" || "$RESOURCE_REGISTRATION_PROTECTED_TARGETS" == "yes" ]]; then
+    source ../common/prerequisite-utils.sh
+    run_validation "check_crossplane_installed"
+fi
+
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."

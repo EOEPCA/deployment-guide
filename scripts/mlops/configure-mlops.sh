@@ -78,3 +78,8 @@ if [ "$INGRESS_CLASS" == "apisix" ]; then
 fi
 
 gomplate -f "mlflow/$INGRESS_TEMPLATE_PATH" -o "mlflow/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+
+if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
+    source ../common/prerequisite-utils.sh
+    run_validation "check_crossplane_installed"
+fi
