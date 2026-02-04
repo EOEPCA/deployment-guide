@@ -6,9 +6,9 @@ The Crossplane deployment comprises a core system deployment, which is then exte
 
 Crossplane is currently relied upon by several Building Blocks in this Deployment Guide, including:
 
-* IAM Building Block<br>
+* **IAM Building Block**<br>
   _Declarative provisioning of Clients, Users, Groups, and Roles in Keycloak._
-* Workspace Building Block<br>
+* **Workspace Building Block**<br>
   _Declarative provisioning of workspaces and associated IAM resources._
 
 ## Crossplane Core
@@ -354,6 +354,8 @@ EOF
 Crossplane Providers expect to find their configuration in `ProviderConfig` resources. Typically these are namespace-scoped and thus are configured by the BBs that rely upon those specific providers - although some providers (like MinIO) require cluster-wide configuration.
 
 ### Minio Provider
+
+> For convenience we reuse the `minio-secret` that is provisioned as part of the [Workspace BB](../building-blocks/workspace.md) deployment. This secret supplies the credentals for the MinIO API.
 
 ```bash
 cat <<EOF | kubectl apply -f -

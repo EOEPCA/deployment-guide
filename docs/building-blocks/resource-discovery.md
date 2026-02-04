@@ -92,6 +92,16 @@ Deploy the ingress for the Resource Discovery service:
 kubectl apply -f generated-ingress.yaml
 ```
 
+Before proceeding - wait for the Resource Catalogue to be ready...
+
+```bash
+while ! kubectl wait --for=condition=Ready --all=true -n resource-discovery pod --timeout=1m &>/dev/null; do
+  sleep 10
+  echo "Waiting for Resource Catalogue readiness"
+done
+echo -e "\nResource Catalogue is READY"
+```
+
 ---
 
 ## Validation and Operation
@@ -215,7 +225,7 @@ kubectl cp sample_record.xml \
         
 ```bash
 kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
-  pycsw-admin.py load-records \
+  /venv/bin/pycsw-admin.py load-records \
     --config /etc/pycsw/pycsw.yml \
     --path /tmp/sample_record.xml
 ```

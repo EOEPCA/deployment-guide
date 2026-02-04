@@ -47,37 +47,49 @@ The Data Access BB provides efficient access to Earth Observation data. It provi
 
 [Deploy Data Access »](data-access.md)
 
-### 5. Processing
+### 5. Datacube Access
+
+The Datacube Access BB allows users to access and explore multi-dimensional Earth Observation (EO) data using standard APIs.
+
+[Deploy Datacube Access »](datacube-access.md)
+
+### 6. Data Gateway
+
+The Data Gateway Building Block provides a consolidated and consistent capability for accessing Earth Observation data from an extensible set of providers and datasets.
+
+[Explore Data Gateway »](data-gateway.md)
+
+### 7. Processing
 
 The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
 
 [Deploy Processing »](processing.md)
 
-### 6. Workspace
-
-The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
-
-[Deploy Workspace »](workspace.md)
-
-### 7. MLOps (Machine Learning Operations)
+### 8. MLOps (Machine Learning Operations)
 
 The MLOps BB faciliates the machine learning model development lifecycle - including model training, model version management and management of training data - and supports discovery of published models and training datasets.
 
 [Deploy MLOps »](mlops.md)
 
-### 8. Resource Health
+### 9. Workspace
 
-The Resource Health BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
+The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
 
-[Deploy Resource Health »](resource-health.md)
+[Deploy Workspace »](workspace.md)
 
-### 9. Application Hub
+### 10. Application Hub
 
 The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
 
 [Deploy Application Hub »](application-hub.md)
 
-### 10. Application Quality
+### 11. Resource Health
+
+The Resource Health BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
+
+[Deploy Resource Health »](resource-health.md)
+
+### 12. Application Quality
 
 The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
 

@@ -6,11 +6,13 @@ ingress:
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
   hosts:
     - host: eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-        - path: /manager
-          pathType: Prefix
+        - path: /manager(/|$)(.*)
+          pathType: ImplementationSpecific
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - secretName: "eoapi-tls"
@@ -34,15 +36,15 @@ resources:
 image:
   tag: latest
   pullPolicy: Always
-publicUrl: https://eoapi.{{ getenv "INGRESS_HOST" }}/manager/
-stacApi: https://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+publicUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/manager/
+stacApi: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/stac/
 primaryColor: "#005ACD"
 secondaryColor: "#048A81"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
-  providerUrl: {{ getenv "KEYCLOAK_URL" }}
-  clientId: {{ getenv "KEYCLOAK_CLIENT_ID" }}
-  realm: {{ getenv "KEYCLOAK_REALM" }}
+  providerUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
+  clientId: {{ getenv "EOAPI_CLIENT_ID" }}
+  realm: {{ getenv "REALM" }}
 {{- end }}
 resources:
   requests:
@@ -54,13 +56,3 @@ resources:
 image:
   tag: latest
   pullPolicy: Always
-publicUrl: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/manager/
-stacApi: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
-primaryColor: "#005ACD"
-secondaryColor: "#048A81"
-{{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
-oidc:
-  providerUrl: {{ getenv "KEYCLOAK_URL" }}
-  clientId: {{ getenv "KEYCLOAK_CLIENT_ID" }}
-  realm: {{ getenv "KEYCLOAK_REALM" }}
-{{- end }}

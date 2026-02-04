@@ -46,14 +46,14 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 
 Before deploying the Resource Registration Building Block, ensure you have the following:
 
-| Component          | Requirement                            | Documentation Link                                                |
-| ------------------ | -------------------------------------- | ----------------------------------------------------------------- |
-| Kubernetes         | Cluster (tested on v1.32)              | [Installation Guide](../prerequisites/kubernetes.md)             |
-| Helm               | Version 3.7 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)         |
-| kubectl            | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md) |
+| Component          | Requirement                              | Documentation Link                                                |
+| ------------------ | ---------------------------------------- | ----------------------------------------------------------------- |
+| Kubernetes         | Cluster (tested on v1.32)                | [Installation Guide](../prerequisites/kubernetes.md)             |
+| Helm               | Version 3.7 or newer                     | [Installation Guide](https://helm.sh/docs/intro/install/)         |
+| kubectl            | Configured for cluster access            | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
+| TLS Certificates   | Managed via `cert-manager` or manually   | [TLS Certificate Management Guide](../prerequisites/tls.md) |
 | Ingress Controller | Properly installed (e.g., NGINX, APISIX) | [Installation Guide](../prerequisites/ingress/overview.md)      |
-
+| Crossplane         | Properly installed (if OIDC protected)   | [Installation Guide](../prerequisites/crossplane.md) |
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -102,6 +102,8 @@ During the script execution, you will be prompted to provide:
     - *Default*: `yes`
 - **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
     - *Default*: `resource-registration`
+- **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
+    - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
 
 ### 2. Apply Kubernetes Secrets
 
@@ -128,7 +130,8 @@ If you want to harvest Landsat data, you'll need credentials from [USGS Machine-
 
 If you plan to harvest Sentinel data from the Copernicus Data Space Ecosystem (CDSE), you'll need to provide CDSE credentials:
 
-TBD
+1. Register for a free account at [CDSE](https://dataspace.copernicus.eu/)
+2. Enter your email address (as your username) and your password when prompted
 
 ### 3. Deploy the Registration API Using Helm
 
@@ -139,7 +142,7 @@ Deploy the Registration API using the generated values file:
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-dev12 \
+  --version 2.0.0-rc5 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -170,6 +173,66 @@ Deploy the ingress for the Flowable Engine:
 kubectl apply -f registration-harvester/generated-ingress.yaml
 ```
 
+#### Shared `eodata` Volume
+
+Each harvester worker stores their harvested data into a kubernetes persistent volume. We establish a single shared `eodata` volume to collate the outputs of all workers - and also to provide a single asset location to facilitate delivery of data through external services.
+
+The volume must be created as `ReadWriteMany` - and thus should use the `SHARED_STORAGECLASS` specified at the earlier configuration step.
+
+```bash
+source ~/.eoepca/state
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eodata
+  namespace: resource-registration
+  labels:
+    app.kubernetes.io/name: registration-harvester
+    app.kubernetes.io/component: eodata-storage
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ${SHARED_STORAGECLASS}
+  resources:
+    requests:
+      storage: 100Gi
+EOF
+```
+
+Each worker instance is then configured to use this persistent volume via helm values - for example, see helm values file `registration-harvester/harvester-values/values-landsat.yaml`...
+
+```
+harvester:
+  eodata:
+    enabled: true
+    createPVC: false
+    claimName: eodata
+```
+
+> Note that, alternative to directly creating the volume as above, the worker helm chart can be configured to create the volume itself...
+>
+> ```
+> harvester:
+>   eodata:
+>     enabled: true
+>     createPVC: true
+>     claimName: eodata
+>     storageClass: ${SHARED_STORAGECLASS}
+> ```
+>
+> Subsequent worker instances should then be configured to use (rather than create) this existing volume...
+> 
+> ```
+> harvester:
+>   eodata:
+>     enabled: true
+>     createPVC: false
+>     claimName: eodata
+> ```
+
 #### Deploy Landsat Harvester Worker
 
 Deploy the worker that executes Landsat harvesting tasks:
@@ -180,6 +243,18 @@ helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-ha
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-landsat.yaml
+```
+
+#### Deploy the Sentinel Harvester Worker
+
+Deploy the worker that harvests Sentinel data from CDSE:
+
+```bash
+helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-harvester \
+  --version 2.0.0-rc3 \
+  --namespace resource-registration \
+  --create-namespace \
+  --values registration-harvester/harvester-values/values-sentinel.yaml
 ```
 
 ### 5. Monitor the Deployment
@@ -272,6 +347,11 @@ bash validation.sh
 
 **Registration API:**
 
+> Authenticate as the configured _Test User_:
+> 
+> * Username: `eoepcauser` (ref. `KEYCLOAK_TEST_USER`)
+> * Password: `eoepcapassword` (ref. `KEYCLOAK_TEST_PASSWORD`)
+
 Service root:
 
 ```bash
@@ -321,7 +401,7 @@ ACCESS_TOKEN=$( \
 echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 ```
 
-#### Example - Registering a Collection
+#### Example - Registering a Landsat Collection
 
 This example registers the STAC Collection `landsat-ot-c2-l2` resource into the EOEPCA Resource Catalogue instance - representing the `Landsat 8-9 OLI/TIRS Collection 2 Level-2`. This collection is used in later steps as a target for harvesting of some example Landsat data.
 
@@ -342,6 +422,26 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
 EOF
 ```
 
+#### Example - Registering a Sentinel 2 Collection
+
+This registers a STAC Collection for Sentinel 2 L2a Collection 1, which is also used later to demonstrate Sentinel harvesting.
+
+```bash
+source ~/.eoepca/state
+curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
+  ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
+  -H "Content-Type: application/json" \
+  -d @- <<EOF
+{
+    "inputs": {
+        "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/sentinel/sentinel-2-c1-l2a.json"},
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
+    }
+}
+EOF
+```
+
+
 #### Validate Registration
 
 Check job status:
@@ -354,10 +454,17 @@ source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/jobs"
 ```
 
-If you have deployed the [Resource Discovery](./resource-discovery.md) Building Block, verify the collection:
+If you have deployed the [Resource Discovery](./resource-discovery.md) Building Block, verify the Landsat collection:
 ```bash
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2"
+```
+
+and the Sentinel collection:
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a"
 ```
 
 ---
@@ -439,7 +546,7 @@ curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-res
 EOF
 ```
 
-#### Monitor Harvesting Progress
+#### Monitor Landsat Harvesting Progress
 
 **Check worker logs:**
 
@@ -467,34 +574,92 @@ source ~/.eoepca/state
 xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
 ```
 
----
+#### Deploy Workflow for Sentinel harvesting
 
-#### Retain the `eodata` volume
-
-Given the time/bandwidth required to retrieve the harvested data - you may want to ensure that the Persistent Volume is retained for future reuse. For example, to reconnect with the downloaded data in the case that the Resource Registration BB is re-deployed.
-
-Depending on your `RWX` storage class, the `Retain` reclaim policy may already be set.
-
-Check reclaim policy of the `eodata` persistent volume...
+As above for the Landsat harvester, for Sentinel harvesting two workflows must be deployed to Flowable using
 
 ```bash
- EODATA_PV=$(kubectl get pvc "eodata" -n "resource-registration" -o jsonpath='{.spec.volumeName}')
- POLICY=$(kubectl get pv "$EODATA_PV" -o jsonpath='{.spec.persistentVolumeReclaimPolicy}')
- echo -e "\nVolume Reclaim Policy is: $POLICY\n"
+source ~/.eoepca/state
+curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel.bpmn | \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+  -F "sentinel.bpmn=@-;filename=sentinel.bpmn;type=text/xml" | jq
 ```
 
-Otherwise, you can patch the persistent volume as follows...
+and
 
 ```bash
- EODATA_PV=$(kubectl get pvc "eodata" -n "resource-registration" -o jsonpath='{.spec.volumeName}')
- kubectl patch pv "$EODATA_PV" -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel-scene-ingestion.bpmn | \
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
+  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+  -F "sentinel-scene-ingestion.bpmn=@-;filename=sentinel-scene-ingestion.bpmn;type=text/xml" | jq
+```
+
+
+#### Execute Sentinel Harvesting
+
+Start a Sentinel harvesting job (for a small time period - this should match three records):
+
+```bash
+source ~/.eoepca/state
+# Get process ID
+processes="$( \
+  curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
+    -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
+  )"
+sentinel_process_id="$(echo "$processes" | jq -r '[.data[] | select(.name == "Sentinel Registration")][0].id')"
+
+# Start harvesting
+curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
+  -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
+  -H "Content-Type: application/json" \
+  -d @- <<EOF | jq
+{
+  "processDefinitionId": "$sentinel_process_id",
+  "variables": [
+    {
+      "name": "filter",
+      "type": "string",
+      "value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true"
+    }
+  ]
+}
+EOF
+```
+
+#### Monitor Sentinel Harvesting Progress
+
+**Check worker logs:**
+
+```bash
+kubectl -n resource-registration logs -f deploy/registration-harvester-worker-sentinel
+```
+
+Use `Ctrl-C` to exit the log stream.
+
+> Note that the harvesting may take some time, depending on download speeds and the number of scenes to be harvested. Therefore the following monitoring steps may be subject to delay.
+
+**Monitor process instances:**
+```bash
+source ~/.eoepca/state
+curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
+  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+  | jq -r '.data[] | "\(.startTime) | \(.id) | \(.processDefinitionName)"'
+```
+
+**Check registered items:**
+
+Once harvesting completes (this may take time depending on download speeds), check the catalogue:
+```bash
+source ~/.eoepca/state
+xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a/items"
 ```
 
 ---
 
 ### Delivery of data `assets`
 
-The default harvesting approach illustrated above maintains the harvested assets into an `eodata` persistent volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL `https://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
+The default harvesting approach illustrated above maintains the harvested assets into a persistent `eodata` volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL `https://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
 
 #### Example - Service for asset access
 
@@ -504,13 +669,40 @@ By way of an example, a simple NGINX service can be deployed to provide access t
 kubectl apply -f registration-harvester/generated-eodata-server.yaml
 ```
 
+Once started, the asset links in the STAC Items viewed earlier should work.
+
 #### Visualise with STAC Browser
 
-Use STAC Browser to navigate the harvested STAC Collection and the referenced assets.
+STAC Browser can be used to visualise the harvested STAC Collection and the referenced assets.
+
+Use either the [On-line Radiant Earth instance](#using-on-line-radiant-earth-service), or a [dedicated local instance](#using-local-stac-browser).
+
+##### Using On-line Radiant Earth service
+
+[Radiant Earth](https://radiant.earth/) provide a [public STAC Browser client](https://radiantearth.github.io/stac-browser).
+
+> If your Resource Catalogue deployment uses `http` (rather than `https`) then this will not work. Instead use the [local STAC Browser deployment](#using-local-stac-browser)
 
 ```bash
 source ~/.eoepca/state
 xdg-open "https://radiantearth.github.io/stac-browser/#/external/resource-catalogue.${INGRESS_HOST}/stac/"
+```
+
+##### Using Local STAC Browser
+
+**Deploy STAC Browser**
+
+Deploy...
+
+```bash
+kubectl apply -f registration-harvester/generated-stac-browser.yaml
+```
+
+Open...
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://stac-browser.${INGRESS_HOST}"
 ```
 
 ---

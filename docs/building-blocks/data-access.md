@@ -122,9 +122,9 @@ During the script execution, you will be prompted to provide:
 
 - **`ENABLE_IAM`**: Enable IAM/Keycloak integration (yes/no)
     - If yes, you'll configure:
-        - **`KEYCLOAK_URL`**: Keycloak server URL
-        - **`KEYCLOAK_REALM`**: Keycloak realm name
-        - **`KEYCLOAK_CLIENT_ID`**: Client ID for EOAPI
+        - **`KEYCLOAK_HOST`**: Keycloak service hostname
+        - **`REALM`**: Keycloak realm name
+        - **`EOAPI_CLIENT_ID`**: Client ID for EOAPI
         - **`OPA_URL`**: OPA server URL for authorization
 
 - **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
@@ -180,9 +180,6 @@ bash apply-secrets.sh
 > If using the external PostgreSQL option, skip this step.
 
 ```bash
-helm repo add postgres-operator https://postgres-operator-examples.github.io/charts
-helm repo update postgres-operator
-
 helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
   --version 5.6.0 \
   --namespace data-access \
@@ -223,15 +220,18 @@ helm upgrade -i eoapi-maps-plugin eoepca-dev/eoapi-maps-plugin \
 
 #### Configure Ingress/Routes
 
-For APISIX with IAM:
-```bash
-kubectl apply -f iam/generated-iam.yaml  # If IAM enabled
-kubectl apply -f routes/generated-apisix-route.yaml  # APISIX routes
-```
+If IAM is enabled then we need to configure Keycloak with a Client and associated Roles/Groups.
 
-For APISIX without IAM or NGINX:
+If APISIX is the configured ingress controller, then apply the dedicated `ApisixRoute`.
+
 ```bash
-kubectl apply -f eoapi/generated-ingress.yaml
+source ~/.eoepca/state
+if [ "${DATA_ACCESS_ENABLE_IAM}" = "yes" ]; then
+  kubectl apply -f iam/generated-iam.yaml
+fi
+if [ "${INGRESS_CLASS}" = "apisix" ]; then
+  kubectl apply -f eoapi/generated-ingress.yaml
+fi
 ```
 
 #### (Optional) Deploy Monitoring

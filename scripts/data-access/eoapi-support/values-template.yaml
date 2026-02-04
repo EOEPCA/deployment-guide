@@ -43,7 +43,7 @@ prometheus:
       type: ClusterIP
     persistentVolume:
       enabled: true
-      storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
+      storageClass: "{{ getenv "SHARED_STORAGECLASS" }}"
       accessModes:
         - ReadWriteMany
 
@@ -51,6 +51,8 @@ enableCaBundleFetch: true
 caBundleSecretName: "eoepca-ca-secret"
 
 metrics-server:
+  image:
+    repository: bitnamilegacy/metrics-server
   apiService:
     create: false
     insecureSkipTLSVerify: false

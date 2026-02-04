@@ -15,7 +15,6 @@ Kubernetes defines several access modes for volumes, which determine how the vol
 - **ReadWriteMany (RWX)**: The volume can be mounted as read-write by many nodes. This is required for applications that need to share data between multiple pods or nodes.
 - **ReadOnlyMany (ROX)**: The volume can be mounted as read-only by many nodes. This is less common but can be useful for certain scenarios.
 - **ReadWriteOncePod (RWOP)**: The volume can be mounted as read-write by a single pod. This is a more restrictive access mode introduced in Kubernetes 1.22.
-- **ReadOnlyManyPod (ROOP)**: The volume can be mounted as read-only by a single pod. This is a more restrictive access mode introduced in Kubernetes 1.22.
 
 ---
 

@@ -70,14 +70,28 @@ During the script execution, you will be prompted to provide:
     - _Example_: `example.com`
 - **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent volumes.
     - _Example_: `standard`
+- **`REALM`**: The name of the Keycloak realm which will authenticate end users.
+    - _Example_: `eoepca`
 - **`CLUSTER_ISSUER`**: Issuer for TLS certificates
     - _Example_: `letsencrypt-http01-apisix`
+- **`IAM_MANAGEMENT_CLIENT_ID`**: OIDC client ID for Crossplane's management of Keycloak
+    - _Example_: `iam-management`
+- **`OPA_CLIENT_ID`**: OIDC client ID for Open Policy Agent
+    - _Example_: `opa`
+- **`KEYCLOAK_TEST_USER`**: Username of Keycloak example user to create for testing
+    - _Example_: `eoepcauser`
+- **`KEYCLOAK_TEST_ADMIN`**: Initial admin username to pre-create in Keycloak
+    - _Example_: `eoepcaadmin`
+- **`KEYCLOAK_TEST_PASSWORD`**: Example user's Keycloak password
+    - _Example_: `eoepcapassword`
 
 The script will also generate secure passwords for:
 
 - **`KEYCLOAK_ADMIN_PASSWORD`**: Password for the Keycloak admin account.
 - **`KEYCLOAK_POSTGRES_PASSWORD`**: Password for the Keycloak PostgreSQL database.
 - **`OPA_CLIENT_SECRET`**: Secret for the `opa` (Open Policy Agent) client in Keycloak
+- **`IAM_MANAGEMENT_CLIENT_SECRET`**: Client secret for Crossplane's management of Keycloak
+- **`OPA_CLIENT_SECRET`**: OIDC client secret for Open Policy Agent
 
 These credentials will be stored in a state file at `~/.eoepca/state`.
 
@@ -91,10 +105,10 @@ This creates Kubernetes secrets from the credentials generated earlier.
 
 ### 3. Deploy IAM Building Block
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i iam eoepca-dev/iam-bb \
-  --version 2.0.0-rc2 \
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
+helm upgrade -i iam eoepca/iam-bb \
+  --version 2.0.0 \
   --namespace iam \
   --values generated-values.yaml \
   --create-namespace
@@ -104,6 +118,16 @@ Then apply the **APISIX TLS** resource:
 
 ```bash
 kubectl apply -f apisix-tls.yaml
+```
+
+Before proceeding - wait for Keycloak to be ready to accept API requests...
+
+```bash
+while ! kubectl wait --for=condition=Ready --all=true -n iam pod --timeout=1m &>/dev/null; do
+  sleep 10
+  echo "Waiting for Keycloak readiness"
+done
+echo -e "\nKeycloak is READY"
 ```
 
 ---

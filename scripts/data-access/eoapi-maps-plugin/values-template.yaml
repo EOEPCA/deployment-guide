@@ -1,20 +1,26 @@
 ingress:
+  {{- if eq ( getenv "INGRESS_CLASS" ) "nginx" }}
   enabled: true
   className: {{ getenv "INGRESS_CLASS" }}
   annotations:
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
   hosts:
-    - host: maps.{{ getenv "INGRESS_HOST" }}
+    - host: eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
-        - path: /
+        - path: /maps(/|$)(.*)
           pathType: ImplementationSpecific
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
   - hosts:
-      - maps.{{ getenv "INGRESS_HOST" }}
+      - eoapi.{{ getenv "INGRESS_HOST" }}
     secretName: data-access-maps-tls
+  {{- end }}
+  {{- else }}
+  enabled: false
   {{- end }}
 resources:
   requests:

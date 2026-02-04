@@ -214,7 +214,7 @@ Launch the notebook server:
 Open the openeo notebook:
 
 ```bash
-xdg-open http://127.0.0.1:8888/lab/tree/openeo/openeo.ipynb
+xdg-open "http://127.0.0.1:8888/lab/tree/openeo/openeo.ipynb"
 ```
 
 Clear the cell outputs and then execute the notebook - which should complete with similar outputs to the reference notebook.
@@ -263,7 +263,7 @@ _Expected output:_ A JSON object with an array of processes. Use your terminal's
 The deployment can be tested using the openEO Web Editor as a client.
 
 ```bash
-xdg-open https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.2/
+xdg-open "https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.2/"
 ```
 
 **Alternatively:**
@@ -275,6 +275,7 @@ xdg-open https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/
 **Login to service**
 
 If OIDC authentication is enabled:
+
 * Select `EOEPCA`
 * Select `Log in with EOEPCA`  
   This redirects to authenticate via the IAM BB Keycloak instance
@@ -382,13 +383,18 @@ The Python client provides a more comprehensive interface for working with openE
 
 #### Install Dependencies
 
-Create a virtual environment and install required packages:
+If needed, ensure python 3.12+ - for example, on ubuntu...
 
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
 sudo apt install -y python3.12 python3.12-venv
-python3.12 -m venv venv
+```
+
+Create a virtual environment and install required packages:
+
+```bash
+python -m venv venv
 source venv/bin/activate
 pip install openeo xarray netCDF4 h5netcdf
 
@@ -399,9 +405,11 @@ export OPENEO_URL="https://openeo.${INGRESS_HOST}"
 
 Start a Python session and establish connection:
 
-```
+```bash
 python
 ```
+
+> Alternative to pasting the following python snippets into the python REPL, you might instead find it easier to paster them into a source file `openeo-test.py` and then run with `python openeo-test.py`
 
 And then run:
 

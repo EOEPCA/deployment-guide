@@ -18,7 +18,7 @@ nav:
           - Overview: prerequisites/ingress/overview.md
           - APISIX Ingress: prerequisites/ingress/apisix.md
           - Nginx Ingress: prerequisites/ingress/nginx.md
-          - Multiple Ingress Controllers: prerequisites/ingress/multi.md
+          - Ingress Gateway: prerequisites/ingress/gateway.md
       - TLS Management: prerequisites/tls.md
       - Optional Components:
           - Crossplane: prerequisites/crossplane.md

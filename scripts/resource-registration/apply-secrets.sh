@@ -28,7 +28,7 @@ fi
 read -p "Do you want to enable Copernicus Data Space Ecosystem (CDSE) credentials for Sentinel Harvesting? (y/n): " enable_cdse
 if [[ "$enable_cdse" == "y" || "$enable_cdse" == "Y" ]]; then
   read -p "Enter CDSE Username: " cdse_user
-  read -p "Enter CDSE Password: " cdse_password
+  read -s -p "Enter CDSE Password: " cdse_password
   echo
   export CDSE_USER="$cdse_user"
   export CDSE_PASSWORD="$cdse_password"

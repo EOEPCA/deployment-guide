@@ -443,15 +443,9 @@ bash -l
 source ~/.eoepca/state
 ```
 
-If OIDC is enabled, generate a token:
-```bash
-source oapip-utils.sh
-```
-
-> **Note:** Tokens are short-lived. Re-run this if later commands fail unexpectedly.
-
 #### List Processes
 ```bash
+source oapip-utils.sh
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
@@ -460,6 +454,7 @@ curl --silent --show-error \
 
 #### Deploy Process `convert`
 ```bash
+source oapip-utils.sh
 curl --silent --show-error \
   -X POST "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
@@ -477,6 +472,7 @@ EOF
 
 Verify it's deployed:
 ```bash
+source oapip-utils.sh
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
@@ -485,6 +481,7 @@ curl --silent --show-error \
 
 #### Execute Process `convert`
 ```bash
+source oapip-utils.sh
 JOB_ID=$(
   curl --silent --show-error \
     -X POST "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url/execution" \
@@ -508,6 +505,7 @@ echo "JOB ID: ${JOB_ID}"
 
 #### Check Execution Status
 ```bash
+source oapip-utils.sh
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/jobs/${JOB_ID}" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
@@ -520,6 +518,7 @@ The `status` field shows `running`, `successful`, or `failed`.
 
 Once the job completes successfully:
 ```bash
+source oapip-utils.sh
 curl --silent --show-error \
   -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/jobs/${JOB_ID}/results" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
@@ -529,12 +528,15 @@ curl --silent --show-error \
 Use the Minio `mc` CLI or the MinIO console (installed as per the [MinIO Deployment Guide](../prerequisites/minio.md)) to access the output file in the Stage-Out bucket.
 
 ```bash
-https://console-minio.${INGRESS_HOST}/browser/eoepca/processing-results
+source ~/.eoepca/state
+if [ "${USE_WORKSPACE_API=}" = "true" ]; then BUCKET_NAME="ws-${OAPIP_USER}"; else BUCKET_NAME="eoepca"; fi
+xdg-open "https://console-minio.${INGRESS_HOST}/browser/${BUCKET_NAME}/processing-results/"
 ```
 
 
 #### Undeploy Process `convert`
 ```bash
+source oapip-utils.sh
 curl --silent --show-error \
   -X DELETE "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \

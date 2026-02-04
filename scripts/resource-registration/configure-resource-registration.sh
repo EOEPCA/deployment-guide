@@ -11,6 +11,9 @@ configure_cert
 ask "FLOWABLE_ADMIN_USER" "Set what you'd like your Flowable admin username to be" "eoepca" is_non_empty
 ask "FLOWABLE_ADMIN_PASSWORD" "Set what you'd like your Flowable admin password to be" "eoepca" is_non_empty
 
+# eodata base URL
+ask "EODATA_ASSET_BASE_URL" "Set the base URL through which harvested 'eodata' assets will be accessed" "${HTTP_SCHEME}://eodata.${INGRESS_HOST}/" is_non_empty
+
 # IAM integration
 # Two cases:
 #   1. We want to protect the Resource Registration endpoints via OIDC
@@ -37,8 +40,10 @@ gomplate  -f "registration-api/$INGRESS_TEMPLATE_PATH" -o "registration-api/$ING
 gomplate  -f "registration-harvester/$TEMPLATE_PATH" -o "registration-harvester/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/$INGRESS_TEMPLATE_PATH" -o "registration-harvester/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/harvester-values/values-landsat-template.yaml" -o "registration-harvester/harvester-values/values-landsat.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "registration-harvester/harvester-values/values-sentinel-template.yaml" -o "registration-harvester/harvester-values/values-sentinel.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
-# eodata-server - Generate deployment yaml from template
+# eodata-server + STAC browser
 gomplate  -f "registration-harvester/eodata-server-template.yaml" -o "registration-harvester/generated-eodata-server.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "registration-harvester/stac-browser-template.yaml" -o "registration-harvester/generated-stac-browser.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."

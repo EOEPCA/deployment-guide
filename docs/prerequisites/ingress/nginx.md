@@ -4,54 +4,39 @@
 
 This document provides instructions to deploy [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) for EOEPCA+. 
 
+> See also [Ingress Gateway](./gateway.md) for more advanced ingress scenarios.
+
 ## Quickstart Installation
 
 > **Disclaimer:** We recommend following the official installation instructions for the NGINX Ingress Controller. However, this quick start guide should also work for most environments.
 
+The deployment configuration below assumes that the Kubernetes cluster exposes NodePorts `31080` (http) and `31443` (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public `80/443` traffic to these exposed ports on the cluster nodes.
+
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-
+helm repo update ingress-nginx
 helm upgrade -i ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx --create-namespace \
-  --set controller.ingressClassResource.default=true \
   --set controller.allowSnippetAnnotations=true \
-  --set controller.service.type=LoadBalancer
+  --set controller.config.ssl-redirect=true \
+  --set controller.service.type=NodePort \
+  --set controller.service.nodePorts.http=31080 \
+  --set controller.service.nodePorts.https=31443
 ```
 
 Adjust parameters as needed (e.g. `NodePort` vs. `LoadBalancer` service).
 
 ### Forced TLS Redirection
 
-By default, if you want to force HTTP→HTTPS redirection, you can use an [ingress annotation or config snippet](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#force-ssl-redirect). For instance:
+The above configuration enables forced TLS redirection via the NGINX controller config (`ssl-redirect="true"`).
+
+This global redirect can be disabled for specific Ingress resources with the `annotation`:
 
 ```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-service
-  annotations:
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - "my-service.example.com"
-      secretName: my-service-tls
-  rules:
-    - host: my-service.example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: my-service
-                port:
-                  number: 80
+nginx.ingress.kubernetes.io/ssl-redirect: "false"
 ```
 
-### Uninstallation
+## NGINX Uninstallation
 
 ```bash
 helm -n ingress-nginx uninstall ingress-nginx

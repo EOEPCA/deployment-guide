@@ -148,7 +148,13 @@ A test script is provided to demonstrate loading the datacube using Python libra
 
 ```bash
 cd tests
+python -m venv venv
+source ./venv/bin/activate
+pip install -U -r requirements.txt
+source ~/.eoepca/state
 python processing-tools.py
+deactivate
+cd ..
 ```
 
 ### Relevance to OpenEO

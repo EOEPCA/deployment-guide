@@ -1,9 +1,12 @@
 harvester:
+  image:
+    tag: pr-5
   secret:
     name: registration-harvester-secret
   eodata:
     enabled: true
-    storageClass: {{ getenv "SHARED_STORAGECLASS" }}
+    createPVC: false
+    claimName: eodata
   config:
     worker:
       log_level: INFO
@@ -57,8 +60,8 @@ harvester:
           remove_tar: false
           create_folder: true
         LandsatRegisterMetadataHandler:
-          stac_api_url: https://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac/
+          stac_api_url: {{ getenv "HTTP_SCHEME"}}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac
           stac_file_deletion: true
           rewrite_asset_hrefs:
             prefix_from: "/eodata/"
-            prefix_to: "{{ getenv "HTTP_SCHEME"}}://eodata.{{ getenv "INGRESS_HOST" }}/"
+            prefix_to: "{{ getenv "EODATA_ASSET_BASE_URL" }}"
