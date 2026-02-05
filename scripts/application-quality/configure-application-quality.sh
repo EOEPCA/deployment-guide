@@ -12,6 +12,7 @@ ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for inter
 
 # Allow override for public-facing host through which Application Quality is accessed
 export APP_QUALITY_PUBLIC_HOST="${APP_QUALITY_PUBLIC_HOST:-"application-quality.${INGRESS_HOST}"}"
+add_to_state_file "APP_QUALITY_PUBLIC_HOST" "${APP_QUALITY_PUBLIC_HOST}"
 
 # OIDC configuration - now optional
 if ask_yes_no "Enable OIDC authentication?"; then
