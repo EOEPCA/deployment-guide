@@ -2575,10 +2575,10 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 <h3 id="3-deploy-the-registration-api-using-helm">3. Deploy the Registration API Using Helm<a class="headerlink" href="#3-deploy-the-registration-api-using-helm" title="Permanent link">⚓︎</a></h3>
 <p>The Registration API provides a RESTful interface through which resources can be directly registered, updated, or deleted.</p>
 <p>Deploy the Registration API using the generated values file:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca-dev<span class="w"> </span>https://eoepca.github.io/helm-charts-dev
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca-dev
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-api<span class="w"> </span>eoepca-dev/registration-api<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc5<span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>eoepca<span class="w"> </span>https://eoepca.github.io/helm-charts
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>update<span class="w"> </span>eoepca
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-api<span class="w"> </span>eoepca/registration-api<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span>--values<span class="w"> </span>registration-api/generated-values.yaml
@@ -2650,16 +2650,16 @@ A Python library consolidating upstream packages (e.g. STAC tools, eometa tools)
 </blockquote>
 <h4 id="deploy-landsat-harvester-worker">Deploy Landsat Harvester Worker<a class="headerlink" href="#deploy-landsat-harvester-worker" title="Permanent link">⚓︎</a></h4>
 <p>Deploy the worker that executes Landsat harvesting tasks:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker-landsat<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc3<span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker-landsat<span class="w"> </span>eoepca/registration-harvester<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/harvester-values/values-landsat.yaml
 </span></code></pre></div>
 <h4 id="deploy-the-sentinel-harvester-worker">Deploy the Sentinel Harvester Worker<a class="headerlink" href="#deploy-the-sentinel-harvester-worker" title="Permanent link">⚓︎</a></h4>
 <p>Deploy the worker that harvests Sentinel data from CDSE:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker-sentinel<span class="w"> </span>eoepca-dev/registration-harvester<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0-rc3<span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>-i<span class="w"> </span>registration-harvester-worker-sentinel<span class="w"> </span>eoepca/registration-harvester<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--version<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>--namespace<span class="w"> </span>resource-registration<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span>--values<span class="w"> </span>registration-harvester/harvester-values/values-sentinel.yaml
@@ -3040,7 +3040,7 @@ You should see a new job with the status <code>COMPLETED</code>. </p>
 <li><a href="https://github.com/EOEPCA/registration-harvester">Registration Harvester Documentation</a></li>
 <li><a href="https://flowable.com/open-source/">Flowable BPMN Platform</a></li>
 <li><a href="https://pygeoapi.io/">pygeoapi Documentation</a></li>
-<li><a href="https://eoepca.github.io/helm-charts-dev"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Helm Charts</a></li>
+<li><a href="https://eoepca.github.io/helm-charts"><abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ Helm Charts</a></li>
 </ul>
 
 
