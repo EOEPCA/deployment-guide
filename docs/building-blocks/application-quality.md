@@ -116,6 +116,12 @@ A Keycloak client is required for the ingress protection of the Application Qual
 
 ```bash
 source ~/.eoepca/state
+
+REDIRECT_URIS=("/*")
+if [ "${APP_QUALITY_PUBLIC_HOST}" != "application-quality.${INGRESS_HOST}" ]; then
+  REDIRECT_URIS+=("${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/*")
+fi
+
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
@@ -138,9 +144,9 @@ spec:
     description: Application Quality OIDC
     enabled: true
     accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://application-quality.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://application-quality.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://application-quality.${INGRESS_HOST}
+    rootUrl: ${HTTP_SCHEME:-http}://${APP_QUALITY_PUBLIC_HOST}
+    baseUrl: ${HTTP_SCHEME:-http}://${APP_QUALITY_PUBLIC_HOST}
+    adminUrl: ${HTTP_SCHEME:-http}://${APP_QUALITY_PUBLIC_HOST}
     serviceAccountsEnabled: true
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
@@ -152,9 +158,9 @@ spec:
         keepDefaults: true
         policyEnforcementMode: ENFORCING
     validRedirectUris:
-      - "/*"
+$(for uri in "${REDIRECT_URIS[@]}"; do printf '      - "%s"\n' "$uri"; done)
     webOrigins:
-      - "/*"
+$(for uri in "${REDIRECT_URIS[@]}"; do printf '      - "%s"\n' "$uri"; done)
     clientSecretSecretRef:
       name: ${APP_QUALITY_CLIENT_ID}-keycloak-client
       key: client_secret
