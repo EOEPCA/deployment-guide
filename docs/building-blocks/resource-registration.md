@@ -139,10 +139,10 @@ The Registration API provides a RESTful interface through which resources can be
 
 Deploy the Registration API using the generated values file:
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.0.0-rc5 \
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
+helm upgrade -i registration-api eoepca/registration-api \
+  --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -238,8 +238,8 @@ harvester:
 Deploy the worker that executes Landsat harvesting tasks:
 
 ```bash
-helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-harvester \
-  --version 2.0.0-rc3 \
+helm upgrade -i registration-harvester-worker-landsat eoepca/registration-harvester \
+  --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-landsat.yaml
@@ -250,8 +250,8 @@ helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-ha
 Deploy the worker that harvests Sentinel data from CDSE:
 
 ```bash
-helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-harvester \
-  --version 2.0.0-rc3 \
+helm upgrade -i registration-harvester-worker-sentinel eoepca/registration-harvester \
+  --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-sentinel.yaml
@@ -753,4 +753,4 @@ kubectl delete namespace resource-registration
 - [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester)
 - [Flowable BPMN Platform](https://flowable.com/open-source/)
 - [pygeoapi Documentation](https://pygeoapi.io/)
-- [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts-dev)
+- [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts)
