@@ -42,7 +42,7 @@ application-quality:
     image:
       repository: eoepca/eoepca-appquality-frontend
       tag: 2.0.0-rc1
-    publicUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}"
+    publicUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}"
 
   persistence:
     enabled: true
@@ -82,11 +82,11 @@ application-quality:
     preferredUsernameClaimField: "preferred_username"
     logoutEndpointPath: "end_session"
     logoutRedirectUrlParameterName: "post_logout_redirect_url"
-    postLogoutRedirectUrl: "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
+    postLogoutRedirectUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/"
     loginUrl: "/oidc/authenticate"
-    loginRedirectUrl:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
+    loginRedirectUrl:  "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/"
     logoutRedirectUrl: "/"
-    rpRedirectUri:  "{{ getenv "HTTP_SCHEME" }}://application-quality.{{ getenv "INGRESS_HOST" }}/"
+    rpRedirectUri:  "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/"
     rpSignAlgo: "RS256"
     {{- end }}
 
