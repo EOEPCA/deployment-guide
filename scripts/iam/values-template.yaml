@@ -172,6 +172,13 @@ keycloak:
     # URL of Keycloak (usually the same as iam.keycloak.url)
     - name: KC_HOSTNAME
       value: *kcurl
+    {{- if eq ( getenv "HTTP_SCHEME" ) "http" }}
+    # Disable HTTPS requirement when running without TLS
+    - name: KC_HOSTNAME_STRICT
+      value: "false"
+    - name: KC_HOSTNAME_STRICT_HTTPS
+      value: "false"
+    {{- end }}
   ##
   ## Service configuration
   ##
