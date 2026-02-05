@@ -90,27 +90,30 @@ bash apply-secrets.sh
 
 > **Note:** Application Quality is not yet in the official Helm charts. Deploy directly from GitHub.
 
-1. **Clone the reference repository**:
-    
+
+### 1. Deploy via Helm
+
 ```bash
-git clone https://github.com/EOEPCA/application-quality.git reference-repo \
-  -b reference-deployment
-```
-    
-2. **Install** with Helm:
-    
-```bash
+git clone https://github.com/EOEPCA/application-quality.git reference-repo
+cd reference-repo
+git checkout cb9ad92e9ae5b8b08c2069804131fccb6a7ded4f
+cd ..
 helm dependency update reference-repo/application-quality-reference-deployment
-helm dependency build reference-repo/application-quality-reference-deployment
-kubectl apply -f https://github.com/knative/eventing/releases/download/knative-v1.20.0/eventing-crds.yaml
+```{{exec}}
 
+Deploy using Helm with the generated values:
+
+```bash
 helm upgrade -i application-quality reference-repo/application-quality-reference-deployment \
-  --namespace application-quality \
-  --create-namespace \
-  --values generated-values.yaml
+  -f generated-values.yaml \
+  -n application-quality \
+  --timeout 10m
 ```
 
-### 4 Create a Keycloak Client
+> If you get a Knative-related error, ensure Knative Eventing CRDs are installed: `kubectl apply -f https://github.com/knative/eventing/releases/download/knative-v1.20.0/eventing-crds.yaml`
+
+
+### 2. Create a Keycloak Client
 
 A Keycloak client is required for the ingress protection of the Application Quality BB. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
