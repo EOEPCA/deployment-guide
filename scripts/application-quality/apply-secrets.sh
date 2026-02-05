@@ -1,5 +1,6 @@
 # Load utility functions and state file
 source ../common/utils.sh
+source ~/.eoepca/state
 
 NAMESPACE="application-quality"
 
@@ -15,10 +16,10 @@ kubectl create secret generic application-quality-auth-client \
 
 
 kubectl create secret generic application-quality-opensearch-dashboards-openid-config \
-    --from-literal=OPENSEARCH_SECURITY_OPENID_BASE_REDIRECT_URL="${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/dashboards" \
+    --from-literal=OPENSEARCH_SECURITY_OPENID_BASE_REDIRECT_URL="${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/dashboards" \
     --from-literal=OPENSEARCH_SECURITY_OPENID_CLIENT_ID="$APP_QUALITY_CLIENT_ID" \
     --from-literal=OPENSEARCH_SECURITY_OPENID_CLIENT_SECRET="$APP_QUALITY_CLIENT_SECRET" \
-    --from-literal=OPENSEARCH_SECURITY_OPENID_CONNECT_URL="${HTTP_SCHEME}://keycloak.${INGRESS_HOST}/auth/realms/${REALM}/.well-known/openid-configuration" \
+    --from-literal=OPENSEARCH_SECURITY_OPENID_CONNECT_URL="${HTTP_SCHEME}://${KEYCLOAK_HOST}/auth/realms/${REALM}/.well-known/openid-configuration" \
     --namespace "$NAMESPACE" \
     --dry-run=client -o yaml | kubectl apply -f -
 

@@ -10,6 +10,9 @@ ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTE
 configure_cert
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
 
+# Allow override for public-facing host through which Application Quality is accessed
+export APP_QUALITY_PUBLIC_HOST="${APP_QUALITY_PUBLIC_HOST:-"application-quality.${INGRESS_HOST}"}"
+add_to_state_file "APP_QUALITY_PUBLIC_HOST" "${APP_QUALITY_PUBLIC_HOST}"
 
 # OIDC configuration - now optional
 if ask_yes_no "Enable OIDC authentication?"; then
@@ -31,7 +34,7 @@ if ask_yes_no "Enable OIDC authentication?"; then
     echo "   Application Quality Client Secret: $APP_QUALITY_CLIENT_SECRET"
     echo ""
 
-    add_to_state_file "OSD_BASE_REDIRECT" "${HTTP_SCHEME}://application-quality.${INGRESS_HOST}/dashboards"
+    add_to_state_file "OSD_BASE_REDIRECT" "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/dashboards"
     add_to_state_file "OSD_CONNECT_URL" "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
 else
     export OIDC_APPLICATION_QUALITY_ENABLED="false"
@@ -44,4 +47,3 @@ fi
 
 # Generate configuration file
 gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-
