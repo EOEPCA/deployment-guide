@@ -1704,55 +1704,55 @@
 <tr>
 <td>Resource Discovery</td>
 <td style="text-align: left;">pycsw (all resource types)</td>
-<td style="text-align: left;"><strong>pycsw (resource discovery)</strong><br />Key enhancements:<br />- Latest OGC API Records, incl. transactions<br />- Latest STAC API, incl. transactions, CEOS best practice<br /><strong>eoAPI (data discovery)</strong><br />Key capabilities (see Data Access):<br />- Latest STAC API, incl. transactions, CEOS best practice</td>
+<td style="text-align: left;"><strong>pycsw (resource discovery)</strong><br />Catalogue for all resource types supporting Open Science<br />Key enhancements:<br />- Latest OGC API Records, incl. transactions<br />- Latest STAC API, incl. transactions, CEOS best practice<br /><strong>eoAPI (data discovery)</strong><br />Data discovery, access and visualisation (see also Data Access)<br />Key capabilities:<br />- Latest STAC API, incl. transactions, CEOS best practice</td>
 <td style="text-align: center;"><strong>pycsw</strong><br />Upgrade<br /><br /><strong>eoAPI</strong><br />New installation</td>
 </tr>
 <tr>
 <td>Data Access</td>
 <td style="text-align: left;">EOxServer</td>
-<td style="text-align: left;"><strong>eoAPI</strong><br />Key capabilities:<br />- Latest STAC API<br />- TiTiler-PgSTAC raster tiling service (XYZ/OGC-WMTS, OGC API Tiles, COG dynamic tiling, Virtual mosaics)<br />- TiPg vector tiling service (OGC Features and Tiles)<br />- MultiDimensional dataset support via Xarray<br />- Scalable in production<br /><strong>Additional</strong><br />- STAC Browser for data discovery and visualisation<br />- STAC Manager for metadata management</td>
+<td style="text-align: left;"><strong>eoAPI</strong><br />Data discovery, access and visualisation (see also Data Discovery)<br />Key capabilities:<br />- Latest STAC API<br />- TiTiler-PgSTAC raster tiling service (XYZ/OGC-WMTS, OGC API Tiles, COG dynamic tiling, Virtual mosaics)<br />- TiPg vector tiling service (OGC Features and Tiles)<br />- MultiDimensional dataset support via Xarray<br />- Scalable in production<br /><strong>Additional</strong><br />- STAC Browser for data discovery and visualisation<br />- STAC Manager for metadata management</td>
 <td style="text-align: center;">New installation</td>
 </tr>
 <tr>
 <td>Resource Registration</td>
 <td style="text-align: left;">Registration API (bespoke)</td>
-<td style="text-align: left;"><strong>Registration API</strong><br />- API via pygeoapi (OGC API Processes) for resource register and deregister<br />- Integrates with <em>Resource Discovery</em> and <em>Data Access</em><br />- Resource types for reproducible science<br /><br /><strong>Registration Harvester</strong><br />- Flowable BPMN Engine - extensible workflows for harvesting<br />Example workflows&hellip;<br />- Harvest Landsat data from USGS<br />- Harvest Sentinel data from CDSE<br />Generic workflows&hellip;<br />- Harvest from static STAC catalog<br />- Harvest from STAC API</td>
+<td style="text-align: left;"><strong>Registration API</strong><br />API for registration of resources into discovery and access services.<br />- API via pygeoapi (OGC API Processes) for resource register and deregister<br />- Integrates with <em>Resource Discovery</em> and <em>Data Access</em><br />- Resource types for reproducible science<br /><br /><strong>Registration Harvester</strong><br />Automated harvesting of datasets (and other resources) from external providers into discovery and access services.<br />- Flowable BPMN Engine - extensible workflows for harvesting<br />Example workflows&hellip;<br />- Harvest Landsat data from USGS<br />- Harvest Sentinel data from CDSE<br />Generic workflows&hellip;<br />- Harvest from static STAC catalog<br />- Harvest from STAC API</td>
 <td style="text-align: center;">New installation</td>
 </tr>
 <tr>
 <td>Workspace</td>
 <td style="text-align: left;">Workspace API (bespoke)<br /><br />Workspace Provisioning<br /><em>Helm templates for workspace definitions</em></td>
-<td style="text-align: left;">Key capabilities:<br />- <strong>Workspace API</strong> preserved for workspace management<br />- Alternative declarative approach using Kubernetes custom resources<br />- <strong>Workspace provisioning</strong> via declarative Crossplane pipelines<br />- Object storage provisioning (declarative and via UI), with multiple buckets per workspace<br />- Workspace UI providing users an interactive web interface with: Terminal, Code Editor, Storage Browser<br />- Workspace UI provides user-controlled management of permissions and sharing, with RBAC approach<br />- Automated rollover of bucket credentials<br />- vCluster providing dedicated, isolated Kubernetes cluster for workspace user service provisioning<br />Workspace hibernate and auto-suspend</td>
+<td style="text-align: left;">Isolated environments for users/teams providing storage/compute for data management, processing and collaboration.<br />Key capabilities:<br />- <strong>Workspace API</strong> preserved for workspace management<br />- Alternative declarative approach using Kubernetes custom resources<br />- <strong>Workspace provisioning</strong> via declarative Crossplane pipelines<br />- Object storage provisioning (declarative and via UI), with multiple buckets per workspace<br />- Workspace UI providing users an interactive web interface with: Terminal, Code Editor, Storage Browser<br />- Workspace UI provides user-controlled management of permissions and sharing, with RBAC approach<br />- Automated rollover of bucket credentials<br />- vCluster providing dedicated, isolated Kubernetes cluster for workspace user service provisioning<br />Workspace hibernate and auto-suspend</td>
 <td style="text-align: center;">New installation</td>
 </tr>
 <tr>
 <td>Datacube Access</td>
 <td style="text-align: left;">n/a</td>
-<td style="text-align: left;">Key Capabilities:<br />- Filtered discovery and access to multi-dimensional datasets<br />- STAC Best Practice for Datacubes</td>
+<td style="text-align: left;">Ensuring support for datacube semantics in <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ BBs.<br />Key Capabilities:<br />- Filtered discovery and access to multi-dimensional datasets<br />- STAC Best Practice for Datacubes</td>
 <td style="text-align: center;">New installation</td>
 </tr>
 <tr>
 <td>Processing<br />OGC API Processes</td>
 <td style="text-align: left;">ZOO-Project with Calrissian - Kubernetes Runner</td>
-<td style="text-align: left;"><strong>ZOO-Project (common)</strong><br />Key enhancements:<br />- Improved job log management<br />- OGC types in CWL for inputs/outputs (cwl2ogc)<br />- Zoo pod auto-scaling<br />- New Zoo web UI<br />- Many stability, efficiency and maintainability improvements<br />- Unit tests for OGC-AP Patterns (see below)<br /><br /><strong>Kubernetes Runner (Calrissian)</strong><br />Key enhancements:<br />- GPU resource requirements in CWL and node selectors<br />- Jobs can use existing namespace<br />- Fully reworked Calrissian integration (new eoap-cwlwrap)<br /><br /><strong>HPC Runner (Toil)</strong><br />- Zoo integration with Toil for HPC CWL execution<br /><br /><strong>Additional</strong><br />- <a href="https://github.com/eoap">Resources &amp; Guides for Application Packages</a><br />- Documented Application Package patterns, including datacubes<br />- OGC API Processes python client</td>
+<td style="text-align: left;">User-defined processing following OGC API Processes standard<br /><strong>ZOO-Project (common)</strong><br />Key enhancements:<br />- Improved job log management<br />- OGC types in CWL for inputs/outputs (cwl2ogc)<br />- Zoo pod auto-scaling<br />- New Zoo web UI<br />- Many stability, efficiency and maintainability improvements<br />- Unit tests for OGC-AP Patterns (see below)<br /><br /><strong>Kubernetes Runner (Calrissian)</strong><br />Key enhancements:<br />- GPU resource requirements in CWL and node selectors<br />- Jobs can use existing namespace<br />- Fully reworked Calrissian integration (new eoap-cwlwrap)<br /><br /><strong>HPC Runner (Toil)</strong><br />- Zoo integration with Toil for HPC CWL execution<br /><br /><strong>Additional</strong><br />- <a href="https://github.com/eoap">Resources &amp; Guides for Application Packages</a><br />- Documented Application Package patterns, including datacubes<br />- OGC API Processes python client</td>
 <td style="text-align: center;"><strong>Zoo-Calrissian</strong><br />Upgrade<br /><br /><strong>Zoo-Toil</strong><br />New Installation</td>
 </tr>
 <tr>
 <td>Processing<br />openEO</td>
 <td style="text-align: left;">n/a</td>
-<td style="text-align: left;"><strong>openeo-geotrellis</strong><br />Key capabilities:<br />- API providing a simple/unified approach for connection to Earth Observation platforms<br />- Predefined processing specifications for portable applications<br />- Dataset load via STAC - with many enhancements for compatibility and datacube support<br />- Support for running CWL/OGC-App-Package<br />- Many process improvements: geojson, spatial aggregation, bbox filter, &hellip;<br />Improvements for federation<br /><br /><strong>openEO Client / Web Editor</strong><br />- Support for running CWL/OGC-App-Package</td>
+<td style="text-align: left;">API providing a simple/unified approach for connection to Earth Observation platforms<br /><strong>openeo-geotrellis</strong><br />Key capabilities:<br />- openEO API<br />- Predefined processing specifications for portable applications<br />- Dataset load via STAC - with many enhancements for compatibility and datacube support<br />- Support for running CWL/OGC-App-Package<br />- Many process improvements: geojson, spatial aggregation, bbox filter, &hellip;<br />- Improvements for federation<br /><br /><strong>openEO Client / Web Editor</strong><br />Key enhancements:<br />- Support for running CWL/OGC-App-Package</td>
 <td style="text-align: center;">New Installation</td>
 </tr>
 <tr>
 <td>Application Hub</td>
 <td style="text-align: left;">JupyterHub-based</td>
-<td style="text-align: left;"><strong>JupyterHub-based</strong><br />Key enhancements:<br />- Support for init containers, and user image pull secrets<br />- Configuration generator tool - to tailor available applications<br />- Dask Gateway support<br />- Optional harbor for image proxy cache<br />- CSI annotations for persistent volume claims</td>
+<td style="text-align: left;">Web-based tooling for interactive analysis and development<br /><strong>JupyterHub-based</strong><br />Key enhancements:<br />- Support for init containers, and user image pull secrets<br />- Configuration generator tool - to tailor available applications<br />- Dask Gateway support<br />- Optional harbor for image proxy cache<br />- CSI annotations for persistent volume claims</td>
 <td style="text-align: center;">Upgrade</td>
 </tr>
 <tr>
 <td>IAM</td>
 <td style="text-align: left;">Keycloak with gogatekeeper and Identity API</td>
-<td style="text-align: left;"><strong>Keycloak with APISIX, Open Policy Agent and Crossplane</strong><br />Key enhancements:<br />- Keycloak as for <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> 1.4, with upgraded version<br />- Identity API deprecated in favour of Crossplane CRDs<br />- Crossplane Keycloak Provider for declarative configuration of Keycloak<br />- Open Policy Agent as policy engine<br />- APISIX (ingress) for policy enforcement - with plugins for Authn (OIDC) and Authz (UMA and OPA)<br />- Integration with other <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ BBs for policy enforcement and resource sharing</td>
+<td style="text-align: left;">Authenticated user identity, and authorisation of access to platform resources<br /><strong>Keycloak with APISIX, Open Policy Agent and Crossplane</strong><br />Key enhancements:<br />- Keycloak as for <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> 1.4, with upgraded version<br />- Identity API deprecated in favour of Crossplane CRDs<br />- Crossplane Keycloak Provider for declarative configuration of Keycloak<br />- Open Policy Agent as policy engine<br />- APISIX (ingress) for policy enforcement - with plugins for Authn (OIDC) and Authz (UMA and OPA)<br />- Integration with other <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ BBs for policy enforcement and resource sharing</td>
 <td style="text-align: center;">New Installation</td>
 </tr>
 <tr>
@@ -1761,8 +1761,15 @@
 <td style="text-align: left;"><strong>EODAG</strong><br />Capability for accessing the data offering of an extensible set of data providers and datasets<br />Key enhancements:<br />- STAC-formatted metadata representation<br />- Integrate FedEO CEOS STAC for CCI data<br />- Support STAC serialise/deserialise<br />- STAC metadata augmentation via xarray</td>
 <td style="text-align: center;">n/a</td>
 </tr>
+<tr>
+<td>Application Quality</td>
+<td style="text-align: left;">n/a</td>
+<td style="text-align: left;"><strong>Application Quality</strong> supports the transition of scientific algorithms to production-grade workflows. This is achieved through automated pipelines that execute tooling which verifies workflow quality against industry best practices for coding and security.<br />- Python code quality checks<br />- Best practices for Jupyter Notebooks<br />- OGC Application Package validation<br />- Trivy vulerability scanning<br />- Grafan dashboards and reports for quality outcomes</td>
+<td style="text-align: center;">New Installation</td>
+</tr>
 </tbody>
 </table>
+<p>For more details please refer to the documentation for each component, or ask the <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr> team for support - in particular if you are migrating an existing deployment to <abbr title="EO Exploitation Platform Common Architecture">EOEPCA</abbr>+ 2.0.</p>
 
 
 
