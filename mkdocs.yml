@@ -7,6 +7,7 @@ edit_uri: "edit/main/docs/"
 nav:
   - EOEPCA+ Deployment:
       - Introduction: index.md
+      - Changelog: changelog.md
       - Deployments:
         - EOEPCA+ Prerequisites: prerequisites/prerequisites-overview.md
         - Building Blocks: building-blocks/overview.md

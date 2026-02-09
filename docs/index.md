@@ -2,7 +2,9 @@
 
 This guide provides steps to deploy the EOEPCA+ platform's components (Building Blocks) in your environment.
 
-> This `latest` version of the Deployment Guide represents the EOEPCA+ (Phase 2) building blocks. For deployment of the previous EOEPCA (Phase 1) see the [`v1.4-stable` version](../v1.4-stable).
+> Release 2.0 is the first formal release of EOEPCA+, since the last EOEPCA release 1.4 - representing a full refresh of the EOEPCA+ building blocks that provides many new capabilities, with improved stability - ready for production deployment.
+>
+> See the [Changelog](./changelog.md) for a summary of the major changes since EOEPCA Release 1.4.
 
 * **EOEPCA+ Prerequisites**<br>
   Set up the foundational infrastructure required for the EOEPCA+ platform.<br>
