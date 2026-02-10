@@ -351,4 +351,4 @@ kubectl delete namespace data-access
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
 - [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
 - [External Secrets Operator](https://external-secrets.io/)
-- [APISIX Ingress Controller](https://apisix.apache.org/docs/ingress-controller/getting-started/)
+

@@ -602,7 +602,7 @@ docker rm toil-wes-rabbitmq
 
 **General:**
 
-- [ZOO-Project DRU Helm Chart](https://github.com/ZOO-Project/ZOO-Project/tree/master/docker/kubernetes/helm/zoo-project-dru)
+- [ZOO-Project DRU Helm Chart](https://github.com/ZOO-Project/charts/tree/main/zoo-project-dru)
 - [EOEPCA+ Deployment Guide Repository](https://github.com/EOEPCA/deployment-guide)
 - [OGC API Processes Standards](https://www.ogc.org/standards/ogcapi-processes)
 - [Common Workflow Language (CWL)](https://www.commonwl.org/)
