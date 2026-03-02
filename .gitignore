@@ -1,5 +1,5 @@
-.vscode/*
-!.vscode/settings.json
+.vscode/
+.envrc
 site/
 deploy/eoepca/client.yaml
 deploy/eoepca/client-apphub.yaml
