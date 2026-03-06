@@ -1,6 +1,10 @@
 # Changelog
 
+For release numbering and lifecycle policy, see [Release Versioning](release-versioning.md).
+
 ## Release 2.0
+
+Git tag: `eoepca-2.0`
 
 Release 2.0 is the first formal release of EOEPCA+, since the last EOEPCA release 1.4 - representing a full refresh of the EOEPCA+ building blocks. EOEPCA+ 2.0 provides many new capabilities, with improved stability - ready for production deployment.
 

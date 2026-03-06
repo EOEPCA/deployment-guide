@@ -8,6 +8,7 @@ nav:
   - EOEPCA+ Deployment:
       - Introduction: index.md
       - Changelog: changelog.md
+      - Release Versioning: release-versioning.md
       - Deployments:
         - EOEPCA+ Prerequisites: prerequisites/prerequisites-overview.md
         - Building Blocks: building-blocks/overview.md

@@ -2,9 +2,33 @@
 
 _See [latest published version](https://eoepca.readthedocs.io/projects/deploy/en/latest/)_
 
-The guide is written in Markdown and rendered through the [`mkdocs` tool](https://www.mkdocs.org/).
+This repository contains two related deliverables that are released together:
 
-The file `mkdocs.yml` is the configuration file that describes the organisation and settings for the document generation.
+- `docs/`: the Deployment Guide content rendered with MkDocs.
+- `scripts/`: deployment helper scripts for EOEPCA+ Building Blocks.
+
+A tagged release in this repository represents a consistent version of both.
+
+## Release Versioning
+
+Releases follow Semantic Versioning with repository tags in the form `eoepca-MAJOR.MINOR` (optionally `eoepca-MAJOR.MINOR.PATCH`).
+
+For example, `Release 2.0` is tagged as `eoepca-2.0`.
+
+- `MAJOR`: breaking deployment/script behavior changes.
+- `MINOR`: backward-compatible capabilities or guidance additions.
+- `PATCH`: backward-compatible fixes and clarifications.
+
+The full policy is documented in [docs/release-versioning.md](docs/release-versioning.md).
+
+## Documentation Publication
+
+The guide is written in Markdown and rendered through [`mkdocs`](https://www.mkdocs.org/), with site configuration in `mkdocs.yml`.
+
+Published documentation is served via Read the Docs:
+
+- `latest` tracks `main`.
+- Tagged releases provide versioned documentation views.
 
 ## Material Theme
 
@@ -17,44 +41,3 @@ To avoid the need for a local installation of the mkdocs tooling and the Materia
 The script `./serve` is used for local development of the docs - using the `squidfunk/mkdocs-material` docker image to invoke a local server to render the 'live' content from the `docs/` subdirectory.
 
 The local document is served from http://localhost:8000/.
-
-## GitHub Action
-
-The GitHub Action at `.github/workflows/main.yml` is triggered on each commit pushed to `origin/main` to build the documentation to the branch `gh-pages` from where it is published.
-
-## Public Domain - deployment-guide.docs.eoepca.org
-
-The contents of the `gh-pages` branch are published via the domain `deployment-guide.docs.eoepca.org`.
-
-This is achieved by the steps:
-
-1. Configure the GitHub pages to publish from the `gh-pages` branch and using the domain `deployment-guide.docs.eoepca.org`
-2. Follow the GitHub steps to verify ownership of the domain `deployment-guide.docs.eoepca.org`
-3. Maintain the file `docs/CNAME` with the domain name
-
-## Helper Script - `publish`
-
-This script is used to invoke publishing of the docs under a given version - by default the version `current`.
-
-Mkdocs is [configured to support versioning](https://squidfunk.github.io/mkdocs-material/setup/setting-up-versioning/) by using the [`mike` plugin](https://github.com/jimporter/mike).
-
-**Examples**
-
-Publish to `current` version, and update the `latest` alias to point to this...
-
-```bash
-./publish current latest
-```
-
-Publish to `v1.x` version...
-
-```bash
-./publish v1.x
-```
-
-## Other Helper Scripts
-
-* `mike`<br>
-  _Run `mike` via docker_
-* `serve-published`<br>
-  _Serve the published site - i.e. the `gh-pages` branch_
