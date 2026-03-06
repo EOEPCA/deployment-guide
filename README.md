@@ -15,9 +15,9 @@ Releases follow Semantic Versioning with repository tags in the form `eoepca-MAJ
 
 For example, `Release 2.0` is tagged as `eoepca-2.0`.
 
-- `MAJOR`: breaking deployment/script behavior changes.
-- `MINOR`: backward-compatible capabilities or guidance additions.
-- `PATCH`: backward-compatible fixes and clarifications.
+- `MAJOR`: reserved for governance-level exceptional EOEPCA+ release boundaries (for example major architecture transitions or contractual/programmatic phase changes).
+- `MINOR`: new features/use-cases/components that do not meet `MAJOR` criteria.
+- `PATCH`: backward-compatible corrections without capability expansion, including backward-compatible security vulnerability fixes.
 
 The full policy is documented in [docs/release-versioning.md](docs/release-versioning.md).
 

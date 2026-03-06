@@ -15,23 +15,25 @@ Releases follow Semantic Versioning for version semantics, with repository tags 
 
 Human-readable release labels map directly to this tag namespace. For example, `Release 2.0` corresponds to git tag `eoepca-2.0`.
 
-- `MAJOR`: reserved for exceptional release boundaries, typically driven by significant architecture change or contractual/programmatic phasing.<br>
+- `MAJOR`: reserved for governance-level exceptional release boundaries, typically driven by significant architecture change or contractual/programmatic phasing.<br>
   Typical triggers include:
     - Platform architecture transitions that redefine how EOEPCA+ is composed or operated.
     - Contractual/programmatic phase transitions that require a clearly separated release line.
     - Broad migration expectations across multiple Building Blocks and dependent artifacts.
     - Intentional reset of compatibility expectations at EOEPCA+ release level.
 
-- `MINOR`: use for backward-compatible capability growth across the platform release.<br>
+- `MINOR`: default release bucket for non-`PATCH` changes that do not meet `MAJOR` criteria.<br>
   Typical triggers include:
-    - New Building Block coverage, new deployment paths, or new optional features.
-    - Backward-compatible integration of sub-component feature releases.
-    - Material operational improvements that do not require migration.
+    - New Building Blocks, new features/use-cases, or new deployment paths
+    - Integration of sub-component feature releases where `MAJOR` criteria are not met.
+    - Material operational improvements and release rollups outside pure fix-only scope.
+    - Changes that may require limited migration, where architecture/programmatic `MAJOR` criteria are not met.
     - Significant new guidance enabling new supported usage patterns.
 
 - `PATCH`: use for backward-compatible corrections without capability expansion.<br>
   Typical triggers include:
     - Script fixes, reliability/stability fixes, and safe configuration corrections.
+    - Backward-compatible security vulnerability fixes (for example dependency patches, CVE remediations, and hardening with no required migration).
     - Documentation corrections and clarification updates.
     - Backward-compatible sub-component bugfix rollups.
 
@@ -41,9 +43,11 @@ Because this repository is the umbrella release vehicle for EOEPCA+, release num
 
 For routine rollups, use this default rule:
 
-- If release scope introduces new features/use cases/components, the repository release is typically `MINOR`.
-- Else, if release scope is limited to backward-compatible fixes, the repository release is `PATCH`.
+- If release scope is limited to backward-compatible fixes/clarifications, the repository release is `PATCH`.
+- Else, if release scope introduces new features/use cases/components but does not meet `MAJOR` criteria, the repository release is `MINOR`.
 - Escalate to `MAJOR` only when architecture or contractual phasing criteria are met.
+
+Security note: classify vulnerability fixes as `PATCH` when backward-compatible; if mitigation requires broader behavioral change or migration, classify as `MINOR` unless `MAJOR` criteria are met.
 
 This means fixes and features from individual sub-components, notebooks, and tutorials are rolled up into one EOEPCA+ manifest release through this repository tag.
 
