@@ -74,7 +74,7 @@ Documentation is published via Read the Docs.
 7. Verify Read the Docs built the tagged documentation version.
 8. Announce release with links to the tag, docs version, and aligned tutorial material.
 
-## Release Preparation Baseline And Delta
+## Release Preparation
 
 Each release is prepared by establishing a baseline for the composing Building Blocks (BBs), similar to a feature-freeze point.
 
@@ -87,13 +87,3 @@ This process is typically run as a calendar-aligned rollup, with releases target
 Quarterly rollups are typically expected to result in a `MINOR` release, reflecting the addition of new features, new use cases, and potentially new components.
 
 The right is reserved to issue `PATCH` releases between quarterly rollups when backward-compatible fixes are needed.
-
-## Compatibility Guidance
-
-As part of the baseline-to-baseline delta assessment, document compatibility impact explicitly:
-
-- Required migration actions.
-- State/configuration key changes (`~/.eoepca/state`).
-- Any ordering or dependency changes between Building Blocks.
-
-If migration effort is non-trivial, treat the change as `MAJOR` and include a dedicated migration section in the changelog.
