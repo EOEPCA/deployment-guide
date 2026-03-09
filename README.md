@@ -9,7 +9,7 @@ This repository contains two related deliverables that are released together:
 
 A tagged release in this repository represents a consistent version of both.
 
-## Release Versioning
+## Release Strategy
 
 Releases follow Semantic Versioning with repository tags in the form `eoepca-MAJOR.MINOR` (optionally `eoepca-MAJOR.MINOR.PATCH`).
 
@@ -19,8 +19,8 @@ For example, `Release 2.0` is tagged as `eoepca-2.0`.
 - `MINOR`: new features/use-cases/components that do not meet `MAJOR` criteria.
 - `PATCH`: backward-compatible corrections without capability expansion, including backward-compatible security vulnerability fixes.
 
-The full policy is documented in [docs/release-versioning.md](docs/release-versioning.md).
-
+The full policy is documented in [docs/release-strategy.md](docs/release-strategy.md).
+  
 ## Documentation Publication
 
 The guide is written in Markdown and rendered through [`mkdocs`](https://www.mkdocs.org/), with site configuration in `mkdocs.yml`.
