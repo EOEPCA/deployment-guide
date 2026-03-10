@@ -1,6 +1,6 @@
 # Release Strategy
 
-This repository release represents an EOEPCA+ manifest release and is validated as a coherent set across:
+EOEPCA+ is formally released via the Deployment Guide, which baselines a set of Building Blocks versions that are validated as a coherent integration. The release baselines the following artifacts:
 
 - Deployment Guide:
     - `docs/`: deployment guidance published via Read the Docs.
@@ -13,7 +13,7 @@ For each tagged release, these artifacts are expected to describe and validate t
 
 ## Versioning Numbering
 
-The versioning numbering approach is described in the [EOEPCA+ Organisation README](https://github.com/EOEPCA#version-numbering).
+The versioning numbering approach is described in the [EOEPCA+ Release Strategy](https://github.com/EOEPCA/.github/blob/main/profile/RELEASE-STRATEGY.md#version-numbering).
 
 ## Source of Truth
 
@@ -31,7 +31,7 @@ Documentation is published via Read the Docs.
 
 ## Release Process (Recommended)
 
-The release cycle is described in the [EOEPCA+ Organisation README](https://github.com/EOEPCA#release-cycle).
+The release cycle is described in the [EOEPCA+ Release Strategy](https://github.com/EOEPCA/.github/blob/main/profile/RELEASE-STRATEGY.md#release-cycle).
 
 Such releases are prepared and published with the following recommended steps:
 
