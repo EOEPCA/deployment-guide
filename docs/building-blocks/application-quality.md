@@ -37,7 +37,7 @@ Before deploying the Application Quality Building Block, ensure you have the fol
 | Helm             | Version 3.5 or newer                   | [Installation Guide](https://helm.sh/docs/intro/install/)                                           |
 | kubectl          | Configured for cluster access          | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)                                       |
 | OIDC Provider             | An OIDC Provider must be available              | [Deployment Guide](../building-blocks/iam/main-iam.md)                                                                                          |
-| APISIX Ingress Controller | Installed and configured for OIDC | [APISIX Ingress Guide](../prerequisites/apisix-ingress.md)                                         |
+| APISIX Ingress Controller | Installed and configured for OIDC | [APISIX Ingress Guide](../prerequisites/ingress/apisix.md)                                         |
 | TLS Certificates | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)                                   |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
 
