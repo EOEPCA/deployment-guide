@@ -10,7 +10,7 @@ The Kubernetes `Gateway` API provides a way to manage external L4/L7 access to s
 
 The approach illustrates the following topology, which can be adapted to other ingress controllers or multiple ingress controllers as required:
 
-> As for the [APISIX Ingress](../apisix-ingress.md) approach, we assume use of NodePorts `31080/31443` for the Gateway to expose its services externally.
+> As for the [APISIX Ingress](./apisix.md) approach, we assume use of NodePorts `31080/31443` for the Gateway to expose its services externally.
 
 ```
 Internet

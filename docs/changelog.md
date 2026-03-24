@@ -1,6 +1,6 @@
 # Changelog
 
-For release numbering and lifecycle policy, see [Release Versioning](release-versioning.md).
+For release numbering and lifecycle policy, see [Release Strategy](release-strategy.md).
 
 ## Release 2.0
 

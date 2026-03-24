@@ -20,7 +20,7 @@ Before deploying, ensure your environment meets these requirements:
 | Ingress | Properly installed | [Installation Guide](../prerequisites/ingress/overview.md) |
 | Cert Manager | Properly installed | [Installation Guide](../prerequisites/tls.md) |
 | OIDC Provider | Required for authentication | [Installation Guide](./iam/main-iam.md) |
-| STAC Catalogue | Required for data access | [eoAPI Deployment](./data-access/eoapi.md) |
+| STAC Catalogue | Required for data access | [eoAPI Deployment](./data-access.md) |
 
 **Clone the Deployment Guide Repository:**
 ```bash
