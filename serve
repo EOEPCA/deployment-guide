@@ -10,11 +10,10 @@ onExit() {
 
 trap onExit EXIT
 
-docker build -t eoepca/mkdocs-material .
+docker build -t eoepca/zensical .
 
-exec docker run --name mkdocs-serve --rm -it \
+exec docker run --name zensical-serve --rm -it \
   -p 8000:8000 \
   -v ${PWD}:/docs \
-  eoepca/mkdocs-material \
-  serve --dev-addr 0.0.0.0:8000 \
-  --livereload
+  eoepca/zensical \
+  serve --dev-addr 0.0.0.0:8000

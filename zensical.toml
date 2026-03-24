@@ -1,0 +1,145 @@
+# ============================================================================
+# Zensical configuration for EOEPCA Deployment Guide
+# Migrated from mkdocs.yml
+# See https://zensical.org/docs/ for documentation
+# ============================================================================
+
+[project]
+
+site_name = "EOEPCA Deployment Guide"
+site_url = "https://eoepca.readthedocs.io/projects/deploy/en/latest/"
+repo_url = "https://github.com/EOEPCA/deployment-guide"
+repo_name = "EOEPCA/deployment-guide"
+edit_uri = "edit/main/docs/"
+
+extra_css = ["css/eoepca.css"]
+
+nav = [
+  {"EOEPCA+ Deployment" = [
+    {"Introduction" = "index.md"},
+    {"Changelog" = "changelog.md"},
+    {"Release Strategy" = "release-strategy.md"},
+    {"Deployments" = [
+      {"EOEPCA+ Prerequisites" = "deployments/eoepca-prerequisites.md"},
+      {"Building Blocks" = "deployments/building-blocks.md"}
+    ]}
+  ]},
+  {"EOEPCA+ Prerequisites" = [
+    {"Overview" = "prerequisites/prerequisites-overview.md"},
+    {"Kubernetes Requirements" = "prerequisites/kubernetes.md"},
+    {"Storage Requirements" = "prerequisites/storage.md"},
+    {"Ingress Setup" = [
+      {"Overview" = "prerequisites/ingress/overview.md"},
+      {"APISIX Ingress" = "prerequisites/ingress/apisix.md"},
+      {"Nginx Ingress" = "prerequisites/ingress/nginx.md"},
+      {"Ingress Gateway" = "prerequisites/ingress/gateway.md"}
+    ]},
+    {"TLS Management" = "prerequisites/tls.md"},
+    {"Optional Components" = [
+      {"Crossplane" = "prerequisites/crossplane.md"},
+      {"S3 Storage (MinIO)" = "prerequisites/minio.md"},
+      {"Container Registry" = "prerequisites/container-registry.md"}
+    ]},
+    {"Application Deployment →" = "prerequisites/application-deployment.md"}
+  ]},
+  {"Building Blocks" = [
+    {"Deployment Overview" = "building-blocks/overview.md"},
+    {"Identity & Access (IAM)" = [
+      {"Deployment" = "building-blocks/iam/main-iam.md"},
+      {"Client Administration" = "building-blocks/iam/client-management.md"},
+      {"Advanced Configuration" = "building-blocks/iam/advanced-iam.md"}
+    ]},
+    {"Data" = [
+      {"Resource Discovery" = "building-blocks/resource-discovery.md"},
+      {"Resource Registration" = "building-blocks/resource-registration.md"},
+      {"Data Access" = "building-blocks/data-access.md"},
+      {"Datacube Access" = "building-blocks/datacube-access.md"},
+      {"Data Gateway" = "building-blocks/data-gateway.md"}
+    ]},
+    {"Processing & Analysis" = [
+      {"Processing" = [
+        {"Overview" = "building-blocks/processing.md"},
+        {"OGC API Processes" = "building-blocks/oapip-engine.md"},
+        {"openEO Geotrellis" = "building-blocks/openeo-geotrellis.md"},
+        {"openEO Argo Workflows (Dask)" = "building-blocks/openeo-argo.md"}
+      ]},
+      {"MLOps" = "building-blocks/mlops.md"}
+    ]},
+    {"User Environments" = [
+      {"Workspace" = "building-blocks/workspace.md"},
+      {"Application Hub" = "building-blocks/application-hub.md"}
+    ]},
+    {"Platform Monitoring & Quality" = [
+      {"Resource Health" = "building-blocks/resource-health.md"},
+      {"Application Quality" = "building-blocks/application-quality.md"}
+    ]}
+  ]},
+  {"Further EOEPCA+ Documentation" = "https://eoepca.readthedocs.io/"}
+]
+
+# ----------------------------------------------------------------------------
+# Theme configuration
+# ----------------------------------------------------------------------------
+[project.theme]
+
+# Use the classic variant to preserve Material for MkDocs look and feel
+variant = "classic"
+
+custom_dir = "overrides"
+logo = "img/favicon.ico"
+favicon = "img/favicon.ico"
+language = "en"
+
+features = [
+    "navigation.footer",
+    "navigation.instant",
+    "navigation.tracking",
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.sections",
+    "navigation.top",
+    "content.code.copy",
+    "content.action.edit",
+]
+
+# ----------------------------------------------------------------------------
+# Markdown extensions
+# The following includes the zensical defaults plus extensions from mkdocs.yml
+# ----------------------------------------------------------------------------
+[project.markdown_extensions.tables]
+[project.markdown_extensions.toc]
+permalink = "⚓︎"
+toc_depth = 4
+[project.markdown_extensions.smarty]
+[project.markdown_extensions.sane_lists]
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+[project.markdown_extensions.pymdownx.betterem]
+smart_enable = "all"
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.details]
+[project.markdown_extensions.pymdownx.emoji]
+emoji_generator = "zensical.extensions.emoji.to_svg"
+emoji_index = "zensical.extensions.emoji.twemoji"
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.keys]
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.smartsymbols]
+[project.markdown_extensions.pymdownx.superfences]
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+[project.markdown_extensions.pymdownx.tilde]
+[project.markdown_extensions.pymdownx.snippets]
+auto_append = ["includes/abbreviations.md"]

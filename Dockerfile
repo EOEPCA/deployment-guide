@@ -1,5 +1,3 @@
-FROM squidfunk/mkdocs-material
+FROM zensical/zensical
 COPY ./docs/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -U -r /tmp/requirements.txt \
-  && rm /tmp/requirements.txt
-RUN git config --global --add safe.directory /docs
+RUN pip install --no-cache-dir -U -r /tmp/requirements.txt
