@@ -1,6 +1,6 @@
 # EOEPCA+ Security Scanner Deployment Guide (Trivy)
 
-Running a security scanner is important for vulnerability management in an EOEPCA deployment, allowing you to detect when new vulnerabilities are published for both EOEPCA-published and third-party software artefacts present in your cluster. You can then take action such as updating image versions in your Helm configuration files. This is important even for freshly installed deployments as, whilst we will endeavour to update this guide to avoid vulnerable versions at each EOEPCA release, we do not do so in between releases.
+Running a security scanner is important for vulnerability management in an EOEPCA deployment, allowing you to detect when new vulnerabilities are published for both EOEPCA-published and third-party software artefacts present in your cluster. You can then take action such as updating image versions in your Helm configuration files. This is important even for freshly installed deployments as, whilst we will endeavour to update this guide and default image tags in our Helm charts to avoid vulnerable versions at each EOEPCA release, we do not do so in between releases.
 
 Security scanners can also assess your Kubernetes configuration. This guide aims to achieve a baseline level of good security configuration, but a scanner will help ensure that your cluster and your custom modifications meet your particiular security goals and policies.
 
@@ -138,7 +138,7 @@ kubectl get clustercompliancereports -o wide
 kubectl get clusterconfigauditreports -o wide
 kubectl get clusterinfraassessmentreports -o wide
 kubectl get clusterrbacassessmentreports -o wide
-kubectl get clustersbomreports -o wide 
+kubectl get clustersbomreports -o wide
 kubectl get clustervulnerabilityreports -o wide
 kubectl get exposedsecretreports -A -o wide
 kubectl get infraassessmentreports -A -o wide
