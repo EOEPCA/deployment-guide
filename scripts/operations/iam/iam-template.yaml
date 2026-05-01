@@ -1,0 +1,185 @@
+---
+# ================= Grafana client (monitoring) =================
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ getenv "GRAFANA_CLIENT_ID" }}
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  writeConnectionSecretToRef:
+    name: monitoring-oidc
+    namespace: operations
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: {{ getenv "GRAFANA_CLIENT_ID" }}
+    accessType: CONFIDENTIAL
+    clientId: {{ getenv "GRAFANA_CLIENT_ID" }}
+    enabled: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    fullScopeAllowed: true
+    serviceAccountsEnabled: false
+    useRefreshTokens: true
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://monitoring.{{ getenv "INGRESS_HOST" }}
+    validRedirectUris:
+      - {{ getenv "HTTP_SCHEME" }}://monitoring.{{ getenv "INGRESS_HOST" }}/login/generic_oauth
+    validPostLogoutRedirectUris:
+      - {{ getenv "HTTP_SCHEME" }}://monitoring.{{ getenv "INGRESS_HOST" }}/
+      - {{ getenv "HTTP_SCHEME" }}://monitoring.{{ getenv "INGRESS_HOST" }}/login
+    webOrigins:
+      - {{ getenv "HTTP_SCHEME" }}://monitoring.{{ getenv "INGRESS_HOST" }}
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: grafana-admin
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: grafana_admin
+    description: Admin access for monitoring stack
+    clientIdRef:
+      name: {{ getenv "GRAFANA_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: grafana-editor
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: grafana_editor
+    description: Editor access for monitoring stack
+    clientIdRef:
+      name: {{ getenv "GRAFANA_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: grafana-viewer
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: grafana_viewer
+    description: Viewer access for monitoring stack
+    clientIdRef:
+      name: {{ getenv "GRAFANA_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+# ================= Keep client (alerting) =================
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ getenv "KEEP_CLIENT_ID" }}
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  writeConnectionSecretToRef:
+    name: alerting-oidc
+    namespace: operations
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: {{ getenv "KEEP_CLIENT_ID" }}
+    accessType: CONFIDENTIAL
+    clientId: {{ getenv "KEEP_CLIENT_ID" }}
+    enabled: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    fullScopeAllowed: true
+    serviceAccountsEnabled: false
+    useRefreshTokens: true
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}
+    validRedirectUris:
+      - {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}/oauth2/callback
+    validPostLogoutRedirectUris:
+      - {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}/
+      - {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}/oauth2/*
+    webOrigins:
+      - {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: alerting-keep-admin
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: keep_admin
+    description: Admin access for alerting stack
+    clientIdRef:
+      name: {{ getenv "KEEP_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: alerting-keep-noc
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: keep_noc
+    description: NOC access for alerting stack
+    clientIdRef:
+      name: {{ getenv "KEEP_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: alerting-keep-webhook
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: keep_webhook
+    description: Webhook ingestion access for alerting stack
+    clientIdRef:
+      name: {{ getenv "KEEP_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+apiVersion: client.keycloak.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: alerting-client-roles-groups
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    clientIdRef:
+      name: {{ getenv "KEEP_CLIENT_ID" }}
+      policy:
+        resolution: Required
+    realmId: {{ getenv "REALM" }}
+    protocol: openid-connect
+    protocolMapper: oidc-usermodel-client-role-mapper
+    name: alerting-client-roles-groups
+    config:
+      "access.token.claim": "true"
+      "id.token.claim": "true"
+      "userinfo.token.claim": "true"
+      "multivalued": "true"
+      "claim.name": "groups"
+      "jsonType.label": "String"
+      "usermodel.clientRoleMapping.clientId": "{{ getenv "KEEP_CLIENT_ID" }}"

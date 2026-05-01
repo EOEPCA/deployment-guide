@@ -71,7 +71,8 @@ nav = [
     ]},
     {"Platform Monitoring & Quality" = [
       {"Resource Health" = "building-blocks/resource-health.md"},
-      {"Application Quality" = "building-blocks/application-quality.md"}
+      {"Application Quality" = "building-blocks/application-quality.md"},
+      {"Operations" = "building-blocks/operations.md"}
     ]}
   ]},
   {"Further EOEPCA+ Documentation" = "https://eoepca.readthedocs.io/"}

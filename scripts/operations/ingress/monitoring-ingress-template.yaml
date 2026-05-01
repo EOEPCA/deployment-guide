@@ -1,0 +1,49 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: monitoring
+  namespace: operations
+spec:
+  ingressClassName: apisix
+  http:
+    - name: grafana
+      match:
+        hosts:
+          - monitoring.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /
+          - /*
+      backends:
+        - serviceName: kube-prometheus-stack-grafana
+          servicePort: 80
+{{- if eq (getenv "HTTP_SCHEME") "https" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: monitoring
+  namespace: operations
+spec:
+  dnsNames:
+    - monitoring.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: monitoring-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: monitoring
+  namespace: operations
+spec:
+  hosts:
+    - monitoring.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: monitoring-tls
+    namespace: operations
+{{- end }}

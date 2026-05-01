@@ -1,0 +1,48 @@
+backend:
+  env:
+{{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+    - name: AUTH_TYPE
+      value: OAUTH2PROXY
+    - name: KEEP_OAUTH2_PROXY_USER_HEADER
+      value: x-forwarded-email
+    - name: KEEP_OAUTH2_PROXY_ROLE_HEADER
+      value: x-forwarded-groups
+    - name: KEEP_OAUTH2_PROXY_AUTO_CREATE_USER
+      value: "true"
+    - name: KEEP_OAUTH2_PROXY_ADMIN_ROLES
+      value: keep_admin
+    - name: KEEP_OAUTH2_PROXY_NOC_ROLES
+      value: keep_noc
+    - name: KEEP_OAUTH2_PROXY_WEBHOOK_ROLES
+      value: keep_webhook
+{{- else }}
+    - name: AUTH_TYPE
+      value: NO_AUTH
+{{- end }}
+  envFromSecret: keep-auth-secrets
+
+frontend:
+  env:
+    - name: NEXTAUTH_URL
+      value: {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}
+    - name: NEXTAUTH_URL_INTERNAL
+      value: http://keep-frontend.operations.svc.cluster.local:3000
+    - name: API_URL_CLIENT
+      value: /v2
+    - name: API_URL
+      value: http://keep-backend.operations.svc.cluster.local:8080
+{{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+    - name: AUTH_TYPE
+      value: OAUTH2PROXY
+    - name: KEEP_OAUTH2_PROXY_USER_HEADER
+      value: x-forwarded-email
+    - name: KEEP_OAUTH2_PROXY_ROLE_HEADER
+      value: x-forwarded-groups
+{{- else }}
+    - name: AUTH_TYPE
+      value: NO_AUTH
+{{- end }}
+
+global:
+  ingress:
+    enabled: false

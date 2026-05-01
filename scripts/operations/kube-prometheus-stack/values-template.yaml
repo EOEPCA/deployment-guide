@@ -1,0 +1,89 @@
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: false
+{{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+  envValueFrom:
+    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+      secretKeyRef:
+        name: monitoring-oidc
+        key: attribute.client_secret
+  grafana.ini:
+    server:
+      root_url: "{{ getenv "HTTP_SCHEME" }}://monitoring.{{ getenv "INGRESS_HOST" }}/"
+    auth:
+      disable_login_form: true
+      oauth_auto_login: false
+    auth.basic:
+      enabled: false
+    auth.generic_oauth:
+      enabled: true
+      name: Login EOEPCA
+      allow_sign_up: true
+      client_id: {{ getenv "GRAFANA_CLIENT_ID" }}
+      client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
+      scopes: openid email profile offline_access roles
+      auth_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
+      token_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+      api_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
+      signout_redirect_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/logout?post_logout_redirect_uri={{ getenv "HTTP_SCHEME" }}%3A%2F%2Fmonitoring.{{ getenv "INGRESS_HOST" }}%2Flogin
+      login_attribute_path: preferred_username
+      name_attribute_path: name
+      email_attribute_path: email
+      role_attribute_path: contains(resource_access.{{ getenv "GRAFANA_CLIENT_ID" }}.roles[*], 'grafana_admin') && 'GrafanaAdmin' || contains(resource_access.{{ getenv "GRAFANA_CLIENT_ID" }}.roles[*], 'grafana_editor') && 'Editor' || contains(resource_access.{{ getenv "GRAFANA_CLIENT_ID" }}.roles[*], 'grafana_viewer') && 'Viewer'
+      allow_assign_grafana_admin: true
+      role_attribute_strict: true
+      use_refresh_token: true
+      tls_skip_verify_insecure: false
+{{- end }}
+  additionalDataSources:
+    - name: Loki
+      uid: loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway.operations.svc.cluster.local
+      isDefault: false
+      jsonData:
+        httpMethod: GET
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: operations
+
+defaultRules:
+  create: false
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    alertmanagerConfigMatcherStrategy:
+      type: None
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: {{ getenv "PROMETHEUS_RETENTION" }}
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: {{ getenv "PROMETHEUS_STORAGE_SIZE" }}
+
+prometheusAgent:
+  enabled: false
+
+thanosRuler:
+  enabled: false
+
+prometheus-node-exporter:
+  hostPort:
+    enabled: false
+
+prometheusOperator:
+  scrapeConfig:
+    enabled: false

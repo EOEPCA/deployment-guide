@@ -57,3 +57,4 @@ buckets:
   - name: mlopbb-sharinghub
   - name: openeo-geotrellis-data
   - name: cluster-storage
+  - name: logging

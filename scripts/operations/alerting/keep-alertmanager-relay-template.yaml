@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keep-alertmanager-relay-config
+  namespace: operations
+data:
+  nginx.conf: |
+    events {}
+    http {
+      server {
+        listen 8080;
+
+        location = /alerts/event/prometheus {
+          proxy_pass http://keep-backend.operations.svc.cluster.local:8080;
+        {{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+          proxy_set_header X-Forwarded-Email webhook@alertmanager;
+          proxy_set_header X-Forwarded-Groups keep_webhook;
+        {{- else }}
+          proxy_set_header x-api-key "alertmanager-webhook";
+        {{- end }}
+          proxy_set_header Cookie "";
+          proxy_http_version 1.1;
+        }
+
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keep-alertmanager-relay
+  namespace: operations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keep-alertmanager-relay
+  template:
+    metadata:
+      labels:
+        app: keep-alertmanager-relay
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: config
+          configMap:
+            name: keep-alertmanager-relay-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keep-alertmanager-relay
+  namespace: operations
+spec:
+  selector:
+    app: keep-alertmanager-relay
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

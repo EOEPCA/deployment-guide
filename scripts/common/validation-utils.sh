@@ -145,3 +145,10 @@ function check_secret_exists() {
     fi
 }
 
+check_crd_exists() {
+  if kubectl get crd "$1" >/dev/null 2>&1; then
+    echo "✅ CRD '$1' exists."
+  else
+    echo "❌ CRD '$1' missing."
+  fi
+}

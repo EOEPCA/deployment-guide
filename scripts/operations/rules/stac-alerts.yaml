@@ -1,0 +1,183 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: stac-alerts
+  namespace: operations
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: STAC_Latency_Error_Rate_Recording
+      rules:
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="request", route="data-access_stac_stac-route", http_method="GET", le="500.0"}[1h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="request", route="data-access_stac_stac-route", http_method="GET"}[1h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_get_latency_500ms_burn_rate_1h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="request", route="data-access_stac_stac-route", http_method="POST", le="500.0"}[1h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="request", route="data-access_stac_stac-route", http_method="POST"}[1h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_post_latency_500ms_burn_rate_1h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="request", route="data-access_stac_stac-route", http_method="GET", le="500.0"}[6h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="request", route="data-access_stac_stac-route", http_method="GET"}[6h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_get_latency_500ms_burn_rate_6h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="request", route="data-access_stac_stac-route", http_method="POST", le="500.0"}[6h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="request", route="data-access_stac_stac-route", http_method="POST"}[6h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_post_latency_500ms_burn_rate_6h
+    - name: STAC_Application_Latency_Correlation
+      rules:
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="upstream", route="data-access_stac_stac-route", http_method="GET", le="500.0"}[1h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="upstream", route="data-access_stac_stac-route", http_method="GET"}[1h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_app_latency_500ms_burn_rate_1h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="upstream", route="data-access_stac_stac-route", http_method="POST", le="500.0"}[1h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="upstream", route="data-access_stac_stac-route", http_method="POST"}[1h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_app_latency_500ms_burn_rate_1h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="upstream", route="data-access_stac_stac-route", http_method="GET", le="500.0"}[6h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="upstream", route="data-access_stac_stac-route", http_method="GET"}[6h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_app_latency_500ms_burn_rate_6h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="upstream", route="data-access_stac_stac-route", http_method="POST", le="500.0"}[6h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="upstream", route="data-access_stac_stac-route", http_method="POST"}[6h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_app_latency_500ms_burn_rate_6h
+    - name: STAC_Gateway_Latency_Correlation
+      rules:
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="apisix", route="data-access_stac_stac-route", http_method="GET", le="500.0"}[1h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="apisix", route="data-access_stac_stac-route", http_method="GET"}[1h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_gateway_latency_500ms_burn_rate_1h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="apisix", route="data-access_stac_stac-route", http_method="POST", le="500.0"}[1h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="apisix", route="data-access_stac_stac-route", http_method="POST"}[1h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_gateway_latency_500ms_burn_rate_1h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="apisix", route="data-access_stac_stac-route", http_method="GET", le="500.0"}[6h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="apisix", route="data-access_stac_stac-route", http_method="GET"}[6h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_gateway_latency_500ms_burn_rate_6h
+        - expr: |
+            (
+              1 - (
+                sum by (route) (rate(apisix_http_latency_bucket{type="apisix", route="data-access_stac_stac-route", http_method="POST", le="500.0"}[6h]))
+                /
+                sum by (route) (rate(apisix_http_latency_count{type="apisix", route="data-access_stac_stac-route", http_method="POST"}[6h]))
+              )
+            ) / 0.01
+          labels:
+            namespace: ingress-apisix
+          record: stac_gateway_latency_500ms_burn_rate_6h
+    - name: STAC_DB_Latency_Correlation
+      rules:
+        - expr: avg(ccp_pg_stat_statements_total_mean_exec_time_ms{dbname="eoapi", role="eoapi"})
+          record: stac_db_mean_latency_ms
+    - name: STAC_SLOs_Warning
+      rules:
+        - alert: STACGetLatencyBudgetBurn_Warning
+          annotations:
+            summary: STAC GET requests have a sustained high latency.
+          expr: |
+            stac_get_latency_500ms_burn_rate_6h > 6 unless stac_get_latency_500ms_burn_rate_1h > 14.4
+          for: 30m
+          labels:
+            severity: warning
+        - alert: STACPostLatencyBudgetBurn_Warning
+          annotations:
+            summary: STAC POST requests have a sustained high latency.
+          expr: |
+            stac_post_latency_500ms_burn_rate_6h > 6 unless stac_post_latency_500ms_burn_rate_1h > 14.4
+          for: 30m
+          labels:
+            severity: warning
+    - name: STAC_SLOs_Critical
+      rules:
+        - alert: STACGetLatencyBudgetBurn_Critical
+          annotations:
+            summary: STAC GET requests are burning their latency error budget.
+          expr: stac_get_latency_500ms_burn_rate_1h > 14.4
+          labels:
+            severity: critical
+        - alert: STACPostLatencyBudgetBurn_Critical
+          annotations:
+            summary: STAC POST requests are burning their latency error budget.
+          expr: stac_post_latency_500ms_burn_rate_1h > 14.4
+          labels:
+            severity: critical

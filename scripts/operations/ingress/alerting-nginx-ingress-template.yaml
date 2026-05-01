@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alerting
+  namespace: operations
+  annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  rules:
+    - host: alerting.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: keep-oauth2-proxy
+                port:
+                  number: 80
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
+  tls:
+    - hosts:
+        - alerting.{{ getenv "INGRESS_HOST" }}
+      secretName: alerting-tls
+  {{- end }}

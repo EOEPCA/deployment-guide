@@ -1,0 +1,196 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: baseline-alerts
+  namespace: operations
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: baseline.monitoring
+      rules:
+        - alert: Watchdog
+          expr: vector(1)
+          labels:
+            severity: none
+          annotations:
+            summary: Watchdog alert for the monitoring pipeline.
+        - alert: PrometheusTargetMissing
+          expr: |
+            100 * (
+              count by (job, namespace, service) (up == 0)
+              /
+              count by (job, namespace, service) (up)
+            ) > 10
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A Prometheus target has been missing for 15 minutes.
+        - alert: PrometheusNotIngestingSamples
+          expr: rate(prometheus_tsdb_head_samples_appended_total[5m]) < 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: Prometheus is ingesting unusually few samples.
+        - alert: PrometheusRuleFailures
+          expr: increase(prometheus_rule_evaluation_failures_total[15m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Prometheus rule evaluation is failing.
+        - alert: KubeClientErrors
+          expr: |
+            (
+              sum by (job, instance) (rate(rest_client_requests_total{code=~"5.."}[5m]))
+              /
+              sum by (job, instance) (rate(rest_client_requests_total[5m]))
+            ) > 0.01
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: Kubernetes client requests are returning too many 5xx responses.
+    - name: baseline.nodes
+      rules:
+        - alert: NodeDown
+          expr: up{job=~".*node-exporter.*"} == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: A node exporter target is down.
+        - alert: NodeFilesystemAlmostOutOfSpace
+          expr: |
+            (
+              node_filesystem_avail_bytes{
+                fstype!~"tmpfs|overlay|nsfs|squashfs",
+                mountpoint!~"/run.*|/var/lib/kubelet/pods/.+"
+              }
+              /
+              node_filesystem_size_bytes{
+                fstype!~"tmpfs|overlay|nsfs|squashfs",
+                mountpoint!~"/run.*|/var/lib/kubelet/pods/.+"
+              }
+            ) < 0.10
+            and
+            node_filesystem_readonly{
+              fstype!~"tmpfs|overlay|nsfs|squashfs",
+              mountpoint!~"/run.*|/var/lib/kubelet/pods/.+"
+            } == 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A node filesystem has less than 10% free space remaining.
+        - alert: NodeFilesystemFilesFillingUp
+          expr: |
+            (
+              node_filesystem_files_free{
+                fstype!~"tmpfs|overlay|nsfs|squashfs",
+                mountpoint!~"/run.*|/var/lib/kubelet/pods/.+"
+              }
+              /
+              node_filesystem_files{
+                fstype!~"tmpfs|overlay|nsfs|squashfs",
+                mountpoint!~"/run.*|/var/lib/kubelet/pods/.+"
+              }
+            ) < 0.10
+            and
+            node_filesystem_readonly{
+              fstype!~"tmpfs|overlay|nsfs|squashfs",
+              mountpoint!~"/run.*|/var/lib/kubelet/pods/.+"
+            } == 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A node filesystem has less than 10% free inodes remaining.
+        - alert: NodeMemoryPressure
+          expr: kube_node_status_condition{condition="MemoryPressure", status="true"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: A node is reporting memory pressure.
+        - alert: NodeDiskPressure
+          expr: kube_node_status_condition{condition="DiskPressure", status="true"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: A node is reporting disk pressure.
+    - name: baseline.workloads
+      rules:
+        - alert: KubePodCrashLooping
+          expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}[15m]) >= 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: A pod is crash looping.
+        - alert: KubePodNotReady
+          expr: kube_pod_status_ready{condition="false"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A pod has not been ready for 15 minutes.
+        - alert: KubeDeploymentReplicasMismatch
+          expr: kube_deployment_spec_replicas > kube_deployment_status_replicas_available
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A deployment does not have the expected number of available replicas.
+        - alert: KubeStatefulSetReplicasMismatch
+          expr: kube_statefulset_replicas > kube_statefulset_status_replicas_ready
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A StatefulSet does not have the expected number of ready replicas.
+        - alert: KubeJobFailed
+          expr: kube_job_status_failed > 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A Kubernetes Job has failed.
+        - alert: ContainerRestartHigh
+          expr: increase(kube_pod_container_status_restarts_total[1h]) > 3
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A container is restarting frequently.
+    - name: baseline.storage
+      rules:
+        - alert: PersistentVolumeUsageHigh
+          expr: |
+            (
+              kubelet_volume_stats_available_bytes
+              /
+              kubelet_volume_stats_capacity_bytes
+            ) < 0.15
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: A persistent volume has less than 15% free space remaining.
+        - alert: PersistentVolumeAlmostFull
+          expr: |
+            (
+              kubelet_volume_stats_available_bytes
+              /
+              kubelet_volume_stats_capacity_bytes
+            ) < 0.05
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: A persistent volume has less than 5% free space remaining.

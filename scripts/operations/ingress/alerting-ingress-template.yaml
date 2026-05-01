@@ -1,0 +1,91 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: alerting
+  namespace: operations
+spec:
+  ingressClassName: apisix
+  http:
+    - name: keep-backend
+      match:
+        hosts:
+          - alerting.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /v2/*
+      backends:
+{{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+        - serviceName: keep-oauth2-proxy
+          servicePort: 80
+{{- else }}
+        - serviceName: keep-backend
+          servicePort: 8080
+{{- end }}
+      plugins:
+        - name: prometheus
+          enable: true
+{{- if ne (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+        - name: proxy-rewrite
+          enable: true
+          config:
+            regex_uri: ["^/v2/(.*)", "/$1"]
+{{- end }}
+    - name: keep-websocket
+      match:
+        hosts:
+          - alerting.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /websocket/*
+      backends:
+{{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+        - serviceName: keep-oauth2-proxy
+          servicePort: 80
+{{- else }}
+        - serviceName: keep-websocket
+          servicePort: 6001
+{{- end }}
+      websocket: true
+    - name: keep-frontend
+      match:
+        hosts:
+          - alerting.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /*
+      backends:
+{{- if eq (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+        - serviceName: keep-oauth2-proxy
+          servicePort: 80
+{{- else }}
+        - serviceName: keep-frontend
+          servicePort: 3000
+{{- end }}
+{{- if eq (getenv "HTTP_SCHEME") "https" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alerting
+  namespace: operations
+spec:
+  dnsNames:
+    - alerting.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: alerting-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: alerting
+  namespace: operations
+spec:
+  hosts:
+    - alerting.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: alerting-tls
+    namespace: operations
+{{- end }}

@@ -1,0 +1,78 @@
+proxyVarsAsSecrets: false
+config:
+  requiredSecretKeys: []
+  emailDomains:
+    - "*"
+  cookieName: keep
+
+alphaConfig:
+  enabled: true
+  configData:
+    providers:
+      - id: alerting
+        provider: keycloak-oidc
+        clientID: ${OAUTH2_PROXY_CLIENT_ID}
+        clientSecret: ${OAUTH2_PROXY_CLIENT_SECRET}
+        allowedGroups:
+          - keep_admin
+          - keep_noc
+        oidcConfig:
+          issuerURL: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
+        scope: openid email profile roles
+    upstreamConfig:
+      upstreams:
+        - id: backend
+          path: /v2/
+          uri: http://keep-backend.operations.svc.cluster.local:8080
+          rewriteTarget: /
+          passHostHeader: true
+        - id: websocket
+          path: /websocket/
+          uri: http://keep-websocket.operations.svc.cluster.local:6001
+          rewriteTarget: /
+          passHostHeader: true
+          proxyWebSockets: true
+        - id: frontend
+          path: /
+          uri: http://keep-frontend.operations.svc.cluster.local:3000
+          passHostHeader: true
+    injectRequestHeaders:
+      - name: X-Forwarded-Email
+        values:
+          - claimSource:
+              claim: email
+      - name: X-Forwarded-Groups
+        values:
+          - claimSource:
+              claim: groups
+
+extraArgs:
+  redirect-url: {{ getenv "HTTP_SCHEME" }}://alerting.{{ getenv "INGRESS_HOST" }}/oauth2/callback
+  cookie-secure: "{{ if eq (getenv "HTTP_SCHEME") "https" }}true{{ else }}false{{ end }}"
+  session-cookie-minimal: "true"
+  reverse-proxy: "true"
+  skip-provider-button: "true"
+
+extraEnv:
+  - name: OAUTH2_PROXY_CLIENT_ID
+    value: {{ getenv "KEEP_CLIENT_ID" }}
+  - name: OAUTH2_PROXY_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: alerting-oidc
+        key: attribute.client_secret
+  - name: OAUTH2_PROXY_COOKIE_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keep-oauth2-proxy-cookie
+        key: cookie-secret
+
+service:
+  type: ClusterIP
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: kube-prometheus-stack
