@@ -290,12 +290,13 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
 
 **With IAM disabled:** Grafana uses local admin auth. Retrieve the chart-generated credentials with:
 
-​```bash
+```bash
 kubectl -n operations get secret kube-prometheus-stack-grafana \
   -o jsonpath='{.data.admin-user}' | base64 -d; echo
+
 kubectl -n operations get secret kube-prometheus-stack-grafana \
   -o jsonpath='{.data.admin-password}' | base64 -d; echo
-​```
+```
 
 Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated.
 
