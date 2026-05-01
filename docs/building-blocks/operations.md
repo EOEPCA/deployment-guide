@@ -300,8 +300,6 @@ kubectl -n operations get secret kube-prometheus-stack-grafana \
 
 Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated.
 
-> ⚠️ **Warning:** With IAM disabled, Keep is wide open and Grafana is protected only by a chart-generated password. This mode is intended for local or development clusters. Do not deploy IAM-disabled Operations on a public cluster.
-
 ---
 
 ## Testing and Validation
