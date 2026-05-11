@@ -1,0 +1,46 @@
+serving:
+  install: false
+eventing:
+  install: false
+{{- if eq ( getenv "NA_ENABLE_OIDC" ) "yes" }}
+  authenticationOidc: true
+{{- else }}
+  authenticationOidc: false
+{{- end }}
+
+webhookSource:
+  enabled: true
+  secrets:
+    create: true
+    githubSecret: "{{ getenv "NA_GITHUB_WEBHOOK_SECRET" }}"
+  sinkBinding:
+    create: true
+
+cloudEventsPlayer:
+  enabled: true
+  subscribeBroker:
+    enabled: true
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  ingress:
+    enabled: true
+    className: apisix
+    host: cloudevents-player.na.notifications.{{ getenv "INGRESS_HOST" }}
+    tls:
+      enabled: true
+      secretName: notifications-wildcard-tls
+{{- end }}
+
+emailer:
+{{- if eq ( getenv "NA_ENABLE_EMAILER" ) "yes" }}
+  install: true
+  config:
+    emailFrom: "{{ getenv "NA_EMAIL_FROM" }}"
+    emailTo: "{{ getenv "NA_EMAIL_TO" }}"
+    yagmailHost: "{{ getenv "NA_SMTP_HOST" }}"
+    yagmailPort: "{{ getenv "NA_SMTP_PORT" }}"
+    yagmailUser: "{{ getenv "NA_SMTP_USER" }}"
+    yagmailPassword: "{{ getenv "NA_SMTP_PASSWORD" }}"
+    yagmailSmtpStarttls: "{{ getenv "NA_SMTP_STARTTLS" }}"
+{{- else }}
+  install: false
+{{- end }}

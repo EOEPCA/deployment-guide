@@ -69,9 +69,10 @@ nav = [
       {"Workspace" = "building-blocks/workspace.md"},
       {"Application Hub" = "building-blocks/application-hub.md"}
     ]},
-    {"Platform Monitoring & Quality" = [
+    {"Platform Operations" = [
       {"Resource Health" = "building-blocks/resource-health.md"},
       {"Application Quality" = "building-blocks/application-quality.md"},
+      {"Notification & Automation" = "building-blocks/notification-automation.md"},
       {"Operations" = "building-blocks/operations.md"}
     ]}
   ]},

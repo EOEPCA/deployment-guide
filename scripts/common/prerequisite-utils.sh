@@ -362,3 +362,31 @@ function run_validation() {
         echo "❌ There are $errors errors in the prerequisites. Please fix them before proceeding."
     fi
 }
+
+function check_kubernetes_version() {
+    local required_version="${KUBERNETES_MIN_VERSION:-1.32.0}"
+
+    if ! command -v kubectl >/dev/null 2>&1; then
+        echo "❌ kubectl is not installed - cannot check Kubernetes version."
+        return 1
+    fi
+
+    # Get server version - format like "v1.31.1+k3s1"
+    local server_version
+    server_version=$(kubectl version -o json 2>/dev/null | grep -Eo '"gitVersion":\s*"v[0-9]+\.[0-9]+\.[0-9]+[^"]*"' | head -n2 | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
+
+    if [ -z "$server_version" ]; then
+        echo "⚠️  Could not determine Kubernetes server version."
+        echo "   Ensure your kubeconfig is configured and the cluster is reachable."
+        return 1
+    fi
+
+    if [ "$(printf '%s\n' "$required_version" "$server_version" | sort -V | head -n1)" = "$required_version" ]; then
+        echo "✅ Kubernetes server version $server_version meets the requirement (>= $required_version)."
+        return 0
+    else
+        echo "❌ Kubernetes server version $server_version is less than required version $required_version."
+        echo "   Please upgrade your cluster to use this Building Block."
+        return 1
+    fi
+}

@@ -5,21 +5,22 @@ metadata:
   namespace: knative-serving
 spec:
   http:
-  - name: knative-serving-default
-    match:
-      hosts:
-        - "*.notifications.{{ getenv "INGRESS_HOST" }}"
-        - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
-        - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
-        - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
-      paths:
-        - "/*"
-    backends:
-    - serviceName: kourier
-      servicePort: 80
-    plugins:
-      - name: cors
-        enable: true
+    - name: knative-serving-default
+      match:
+        hosts:
+          - "*.notifications.{{ getenv "INGRESS_HOST" }}"
+          - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
+          - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
+          - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
+          - "*.na.notifications.{{ getenv "INGRESS_HOST" }}"
+        paths:
+          - "/*"
+      backends:
+        - serviceName: kourier
+          servicePort: 80
+      plugins:
+        - name: cors
+          enable: true
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: cert-manager.io/v1
@@ -30,7 +31,10 @@ metadata:
 spec:
   dnsNames:
     - "*.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"  # Add this
+    - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.na.notifications.{{ getenv "INGRESS_HOST" }}"
   issuerRef:
     kind: ClusterIssuer
     name: {{ getenv "CLUSTER_ISSUER" }}
@@ -44,6 +48,10 @@ metadata:
 spec:
   hosts:
     - "*.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
+    - "*.na.notifications.{{ getenv "INGRESS_HOST" }}"
   secret:
     name: notifications-wildcard-tls
     namespace: knative-serving

@@ -2,11 +2,12 @@
 
 source ../common/utils.sh
 source ../common/prerequisite-utils.sh
-echo "🔍 Checking prerequisites for Notification & Automation deployment..."
+echo "Checking prerequisites for Notification and Automation deployment..."
 
 declare -a checks=(
     "check_kubernetes_access"
     "check_kubectl_installed"
+    "check_kubernetes_version"
     "check_helm_installed"
     "check_cert_manager_installed"
     "check_ingress_controller_installed"

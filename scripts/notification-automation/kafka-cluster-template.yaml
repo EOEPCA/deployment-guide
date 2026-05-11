@@ -1,0 +1,34 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: kafka-cluster
+  namespace: notifications
+spec:
+  kafka:
+    version: 3.7.0
+    replicas: {{ getenv "NA_KAFKA_REPLICAS" }}
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: {{ getenv "NA_KAFKA_VOLUME_SIZE" }}
+          deleteClaim: false
+  zookeeper:
+    replicas: {{ getenv "NA_KAFKA_REPLICAS" }}
+    storage:
+      type: persistent-claim
+      size: {{ getenv "NA_KAFKA_VOLUME_SIZE" }}
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
