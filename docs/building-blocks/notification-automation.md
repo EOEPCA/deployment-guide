@@ -25,6 +25,8 @@ The BB deploys the following:
 | kubectl      | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)  |
 | Ingress      | APISIX installed              | [Installation Guide](../prerequisites/ingress/overview.md)     |
 | Cert Manager | Installed and working         | [Installation Guide](../prerequisites/tls.md)                  |
+| DNS-01 ClusterIssuer | Required for wildcard TLS on Knative services | — |
+
 
 A note on ingress: only APISIX is wired up by the templates in this BB. NGINX is on the roadmap but not supported yet. The configure script will warn you if `INGRESS_CLASS` is set to anything other than `apisix`.
 
@@ -53,6 +55,7 @@ You will be prompted for:
 
 - `INGRESS_HOST`: base domain for ingress hosts (e.g. `example.com`)
 - `CLUSTER_ISSUER`: cert-manager ClusterIssuer used for TLS (e.g. `letsencrypt-http01-apisix`)
+- `DNS_CLUSTER_ISSUER`: Required for wildcard TLS on Knative services
 - `NA_ENABLE_OIDC`: whether to turn on OIDC authentication for eventing resources (defaults to no)
 - `NA_ENABLE_EMAILER`: whether to deploy the emailer sink (defaults to no)
 - SMTP settings if the emailer is enabled
@@ -114,7 +117,6 @@ Then apply the cluster:
 
 ```bash
 kubectl apply -f generated-kafka-cluster.yaml
-kubectl wait --for=condition=Ready kafka/kafka-cluster -n notifications --timeout=600s
 ```
 
 Wiring Kafka in as the channel layer for Knative Eventing needs the Knative Kafka extension configured against this cluster. That is out of scope here, see the Knative Kafka docs in further reading.
@@ -125,15 +127,13 @@ Wiring Kafka in as the channel layer for Knative Eventing needs the Knative Kafk
 bash validation.sh
 ```
 
-This checks Knative Serving, Knative Eventing, Kourier and the BB Helm release are all in a good state.
-
 ## Usage
 
-A few worked examples to confirm things are working end to end.
+A few worked examples to confirm things are working end to end, and to show the main patterns for building automations on top of the BB.
 
 ### Deploy a simple function
 
-This deploys the standard Knative `helloworld-go` sample as a public function. It is useful for confirming routing and TLS work before you add anything more complicated. Note this image is publicly accessible from `gcr.io` and will not work on clusters with image pull restrictions.
+This deploys the standard Knative `helloworld-go` sample as a public function. Useful for confirming routing and TLS work before adding anything more complicated.
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -153,15 +153,11 @@ spec:
 EOF
 ```
 
-Check it came up:
+Check it came up and hit it:
 
 ```bash
 kubectl get ksvc -n notifications
-```
 
-Hit it (note the double `notifications` in the host, that is Knative's `service.namespace.domain` pattern):
-
-```bash
 source ~/.eoepca/state
 curl https://hello-function.notifications.notifications.${INGRESS_HOST}
 ```
@@ -178,83 +174,136 @@ metadata:
   name: primary
   namespace: notifications
 EOF
-```
 
-```bash
 kubectl get brokers -n notifications
 ```
 
-We deliberately omit `spec.config` here. Knative will use the cluster default channel (in-memory by default), which is enough for testing. If you want a durable broker, point it at a Kafka channel once you have Kafka set up.
+We deliberately omit `spec.config`. Knative will use the cluster default channel (in-memory by default), which is enough for testing. For a durable broker, point it at a Kafka channel once Kafka is set up.
 
-### Event-driven processing
+## Writing automations
 
-This deploys a function that consumes events and a trigger that wires it to the broker. Replace the image with your own to actually process anything useful.
+You have two routes for the actual automation code:
 
-```yaml
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: event-processor
-  namespace: notifications
-spec:
-  template:
-    spec:
-      containers:
-        - image: your-registry/event-processor:latest
-          env:
-            - name: LOG_LEVEL
-              value: "info"
----
+- **`func` CLI** - the Knative Functions tool. Gives you a boilerplate project with CloudEvents wiring already done, and handles the build-and-push step for you. Good for getting going quickly without thinking about containers.
+- **Plain Knative Serving** - write a FastAPI (or any HTTP) service, build the container yourself, deploy as a `Service`. More control, no extra framework to learn.
+
+Both end up as Knative Services and both work with the same triggers, brokers and sources. The walkthrough below uses `func`. If you go the FastAPI route, skip to the trigger section once your service is deployed.
+
+### Install the func CLI
+
+Download from the [Knative Functions releases page](https://github.com/knative/func/releases) and put the binary on your `PATH`. On Linux amd64:
+
+```bash
+curl -L -o /tmp/func https://github.com/knative/func/releases/latest/download/func_linux_amd64
+chmod +x /tmp/func
+sudo mv /tmp/func /usr/local/bin/func
+func version
+```
+
+> **Apple Silicon note:** building functions locally on an M-series Mac produces ARM64 container images that won't run on an x86_64 cluster. Either build remotely (`func deploy --remote`) or use a build host that matches your cluster architecture.
+
+### Create a function
+
+`func create` scaffolds a project from a template. For an event-driven automation, use the `cloudevents` template:
+
+```bash
+func create -l python -t cloudevents demo-fn
+cd demo-fn
+```
+
+The handler lives in `function/func.py` - an async `handle(scope, receive, send)` method on a `Function` class, plus a module-level `new()` that returns an instance. The scaffold also includes optional `start`, `stop`, `alive` and `ready` hooks. Delete what you don't need.
+
+### Deploy it
+
+```bash
+func deploy --registry docker.io/YOUR-REGISTRY --build --namespace notifications
+```
+
+First build is slow - Buildpacks downloads layers. Subsequent builds are quick. When it finishes you have a Knative Service:
+
+```bash
+kubectl get ksvc -n notifications
+```
+
+By default each function gets a public endpoint. To make it cluster-local only, add the label `networking.knative.dev/visibility=cluster-local` to the service. Safer default for automations that should only respond to internal events.
+
+### Wire it to events with a Trigger
+
+Triggers route events from a broker to a subscriber. This one only fires for events of type `org.eoepca.demo.hello`:
+
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
-  name: process-stac-events
+  name: demo-fn-hello
   namespace: notifications
 spec:
   broker: primary
   filter:
     attributes:
-      type: org.eoapi.stac.item
+      type: org.eoepca.demo.hello
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: event-processor
-      namespace: notifications
+      name: demo-fn
+EOF
 ```
 
-The trigger only forwards events with `type: org.eoapi.stac.item`. Other event types pass through untouched.
+Events with other types pass through this trigger untouched (other triggers can still match them).
 
-### Inspect events with the CloudEvents player
+> **Avoid self-triggering loops.** If your function emits a CloudEvent in response and the trigger has no filter, the response flows back through the broker, matches the trigger, fires the function again, ad infinitum. Either filter on `type` (as above) so the function's own response type doesn't match, or have the function return without sending a response.
 
-The chart deploys a CloudEvents player that subscribes to the broker and shows incoming events in a web UI. If you enabled HTTPS during configuration it is exposed at:
+### See it working
 
+Grab the broker's internal URL:
+
+```bash
+BROKER_URL=$(kubectl get broker primary -n notifications -o jsonpath='{.status.address.url}')
+echo "$BROKER_URL"
 ```
-https://cloudevents-player.na.notifications.${INGRESS_HOST}
+
+Post a CloudEvent. The `Ce-*` headers are how CloudEvents are encoded over HTTP in binary mode. The broker URL is cluster-internal, so we run curl from inside a pod:
+
+```bash
+kubectl run curl-test --rm -i --tty --restart=Never --namespace=notifications \
+  --image=curlimages/curl:latest -- \
+  curl -v "$BROKER_URL" \
+    -H "Ce-Id: test-1" \
+    -H "Ce-Specversion: 1.0" \
+    -H "Ce-Type: org.eoepca.demo.hello" \
+    -H "Ce-Source: manual-test" \
+    -H "Content-Type: application/json" \
+    -d '{"message": "hello from the test"}'
 ```
 
-Useful for sanity checking your event sources without writing a custom subscriber.
+A `202 Accepted` means the broker took the event. The trigger forwards it to `demo-fn`, which Knative scales up from zero if needed.
+
+Tail the function logs:
+
+```bash
+kubectl logs -n notifications -l serving.knative.dev/service=demo-fn -c user-container --tail=50 -f
+```
+
+You should see one `Request Received` line per test event. If you see a flood of them, the function is looping on its own responses - delete the trigger, switch to a filtered one as above, or remove the response from `func.py`.
 
 ## Uninstall
 
 ```bash
 helm uninstall notification-automation -n notifications
 
-kubectl delete -f generated-apisix-route.yaml
-kubectl delete -f generated-knative.yaml
+kubectl delete -f generated-apisix-route.yaml 2>/dev/null || true
+kubectl delete -f generated-knative.yaml 2>/dev/null || true
 
-helm uninstall knative-operator -n knative-operator
+helm uninstall knative-operator -n knative-operator 2>/dev/null || true
 
-# If you deployed Kafka
+# If Kafka was deployed
 kubectl delete -f generated-kafka-cluster.yaml 2>/dev/null || true
 helm uninstall strimzi-cluster-operator -n strimzi-system 2>/dev/null || true
 
 # Namespaces
-kubectl delete namespace notifications
-kubectl delete namespace knative-serving
-kubectl delete namespace knative-eventing
-kubectl delete namespace knative-operator
-kubectl delete namespace kourier-system
+kubectl delete namespace notifications knative-serving knative-eventing knative-operator kourier-system 2>/dev/null || true
 kubectl delete namespace strimzi-system 2>/dev/null || true
 ```
 

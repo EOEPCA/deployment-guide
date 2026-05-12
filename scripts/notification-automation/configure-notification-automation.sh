@@ -4,6 +4,7 @@ source ../common/utils.sh
 echo "Configuring the Notification and Automation Building Block..."
 
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
+ask "DNS_CLUSTER_ISSUER" "Cert-manager ClusterIssuer supporting DNS-01 (needed for wildcard certs)" "letsencrypt-dns01"
 configure_cert
 
 # IAM toggle
