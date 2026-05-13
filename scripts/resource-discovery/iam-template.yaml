@@ -1,0 +1,67 @@
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: resource-catalogue
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: eoepca
+    name: resource-catalogue
+    accessType: PUBLIC
+    clientId: resource-catalogue
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    directAccessGrantsEnabled: false
+    fullScopeAllowed: false
+    serviceAccountsEnabled: false
+    oauth2DeviceAuthorizationGrantEnabled: true
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}
+    webOrigins:
+      - {{ getenv "HTTP_SCHEME" }}://resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}
+    validRedirectUris:
+      - {{ getenv "HTTP_SCHEME" }}://resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}/*
+---
+apiVersion: role.keycloak.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: records-editor
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: eoepca
+    name: records_editor
+    clientIdRef:
+      name: resource-catalogue
+      policy:
+        resolution: Required
+---
+apiVersion: group.keycloak.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: resource-catalogue-admin
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: eoepca
+    name: resource-catalogue-admin
+---
+apiVersion: group.keycloak.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: resource-catalogue-admin
+spec:
+  providerConfigRef:
+    name: iam-keycloak-keycloak-provider-config
+  forProvider:
+    realmId: eoepca
+    groupIdRef:
+      name: resource-catalogue-admin
+      policy:
+        resolution: Required
+    roleIdsRefs:
+      - name: records-editor
+        policy:
+          resolution: Required

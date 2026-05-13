@@ -1,16 +1,40 @@
 global:
   namespace: resource-discovery
+
 ingress:
   enabled: false
+
 db:
+  enabled: true
   volume_storageclass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   volume_access_modes: ReadWriteOnce
+
 pycsw:
+  image:
+    repository: geopython/pycsw
+    tag: "eoepca-staging"
+    pullPolicy: Always
+  replicas: 1
   config:
     server:
-      url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}
+      url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/
+    federatedcatalogues:
+      - id: fedcat01
+        type: OARec
+        title: WIS2 discovery metadata
+        url: https://wis2-gdc.weather.gc.ca/collections/wis2-discovery-metadata
+      - id: fedcat02
+        type: STAC-API
+        title: Copernicus Data Space Ecosystem (CDSE) asset-level STAC catalogue
+        url: https://stac.dataspace.copernicus.eu/v1
+        collections:
+          - ccm-sar
+      - id: arctic-sdi-csw
+        type: CSW
+        title: Arctic SDI
+        url: https://catalogue.arctic-sdi.org/csw
     manager:
-      transactions: "true"
+      transactions: "false"
       allowed_ips:
         - '"*"'
     metadata:
@@ -18,9 +42,9 @@ pycsw:
         title: EOEPCA+ Resource Catalogue
         description: EOEPCA+ Resource Catalogue
         keywords:
-            - EOEPCA+
-            - Earth observation
-            - discovery
+          - EOEPCA+
+          - Earth observation
+          - discovery
         license:
           name: CC-BY 4.0 license
           url: https://creativecommons.org/licenses/by/4.0
@@ -32,4 +56,4 @@ pycsw:
         url: https://eoepca.org/
     repository:
       facets:
-          - type
+        - type

@@ -4,6 +4,7 @@ metadata:
   name: resource-catalogue
   namespace: resource-discovery
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   http:
     - name: resource-catalogue
       match:
@@ -15,7 +16,6 @@ spec:
         - serviceName: resource-catalogue-service
           servicePort: 80
       plugins:
-        # Allow CORS access
         - name: cors
           enable: true
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}

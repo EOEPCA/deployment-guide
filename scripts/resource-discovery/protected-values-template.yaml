@@ -1,0 +1,54 @@
+global:
+  namespace: resource-discovery
+
+ingress:
+  enabled: false
+
+# The protected catalogue shares the same chart-managed database created by the
+# public catalogue release. Do not deploy a second database.
+db:
+  enabled: false
+
+external_db:
+  host: resource-catalogue-db.resource-discovery.svc
+  port: 5432
+  database: pycsw
+  auth:
+    secret_name: resource-catalogue-db-secret
+
+pycsw:
+  name: pycsw-protected
+  service_name: resource-catalogue-protected-service
+  configmap_name: resource-catalogue-protected-configmap
+  image:
+    repository: geopython/pycsw
+    tag: "eoepca-staging"
+    pullPolicy: Always
+  replicas: 1
+  config:
+    server:
+      url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}/
+    manager:
+      transactions: "true"
+      allowed_ips:
+        - '"*"'
+    metadata:
+      identification:
+        title: EOEPCA+ Protected Resource Catalogue
+        description: EOEPCA+ Protected Resource Catalogue
+        keywords:
+          - EOEPCA+
+          - Earth observation
+          - discovery
+        license:
+          name: CC-BY 4.0 license
+          url: https://creativecommons.org/licenses/by/4.0
+        keywords_type: theme
+        terms_of_service: https://creativecommons.org/licenses/by/4.0
+        url: https://eoepca.org
+      provider:
+        name: EOEPCA+
+        url: https://eoepca.org/
+    repository:
+      facets:
+        - type

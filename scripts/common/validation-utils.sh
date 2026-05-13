@@ -52,17 +52,19 @@ function check_service_exists() {
 function check_url_status_code() {
     local url="$1"
     local expected_code="$2"
+    local basic_auth=""
+    local curl_redirect=""
 
-    if [ -n "${CHECK_USER}" -a -n "${CHECK_PASSWORD}" ]; then
-        BASIC_AUTH="-u ${CHECK_USER}:${CHECK_PASSWORD}"
+    if [ -n "${CHECK_USER:-}" ] && [ -n "${CHECK_PASSWORD:-}" ]; then
+        basic_auth="-u ${CHECK_USER}:${CHECK_PASSWORD}"
     fi
 
-    if [ -z "${CHECK_URL_NO_REDIRECT}" ]; then
-        CURL_REDIRECT="-L"
+    if [ -z "${CHECK_URL_NO_REDIRECT:-}" ]; then
+        curl_redirect="-L"
     fi
 
     local actual_code
-    actual_code=$(curl ${BASIC_AUTH} ${CURL_REDIRECT} -k -s -o /dev/null -w "%{http_code}" "$url")
+    actual_code=$(curl ${basic_auth} ${curl_redirect} -k -s -o /dev/null -w "%{http_code}" "$url")
 
     if [ "$actual_code" -eq "$expected_code" ]; then
         echo "✅ URL '$url' returned expected HTTP status code $expected_code."

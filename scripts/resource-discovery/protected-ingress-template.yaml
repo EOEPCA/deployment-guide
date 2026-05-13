@@ -1,0 +1,94 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: resource-catalogue-protected
+  namespace: resource-discovery
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  http:
+    - name: resource-catalogue-protected-public
+      match:
+        hosts:
+          - resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /static*
+          - /conformance*
+      backends:
+        - serviceName: resource-catalogue-protected-service
+          servicePort: 80
+      plugins:
+        - name: proxy-rewrite
+          enable: true
+          config:
+            headers:
+              Cookie: ""
+        - name: cors
+          enable: true
+
+    - name: resource-catalogue-protected
+      match:
+        hosts:
+          - resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /*
+      backends:
+        - serviceName: resource-catalogue-protected-service
+          servicePort: 80
+      plugins:
+        - name: openid-connect
+          enable: true
+          config:
+            discovery: "{{ getenv "HTTP_SCHEME" }}://iam-auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/openid-configuration"
+            use_jwks: true
+            bearer_only: false
+            set_access_token_header: true
+            access_token_in_authorization_header: true
+            set_id_token_header: false
+            set_userinfo_header: false
+            client_id: resource-catalogue
+            client_secret: ""
+            session:
+              secret: "{{ getenv "RESOURCE_CATALOGUE_SESSION_SECRET" "change-me-resource-catalogue" }}"
+        - name: opa
+          enable: true
+          config:
+            host: http://iam-opa.iam:8181
+            policy: eoepca/resourceregistration/registrationapi
+        - name: proxy-rewrite
+          enable: true
+          config:
+            headers:
+              Cookie: ""
+        - name: cors
+          enable: true
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: resource-catalogue-protected
+  namespace: resource-discovery
+spec:
+  dnsNames:
+    - resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ getenv "CLUSTER_ISSUER" }}
+  secretName: resource-catalogue-protected-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: resource-catalogue-protected
+  namespace: resource-discovery
+spec:
+  hosts:
+    - resource-catalogue-protected.{{ getenv "INGRESS_HOST" }}
+  secret:
+    name: resource-catalogue-protected-tls
+    namespace: resource-discovery
+{{- end }}

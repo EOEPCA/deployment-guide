@@ -67,40 +67,97 @@ bash configure-resource-discovery.sh
 During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.  
-    - *Example*: `example.com`
-- **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.  
-    - *Example*: `letsencrypt-http01-apisix`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.  
-    - *Example*: `standard`
+    - Example: `example.com`
+- **`INGRESS_CLASS`**: Ingress controller to use.  
+    - Supported values: `apisix`, `nginx`
+- **`HTTP_SCHEME`**: Public scheme used by the ingress endpoints.  
+    - Supported values: `http`, `https`
+- **`CLUSTER_ISSUER`**: Cert-manager ClusterIssuer for TLS certificates. Required when using HTTPS.  
+    - Example: `letsencrypt-http01-apisix`
+- **`PERSISTENT_STORAGECLASS`**: Storage class for the chart-managed PostgreSQL volume.  
+    - Example: `local-path`
+- **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue. the EOEPCA IAM building block must already be deployed.
+    - Supported values: `yes`, `no`
 
+When `RESOURCE_DISCOVERY_ENABLE_IAM=yes`, Resource Discovery deploys a second protected catalogue endpoint:
+The protected endpoint currently requires APISIX because it uses APISIX `openid-connect` and `opa` plugins. If using nginx, configure `RESOURCE_DISCOVERY_ENABLE_IAM=no`.
+
+`resource-catalogue-protected.${INGRESS_HOST}`
 
 2. **Deploy Resource Discovery Using Helm**
 
+Add the EOEPCA development Helm chart repository and deploy the public Resource Discovery catalogue:
+
 ```bash
-helm repo add eoepca https://eoepca.github.io/helm-charts
-helm repo update eoepca
-helm upgrade -i resource-discovery eoepca/rm-resource-catalogue \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+helm repo update eoepca-dev
+
+helm upgrade -i resource-catalogue eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 2.0.0 \
+  --version 2.1.0-dev1 \
   --namespace resource-discovery \
   --create-namespace
 ```
 
-Deploy the ingress for the Resource Discovery service:
+Deploy the public ingress:
 
 ```bash
 kubectl apply -f generated-ingress.yaml
 ```
 
-Before proceeding - wait for the Resource Catalogue to be ready...
+If IAM support was enabled during configuration, deploy the IAM resources and the protected catalogue:
+
+```bash
+source ~/.eoepca/state
+
+if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
+  kubectl apply -f generated-iam.yaml
+
+  helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
+    --values generated-protected-values.yaml \
+    --version 2.1.0-dev1 \
+    --namespace resource-discovery \
+    --create-namespace
+
+  kubectl apply -f generated-protected-ingress.yaml
+fi
+```
+
+Before proceeding, wait for Resource Discovery to be ready:
 
 ```bash
 while ! kubectl wait --for=condition=Ready --all=true -n resource-discovery pod --timeout=1m &>/dev/null; do
   sleep 10
-  echo "Waiting for Resource Catalogue readiness"
+  echo "Waiting for Resource Discovery readiness"
 done
-echo -e "\nResource Catalogue is READY"
+
+echo -e "\nResource Discovery is READY"
 ```
+
+Note: applying `generated-iam.yaml` before the protected Helm install is fine. The protected route can exist before the Keycloak client is reconciled, but login may fail until IAM reconciliation completes.
+
+
+### Protected Transactional Catalogue
+
+The default public catalogue is intended for discovery. Transactional writes are disabled on the public endpoint.
+
+When `RESOURCE_DISCOVERY_ENABLE_IAM=yes`, a second catalogue is deployed at:
+
+`https://resource-catalogue-protected.${INGRESS_HOST}`
+
+This protected catalogue enables pycsw transactions and is routed through APISIX using:
+
+- OpenID Connect authentication against the EOEPCA IAM realm
+- OPA policy checks using the Resource Registration policy
+- a Keycloak client named `resource-catalogue`
+- a Keycloak group named `resource-catalogue-admin`
+- a client role named `records_editor`
+
+Users who need to perform protected catalogue operations must be assigned to the appropriate IAM group/role.
+
+For minimal non-IAM deployments, use the public catalogue only:
+
+`https://resource-catalogue.${INGRESS_HOST}`
 
 ---
 
@@ -120,7 +177,7 @@ Most Resource Discovery endpoints can be accessed directly in a browser:
 
 ```bash
 source ~/.eoepca/state
-xdg-open "https://resource-catalogue.${INGRESS_HOST}/"
+xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/"
 ```
 You should see an HTML landing page or a minimal JSON response with links to the various endpoints.
 
@@ -128,7 +185,7 @@ You should see an HTML landing page or a minimal JSON response with links to the
 
 ```bash
 source ~/.eoepca/state
-xdg-open "https://resource-catalogue.${INGRESS_HOST}/openapi?f=html"
+xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/openapi?f=html"
 ```  
 Opens a human-friendly UI showing available endpoints and interactive documentation.  
 
@@ -136,7 +193,7 @@ Opens a human-friendly UI showing available endpoints and interactive documentat
 
 ```bash
 source ~/.eoepca/state
-xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections"
+xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections"
 ```  
 
 Should return a JSON or HTML response listing available collections.
@@ -145,7 +202,7 @@ Should return a JSON or HTML response listing available collections.
 
 ```bash
 source ~/.eoepca/state
-xdg-open "https://resource-catalogue.${INGRESS_HOST}/conformance"
+xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/conformance"
 ```  
 Confirms which OGC API conformance classes and standards are supported by the server.
 
@@ -162,13 +219,13 @@ We recommend executing `source ~/.eoepca/state` to load the environment variable
 _Returns response headers only..._
 
 ```bash
-curl -s -D - -o /dev/null "https://resource-catalogue.${INGRESS_HOST}/"
+curl -s -D - -o /dev/null "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/"
 ```
 
 #### 3.2. Testing OGC CSW
 
 ```bash
-curl "https://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&request=GetCapabilities"
+curl "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&request=GetCapabilities"
 ```
 
 - A successful response should be an XML Capabilities document containing service metadata.  
@@ -176,7 +233,7 @@ curl "https://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&r
 #### 3.3. Testing STAC API
 
 ```bash
-curl -s "https://resource-catalogue.${INGRESS_HOST}/stac" | jq
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/stac" | jq
 ```
 
 - You should see a JSON object containing STAC-related metadata, including a list of links to collections and search endpoints.
@@ -184,7 +241,7 @@ curl -s "https://resource-catalogue.${INGRESS_HOST}/stac" | jq
 #### 3.4. Searching STAC Items
 
 ```bash
-curl -X POST "https://resource-catalogue.${INGRESS_HOST}/stac/search" \
+curl -X POST "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/stac/search" \
    --silent --show-error \
   -H "Content-Type: application/json" \
   -d @- <<EOF | jq
@@ -199,9 +256,13 @@ EOF
 You should receive a JSON response listing zero or more STAC items that match the query. If you have not yet ingested any items, you may get an empty result array (`"features": []`).  
 
 
-### 4. Ingesting Sample Records
+### 4. Optional Smoke Test: Loading a Sample Record Internally
 
-For a quick demonstration, we can ingest a sample record into the catalogue - directly via its service pod.
+This is a smoke test only. It loads a sample record by executing `pycsw-admin.py` inside the catalogue pod, which proves the catalogue and database are functioning.
+
+It is not the recommended operational ingestion path because it bypasses ingress, IAM, API-level validation, and the Resource Registration building block.
+
+For normal record registration, use the Resource Registration building block against the protected Resource Discovery endpoint when IAM is enabled.
 
 > See the [Resource Registration BB](./resource-registration.md), which is the preferred means to ingest records in a production environment.
     
@@ -240,7 +301,7 @@ kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
     
     ```
     source ~/.eoepca/state
-    xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items"
+    xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items"
     ```
     
     Confirm that the newly ingested record (titled `EOEPCA Sample Record`) appears in the search results.
@@ -264,13 +325,48 @@ kubectl get pods -n resource-discovery
 
 ---
 
-## Uninstallation
+### Protected Catalogue Validation
 
-To uninstall the Resource Discovery Building Block and clean up associated resources:
+If IAM support was enabled, verify that the protected public metadata endpoint is reachable:
 
 ```bash
-kubectl delete -f generated-ingress.yaml
-helm uninstall resource-discovery -n resource-discovery
+source ~/.eoepca/state
+
+curl -s -D - -o /dev/null \
+  "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/conformance"
+```
+
+This should return HTTP 200.
+
+The protected catalogue root should redirect unauthenticated users to IAM:
+
+```bash
+curl -s -D - -o /dev/null \
+  "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/"
+```
+
+This should return a redirect response, usually HTTP 302.
+
+To use protected transactional operations, authenticate through IAM with a user assigned to the resource-catalogue-admin group / records_editor role.
+
+---
+
+## Uninstallation
+
+To uninstall Resource Discovery and clean up associated resources:
+
+```bash
+source ~/.eoepca/state
+
+kubectl delete -f generated-ingress.yaml --ignore-not-found
+
+if [ "${RESOURCE_DISCOVERY_ENABLE_IAM:-no}" = "yes" ]; then
+  kubectl delete -f generated-protected-ingress.yaml --ignore-not-found
+  kubectl delete -f generated-iam.yaml --ignore-not-found
+  helm uninstall resource-catalogue-protected -n resource-discovery || true
+fi
+
+helm uninstall resource-catalogue -n resource-discovery || true
 
 kubectl delete namespace resource-discovery
 ```
