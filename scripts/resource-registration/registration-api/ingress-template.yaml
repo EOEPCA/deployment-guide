@@ -1,9 +1,11 @@
+{{- if eq (getenv "INGRESS_CLASS") "apisix" }}
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
   name: registration-api
   namespace: resource-registration
 spec:
+  ingressClassName: apisix
   http:
   - name: registration-api
     match:
@@ -18,30 +20,30 @@ spec:
       - name: cors
         enable: true
 {{- if eq (getenv "RESOURCE_REGISTRATION_ENABLE_OIDC") "yes" }}
-      # Authn - expect JWT in `Authorization: Bearer` header
       - name: openid-connect
         enable: true
         config:
           client_id: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}"
           client_secret: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" }}"
-          discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/openid-configuration"
-          realm: eoepca
+          session:
+            secret: "{{ getenv "RESOURCE_REGISTRATION_APISIX_SESSION_SECRET" }}"
+          discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+          realm: "{{ getenv "REALM" }}"
           use_jwks: true
-          bearer_only: false # as we want to redirect to login screen (default: false)
-          set_access_token_header: true  # (default: true)
-          access_token_in_authorization_header: true  # (default: false)
-      # Authz
+          bearer_only: false
+          set_access_token_header: true
+          access_token_in_authorization_header: true
       - name: authz-keycloak
         enable: true
         config:
           client_id: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}"
           client_secret: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" }}"
-          discovery: "https://auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/uma2-configuration"
+          discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
           lazy_load_paths: true
           ssl_verify: false
 {{- end }}
----
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -65,9 +67,41 @@ metadata:
   name: registration-api-tls
   namespace: resource-registration
 spec:
+  ingressClassName: apisix
   hosts:
     - registration-api.{{ getenv "INGRESS_HOST" }}
   secret:
     name: registration-api-tls
     namespace: resource-registration
+{{- end }}
+
+{{- else }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: registration-api
+  namespace: resource-registration
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  rules:
+    - host: registration-api.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: registration-api-service
+                port:
+                  number: 80
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - registration-api.{{ getenv "INGRESS_HOST" }}
+      secretName: registration-api-tls
+  {{- end }}
 {{- end }}

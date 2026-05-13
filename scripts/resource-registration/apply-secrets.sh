@@ -52,11 +52,17 @@ create_secret() {
     kubectl_cmd="$kubectl_cmd --from-literal=CDSE_PASSWORD=\"$CDSE_PASSWORD\""
   fi
 
-  if [[ "$RESOURCE_REGISTRATION_PROTECTED_TARGETS" == "yes" ]]; then
-    kubectl_cmd="$kubectl_cmd --from-literal=IAM_CLIENT_ID=\"$RESOURCE_REGISTRATION_IAM_CLIENT_ID\""
-    kubectl_cmd="$kubectl_cmd --from-literal=IAM_CLIENT_SECRET=\"$RESOURCE_REGISTRATION_IAM_CLIENT_SECRET\""
-  fi
+  if [[ "${RESOURCE_REGISTRATION_PROTECTED_TARGETS:-no}" == "yes" ]]; then
+    if [[ "$secret_name" == "registration-api-secret" ]]; then
+      kubectl_cmd="$kubectl_cmd --from-literal=EOEPCA_REGISTRATION_API_IAM_CLIENT_ID=\"$RESOURCE_REGISTRATION_IAM_CLIENT_ID\""
+      kubectl_cmd="$kubectl_cmd --from-literal=EOEPCA_REGISTRATION_API_IAM_CLIENT_SECRET=\"$RESOURCE_REGISTRATION_IAM_CLIENT_SECRET\""
+    fi
 
+    if [[ "$secret_name" == "registration-harvester-secret" ]]; then
+      kubectl_cmd="$kubectl_cmd --from-literal=IAM_CLIENT_ID=\"$RESOURCE_REGISTRATION_IAM_CLIENT_ID\""
+      kubectl_cmd="$kubectl_cmd --from-literal=IAM_CLIENT_SECRET=\"$RESOURCE_REGISTRATION_IAM_CLIENT_SECRET\""
+    fi
+  fi
   kubectl_cmd="$kubectl_cmd --namespace resource-registration"
   kubectl_cmd="$kubectl_cmd --dry-run=client -o yaml | kubectl apply -f -"
 

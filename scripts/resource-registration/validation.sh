@@ -15,9 +15,16 @@ check_service_exists "resource-registration" "registration-harvester-worker-land
 check_service_exists "resource-registration" "registration-harvester-worker-sentinel-service"
 
 # Check ingress
+if [ "${INGRESS_CLASS:-}" == "apisix" ]; then
+  kubectl -n resource-registration get apisixroute registration-api >/dev/null
+  kubectl -n resource-registration get apisixroute registration-harvester-api >/dev/null
+else
+  kubectl -n resource-registration get ingress registration-api >/dev/null
+  kubectl -n resource-registration get ingress registration-harvester-api >/dev/null
+fi
 #
 # Registration API
-if [ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" ]; then
+if [ "${RESOURCE_REGISTRATION_ENABLE_OIDC:-no}" == "yes" ]; then
     CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "302"
 else
     check_url_status_code "$HTTP_SCHEME://registration-api.$INGRESS_HOST" "200"

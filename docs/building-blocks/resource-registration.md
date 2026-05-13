@@ -85,25 +85,37 @@ During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
+- **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for `Flowable` database.
+    - *Default*: `local-path`
+- **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
+    - *Default*: `standard`
+    > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
     - *Example*: `letsencrypt-http01-apisix`
 - **`FLOWABLE_ADMIN_USER`**: Admin username for Flowable.
     - *Default*: `eoepca`
 - **`FLOWABLE_ADMIN_PASSWORD`**: Admin password for Flowable.
     - *Default*: `eoepca`
-- **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for `Flowable` database.
-    - *Default*: `local-path`
-- **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
-    - *Default*: `standard`
-    > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
+- **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
+    - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
 - **`RESOURCE_REGISTRATION_ENABLE_OIDC`**: Whether the Resource Registration endpoints should be protected via OIDC authentication.
     - *Default*: `yes`
 - **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`**: Whether the Resource Registration target services for resource registration are protected via OIDC authentication. In this case the Resource Registration (API and harvester) must act as OIDC clients to authenticate against these services.
     - *Default*: `yes`
 - **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
     - *Default*: `resource-registration`
-- **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
-    - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
+
+
+Resource Registration supports two ingress modes:
+
+- APISIX supports public and IAM-protected deployments.
+- nginx supports a minimal public deployment only.
+
+OIDC protection for Resource Registration ingress currently uses APISIX openid-connect and authz-keycloak plugins. Therefore `RESOURCE_REGISTRATION_ENABLE_OIDC=yes` is only supported when `INGRESS_CLASS=apisix`.
+
+For nginx deployments, set `RESOURCE_REGISTRATION_ENABLE_OIDC=no`.
+
+`RESOURCE_REGISTRATION_PROTECTED_TARGETS=yes` may still be used with nginx. That setting controls whether Registration API and Harvester authenticate as clients when calling protected downstream services such as Resource Discovery. It does not protect the public Resource Registration ingress.
 
 ### 2. Apply Kubernetes Secrets
 
@@ -139,10 +151,10 @@ The Registration API provides a RESTful interface through which resources can be
 
 Deploy the Registration API using the generated values file:
 ```bash
-helm repo add eoepca https://eoepca.github.io/helm-charts
-helm repo update eoepca
-helm upgrade -i registration-api eoepca/registration-api \
-  --version 2.0.0 \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
+helm repo update eoepca-dev
+helm upgrade -i registration-api eoepca-dev/registration-api \
+  --version 2.1.0-dev2 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -238,8 +250,8 @@ harvester:
 Deploy the worker that executes Landsat harvesting tasks:
 
 ```bash
-helm upgrade -i registration-harvester-worker-landsat eoepca/registration-harvester \
-  --version 2.0.0 \
+helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-harvester \
+  --version 2.0.0-rc3 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-landsat.yaml
@@ -250,8 +262,8 @@ helm upgrade -i registration-harvester-worker-landsat eoepca/registration-harves
 Deploy the worker that harvests Sentinel data from CDSE:
 
 ```bash
-helm upgrade -i registration-harvester-worker-sentinel eoepca/registration-harvester \
-  --version 2.0.0 \
+helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-harvester \
+  --version 2.0.0-rc3 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-sentinel.yaml
@@ -262,11 +274,6 @@ helm upgrade -i registration-harvester-worker-sentinel eoepca/registration-harve
 Check the status of all deployments:
 ```bash
 kubectl get all -n resource-registration
-```
-
-Verify all pods are running:
-```bash
-kubectl get pods -n resource-registration
 ```
 
 ### 6. Create the Keycloak Client for Resource Registration

@@ -6,10 +6,11 @@ ingress:
   enabled: false
 
 pygeoapi:
+  name: pygeoapi
   image:
     repository: eoepca/registration-api
     pullPolicy: Always
-    tag: "2.0.0-rc3"
+    tag: "2.1.0-dev2"
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
   secret:
     name: "registration-api-secret"
@@ -54,6 +55,10 @@ pygeoapi:
         type: process
         processor:
           name: registration_api.processes.registration.DeregisterProcessor
+      pyeomp-record-validate:
+        type: process
+        processor:
+          name: pyeomp.pygeoapi_plugin.EOMPETSProcessor
       hello-world:
         type: process
         processor:

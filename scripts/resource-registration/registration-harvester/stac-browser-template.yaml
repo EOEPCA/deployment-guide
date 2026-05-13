@@ -47,7 +47,9 @@ metadata:
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
+{{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
+{{- end }}
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:

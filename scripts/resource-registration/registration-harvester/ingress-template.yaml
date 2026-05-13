@@ -1,11 +1,12 @@
+{{- if eq (getenv "INGRESS_CLASS") "apisix" }}
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
   name: registration-harvester-api
   namespace: resource-registration
 spec:
+  ingressClassName: apisix
   http:
-    # 1. Redirect to /flowable-rest/
     - name: redirect-root
       match:
         hosts:
@@ -18,11 +19,10 @@ spec:
           enable: true
           config:
             uri: /flowable-rest/
-      backends:  # never hit due to redirect
+      backends:
         - serviceName: registration-harvester-api-engine-flowable-rest
           servicePort: 8080
 
-    # 2. Main service handler
     - name: rewrite-flowable-path
       match:
         hosts:
@@ -57,9 +57,49 @@ metadata:
   name: registration-harvester-api-tls
   namespace: resource-registration
 spec:
+  ingressClassName: apisix
   hosts:
     - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
   secret:
     name: registration-harvester-api-tls
     namespace: resource-registration
+{{- end }}
+
+{{- else }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: registration-harvester-api
+  namespace: resource-registration
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+    nginx.ingress.kubernetes.io/app-root: /flowable-rest/
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  rules:
+    - host: registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: /flowable-rest
+            pathType: Prefix
+            backend:
+              service:
+                name: registration-harvester-api-engine-flowable-rest
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: registration-harvester-api-engine-flowable-rest
+                port:
+                  number: 8080
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+      secretName: registration-harvester-api-tls
+  {{- end }}
 {{- end }}

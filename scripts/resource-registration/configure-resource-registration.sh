@@ -19,11 +19,19 @@ ask "EODATA_ASSET_BASE_URL" "Set the base URL through which harvested 'eodata' a
 #   1. We want to protect the Resource Registration endpoints via OIDC
 #   2. The Resource Registration needs to connect with other services that are protected via OIDC (e.g., resource-catalogue, eoapi)
 ask "RESOURCE_REGISTRATION_ENABLE_OIDC" "Enable OIDC protection for Resource Registration? (yes/no)" "yes" is_yes_no
+
+if [[ "${RESOURCE_REGISTRATION_ENABLE_OIDC:-no}" == "yes" && "${INGRESS_CLASS:-}" != "apisix" ]]; then
+  echo "❌ Resource Registration IAM ingress protection currently requires APISIX."
+  echo "   Requested: RESOURCE_REGISTRATION_ENABLE_OIDC=yes with INGRESS_CLASS=${INGRESS_CLASS:-unset}"
+  echo "   Use APISIX, or set RESOURCE_REGISTRATION_ENABLE_OIDC=no for a minimal nginx deployment."
+  exit 1
+fi
+
 ask "RESOURCE_REGISTRATION_PROTECTED_TARGETS" "Resource Registration support for protected targets? (yes/no)" "yes" is_yes_no
 # If either is yes, we need IAM client credentials
 if [[ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" || "$RESOURCE_REGISTRATION_PROTECTED_TARGETS" == "yes" ]]; then
   ask "RESOURCE_REGISTRATION_IAM_CLIENT_ID" "Enter the IAM Client ID for Resource Registration" "resource-registration" is_non_empty
-  if [ -z "$RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" ]; then
+  if [ -z "${RESOURCE_REGISTRATION_IAM_CLIENT_SECRET:-}" ]; then
       RESOURCE_REGISTRATION_IAM_CLIENT_SECRET=$(generate_aes_key 32)
       add_to_state_file "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" "$RESOURCE_REGISTRATION_IAM_CLIENT_SECRET"
       echo ""
@@ -33,6 +41,14 @@ if [[ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" || "$RESOURCE_REGISTRATION_P
       echo ""
   fi
 fi
+
+if [[ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" ]]; then
+    if [ -z "${RESOURCE_REGISTRATION_APISIX_SESSION_SECRET:-}" ]; then
+    RESOURCE_REGISTRATION_APISIX_SESSION_SECRET=$(generate_aes_key 32)
+    add_to_state_file "RESOURCE_REGISTRATION_APISIX_SESSION_SECRET" "$RESOURCE_REGISTRATION_APISIX_SESSION_SECRET"
+    fi
+fi
+
 
 # Generate configuration files
 gomplate  -f "registration-api/$TEMPLATE_PATH" -o "registration-api/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

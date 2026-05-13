@@ -34,7 +34,7 @@ pycsw:
         title: Arctic SDI
         url: https://catalogue.arctic-sdi.org/csw
     manager:
-      transactions: "false"
+      transactions: "true"
       allowed_ips:
         - '"*"'
     metadata:
