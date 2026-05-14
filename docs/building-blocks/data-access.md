@@ -193,8 +193,9 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.7.12 \
+  --version 0.12.3 \
   --namespace data-access \
+  --create-namespace \
   --values eoapi/generated-values.yaml
 ```
 
@@ -203,20 +204,11 @@ helm upgrade -i eoapi eoapi/eoapi \
 helm repo add stac-manager https://stac-manager.ds.io/
 helm repo update stac-manager
 helm upgrade -i stac-manager stac-manager/stac-manager \
-  --version 0.0.11 \
+  --version 0.0.13 \
   --namespace data-access \
   --values stac-manager/generated-values.yaml
 ```
 
-#### Deploy EOAPI Maps Plugin
-```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
-helm repo update eoepca-dev
-helm upgrade -i eoapi-maps-plugin eoepca-dev/eoapi-maps-plugin \
-  --version 0.0.21 \
-  --namespace data-access \
-  --values eoapi-maps-plugin/generated-values.yaml
-```
 
 #### Configure Ingress/Routes
 
@@ -262,7 +254,8 @@ bash validation.sh
 
 Once deployment is complete:
 
-**Core Services:**
+**Core Services:**:
+
 - **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/`
 - **Raster API:** `https://eoapi.${INGRESS_HOST}/raster/`
 - **Vector API:** `https://eoapi.${INGRESS_HOST}/vector/`
@@ -270,7 +263,8 @@ Once deployment is complete:
 - **STAC Manager UI:** `https://eoapi.${INGRESS_HOST}/manager/`
 - **Maps API:** `https://eoapi.${INGRESS_HOST}/maps/`
 
-**Optional Services:**
+**Optional Services:**:
+
 - **Grafana** (if monitoring enabled): `https://eoapisupport.${INGRESS_HOST}/`
 
 ---

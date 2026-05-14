@@ -29,6 +29,12 @@ fi
 
 # IAM/Keycloak Configuration
 ask "DATA_ACCESS_ENABLE_IAM" "Enable IAM/Keycloak integration? (yes/no)" "no" is_yes_no
+if [ "${DATA_ACCESS_ENABLE_IAM}" = "yes" ] && [ "${INGRESS_CLASS}" != "apisix" ]; then
+    echo "ERROR: Data Access IAM mode is currently supported only with APISIX."
+    echo "nginx can expose the services, but it does not implement the APISIX/STAC auth-proxy routing used by this guide."
+    echo "Set DATA_ACCESS_ENABLE_IAM=no or use INGRESS_CLASS=apisix."
+    exit 1
+fi
 if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty

@@ -156,8 +156,9 @@ spec:
         - $2
       enable: true
   - name: stac-redirect
+    priority: 100
     backends:
-    - serviceName: eoapi-stac
+    - serviceName: {{ if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}eoapi-stac-auth-proxy{{ else }}eoapi-stac{{ end }}
       servicePort: 8080
     match:
       hosts:
@@ -173,122 +174,27 @@ spec:
         uri: /stac/
     - name: cors
       enable: true
-  - name: stac-open-route
+  - name: stac-route
+    priority: 10
     backends:
-    - serviceName: eoapi-stac
-      servicePort: 8080
-    match:
-      hosts:
-        - eoapi.{{ getenv "INGRESS_HOST" }}
-      methods:
-        - GET
-      paths:
-        - /stac/
-        - /stac/api*
-        - /stac/collections
-        - /stac/collections/*
-      exprs:
-      - subject:
-          scope: Path
-          name: uri
-        op: RegexNotMatch
-        value: '^/stac/collections/ws-.*'
-    plugins:
-    - name: proxy-rewrite
-      config:
-        regex_uri:
-        - ^(/stac)($|/.*)
-        - $2
-      enable: true
-    - name: cors
-      enable: true
-  - name: stac-open-search-route
-    backends:
-    - serviceName: eoapi-stac
-      servicePort: 8080
-    match:
-      hosts:
-      - eoapi.{{ getenv "INGRESS_HOST" }}
-      methods:
-      - POST
-      paths:
-      - /stac/search
-    plugins:
-    - name: proxy-rewrite
-      config:
-        regex_uri:
-        - ^(/stac)($|/.*)
-        - $2
-      enable: true
-    - name: cors
-      enable: true
-  - name: stac-protected-route
-    backends:
-    - serviceName: eoapi-stac
+    - serviceName: {{ if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}eoapi-stac-auth-proxy{{ else }}eoapi-stac{{ end }}
       servicePort: 8080
     match:
       hosts:
       - eoapi.{{ getenv "INGRESS_HOST" }}
       paths:
+      - /stac/
       - /stac/*
     plugins:
+    {{- if ne (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
     - name: proxy-rewrite
       config:
         regex_uri:
         - ^(/stac)($|/.*)
         - $2
       enable: true
-    - name: cors
-      enable: true
-    {{- if eq ( getenv "DATA_ACCESS_ENABLE_IAM" ) "yes" }}
-    - name: openid-connect
-      enable: true
-      config:
-        discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-        use_jwks: true
-        bearer_only: false # as we want to redirect to login screen (default: false)
-        set_access_token_header: true # required for subsequent OPA check (default: true)
-        access_token_in_authorization_header: true # required for subsequent OPA check (default: false)
-        set_id_token_header: false # not needed (default: true)
-        set_userinfo_header: false # not needed (default: true)
-        client_id: {{ getenv "EOAPI_CLIENT_ID" }}
-        client_secret: ""
-    - name: opa
-      enable: true
-      config:
-        host: {{ getenv "OPA_URL" }}
-        policy: eoepca/dataaccess/eoapi
     {{- end }}
-  - name: maps-redirect
-    backends:
-    - serviceName: eoapi-maps-plugin
-      servicePort: 5000
-    match:
-      hosts:
-      - eoapi.{{ getenv "INGRESS_HOST" }}
-      paths:
-      - /maps
-    plugins:
-    - name: redirect
-      enable: true
-      config:
-        uri: /maps/
-  - name: maps-route
-    backends:
-    - serviceName: eoapi-maps-plugin
-      servicePort: 5000
-    match:
-      hosts:
-      - eoapi.{{ getenv "INGRESS_HOST" }}
-      paths:
-      - /maps/
-      - /maps/*
-    plugins:
-    - name: proxy-rewrite
-      config:
-        regex_uri:
-        - ^(/maps)($|/.*)
-        - $2
+    - name: cors
       enable: true
   - name: docs-redirect
     backends:
