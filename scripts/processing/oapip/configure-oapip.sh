@@ -21,7 +21,7 @@ ask "S3_REGION" "Enter the Stage-Out S3 Region" "RegionOne" is_non_empty
 ask "USE_WORKSPACE_API" "Do you want to use the Workspace API to manage your execution context? IMPORTANT: Only set this to true if you are using the Workspace API" "false" is_boolean
 
 # Stage-in S3 configuration
-ask "DIFFERENT_STAGE_IN" "Will your outputs be stored in a different S3 store? (yes/no)" "no" is_non_empty
+ask "DIFFERENT_STAGE_IN" "Are your inputs stored in a different S3 store from stage-out? (yes/no)" "no" is_non_empty
 if [ "$DIFFERENT_STAGE_IN" = "yes" ]; then
     ask "STAGEIN_S3_ENDPOINT" "Enter the Stage-In S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
     ask "STAGEIN_S3_ACCESS_KEY" "Enter the Stage-In S3 Access Key" "" is_non_empty
@@ -37,45 +37,43 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
 fi
 
 # OIDC
-ask "OIDC_OAPIP_ENABLED" "Do you want to enable OIDC for the OAPIP?" "true" is_boolean
+# IAM / OIDC
+ask "OIDC_OAPIP_ENABLED" "Do you want to enable IAM/OIDC protection for OAPIP? APISIX only." "true" is_boolean
 
-
-if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
+if [ "$OIDC_OAPIP_ENABLED" = "true" ]; then
+    if [ "${INGRESS_CLASS}" != "apisix" ]; then
+        echo "ERROR: OAPIP IAM protection is only supported with APISIX ingress."
+        echo "Set OIDC_OAPIP_ENABLED=false, or reconfigure the cluster to use APISIX."
+        exit 1
+    fi
 
     ask "OAPIP_CLIENT_ID" "Enter the Client ID for the OAPIP" "oapip-engine" is_non_empty
 
-    if [ -z "$OAPIP_CLIENT_SECRET" ]; then
+    if [ -z "${OAPIP_CLIENT_SECRET:-}" ]; then
         OAPIP_CLIENT_SECRET=$(generate_aes_key 32)
         add_to_state_file "OAPIP_CLIENT_SECRET" "$OAPIP_CLIENT_SECRET"
     fi
+
     echo ""
-    echo "❗  Generated client secret for the OAPIP."
-    echo "   Please store this securely: $OAPIP_CLIENT_SECRET"
+    echo "Generated client secret for the OAPIP."
+    echo "Store this securely: $OAPIP_CLIENT_SECRET"
     echo ""
 
-    if [ -z "$KEYCLOAK_HOST" ]; then
+    if [ -z "${KEYCLOAK_HOST:-}" ]; then
         ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     fi
 
-    if [ -z "$REALM" ]; then
+    if [ -z "${REALM:-}" ]; then
         ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
     fi
 
+    add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
 
-    if [ "$INGRESS_CLASS" == "apisix" ]; then
-        add_to_state_file "OAPIP_INGRESS_ENABLED" "false"
-        gomplate -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-    else
-        add_to_state_file "OAPIP_INGRESS_ENABLED" "true"
-    fi
-
-
+    gomplate -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 else
-
     add_to_state_file "OAPIP_INGRESS_ENABLED" "true"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
-
 fi
 
 # Processing engine

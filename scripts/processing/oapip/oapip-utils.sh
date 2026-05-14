@@ -2,9 +2,8 @@
 
 source ../../common/utils.sh
 
-if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
-
-    if [ -z "${OAPIP_USER}" -o -z "${OAPIP_PASSWORD}" ]; then
+if [ "${OIDC_OAPIP_ENABLED:-false}" = "true" ]; then
+    if [ -z "${OAPIP_USER:-}" ] || [ -z "${OAPIP_PASSWORD:-}" ]; then
         ask_temp "OAPIP_USER" "Enter the username" "${KEYCLOAK_TEST_USER:-eoepcauser}"
         ask_temp "OAPIP_PASSWORD" "Enter the password for the user" "${KEYCLOAK_TEST_PASSWORD:-eoepcapassword}"
     fi
@@ -20,17 +19,20 @@ if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
             "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
             jq -r '.access_token'
     )
+
+    if [ -z "${ACCESS_TOKEN}" ] || [ "${ACCESS_TOKEN}" = "null" ]; then
+        echo "ERROR: failed to obtain Keycloak access token."
+        exit 1
+    fi
+
     echo "Got access token: ${ACCESS_TOKEN:0:10}...${ACCESS_TOKEN: -10}"
 
     export OAPIP_USER
     export OAPIP_PASSWORD
     export ACCESS_TOKEN
     export OAPIP_AUTH_HEADER="Authorization: Bearer ${ACCESS_TOKEN}"
-
 else
-
-    export OAPIP_USER="eoepca"
+    export OAPIP_USER="${OAPIP_USER:-eoepca}"
     export ACCESS_TOKEN=""
     export OAPIP_AUTH_HEADER=""
-
 fi

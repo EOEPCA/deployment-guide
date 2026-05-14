@@ -5,8 +5,9 @@ metadata:
   name: zoo-api
   namespace: processing
 spec:
+  ingressClassName: apisix
   http:
-    # Open access to zoo OpenAPI docs
+    # Open access to ZOO OpenAPI docs and conformance metadata only.
     - name: zoo-docs
       match:
         hosts:
@@ -16,16 +17,15 @@ spec:
           - /ogc-api/
           - /ogc-api/api*
           - /swagger-ui*
-          - /conformance*
+          - /ogc-api/conformance*
       backends:
         - serviceName: zoo-project-dru-service
           servicePort: 80
       plugins:
-        # Allow CORS access
         - name: cors
           enable: true
 
-    # Authorized access to zoo API
+    # Protected access to OAPIP operations.
     - name: zoo-protected
       match:
         hosts:
@@ -36,29 +36,27 @@ spec:
         - serviceName: zoo-project-dru-service
           servicePort: 80
       plugins:
-        # Authenticate - expect JWT in `Authorization: Bearer` header
         - name: openid-connect
           enable: true
           config:
             discovery: "https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            realm: eoepca
-            client_id: {{ getenv "OAPIP_CLIENT_ID" }}
-            client_secret: {{ getenv "OAPIP_CLIENT_SECRET" }}
-            # Following settings to enable support for both interactive and API access
-            use_jwks: true                              # (default: false)
-            bearer_only: false                          # (default: false)
-            set_access_token_header: true               # (default: true)
-            access_token_in_authorization_header: true  # (default: false)
-        # Authorization - required for access to API
+            realm: "{{ getenv "REALM" }}"
+            client_id: "{{ getenv "OAPIP_CLIENT_ID" }}"
+            client_secret: "{{ getenv "OAPIP_CLIENT_SECRET" }}"
+            session:
+              secret: "{{ getenv "OAPIP_CLIENT_SECRET" }}"
+            use_jwks: true
+            bearer_only: false
+            set_access_token_header: true
+            access_token_in_authorization_header: true
         - name: authz-keycloak
           enable: true
           config:
             discovery: "https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
             lazy_load_paths: true
             ssl_verify: false
-            client_id: {{ getenv "OAPIP_CLIENT_ID" }}
-            client_secret: {{ getenv "OAPIP_CLIENT_SECRET" }}
-        # Allow CORS access
+            client_id: "{{ getenv "OAPIP_CLIENT_ID" }}"
+            client_secret: "{{ getenv "OAPIP_CLIENT_SECRET" }}"
         - name: cors
           enable: true
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
@@ -86,6 +84,7 @@ metadata:
   name: zoo
   namespace: processing
 spec:
+  ingressClassName: apisix
   hosts:
     - zoo.{{ getenv "INGRESS_HOST" }}
   secret:

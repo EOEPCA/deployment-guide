@@ -224,10 +224,17 @@ bash configure-oapip.sh
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
-- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-http01-apisix`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
+- **`SHARED_STORAGECLASS`**: Storage class supporting RWX.
+- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
+    - *Example*: `letsencrypt-http01-apisix`
+
+### Stage-Out S3 Configuration
+
+Ensure you have an S3-compatible object store set up. See the [MinIO Deployment Guide](../prerequisites/minio.md) if needed.
+
+- **`S3_ENDPOINT`**, **`S3_ACCESS_KEY`**, **`S3_SECRET_KEY`**, **`S3_REGION`**: Credentials for Stage-Out storage
 
 ### Workspace Integration
 
@@ -244,12 +251,6 @@ If using Workspace integration:
 
 * The Workspace BB must already be deployed
 * The username from the JWT Bearer token (or path prefix for open services) determines which workspace bucket to use, following the `ws-<username>` naming convention
-
-### Stage-Out S3 Configuration
-
-Ensure you have an S3-compatible object store set up. See the [MinIO Deployment Guide](../prerequisites/minio.md) if needed.
-
-- **`S3_ENDPOINT`**, **`S3_ACCESS_KEY`**, **`S3_SECRET_KEY`**, **`S3_REGION`**: Credentials for Stage-Out storage
 
 ### Stage-In S3 Configuration
 
@@ -310,7 +311,7 @@ helm repo update zoo-project
 
 ```bash
 helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
-  --version 0.9.1 \
+  --version 0.9.9 \
   --values generated-values.yaml \
   --namespace processing \
   --create-namespace

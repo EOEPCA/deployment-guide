@@ -20,12 +20,14 @@ check_service_exists "processing" "zoo-project-dru-postgresql-service"
 check_service_exists "processing" "zoo-project-dru-rabbitmq"
 check_service_exists "processing" "zoo-project-dru-service"
 
-if [ "$OIDC_OAPIP_ENABLED" == "true" ]; then
-    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "302"
+if [ "${OIDC_OAPIP_ENABLED}" = "true" ]; then
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api" "200"
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
     CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "302"
 else
-    check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST" "200"
+    check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api" "200"
     check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/ogc-api/processes" "200"
+    check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
 fi
 
 CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
