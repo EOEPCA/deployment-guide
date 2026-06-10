@@ -166,18 +166,12 @@ This script creates the necessary secrets for the Resource Health BB.
 
 2. **Install or upgrade Resource Health**
 
-> **Note**: While the Resource Health BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
-
-- Clone the Resource Health repository and update dependencies:
+Install or upgrade the Resource Health Helm chart:
 ```bash
-git clone -b 2.0.0 https://github.com/EOEPCA/resource-health.git reference-repo
-helm dependency update reference-repo/resource-health-reference-deployment
-helm dependency build reference-repo/resource-health-reference-deployment
-```
-
-- Install or upgrade the Resource Health Helm chart:
-```bash
-helm upgrade -i resource-health reference-repo/resource-health-reference-deployment \
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
+helm repo update eoepca-dev
+helm upgrade -i resource-health eoepca-dev/resource-health-reference-deployment \
+  --version 2.1.0 \
   -f generated-values.yaml \
   -n resource-health --create-namespace
 ```
