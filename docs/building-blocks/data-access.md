@@ -279,11 +279,13 @@ Once deployment is complete:
 
 ## STAC API Access Control (STAC Auth Proxy)
 
-As an alternative to the OPA-based authorization described above, the STAC API can be
-protected with [STAC Auth Proxy](https://github.com/developmentseed/stac-auth-proxy),
-which validates Keycloak OIDC tokens and enforces record-level read/write policies by
-injecting CQL2 filters into every request. This is the approach used in the EOEPCA+ demo
-cluster.
+In addition to — or in place of — the ingress-level OPA authorization described above,
+the STAC API can be protected with
+[STAC Auth Proxy](https://github.com/developmentseed/stac-auth-proxy). The two operate
+at different layers: OPA gates all APIs at the ingress, while STAC Auth Proxy enforces
+record-level read/write policies for the STAC API only, by validating Keycloak OIDC
+tokens and injecting CQL2 filters into every request. This is the approach used in the
+EOEPCA+ demo cluster.
 
 In brief, access is governed by a collection ID naming convention:
 
@@ -293,14 +295,19 @@ In brief, access is governed by a collection ID naming convention:
 | `<username>.<collection>` | That user | That user |
 | `<group>.<collection>` | Group members (incl. `-ro`) | Group members |
 
-The full policy model is documented in the
+This is a simplified view — the full policy model, including the `-ro` (read-only) and
+`-mgr` group-suffix rules and the default-deny behavior, is documented in the
 [Resource Discovery BB — Access Control](https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/)
 page.
 
 > **Note:** `configure-data-access.sh` does not yet template these values — the steps
 > below are applied manually on top of the generated eoAPI values.
 
-### 1. Enable the proxy in the eoAPI Helm values
+> **Important:** Once the proxy is active, anonymous writes are rejected. If you intend
+> to load the [sample collection](#load-sample-collection), do so **before** enabling
+> the proxy, or supply an authorized token to the ingest.
+
+#### 1. Enable the proxy in the eoAPI Helm values
 
 The `eoapi` Helm chart bundles STAC Auth Proxy as an optional subchart. Add to
 `eoapi/generated-values.yaml`:
@@ -321,7 +328,7 @@ stac-auth-proxy:
     STAC_EDITOR_ROLE: "stac_editor"
 ```
 
-### 2. Mount the policy filter factories
+#### 2. Mount the policy filter factories
 
 The policies are implemented as
 [filter factories](https://developmentseed.org/stac-auth-proxy/user-guide/record-level-auth/#filter-contract)
@@ -352,7 +359,7 @@ stac-auth-proxy:
 
 Re-run the `helm upgrade -i eoapi ...` command from the deployment steps to apply.
 
-### 3. Configure Keycloak
+#### 3. Configure Keycloak
 
 In the `${REALM}` realm:
 
@@ -363,15 +370,17 @@ In the `${REALM}` realm:
    catalog-wide write access (e.g. the Registration Harvester). Only grant this on
    confidential clients — the role bypasses all collection-prefix checks.
 3. For group-based access, ensure a `groups` claim mapper is configured so group
-   memberships appear in access tokens.
+   memberships appear in access tokens. Group names must follow `/dss/<group-id>`,
+   with `<group-id>` containing `-dss-` — see the Resource Discovery page above for
+   the `-ro` and `-mgr` suffix semantics.
 
-### 4. Route ingress through the proxy
+#### 4. Route ingress through the proxy
 
 Point the STAC ingress path (`/stac`) at the `stac-auth-proxy` service instead of
 `eoapi-stac`, so no request reaches the STAC API unfiltered. Raster/vector/multidim
 routes are unaffected.
 
-### 5. Validate
+#### 5. Validate
 
 ```bash
 source ~/.eoepca/state
@@ -393,7 +402,7 @@ curl -s -H "Authorization: Bearer ${TOKEN}" \
 ```
 
 Because read responses depend on identity, clients should send their token on **all**
-STAC requests, not only writes — STAC Manager does this from `v1.0.0`.
+STAC requests, not only writes — current STAC Manager releases do this automatically.
 
 ---
 
