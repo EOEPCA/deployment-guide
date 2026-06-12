@@ -45,6 +45,7 @@ The Data Access BB consists of the following main components:
    - **eoapi-support**: Monitoring stack (Grafana, Prometheus, metrics server)
    - **eoapi-notifier**: CloudEvents integration for event-driven workflows
    - **IAM Integration**: Keycloak authentication and OPA authorization
+   - **STAC Auth Proxy**: record-level access control for the STAC API
 
 ---
 
@@ -68,6 +69,7 @@ Before deploying the Data Access Building Block, ensure you have the following:
 | External Secrets Operator | If using external PostgreSQL   | Production deployments              |
 | Keycloak                 | For IAM integration            | Secure access control               |
 | OPA (Open Policy Agent)  | For authorization              | Fine-grained access policies        |
+| STAC Auth Proxy          | For STAC access control        | Record-level read/write policies    |
 | Knative Eventing         | For CloudEvents                | Event-driven workflows              |
 
 **Clone the Deployment Guide Repository:**
@@ -275,6 +277,126 @@ Once deployment is complete:
 
 ---
 
+## STAC API Access Control (STAC Auth Proxy)
+
+As an alternative to the OPA-based authorization described above, the STAC API can be
+protected with [STAC Auth Proxy](https://github.com/developmentseed/stac-auth-proxy),
+which validates Keycloak OIDC tokens and enforces record-level read/write policies by
+injecting CQL2 filters into every request. This is the approach used in the EOEPCA+ demo
+cluster.
+
+In brief, access is governed by a collection ID naming convention:
+
+| Collection ID pattern | Read | Write |
+| --- | --- | --- |
+| No prefix (no `.` in the ID) | Everyone | `stac_editor` role only |
+| `<username>.<collection>` | That user | That user |
+| `<group>.<collection>` | Group members (incl. `-ro`) | Group members |
+
+The full policy model is documented in the
+[Resource Discovery BB — Access Control](https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/)
+page.
+
+> **Note:** `configure-data-access.sh` does not yet template these values — the steps
+> below are applied manually on top of the generated eoAPI values.
+
+### 1. Enable the proxy in the eoAPI Helm values
+
+The `eoapi` Helm chart bundles STAC Auth Proxy as an optional subchart. Add to
+`eoapi/generated-values.yaml`:
+
+```yaml
+stac-auth-proxy:
+  enabled: true
+  image:
+    tag: "v1.1.0"
+  env:
+    UPSTREAM_URL: "http://eoapi-stac.data-access.svc.cluster.local:8080"
+    OIDC_DISCOVERY_URL: "https://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
+    ALLOWED_JWT_AUDIENCES: "eoapi"
+    ROOT_PATH: "/stac"
+    COLLECTIONS_FILTER_CLS: stac_auth_proxy.eoepca_filters:CollectionsFilter
+    ITEMS_FILTER_CLS: stac_auth_proxy.eoepca_filters:ItemsFilter
+    STAC_EDITOR_CLIENT_IDS: "eoapi,registration-harvester"
+    STAC_EDITOR_ROLE: "stac_editor"
+```
+
+### 2. Mount the policy filter factories
+
+The policies are implemented as
+[filter factories](https://developmentseed.org/stac-auth-proxy/user-guide/record-level-auth/#filter-contract)
+in a single Python file, delivered via ConfigMap — so policy changes need no image
+rebuild, only a ConfigMap update and a proxy pod restart.
+
+```bash
+curl -LO https://raw.githubusercontent.com/EOEPCA/eoepca-plus/deploy-develop/argocd/eoepca/data-access/parts/stac-auth-proxy/eoepca_filters.py
+kubectl create configmap stac-auth-proxy-filters \
+  --from-file=eoepca_filters.py \
+  --namespace data-access
+```
+
+And in the values, mount it into the proxy container:
+
+```yaml
+stac-auth-proxy:
+  extraVolumes:
+    - name: filters
+      configMap:
+        name: stac-auth-proxy-filters
+  extraVolumeMounts:
+    - name: filters
+      mountPath: /app/src/stac_auth_proxy/eoepca_filters.py
+      subPath: eoepca_filters.py
+      readOnly: true
+```
+
+Re-run the `helm upgrade -i eoapi ...` command from the deployment steps to apply.
+
+### 3. Configure Keycloak
+
+In the `${REALM}` realm:
+
+1. Ensure the `eoapi` client exists and its audience appears in tokens
+   (`ALLOWED_JWT_AUDIENCES` must match).
+2. Create a `stac_editor` **client role** on each client listed in
+   `STAC_EDITOR_CLIENT_IDS`, and assign it to the service accounts that need
+   catalog-wide write access (e.g. the Registration Harvester). Only grant this on
+   confidential clients — the role bypasses all collection-prefix checks.
+3. For group-based access, ensure a `groups` claim mapper is configured so group
+   memberships appear in access tokens.
+
+### 4. Route ingress through the proxy
+
+Point the STAC ingress path (`/stac`) at the `stac-auth-proxy` service instead of
+`eoapi-stac`, so no request reaches the STAC API unfiltered. Raster/vector/multidim
+routes are unaffected.
+
+### 5. Validate
+
+```bash
+source ~/.eoepca/state
+
+# Anonymous: returns only public (unprefixed) collections
+curl -s "https://eoapi.${INGRESS_HOST}/stac/collections" | jq -r '.collections[].id'
+
+# Anonymous write: rejected
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+  -H "Content-Type: application/json" -d '{"id": "should-fail"}'
+
+# Authenticated: additionally returns <username>.* and group-prefixed collections
+TOKEN=$(curl -s "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+  -d "grant_type=password" -d "client_id=eoapi" \
+  -d "username=<user>" -d "password=<password>" | jq -r .access_token)
+curl -s -H "Authorization: Bearer ${TOKEN}" \
+  "https://eoapi.${INGRESS_HOST}/stac/collections" | jq -r '.collections[].id'
+```
+
+Because read responses depend on identity, clients should send their token on **all**
+STAC requests, not only writes — STAC Manager does this from `v1.0.0`.
+
+---
+
 ## Load Sample Collection
 
 Load the sample `Sentinel-2-L2A-Iceland` collection:
@@ -349,6 +471,8 @@ kubectl delete namespace data-access
 
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
+- [STAC Auth Proxy Documentation](https://developmentseed.org/stac-auth-proxy/)
+- [Resource Discovery BB — Access Control](https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/)
 - [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
 - [External Secrets Operator](https://external-secrets.io/)
 
