@@ -73,6 +73,10 @@ raster:
     envVars:
       AWS_S3_ENDPOINT: "{{ getenv "S3_ENDPOINT" }}"
       AWS_VIRTUAL_HOSTING: "FALSE"
+      # Connection pool caps, see docs/building-blocks/data-access-postgresql-sizing.md
+      WEB_CONCURRENCY: "2"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "3"
     envSecrets:
       - data-access
     resources:
@@ -85,6 +89,11 @@ multidim:
     path: "/multidim"
   overrideRootPath: "/"
   settings:
+    envVars:
+      # Connection pool caps, see docs/building-blocks/data-access-postgresql-sizing.md
+      WEB_CONCURRENCY: "2"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "3"
     envSecrets:
       - data-access
     resources:
@@ -99,6 +108,10 @@ stac:
       ENABLE_TRANSACTIONS_EXTENSIONS: "TRUE"
       {{- end }}
       STAC_API_URL: "https://eoapi.${INGRESS_HOST}/stac"
+      # Connection pool caps, see docs/building-blocks/data-access-postgresql-sizing.md
+      WEB_CONCURRENCY: "2"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "3"
     resources:
       limits:
         cpu: "1280m"
@@ -117,6 +130,10 @@ vector:
     envVars:
       TIPG_DEBUG: "True"
       TIPG_CATALOG_TTL: "30"
+      # Connection pool caps, see docs/building-blocks/data-access-postgresql-sizing.md
+      WEB_CONCURRENCY: "2"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "3"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 # STAC Auth Proxy - collection-level access control for the STAC API.
 # Policy model: https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/
