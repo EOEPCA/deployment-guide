@@ -32,7 +32,7 @@ The Data Access BB consists of the following main components:
 
 2. **PostgreSQL with PostGIS and pgSTAC**<br>
    Database for storing geospatial metadata and data. Can be deployed as:
-   - Internal cluster managed by [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+   - Internal cluster managed by the [Crunchy Postgres Operator (PGO)](https://access.crunchydata.com/documentation/postgres-operator/latest/), deployed by default **without** a PgBouncer pooler
    - External PostgreSQL accessed via External Secrets Operator
 
 3. **STAC Manager UI**<br>
@@ -178,6 +178,9 @@ bash apply-secrets.sh
 #### Deploy PostgreSQL Operator (if using internal database)
 
 > If using the external PostgreSQL option, skip this step.
+
+!!! tip "Mind the connection budget"
+    No PgBouncer pooler is deployed by default, so every client connects directly and the chart defaults can exhaust `max_connections` — whether the database is the in-chart cluster or an external/shared one, and especially if services autoscale (HPA `maxReplicas > 1`). See [Sizing PostgreSQL for Data Access](data-access-postgresql-sizing.md) to compute a connection budget before deploying.
 
 ```bash
 helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
@@ -339,7 +342,7 @@ To uninstall the Data Access Building Block:
 helm uninstall eoapi -n data-access
 helm uninstall eoapi-maps-plugin -n data-access
 helm uninstall stac-manager -n data-access
-helm uninstall postgres-operator -n data-access  # or pgo if using Crunchy
+helm uninstall pgo -n data-access  # Crunchy Postgres Operator
 helm uninstall eoapi-support -n data-access  # if monitoring was installed
 
 kubectl delete namespace data-access
@@ -347,8 +350,9 @@ kubectl delete namespace data-access
 
 ## Further Reading
 
+- [Sizing PostgreSQL for Data Access](data-access-postgresql-sizing.md) — connection budgeting for the in-chart and shared/external database
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
-- [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
+- [Crunchy Postgres Operator (PGO) Documentation](https://access.crunchydata.com/documentation/postgres-operator/latest/)
 - [External Secrets Operator](https://external-secrets.io/)
 

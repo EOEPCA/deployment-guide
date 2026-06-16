@@ -53,6 +53,7 @@ nav = [
       {"Resource Discovery" = "building-blocks/resource-discovery.md"},
       {"Resource Registration" = "building-blocks/resource-registration.md"},
       {"Data Access" = "building-blocks/data-access.md"},
+      {"Data Access — PostgreSQL Sizing" = "building-blocks/data-access-postgresql-sizing.md"},
       {"Datacube Access" = "building-blocks/datacube-access.md"},
       {"Data Gateway" = "building-blocks/data-gateway.md"}
     ]},
