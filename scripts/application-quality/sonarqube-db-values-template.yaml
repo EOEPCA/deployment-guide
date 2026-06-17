@@ -1,0 +1,24 @@
+fullnameOverride: "application-quality-sonarqube-db"
+
+image:
+  registry: ghcr.io
+  repository: kubelauncher/postgresql
+  tag: "17.9"
+  pullPolicy: IfNotPresent
+
+auth:
+  username: "sonarUser"
+  database: "sonar"
+  existingSecret: "application-quality-sonarqube-db-secrets"
+  secretKeys:
+    adminPasswordKey: postgres-password
+    userPasswordKey: password
+
+primary:
+  initdb:
+    args: "--auth-host=md5 --encoding=UTF8 --lc-collate=C --lc-ctype=C"
+  persistence:
+    enabled: true
+    mountPath: /data/postgresql
+    size: 8Gi
+    storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}

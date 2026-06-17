@@ -1,49 +1,83 @@
 #!/bin/bash
 
-# Load utility functions
 source ../common/utils.sh
 echo "Configuring the Application Quality Building Block..."
 
-# Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
+ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for persistent data" "local-path" is_non_empty
+ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for shared/RWX data used by Calrissian" "${PERSISTENT_STORAGECLASS}" is_non_empty
 configure_cert
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
 
-# Allow override for public-facing host through which Application Quality is accessed
-export APP_QUALITY_PUBLIC_HOST="${APP_QUALITY_PUBLIC_HOST:-"application-quality.${INGRESS_HOST}"}"
+export APP_QUALITY_PUBLIC_HOST="${APP_QUALITY_PUBLIC_HOST:-application-quality.${INGRESS_HOST}}"
 add_to_state_file "APP_QUALITY_PUBLIC_HOST" "${APP_QUALITY_PUBLIC_HOST}"
+add_to_state_file "SHARED_STORAGECLASS" "${SHARED_STORAGECLASS}"
 
-# OIDC configuration - now optional
-if ask_yes_no "Enable OIDC authentication?"; then
-    export OIDC_APPLICATION_QUALITY_ENABLED="true"
-    
-    if [ -z "$OIDC_ISSUER_URL" ]; then
-        ask "OIDC_ISSUER_URL" "Enter the OIDC issuer URL" "https://keycloak.${INGRESS_HOST}/auth/realms/${REALM}" is_non_empty
+if ask_yes_no "Enable IAM/OIDC authentication?"; then
+    export APP_QUALITY_ENABLE_IAM="true"
+
+    if [ "${INGRESS_CLASS:-}" = "nginx" ]; then
+        echo "ERROR: Application Quality IAM/OIDC with nginx ingress is not currently supported by this guide."
+        echo "Use APISIX for IAM-enabled Application Quality, or disable IAM for nginx."
+        exit 1
     fi
 
-    ask "APP_QUALITY_CLIENT_ID" "Enter the OIDC client ID for the Application Quality Building Block" "application-quality" is_non_empty
+    ask "APP_QUALITY_CLIENT_ID" "Enter the OIDC client ID for Application Quality" "application-quality-bb" is_non_empty
 
-    if [ -z "$APP_QUALITY_CLIENT_SECRET" ]; then
-        APP_QUALITY_CLIENT_SECRET=$(generate_aes_key 32)
-        add_to_state_file "APP_QUALITY_CLIENT_SECRET" "$APP_QUALITY_CLIENT_SECRET"
+    if [ -z "${APP_QUALITY_CLIENT_SECRET:-}" ]; then
+        APP_QUALITY_CLIENT_SECRET="$(generate_aes_key 32)"
     fi
 
-    echo ""
-    echo "❗  Generated client secret for the Application Quality."
-    echo "   Application Quality Client Secret: $APP_QUALITY_CLIENT_SECRET"
-    echo ""
+    add_to_state_file "APP_QUALITY_ENABLE_IAM" "${APP_QUALITY_ENABLE_IAM}"
+    add_to_state_file "APP_QUALITY_CLIENT_ID" "${APP_QUALITY_CLIENT_ID}"
+    add_to_state_file "APP_QUALITY_CLIENT_SECRET" "${APP_QUALITY_CLIENT_SECRET}"
 
-    add_to_state_file "OSD_BASE_REDIRECT" "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/dashboards"
-    add_to_state_file "OSD_CONNECT_URL" "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
+    echo ""
+    echo "Generated Application Quality client secret:"
+    echo "${APP_QUALITY_CLIENT_SECRET}"
+    echo ""
 else
-    export OIDC_APPLICATION_QUALITY_ENABLED="false"
-    export APP_QUALITY_CLIENT_ID=""
-    export APP_QUALITY_CLIENT_SECRET=""
+    export APP_QUALITY_ENABLE_IAM="false"
+    add_to_state_file "APP_QUALITY_ENABLE_IAM" "${APP_QUALITY_ENABLE_IAM}"
     echo ""
-    echo "ℹ️  OIDC authentication disabled. The API will allow unauthenticated access."
+    echo "IAM/OIDC disabled. Application Quality will be deployed without authentication."
     echo ""
 fi
 
-# Generate configuration file
-gomplate  -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+export APP_QUALITY_ENABLE_NOTIFICATIONS="${APP_QUALITY_ENABLE_NOTIFICATIONS:-false}"
+add_to_state_file "APP_QUALITY_ENABLE_NOTIFICATIONS" "${APP_QUALITY_ENABLE_NOTIFICATIONS}"
+
+export APP_QUALITY_ENABLE_GRAFANA="${APP_QUALITY_ENABLE_GRAFANA:-false}"
+add_to_state_file "APP_QUALITY_ENABLE_GRAFANA" "${APP_QUALITY_ENABLE_GRAFANA}"
+
+if ask_yes_no "Enable optional SonarQube deployment?"; then
+    export APP_QUALITY_ENABLE_SONARQUBE="true"
+
+    if [ "${INGRESS_CLASS:-}" = "nginx" ]; then
+        echo "ERROR: SonarQube routing in this guide currently uses APISIX ApisixRoute."
+        echo "Use APISIX or leave SonarQube disabled."
+        exit 1
+    fi
+
+    APP_QUALITY_SONARQUBE_DB_PASSWORD="${APP_QUALITY_SONARQUBE_DB_PASSWORD:-$(generate_aes_key 32)}"
+    APP_QUALITY_SONARQUBE_DB_POSTGRES_PASSWORD="${APP_QUALITY_SONARQUBE_DB_POSTGRES_PASSWORD:-$(generate_aes_key 32)}"
+    APP_QUALITY_SONARQUBE_MONITORING_PASSCODE="${APP_QUALITY_SONARQUBE_MONITORING_PASSCODE:-$(generate_aes_key 32)}"
+
+    add_to_state_file "APP_QUALITY_ENABLE_SONARQUBE" "${APP_QUALITY_ENABLE_SONARQUBE}"
+    add_to_state_file "APP_QUALITY_SONARQUBE_DB_PASSWORD" "${APP_QUALITY_SONARQUBE_DB_PASSWORD}"
+    add_to_state_file "APP_QUALITY_SONARQUBE_DB_POSTGRES_PASSWORD" "${APP_QUALITY_SONARQUBE_DB_POSTGRES_PASSWORD}"
+    add_to_state_file "APP_QUALITY_SONARQUBE_MONITORING_PASSCODE" "${APP_QUALITY_SONARQUBE_MONITORING_PASSCODE}"
+else
+    export APP_QUALITY_ENABLE_SONARQUBE="false"
+    add_to_state_file "APP_QUALITY_ENABLE_SONARQUBE" "${APP_QUALITY_ENABLE_SONARQUBE}"
+fi
+
+# Generate Application Quality Helm values
+gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+
+# Generate optional SonarQube Helm values and APISIX route
+if [ "${APP_QUALITY_ENABLE_SONARQUBE:-false}" = "true" ]; then
+    gomplate -f sonarqube-db-values-template.yaml -o generated-sonarqube-db-values.yaml
+    gomplate -f sonarqube-values-template.yaml -o generated-sonarqube-values.yaml
+    gomplate -f sonarqube-apisix-template.yaml -o generated-sonarqube-apisix.yaml
+fi

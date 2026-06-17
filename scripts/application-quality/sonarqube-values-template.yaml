@@ -1,0 +1,44 @@
+community:
+  enabled: true
+
+postgresql:
+  enabled: false
+
+persistence:
+  enabled: false
+
+initSysctl:
+  enabled: false
+
+initFs:
+  enabled: false
+
+sonarProperties:
+  sonar.web.context: /sonarqube
+  sonar.web.port: 9000
+
+monitoringPasscodeSecretName: "application-quality-sonarqube-monitoring-passcode"
+monitoringPasscodeSecretKey: "passcode"
+
+ingress:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 2Gi
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+
+jdbcOverwrite:
+  enable: true
+  jdbcUrl: "jdbc:postgresql://application-quality-sonarqube-db:5432/sonar"
+  jdbcUsername: "sonarUser"
+  jdbcSecretName: "application-quality-sonarqube-db-secrets"
+  jdbcSecretPasswordKey: "password"
+
+plugins:
+  install:
+    - "https://github.com/sonar-auth-oidc/sonar-auth-oidc/releases/download/v3.0.0/sonar-auth-oidc-plugin-3.0.0.jar"
+    - "https://github.com/sbaudoin/sonar-yaml/releases/download/v1.9.1/sonar-yaml-plugin-1.9.1.jar"

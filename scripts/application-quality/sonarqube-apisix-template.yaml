@@ -1,0 +1,22 @@
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: application-quality-sonarqube-route
+  namespace: application-quality-sonarqube
+spec:
+  ingressClassName: apisix
+  http:
+    - name: application-quality-sonarqube-route
+      priority: 5
+      match:
+        hosts:
+          - {{ getenv "APP_QUALITY_PUBLIC_HOST" }}
+        paths:
+          - /sonarqube
+          - /sonarqube/*
+      backends:
+        - serviceName: application-quality-sonarqube-sonarqube
+          servicePort: 9000
+      plugins:
+        - name: cors
+          enable: true
