@@ -1,433 +1,222 @@
-# Customized values for iam-bb.
-# Note: For the EOEPCA 2.0.0-beta2 release, this file is *not* used for
-# APISIX yet, though this would be supported in principle.
-# So the relevant values for APISIX are still defined in apisix-values.yaml.
+# Values for the EOEPCA IAM BB 2.1 chart.
 
 fullnameOverride: iam
 
 global:
-  storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
+  storageClass: {{ getenv "PERSISTENT_STORAGECLASS" | quote }}
   security:
-    # Required for Keycloak custom image with OPA adapter
     allowInsecureImages: true
 
-# Settings for the IAM BB chart as a whole.
-# Some settings made here are propagated to the service-specific sections
-# through anchors. Make sure not to remove the anchors and references,
-# because otherwise the dependent values will not be set.
-# Note that further adaptations may still be needed in the service-specific
-# sections below.
 iam: &iam
   keycloak:
-    enabled: &keycloakEnabled true
+    enabled: true
     createRoute: true
-    # "Official" Keycloak URL
-    url: &kcurl {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
-    # Deviating "internal" Keycloak URL to use for cluster-internal access
-    # (defaults to official URL). Only used for Crossplane provider so far.
+    url: &kcurl {{ printf "%s://%s" (getenv "HTTP_SCHEME") (getenv "KEYCLOAK_HOST") | quote }}
     internalUrl: ""
     hosts:
-      - auth.{{ getenv "INGRESS_HOST" }}
+      - {{ getenv "KEYCLOAK_HOST" | quote }}
     paths:
       - /*
-    # Optional configuration to apply as Crossplane CRs
-    # Evaluated by the iam-bb-config Helm chart.
-    # See also section keycloak.keycloakConfigCli for another way to
-    # configure Keycloak, which can be combined with this approach.
-    # By default, the EOEPCA realm and a user account for Crossplane
-    # should be initialized using keycloak-config-cli, whereas further
-    # configuration (like clients, groups etc.) should be applied via
-    # the Crossplane Keycloak Provider.
-    configuration: &kcConfig
-      # Set this to true to enable generation of Crossplane CRs;
-      # if set to false, Crossplane is not used and no CRs are generated.
-      useCrossplane: false
-      # Set this to true to enable Keycloak Config CLI for initial realm
-      # setup. The realm configuration must be provided in the
-      # keycloak.keycloakConfigCli section.
-      useKeycloakConfigCli: &useKeycloakConfigCli false
-      # Set to true to generate secrets using kubernetes-secret-generator;
-      # Set to false (default) to generate them using Helm random functions.
+    configuration:
+      useCrossplane: true
       useSecretGenerator: false
-      # Set to true to auto-generate clients as Crossplane CRs.
-      createClients: true
+      createClients: false
+      createSecretStore: false
       realm:
-        # Set to true to auto-generate realm as Crossplane CR.
-        # Note that this only makes sense if useKeycloakConfigCli is set to
-        # false and the iam-bb-config chart is applied separately.
-        create: false
-        # Name of realm to create or of existing realm to create clients in
-        name: &realmName eoepca
-        displayName: &realmDisplayName EOEPCA
-      provider:
-        # Reference to existing ProviderConfig to use (created by iam-keycloak app)
-        existingConfigRef: "iam-keycloak-keycloak-provider-config"
-        # Set to true to generate Provider config for Keycloak (only honoured if
-        # useCrossplane is true)
         create: true
-        # Set to true to create a client with service account to be used by Crossplane
-        # Keycloak Provider. (only honoured if useKeycloakConfigCli is true, but
-        # independent of useCrossplane setting)
-        createServiceAccount: false
-        # Client secret for the Crossplane Keycloak Provider client.
-        # Unfortunately it is currently not possible to generate this secret via
-        # kubernetes-secret-generator. Therefore it must either be specified here
-        # or provided through an existing secret.
+        createUsingCrossplane: false
+        name: &realmName {{ getenv "REALM" | quote }}
+        displayName: EOEPCA
+        placeholders:
+          test_password:
+            secret:
+              name: iam-keycloak
+              key: test-user-password
+          opa_client_secret:
+            secret:
+              name: opa-route
+              key: client_secret
+        customClients:
+          - clientId: {{ getenv "OPA_CLIENT_ID" | quote }}
+            name: Open Policy Agent
+            enabled: true
+            protocol: openid-connect
+            publicClient: false
+            clientAuthenticatorType: client-secret
+            secret: ${opa_client_secret}
+            serviceAccountsEnabled: true
+            standardFlowEnabled: true
+            directAccessGrantsEnabled: true
+            authorizationServicesEnabled: true
+            redirectUris:
+              - {{ printf "%s://opa.%s/.apisix/redirect" (getenv "HTTP_SCHEME") (getenv "INGRESS_HOST") | quote }}
+            webOrigins:
+              - {{ printf "%s://opa.%s" (getenv "HTTP_SCHEME") (getenv "INGRESS_HOST") | quote }}
+        customUsers:
+          - username: {{ getenv "KEYCLOAK_TEST_USER" | quote }}
+            enabled: true
+            email: {{ printf "%s@eoepca.org" (getenv "KEYCLOAK_TEST_USER") | quote }}
+            emailVerified: true
+            firstName: {{ getenv "KEYCLOAK_TEST_USER" | quote }}
+            lastName: Testuser
+            credentials:
+              - type: password
+                value: ${test_password}
+                temporary: false
+          - username: {{ getenv "KEYCLOAK_TEST_ADMIN" | quote }}
+            enabled: true
+            email: {{ printf "%s@eoepca.org" (getenv "KEYCLOAK_TEST_ADMIN") | quote }}
+            emailVerified: true
+            firstName: {{ getenv "KEYCLOAK_TEST_ADMIN" | quote }}
+            lastName: Admin
+            credentials:
+              - type: password
+                value: ${test_password}
+                temporary: false
+            clientRoles:
+              realm-management:
+                - realm-admin
+        customSettings:
+          loginWithEmailAllowed: false
+      provider:
+        existingConfigRef: ""
+        create: true
+        createServiceAccount: true
         clientSecret: ""
-        # Reference to existing secret containing Keycloak location and credentials
         secretRef:
-          name: keycloak-provider-secret
+          name: keycloak-provider
           key: credentials
-          namespace: iam
-  opa:
-    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
-    enabled: &opaEnabled true
-    createRoute: true
-    {{- else }}
-    enabled: &opaEnabled false
-    createRoute: false
-    {{- end }}
+    tls:
+      enabled: false
+      autoGenerate: true
+      tlsSecretRef: &tlsSecretRef ~
+    cors:
+      enabled: false
+    postgres:
+      enabled: true
+      host: &pgHost iam-postgresql
+      database: &pgDatabase keycloak
+      username: keycloak
+      password: ""
+      secretRef: postgresql
 
-    # "Official" OPA URL (used as root URL for the client if one is created)
-    url: {{ getenv "HTTP_SCHEME" }}://opa.{{ getenv "INGRESS_HOST" }}
+  opa:
+    enabled: true
+    inline: false
+    createRoute: true
+    url: {{ printf "%s://opa.%s" (getenv "HTTP_SCHEME") (getenv "INGRESS_HOST") | quote }}
     hosts:
-      - opa.{{ getenv "INGRESS_HOST" }}
+      - {{ printf "opa.%s" (getenv "INGRESS_HOST") | quote }}
     paths:
       - /*
-    # Client credentials:
-    clientSecretRef: opa-keycloak-client
-  identityApi:
-    # Note: The use of Identity API in conjunction with the IAM BB is deprecated.
-    # Installing Identity API as part of the IAM BB is still supported, but neither
-    # well-tested nor fully automated. Additional manual Keycloak configuration may
-    # thus be required.
-    enabled: &identityApiEnabled false
+    clientId: {{ getenv "OPA_CLIENT_ID" | quote }}
+    clientSecretRef: opa-route
+    image:
+      registry: docker.io
+      repository: openpolicyagent/opa
+      tag: 1.7.1
+      pullPolicy: IfNotPresent
+
   apisix:
-    enabled: &apisixEnabled false
+    enabled: false
+    ingressClassName: &ingressClassName {{ getenv "INGRESS_CLASS" | quote }}
+
   config:
-    # Set this to true in order to apply iam-bb-config as a subchart.
-    # If set to false, iam-bb-config must be applied separately if needed.
-    enabled: &configEnabled true
-  secretGenerator:
-    # Set to true to install kubernetes-secret-generator as a subchart (EXPERIMENTAL)
-    enabled: false
-
-# ----
-
-keycloak:
-  enabled: *keycloakEnabled
-  # default is "small" - see https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
-  resourcesPreset: "large"
-  image:
-    # The following settings should point to a custom Keycloak image that includes the Keycloak OPA Plugin.
-    # If you do not need the Keycloak OPA Plugin, you may also use the standard Keycloak image instead.
-    registry: byud8gih.c1.de1.container-registry.ovh.net
-    repository: eoepca/keycloak-with-opa-plugin
-    tag: 0.5.0
-    digest: ""
-    pullPolicy: IfNotPresent
-  auth:
-    # Admin user credentials. If you specify a clear-text password here, you should make sure to change it
-    # before making Keycloak publicly accessible. Alternatively, you may provide the password via an
-    # existing (sealed) secret.
-    adminUser: &adminUser {{ getenv "KEYCLOAK_ADMIN_USER" }}
-    adminPassword: &adminPwd {{ getenv "KEYCLOAK_ADMIN_PASSWORD" }}
-    existingSecret: ""
-    passwordSecretKey: ""
-  tls:
-    # Set this to true to enable TLS
-    enabled: false
-    autoGenerated: true
-  cors:
-    # Set this to true to enable CORS
     enabled: true
-  ## @param production Run Keycloak in production mode. TLS configuration is required except when using proxy=edge.
-  ##
-  production: false
-  ## @param proxyHeaders Set Keycloak proxy headers
-  ##
-  proxyHeaders: "xforwarded"
-  ## @param proxy reverse Proxy mode edge, reencrypt, passthrough or none
-  ## ref: https://www.keycloak.org/server/reverseproxy
-  ##
-  #proxy: edge
-  ## @param httpRelativePath Set the path relative to '/' for serving resources. Useful if you are migrating from older version which were using '/auth/'
-  ## ref: https://www.keycloak.org/migration/migrating-to-quarkus#_default_context_path_changed
-  ##
-  httpRelativePath: "/"
-  command: []
-  ## @param args Override default container args (useful when using custom images)
-  ##
-  args: []
-  ## @param extraEnvVars Extra environment variables to be set on Keycloak container
-  extraEnvVars:
-    # KC_SPI_POLICY_OPA_OPA_BASE_URI must point to the base URI of the OPA service.
-    - name: KC_SPI_POLICY_OPA_OPA_BASE_URI
-      value: "http://iam-opal-client:8181/v1/data/"
-    # KC_SPI_POLICY_OPA_OPA_POLICY_DIR points to a pod-internal config directory for
-    # policies and should not be changed.
-    - name: KC_SPI_POLICY_OPA_OPA_POLICY_DIR
-      value: "/opt/bitnami/keycloak/conf/opa-policies"
-    # KC_HOSTNAME and optionally KC_HOSTNAME_ADMIN should be set to the official base
-    # URL of Keycloak (usually the same as iam.keycloak.url)
-    - name: KC_HOSTNAME
-      value: *kcurl
-    {{- if eq ( getenv "HTTP_SCHEME" ) "http" }}
-    # Disable HTTPS requirement when running without TLS
-    - name: KC_HOSTNAME_STRICT
-      value: "false"
-    - name: KC_HOSTNAME_STRICT_HTTPS
-      value: "false"
-    {{- end }}
-  ##
-  ## Service configuration
-  ##
-  service:
-    ## @param service.type Kubernetes service type
-    ##
-    type: ClusterIP
-    ## @param service.http.enabled Enable http port on service
-    ##
+    targetNamespace: iam-management
+    propagateSecrets: false
+
+keycloak-operator:
+  operator:
+    replicaCount: 1
+  keycloak:
+    enabled: true
+    instances: 1
+    bootstrapAdmin:
+      user:
+        secret: keycloak-admin
+    db:
+      vendor: postgres
+      host: *pgHost
+      port: 5432
+      database: *pgDatabase
+      usernameSecret:
+        name: postgresql
+        key: username
+      passwordSecret:
+        name: postgresql
+        key: password
     http:
-      enabled: true
-    ## @param service.ports.http Keycloak service HTTP port
-    ## @param service.ports.https Keycloak service HTTPS port
-    ##
-    ports:
-      http: 80
-      https: 443
-    ## @param service.nodePorts [object] Specify the nodePort values for the LoadBalancer and NodePort service types.
-    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-    ##
-    nodePorts:
-      http: ""
-      https: ""
-    ## @param service.clusterIP Keycloak service clusterIP IP
-    ## e.g:
-    ## clusterIP: None
-    ##
-    clusterIP: ""
-    ## @param service.loadBalancerIP loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
-    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
-    ##
-    loadBalancerIP: ""
-    ## @param service.loadBalancerSourceRanges Address that are allowed when service is LoadBalancer
-    ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
-    ## Example:
-    ## loadBalancerSourceRanges:
-    ##   - 10.10.10.0/24
-    ##
-    loadBalancerSourceRanges: []
-    ## @param service.externalTrafficPolicy Enable client source IP preservation
-    ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-    ##
-    externalTrafficPolicy: Cluster
-    ## @param service.annotations Additional custom annotations for Keycloak service
-    ##
-    annotations: {}
-    ## @param service.extraPorts Extra port to expose on Keycloak service
-    ##
-    extraPorts: []
-  ## Keycloak ingress parameters
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
-  ##
-  ingress:
-    enabled: false
-  ## Keycloak admin ingress parameters
-  ## ref: https://kubernetes.io/docs/user-guide/ingress/
-  ##
-  adminIngress:
-    enabled: false
-  postgresql:
-    enabled: true
-    auth:
-      # postgresPassword: "..."
-      username: bn_keycloak
-      # password: "..."
-      database: bitnami_keycloak
-      existingSecret: "kc-postgres"
-    architecture: standalone
-    image:
-      repository: bitnamilegacy/postgresql
-      # Optionally use PostgreSQL 16.4 for existing deployments instead of migrating the data.
-      # Fresh deployments should use PostgreSQL 17, which is the default.
-      tag: 16.4.0-debian-12-r14
-
-  keycloakConfigCli:
-    enabled: *useKeycloakConfigCli
-    image:
-      repository: bitnamilegacy/keycloak-config-cli
-    ## @param keycloakConfigCli.extraEnvVars Additional environment variables to set
-    extraEnvVars:
-      - name: IMPORT_VARSUBSTITUTION_ENABLED
-        value: "true"
-      - name: IAM_REALM_NAME
-        value: *realmName
-      - name: IAM_REALM_DISPLAY_NAME
-        value: *realmDisplayName
-    ##
-    # TODO: Create secret for crossplane user credentials and reference it here.
-    extraEnvVarsSecret: "keycloak-provider"
-    ## @param keycloakConfigCli.configuration keycloak-config-cli realms configuration
-    ## NOTE: nil keys will be considered files to import locally
-    ## Example:
-    ## configuration:
-    ##   realm1.json: |
-    ##     {
-    ##       "realm": "realm1",
-    ##       "clients": []
-    ##     }
-    ##   realm2.yaml: |
-    ##     realm: realm2
-    ##     clients: []
-    ##
-#    configuration:
-#      realm.yaml: |
-#        id: $(env:IAM_REALM_NAME)
-#        realm: $(env:IAM_REALM_NAME)
-#        displayName: $(env:IAM_REALM_DISPLAY_NAME)
-#        clients:
-#          - clientId: crossplane-keycloak-provider
-#            name: crossplane-keycloak-provider
-#            type:
-#            enabled: true
-#            clientAuthenticatorType: client-secret
-#            secret: $(env:client_secret)
-#            serviceAccountsEnabled: true
-#            #authorizationServicesEnabled: ...
-#            publicClient: false
-#            fullScopeAllowed: true
-#            #defaultClientScopes:
-#            #  - "web-origins",
-#            #  - "acr",
-#            #  - "roles",
-#            #  - "profile",
-#            #  - "basic",
-#            #  - "email"
-#            #optionalClientScopes:
-#            #  - "address",
-#            #  - "phone",
-#            #  - "offline_access",
-#            #  - "microprofile-jwt"
-#            #authorizationSettings: { ... } # ResourceServerRepresentation
-#            # ...
-#        users:
-#          - username: service-account-crossplane-keycloak-provider
-#            enabled: true
-#            totp: false
-#            serviceAccountClientId: "crossplane-keycloak-provider"
-#            #firstName: Crossplane Keycloak Provider
-#            #lastName: Admin
-#            realmRoles:
-#              - default-roles-$(env:IAM_REALM_NAME)
-#            clientRoles:
-#              realm-management:
-#                - manage-users
-#                - manage-clients
-#                - manage-authorization
-#                - create-client
-#              #crossplane-keycloak-provider:
-#              #  - uma_protection
-    ## @param keycloakConfigCli.existingConfigmap ConfigMap with keycloak-config-cli configuration
-    ## NOTE: This will override keycloakConfigCli.configuration
-    # Note: The default config map "initial-keycloak-config" is generated automatically.
-    # Change this to your own config map if you need to override the defaults.
-    existingConfigmap: "initial-keycloak-config"
+      tlsSecret: *tlsSecretRef
+    hostname:
+      hostname: *kcurl
+    ingress:
+      enabled: false
+    proxy:
+      headers: xforwarded
+    realmimport:
+      enabled: false
 
 opal:
-  enabled: *opaEnabled
-  # Override actual OPAL version to 0.8.0. Unfortunately though, this does not match the chart's app version and might be confusing.
-  # Note: Commented out, thus defaults from Helm chart are used.
-  #image:
-  #  client:
-  #    registry: docker.io
-  #    repository: permitio/opal-client
-  #    tag: 0.8.0
-  #  server:
-  #    registry: docker.io
-  #    repository: permitio/opal-server
-  #    tag: 0.8.0
-  #  pgsql:
-  #    registry: docker.io
-  #    repository: postgres
-  #    tag: alpine
+  enabled: true
+  broadcastReplicas: 1
+  image:
+    client:
+      registry: docker.io
+      repository: permitio/opal-client
+      tag: 0.8.0
+    server:
+      registry: docker.io
+      repository: permitio/opal-server
+      tag: 0.8.0
+    pgsql:
+      registry: docker.io
+      repository: postgres
+      tag: alpine
   server:
     port: 7002
     policyRepoUrl: https://github.com/EOEPCA/iam-policies.git
     policyRepoSshKey: null
     policyRepoClonePath: null
     policyRepoMainBranch: main
-    # Poll only every 5min for now. May be reduced or reconfigured to use webhooks if required.
     pollingInterval: 300
     dataConfigSources:
-      # Option #1 - No data sources
       config:
         entries: []
-
-      # Option #2 - Dynamically get data sources
-      # external_source_url: "https://your-api.com/path/to/api/endpoint"
-
-      # Option #3 - Example static data sources (endpoint is empty by default)
-      # config:
-      #   entries:
-      #   - url: http://opal-server:7002/policy-data
-      #     topics: ["policy_data"]
-      #     dst_path: "/static"
-
-      # Option #4 - Leave config empty and instead supply using the OPAL_DATA_CONFIG_SOURCES environment variable through env or secret
-      # config: null
-
     broadcastUri: null
     broadcastPgsql: true
     uvicornWorkers: 4
     replicas: 1
-    extraEnv: {
-      # "CUSTOM_ENV_VAR": "VALUE"
-    }
-
   client:
     port: 7000
     opaPort: 8181
     replicas: 1
-    # If you need to specify a custom hostname for the opal-sever, configure the serverUrl property
-    # serverUrl: http://custom-hostname-for-opal:opal-port
     opaStartupData:
       policy.rego: |
-        # Simple example policy gives everyone read access to non-system documents
-        # and only gives a root user full access.
         package system.authz
         import rego.v1
         jwks_request(url) := http.send({
           "url": url,
           "method": "GET",
           "force_cache": true,
-          "force_cache_duration_seconds": 3600 # Cache response for an hour
+          "force_cache_duration_seconds": 3600
         })
-        # FIXED: Use internal Keycloak service URL for JWKS
-        jwks := jwks_request("http://iam-keycloak.iam.svc.cluster.local/realms/eoepca/protocol/openid-connect/certs").raw_body
-        echo := input if {
-          print(input)
-        }
+        jwks := jwks_request("http://iam-keycloak-operator-service:8080/realms/{{ getenv "REALM" }}/protocol/openid-connect/certs").raw_body
         default allow_policy_evaluation := false
         allow_policy_evaluation if {
-          # Generally allow GET and POST on /v1/data/**
           input.method in ["GET", "POST"]
           "v1" == input.path[0]
           "data" == input.path[1]
           "system" != input.path[2]
         }
         allow_policy_evaluation if {
-          # Generally allow POST on /v1/query
           "POST" == input.method
           ["v1", "query"] == input.path
         }
         allow_policy_evaluation if {
-          # Generally allow GET on /
           "GET" == input.method
-          [""] == input.path
-          print("GET /, Input: ", input)
+          input.path in [[""], ["health"]]
         }
-        # Claims from JWT if JWT is present and can be verified; null otherwise 
         default verified_claims = null
         verified_claims := claims if {
           [type, token] := split(input.headers["Authorization"][_], " ")
@@ -437,30 +226,24 @@ opal:
         }
         default allow := false
         allow if {
-          # Allow everything for "root" identity
           "root$secret" == input.identity
-          print("Root identity, Input: ", input)
         }
         allow if {
-          # Preliminarily allow policy evaluation if Authorization header is unset,
-          # i.e., if the request is anonymous, but originates from within the cluster
           not input.headers["Authorization"]
           allow_policy_evaluation == true
-          print("AuthZ unset, Input: ", input)
         }
         allow if {
-          # Allow authenticated users to evaluate policies 
           claims := verified_claims
           claims != null
           allow_policy_evaluation == true
-          print("External, Input: ", input, " Claims: ", claims)
         }
     extraEnv:
-      OPAL_POLICY_STORE_URL: http://localhost:8181
+      OPAL_POLICY_STORE_URL: http://iam-opa:8181
       OPAL_POLICY_STORE_AUTH_TYPE: token
       OPAL_POLICY_STORE_AUTH_TOKEN: root$secret
-      OPAL_INLINE_OPA_LOG_FORMAT: full
       OPAL_DATA_UPDATER_ENABLED: False
+      OPAL_INLINE_OPA_ENABLED: False
+      OPAL_INLINE_OPA_LOG_FORMAT: full
       OPAL_INLINE_OPA_CONFIG: >-
         {
           "addr": "http://0.0.0.0:8181",
@@ -469,54 +252,6 @@ opal:
           "files": [ "/opt/opa/startup-data/policy.rego" ]
         }
 
-apisix:
-  enabled: *apisixEnabled
-  service:
-    # -- Apache APISIX service type for user access itself
-    type: NodePort
-    # -- Setting how the Service route external traffic
-    # ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-    externalTrafficPolicy: Cluster
-    externalIPs: []
-  apisix:
-    enableIPv6: false
-    enableServerTokens: false
-    ssl:
-      enabled: true
-      existingCASecret: "apx-all-tls"
-      certCAFilename: "tls.crt"
-    pluginAttrs:
-      redirect:
-        https_port: 443
-  ingress-controller:
-    enabled: true
-#    config:
-#      apisix:
-#        adminAPIVersion: "v3"
-#        # The following value may have to be adapted if the release name is not "iam"
-#        serviceName: iam-apisix-admin
-#        # The following value must be adapted if the chart is not installed in the
-#        # namespace "ingress-apisix"
-#        #serviceNamespace: ingress-apisix
-  etcd:
-    image:
-      repository: bitnamilegacy/etcd
-
-# Configuration for iam-bb-config when applied as a subchart
 iam-bb-config:
-  enabled: *configEnabled
+  enabled: true
   iam: *iam
-  #config: *config
-
-identityApi:
-  enabled: *identityApiEnabled
-
-identity-service:
-  identity-postgres:
-    enabled: false
-  identity-keycloak:
-    enabled: false
-  identity-gatekeeper:
-    enabled: false
-  identity-api:
-    enabled: *identityApiEnabled

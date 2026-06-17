@@ -1,6 +1,6 @@
 # Application Hub Deployment Guide
 
-> **OIDC** is currently a requirement for the Application Hub. This is a work in progress and will be updated in the future.
+> Application Hub 2.1 requires OIDC. The IAM-off mode is not supported by this guide.
 
 The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps
 
@@ -35,7 +35,7 @@ Before deploying the Application Hub, ensure you have the following:
 | TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)      |
 | OIDC Provider      | Keycloak or compatible                 | [IAM Deployment Guide](../building-blocks/iam/main-iam.md)       |
 | Storage Class      | For persistent volumes                 | Default or custom storage class                                  |
-| Crossplane         | Properly installed                     | [Installation Guide](../prerequisites/crossplane.md)             |
+| Crossplane         | Required only for the generated Keycloak client manifest | [Installation Guide](../prerequisites/crossplane.md) |
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -66,6 +66,8 @@ During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
+- **`APPHUB_PUBLIC_HOST`**: Public Application Hub host. Defaults to `app-hub.${INGRESS_HOST}`.
+    - *Example*: `app-hub.example.com`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
@@ -76,74 +78,52 @@ During the script execution, you will be prompted to provide:
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
     - *Example*: `linux`
 
-**OIDC Configuration (We will set this up in the next step)**:
+**OIDC Configuration**:
 
 - **`KEYCLOAK_HOST`**: OIDC provider base domain will be asked if this hasn't been set. JupyterHub requires an OIDC provider for authentication.
-    - *Example*: `auth.example.com` 
+    - *Example*: `auth.example.com`
+- **`REALM`**: Keycloak realm.
+    - *Example*: `eoepca`
 - **`APPHUB_CLIENT_ID`**: Client ID for the OIDC provider.
     - *Example*: `application-hub`
+- **`APPHUB_CLIENT_SECRET`**: Generated and stored in `~/.eoepca/state`.
+
+The script renders:
+
+- `generated-values.yaml`
+- `generated-ingress.yaml`
+- `generated-iam.yaml`
 
 ---
 
-### 2. **Create a Keycloak Client**:
+### 2. Create the Keycloak Client
 
-To enable Jupyter notebooks and other interactive services to authenticate users, you must integrate the Application Hub with an OIDC identity provider. This requires creation of a `Client` in Keycloak (part of IAM BB).
+To enable Jupyter notebooks and other interactive services to authenticate users, create an OIDC client in Keycloak.
 
-The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+If you deployed the EOEPCA IAM Building Block with the Crossplane Keycloak provider, apply the generated manifest:
+
+```bash
+kubectl apply -f generated-iam.yaml
+```
+
+The generated client uses the exact JupyterHub callback URL:
 
 ```bash
 source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${APPHUB_CLIENT_ID}-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: ${APPHUB_CLIENT_SECRET}
----
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: ${APPHUB_CLIENT_ID}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${APPHUB_CLIENT_ID}
-    name: Application Hub
-    description: Application Hub OIDC
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://app-hub.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "/*"
-    webOrigins:
-      - "/*"
-    clientSecretSecretRef:
-      name: ${APPHUB_CLIENT_ID}-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
+echo "${HTTP_SCHEME}://${APPHUB_PUBLIC_HOST}/hub/oauth_callback"
 ```
 
-The `Client` should be created successfully.
+For an external OIDC provider, create an equivalent confidential client manually with that redirect URI and the client secret from `APPHUB_CLIENT_SECRET`.
 
-### 3. **Deploy the Application Hub Using Helm**
+### 3. Apply Application Hub Secrets
+
+Create the Kubernetes Secret consumed by the Helm release:
+
+```bash
+bash apply-secrets.sh
+```
+
+### 4. Deploy the Application Hub Using Helm
 
 ```bash
 helm repo add eoepca https://eoepca.github.io/helm-charts
@@ -151,17 +131,17 @@ helm repo update eoepca
 helm upgrade -i application-hub eoepca/application-hub \
 --version 2.1.0 \
 --values generated-values.yaml \
---namespace application-hub \
+--namespace app-hub \
 --create-namespace
 ```
 
-#### 3.1. Configure Ingress
+#### Configure Ingress
 
 ```bash
 kubectl apply -f generated-ingress.yaml
 ```
 
-### 4. **Create an admin user**
+### 5. Create an admin user
 
 By default, the Application Hub has a **demo** admin user named `eric`. You will need to create this user in Keycloak (or your OIDC provider) to access the Application Hub admin.
 
@@ -186,7 +166,7 @@ metadata:
   namespace: iam-management
 spec:
   forProvider:
-    realmId: eoepca
+    realmId: ${REALM}
     username: ${username}
     email: ${username}@eoepca.org
     emailVerified: true
@@ -198,20 +178,20 @@ spec:
           name: ${username}-user-password
           key: password
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
 
 > Alternatively you can create this user through the Keycloak admin interface.
 
-### 5. **Create Groups in AppHub**
+### 6. Create Groups in AppHub
 
 Once `eric` has been created, navigate to the Application Hub admin panel: 
 
 ```bash
 source ~/.eoepca/state
-xdg-open "${HTTP_SCHEME}://app-hub.${INGRESS_HOST}/hub/admin"
+echo "${HTTP_SCHEME}://${APPHUB_PUBLIC_HOST}/hub/admin"
 ```
 
 - **Log in** as the `eric` user - using the password from the state file (`~/.eoepca/state`) variable `KEYCLOAK_TEST_PASSWORD`.
@@ -226,16 +206,16 @@ xdg-open "${HTTP_SCHEME}://app-hub.${INGRESS_HOST}/hub/admin"
 
 ![Create Groups](../img/apphub/groups.jpeg)
 
-### 6. **Assign Users to Groups**
+### 7. Assign Users to Groups
 
 Individually assign the `eric` user to each group and hit **Apply**.
 
 ![Assign Users to Groups](../img/apphub/assign-users.jpeg)
 
 
-### 7. **Select a Profile**
+### 8. Select a Profile
 
-Return to the primary Application Hub interface (`https://app-hub.${INGRESS_HOST}/`) and log in as `eric`.
+Return to the primary Application Hub interface and log in as `eric`.
 
 Selecting `Start My Server` - you should now see a list of the preconfigured profiles. Select one to spawn an application profile.
 
@@ -243,7 +223,7 @@ Selecting `Start My Server` - you should now see a list of the preconfigured pro
 
 ![Select a Profile](../img/apphub/profiles.jpeg)
 
-### 8. **Launch a Profile**
+### 9. Launch a Profile
 
 Select one of the profiles to launch a profile. You will then be redirected to the relevant tooling environment.
 
@@ -265,20 +245,18 @@ bash validation.sh
 1. **Check Kubernetes Resources**:
     
 ```bash
-kubectl get pods -n application-hub
+kubectl get pods -n app-hub
 ```
 
 Ensure the JupyterHub pod(s) and other components are in the `Running` state.
     
 2. **Access the Hub**:
     
-- Go to `https://app-hub.${INGRESS_HOST}/`.
-- You should be redirected to Keycloak (or your chosen OIDC provider) for login if OIDC is set up.
+- Go to `${HTTP_SCHEME}://${APPHUB_PUBLIC_HOST}/`.
+- You should be redirected to Keycloak (or your chosen OIDC provider) for login.
 - Upon successful login, you'll land in the JupyterHub interface (the "spawn" page).
 
 3. **Spawn a Notebook**:
-
-> While this Building Block is still in development, the following steps may not work as expected. This section will be updated in the future.
 
 - If you have multiple **Profiles**, pick one.
 - Wait for the container to start. You should end up in a JupyterLab interface.
@@ -286,7 +264,7 @@ Ensure the JupyterHub pod(s) and other components are in the `Running` state.
 If something fails (e.g. a 401 from Keycloak or a "profile list is empty" error), review the logs:
 
 ```bash
-kubectl logs -n application-hub <application-hub-pod-name>
+kubectl logs -n app-hub deploy/application-hub-hub
 ```
 
 ---
@@ -300,8 +278,9 @@ Check the [JupyterHub Configuration Reference](https://eoepca.github.io/applicat
 
 To uninstall the Application Hub and clean up associated resources:
 
-```
-helm uninstall application-hub -n application-hub
+```bash
+helm uninstall application-hub -n app-hub
+kubectl delete ingress application-hub -n app-hub
 ```
 
 ***

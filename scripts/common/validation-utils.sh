@@ -147,6 +147,49 @@ function check_secret_exists() {
     fi
 }
 
+function check_keycloak_provider_config_exists() {
+    local namespace="${1:-iam-management}"
+    local provider_config_name="${2:-keycloak-provider-config}"
+
+    if kubectl get providerconfig.keycloak.m.crossplane.io "$provider_config_name" -n "$namespace" >/dev/null 2>&1; then
+        echo "✅ Keycloak ProviderConfig '$provider_config_name' exists in namespace '$namespace'."
+        return 0
+    fi
+
+    echo "❌ Keycloak ProviderConfig '$provider_config_name' does not exist in namespace '$namespace'."
+    return 1
+}
+
+function check_keycloak_client_secret_exists() {
+    local namespace="$1"
+    local client_id="$2"
+    local secret_name="${3:-${client_id}-keycloak-client}"
+
+    check_secret_exists "$namespace" "$secret_name"
+}
+
+function check_keycloak_client_ready() {
+    local namespace="$1"
+    local client_id="$2"
+    local apply_hint="${3:-Apply the generated IAM manifest and check Crossplane reconciliation.}"
+    local client_resource="client.openidclient.keycloak.m.crossplane.io/${client_id}"
+
+    if ! kubectl get "$client_resource" -n "$namespace" >/dev/null 2>&1; then
+        echo "❌ Keycloak Client '$client_id' does not exist in namespace '$namespace'."
+        echo "   $apply_hint"
+        return 1
+    fi
+
+    if kubectl wait --for=condition=Ready "$client_resource" -n "$namespace" --timeout=60s >/dev/null 2>&1; then
+        echo "✅ Keycloak Client '$client_id' is ready."
+        return 0
+    fi
+
+    echo "❌ Keycloak Client '$client_id' is not ready."
+    kubectl get "$client_resource" -n "$namespace" -o jsonpath='{range .status.conditions[*]}{.type}={.status}: {.reason} {.message}{"\n"}{end}' 2>/dev/null || true
+    return 1
+}
+
 check_crd_exists() {
   if kubectl get crd "$1" >/dev/null 2>&1; then
     echo "✅ CRD '$1' exists."

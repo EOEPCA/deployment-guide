@@ -1,17 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ah
-  namespace: application-hub
+  name: application-hub
+  namespace: app-hub
   annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
+    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
+    {{- else if eq ( getenv "INGRESS_CLASS" ) "nginx" }}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    {{- end }}
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: app-hub.{{ getenv "INGRESS_HOST" }}
+    - host: {{ getenv "APPHUB_PUBLIC_HOST" }}
       http:
         paths:
           - path: "/"
@@ -24,6 +31,6 @@ spec:
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
-        - app-hub.{{ getenv "INGRESS_HOST" }}
+        - {{ getenv "APPHUB_PUBLIC_HOST" }}
       secretName: app-hub-tls
   {{- end }}

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ getenv "APPHUB_CLIENT_ID" }}-keycloak-client"
+  namespace: iam-management
+stringData:
+  client_secret: "{{ getenv "APPHUB_CLIENT_SECRET" }}"
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: "{{ getenv "APPHUB_CLIENT_ID" }}"
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: "{{ getenv "REALM" }}"
+    clientId: "{{ getenv "APPHUB_CLIENT_ID" }}"
+    name: Application Hub
+    description: Application Hub OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}"
+    baseUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}"
+    adminUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}"
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}/hub/oauth_callback"
+    webOrigins:
+      - "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}"
+    clientSecretSecretRef:
+      name: "{{ getenv "APPHUB_CLIENT_ID" }}-keycloak-client"
+      key: client_secret

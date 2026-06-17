@@ -1,4 +1,4 @@
-{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+{{- if and (eq (getenv "HTTP_SCHEME") "https") (eq (getenv "USE_CERT_MANAGER") "yes") }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -11,19 +11,6 @@ spec:
     name: {{ getenv "CLUSTER_ISSUER" }}
   dnsNames:
   - auth.{{ getenv "INGRESS_HOST" }}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: identity-api-cert
-  namespace: iam
-spec:
-  secretName: identity-api-cert-tls
-  issuerRef:
-    kind: ClusterIssuer
-    name: {{ getenv "CLUSTER_ISSUER" }}
-  dnsNames:
-  - identity-api.{{ getenv "INGRESS_HOST" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -48,18 +35,6 @@ spec:
     - auth.{{ getenv "INGRESS_HOST" }}
   secret:
     name: auth-cert-tls
-    namespace: iam
----
-apiVersion: apisix.apache.org/v2
-kind: ApisixTls
-metadata:
-  name: identity-api-apisix-tls
-  namespace: iam
-spec:
-  hosts:
-    - identity-api.{{ getenv "INGRESS_HOST" }}
-  secret:
-    name: identity-api-cert-tls
     namespace: iam
 ---
 apiVersion: apisix.apache.org/v2

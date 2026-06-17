@@ -18,7 +18,7 @@ Three alternative paths are offered for creation of Keycloak clients:
 If you have Crossplane set up with the Keycloak provider, you can create a Keycloak client using a Kubernetes Custom Resource Definition (CRD). This assumes you have followed the steps:
 
 * [Crossplane deployment](../../prerequisites/crossplane.md)
-* [Keycloak Management via Crossplane](../iam/main-iam.md#5-establish-keycloak-management-via-crossplane)
+* [IAM deployment guide](../iam/main-iam.md)
 
 > Note the use of placeholders such as `<client-name>`, `<username>`, etc.. Replace these with actual values relevant to your setup.
 
@@ -44,7 +44,7 @@ spec:
     realmId: eoepca
     name: <username>-group
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: group.keycloak.m.crossplane.io/v1alpha1
@@ -61,7 +61,7 @@ spec:
     members:
       - <username>
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
@@ -81,7 +81,7 @@ spec:
     uris:
       - "/<username>/*"
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
@@ -103,7 +103,7 @@ spec:
       - path: /<username>-group
         extendChildren: false
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
@@ -126,7 +126,7 @@ spec:
     policies:
       - <username>-policy
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
@@ -172,7 +172,7 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 ```
@@ -181,7 +181,7 @@ ACCESS_TOKEN=$( \
 
 ```bash
 curl --silent --show-error \
-  -X POST "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/groups" \
+  -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/groups" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{"name": "mygroup"}'
@@ -192,7 +192,7 @@ Retrieve the group ID:
 ```bash
 group_id=$( \
   curl --silent --show-error \
-    -X GET "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/groups" \
+    -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/groups" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.[] | select(.name == "mygroup") | .id' \
 )
@@ -206,7 +206,7 @@ Obtain the user's ID (e.g., the `eoepca` user created previously):
 ```bash
 user_id=$( \
   curl --silent --show-error \
-    -X GET "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/users?username=eoepcauser" \
+    -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=eoepcauser" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.[0].id'
 )
@@ -217,7 +217,7 @@ Add the user to `mygroup`:
 
 ```bash
 curl --silent --show-error \
-  -X PUT "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/users/${user_id}/groups/${group_id}" \
+  -X PUT "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${user_id}/groups/${group_id}" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -228,7 +228,7 @@ First, find the client ID for the client (e.g., `myclient` or another service cl
 ```bash
 client_id=$( \
   curl --silent --show-error \
-    -X GET "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
+    -X GET "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.[] | select(.clientId == "myclient") | .id' \
 )
@@ -239,7 +239,7 @@ Create the policy:
 ```bash
 policy_id=$( \
   curl --silent --show-error \
-    -X POST "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients/${client_id}/authz/resource-server/policy/group" \
+    -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${client_id}/authz/resource-server/policy/group" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF | jq -r '.id'
@@ -261,7 +261,7 @@ Note that the `client_id` is the 'internal' unique identifier that is assigned b
 ```bash
 resource_id=$( \
   curl --silent --show-error \
-    -X POST "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients/${client_id}/authz/resource-server/resource" \
+    -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${client_id}/authz/resource-server/resource" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF | jq -r '._id'
@@ -284,7 +284,7 @@ The effect of this is to allow access to anyone in the `mygroup` group to access
 ```bash
 permission_id=$( \
   curl --silent --show-error \
-    -X POST "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients/${client_id}/authz/resource-server/policy/resource" \
+    -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${client_id}/authz/resource-server/policy/resource" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF | jq -r '.id'
@@ -328,7 +328,7 @@ spec:
           config:
             client_id: myclient
             client_secret: changeme
-            discovery: "https://auth.$INGRESS_HOST/realms/${REALM}/.well-known/uma2-configuration"
+            discovery: "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/uma2-configuration"
             ssl_verify: false
 EOF
 ```
@@ -376,8 +376,8 @@ Integrating GitHub as an external IdP allows your users to sign in with their Gi
 Go to the [GitHub OAuth Apps page](https://github.com/settings/applications/new) and register a new application:
 
 - **Application Name**: e.g. `EOEPCA`
-- **Homepage URL**: `https://auth.${INGRESS_HOST}/realms/${REALM}`
-- **Authorization Callback URL**: `https://auth.${INGRESS_HOST}/realms/${REALM}/broker/github/endpoint`
+- **Homepage URL**: `${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}`
+- **Authorization Callback URL**: `${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/broker/github/endpoint`
 
 Generate a Client Secret and note both the **Client ID** and **Client Secret**.
 
@@ -394,7 +394,7 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 ```
@@ -414,7 +414,7 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/identity-provider/instances" <<EOF
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/identity-provider/instances" <<EOF
 {
   "alias": "github",
   "providerId": "github",
@@ -422,7 +422,7 @@ curl --silent --show-error \
   "config": {
     "clientId": "${GITHUB_CLIENT_ID}",
     "clientSecret": "${GITHUB_CLIENT_SECRET}",
-    "redirectUri": "https://auth.${INGRESS_HOST}/realms/${REALM}/broker/github/endpoint"
+    "redirectUri": "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/broker/github/endpoint"
   }
 }
 EOF
@@ -431,7 +431,7 @@ EOF
 Now navigate to:
 
 ```bash
-xdg-open https://auth.${INGRESS_HOST}/realms/${REALM}/account
+xdg-open "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/account"
 ```
 
 Choose **GitHub** at the login prompt and complete the authorization flow.

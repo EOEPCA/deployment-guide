@@ -17,7 +17,7 @@ Three alternative paths are offered for creation of Keycloak clients:
 If you have Crossplane set up with the Keycloak provider, you can create a Keycloak client using a Kubernetes Custom Resource Definition (CRD). This assumes you have followed the steps:
 
 * [Crossplane deployment](../../prerequisites/crossplane.md)
-* [Keycloak Management via Crossplane](../iam/main-iam.md#5-establish-keycloak-management-via-crossplane)
+* [IAM deployment guide](../iam/main-iam.md)
 
 > Note the use of placeholders such as `<client-name>`, `<client-secret>`, `<service-name>`, etc.. Replace these with actual values relevant to your setup.
 
@@ -61,14 +61,14 @@ spec:
         keepDefaults: true
         policyEnforcementMode: ENFORCING
     validRedirectUris:
-      - "/*"
+      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}/*"
     webOrigins:
-      - "/*"
+      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}"
     clientSecretSecretRef:
       name: <client-name>-keycloak-client
       key: client_secret
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
@@ -99,12 +99,13 @@ spec:
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
     validRedirectUris:
-      - "/*"
+      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}/*"
       - "https://editor.openeo.org/*"
     webOrigins:
-      - "+"
+      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}"
+      - "https://editor.openeo.org"
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
@@ -147,7 +148,7 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
   | jq -r '.access_token' \
 )
 echo ${ACCESS_TOKEN}
@@ -163,7 +164,7 @@ curl --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- \
-  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" <<EOF
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" <<EOF
 {
   "clientId": "<UPDATE TO CLIENT ID>",
   "name": "<UPDATE TO CLIENT NAME>",
@@ -172,8 +173,8 @@ curl --silent --show-error \
   "protocol": "openid-connect",
   "rootUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
   "baseUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
-  "redirectUris": ["https://<UPDATE TO THE MAIN URL OF THE CLIENT>/*", "/*"],
-  "webOrigins": ["/*"],
+  "redirectUris": ["<UPDATE TO MAIN URL OF THE CLIENT>/*"],
+  "webOrigins": ["<UPDATE TO MAIN ORIGIN OF THE CLIENT>"],
   "publicClient": false,
   "clientAuthenticatorType": "client-secret",
   "secret": "<OPTIONAL SECRET, OR LEAVE EMPTY>",
@@ -194,7 +195,7 @@ EOF
 curl --silent --show-error \
   -X GET \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
 | jq '.[] | select(.clientId == "<UPDATE TO CLIENT ID>")'
 ```
 
@@ -219,7 +220,7 @@ myclient_id=$( \
   curl --silent --show-error \
     -X GET \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
   | jq -r '.[] | select(.clientId == "<UPDATE TO CLIENT ID>") | .id' \
 )
 ```
@@ -230,7 +231,7 @@ Delete the client:
 curl --silent --show-error \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "https://auth.${INGRESS_HOST}/admin/realms/${REALM}/clients/${<UPDATE TO CLIENT ID>}"
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients/${myclient_id}"
 ```
 
 ## Obtaining Tokens via the Device Flow
@@ -248,7 +249,7 @@ response=$( \
     -d "client_id=<UPDATE TO CLIENT ID>" \
     --data-urlencode "client_secret=<UPDATE TO CLIENT SECRET>" \
     -d "scope=openid profile email" \
-    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
 )
 device_code=$(echo $response | jq -r '.device_code')
 verification_uri_complete=$(echo $response | jq -r '.verification_uri_complete')
@@ -270,7 +271,7 @@ response=$( \
     --data-urlencode "client_secret=<UPDATE TO CLIENT SECRET>" \
     -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
     -d "device_code=${device_code}" \
-    "https://auth.${INGRESS_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
 )
 access_token=$(echo $response | jq -r '.access_token')
 refresh_token=$(echo $response | jq -r '.refresh_token')

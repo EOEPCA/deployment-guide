@@ -4,25 +4,40 @@ ingress:
 jupyterhub:
   fullnameOverride: "application-hub"
   hub:
+    baseUrl: /
+    existingSecret: application-hub
     extraEnv:
       JUPYTERHUB_ENV: "dev"
       JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
-      APP_HUB_NAMESPACE: "application-hub"
+      APP_HUB_NAMESPACE: "app-hub"
       STORAGE_CLASS: {{ getenv "PERSISTENT_STORAGECLASS" }}
       RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
+      BASE_URL: /
 
-      JUPYTERHUB_CRYPT_KEY: "{{ getenv "APPHUB_JUPYTERHUB_CRYPT_KEY" }}"
+      JUPYTERHUB_CRYPT_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: application-hub
+            key: JUPYTERHUB_CRYPT_KEY
 
-      OAUTH_CALLBACK_URL: {{ getenv "HTTP_SCHEME" }}://app-hub.{{ getenv "INGRESS_HOST" }}/hub/oauth_callback
-      OAUTH_LOGOUT_REDIRECT_URL: {{ getenv "HTTP_SCHEME" }}://app-hub.{{ getenv "INGRESS_HOST" }}/hub/home
+      OAUTH_CALLBACK_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}/hub/oauth_callback
+      OAUTH_LOGOUT_REDIRECT_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}/hub/home
       OAUTH2_USERNAME_KEY: "preferred_username"
 
       OAUTH2_USERDATA_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
       OAUTH2_TOKEN_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
       OAUTH2_AUTHORIZE_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
 
-      OAUTH_CLIENT_ID: {{ getenv "APPHUB_CLIENT_ID" }}
-      OAUTH_CLIENT_SECRET: "{{ getenv "APPHUB_CLIENT_SECRET" }}"
+      OAUTH_CLIENT_ID:
+        valueFrom:
+          secretKeyRef:
+            name: application-hub
+            key: OAUTH_CLIENT_ID
+      OAUTH_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: application-hub
+            key: OAUTH_CLIENT_SECRET
 
     image:
       pullPolicy: Always
@@ -30,17 +45,6 @@ jupyterhub:
     db:
       pvc:
         storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
-
-    config:
-      JupyterHub:
-        admin_access: true
-
-      Authenticator:
-        admin_users:
-          - "admin"
-        allowed_users: 
-          - "admin"               
-          - "user"
 
   singleuser:
     image:
