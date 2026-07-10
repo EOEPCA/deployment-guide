@@ -8,11 +8,7 @@ spec:
     - name: knative-serving-default
       match:
         hosts:
-          - "*.notifications.{{ getenv "INGRESS_HOST" }}"
-          - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
-          - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
           - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
-          - "*.na.notifications.{{ getenv "INGRESS_HOST" }}"
         paths:
           - "/*"
       backends:
@@ -30,11 +26,7 @@ metadata:
   namespace: knative-serving
 spec:
   dnsNames:
-    - "*.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
     - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.na.notifications.{{ getenv "INGRESS_HOST" }}"
   issuerRef:
     kind: ClusterIssuer
     name: {{ getenv "DNS_CLUSTER_ISSUER" }}
@@ -47,11 +39,7 @@ metadata:
   namespace: knative-serving
 spec:
   hosts:
-    - "*.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.default.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.knative-serving.notifications.{{ getenv "INGRESS_HOST" }}"
     - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
-    - "*.na.notifications.{{ getenv "INGRESS_HOST" }}"
   secret:
     name: notifications-wildcard-tls
     namespace: knative-serving

@@ -1,20 +1,22 @@
 # Notification and Automation Deployment Guide
 
-The Notification and Automation Building Block gives the EOEPCA platform an event-driven workflow layer. It uses Knative Serving for serverless functions, Knative Eventing for routing CloudEvents between sources and sinks, and ships with a few ready-made components (a GitHub webhook source, a CloudEvents player for inspecting traffic, and an emailer sink). Kafka can be added on top if you want a durable event backbone, but the default setup uses Knative's in-memory channel and works fine for most cases.
+The Notification and Automation Building Block gives the EOEPCA platform an event-driven workflow layer. It uses Knative Eventing for routing CloudEvents between sources and sinks, ships with a few ready-made components (a GitHub webhook source, a CloudEvents player for inspecting traffic, and an emailer sink), and lets you deploy your own event-driven functions on Knative Serving on top. Kafka can be added on top if you want a durable event backbone, but the default setup uses Knative's in-memory channel and works fine for most cases.
 
 This guide walks through deploying the whole stack on a Kubernetes cluster.
 
 ## Components
 
-The BB deploys the following:
-
-- **Knative Serving** for serverless workload deployment and autoscaling
+- **Knative Operator** installed separately via Helm, ahead of the BB chart — reconciles the `KnativeServing`/`KnativeEventing` custom resources into an actual control plane
+- **Knative Serving** for deploying your own serverless functions on top (see [Writing automations](#writing-automations))
 - **Knative Eventing** for event routing and delivery
 - **Kourier** as the cluster-internal ingress for Knative services (enabled via the Knative Serving CR, not installed separately)
 - **GitHub webhook source** that turns inbound webhooks into CloudEvents
+- **API Server Source** that turns Kubernetes API events into CloudEvents
 - **CloudEvents player** for inspecting events flowing through a broker
 - **Emailer sink** that sends an email when it receives a CloudEvent
 - **Kafka** (optional) via Strimzi, for persistent event streaming
+
+The BB Helm chart itself (`notification-automation`) only creates the webhook source, API server source, CloudEvents player, emailer, and default broker as plain Deployments — it does **not** install the Knative Operator or the `KnativeServing`/`KnativeEventing` instances. Those are separate, mandatory steps below.
 
 ## Prerequisites
 
@@ -28,7 +30,7 @@ The BB deploys the following:
 | DNS-01 ClusterIssuer | Required for wildcard TLS on Knative services | — |
 
 
-A note on ingress: only APISIX is wired up by the templates in this BB. NGINX is on the roadmap but not supported yet. The configure script will warn you if `INGRESS_CLASS` is set to anything other than `apisix`.
+A note on ingress: only APISIX is wired up by the templates in this BB. NGINX is on the roadmap but not supported yet. The configure script exits early if `INGRESS_CLASS` is set to anything other than `apisix`.
 
 Clone the deployment guide repo and switch to this BB's directory:
 
@@ -56,32 +58,50 @@ You will be prompted for:
 - `INGRESS_HOST`: base domain for ingress hosts (e.g. `example.com`)
 - `CLUSTER_ISSUER`: cert-manager ClusterIssuer used for TLS (e.g. `letsencrypt-http01-apisix`)
 - `DNS_CLUSTER_ISSUER`: Required for wildcard TLS on Knative services
-- `NA_ENABLE_OIDC`: whether to turn on OIDC authentication for eventing resources (defaults to no)
+- `NA_ENABLE_OIDC`: whether to turn on Knative Eventing's own OIDC token authentication between eventing resources (defaults to no — this is unrelated to the IAM Building Block)
 - `NA_ENABLE_EMAILER`: whether to deploy the emailer sink (defaults to no)
 - SMTP settings if the emailer is enabled
-- `NA_ENABLE_KAFKA`: whether to deploy a Kafka cluster (defaults to no)
+- `NA_ENABLE_KAFKA`: whether to deploy a Kafka cluster (defaults to no), plus Kafka replica count, volume size and version if so
 
 The script generates a random GitHub webhook secret and stores it in `~/.eoepca/state`. Keep that file safe, you will need the secret when registering webhooks against GitHub.
 
-### 2. Apply secrets
+### 2. Install the Knative Operator
+
+The BB chart does not install the Knative Operator or manage the `KnativeServing`/`KnativeEventing` custom resources — install it first, separately:
 
 ```bash
-bash apply-secrets.sh
+helm repo add knative-operator https://knative.github.io/operator
+helm repo update knative-operator
+
+helm upgrade -i knative-operator knative-operator/knative-operator \
+  --namespace knative-operator \
+  --create-namespace \
+  --version v1.19.6 \
+  --wait
 ```
 
-Creates the SMTP credentials secret in the `notifications` namespace if the emailer is enabled. The webhook secret is handled by the BB Helm chart itself, so nothing needs to happen here for that.
+### 3. Apply the Knative Serving and Eventing instances
 
-### 3. Apply the ingress route
+```bash
+kubectl apply -f generated-knative.yaml
+
+kubectl wait --for=condition=Ready knativeserving/knative-serving -n knative-serving --timeout=300s
+kubectl wait --for=condition=Ready knativeeventing/knative-eventing -n knative-eventing --timeout=300s
+```
+
+This creates the `knative-serving`/`knative-eventing`/`notifications` namespaces and the `KnativeServing`/`KnativeEventing` custom resources the operator reconciles. Give it a couple of minutes on a fresh cluster while it pulls the component images.
+
+### 4. Apply the wildcard ingress route for Knative Functions
 
 ```bash
 kubectl apply -f generated-apisix-route.yaml
 ```
 
-This sets up the APISIX route that exposes Knative services through your cluster ingress. If you enabled HTTPS, it also creates the wildcard Certificate and ApisixTls resources. Give cert-manager a minute or two to issue the certificate before testing.
+This route is only for **Knative Services you deploy yourself** on top of the BB (see [Writing automations](#writing-automations) below). If you enabled HTTPS, it also creates the wildcard Certificate and ApisixTls resources; give cert-manager a minute or two to issue it.
 
-### 4. Install the BB chart
+### 5. Install the BB chart
 
-The chart bundles the Knative Operator, the Knative Serving and Eventing CRs, the GitHub webhook source, the CloudEvents player and the emailer. One install brings up the lot.
+The chart deploys the GitHub webhook source, the API server source, the CloudEvents player, the default broker and (if enabled) the emailer. The webhook source and CloudEvents player each get their own `Ingress` with a cert-manager-issued certificate.
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
@@ -94,13 +114,21 @@ helm upgrade -i notification-automation eoepca-dev/notification-automation \
   --wait
 ```
 
-The generated values set `serving.install: true` and `eventing.install: true` so the chart manages the Knative CRs alongside everything else. Do not run a separate `knative-operator` Helm install, the chart owns those CRDs and a separate install will conflict on ownership.
+Once it's up:
 
-### 5. Optional: Deploy Kafka
+```bash
+source ~/.eoepca/state
+curl https://cloudevents-player.notifications.${INGRESS_HOST}
+curl https://webhooks.notifications.${INGRESS_HOST}/health
+```
+
+The CloudEvents player should return its web UI, and `/health` on the webhook source should return `200`.
+
+### 6. Optional: Deploy Kafka
 
 Skip this section unless you opted into Kafka during configuration.
 
-Kafka requires the Strimzi operator. The BB chart does not bundle it, so install it separately:
+Kafka requires the Strimzi operator, which the BB chart does not bundle:
 
 ```bash
 helm repo add strimzi https://strimzi.io/charts/
@@ -109,6 +137,7 @@ helm repo update strimzi
 helm upgrade -i strimzi-cluster-operator strimzi/strimzi-kafka-operator \
   --namespace strimzi-system \
   --create-namespace \
+  --version 1.1.0 \
   --set watchAnyNamespace=true \
   --wait
 ```
@@ -119,9 +148,13 @@ Then apply the cluster:
 kubectl apply -f generated-kafka-cluster.yaml
 ```
 
+```bash
+kubectl describe kafka kafka-cluster -n notifications
+```
+
 Wiring Kafka in as the channel layer for Knative Eventing needs the Knative Kafka extension configured against this cluster. That is out of scope here, see the Knative Kafka docs in further reading.
 
-### 6. Validate
+### 7. Validate
 
 ```bash
 bash validation.sh
@@ -288,26 +321,29 @@ kubectl logs -n notifications -l serving.knative.dev/service=demo-fn -c user-con
 
 You should see one `Request Received` line per test event. If you see a flood of them, the function is looping on its own responses - delete the trigger, switch to a filtered one as above, or remove the response from `func.py`.
 
-## Uninstall
+## Uninstallation
+
+Tear down in the reverse order of installation, so nothing is left depending on a CRD or control plane that's already gone.
 
 ```bash
-helm uninstall notification-automation -n notifications
-
-kubectl delete -f generated-apisix-route.yaml 2>/dev/null || true
-kubectl delete -f generated-knative.yaml 2>/dev/null || true
-
-helm uninstall knative-operator -n knative-operator 2>/dev/null || true
-
 # If Kafka was deployed
 kubectl delete -f generated-kafka-cluster.yaml 2>/dev/null || true
 helm uninstall strimzi-cluster-operator -n strimzi-system 2>/dev/null || true
 
+# BB chart and ingress route
+helm uninstall notification-automation -n notifications 2>/dev/null || true
+kubectl delete -f generated-apisix-route.yaml 2>/dev/null || true
+
+# Knative Serving/Eventing instances, then the operator that reconciles them
+kubectl delete -f generated-knative.yaml 2>/dev/null || true
+helm uninstall knative-operator -n knative-operator 2>/dev/null || true
+
 # Namespaces
-kubectl delete namespace notifications knative-serving knative-eventing knative-operator kourier-system 2>/dev/null || true
+kubectl delete namespace notifications knative-serving knative-eventing knative-operator 2>/dev/null || true
 kubectl delete namespace strimzi-system 2>/dev/null || true
 ```
 
-The Knative namespaces sometimes hang on deletion because of finalizers on the operator CRs. If that happens, delete the `KnativeServing` and `KnativeEventing` resources before deleting the namespaces, or remove the stuck finalizers manually.
+The `knative-serving`/`knative-eventing` namespaces can hang on deletion because of finalizers on the `KnativeServing`/`KnativeEventing` resources — that's why they're deleted before the operator that owns their finalizers is uninstalled. If a namespace still hangs, check `kubectl get knativeserving,knativeeventing -A` for leftover resources and remove their finalizers manually as a last resort.
 
 ## Further Reading
 

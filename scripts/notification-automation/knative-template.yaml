@@ -41,12 +41,9 @@ metadata:
 spec:
   version: "1.19"
   config:
-    features:
-      delivery-retries: "enabled"
+    config-features:
+      delivery-retryafter: "enabled"
       delivery-timeout: "enabled"
 {{- if eq ( getenv "NA_ENABLE_OIDC" ) "yes" }}
-    # OIDC authentication on eventing resources. Requires Identity BB
-    # (Keycloak) to be reachable from the cluster.
-    oidc-authentication:
-      enabled: "true"
+      authentication-oidc: "enabled"
 {{- end }}

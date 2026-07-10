@@ -3,11 +3,16 @@
 source ../common/utils.sh
 echo "Configuring the Notification and Automation Building Block..."
 
+if [ "${INGRESS_CLASS}" != "apisix" ]; then
+    echo "❌ Notification and Automation currently requires INGRESS_CLASS=apisix."
+    echo "   The wildcard ingress route is generated as an ApisixRoute/ApisixTls; there is no nginx equivalent yet."
+    exit 1
+fi
+
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "DNS_CLUSTER_ISSUER" "Cert-manager ClusterIssuer supporting DNS-01 (needed for wildcard certs)" "letsencrypt-dns01"
 configure_cert
 
-# IAM toggle
 ask "NA_ENABLE_OIDC" "Enable OIDC authentication on eventing resources? (yes/no)" "no" is_yes_no
 if [ "$NA_ENABLE_OIDC" = "yes" ]; then
     echo "Note: OIDC requires the Identity BB (Keycloak) to be reachable from the cluster."
@@ -20,7 +25,6 @@ if [ -z "$NA_GITHUB_WEBHOOK_SECRET" ]; then
     echo "Generated a random GitHub webhook secret and stored it in ~/.eoepca/state."
 fi
 
-# Emailer toggle
 ask "NA_ENABLE_EMAILER" "Enable the emailer sink? (yes/no)" "no" is_yes_no
 if [ "$NA_ENABLE_EMAILER" = "yes" ]; then
     ask "NA_EMAIL_FROM" "Sender address" "noreply@example.com"
@@ -32,14 +36,13 @@ if [ "$NA_ENABLE_EMAILER" = "yes" ]; then
     ask "NA_SMTP_STARTTLS" "Use STARTTLS? (true/false)" "true"
 fi
 
-# Kafka toggle
 ask "NA_ENABLE_KAFKA" "Deploy a Kafka cluster for persistent event streaming? (yes/no)" "no" is_yes_no
 if [ "$NA_ENABLE_KAFKA" = "yes" ]; then
-    ask "NA_KAFKA_REPLICAS" "Kafka and Zookeeper replicas" "3"
+    ask "NA_KAFKA_REPLICAS" "Kafka node pool replicas (combined broker+controller, KRaft mode)" "3"
     ask "NA_KAFKA_VOLUME_SIZE" "Persistent volume size per broker" "100Gi"
+    ask "NA_KAFKA_VERSION" "Kafka version (must be supported by your Strimzi operator version)" "4.2.0"
 fi
 
-# Render templates
 gomplate -f "knative-template.yaml" -o "generated-knative.yaml" \
     --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
@@ -52,14 +55,6 @@ gomplate -f "na-values-template.yaml" -o "generated-na-values.yaml" \
 if [ "$NA_ENABLE_KAFKA" = "yes" ]; then
     gomplate -f "kafka-cluster-template.yaml" -o "generated-kafka-cluster.yaml" \
         --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-fi
-
-# Ingress class warning. Only APISIX is wired up at this stage.
-if [ -n "$INGRESS_CLASS" ] && [ "$INGRESS_CLASS" != "apisix" ]; then
-    echo ""
-    echo "Warning: INGRESS_CLASS is set to '${INGRESS_CLASS}'."
-    echo "         The route template generates APISIX resources only."
-    echo "         You will need to create equivalent ingress objects manually."
 fi
 
 echo ""

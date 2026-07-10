@@ -138,6 +138,26 @@ function check_ingress_controller_installed() {
     fi
 }
 
+function check_dns01_clusterissuer_exists() {
+    if ! kubectl get clusterissuers >/dev/null 2>&1; then
+        echo "❌ No ClusterIssuers found. A DNS-01 ClusterIssuer is required for wildcard TLS certificates."
+        echo "   See: https://cert-manager.io/docs/configuration/acme/dns01/"
+        return 1
+    fi
+
+    local issuer
+    for issuer in $(kubectl get clusterissuers -o jsonpath='{.items[*].metadata.name}' 2>/dev/null); do
+        if [ -n "$(kubectl get clusterissuer "$issuer" -o jsonpath='{.spec.acme.solvers[*].dns01}' 2>/dev/null)" ]; then
+            echo "✅ Found a DNS-01 ClusterIssuer: '$issuer'."
+            return 0
+        fi
+    done
+
+    echo "❌ No ClusterIssuer with a DNS-01 solver found."
+    echo "   A DNS-01 ClusterIssuer is required for wildcard TLS certificates. See: https://cert-manager.io/docs/configuration/acme/dns01/"
+    return 1
+}
+
 function check_apisix_ingress_installed() {
     if kubectl get pods --all-namespaces | grep -q apisix-ingress-controller; then
         echo "✅ APISIX Ingress Controller is installed."

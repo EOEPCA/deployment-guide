@@ -1,3 +1,24 @@
+# KRaft mode (no ZooKeeper) - broker/controller storage and replicas live on the KafkaNodePool.
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: dual-role
+  namespace: notifications
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  replicas: {{ getenv "NA_KAFKA_REPLICAS" }}
+  roles:
+    - controller
+    - broker
+  storage:
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        size: {{ getenv "NA_KAFKA_VOLUME_SIZE" }}
+        deleteClaim: false
+---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
@@ -5,8 +26,7 @@ metadata:
   namespace: notifications
 spec:
   kafka:
-    version: 3.7.0
-    replicas: {{ getenv "NA_KAFKA_REPLICAS" }}
+    version: {{ getenv "NA_KAFKA_VERSION" }}
     listeners:
       - name: plain
         port: 9092
@@ -16,19 +36,6 @@ spec:
         port: 9093
         type: internal
         tls: true
-    storage:
-      type: jbod
-      volumes:
-        - id: 0
-          type: persistent-claim
-          size: {{ getenv "NA_KAFKA_VOLUME_SIZE" }}
-          deleteClaim: false
-  zookeeper:
-    replicas: {{ getenv "NA_KAFKA_REPLICAS" }}
-    storage:
-      type: persistent-claim
-      size: {{ getenv "NA_KAFKA_VOLUME_SIZE" }}
-      deleteClaim: false
   entityOperator:
     topicOperator: {}
     userOperator: {}

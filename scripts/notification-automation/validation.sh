@@ -4,9 +4,11 @@ source ../common/validation-utils.sh
 
 echo "Validating Notification and Automation deployment..."
 
-# Knative Operator (installed by the BB chart into the notifications namespace)
-check_deployment_ready "notifications" "knative-operator"
-check_deployment_ready "notifications" "operator-webhook"
+# Knative Operator (installed separately, ahead of the BB chart, into its own namespace)
+check_deployment_ready "knative-operator" "knative-operator"
+check_deployment_ready "knative-operator" "operator-webhook"
+check_crd_exists "knativeservings.operator.knative.dev"
+check_crd_exists "knativeeventings.operator.knative.dev"
 
 # Knative Serving control plane
 check_deployment_ready "knative-serving" "controller"
@@ -28,6 +30,12 @@ check_deployment_ready "knative-eventing" "imc-dispatcher"
 check_deployment_ready "knative-eventing" "mt-broker-controller"
 check_deployment_ready "knative-eventing" "mt-broker-filter"
 check_deployment_ready "knative-eventing" "mt-broker-ingress"
+
+# BB workloads: plain Deployments/Services (not Knative Services) exposed via their own Ingress
+check_deployment_ready "notifications" "notification-automation-webhook-source"
+check_deployment_ready "notifications" "notification-automation-cloudevents-player"
+check_service_exists "notifications" "notification-automation-webhook-source"
+check_service_exists "notifications" "notification-automation-cloudevents-player"
 
 # Kafka, only if it was deployed and the cluster came up
 if [ "$NA_ENABLE_KAFKA" = "yes" ] && kubectl get kafka kafka-cluster -n notifications >/dev/null 2>&1; then

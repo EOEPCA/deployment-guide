@@ -8,6 +8,9 @@ eventing:
   authenticationOidc: false
 {{- end }}
 
+apiServerSource:
+  enabled: true
+
 webhookSource:
   enabled: true
   secrets:
@@ -15,19 +18,46 @@ webhookSource:
     githubSecret: "{{ getenv "NA_GITHUB_WEBHOOK_SECRET" }}"
   sinkBinding:
     create: true
+  ingress:
+    enabled: true
+    className: {{ getenv "INGRESS_CLASS" }}
+    annotations:
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+    hosts:
+      - host: webhooks.notifications.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - path: /
+            pathType: Prefix
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+    tls:
+      - hosts:
+          - webhooks.notifications.{{ getenv "INGRESS_HOST" }}
+        secretName: notification-automation-webhook-source-tls
+{{- end }}
 
 cloudEventsPlayer:
   enabled: true
   subscribeBroker:
     enabled: true
-{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   ingress:
     enabled: true
-    className: apisix
-    host: cloudevents-player.na.notifications.{{ getenv "INGRESS_HOST" }}
+    className: {{ getenv "INGRESS_CLASS" }}
+    annotations:
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
+    hosts:
+      - host: cloudevents-player.notifications.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - path: /
+            pathType: Prefix
+{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
     tls:
-      enabled: true
-      secretName: notifications-wildcard-tls
+      - hosts:
+          - cloudevents-player.notifications.{{ getenv "INGRESS_HOST" }}
+        secretName: notification-automation-cloudevents-player-tls
 {{- end }}
 
 emailer:
