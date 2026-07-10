@@ -21,15 +21,12 @@ grafana:
     hosts:
       - {{ getenv "APP_QUALITY_PUBLIC_HOST" }}
     annotations:
+      {{- range $key, $value := (datasource "annotations") }}
+      {{ $key }}: "{{ $value }}"
+      {{- end }}
       {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
-      cert-manager.io/cluster-issuer: {{ getenv "CLUSTER_ISSUER" }}
       k8s.apisix.apache.org/rewrite-target-regex: "/dashboards/?(.*)"
       k8s.apisix.apache.org/rewrite-target-regex-template: "/$1"
-      k8s.apisix.apache.org/upstream-read-timeout: "600s"
-      k8s.apisix.apache.org/enable-cors: "true"
-      {{- if eq (getenv "HTTP_SCHEME") "https" }}
-      k8s.apisix.apache.org/http-to-https: "true"
-      {{- end }}
       {{- end }}
     path: /dashboards
     pathType: Prefix
@@ -44,9 +41,16 @@ grafana:
     enabled: true
     storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
+  # Chart defaults wire this to an OAuth client secret and Keycloak host this
+  # guide doesn't provision. Disable to fall back to local admin login
+  # (see apply-secrets.sh for the generated admin credentials) instead of
+  # generating a broken/dev-cluster-pointed config.
+  envFromSecret: ""
   grafana.ini:
     server:
       root_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/dashboards
+    auth.generic_oauth:
+      enabled: false
   {{- end }}
 
 application-quality:
@@ -63,6 +67,12 @@ application-quality:
 
   calrissian:
     storageClassName: {{ getenv "SHARED_STORAGECLASS" }}
+
+  # Chart defaults this to true independently of the grafana subchart's own
+  # enabled flag; leaving it unset makes the API pod mount a Grafana admin
+  # creds secret that apply-secrets.sh only creates when Grafana is enabled.
+  grafana:
+    enabled: {{ getenv "APP_QUALITY_ENABLE_GRAFANA" "false" }}
 
   oidc:
     enabled: {{ getenv "APP_QUALITY_ENABLE_IAM" "false" }}
@@ -82,15 +92,6 @@ application-quality:
     domain: {{ getenv "APP_QUALITY_PUBLIC_HOST" }}
     annotations:
       kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
-      {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
-      cert-manager.io/cluster-issuer: {{ getenv "CLUSTER_ISSUER" }}
-      apisix.ingress.kubernetes.io/use-regex: "true"
-      k8s.apisix.apache.org/upstream-read-timeout: "600s"
-      k8s.apisix.apache.org/enable-cors: "true"
-      {{- if eq (getenv "HTTP_SCHEME") "https" }}
-      k8s.apisix.apache.org/http-to-https: "true"
-      {{- end }}
-      {{- end }}
       {{- range $key, $value := (datasource "annotations") }}
       {{ $key }}: "{{ $value }}"
       {{- end }}
@@ -107,7 +108,7 @@ application-quality:
     enabled: {{ getenv "APP_QUALITY_ENABLE_NOTIFICATIONS" "false" }}
     middleware: "knative"
     brokerName: "default"
-    brokerNamespace: "na"
+    brokerNamespace: "notifications"
     channelPrefix: "org.eoepca.application-quality"
     responseSource: "/eoepca/application-quality"
     responseTypePrefix: "org.eoepca.application-quality.response"

@@ -16,12 +16,10 @@ add_to_state_file "SHARED_STORAGECLASS" "${SHARED_STORAGECLASS}"
 if ask_yes_no "Enable IAM/OIDC authentication?"; then
     export APP_QUALITY_ENABLE_IAM="true"
 
-    if [ "${INGRESS_CLASS:-}" = "nginx" ]; then
-        echo "ERROR: Application Quality IAM/OIDC with nginx ingress is not currently supported by this guide."
-        echo "Use APISIX for IAM-enabled Application Quality, or disable IAM for nginx."
-        exit 1
-    fi
-
+    # The Application Quality API validates OIDC tokens itself against the
+    # Keycloak realm's discovery endpoint (app-native OIDC); there is no
+    # APISIX-only ingress-layer enforcement involved, so this works under
+    # nginx too.
     ask "APP_QUALITY_CLIENT_ID" "Enter the OIDC client ID for Application Quality" "application-quality-bb" is_non_empty
 
     if [ -z "${APP_QUALITY_CLIENT_SECRET:-}" ]; then
@@ -47,7 +45,14 @@ fi
 export APP_QUALITY_ENABLE_NOTIFICATIONS="${APP_QUALITY_ENABLE_NOTIFICATIONS:-false}"
 add_to_state_file "APP_QUALITY_ENABLE_NOTIFICATIONS" "${APP_QUALITY_ENABLE_NOTIFICATIONS}"
 
-export APP_QUALITY_ENABLE_GRAFANA="${APP_QUALITY_ENABLE_GRAFANA:-false}"
+if ask_yes_no "Enable optional Grafana dashboards?"; then
+    export APP_QUALITY_ENABLE_GRAFANA="true"
+    echo ""
+    echo "Grafana will be deployed with local admin login only; this guide does not configure Grafana OIDC SSO."
+    echo ""
+else
+    export APP_QUALITY_ENABLE_GRAFANA="false"
+fi
 add_to_state_file "APP_QUALITY_ENABLE_GRAFANA" "${APP_QUALITY_ENABLE_GRAFANA}"
 
 if ask_yes_no "Enable optional SonarQube deployment?"; then
