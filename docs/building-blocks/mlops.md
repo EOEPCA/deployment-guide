@@ -90,7 +90,7 @@ The S3 environment variables should be already set after successful deployment o
 
 **OIDC Configuration (Optional):**
 
-If you are using the APISIX Ingress, you will be prompted to provide whether you wish to enable OIDC authentication. If you **don't** want to enable OIDC, enter `false` when prompted.
+You will be prompted to provide whether you wish to enable OIDC authentication. GitLab validates OIDC tokens itself (via its `openid_connect` omniauth provider) and SharingHub authenticates through GitLab OAuth, so this works under either ingress controller. If you **don't** want to enable OIDC, enter `false` when prompted.
 
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
     - *Example*: `https://keycloak.example.com/realms/eoepca`
@@ -100,7 +100,7 @@ For instructions on how to set up IAM, you can follow the [IAM Building Block](.
 
 ### 2. Create a Keycloak Client for GitLab (Optional)
 
-If you **don't** want to enable OIDC or you are **not** using the APISIX ingress controller, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
+If you **don't** want to enable OIDC, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
 
 A Keycloak client is required for the ingress protection of the MLOps. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
@@ -274,7 +274,7 @@ This script prompts you for `GITLAB_APP_ID` and `GITLAB_APP_SECRET` from the ste
 ### 6. Deploy SharingHub Using Helm
 
 ```bash
-git clone --depth 1 --branch 0.4.1 https://github.com/csgroup-oss/sharinghub.git /tmp/sharinghub
+git clone --depth 1 --branch 0.4.2 https://github.com/csgroup-oss/sharinghub.git /tmp/sharinghub
 helm upgrade -i sharinghub /tmp/sharinghub/deploy/helm/sharinghub \
   --namespace sharinghub \
   --create-namespace \

@@ -18,11 +18,10 @@ ask "S3_BUCKET_SHARINGHUB" "Enter the S3 bucket name for SharingHub" "mlopbb-sha
 ask "S3_BUCKET_MLFLOW" "Enter the S3 bucket name for MLFlow" "mlopbb-mlflow-sharinghub" is_non_empty
 
 # OIDC configuration
-if [ "$INGRESS_CLASS" == "apisix" ]; then
-    ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
-elif [ "$INGRESS_CLASS" == "nginx" ]; then
-    MLOPS_OIDC_ENABLED=false
-fi
+# GitLab validates OIDC tokens itself (omniauth openid_connect provider), and
+# SharingHub authenticates via GitLab OAuth - there is no ingress-layer (APISIX)
+# auth plugin involved, so this works under either ingress class.
+ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
     echo "OIDC is enabled. Please provide the following details:"
@@ -65,7 +64,7 @@ gomplate  -f "mlflow/$TEMPLATE_PATH" -o "mlflow/$OUTPUT_PATH" --datasource annot
 gomplate  -f "mlflow/postgres-deployment-template.yaml" -o "mlflow/postgres-deployment.yaml"
 
 # Generate configuration files for secrets
-gomplate -f "mlflow/pvc-template.yaml" -o "mlflow/generated-pvc.yaml" --datasource omniauth="gitlab/omniauth.yaml"
+gomplate -f "mlflow/pvc-template.yaml" -o "mlflow/generated-pvc.yaml"
 gomplate -f "gitlab/storage.config.template" -o "gitlab/storage.config"
 gomplate -f "gitlab/lfs-s3.yaml.template" -o "gitlab/lfs-s3.yaml"
 

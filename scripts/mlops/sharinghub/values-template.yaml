@@ -42,16 +42,16 @@ config: |-
     allow-public: true
 
   docs:
-    url: https://sharinghub.p2.csgroup.space/docs/
+    url: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}/docs/
 
   mlflow:
     type: mlflow-sharinghub
     url: {{ getenv "HTTP_SCHEME" }}://sharinghub.{{ getenv "INGRESS_HOST" }}/mlflow
 
   s3:
-    bucket: mlopsbb-sharinghub
-    region: eu
-    endpoint: {{ getenv "HTTP_SCHEME" }}://minio.{{ getenv "INGRESS_HOST" }}
+    bucket: {{ getenv "S3_BUCKET_SHARINGHUB" }}
+    region: {{ getenv "S3_REGION" }}
+    endpoint: {{ getenv "S3_ENDPOINT" }}
 
   jupyterlab:
     url: {{ getenv "HTTP_SCHEME" }}://applicationhub.{{ getenv "INGRESS_HOST" }}
@@ -84,8 +84,8 @@ config: |-
               title: "Modèles IA"
               description: "Les modèles d'IA sont au cœur de notre plateforme, allez les parcourir pour découvrir nos modèles."
           features:
-            map-viewer: enable
-            store-s3: enable
+            map-viewer: disable
+            store-s3: disable
             mlflow: enable
             jupyter: enable
       - dataset:
@@ -102,7 +102,7 @@ config: |-
             map-viewer: enable
             store-s3: enable
             mlflow: disable
-            jupyter: enable
+            jupyter: disable
 
   tags:
     gitlab:

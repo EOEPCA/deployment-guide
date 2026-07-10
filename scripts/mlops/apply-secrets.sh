@@ -41,8 +41,12 @@ kubectl create secret generic sharinghub-s3 \
   --dry-run=client -oyaml | kubectl apply -f -
 
 # MLflow SharingHub secrets
+# secret-key and backend-store-uri are read from the same Secret by the
+# mlflow-sharinghub chart (mlflowSharinghub.existingSecret) - see
+# mlflow/values-template.yaml.
 kubectl create secret generic mlflow-sharinghub \
   --from-literal=secret-key="$MLFLOW_SECRET_KEY" \
+  --from-literal=backend-store-uri="postgresql://$MLFLOW_POSTGRES_USERNAME:$MLFLOW_POSTGRES_PASSWORD@mlflow-postgres.sharinghub.svc.cluster.local:5432/mlflow" \
   --namespace sharinghub --dry-run=client -oyaml | kubectl apply -f -
 
 kubectl create secret generic mlflow-sharinghub-s3 \
@@ -51,16 +55,11 @@ kubectl create secret generic mlflow-sharinghub-s3 \
   --namespace sharinghub \
   --dry-run=client -oyaml | kubectl apply -f -
 
+# Consumed by mlflow/postgres-deployment.yaml (POSTGRES_PASSWORD envFrom)
 kubectl create secret generic mlflow-sharinghub-postgres \
   --from-literal=password="$MLFLOW_POSTGRES_PASSWORD" \
   --from-literal=postgres-password="$MLFLOW_POSTGRES_PASSWORD" \
   --namespace sharinghub \
   --dry-run=client -oyaml | kubectl apply -f -
-
-
-kubectl create secret generic mlflow-sharinghub-backend \
-  --from-literal=backend-store-uri="postgresql://$MLFLOW_POSTGRES_USERNAME:$MLFLOW_POSTGRES_PASSWORD@mlflow-postgres.sharinghub.svc.cluster.local:5432/mlflow" \
-  --namespace sharinghub \
-  --dry-run=client -o yaml | kubectl apply -f -
 
 echo "✅ Secrets applied."
