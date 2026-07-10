@@ -1,0 +1,76 @@
+---
+# ServiceAccount used by the openEO Geotrellis driver to run batch jobs as
+# separate SparkApplication pods (distinct from the "openeo" sync-request
+# service account created by the sparkapplication Helm chart).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: batch-jobs
+  namespace: openeo-geotrellis
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: batch-jobs
+  namespace: openeo-geotrellis
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - list
+      - watch
+      - create
+      - deletecollection
+      - patch
+      - get
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - list
+      - create
+      - deletecollection
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - list
+      - create
+      - deletecollection
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - list
+      - deletecollection
+  - apiGroups:
+      - sparkoperator.k8s.io
+    resources:
+      - sparkapplications
+    verbs:
+      - list
+      - create
+      - get
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: batch-jobs
+  namespace: openeo-geotrellis
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: batch-jobs
+subjects:
+  - kind: ServiceAccount
+    name: batch-jobs
+    namespace: openeo-geotrellis

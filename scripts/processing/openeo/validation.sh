@@ -17,6 +17,8 @@ check_service_exists "openeo-geotrellis" "openeo-geotrellis-zookeeper-headless"
 check_service_exists "openeo-geotrellis" "openeo-geotrellis-openeo-sparkapplication"
 check_service_exists "openeo-geotrellis" "openeo-geotrellis-openeo-ui-svc"
 
+check_serviceaccount_exists "openeo-geotrellis" "batch-jobs"
+
 check_url_status_code "$HTTP_SCHEME://openeo.$INGRESS_HOST" 200
 check_url_status_code "$HTTP_SCHEME://openeo.$INGRESS_HOST/openeo/1.2/processes" 200
 

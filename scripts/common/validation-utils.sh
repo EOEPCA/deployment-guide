@@ -133,6 +133,20 @@ function check_configmap_exists() {
     fi
 }
 
+# Function to check if a ServiceAccount exists
+function check_serviceaccount_exists() {
+    local namespace="$1"
+    local serviceaccount_name="$2"
+
+    if kubectl get serviceaccount "$serviceaccount_name" -n "$namespace" >/dev/null 2>&1; then
+        echo "✅ ServiceAccount '$serviceaccount_name' exists."
+        return 0
+    else
+        echo "❌ ServiceAccount '$serviceaccount_name' does not exist."
+        return 1
+    fi
+}
+
 # Function to check if a Secret exists
 function check_secret_exists() {
     local namespace="$1"

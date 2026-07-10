@@ -64,7 +64,7 @@ Deploy the Kubeflow Spark Operator to manage Spark jobs within your Kubernetes c
 ```bash
 helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 2.0.2 \
+    --version 2.3.0 \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values sparkoperator/generated-values.yaml
@@ -98,7 +98,7 @@ Provides an API that simplifies connecting to EO cloud back-ends, running on Apa
 ```bash
 helm upgrade -i openeo-geotrellis-openeo sparkapplication \
     --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 1.0.2 \
+    --version 1.2.0 \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values openeo-geotrellis/generated-values.yaml
@@ -110,7 +110,17 @@ Deploy ingress:
 kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 ```
 
-#### Step 4: Create a Keycloak Client (Only if OIDC is enabled)
+#### Step 4: Create the Batch Jobs RBAC
+
+openEO Geotrellis submits each batch (async) job as its own `SparkApplication`, run under a dedicated `batch-jobs` service account - separate from the `openeo` service account used by the always-on sync API driver. Create it once per cluster:
+
+```bash
+kubectl apply -f openeo-geotrellis/batch-jobs-rbac.yaml
+```
+
+> This is a static manifest (fixed to the `openeo-geotrellis` namespace) with no gomplate variables, so there is nothing to (re)generate.
+
+#### Step 5: Create a Keycloak Client (Only if OIDC is enabled)
 
 > **Note:** This step is only required if you enabled OIDC authentication during the configuration step. If you chose basic authentication, skip to the Validation section.
 
@@ -246,6 +256,8 @@ curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
 ```
 
 _Expected output:_ A JSON array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
+
+> **Note:** This guide only configures the built-in `TestCollection-LonLat16x16` debug layer. Wiring up a real EO data source (e.g. Sentinel data via a Swift/S3 object store and a full `layerCatalog`) needs provider-specific endpoints and credentials that aren't portable across clusters, so it's left out of this guide. See the [openEO Geotrellis GitHub Repository](https://github.com/Open-EO/openeo-geotrellis-kubernetes) for adding your own collections.
 
 #### List Processes
 
@@ -567,6 +579,27 @@ deactivate
 ```
 
 The downloaded files contain the processed data cubes and workflow definitions that can be reused or shared with other openEO deployments.
+
+## Uninstallation
+
+To uninstall the OpenEO Geotrellis deployment:
+
+```bash
+kubectl delete -f openeo-geotrellis/generated-ingress.yaml --ignore-not-found
+
+helm uninstall openeo-geotrellis-openeo -n openeo-geotrellis || true
+helm uninstall openeo-geotrellis-zookeeper -n openeo-geotrellis || true
+helm uninstall openeo-geotrellis-sparkoperator -n openeo-geotrellis || true
+
+kubectl delete -f openeo-geotrellis/batch-jobs-rbac.yaml --ignore-not-found
+
+kubectl delete namespace openeo-geotrellis
+```
+
+> If OIDC was enabled, also remove the Keycloak `Client` created in Step 5:
+> `kubectl delete client.openidclient.keycloak.m.crossplane.io ${OPENEO_CLIENT_ID} -n iam-management`
+
+---
 
 ## Further Reading & Official Docs
 
