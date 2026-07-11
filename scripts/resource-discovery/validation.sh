@@ -29,6 +29,10 @@ if [ "${RESOURCE_DISCOVERY_ENABLE_IAM:-no}" = "yes" ]; then
 
   check_service_exists "resource-discovery" "resource-catalogue-protected-service"
   check_configmap_exists "resource-discovery" "resource-catalogue-protected-configmap"
+  check_secret_exists "resource-discovery" "resource-catalogue-db-secret"
+
+  check_keycloak_client_ready "iam-management" "resource-catalogue" \
+    "Apply scripts/resource-discovery/generated-iam.yaml and check Crossplane reconciliation."
 
   # Public paths on the protected catalogue should be reachable without login.
   check_url_status_code "$HTTP_SCHEME://resource-catalogue-protected.$INGRESS_HOST/conformance" "200"

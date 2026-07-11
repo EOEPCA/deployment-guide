@@ -8,6 +8,10 @@ db:
   enabled: true
   volume_storageclass: {{ getenv "PERSISTENT_STORAGECLASS" }}
   volume_access_modes: ReadWriteOnce
+{{- if getenv "RESOURCE_DISCOVERY_DB_PASSWORD" "" }}
+  user: pycsw
+  pass: {{ getenv "RESOURCE_DISCOVERY_DB_PASSWORD" }}
+{{- end }}
 
 pycsw:
   image:
@@ -33,10 +37,9 @@ pycsw:
         type: CSW
         title: Arctic SDI
         url: https://catalogue.arctic-sdi.org/csw
-    manager:
-      transactions: "true"
-      allowed_ips:
-        - '"*"'
+    # Transactions are intentionally left disabled (chart default) on the
+    # public, unauthenticated catalogue. Enable RESOURCE_DISCOVERY_ENABLE_IAM
+    # for a transactional endpoint gated by IAM + OPA instead.
     metadata:
       identification:
         title: EOEPCA+ Resource Catalogue

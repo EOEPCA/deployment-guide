@@ -48,7 +48,7 @@ spec:
             client_id: resource-catalogue
             client_secret: ""
             session:
-              secret: "{{ getenv "RESOURCE_CATALOGUE_SESSION_SECRET" "change-me-resource-catalogue" }}"
+              secret: "{{ getenv "RESOURCE_CATALOGUE_SESSION_SECRET" }}"
         - name: opa
           enable: true
           config:

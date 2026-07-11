@@ -11,7 +11,7 @@ ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTE
 
 # IAM is optional. Protected Resource Discovery currently requires APISIX because
 # the protected route uses APISIX openid-connect and opa plugins.
-ask "RESOURCE_DISCOVERY_ENABLE_IAM" "Enable IAM-protected transactional catalogue? (yes/no)" "no" is_yes_or_no
+ask "RESOURCE_DISCOVERY_ENABLE_IAM" "Enable IAM-protected transactional catalogue? (yes/no)" "no" is_yes_no
 
 configure_cert
 
@@ -19,6 +19,26 @@ if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ] && [ "${INGRESS_CLASS}" != "ap
   echo "❌ IAM-protected Resource Discovery currently requires INGRESS_CLASS=apisix."
   echo "   Re-run the configuration and select APISIX, or set RESOURCE_DISCOVERY_ENABLE_IAM=no."
   exit 1
+fi
+
+if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
+  source ../common/prerequisite-utils.sh
+  run_validation "check_crossplane_installed"
+
+  # Shared credentials for the protected catalogue's Keycloak client cookie
+  # session and the Postgres user it shares with the public catalogue's
+  # chart-managed database.
+  if [ -z "${RESOURCE_CATALOGUE_SESSION_SECRET:-}" ]; then
+    RESOURCE_CATALOGUE_SESSION_SECRET="$(generate_aes_key 32)"
+    add_to_state_file "RESOURCE_CATALOGUE_SESSION_SECRET" "$RESOURCE_CATALOGUE_SESSION_SECRET"
+  fi
+  export RESOURCE_CATALOGUE_SESSION_SECRET
+
+  if [ -z "${RESOURCE_DISCOVERY_DB_PASSWORD:-}" ]; then
+    RESOURCE_DISCOVERY_DB_PASSWORD="$(generate_password)"
+    add_to_state_file "RESOURCE_DISCOVERY_DB_PASSWORD" "$RESOURCE_DISCOVERY_DB_PASSWORD"
+  fi
+  export RESOURCE_DISCOVERY_DB_PASSWORD
 fi
 
 # Template - helm values for public catalogue
@@ -61,7 +81,13 @@ if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
     -o generated-iam.yaml \
     --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
+  gomplate \
+    -f db-secret-template.yaml \
+    -o generated-db-secret.yaml \
+    --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+
   echo "✅ Configuration file generated: generated-protected-values.yaml"
   echo "✅ Configuration file generated: generated-protected-ingress.yaml"
   echo "✅ Configuration file generated: generated-iam.yaml"
+  echo "✅ Configuration file generated: generated-db-secret.yaml"
 fi

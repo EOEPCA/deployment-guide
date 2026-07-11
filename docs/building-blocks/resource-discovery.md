@@ -84,6 +84,8 @@ The protected endpoint currently requires APISIX because it uses APISIX `openid-
 
 `resource-catalogue-protected.${INGRESS_HOST}`
 
+The configuration script also generates and stores two credentials in `~/.eoepca/state` at this point: `RESOURCE_CATALOGUE_SESSION_SECRET` (APISIX's OIDC session cookie signing key) and `RESOURCE_DISCOVERY_DB_PASSWORD` (the Postgres password the protected catalogue uses to reach the public catalogue's chart-managed database). You don't need to set these yourself.
+
 2. **Deploy Resource Discovery Using Helm**
 
 Add the EOEPCA development Helm chart repository and deploy the public Resource Discovery catalogue:
@@ -112,6 +114,10 @@ source ~/.eoepca/state
 
 if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
   kubectl apply -f generated-iam.yaml
+
+  # The protected catalogue reuses the public catalogue's chart-managed
+  # database, so it needs the same DB credentials as a Secret.
+  kubectl apply -f generated-db-secret.yaml
 
   helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
     --values generated-protected-values.yaml \
@@ -363,6 +369,7 @@ kubectl delete -f generated-ingress.yaml --ignore-not-found
 if [ "${RESOURCE_DISCOVERY_ENABLE_IAM:-no}" = "yes" ]; then
   kubectl delete -f generated-protected-ingress.yaml --ignore-not-found
   kubectl delete -f generated-iam.yaml --ignore-not-found
+  kubectl delete -f generated-db-secret.yaml --ignore-not-found
   helm uninstall resource-catalogue-protected -n resource-discovery || true
 fi
 
