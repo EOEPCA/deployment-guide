@@ -56,7 +56,6 @@ Before deploying the Resource Health Building Block, ensure you have the followi
 | Kubernetes                  | Cluster (tested on v1.32)               | [Installation Guide](../prerequisites/kubernetes.md) |
 | Git                         | Properly installed                      | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) |
 | Helm                        | Version 3.5 or newer                    | [Installation Guide](https://helm.sh/docs/intro/install/)         |
-| Helm plugins                | `helm-git`: Version 1.3.0 tested        | [Installation Guide](https://github.com/aslafy-z/helm-git?tab=readme-ov-file#install) |
 | kubectl                     | Configured for cluster access           | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../prerequisites/ingress/overview.md)      |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
@@ -145,7 +144,7 @@ spec:
       name: ${RESOURCE_HEALTH_CLIENT_ID}-keycloak-client
       key: client_secret
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
@@ -161,42 +160,50 @@ The `Client` should be created successfully.
 ```bash
 bash apply-secrets.sh
 ```
-This script creates the necessary secrets for the Resource Health BB.
+This script creates the necessary secrets for the Resource Health BB (skipped if OIDC is disabled).
 
 
 2. **Install or upgrade Resource Health**
 
-> **Note**: While the Resource Health BB is not yet in the official EOEPCA Helm charts, you can install it directly from the GitHub repository.
+The chart is published in the EOEPCA Helm charts-dev repository:
 
-- Clone the Resource Health repository and update dependencies:
 ```bash
-git clone -b 2.0.0 https://github.com/EOEPCA/resource-health.git reference-repo
-helm dependency update reference-repo/resource-health-reference-deployment
-helm dependency build reference-repo/resource-health-reference-deployment
-```
+helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
+helm repo update eoepca-dev
 
-- Install or upgrade the Resource Health Helm chart:
-```bash
-helm upgrade -i resource-health reference-repo/resource-health-reference-deployment \
+helm upgrade -i resource-health eoepca-dev/resource-health-reference-deployment \
+  --version 2.1.1 \
   -f generated-values.yaml \
   -n resource-health --create-namespace
 ```
 
 > As part of this deployment, you will have a preconfigured healthcheck that runs every minute. 
 
+3. **Bootstrap OpenSearch security**
+
+The OpenSearch chart mounts the security config (roles, internal users, role mappings) but does not apply it automatically. Without this step every OpenSearch-backed request (telemetry, dashboards) fails with `OpenSearch Security not initialized.`:
+
+```bash
+bash bootstrap-opensearch-security.sh
+```
+
+Re-run this any time you change OpenSearch-related values and `helm upgrade`.
+
 ---
 
-### 3. Configure Ingress
+### 4. Configure Ingress
 
-By default, Resource Health is designed to be flexible with Ingress and OIDC configurations.
+By default, Resource Health is designed to be flexible with Ingress and OIDC configurations. OIDC protection is only supported with APISIX: it is enforced at the ingress layer via an `ApisixRoute` + `openid-connect` plugin, and there is no nginx equivalent. `configure-resource-health.sh` rejects `RESOURCE_HEALTH_ENABLE_OIDC=yes` with `INGRESS_CLASS=nginx` for this reason.
 
 For the purpose of this guide, the configuration script created a sample Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the `~/.eoepca/state` file.
 
 - **APISIX**
 
 ```bash
+# Only if RESOURCE_HEALTH_ENABLE_OIDC=yes (these files are only generated in that case)
 kubectl apply -f apisix/plugin-api-auth.yaml -n resource-health
 kubectl apply -f apisix/plugin-browser-auth.yaml -n resource-health
+
 kubectl apply -f generated-ingress.yaml -n resource-health
 ```
 
@@ -208,15 +215,43 @@ kubectl apply -f generated-ingress.yaml -n resource-health
 
 ---
 
-### 4. Configure Keycloak Client
+### 5. Configure Keycloak Client
 
-To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.
+This step only applies if OIDC is enabled. To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.
 
 #### If you are using Crossplane:
 
-```
+```bash
 kubectl apply -f keycloak.yaml
 ```
+
+This creates the `opensearch_user` realm role and the client's realm-role protocol mapper. It does **not** assign the role to your test user: Crossplane's `Roles` resource needs a `user.keycloak.m.crossplane.io` `User` object to reference, but `KEYCLOAK_TEST_USER` is normally a plain Keycloak user (not a Crossplane-managed one). Assign it via the Admin REST API instead:
+
+```bash
+source ~/.eoepca/state
+
+ADMIN_TOKEN=$(curl -s -X POST \
+  -d "username=${KEYCLOAK_ADMIN_USER}" \
+  --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+  -d "grant_type=password" \
+  -d "client_id=admin-cli" \
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
+  | jq -r '.access_token')
+
+USER_ID=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${KEYCLOAK_TEST_USER}" \
+  | jq -r '.[0].id')
+
+ROLE_JSON=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/roles/opensearch_user")
+
+curl -s -X POST \
+  -H "Authorization: Bearer ${ADMIN_TOKEN}" -H "Content-Type: application/json" \
+  -d "[${ROLE_JSON}]" \
+  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${USER_ID}/role-mappings/realm"
+```
+
+> **Note**: this uses the `master` realm for the admin token, since `admin-cli`'s default admin account normally isn't a user of your own realm. If `KEYCLOAK_ADMIN_USER` is a user of `${REALM}` instead, use `${REALM}` here.
 
 #### OR If you are configuring Keycloak manually, follow these steps:
 
@@ -256,7 +291,7 @@ This configuration ensures Keycloak will correctly include realm roles in the JW
 
 ---
 
-### 4. Monitor the Deployment
+### 6. Monitor the Deployment
 
 Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
 
@@ -436,6 +471,10 @@ If no data appears yet, wait a moment for the checks to complete and telemetry t
 
 Visit `https://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
 
+**Via OpenSearch Dashboards:**
+
+Visit `https://resource-health.${INGRESS_HOST}/dashboards` to query the raw `ss4o_traces-*` indices directly. With OIDC disabled, log in with `admin`/`admin`.
+
 ---
 
 ### Delete a Health Check
@@ -508,7 +547,8 @@ resource-health:
 Apply the updated configuration:
 
 ```bash
-helm upgrade resource-health reference-repo/resource-health-reference-deployment \
+helm upgrade resource-health eoepca-dev/resource-health-reference-deployment \
+  --version 2.1.1 \
   -f generated-values.yaml \
   -n resource-health
 ```
@@ -529,6 +569,29 @@ helm upgrade resource-health reference-repo/resource-health-reference-deployment
 
 The check will immediately appear in the dashboard and begin running according to its schedule.
 
+
+## Uninstallation
+
+To uninstall Resource Health and clean up associated resources:
+
+```bash
+source ~/.eoepca/state
+
+kubectl delete -f generated-ingress.yaml --ignore-not-found
+kubectl delete -f apisix/plugin-api-auth.yaml -n resource-health --ignore-not-found
+kubectl delete -f apisix/plugin-browser-auth.yaml -n resource-health --ignore-not-found
+
+helm uninstall resource-health -n resource-health || true
+kubectl delete namespace resource-health --ignore-not-found
+
+if [ "${RESOURCE_HEALTH_ENABLE_OIDC:-no}" = "yes" ]; then
+  kubectl delete -f keycloak.yaml --ignore-not-found
+  kubectl delete client.openidclient.keycloak.m.crossplane.io "${RESOURCE_HEALTH_CLIENT_ID}" -n iam-management --ignore-not-found
+  kubectl delete secret "${RESOURCE_HEALTH_CLIENT_ID}-keycloak-client" -n iam-management --ignore-not-found
+fi
+```
+
+---
 
 ## Further Reading
 

@@ -65,6 +65,38 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: rhd
+  namespace: resource-health
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+
+spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
+  tls:
+    - hosts:
+        - resource-health.{{ getenv "INGRESS_HOST" }}
+      secretName: resource-health-tls
+  {{- end }}
+  rules:
+    - host: resource-health.{{ getenv "INGRESS_HOST" }}
+      http:
+        paths:
+          - path: /dashboards/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: resource-health-opensearch-dashboards
+                port:
+                  number: 5601
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
   name: rhw
   namespace: resource-health
   annotations:

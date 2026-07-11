@@ -16,7 +16,9 @@ spec:
     backends:
       - serviceName: resource-health-web
         servicePort: 80
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
     plugin_config_name: resource-health-route-browser-auth-plugin
+{{- end }}
 
   - name: resource-health-telemetry-api-route
     match:
@@ -33,7 +35,9 @@ spec:
         enable: true
         config:
           regex_uri: ["^/api/telemetry/(.*)", "/$1"]
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
     plugin_config_name: resource-health-route-browser-auth-plugin
+{{- end }}
 
   - name: resource-health-check-api-route
     match:
@@ -50,7 +54,28 @@ spec:
         enable: true
         config:
           regex_uri: ["^/api/healthchecks/(.*)", "/$1"]
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
     plugin_config_name: resource-health-route-browser-auth-plugin
+{{- end }}
+
+  - name: resource-health-dashboards-route
+    match:
+      hosts:
+        - resource-health.{{ getenv "INGRESS_HOST" }}
+      paths:
+        - /dashboards
+        - /dashboards/*
+    backends:
+      - serviceName: resource-health-opensearch-dashboards
+        servicePort: 5601
+    plugins:
+      - name: proxy-rewrite
+        enable: true
+        config:
+          regex_uri: ["^/dashboards/?(.*)", "/$1"]
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
+    plugin_config_name: resource-health-route-browser-auth-plugin
+{{- end }}
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: apisix.apache.org/v2

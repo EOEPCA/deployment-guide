@@ -13,6 +13,16 @@ configure_cert
 # Ask about OIDC authentication
 ask "RESOURCE_HEALTH_ENABLE_OIDC" "Enable OIDC protection for Resource Health? (yes/no)" "yes" is_yes_no
 
+# OIDC protection is enforced at the ingress layer via an APISIX ApisixRoute +
+# openid-connect plugin. There is no nginx equivalent in this guide, so
+# generating an nginx ingress with OIDC "enabled" would silently deploy an
+# unprotected backend while the app still expects auth headers.
+if [ "$RESOURCE_HEALTH_ENABLE_OIDC" = "yes" ] && [ "$INGRESS_CLASS" != "apisix" ]; then
+    echo "❌ OIDC-protected Resource Health currently requires INGRESS_CLASS=apisix."
+    echo "   Re-run the configuration and select APISIX, or set RESOURCE_HEALTH_ENABLE_OIDC=no."
+    exit 1
+fi
+
 if [[ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]]; then
     ask "RESOURCE_HEALTH_CLIENT_ID" "Enter the Resource Health Keycloak Client ID" "resource-health" is_non_empty
 
@@ -24,6 +34,14 @@ if [[ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]]; then
     echo "❗  Generated client secret for Resource Health."
     echo "   Please store this securely: $RESOURCE_HEALTH_CLIENT_SECRET"
     echo ""
+
+    # Used by the APISIX openid-connect plugin to encrypt its session cookie.
+    # Shared across all plugin config instances so any APISIX worker can
+    # decrypt a session cookie issued by another.
+    if [ -z "$RESOURCE_HEALTH_SESSION_SECRET" ]; then
+        RESOURCE_HEALTH_SESSION_SECRET=$(generate_aes_key 32)
+        add_to_state_file "RESOURCE_HEALTH_SESSION_SECRET" "$RESOURCE_HEALTH_SESSION_SECRET"
+    fi
 
     if [ -z "$KEYCLOAK_HOST" ]; then
         ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
@@ -42,11 +60,35 @@ if [[ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]]; then
     fi
 fi
 
+# The chart always deploys the alerting component (email notifications for
+# failed health checks), and it requires MAX_EMAILS_PER_DAY, SMTP_MAILER_HOST,
+# FROM_EMAIL and FROM_EMAIL_PASSWORD to be set or it crashloops on startup.
+# Real email delivery is optional; safe placeholders keep the pod up if you
+# don't want to wire up SMTP.
+ask "RESOURCE_HEALTH_ENABLE_ALERTING" "Enable email alerting for failed health checks? (yes/no)" "no" is_yes_no
+
+if [ "$RESOURCE_HEALTH_ENABLE_ALERTING" == "yes" ]; then
+    ask "RESOURCE_HEALTH_SMTP_HOST" "SMTP server host for alert emails" "smtp.gmail.com" is_non_empty
+    ask "RESOURCE_HEALTH_SMTP_PORT" "SMTP server port" "465" is_non_empty
+    ask "RESOURCE_HEALTH_FROM_EMAIL" "From-email address for alert emails" "noreply@example.com" is_non_empty
+    ask "RESOURCE_HEALTH_FROM_EMAIL_PASSWORD" "Password/app-password for the from-email account" "" is_non_empty
+    ask "RESOURCE_HEALTH_MAX_EMAILS_PER_DAY" "Maximum alert emails to send per day" "300" is_non_empty
+else
+    RESOURCE_HEALTH_SMTP_HOST="${RESOURCE_HEALTH_SMTP_HOST:-smtp.example.com}"
+    RESOURCE_HEALTH_SMTP_PORT="${RESOURCE_HEALTH_SMTP_PORT:-465}"
+    RESOURCE_HEALTH_FROM_EMAIL="${RESOURCE_HEALTH_FROM_EMAIL:-noreply@example.com}"
+    RESOURCE_HEALTH_FROM_EMAIL_PASSWORD="${RESOURCE_HEALTH_FROM_EMAIL_PASSWORD:-disabled}"
+    RESOURCE_HEALTH_MAX_EMAILS_PER_DAY="0"
+fi
+export RESOURCE_HEALTH_SMTP_HOST RESOURCE_HEALTH_SMTP_PORT RESOURCE_HEALTH_FROM_EMAIL RESOURCE_HEALTH_FROM_EMAIL_PASSWORD RESOURCE_HEALTH_MAX_EMAILS_PER_DAY
+
 # APISIX-specific templating
 if [ "$INGRESS_CLASS" == "apisix" ]; then
     gomplate -f "apisix/apisix-ingress-template.yaml" -o "$INGRESS_OUTPUT_PATH"
-    gomplate -f "apisix/apisix-route-browser-auth-plugin-template.yaml" -o "apisix/plugin-browser-auth.yaml"
-    gomplate -f "apisix/apisix-route-plugin-template.yaml" -o "apisix/plugin-api-auth.yaml"
+    if [ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]; then
+        gomplate -f "apisix/apisix-route-browser-auth-plugin-template.yaml" -o "apisix/plugin-browser-auth.yaml"
+        gomplate -f "apisix/apisix-route-plugin-template.yaml" -o "apisix/plugin-api-auth.yaml"
+    fi
 
 elif [ "$INGRESS_CLASS" == "nginx" ]; then
     gomplate -f "nginx-ingress-template.yaml" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

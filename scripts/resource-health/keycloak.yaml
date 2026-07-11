@@ -10,7 +10,7 @@ spec:
     name: opensearch_user
     description: Role for OpenSearch access via Resource Health
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: client.keycloak.m.crossplane.io/v1alpha1
@@ -34,22 +34,36 @@ spec:
       access.token.claim: "true"
       userinfo.token.claim: "true"
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
-apiVersion: user.keycloak.m.crossplane.io/v1alpha1
-kind: Roles
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
 metadata:
-  name: eoepcauser-opensearch-role
+  name: resource-health-audience-mapper
   namespace: iam-management
 spec:
   forProvider:
     realmId: eoepca
-    exhaustive: false
-    userIdRef:
-      name: eoepcauser
-    roleIdsRefs:
-      - name: opensearch-user-role
+    clientIdRef:
+      name: resource-health
+    name: audience-account
+    protocol: openid-connect
+    protocolMapper: oidc-audience-mapper
+    config:
+      # check_api/telemetry_api validate OPEN_ID_CONNECT_AUDIENCE="account"
+      # (see values-template.yaml); without this mapper the access token has
+      # no "aud" claim at all and every request 403s with
+      # "Invalid authentication credentials".
+      included.client.audience: account
+      access.token.claim: "true"
+      id.token.claim: "false"
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
+# There is deliberately no Crossplane Roles resource here to assign
+# opensearch_user to your test user: that CR needs a user.keycloak.m.crossplane.io
+# User object to reference, but KEYCLOAK_TEST_USER is normally a plain Keycloak
+# user created via the Admin REST API (see the IAM BB docs), not a Crossplane
+# resource. Assign the role via REST instead - see the guide's "Assign the
+# Realm Role" step below.

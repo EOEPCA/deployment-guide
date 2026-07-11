@@ -1,6 +1,10 @@
 global:
   defaultInternalIssuerRef:
     name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
+  # Chart defaults point at a dev-cluster hostname; these are used to build
+  # self-referential links (e.g. JSON:API "links") in API responses.
+  defaultCheckAPIBaseURL: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/
+  defaultTelemetryAPIBaseURL: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/
 
 opensearch:
   persistence:
@@ -17,6 +21,34 @@ opensearch:
   securityConfig:
     config:
       data:
+        # The chart's own default roles.yml (same "own_trace_data_access" role)
+        # is missing the required _meta header, which makes securityadmin.sh
+        # reject it ("not in OpenSearch Security 7 format") and prevents the
+        # whole security index from applying. Re-declared here with the fix.
+        roles.yml: |-
+          _meta:
+            type: "roles"
+            config_version: 2
+
+          own_trace_data_access:
+            reserved: false
+            hidden: false
+            cluster_permissions: []
+            index_permissions:
+            - index_patterns:
+              - "ss4o_*-default-namespace*"
+              dls: "{ \"bool\": { \"must\" : { \"match\": { \"resource.user.id\" : \"${user.name}\"\
+                \ } } } }"
+              fls: []
+              masked_fields: []
+              allowed_actions:
+              - "crud"
+              - "view_metadata"
+              - "indices:admin/mappings/get"
+              - "indices:monitor/settings/get"
+              - "indices:admin/get"
+            tenant_permissions: []
+            static: false
         roles_mapping.yml: |-
           _meta:
             type: "rolesmapping"
@@ -33,6 +65,37 @@ opensearch:
             users:
               - "admin"
               - "otel-collector"
+
+          # This whole file replaces the chart's own default roles_mapping.yml
+          # (Helm doesn't deep-merge multi-line string values), which is what
+          # normally grants OpenSearch Dashboards' own "dashboards-client" mTLS
+          # identity its permissions - re-declared here so dashboards keeps working.
+          kibana_server:
+            reserved: true
+            hidden: false
+            backend_roles: []
+            hosts: []
+            users:
+              - "dashboards-client"
+            and_backend_roles: []
+{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "no" }}
+        # Chart ships no real internal user by default (just a commented-out
+        # example), but the check_api/telemetry_api no-auth hooks hardcode
+        # http_auth=("admin", "admin") to reach OpenSearch. Without this the
+        # security index has no "admin" user and every OpenSearch-backed
+        # request 401s. Only needed for the no-OIDC demo path.
+        internal_users.yml: |-
+          _meta:
+            type: "internalusers"
+            config_version: 2
+
+          admin:
+            hash: "$2y$12$QNfU3Ejw1wqlPLzTc9C3IuiN7kCUKNdNTMoByQm9W8hej7H72nbB."
+            reserved: true
+            backend_roles:
+              - "admin"
+            description: "Guide-managed admin user for the no-OIDC demo path"
+{{- end }}
         config.yml: |-
           _meta:
             type: "config"
@@ -60,7 +123,11 @@ opensearch:
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                   order: 2
 {{- else }}
-                  order: 1
+                  # Must run after clientcert_auth_domain (below): this
+                  # domain's challenge:true would otherwise short-circuit the
+                  # chain with a 401 before a client cert (e.g. dashboards'
+                  # own dashboards-client identity) is even considered.
+                  order: 2
 {{- end }}
                   http_authenticator:
                     type: basic
@@ -71,11 +138,7 @@ opensearch:
                   description: "Authenticate via SSL client certificates"
                   http_enabled: true
                   transport_enabled: false
-{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                   order: 1
-{{- else }}
-                  order: 2
-{{- end }}
                   http_authenticator:
                     type: clientcert
                     config:
@@ -465,6 +528,28 @@ resource-health:
             """Tag cronjob with owner on creation."""
             cronjob.metadata.annotations["owner"] = userinfo["username"]
 {{- end }}
+
+  alerting:
+    secretMounts:
+      - name: alert-user-emails
+        secretName: resource-health-alerting-user-emails
+        mountPath: /app/alerting-user-emails
+    environmentFixed:
+      - name: MAX_EMAILS_PER_DAY
+        value: "{{ getenv "RESOURCE_HEALTH_MAX_EMAILS_PER_DAY" }}"
+      - name: SMTP_MAILER_HOST
+        value: "{{ getenv "RESOURCE_HEALTH_SMTP_HOST" }}"
+      - name: SMTP_MAILER_PORT
+        value: "{{ getenv "RESOURCE_HEALTH_SMTP_PORT" }}"
+      - name: ALERT_USER_EMAILS
+        value: "/app/alerting-user-emails/alert_user_emails.json"
+    environmentSecrets:
+      - name: FROM_EMAIL
+        secret: resource-health-notifier-email-credentials
+        key: from_email
+      - name: FROM_EMAIL_PASSWORD
+        secret: resource-health-notifier-email-credentials
+        key: from_email_password
 
   web:
     replicaCount: 1
