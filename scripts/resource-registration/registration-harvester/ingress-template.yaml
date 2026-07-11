@@ -2,7 +2,7 @@
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
-  name: registration-harvester-api
+  name: registration-harvester-bpm-engine
   namespace: resource-registration
 spec:
   ingressClassName: apisix
@@ -10,42 +10,67 @@ spec:
     - name: redirect-root
       match:
         hosts:
-          - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+          - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
         paths:
           - /
-          - /flowable-rest
+          - /operaton
       plugins:
         - name: redirect
           enable: true
           config:
-            uri: /flowable-rest/
+            uri: /operaton/
       backends:
-        - serviceName: registration-harvester-api-engine-flowable-rest
+        - serviceName: registration-harvester-bpm-engine-operaton
           servicePort: 8080
 
-    - name: rewrite-flowable-path
+    - name: rewrite-operaton-path
       match:
         hosts:
-          - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+          - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
         paths:
-          - /flowable-rest/*
+          - /operaton/*
       backends:
-        - serviceName: registration-harvester-api-engine-flowable-rest
+        - serviceName: registration-harvester-bpm-engine-operaton
+          servicePort: 8080
+
+    - name: redirect-rest-api
+      match:
+        hosts:
+          - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /engine-rest
+      plugins:
+        - name: redirect
+          enable: true
+          config:
+            uri: /engine-rest/
+      backends:
+        - serviceName: registration-harvester-bpm-engine-operaton
+          servicePort: 8080
+
+    - name: rewrite-operaton-rest-api-path
+      match:
+        hosts:
+          - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /engine-rest/*
+      backends:
+        - serviceName: registration-harvester-bpm-engine-operaton
           servicePort: 8080
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: registration-harvester-api-tls
+  name: registration-harvester-bpm-engine-tls
   namespace: resource-registration
 spec:
   dnsNames:
-    - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+    - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
   issuerRef:
     kind: ClusterIssuer
     name: {{ getenv "CLUSTER_ISSUER" }}
-  secretName: registration-harvester-api-tls
+  secretName: registration-harvester-bpm-engine-tls
   usages:
     - digital signature
     - key encipherment
@@ -54,14 +79,14 @@ spec:
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
 metadata:
-  name: registration-harvester-api-tls
+  name: registration-harvester-bpm-engine-tls
   namespace: resource-registration
 spec:
   ingressClassName: apisix
   hosts:
-    - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+    - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
   secret:
-    name: registration-harvester-api-tls
+    name: registration-harvester-bpm-engine-tls
     namespace: resource-registration
 {{- end }}
 
@@ -69,37 +94,44 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: registration-harvester-api
+  name: registration-harvester-bpm-engine
   namespace: resource-registration
   annotations:
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
-    nginx.ingress.kubernetes.io/app-root: /flowable-rest/
+    nginx.ingress.kubernetes.io/app-root: /operaton/
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+    - host: registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
-          - path: /flowable-rest
+          - path: /operaton
             pathType: Prefix
             backend:
               service:
-                name: registration-harvester-api-engine-flowable-rest
+                name: registration-harvester-bpm-engine-operaton
+                port:
+                  number: 8080
+          - path: /engine-rest
+            pathType: Prefix
+            backend:
+              service:
+                name: registration-harvester-bpm-engine-operaton
                 port:
                   number: 8080
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: registration-harvester-api-engine-flowable-rest
+                name: registration-harvester-bpm-engine-operaton
                 port:
                   number: 8080
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
-        - registration-harvester-api.{{ getenv "INGRESS_HOST" }}
-      secretName: registration-harvester-api-tls
+        - registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}
+      secretName: registration-harvester-bpm-engine-tls
   {{- end }}
 {{- end }}

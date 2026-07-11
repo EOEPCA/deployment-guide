@@ -7,13 +7,6 @@ source "$HOME/.eoepca/state"
 echo "Applying Kubernetes secrets..."
 kubectl create namespace resource-registration --dry-run=client -o yaml | kubectl apply -f -
 
-# Create secrets for Flowable
-kubectl create secret generic flowable-admin-credentials \
-  --from-literal=FLOWABLE_ADMIN_USER="$FLOWABLE_ADMIN_USER" \
-  --from-literal=FLOWABLE_ADMIN_PASSWORD="$FLOWABLE_ADMIN_PASSWORD" \
-  --namespace resource-registration \
-  --dry-run=client -o yaml | kubectl apply -f -
-
 # ask if they want to enable USGS M2M for Landsat Harvesting
 read -p "Do you want to enable USGS M2M credentials for Landsat Harvesting? (y/n): " enable_m2m
 if [[ "$enable_m2m" == "y" || "$enable_m2m" == "Y" ]]; then
@@ -39,8 +32,13 @@ create_secret() {
   local secret_name="$1"
   
   kubectl_cmd="kubectl create secret generic $secret_name"
-  kubectl_cmd="$kubectl_cmd --from-literal=FLOWABLE_USER=\"$FLOWABLE_ADMIN_USER\""
-  kubectl_cmd="$kubectl_cmd --from-literal=FLOWABLE_PASSWORD=\"$FLOWABLE_ADMIN_PASSWORD\""
+
+  if [[ "$secret_name" == "registration-harvester-secret" ]]; then
+    # Consumed both by the harvester worker pods (envFrom) and by the
+    # Operaton chart's postgres subchart (database.credentialsSecretName).
+    kubectl_cmd="$kubectl_cmd --from-literal=OPERATON_DB_USERNAME=\"operaton\""
+    kubectl_cmd="$kubectl_cmd --from-literal=OPERATON_DB_PASSWORD=\"$OPERATON_DB_PASSWORD\""
+  fi
 
   if [[ "$enable_m2m" == "y" || "$enable_m2m" == "Y" ]]; then
     kubectl_cmd="$kubectl_cmd --from-literal=M2M_USER=\"$M2M_USER\""

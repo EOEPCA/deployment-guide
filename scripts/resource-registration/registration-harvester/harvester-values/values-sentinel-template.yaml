@@ -2,7 +2,7 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: 2.0.0-rc3
+    tag: 2.1.0-dev11
   secret:
     name: registration-harvester-secret
   eodata:
@@ -10,60 +10,84 @@ harvester:
     createPVC: false
     claimName: eodata
   config:
-    worker:
-      log_level: INFO
-      flowable:
-        host: {{ getenv "HTTP_SCHEME"}}://registration-harvester-api.{{ getenv "INGRESS_HOST" }}/flowable-rest
-        tls: true
-        cacert: ./etc/eoepca-ca-chain.pem
-      topics:
-        sentinel_discover_data:
-          module: worker.sentinel.tasks
-          handler: SentinelDiscoverHandler
-        sentinel_continuous_data_discovery:
-          module: worker.sentinel.tasks
-          handler: SentinelContinuousDiscoveryHandler
-        sentinel_download_data:
-          module: worker.sentinel.tasks
-          handler: SentinelDownloadHandler
-        sentinel_unzip:
-          module: worker.sentinel.tasks
-          handler: SentinelUnzipHandler
-        sentinel_check_integrity:
-          module: worker.sentinel.tasks
-          handler: SentinelCheckIntegrityHandler
-        sentinel_extract_metadata:
-          module: worker.sentinel.tasks
-          handler: SentinelExtractMetadataHandler
-        sentinel_register_metadata:
-          module: worker.sentinel.tasks
-          handler: SentinelRegisterMetadataHandler
-      handlers:
-        SentinelDiscoverHandler:
-          api_url: https://datahub.creodias.eu/odata/v1
-          limit: 1000
-        SentinelContinuousDiscoveryHandler:
-          enabled: false
-          api_url: https://datahub.creodias.eu/odata/v1
-          limit: 1000
-          timewindow_hours: 1
-          filter: (startswith(Name,'S2') and contains(Name,'L2A') and not contains(Name,'_N9999')) and (intersects(area=geography'SRID=4326;POLYGON((3 55, 3 47, 18 47, 18 55, 3 55))'))
-        SentinelDownloadHandler:
-          subscription:
-            lock_duration: PT30M  # 30 minute lock duration
-          base_dir: /eodata/sentinel
-          retryTimeout: 10
-        SentinelUnzipHandler:
-          remove_zip: false
-        SentinelCheckIntegrityHandler:
-          subscription:
-            number_of_retries: 3
-            lock_duration: PT10M  # 10 minute lock duration
-        SentinelExtractMetadataHandler:
-          collections_dir: ./etc/collections
-        SentinelRegisterMetadataHandler:
-          stac_api_url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac
-          stac_file_deletion: true
-          rewrite_asset_hrefs:
-            prefix_from: "/eodata/"
-            prefix_to: "{{ getenv "EODATA_ASSET_BASE_URL" }}"
+    log_level: INFO
+    bpm_engine:
+      url: {{ getenv "HTTP_SCHEME" }}://registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}/engine-rest
+      lock_duration: 300000  # 5 minutes
+      retries: 3
+      retry_timeout: 30000  # 30 seconds
+      async_response_timeout: 30000 # 30 seconds
+      timeout_delta_millis: 300000 # 5 minutes
+      sleep_seconds: 15
+      http_timeout_millis: 420000 # 7 minutes
+{{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
+    iam:
+      oidc_token_endpoint_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+{{- end }}
+    topics:
+      sentinel_ondemand_discovery:
+        module: worker.sentinel.tasks
+        handler: SentinelDiscoverHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+      sentinel_continuous_discovery:
+        module: worker.sentinel.tasks
+        handler: SentinelContinuousDiscoveryHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+      sentinel_download_scene:
+        module: worker.sentinel.tasks
+        handler: SentinelDownloadHandler
+        lock_duration: 18000000  # 30 minutes
+        workers: 1
+        parallel_tasks: 1
+      sentinel_unzip:
+        module: worker.sentinel.tasks
+        handler: SentinelUnzipHandler
+        lock_duration: 18000000  # 30 minutes
+        workers: 1
+        parallel_tasks: 1
+      sentinel_check_integrity:
+        module: worker.sentinel.tasks
+        handler: SentinelCheckIntegrityHandler
+        lock_duration: 18000000  # 30 minutes
+        workers: 1
+        parallel_tasks: 1
+      sentinel_extract_metadata:
+        module: worker.sentinel.tasks
+        handler: SentinelExtractMetadataHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+      sentinel_register_metadata:
+        module: worker.sentinel.tasks
+        handler: SentinelRegisterMetadataHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+    handlers:
+      SentinelDiscoverHandler:
+        api_url: https://datahub.creodias.eu/odata/v1
+        limit: 1000
+      SentinelContinuousDiscoveryHandler:
+        enabled: false
+        api_url: https://datahub.creodias.eu/odata/v1
+        limit: 1000
+        timewindow_hours: 1
+        filter: (startswith(Name,'S2') and contains(Name,'L2A') and not contains(Name,'_N9999')) and (intersects(area=geography'SRID=4326;POLYGON((3 55, 3 47, 18 47, 18 55, 3 55))'))
+      SentinelDownloadHandler:
+        base_dir: /eodata/sentinel
+        retryTimeout: 10
+      SentinelUnzipHandler:
+        remove_zip: false
+      SentinelCheckIntegrityHandler: {}
+      SentinelExtractMetadataHandler:
+        collections_dir: ./etc/collections
+      SentinelRegisterMetadataHandler:
+        stac_api_url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/stac
+        stac_file_deletion: true
+        rewrite_asset_hrefs:
+          prefix_from: "/eodata/"
+          prefix_to: "{{ getenv "EODATA_ASSET_BASE_URL" }}"

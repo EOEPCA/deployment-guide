@@ -8,8 +8,13 @@ ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTE
 ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for SHARED data (ReadWriteMany)" "standard" is_non_empty
 configure_cert
 
-ask "FLOWABLE_ADMIN_USER" "Set what you'd like your Flowable admin username to be" "eoepca" is_non_empty
-ask "FLOWABLE_ADMIN_PASSWORD" "Set what you'd like your Flowable admin password to be" "eoepca" is_non_empty
+ask "OPERATON_ADMIN_USER" "Set what you'd like your Operaton (BPM engine) admin username to be" "eoepca" is_non_empty
+ask "OPERATON_ADMIN_PASSWORD" "Set what you'd like your Operaton (BPM engine) admin password to be" "eoepca" is_non_empty
+
+if [ -z "${OPERATON_DB_PASSWORD:-}" ]; then
+  OPERATON_DB_PASSWORD="$(generate_password)"
+  add_to_state_file "OPERATON_DB_PASSWORD" "$OPERATON_DB_PASSWORD"
+fi
 
 # eodata base URL
 ask "EODATA_ASSET_BASE_URL" "Set the base URL through which harvested 'eodata' assets will be accessed" "${HTTP_SCHEME}://eodata.${INGRESS_HOST}/" is_non_empty
@@ -57,6 +62,7 @@ gomplate  -f "registration-harvester/$TEMPLATE_PATH" -o "registration-harvester/
 gomplate  -f "registration-harvester/$INGRESS_TEMPLATE_PATH" -o "registration-harvester/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/harvester-values/values-landsat-template.yaml" -o "registration-harvester/harvester-values/values-landsat.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "registration-harvester/harvester-values/values-sentinel-template.yaml" -o "registration-harvester/harvester-values/values-sentinel.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate  -f "registration-harvester/harvester-values/values-stac-template.yaml" -o "registration-harvester/harvester-values/values-stac.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 # eodata-server + STAC browser
 gomplate  -f "registration-harvester/eodata-server-template.yaml" -o "registration-harvester/generated-eodata-server.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

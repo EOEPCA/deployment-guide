@@ -35,7 +35,7 @@ The Resource Registration BB comprises three main components:
 An OGC API Processes interface for registering, updating, or deleting resources on the local platform.
     
 2. **Harvester**  
-Automates workflows (via Flowable BPMN) to harvest data from external sources. This guide demonstrates harvesting Landsat data from USGS.
+Automates workflows (via the Operaton BPM engine) to harvest data from external sources. This guide demonstrates harvesting Landsat data from USGS.
     
 3. **Common Registration Library**  
 A Python library consolidating upstream packages (e.g. STAC tools, eometa tools) for business logic in workflows and resource handling.
@@ -85,16 +85,16 @@ During the script execution, you will be prompted to provide:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for `Flowable` database.
+- **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for the `Operaton` BPM engine's database.
     - *Default*: `local-path`
 - **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
     - *Default*: `standard`
     > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
     - *Example*: `letsencrypt-http01-apisix`
-- **`FLOWABLE_ADMIN_USER`**: Admin username for Flowable.
+- **`OPERATON_ADMIN_USER`**: Admin username for the Operaton BPM engine.
     - *Default*: `eoepca`
-- **`FLOWABLE_ADMIN_PASSWORD`**: Admin password for Flowable.
+- **`OPERATON_ADMIN_PASSWORD`**: Admin password for the Operaton BPM engine.
     - *Default*: `eoepca`
 - **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
     - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
@@ -167,20 +167,20 @@ kubectl apply -f registration-api/generated-ingress.yaml
 
 ### 4. Deploy the Registration Harvester Components
 
-The Registration Harvester consists of the Flowable engine and worker deployments.
+The Registration Harvester consists of the Operaton BPM engine and worker deployments.
 
-#### Deploy Flowable Engine
+#### Deploy the Operaton BPM Engine
 ```bash
-helm repo add flowable https://flowable.github.io/helm/
-helm repo update flowable
-helm upgrade -i registration-harvester-api-engine flowable/flowable \
-  --version 7.0.0 \
+helm repo add operaton https://dlr-terrabyte.github.io/operaton-helm/
+helm repo update operaton
+helm upgrade -i registration-harvester-bpm-engine operaton/operaton \
+  --version 1.0.6 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/generated-values.yaml
 ```
 
-Deploy the ingress for the Flowable Engine:
+Deploy the ingress for the Operaton BPM engine:
 ```bash
 kubectl apply -f registration-harvester/generated-ingress.yaml
 ```
@@ -251,7 +251,7 @@ Deploy the worker that executes Landsat harvesting tasks:
 
 ```bash
 helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-harvester \
-  --version 2.0.0-rc3 \
+  --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-landsat.yaml
@@ -263,10 +263,22 @@ Deploy the worker that harvests Sentinel data from CDSE:
 
 ```bash
 helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-harvester \
-  --version 2.0.0-rc3 \
+  --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-harvester/harvester-values/values-sentinel.yaml
+```
+
+#### Deploy the STAC Harvester Worker
+
+Deploy the worker that harvests generic STAC catalogues, registering into the [Data Access](./data-access.md) eoAPI STAC endpoint (rather than Resource Discovery):
+
+```bash
+helm upgrade -i registration-harvester-worker-stac eoepca-dev/registration-harvester \
+  --version 2.0.0 \
+  --namespace resource-registration \
+  --create-namespace \
+  --values registration-harvester/harvester-values/values-stac.yaml
 ```
 
 ### 5. Monitor the Deployment
@@ -334,7 +346,7 @@ spec:
       name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client
       key: client_secret
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
@@ -373,10 +385,18 @@ source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/openapi?f=html"
 ```
 
-**Flowable REST API:**
+**Operaton BPM Engine (webapp):**
 ```bash
 source ~/.eoepca/state
-xdg-open "${HTTP_SCHEME}://registration-harvester-api.${INGRESS_HOST}/flowable-rest/docs/"
+xdg-open "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/operaton/"
+```
+
+> Authenticate as the configured Operaton admin user - ref. `OPERATON_ADMIN_USER` / `OPERATON_ADMIN_PASSWORD`.
+
+**Operaton REST API:**
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/engine"
 ```
 
 ---
@@ -497,8 +517,9 @@ To exploit this we deploy the Landsat workflow, comprising two BPMN processes. T
 ```bash
 source ~/.eoepca/state
 curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+  -F "deployment-name=landsat" \
   -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
 ```
 
@@ -507,48 +528,30 @@ curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-res
 ```bash
 source ~/.eoepca/state
 curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+  -F "deployment-name=landsat-scene-ingestion" \
   -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
 ```
 
+> Note: the Operaton REST API deployment/process endpoints are not protected by HTTP basic auth by default - the `-u` flag above is only needed if you've explicitly enabled REST API authentication. Confirm against your deployment; drop `-u` if you get a 401 with credentials supplied.
+
 #### Execute Landsat Harvesting
 
-Start a Landsat harvesting job:
+The main `landsat-data-ingestion` process (id `landsat-data-ingestion`) is triggered via its message start event (message name `landsat-start-order`), rather than started directly by process definition - use the `/message` endpoint to correlate it:
 
 ```bash
 source ~/.eoepca/state
-# Get process ID
-processes="$( \
-  curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
-    -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
-  )"
-landsat_process_id="$(echo "$processes" | jq -r '[.data[] | select(.name == "Landsat Workflow")][0].id')"
-
-# Start harvesting
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
-  -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
+curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/message" \
   -H "Content-Type: application/json" \
   -d @- <<EOF | jq
 {
-  "processDefinitionId": "$landsat_process_id",
-  "variables": [
-    {
-      "name": "datetime_interval",
-      "type": "string",
-      "value": "2024-11-13T10:00:00Z/2024-11-13T11:00:00Z"
-    },
-    {
-      "name": "collections",
-      "type": "string",
-      "value": "landsat-c2l2-sr"
-    },
-    {
-      "name": "bbox",
-      "type": "string",
-      "value": "-7,46,3,52"
-    }
-  ]
+  "messageName": "landsat-start-order",
+  "processVariables": {
+    "datetime_interval": {"value": "2024-11-13T10:00:00Z/2024-11-13T11:00:00Z", "type": "String"},
+    "collections": {"value": "landsat-c2l2-sr", "type": "String"},
+    "bbox": {"value": "-7,46,3,52", "type": "String"}
+  }
 }
 EOF
 ```
@@ -568,9 +571,8 @@ Use `Ctrl-C` to exit the log stream.
 **Monitor process instances:**
 ```bash
 source ~/.eoepca/state
-curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  | jq -r '.data[] | "\(.startTime) | \(.id) | \(.processDefinitionName)"'
+curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
+  | jq -r '.[] | "\(.id) | \(.definitionId)"'
 ```
 
 **Check registered items:**
@@ -583,13 +585,14 @@ xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l
 
 #### Deploy Workflow for Sentinel harvesting
 
-As above for the Landsat harvester, for Sentinel harvesting two workflows must be deployed to Flowable using
+As above for the Landsat harvester, for Sentinel harvesting two workflows must be deployed to Operaton using
 
 ```bash
 source ~/.eoepca/state
 curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+  -F "deployment-name=sentinel" \
   -F "sentinel.bpmn=@-;filename=sentinel.bpmn;type=text/xml" | jq
 ```
 
@@ -597,39 +600,27 @@ and
 
 ```bash
 curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel-scene-ingestion.bpmn | \
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/deployments" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
+curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+  -F "deployment-name=sentinel-scene-ingestion" \
   -F "sentinel-scene-ingestion.bpmn=@-;filename=sentinel-scene-ingestion.bpmn;type=text/xml" | jq
 ```
 
 
 #### Execute Sentinel Harvesting
 
-Start a Sentinel harvesting job (for a small time period - this should match three records):
+Start a Sentinel harvesting job (for a small time period - this should match three records). Like Landsat, the `sentinel-data-ingestion` process is triggered via its message start event (message name `sentinel-start-order`):
 
 ```bash
 source ~/.eoepca/state
-# Get process ID
-processes="$( \
-  curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/repository/process-definitions" \
-    -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
-  )"
-sentinel_process_id="$(echo "$processes" | jq -r '[.data[] | select(.name == "Sentinel Registration")][0].id')"
-
-# Start harvesting
-curl -s -X POST "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
-  -u "${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD}" \
+curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/message" \
   -H "Content-Type: application/json" \
   -d @- <<EOF | jq
 {
-  "processDefinitionId": "$sentinel_process_id",
-  "variables": [
-    {
-      "name": "filter",
-      "type": "string",
-      "value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true"
-    }
-  ]
+  "messageName": "sentinel-start-order",
+  "processVariables": {
+    "filter": {"value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true", "type": "String"}
+  }
 }
 EOF
 ```
@@ -649,9 +640,8 @@ Use `Ctrl-C` to exit the log stream.
 **Monitor process instances:**
 ```bash
 source ~/.eoepca/state
-curl -s "https://registration-harvester-api.${INGRESS_HOST}/flowable-rest/service/runtime/process-instances" \
-  -u ${FLOWABLE_ADMIN_USER}:${FLOWABLE_ADMIN_PASSWORD} \
-  | jq -r '.data[] | "\(.startTime) | \(.id) | \(.processDefinitionName)"'
+curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
+  | jq -r '.[] | "\(.id) | \(.definitionId)"'
 ```
 
 **Check registered items:**
@@ -716,12 +706,7 @@ xdg-open "${HTTP_SCHEME}://stac-browser.${INGRESS_HOST}"
 
 ## Additional Harvester Types
 
-The Registration Harvester supports additional data sources beyond Landsat:
-
-- **Sentinel data** from Copernicus Data Space Ecosystem (CDSE)
-- **Generic STAC catalogues**
-
-Deployment of these additional harvesters follows a similar pattern but requires specific configuration and credentials. Refer to the [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester) for details.
+This guide deploys three harvester workers: **Landsat** (USGS), **Sentinel** (CDSE), and generic **STAC** catalogues (registering into [Data Access](./data-access.md)'s eoAPI rather than Resource Discovery). The STAC worker's `stac-harvest-catalog` workflow (`workflows/stac.bpmn`) has a different trigger shape to Landsat/Sentinel - check its start event(s) and the [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester) before scripting an unattended execution against it.
 
 ---
 
@@ -734,14 +719,17 @@ source ~/.eoepca/state
 
 # Remove workers
 helm uninstall registration-harvester-worker-landsat -n resource-registration
+helm uninstall registration-harvester-worker-sentinel -n resource-registration
+helm uninstall registration-harvester-worker-stac -n resource-registration
 
 # Remove ingresses
 kubectl delete -f registration-harvester/generated-ingress.yaml
 kubectl delete -f registration-api/generated-ingress.yaml
 kubectl delete -f registration-harvester/generated-eodata-server.yaml 2>/dev/null
+kubectl delete -f registration-harvester/generated-stac-browser.yaml 2>/dev/null
 
 # Remove core components
-helm uninstall registration-harvester-api-engine -n resource-registration
+helm uninstall registration-harvester-bpm-engine -n resource-registration
 helm uninstall registration-api -n resource-registration
 
 # Remove IAM resources
@@ -758,6 +746,6 @@ kubectl delete namespace resource-registration
 
 - [EOEPCA+ Resource Registration GitHub Repository](https://github.com/EOEPCA/resource-registration)
 - [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester)
-- [Flowable BPMN Platform](https://flowable.com/open-source/)
+- [Operaton BPM Platform](https://operaton.org/)
 - [pygeoapi Documentation](https://pygeoapi.io/)
 - [EOEPCA+ Helm Charts](https://eoepca.github.io/helm-charts)

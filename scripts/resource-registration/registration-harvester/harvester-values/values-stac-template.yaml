@@ -1,0 +1,57 @@
+harvester:
+  image:
+    repository: eoepca/registration-harvester
+    pullPolicy: Always
+    tag: 2.1.0-dev15
+  secret:
+    name: registration-harvester-secret
+  config:
+    log_level: INFO
+    bpm_engine:
+      url: {{ getenv "HTTP_SCHEME" }}://registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}/engine-rest
+      lock_duration: 300000  # 5 minutes
+      retries: 3
+      retry_timeout: 30000  # 30 seconds
+      async_response_timeout: 30000 # 30 seconds
+      timeout_delta_millis: 300000 # 5 minutes
+      sleep_seconds: 15
+      http_timeout_millis: 420000 # 7 minutes
+{{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
+    iam:
+      oidc_token_endpoint_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+{{- end }}
+    topics:
+      stac_harvest_catalog:
+        module: worker.stac.tasks
+        handler: StacCatalogHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+        retries: 5
+      stac_harvest_collection:
+        module: worker.stac.tasks
+        handler: StacCollectionHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+        retries: 5
+      stac_harvest_item:
+        module: worker.stac.tasks
+        handler: StacItemHandler
+        lock_duration: 6000000   # 10 minutes
+        workers: 1
+        parallel_tasks: 1
+        retries: 5
+    handlers:
+      StacCatalogHandler: {}
+      StacCollectionHandler:
+        timewindow_hours: 1
+        stac_api_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+        stac_api_ca_cert: ""
+        stac_api_user: ""
+        stac_api_pw: ""
+      StacItemHandler:
+        stac_api_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+        stac_api_ca_cert: ""
+        stac_api_user: ""
+        stac_api_pw: ""

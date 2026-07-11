@@ -1,21 +1,41 @@
-
+#-------------------------------------------------------------------------------
+# Operaton BPM engine
+#-------------------------------------------------------------------------------
 global:
-  storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
+  defaultStorageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
-#-------------------------------------------------------------------------------
-# Flowable
-#-------------------------------------------------------------------------------
-host:
-  external: registration-harvester-api.{{ getenv "INGRESS_HOST" }}
+general:
+  nameOverride: operaton
 
-rest:
-  admin:
-    username: {{ getenv "FLOWABLE_ADMIN_USER" }}
-    password: {{ getenv "FLOWABLE_ADMIN_PASSWORD" }}
+image:
+  tag: "2.1.0"
 
 ingress:
   enabled: false
 
+database:
+  credentialsSecretEnabled: true
+  credentialsSecretName: registration-harvester-secret
+  credentialsSecretKeys:
+    username: OPERATON_DB_USERNAME
+    password: OPERATON_DB_PASSWORD
+
 postgres:
-  image:
-    repository: bitnamilegacy/postgresql
+  enabled: true
+  nameOverride: postgres
+  architecture: standalone
+  auth:
+    database: operaton
+    username: operaton
+    existingSecret: registration-harvester-secret
+    secretKeys:
+      userPasswordKey: OPERATON_DB_PASSWORD
+  metrics:
+    enabled: false
+
+bpmEngine:
+  autoDeployment: false
+  historyLevel: ACTIVITY
+  adminUser:
+    username: {{ getenv "OPERATON_ADMIN_USER" }}
+    password: {{ getenv "OPERATON_ADMIN_PASSWORD" }}
