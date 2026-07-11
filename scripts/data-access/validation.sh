@@ -9,10 +9,13 @@ if [ "$1" = "nomonitoring" ]; then
   NO_MONITORING="true"
 fi
 
-# if nomonitoring then expected pod count is 12 else 18
+# if nomonitoring then expected pod count is 12 else 18 (+1 if IAM is enabled, for stac-auth-proxy)
 EXPECTED_POD_COUNT=18
 if [ "$NO_MONITORING" = "true" ]; then
   EXPECTED_POD_COUNT=12
+fi
+if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
+  EXPECTED_POD_COUNT=$((EXPECTED_POD_COUNT + 1))
 fi
 
 # Check pods in data-access namespace
@@ -23,10 +26,16 @@ check_service_exists "data-access" "eoapi-raster"
 check_service_exists "data-access" "eoapi-stac"
 check_service_exists "data-access" "eoapi-vector"
 check_service_exists "data-access" "eoapi-doc-server"
+check_service_exists "data-access" "titiler-openeo"
 
 if [ "$NO_MONITORING" = "false" ]; then
   check_service_exists "data-access" "eoapi-support-prometheus-server" "Skipping: eoapi-support not found." || true
   check_service_exists "data-access" "eoapi-support-grafana" "Skipping: eoapi-support not found." || true
+fi
+
+if [ "${ENABLE_GEOPARQUET_EXPORT:-no}" = "yes" ]; then
+  check_cronjob_exists "data-access" "geoparquet-exporter-complete"
+  check_cronjob_exists "data-access" "geoparquet-exporter-incremental"
 fi
 
 # Check ingress

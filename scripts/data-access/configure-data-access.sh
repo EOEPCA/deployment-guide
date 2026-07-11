@@ -28,23 +28,33 @@ else
 fi
 
 # IAM/Keycloak Configuration
+# Data Access protects itself with app-native OIDC, not an ingress-layer plugin,
+# so IAM works under both apisix and nginx.
 ask "DATA_ACCESS_ENABLE_IAM" "Enable IAM/Keycloak integration? (yes/no)" "no" is_yes_no
-if [ "${DATA_ACCESS_ENABLE_IAM}" = "yes" ] && [ "${INGRESS_CLASS}" != "apisix" ]; then
-    echo "ERROR: Data Access IAM mode is currently supported only with APISIX."
-    echo "nginx can expose the services, but it does not implement the APISIX/STAC auth-proxy routing used by this guide."
-    echo "Set DATA_ACCESS_ENABLE_IAM=no or use INGRESS_CLASS=apisix."
-    exit 1
-fi
 if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
     ask "EOAPI_CLIENT_ID" "Enter Keycloak client ID for EOAPI" "eoapi" is_non_empty
     ask "OPA_URL" "Enter OPA URL for authorization" "http://iam-opal-client.iam:8181" is_non_empty
+else
+    # Without IAM, protect the openEO API with basic auth instead of leaving it open.
+    ask "OPENEO_BASIC_AUTH_USER" "Enter a username to protect the openEO API (no IAM)" "openeo" is_non_empty
+    if [ -z "${OPENEO_BASIC_AUTH_PASSWORD:-}" ]; then
+        export OPENEO_BASIC_AUTH_PASSWORD="$(generate_password)"
+        add_to_state_file "OPENEO_BASIC_AUTH_PASSWORD" "$OPENEO_BASIC_AUTH_PASSWORD"
+    fi
 fi
 
 # EOAPI Configuration
 ask "ENABLE_TRANSACTIONS" "Enable STAC transactions extension? (yes/no)" "yes" is_yes_no
 ask "ENABLE_EOAPI_NOTIFIER" "Enable EOAPI notifier for CloudEvents? (yes/no)" "no" is_yes_no
+
+# Geoparquet export (optional): periodically exports pgSTAC collections/items
+# to geoparquet on an S3 bucket. Reuses the same S3 credentials as raster/multidim.
+ask "ENABLE_GEOPARQUET_EXPORT" "Enable scheduled pgSTAC-to-geoparquet export to S3? (yes/no)" "no" is_yes_no
+if [ "$ENABLE_GEOPARQUET_EXPORT" = "yes" ]; then
+    ask "GEOPARQUET_EXPORT_S3_BUCKET" "Enter the S3 path for exported geoparquet (e.g. s3://bucket/geoparquet)" "s3://geoparquet-exporter/geoparquet" is_non_empty
+fi
 
 # Allow override for public-facing host through which eoAPI is accessed
 export EOAPI_PUBLIC_HOST="${EOAPI_PUBLIC_HOST:-"eoapi.${INGRESS_HOST}"}"
@@ -63,7 +73,7 @@ fi
 # Generate supporting services configuration
 gomplate -f "eoapi-support/$TEMPLATE_PATH" -o "eoapi-support/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate -f "stac-manager/$TEMPLATE_PATH" -o "stac-manager/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-gomplate -f "eoapi-maps-plugin/$TEMPLATE_PATH" -o "eoapi-maps-plugin/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "titiler-openeo/$TEMPLATE_PATH" -o "titiler-openeo/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 # Generate ingress/routes based on ingress controller
 if [ "$INGRESS_CLASS" == "apisix" ]; then
@@ -80,4 +90,16 @@ if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     gomplate -f "iam/iam-template.yaml" -o "iam/generated-iam.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
+# Generate geoparquet exporter configuration if enabled
+if [ "$ENABLE_GEOPARQUET_EXPORT" = "yes" ]; then
+    gomplate -f "geoparquet-exporter/$TEMPLATE_PATH" -o "geoparquet-exporter/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+fi
+
 echo "Configuration complete!"
+
+if [ "$DATA_ACCESS_ENABLE_IAM" != "yes" ]; then
+    echo ""
+    echo "🔐 IMPORTANT: openEO API basic-auth credentials (no IAM):"
+    echo "  Username: $OPENEO_BASIC_AUTH_USER"
+    echo "  Password: $OPENEO_BASIC_AUTH_PASSWORD"
+fi

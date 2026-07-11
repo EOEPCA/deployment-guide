@@ -5,7 +5,7 @@ metadata:
   namespace: iam-management
 spec:
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
   forProvider:
     realmId: {{ getenv "REALM" }}
@@ -13,8 +13,9 @@ spec:
     accessType: PUBLIC
     clientId: {{ getenv "EOAPI_CLIENT_ID" }}
     standardFlowEnabled: true
-    implicitFlowEnabled: true
+    implicitFlowEnabled: false
     directAccessGrantsEnabled: true # allow for now to simplify testing
+    fullScopeAllowed: true
     serviceAccountsEnabled: false
     oauth2DeviceAuthorizationGrantEnabled: true
     rootUrl: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}
@@ -23,6 +24,66 @@ spec:
     validRedirectUris:
     - '*'
 ---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientDefaultScopes
+metadata:
+  name: eoapi-default-scopes
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+    defaultScopes:
+      - profile
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientOptionalScopes
+metadata:
+  name: eoapi-optional-scopes
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+    optionalScopes:
+      - email
+      - offline_access
+---
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: eoapi-audience-mapper
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+    realmId: {{ getenv "REALM" }}
+    protocol: openid-connect
+    protocolMapper: oidc-audience-mapper
+    name: eoapi-audience
+    config:
+      "included.client.audience": "{{ getenv "EOAPI_CLIENT_ID" }}"
+      "access.token.claim": "true"
+      "id.token.claim": "false"
+---
 apiVersion: role.keycloak.m.crossplane.io/v1alpha1
 kind: Role
 metadata:
@@ -30,7 +91,7 @@ metadata:
   namespace: iam-management
 spec:
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
   forProvider:
     realmId: {{ getenv "REALM" }}
@@ -47,7 +108,7 @@ metadata:
   namespace: iam-management
 spec:
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
   forProvider:
     realmId: {{ getenv "REALM" }}
@@ -60,7 +121,7 @@ metadata:
   namespace: iam-management
 spec:
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
   forProvider:
     realmId: {{ getenv "REALM" }}

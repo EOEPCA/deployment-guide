@@ -38,21 +38,20 @@ image:
   pullPolicy: Always
 publicUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/manager/
 stacApi: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/stac/
+stacBrowser: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/browser/
 primaryColor: "#005ACD"
 secondaryColor: "#048A81"
+appTitle: "EOEPCA+ STAC Manager"
+appDescription: "Manage STAC collections and items on the EOEPCA+ platform"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
-  providerUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
+  authority: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
   clientId: {{ getenv "EOAPI_CLIENT_ID" }}
-  realm: {{ getenv "REALM" }}
 {{- end }}
-resources:
-  requests:
-    memory: "1Gi"
-    cpu: "1"
-  limits:
-    memory: "4Gi"
-    cpu: "4"
-image:
-  tag: latest
-  pullPolicy: Always
+volumes:
+  - name: branding
+    configMap:
+      name: stac-manager-branding
+volumeMounts:
+  - name: branding
+    mountPath: /app/packages/client/dist/meta

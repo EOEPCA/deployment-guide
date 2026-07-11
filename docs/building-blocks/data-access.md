@@ -38,12 +38,13 @@ The Data Access BB consists of the following main components:
 3. **STAC Manager UI**<br>
    Web interface for managing STAC collections and items with optional OAuth integration
 
-4. **EOAPI Maps Plugin**<br>
-   PyGeoAPI-based service for OGC API Maps implementation
+4. **titiler-openeo**<br>
+   openEO API implementation backed by titiler, serving on-the-fly raster processing/visualisation services under `/openeo`
 
 5. **Optional Components:**
    - **eoapi-support**: Monitoring stack (Grafana, Prometheus, metrics server)
    - **eoapi-notifier**: CloudEvents integration for event-driven workflows
+   - **geoparquet-exporter**: Scheduled export of pgSTAC collections/items to GeoParquet on S3
    - **IAM Integration**: Keycloak authentication and OPA authorization
 
 ---
@@ -120,15 +121,19 @@ During the script execution, you will be prompted to provide:
         - **`POSTGRES_REPLICAS`**: Number of PostgreSQL replicas
         - **`POSTGRES_STORAGE_SIZE`**: Storage size for PostgreSQL
 
-- **`ENABLE_IAM`**: Enable IAM/Keycloak integration (yes/no)
+- **`DATA_ACCESS_ENABLE_IAM`**: Enable IAM/Keycloak integration (yes/no)
     - If yes, you'll configure:
         - **`KEYCLOAK_HOST`**: Keycloak service hostname
         - **`REALM`**: Keycloak realm name
         - **`EOAPI_CLIENT_ID`**: Client ID for EOAPI
         - **`OPA_URL`**: OPA server URL for authorization
+    - If no, you'll be prompted for a **`OPENEO_BASIC_AUTH_USER`** - a password is generated automatically and printed at the end of configuration (used to protect the openEO API, which has no other auth option without IAM)
+    - IAM works under both `apisix` and `nginx` ingress classes.
 
 - **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
 - **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no)
+- **`ENABLE_GEOPARQUET_EXPORT`**: Enable scheduled pgSTAC-to-geoparquet export to S3 (yes/no)
+    - If yes, you'll be prompted for **`GEOPARQUET_EXPORT_S3_BUCKET`** - the destination `s3://` path, reusing the same S3 credentials as raster/multidim
 
 **PgSTAC Configuration Options**
 
@@ -193,7 +198,7 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.12.3 \
+  --version 0.13.1 \
   --namespace data-access \
   --create-namespace \
   --values eoapi/generated-values.yaml
@@ -204,11 +209,20 @@ helm upgrade -i eoapi eoapi/eoapi \
 helm repo add stac-manager https://stac-manager.ds.io/
 helm repo update stac-manager
 helm upgrade -i stac-manager stac-manager/stac-manager \
-  --version 0.0.13 \
+  --version 1.0.3 \
   --namespace data-access \
   --values stac-manager/generated-values.yaml
 ```
 
+#### Deploy titiler-openeo
+
+`titiler-openeo` is only published as a git-sourced Helm chart (no packaged chart repo), so it's installed directly from a pinned tag:
+```bash
+git clone --depth 1 --branch titiler-openeo-v0.12.0 https://github.com/sentinel-hub/titiler-openeo /tmp/titiler-openeo
+helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
+  --namespace data-access \
+  --values titiler-openeo/generated-values.yaml
+```
 
 #### Configure Ingress/Routes
 
@@ -224,6 +238,18 @@ fi
 if [ "${INGRESS_CLASS}" = "apisix" ]; then
   kubectl apply -f eoapi/generated-ingress.yaml
 fi
+```
+
+#### (Optional) Deploy Geoparquet Exporter
+
+> Skip this step if `ENABLE_GEOPARQUET_EXPORT=no`.
+
+Also only published as a git-sourced Helm chart:
+```bash
+git clone --depth 1 --branch v0.2.4 https://github.com/developmentseed/pgstac-geoparquet-exporter /tmp/pgstac-geoparquet-exporter
+helm upgrade -i geoparquet-exporter /tmp/pgstac-geoparquet-exporter/charts/pgstac-geoparquet-exporter \
+  --namespace data-access \
+  --values geoparquet-exporter/generated-values.yaml
 ```
 
 #### (Optional) Deploy Monitoring
@@ -261,7 +287,7 @@ Once deployment is complete:
 - **Vector API:** `https://eoapi.${INGRESS_HOST}/vector/`
 - **Multidim API:** `https://eoapi.${INGRESS_HOST}/multidim/`
 - **STAC Manager UI:** `https://eoapi.${INGRESS_HOST}/manager/`
-- **Maps API:** `https://eoapi.${INGRESS_HOST}/maps/`
+- **openEO API:** `https://eoapi.${INGRESS_HOST}/openeo/`
 
 **Optional Services:**:
 
@@ -330,10 +356,16 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
 
 To uninstall the Data Access Building Block:
 ```bash
+source ~/.eoepca/state
 helm uninstall eoapi -n data-access
-helm uninstall eoapi-maps-plugin -n data-access
 helm uninstall stac-manager -n data-access
-helm uninstall postgres-operator -n data-access  # or pgo if using Crunchy
+helm uninstall titiler-openeo -n data-access
+if [ "${USE_EXTERNAL_POSTGRES}" != "yes" ]; then
+  helm uninstall pgo -n data-access
+fi
+if [ "${ENABLE_GEOPARQUET_EXPORT:-no}" = "yes" ]; then
+  helm uninstall geoparquet-exporter -n data-access
+fi
 helm uninstall eoapi-support -n data-access  # if monitoring was installed
 
 kubectl delete namespace data-access

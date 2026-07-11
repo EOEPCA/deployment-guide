@@ -38,6 +38,8 @@ spec:
         - ^(/manager)($|/.*)
         - $2
       enable: true
+    - name: cors
+      enable: true
   - name: browser-redirect
     backends:
     - serviceName: eoapi-browser
@@ -155,6 +157,37 @@ spec:
         - ^(/raster)($|/.*)
         - $2
       enable: true
+  - name: openeo-redirect
+    backends:
+    - serviceName: titiler-openeo
+      servicePort: 80
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /openeo
+    plugins:
+    - name: redirect
+      enable: true
+      config:
+        uri: /openeo/
+  - name: openeo-route
+    backends:
+    - serviceName: titiler-openeo
+      servicePort: 80
+    match:
+      hosts:
+      - eoapi.{{ getenv "INGRESS_HOST" }}
+      paths:
+      - /openeo/
+      - /openeo/*
+    plugins:
+    - name: proxy-rewrite
+      config:
+        regex_uri:
+        - ^(/openeo)($|/.*)
+        - $2
+      enable: true
   - name: stac-redirect
     priority: 100
     backends:
@@ -174,6 +207,15 @@ spec:
         uri: /stac/
     - name: cors
       enable: true
+    # APISIX forwards its own internal TLS listener port as X-Forwarded-Port, which
+    # stac-fastapi uses to build self-referential links - override it to the real
+    # public-facing port or every href in STAC responses gets a bogus port suffix.
+    - name: proxy-rewrite
+      config:
+        headers:
+          set:
+            X-Forwarded-Port: "{{ if eq (getenv "HTTP_SCHEME") "https" }}443{{ else }}80{{ end }}"
+      enable: true
   - name: stac-route
     priority: 10
     backends:
@@ -186,14 +228,17 @@ spec:
       - /stac/
       - /stac/*
     plugins:
-    {{- if ne (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
     - name: proxy-rewrite
       config:
+        {{- if ne (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
         regex_uri:
         - ^(/stac)($|/.*)
         - $2
+        {{- end }}
+        headers:
+          set:
+            X-Forwarded-Port: "{{ if eq (getenv "HTTP_SCHEME") "https" }}443{{ else }}80{{ end }}"
       enable: true
-    {{- end }}
     - name: cors
       enable: true
   - name: docs-redirect

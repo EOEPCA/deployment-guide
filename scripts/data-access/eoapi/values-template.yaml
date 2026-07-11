@@ -74,12 +74,13 @@ raster:
   ingress:
     path: "/raster"
   overrideRootPath: "/"
-  image:
-    tag: "1.4.0"
   settings:
     envVars:
       AWS_S3_ENDPOINT: "{{ getenv "S3_ENDPOINT" }}"
       AWS_VIRTUAL_HOSTING: "FALSE"
+      WEB_CONCURRENCY: "1"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "5"
     envSecrets:
       - data-access
     resources:
@@ -92,6 +93,10 @@ multidim:
     path: "/multidim"
   overrideRootPath: "/"
   settings:
+    envVars:
+      WEB_CONCURRENCY: "1"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "5"
     envSecrets:
       - data-access
     resources:
@@ -100,14 +105,23 @@ multidim:
 
 stac:
   enabled: true
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    type: "cpu"
+    targets:
+      cpu: 50
   settings:
     envVars:
       {{- if eq (getenv "ENABLE_TRANSACTIONS") "yes" }}
       ENABLE_TRANSACTIONS_EXTENSIONS: "TRUE"
       {{- end }}
-      STAC_API_URL: "{{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac"
       STAC_FASTAPI_TITLE: "EOEPCA STAC API"
       STAC_FASTAPI_DESCRIPTION: "A STAC Catalog for the Earth Observation Exploitation Platform Common Architecture (EOEPCA)"
+      WEB_CONCURRENCY: "2"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "3"
     resources:
       limits:
         cpu: "1280m"
@@ -126,16 +140,22 @@ vector:
     envVars:
       TIPG_DEBUG: "True"
       TIPG_CATALOG_TTL: "30"
+      WEB_CONCURRENCY: "1"
+      DB_MIN_CONN_SIZE: "1"
+      DB_MAX_CONN_SIZE: "5"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 stac-auth-proxy:
   enabled: true
   image:
-    tag: "v1.1.0-rc3"
+    tag: "v1.1.0"
   service:
     port: 8080
   env:
     UPSTREAM_URL: "http://eoapi-stac.data-access.svc.cluster.local:8080"
     OIDC_DISCOVERY_URL: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+    # Without this, stac-auth-proxy's own health check defaults to an unreachable
+    # localhost target and the pod never becomes ready.
+    OIDC_DISCOVERY_INTERNAL_URL: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
     COLLECTIONS_FILTER_CLS: stac_auth_proxy.eoepca_filters:CollectionsFilter
     ITEMS_FILTER_CLS: stac_auth_proxy.eoepca_filters:ItemsFilter
     ALLOWED_JWT_AUDIENCES: "{{ getenv "EOAPI_CLIENT_ID" }}"

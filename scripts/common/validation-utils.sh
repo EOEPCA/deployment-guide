@@ -147,6 +147,20 @@ function check_serviceaccount_exists() {
     fi
 }
 
+# Function to check if a CronJob exists
+function check_cronjob_exists() {
+    local namespace="$1"
+    local cronjob_name="$2"
+
+    if kubectl get cronjob "$cronjob_name" -n "$namespace" >/dev/null 2>&1; then
+        echo "✅ CronJob '$cronjob_name' exists."
+        return 0
+    else
+        echo "❌ CronJob '$cronjob_name' does not exist."
+        return 1
+    fi
+}
+
 # Function to check if a Secret exists
 function check_secret_exists() {
     local namespace="$1"

@@ -1,0 +1,23 @@
+fullnameOverride: "geoparquet-exporter"
+
+image:
+  tag: "0.2.4"
+
+stacApiUrl: "{{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac"
+
+database:
+{{- if eq (getenv "USE_EXTERNAL_POSTGRES") "yes" }}
+  existingSecret: "{{ getenv "POSTGRES_EXTERNAL_SECRET_NAME" }}"
+{{- else }}
+  # Internal PostgreSQL: reference the secret created by the postgres operator
+  existingSecret: "eoapi-pguser-eoapi"
+{{- end }}
+
+storage:
+  outputPath: "{{ getenv "GEOPARQUET_EXPORT_S3_BUCKET" }}"
+  # Reuses the same S3 credentials secret created by apply-secrets.sh for raster/multidim
+  existingSecret: "data-access"
+  endpoint: "{{ getenv "S3_ENDPOINT" }}"
+
+exportConfig:
+  exportAll: true

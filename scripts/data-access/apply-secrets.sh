@@ -26,4 +26,10 @@ if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
         --dry-run=client -o yaml | kubectl apply -f -
 fi
 
+echo "Creating STAC Manager branding ConfigMap..."
+kubectl create configmap stac-manager-branding \
+    --from-file=stac-manager/assets \
+    --namespace=data-access \
+    --dry-run=client -o yaml | kubectl apply -f -
+
 echo "Secrets and config applied successfully."
