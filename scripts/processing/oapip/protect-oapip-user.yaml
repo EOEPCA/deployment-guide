@@ -8,7 +8,7 @@ spec:
     realmId: ${REALM}
     name: ${OAPIP_USER}-group
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: group.keycloak.m.crossplane.io/v1alpha1
@@ -25,7 +25,7 @@ spec:
     members:
       - ${OAPIP_USER}
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
@@ -45,7 +45,7 @@ spec:
     uris:
       - "/${OAPIP_USER}/*"
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
@@ -70,7 +70,7 @@ spec:
         path: /${OAPIP_USER}-group
         extendChildren: false
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
@@ -93,5 +93,5 @@ spec:
     policies:
       - ${OAPIP_USER}-policy
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig

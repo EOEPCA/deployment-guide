@@ -126,10 +126,15 @@ add_to_state_file() {
 
     export "$variable=$value"
 
+    # Single-quote the persisted value (escaping any embedded single quotes)
+    # so that re-sourcing the state file later doesn't re-expand `$`/`` ` ``
+    # in the value - e.g. bcrypt/htpasswd hashes such as OAPIP_TOIL_WES_PASSWORD.
+    local escaped_value="${value//\'/\'\\\'\'}"
+
     if grep -q "export $variable=" "$HOME/.eoepca/state"; then
-        sed -i "s|export $variable=.*|export $variable=\"$value\"|" "$HOME/.eoepca/state"
+        sed -i "s|export $variable=.*|export $variable='$escaped_value'|" "$HOME/.eoepca/state"
     else
-        echo "export $variable=\"$value\"" >>"$HOME/.eoepca/state"
+        echo "export $variable='$escaped_value'" >>"$HOME/.eoepca/state"
     fi
 }
 

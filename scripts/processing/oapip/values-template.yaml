@@ -12,11 +12,13 @@ zoo:
 # zoofpm:
 #   image:
 #     tag: eoepca-39b6fc74b6592b4584be5a0b2740dde11a1ffafc
+{{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
 zookernel:
   env:
     ZOO_OUTPUT_FORMAT: "stac-collection"
   # image:
   #   tag: eoepca-39b6fc74b6592b4584be5a0b2740dde11a1ffafc
+{{- end }}
 customConfig:
   main:
     eoepca: |-

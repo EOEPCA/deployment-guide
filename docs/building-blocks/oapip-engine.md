@@ -368,14 +368,14 @@ spec:
         keepDefaults: true
         policyEnforcementMode: ENFORCING
     validRedirectUris:
-      - "/*"
+      - "${HTTP_SCHEME}://zoo.${INGRESS_HOST}/*"
     webOrigins:
-      - "/*"
+      - "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
     clientSecretSecretRef:
       name: ${OAPIP_CLIENT_ID}-keycloak-client
       key: client_secret
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
