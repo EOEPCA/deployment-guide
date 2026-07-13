@@ -47,7 +47,7 @@ done
 
 # Install required packages
 echo "Installing required packages in pod $EOAPI_POD_RASTER in namespace $FOUND_NAMESPACE..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'apt update -y && apt install python3 python3-pip -y && pip install -U pypgstac[psycopg]'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'pip install --user "pypgstac[psycopg]"'; then
     echo "Failed to install packages."
     exit 1
 fi
@@ -61,13 +61,13 @@ kubectl cp "$EOAPI_ITEMS_FILE" "$FOUND_NAMESPACE/$EOAPI_POD_RASTER":/tmp/items.j
 
 # Load collections and items
 echo "Loading collections..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'pypgstac load collections /tmp/collections.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'export PATH="$PATH:$HOME/.local/bin"; pypgstac load collections /tmp/collections.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
     echo "Failed to load collections."
     exit 1
 fi
 
 echo "Loading items..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'pypgstac load items /tmp/items.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'export PATH="$PATH:$HOME/.local/bin"; pypgstac load items /tmp/items.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
     echo "Failed to load items."
     exit 1
 fi

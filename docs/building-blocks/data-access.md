@@ -350,6 +350,82 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   }'
 ```
 
+### 4. Collection-Level Access Control (IAM)
+
+> Skip this section if `DATA_ACCESS_ENABLE_IAM=no`. Without IAM, `stac-auth-proxy` is disabled entirely and every collection/item is readable and writable by anyone who can reach the STAC API.
+
+With IAM enabled, `stac-auth-proxy` sits in front of the STAC API and decides access per-request using the collection ID:
+
+- **Public collections** — any collection ID with no `.` in it (e.g. `sentinel-2-iceland`) is readable by everyone, including unauthenticated requests. Reads are always public; only writes need auth.
+- **Private/owned collections** — an ID prefixed `<prefix>.` (e.g. `eoepcauser.mycollection`) is only readable/writable by:
+    - the Keycloak user whose `preferred_username` matches `<prefix>`, or
+    - a member of the Keycloak group `/dss/<prefix>` (read-write), or `/dss/<prefix>-ro` (read-only).
+- **Catalog-wide editors** — a token whose `azp` is one of `STAC_EDITOR_CLIENT_IDS` (the `eoapi` client, by default) and whose `resource_access.<azp>.roles` includes `stac_editor` can write to *any* collection, regardless of prefix. `iam/generated-iam.yaml` creates this role and a `data-access-admin` Keycloak group that grants it — add a user to that group (via the Keycloak admin console, or a Crossplane `Roles`/group-membership CR) to give them ingestion/admin rights across the whole catalogue.
+
+This applies uniformly to both collections and items (an item's `collection` field is checked the same way).
+
+**Get a token to test with** (any realm user, using the `eoapi` client created by `iam/generated-iam.yaml`):
+
+```bash
+source ~/.eoepca/state
+ACCESS_TOKEN=$( \
+  curl -sk -X POST \
+    -d "username=${KEYCLOAK_TEST_USER}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${EOAPI_CLIENT_ID}" \
+    -d "scope=openid" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+  | jq -r '.access_token' \
+)
+```
+
+**Unauthenticated write is rejected:**
+
+```bash
+curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+  -H "Content-Type: application/json" \
+  -d '{"id": "unauth-test", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
+# 401
+```
+
+**A user can write to their own username-prefixed collection:**
+
+```bash
+curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d "{\"id\": \"${KEYCLOAK_TEST_USER}.mycollection\", \"type\": \"Collection\", \"stac_version\": \"1.0.0\", \"description\": \"x\", \"license\": \"proprietary\", \"extent\": {\"spatial\": {\"bbox\": [[-180,-90,180,90]]}, \"temporal\": {\"interval\": [[null,null]]}}, \"links\": []}"
+# 201
+```
+
+**...but not to an unrelated collection they don't own and have no editor role for:**
+
+```bash
+curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{"id": "someone-elses-collection", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
+# 403 {"code": "ForbiddenError", "description": "Resource does not match access filter."}
+```
+
+**A private collection is invisible to unauthenticated requests, but visible to its owner:**
+
+```bash
+curl -sk -o /dev/null -w "%{http_code}\n" "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection"
+# 404 (filtered out, not "403" - its existence isn't revealed either)
+
+curl -sk "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq '{id, type}'
+```
+
+Login to the STAC Browser and see your private collection available at:
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
+```
+
 ---
 
 ## Uninstallation
@@ -357,6 +433,13 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
 To uninstall the Data Access Building Block:
 ```bash
 source ~/.eoepca/state
+
+# The Crossplane IAM resources live in iam-management, not data-access, so
+# they aren't removed by deleting the data-access namespace below.
+if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
+  kubectl delete -f iam/generated-iam.yaml --ignore-not-found
+fi
+
 helm uninstall eoapi -n data-access
 helm uninstall stac-manager -n data-access
 helm uninstall titiler-openeo -n data-access

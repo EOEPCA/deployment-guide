@@ -59,6 +59,7 @@ postgrescluster:
 pgstacBootstrap:
   enabled: true
   settings:
+    loadSamples: false
     pgstacSettings:
       use_queue: "true"
       update_collection_extent: "false"
