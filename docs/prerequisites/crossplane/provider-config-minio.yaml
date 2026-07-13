@@ -1,0 +1,11 @@
+apiVersion: minio.crossplane.io/v1
+kind: ProviderConfig
+metadata:
+  name: provider-minio
+spec:
+  credentials:
+    apiSecretRef:
+      name: minio-secret
+      namespace: workspace
+    source: InjectedIdentity
+  minioURL: http://minio-svc.minio:9000

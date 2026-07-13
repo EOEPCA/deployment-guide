@@ -1,0 +1,36 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: provider-helm
+spec:
+  activate:
+    - releases.helm.m.crossplane.io
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-helm
+spec:
+  deploymentTemplate:
+    metadata:
+      labels:
+        runtime: provider-helm
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          runtime: provider-helm
+      template:
+        metadata:
+          labels:
+            runtime: provider-helm
+        spec:
+          containers:
+          - name: package-runtime
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi

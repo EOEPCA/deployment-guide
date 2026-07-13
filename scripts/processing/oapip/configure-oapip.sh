@@ -71,6 +71,7 @@ if [ "$OIDC_OAPIP_ENABLED" = "true" ]; then
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
 
     gomplate -f "$INGRESS_TEMPLATE_PATH" -o "$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+    gomplate -f "iam-template.yaml" -o "generated-iam.yaml"
 else
     add_to_state_file "OAPIP_INGRESS_ENABLED" "true"
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"

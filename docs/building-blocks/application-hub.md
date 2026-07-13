@@ -145,42 +145,10 @@ kubectl apply -f generated-ingress.yaml
 
 By default, the Application Hub has a **demo** admin user named `eric`. You will need to create this user in Keycloak (or your OIDC provider) to access the Application Hub admin.
 
-The user can be created declaratively using the CRD defined by the Crossplane Keycloak provider. A `Secret` is used to inject the password securely.
+The user can be created declaratively using the CRD defined by the Crossplane Keycloak provider. A `Secret` is used to inject the password securely. `configure-app-hub.sh` already rendered `generated-demo-user.yaml` for this.
 
 ```bash
-source ~/.eoepca/state
-username="eric"
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${username}-user-password
-  namespace: iam-management
-stringData:
-  password: ${KEYCLOAK_TEST_PASSWORD}
----
-apiVersion: user.keycloak.m.crossplane.io/v1alpha1
-kind: User
-metadata:
-  name: ${username}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    username: ${username}
-    email: ${username}@eoepca.org
-    emailVerified: true
-    firstName: ${username}
-    lastName: Testuser
-    initialPassword:
-      - temporary: false
-        valueSecretRef:
-          name: ${username}-user-password
-          key: password
-  providerConfigRef:
-    name: keycloak-provider-config
-    kind: ProviderConfig
-EOF
+kubectl apply -f generated-demo-user.yaml
 ```
 
 > Alternatively you can create this user through the Keycloak admin interface.
@@ -281,6 +249,8 @@ To uninstall the Application Hub and clean up associated resources:
 ```bash
 helm uninstall application-hub -n app-hub
 kubectl delete ingress application-hub -n app-hub
+kubectl delete -f generated-iam.yaml --ignore-not-found
+kubectl delete -f generated-demo-user.yaml --ignore-not-found
 ```
 
 ***

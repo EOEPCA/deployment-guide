@@ -1,0 +1,29 @@
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: <client-name>
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    clientId: <client-name>
+    name: <Descriptive Client Name>
+    description: <Description of the Client Purpose>
+    enabled: true
+    accessType: PUBLIC
+    rootUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    baseUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    adminUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    validRedirectUris:
+      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}/*"
+      - "https://editor.openeo.org/*"
+    webOrigins:
+      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}"
+      - "https://editor.openeo.org"
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig

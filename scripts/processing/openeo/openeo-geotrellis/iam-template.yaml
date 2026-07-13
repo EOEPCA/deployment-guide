@@ -1,0 +1,28 @@
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ getenv "OPENEO_CLIENT_ID" }}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientId: {{ getenv "OPENEO_CLIENT_ID" }}
+    name: openEO Geotrellis Engine
+    description: openEO Geotrellis Engine OIDC
+    enabled: true
+    accessType: PUBLIC
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
+    baseUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
+    adminUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    validRedirectUris:
+      - "/*"
+      - "https://editor.openeo.org/*"
+    webOrigins:
+      - "+"
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig

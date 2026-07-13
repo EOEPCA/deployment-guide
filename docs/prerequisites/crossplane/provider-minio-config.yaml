@@ -1,0 +1,38 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: provider-minio
+spec:
+  activate:
+    - buckets.minio.crossplane.io
+    - policies.minio.crossplane.io
+    - users.minio.crossplane.io
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-minio
+spec:
+  deploymentTemplate:
+    metadata:
+      labels:
+        runtime: provider-minio
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          runtime: provider-minio
+      template:
+        metadata:
+          labels:
+            runtime: provider-minio
+        spec:
+          containers:
+          - name: package-runtime
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi

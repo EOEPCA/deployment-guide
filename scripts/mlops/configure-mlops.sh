@@ -81,4 +81,6 @@ gomplate -f "mlflow/$INGRESS_TEMPLATE_PATH" -o "mlflow/$INGRESS_OUTPUT_PATH" --d
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
     source ../common/prerequisite-utils.sh
     run_validation "check_crossplane_installed"
+
+    gomplate -f "iam-template.yaml" -o "generated-iam.yaml"
 fi

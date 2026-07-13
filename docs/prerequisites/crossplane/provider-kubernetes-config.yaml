@@ -1,0 +1,39 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: provider-kubernetes
+spec:
+  activate:
+    - objects.kubernetes.m.crossplane.io
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-kubernetes
+spec:
+  deploymentTemplate:
+    metadata:
+      labels:
+        runtime: provider-kubernetes
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          runtime: provider-kubernetes
+      template:
+        metadata:
+          labels:
+            runtime: provider-kubernetes
+        spec:
+          serviceAccountName: provider-kubernetes
+          containers:
+          - name: package-runtime
+            # args:
+            # - --debug
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi

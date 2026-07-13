@@ -23,91 +23,20 @@ If you have Crossplane set up with the Keycloak provider, you can create a Keycl
 
 **Confidential Client**
 
+Download [`confidential-client.yaml`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/building-blocks/iam/client-management/confidential-client.yaml), replace the `<placeholders>` with values for your client, then apply:
+
 ```bash
 source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: <client-name>-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: <client-secret>
----
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: <client-name>
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: <client-name>
-    name: <Descriptive Client Name>
-    description: <Description of the Client Purpose>
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}/*"
-    webOrigins:
-      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}"
-    clientSecretSecretRef:
-      name: <client-name>-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: keycloak-provider-config
-    kind: ProviderConfig
-EOF
+envsubst < confidential-client.yaml | kubectl apply -f -
 ```
 
 **Public Client**
 
+Download [`public-client.yaml`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/building-blocks/iam/client-management/public-client.yaml), replace the `<placeholders>` with values for your client, then apply:
+
 ```bash
 source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: <client-name>
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: <client-name>
-    name: <Descriptive Client Name>
-    description: <Description of the Client Purpose>
-    enabled: true
-    accessType: PUBLIC
-    rootUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    validRedirectUris:
-      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}/*"
-      - "https://editor.openeo.org/*"
-    webOrigins:
-      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}"
-      - "https://editor.openeo.org"
-  providerConfigRef:
-    name: keycloak-provider-config
-    kind: ProviderConfig
-EOF
+envsubst < public-client.yaml | kubectl apply -f -
 ```
 
 ### Approach 2: Using the Script

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ getenv "OAPIP_CLIENT_ID" }}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: {{ getenv "OAPIP_CLIENT_SECRET" }}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ getenv "OAPIP_CLIENT_ID" }}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientId: {{ getenv "OAPIP_CLIENT_ID" }}
+    name: Processing OAPIP Engine
+    description: Processing OAPIP Engine OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://zoo.{{ getenv "INGRESS_HOST" }}
+    baseUrl: {{ getenv "HTTP_SCHEME" }}://zoo.{{ getenv "INGRESS_HOST" }}
+    adminUrl: {{ getenv "HTTP_SCHEME" }}://zoo.{{ getenv "INGRESS_HOST" }}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "{{ getenv "HTTP_SCHEME" }}://zoo.{{ getenv "INGRESS_HOST" }}/*"
+    webOrigins:
+      - "{{ getenv "HTTP_SCHEME" }}://zoo.{{ getenv "INGRESS_HOST" }}"
+    clientSecretSecretRef:
+      name: {{ getenv "OAPIP_CLIENT_ID" }}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig

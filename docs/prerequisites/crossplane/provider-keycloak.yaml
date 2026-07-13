@@ -1,0 +1,8 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-keycloak
+spec:
+  package: ghcr.io/crossplane-contrib/provider-keycloak:v2.7.2
+  runtimeConfigRef:
+    name: provider-keycloak

@@ -155,43 +155,12 @@ oidc_providers = [
 ]
 ```
 
-A Keycloak client is required for the ingress protection of the Processing BB openEO Geotrellis Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+A Keycloak client is required for the ingress protection of the Processing BB openEO Geotrellis Engine. `configure-openeo.sh` already rendered `openeo-geotrellis/generated-iam.yaml` (a Crossplane `Client` CRD) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
 ```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: ${OPENEO_CLIENT_ID}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${OPENEO_CLIENT_ID}
-    name: openEO Geotrellis Engine
-    description: openEO Geotrellis Engine OIDC
-    enabled: true
-    accessType: PUBLIC
-    rootUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    validRedirectUris:
-      - "/*"
-      - "https://editor.openeo.org/*"
-    webOrigins:
-      - "+"
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
+kubectl apply -f openeo-geotrellis/generated-iam.yaml
+kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OPENEO_CLIENT_ID} -n iam-management --timeout=60s
 ```
-
-The `Client` should be created successfully.
 
 ---
 
@@ -586,6 +555,7 @@ To uninstall the OpenEO Geotrellis deployment:
 
 ```bash
 kubectl delete -f openeo-geotrellis/generated-ingress.yaml --ignore-not-found
+kubectl delete -f openeo-geotrellis/generated-iam.yaml --ignore-not-found
 
 helm uninstall openeo-geotrellis-openeo -n openeo-geotrellis || true
 helm uninstall openeo-geotrellis-zookeeper -n openeo-geotrellis || true
@@ -595,9 +565,6 @@ kubectl delete -f openeo-geotrellis/batch-jobs-rbac.yaml --ignore-not-found
 
 kubectl delete namespace openeo-geotrellis
 ```
-
-> If OIDC was enabled, also remove the Keycloak `Client` created in Step 5:
-> `kubectl delete client.openidclient.keycloak.m.crossplane.io ${OPENEO_CLIENT_ID} -n iam-management`
 
 ---
 

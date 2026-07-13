@@ -299,56 +299,11 @@ A Keycloak client is required for Resource Registration for two purposes:
 
 > If neither of these apply, you can skip this step.
 
-The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+The client can be created using the Crossplane Keycloak provider via the `Client` CRD. `configure-resource-registration.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when either of the two cases above applied - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
 ```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: ${RESOURCE_REGISTRATION_IAM_CLIENT_SECRET}
----
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
-    name: Resource Registration
-    description: Resource Registration OIDC
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://registration-api.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://registration-api.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://registration-api.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "/*"
-    webOrigins:
-      - "/*"
-    clientSecretSecretRef:
-      name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: keycloak-provider-config
-    kind: ProviderConfig
-EOF
+kubectl apply -f generated-iam.yaml
+kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${RESOURCE_REGISTRATION_IAM_CLIENT_ID} -n iam-management --timeout=60s
 ```
 
 ---
@@ -733,8 +688,7 @@ helm uninstall registration-harvester-bpm-engine -n resource-registration
 helm uninstall registration-api -n resource-registration
 
 # Remove IAM resources
-kubectl delete client.openidclient.keycloak.m.crossplane.io/${RESOURCE_REGISTRATION_IAM_CLIENT_ID} -n iam-management
-kubectl delete secret/${RESOURCE_REGISTRATION_IAM_CLIENT_ID}-keycloak-client -n iam-management
+kubectl delete -f generated-iam.yaml --ignore-not-found
 
 # Remove namespace (optional - will delete all data)
 kubectl delete namespace resource-registration

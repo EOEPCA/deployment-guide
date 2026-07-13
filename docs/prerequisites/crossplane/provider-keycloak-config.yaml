@@ -1,0 +1,41 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: provider-keycloak
+spec:
+  activate:
+    - groups.group.keycloak.m.crossplane.io
+    - memberships.group.keycloak.m.crossplane.io
+    - roles.group.keycloak.m.crossplane.io
+    - clients.openidclient.keycloak.m.crossplane.io
+    - groupmembershipprotocolmappers.openidgroup.keycloak.m.crossplane.io
+    - roles.role.keycloak.m.crossplane.io
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-keycloak
+spec:
+  deploymentTemplate:
+    metadata:
+      labels:
+        runtime: provider-keycloak
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          runtime: provider-keycloak
+      template:
+        metadata:
+          labels:
+            runtime: provider-keycloak
+        spec:
+          containers:
+          - name: package-runtime
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi

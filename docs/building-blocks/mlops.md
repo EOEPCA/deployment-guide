@@ -102,56 +102,11 @@ For instructions on how to set up IAM, you can follow the [IAM Building Block](.
 
 If you **don't** want to enable OIDC, you can skip directly to [Create Required Kubernetes Secrets](#3-create-required-kubernetes-secrets).
 
-A Keycloak client is required for the ingress protection of the MLOps. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+A Keycloak client is required for the ingress protection of the MLOps. `configure-mlops.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
 ```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${MLOPS_OIDC_CLIENT_ID}-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: ${MLOPS_OIDC_CLIENT_SECRET}
----
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: ${MLOPS_OIDC_CLIENT_ID}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${MLOPS_OIDC_CLIENT_ID}
-    name: Gitlab
-    description: Gitlab OIDC
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://gitlab.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "/*"
-    webOrigins:
-      - "/*"
-    clientSecretSecretRef:
-      name: ${MLOPS_OIDC_CLIENT_ID}-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
+kubectl apply -f generated-iam.yaml
+kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${MLOPS_OIDC_CLIENT_ID} -n iam-management --timeout=60s
 ```
 
 The `Client` should be created successfully.
@@ -544,6 +499,9 @@ helm uninstall sharinghub mlflow-sharinghub -n sharinghub
 bash utils/uninstallation-cleanup.sh
 kubectl delete ns gitlab sharinghub
 ```
+
+> If OIDC was enabled, also remove the Keycloak `Client` created in Step 2:
+> `kubectl delete -f generated-iam.yaml --ignore-not-found`
 
 ---
 

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: eric-user-password
+  namespace: iam-management
+stringData:
+  password: {{ getenv "KEYCLOAK_TEST_PASSWORD" }}
+---
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: eric
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    username: eric
+    email: eric@eoepca.org
+    emailVerified: true
+    firstName: eric
+    lastName: Testuser
+    initialPassword:
+      - temporary: false
+        valueSecretRef:
+          name: eric-user-password
+          key: password
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig

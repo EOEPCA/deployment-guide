@@ -39,6 +39,8 @@ gomplate -f "ingress-template.yaml" -o "generated-ingress.yaml" --datasource ann
 
 if [ "$OPENEO_ARGO_ENABLE_OIDC" == "no" ]; then
     gomplate -f "proxy-auth-template.yaml" -o "generated-proxy-auth.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+else
+    gomplate -f "iam-template.yaml" -o "generated-iam.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 

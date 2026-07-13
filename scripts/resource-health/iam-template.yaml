@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ getenv "RESOURCE_HEALTH_CLIENT_ID" }}-keycloak-client
+  namespace: iam-management
+stringData:
+  client_secret: {{ getenv "RESOURCE_HEALTH_CLIENT_SECRET" }}
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ getenv "RESOURCE_HEALTH_CLIENT_ID" }}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientId: {{ getenv "RESOURCE_HEALTH_CLIENT_ID" }}
+    name: Resource Health
+    description: Resource Health OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}
+    baseUrl: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}
+    adminUrl: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: {{ getenv "RESOURCE_HEALTH_CLIENT_ID" }}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig

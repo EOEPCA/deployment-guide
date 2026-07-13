@@ -71,6 +71,8 @@ gomplate  -f "registration-harvester/stac-browser-template.yaml" -o "registratio
 if [[ "$RESOURCE_REGISTRATION_ENABLE_OIDC" == "yes" || "$RESOURCE_REGISTRATION_PROTECTED_TARGETS" == "yes" ]]; then
     source ../common/prerequisite-utils.sh
     run_validation "check_crossplane_installed"
+
+    gomplate -f "iam-template.yaml" -o "generated-iam.yaml"
 fi
 
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."

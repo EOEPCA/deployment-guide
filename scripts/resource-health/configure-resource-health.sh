@@ -24,6 +24,9 @@ if [ "$RESOURCE_HEALTH_ENABLE_OIDC" = "yes" ] && [ "$INGRESS_CLASS" != "apisix" 
 fi
 
 if [[ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]]; then
+    source ../common/prerequisite-utils.sh
+    run_validation "check_crossplane_installed"
+
     ask "RESOURCE_HEALTH_CLIENT_ID" "Enter the Resource Health Keycloak Client ID" "resource-health" is_non_empty
 
     if [ -z "$RESOURCE_HEALTH_CLIENT_SECRET" ]; then
@@ -96,5 +99,9 @@ fi
 
 # Generate standard configuration files
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH"
+
+if [ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]; then
+    gomplate -f "iam-template.yaml" -o "generated-iam.yaml"
+fi
 
 echo "You can now proceed to deploy the Resource Health secrets."

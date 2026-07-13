@@ -109,44 +109,10 @@ kubectl apply -f generated-proxy-auth.yaml
 
 ### 7. Configure OIDC Client (if using OIDC)
 
-A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD) when OIDC was enabled - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
 
 ```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: openeo-argo
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: openeo-argo
-    name: openEO Argo Engine
-    description: openEO Argo Engine OIDC
-    enabled: true
-    accessType: PUBLIC
-    rootUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://openeo.${INGRESS_HOST}
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    validRedirectUris:
-      - "/*"
-      - "https://editor.openeo.org/*"
-    webOrigins:
-      - "+"
-  providerConfigRef:
-    name: keycloak-provider-config
-    kind: ProviderConfig
-EOF
-```
-
-Check that the `Client` reconciled successfully:
-```bash
+kubectl apply -f generated-iam.yaml
 kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/openeo-argo -n iam-management --timeout=60s
 ```
 
@@ -271,14 +237,12 @@ To uninstall the OpenEO ArgoWorkflows deployment:
 
 ```bash
 kubectl delete -f generated-ingress.yaml --ignore-not-found
+kubectl delete -f generated-iam.yaml --ignore-not-found
 
 helm uninstall openeo -n openeo
 
 kubectl delete namespace openeo
 ```
-
-> If OIDC was enabled, also remove the Keycloak `Client` created in Step 7:
-> `kubectl delete client.openidclient.keycloak.m.crossplane.io openeo-argo -n iam-management`
 
 ---
 

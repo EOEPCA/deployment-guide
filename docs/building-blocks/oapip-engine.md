@@ -330,54 +330,12 @@ To protect OAPIP endpoints with Keycloak tokens and policies, follow these steps
 > First, ensure you've followed the [IAM Deployment Guide](./iam/main-iam.md) and have Keycloak running.
 
 ### Create a Keycloak Client
+
+`configure-oapip.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when IAM/OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
+
 ```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${OAPIP_CLIENT_ID}-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: ${OAPIP_CLIENT_SECRET}
----
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: ${OAPIP_CLIENT_ID}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${OAPIP_CLIENT_ID}
-    name: Processing OAPIP Engine
-    description: Processing OAPIP Engine OIDC
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://zoo.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "${HTTP_SCHEME}://zoo.${INGRESS_HOST}/*"
-    webOrigins:
-      - "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
-    clientSecretSecretRef:
-      name: ${OAPIP_CLIENT_ID}-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: keycloak-provider-config
-    kind: ProviderConfig
-EOF
+kubectl apply -f generated-iam.yaml
+kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OAPIP_CLIENT_ID} -n iam-management --timeout=60s
 ```
 
 ### Protect the User's Processing Context
@@ -575,8 +533,7 @@ source ~/.eoepca/state
 export OAPIP_USER="${KEYCLOAK_TEST_USER}"
 kubectl delete -f generated-ingress.yaml
 envsubst < protect-oapip-user.yaml | kubectl delete -f -
-kubectl -n iam-management delete client.openidclient.keycloak.m.crossplane.io ${OAPIP_CLIENT_ID}
-kubectl -n iam-management delete secret ${OAPIP_CLIENT_ID}-keycloak-client
+kubectl delete -f generated-iam.yaml --ignore-not-found
 helm -n processing uninstall zoo-project-dru
 kubectl delete ns processing
 ```
