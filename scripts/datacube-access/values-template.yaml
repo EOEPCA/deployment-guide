@@ -7,22 +7,10 @@ ingress:
     {{ $key }}: "{{ $value }}"
     {{- end }}
   hosts:
-    {{- if eq ( getenv "INGRESS_CLASS" ) "apisix" }}
-    - host: datacube-access.{{ getenv "INGRESS_HOST" }}
-      paths:
-        - path: /*
-          pathType: ImplementationSpecific
-    {{- else }}
     - host: datacube-access.{{ getenv "INGRESS_HOST" }}
       paths:
         - path: /
           pathType: Prefix
-          backend:
-            service:
-              name: datacube-access
-              port:
-                number: 8000
-    {{- end }}
 
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
@@ -30,11 +18,6 @@ ingress:
       - datacube-access.{{ getenv "INGRESS_HOST" }}
     secretName: datacube-access-tls
   {{- end }}
-
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: {{ getenv "CLUSTER_ISSUER" }}
 
 resources:
   requests:
