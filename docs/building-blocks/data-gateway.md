@@ -330,3 +330,4 @@ results = dag.search(
 - **[stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag)** - Production STAC server implementation
 - **[EODAG JupyterLab Extension](https://github.com/CS-SI/eodag-labextension)** - GUI for searching and browsing EO products
 - **[Provider Configuration Guide](https://eodag.readthedocs.io/en/stable/getting_started_guide/configure.html)** - Detailed provider setup instructions
+- **[Federated Data Proxy Building Block](federated-data-proxy.md)** - a deployed proxy/caching layer built on the Data Gateway (coming soon)

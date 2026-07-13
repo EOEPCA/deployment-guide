@@ -59,37 +59,43 @@ The Data Gateway Building Block provides a consolidated and consistent capabilit
 
 [Explore Data Gateway »](data-gateway.md)
 
-### 7. Processing
+### 7. Federated Data Proxy (Coming Soon)
+
+The Federated Data Proxy provides a unified access layer for serving Earth Observation data from multiple internal and external providers, transparently to end-users. It is under active development and not yet available for deployment via this guide.
+
+[Learn more »](federated-data-proxy.md)
+
+### 8. Processing
 
 The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
 
 [Deploy Processing »](processing.md)
 
-### 8. MLOps (Machine Learning Operations)
+### 9. MLOps (Machine Learning Operations)
 
 The MLOps BB faciliates the machine learning model development lifecycle - including model training, model version management and management of training data - and supports discovery of published models and training datasets.
 
 [Deploy MLOps »](mlops.md)
 
-### 9. Workspace
+### 10. Workspace
 
 The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
 
 [Deploy Workspace »](workspace.md)
 
-### 10. Application Hub
+### 11. Application Hub
 
 The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
 
 [Deploy Application Hub »](application-hub.md)
 
-### 11. Resource Health
+### 12. Resource Health
 
 The Resource Health BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
 
 [Deploy Resource Health »](resource-health.md)
 
-### 12. Application Quality
+### 13. Application Quality
 
 The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
 
