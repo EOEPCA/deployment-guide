@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: workspace-registry-ingress-class
+spec:
+  admission: true
+  background: false
+  rules:
+    - name: set-apisix-class-for-workspace-registry-ingresses
+      match:
+        any:
+          - resources:
+              kinds:
+                - Ingress
+              selector:
+                matchLabels:
+                  training.educates.dev/application: registry
+                  training.educates.dev/component: session
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.ingressClassName || '' }}"
+            operator: NotEquals
+            value: apisix
+      mutate:
+        patchStrategicMerge:
+          spec:
+            ingressClassName: apisix

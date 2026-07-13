@@ -18,6 +18,7 @@ check_service_exists "crossplane-system" "crossplane-contrib-function-auto-ready
 check_service_exists "crossplane-system" "crossplane-contrib-function-environment-configs"
 check_service_exists "crossplane-system" "crossplane-contrib-function-python"
 check_service_exists "workspace" "workspace-api"
+check_clusterpolicy_exists "workspace-registry-ingress-class"
 
 # Check ingress
 CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/probe" "200"

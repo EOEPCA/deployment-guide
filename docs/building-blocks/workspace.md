@@ -132,6 +132,12 @@ helm upgrade -i workspace-dependencies-educates \
   --values workspace-dependencies/educates-values.yaml
 ```
 
+Educates gives every Datalab session's own registry component a per-session `Ingress`, but doesn't set an `ingressClassName` on it - so on an APISIX-only cluster it's created but never actually routable. Apply a Kyverno policy to fix this on every session:
+
+```bash
+kubectl apply -f workspace-dependencies/kyverno-registry-ingress-class.yaml
+```
+
 ### 4. Deploy the Workspace API
 
 ```bash
@@ -665,6 +671,7 @@ To uninstall the Workspace Building Block and clean up associated resources:
 source ~/.eoepca/state
 kubectl delete ClusterPolicy/workspace-session-iam
 kubectl delete -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml
+kubectl delete -f workspace-dependencies/kyverno-registry-ingress-class.yaml
 kubectl delete -f workspace-api/generated-ingress.yaml
 kubectl delete -f workspace-api/generated-iam.yaml
 kubectl delete secret/${WORKSPACE_API_CLIENT_ID}-keycloak-client -n iam-management
