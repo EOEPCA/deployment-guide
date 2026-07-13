@@ -3,7 +3,8 @@ source ../../common/utils.sh
 echo "Configuring OpenEO ArgoWorkflows with Dask..."
 
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for persistent data" "standard" is_non_empty
+ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
+ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for the SHARED job workspace (ReadWriteMany)" "standard" is_non_empty
 configure_cert
 
 echo ""
@@ -12,17 +13,18 @@ ask "OPENEO_ARGO_ENABLE_OIDC" "Enable OIDC authentication? (yes/no)" "yes" is_ye
 if [ "$OPENEO_ARGO_ENABLE_OIDC" == "no" ]; then
     echo "⚠️  NOTE: This deployment uses basic authentication for testing only!"
     echo "         For production, use proper OIDC authentication"
-    export OPENEO_ARGO_BASIC_AUTH_USERNAME="eoepcauser"
-    export OPENEO_ARGO_BASIC_AUTH_PASSWORD="eoepcapass"
+    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_USERNAME" "eoepcauser"
+    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_PASSWORD" "eoepcapass"
     BASIC_AUTH_HASH=$(openssl passwd -apr1 "${OPENEO_ARGO_BASIC_AUTH_PASSWORD}")
-    export OPENEO_ARGO_BASIC_AUTH_HTPASSWD="${OPENEO_ARGO_BASIC_AUTH_USERNAME}:${BASIC_AUTH_HASH}"
+    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_HTPASSWD" "${OPENEO_ARGO_BASIC_AUTH_USERNAME}:${BASIC_AUTH_HASH}"
     # Add base64 encoding for the Authorization header
-    export OPENEO_ARGO_BASIC_AUTH_B64=$(echo -n "${OPENEO_ARGO_BASIC_AUTH_USERNAME}:${OPENEO_ARGO_BASIC_AUTH_PASSWORD}" | base64)
-    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_HTPASSWD" "$OPENEO_ARGO_BASIC_AUTH_HTPASSWD"
-    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_B64" "$OPENEO_ARGO_BASIC_AUTH_B64"
+    add_to_state_file "OPENEO_ARGO_BASIC_AUTH_B64" "$(echo -n "${OPENEO_ARGO_BASIC_AUTH_USERNAME}:${OPENEO_ARGO_BASIC_AUTH_PASSWORD}" | base64)"
 fi
 if [ "$OPENEO_ARGO_ENABLE_OIDC" == "yes" ]; then
-    ask "OIDC_ISSUER_URL" "Enter OIDC issuer URL" "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}" is_valid_url
+    source ../../common/prerequisite-utils.sh
+    run_validation "check_crossplane_installed"
+
+    ask "OIDC_ISSUER_URL" "Enter OIDC issuer URL" "${HTTP_SCHEME}://auth.${INGRESS_HOST}/realms/${REALM}" is_valid_domain
     ask "OIDC_ORGANISATION" "Enter OIDC organisation" "eoepca" is_non_empty
     ask "OIDC_POLICIES" "Enter OIDC policies (optional, leave empty for none)" "" is_optional
 fi

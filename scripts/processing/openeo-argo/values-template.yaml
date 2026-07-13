@@ -8,53 +8,53 @@ global:
     {{- if eq (getenv "OPENEO_ARGO_ENABLE_OIDC") "yes" }}
     oidcUrl: "{{ getenv "OIDC_ISSUER_URL" }}"
     oidcOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
-    odicOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
     oidcPolicies: "{{ getenv "OIDC_POLICIES" }}"
+    oidcProviderTitle: "EOEPCA Keycloak"
     oidcClientId: "openeo-argo"
-    odicClientId: "openeo-argo"
     {{- else }}
     oidcUrl: "http://dummy-oidc.local/realms/eoepca"
     oidcOrganisation: "eoepca"
     oidcPolicies: ""
     {{- end }}
     stacCatalogueUrl: "{{ getenv "STAC_CATALOG_ENDPOINT" }}"
-    workspaceRoot: "/user_workspaces"
-    executorImage: "eoepcaci/openeo-argoworkflows:executor-2025.5.1-patched-v3"
+    workspaceRoot: "/user_workspaces/jobs"
+    workspaceMount: "/user_workspaces"
     daskWorkerCores: "4"
     daskWorkerMemory: "8"
     daskWorkerLimit: "6"
     daskClusterTimeout: "3600"
+    logLevel: "INFO"
 
 replicaCount: 1
 
-image:
-  repository: ghcr.io/eodcgmbh/openeo-argoworkflows
-  pullPolicy: IfNotPresent
-  tag: "api-2025.5.1"
+# image.repository/tag are left at chart defaults (ghcr.io/eodcgmbh/openeo-argoworkflows),
+# which track the pinned chart version below.
 
 postgresql:
-  enabled: true
-  image:
-    repository: bitnamilegacy/postgresql
+  # Chart default already points auth.existingSecret at "openeo-postgresql" -
+  # that Secret is created by apply-secrets.sh before install.
   auth:
-    username: "postgres"
-    password: "changeme"
     database: "openeo"
-  persistence:
-    storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
-    size: "4Gi"
+  primary:
+    persistence:
+      storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
+      size: "4Gi"
 
 redis:
-  enabled: true
-  image:
-    repository: bitnamilegacy/redis
-  auth:
-    enabled: false
-  persistence:
-    storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
-    size: "8Gi"
+  master:
+    persistence:
+      storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
+      size: "8Gi"
   replica:
     replicaCount: 1
+    persistence:
+      storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
+      size: "8Gi"
+
+# The shared job workspace PVC is mounted ReadWriteMany by the api, queue-worker,
+# executor and dask worker pods at once, so this storage class must support RWX.
+persistence:
+  storageClassName: "{{ getenv "SHARED_STORAGECLASS" }}"
 
 service:
   type: ClusterIP
@@ -73,6 +73,3 @@ resources:
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80

@@ -24,11 +24,9 @@ metadata:
     {{- end }}
 
     {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
-    k8s.apisix.apache.org/enable-cors: "true"
     k8s.apisix.apache.org/cors-allow-origin: "*"
     k8s.apisix.apache.org/cors-allow-methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS"
     k8s.apisix.apache.org/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
-    k8s.apisix.apache.org/http-to-https: "true"
     {{- end }}
 
 spec:

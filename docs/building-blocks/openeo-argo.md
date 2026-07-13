@@ -2,9 +2,9 @@
 
 > **Note**: This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.
 
-OpenEO ArgoWorkflows provides a Kubernetes-native implementation of the OpenEO API specification using Dask for distributed processing. This deployment offers an alternative to the GeoTrellis backend, leveraging Dask's parallel computing capabilities for Earth observation data processing.
+OpenEO ArgoWorkflows provides a Kubernetes-native implementation of the OpenEO API specification, using Argo Workflows to execute OpenEO process graphs and Dask for distributed processing. This deployment offers an alternative to the GeoTrellis backend, leveraging Dask's parallel computing capabilities for Earth observation data processing.
 
-> **Note:** OIDC authentication is configured by default for OpenEO ArgoWorkflows. The deployment integrates with external OIDC providers (e.g., EGI AAI) for authentication. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set up your own OIDC Provider.
+> **Note:** OIDC authentication is app-native - the API itself validates tokens against the configured identity provider's discovery endpoint, so it works the same way under either `apisix` or `nginx` ingress. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set up your own OIDC Provider (e.g. Keycloak). If OIDC is disabled, a basic-auth proxy is deployed instead - for testing only.
 
 ---
 
@@ -19,8 +19,13 @@ Before deploying, ensure your environment meets these requirements:
 | kubectl | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/) |
 | Ingress | Properly installed | [Installation Guide](../prerequisites/ingress/overview.md) |
 | Cert Manager | Properly installed | [Installation Guide](../prerequisites/tls.md) |
-| OIDC Provider | Required for authentication | [Installation Guide](./iam/main-iam.md) |
+| `ReadWriteMany` Storage Class | Required for the shared job workspace | [Storage Guide](../prerequisites/storage.md) |
+| OIDC Provider | Optional (app-native OIDC, if enabling authentication) | [Installation Guide](./iam/main-iam.md) |
 | STAC Catalogue | Required for data access | [eoAPI Deployment](./data-access.md) |
+
+The API, executor, and Dask worker pods all mount the same job workspace volume concurrently, so the storage class used for it (`SHARED_STORAGECLASS` below) **must** support `ReadWriteMany`.
+
+> **Note:** this chart bundles Argo Workflows (CRDs + controller) as a dependency. If another Building Block on the cluster also installs the same cluster-scoped `*.argoproj.io` CRDs under a different Helm release (e.g. OGC API Processing's `zoo-project-dru`), `helm upgrade -i` below will fail with a CRD-ownership error - only one release can own them.
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -47,7 +52,8 @@ You'll be prompted for:
 | Parameter | Description | Example |
 |---|---|---|
 | `INGRESS_HOST` | Base domain for ingress hosts | `example.com` |
-| `PERSISTENT_STORAGECLASS` | Kubernetes storage class for persistent volumes | `standard` |
+| `PERSISTENT_STORAGECLASS` | Kubernetes storage class for PostgreSQL/Redis (ReadWriteOnce) | `standard` |
+| `SHARED_STORAGECLASS` | Kubernetes storage class for the shared job workspace (ReadWriteMany) | `standard` |
 | `CLUSTER_ISSUER` | Cert-manager Cluster Issuer for TLS certificates | `letsencrypt-prod` |
 | `OPENEO_ARGO_ENABLE_OIDC` | Enable OIDC authentication (yes/no) | `yes` |
 | `OIDC_ISSUER_URL` | OIDC provider URL (if OIDC enabled) | `https://auth.example.com/realms/eoepca` |
@@ -55,30 +61,39 @@ You'll be prompted for:
 | `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://eoapi.example.com/stac` |
 
 ### 2. Add Helm Repositories
+
+The chart and its dependencies are all published to public Helm repositories:
 ```bash
+helm repo add eodc https://eodcgmbh.github.io/charts/
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo add dask https://helm.dask.org
-helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 ```
 
-### 3. Prepare the Helm Chart
+### 3. Apply Secrets
 
-Clone the charts repository and build dependencies:
+The chart expects a pre-existing Secret holding the PostgreSQL admin password (it will not generate one itself):
 ```bash
-git clone https://github.com/jzvolensky/charts
-helm dependency update charts/eodc/openeo-argo
-helm dependency build charts/eodc/openeo-argo
+bash apply-secrets.sh
 ```
 
 ### 4. Deploy OpenEO ArgoWorkflows
+
+This installs the API/worker deployment along with its bundled PostgreSQL, Redis, Argo Workflows, and Dask Gateway dependencies into the `openeo` namespace:
 ```bash
-helm upgrade -i openeo charts/eodc/openeo-argo \
+helm upgrade -i openeo eodc/openeo-argo \
+    --version 2026.7.1 \
     --namespace openeo \
     --create-namespace \
     --values generated-values.yaml \
+    --dependency-update \
     --timeout 10m
 ```
+
+> Check for a newer chart release with `helm search repo eodc/openeo-argo -l` - pin whichever version you've actually tested against.
+
+The chart creates the API's Argo Workflows service-account token via a `post-upgrade` hook, which does **not** run on a first-ever install (Helm only fires `post-install` hooks then). If the `openeo-openeo-argo` pod is stuck in `CreateContainerConfigError` with `secret "openeo-argo-access-sa.service-account-token" not found`, re-run the exact same `helm upgrade` command above - the second run is a real upgrade, so the hook fires and the pod recovers.
 
 ### 5. Deploy Ingress
 ```bash
@@ -92,9 +107,9 @@ If you disabled OIDC authentication during configuration:
 kubectl apply -f generated-proxy-auth.yaml
 ```
 
-### 7. Configure OIDC Client (if using custom OIDC)
+### 7. Configure OIDC Client (if using OIDC)
 
-A Keycloak client is required for the ingress protection of the Processing BB openEO Argo Engine. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
 
 ```bash
 source ~/.eoepca/state
@@ -125,16 +140,15 @@ spec:
     webOrigins:
       - "+"
   providerConfigRef:
-    name: provider-keycloak
+    name: keycloak-provider-config
     kind: ProviderConfig
 EOF
 ```
 
-The `Client` should be created successfully.
-
-Then remove the role
-Clients → openeo-public → Client scopes tab
-Remove roles or other scopes from "Assigned default client scopes" if they're adding the audience
+Check that the `Client` reconciled successfully:
+```bash
+kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/openeo-argo -n iam-management --timeout=60s
+```
 
 ---
 
@@ -161,11 +175,12 @@ kubectl get pods -n openeo
 ```bash
 source ~/.eoepca/state
 
-# Without authentication (basic info only)
+# If OIDC is enabled, the ingress routes straight to the API:
 curl -s https://openeo.${INGRESS_HOST}/openeo/1.1.0 | jq .
 
-# With basic auth (if OIDC disabled)
-curl -s -u eoepcauser:eoepcapass https://openeo.${INGRESS_HOST}/openeo/1.1.0 | jq .
+# If OIDC is disabled, the ingress routes to the basic-auth proxy instead, which
+# itself prepends /openeo/1.1.0 to whatever path you request - so call the bare root:
+curl -s -u eoepcauser:eoepcapass https://openeo.${INGRESS_HOST}/ | jq .
 ```
 
 **List available processes:**
@@ -192,7 +207,7 @@ ACCESS_TOKEN=$(curl -s -X POST \
     -d "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "client_id=openeo-argo" \
     -d "scope=openid" | jq -r '.access_token')
-AUTH_TOKEN="oidc/eoepca/${ACCESS_TOKEN}"
+AUTH_TOKEN="oidc/${OIDC_ORGANISATION}/${ACCESS_TOKEN}"
 
 # Create a job
 JOB_ID=$(curl -s -i -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
@@ -239,6 +254,31 @@ curl -s "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
 
 > **Note:** The STAC catalogue must contain collections with data formatted for OpenEO processing. Check the available collections at your STAC endpoint and ensure the spatial/temporal extent matches actual data.
 
+---
+
+## Advanced Configuration
+
+The chart also supports (all optional, left unconfigured by this guide):
+
+- **Basic-auth protected STAC catalogues** - `global.env.stacApiSecret` references an existing Secret with `username`/`secret` keys.
+- **S3/Icechunk output storage and EODAG DESP access for the executor** - `global.env.executorSecret` references an existing Secret with AWS and EODAG credentials, and `global.env.awsEndpointUrl`/`eodagDedlPriority`/`icechunkS3*` control the connection. See the [chart README](https://github.com/eodcgmbh/charts/tree/main/eodc/openeo-argo) for the full parameter list.
+
+---
+
+## Uninstallation
+
+To uninstall the OpenEO ArgoWorkflows deployment:
+
+```bash
+kubectl delete -f generated-ingress.yaml --ignore-not-found
+
+helm uninstall openeo -n openeo
+
+kubectl delete namespace openeo
+```
+
+> If OIDC was enabled, also remove the Keycloak `Client` created in Step 7:
+> `kubectl delete client.openidclient.keycloak.m.crossplane.io openeo-argo -n iam-management`
 
 ---
 
