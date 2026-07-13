@@ -1,6 +1,9 @@
 fullnameOverride: workspace-api
+service:
+  port: 8181
+authAudience: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
 image:
-  tag: 2.0.0-rc.8
+  tag: 2.2.0-rc.1
   pullPolicy: Always
 ingress:
   enabled: false

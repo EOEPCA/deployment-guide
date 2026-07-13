@@ -1,8 +1,0 @@
-fullnameOverride: workspace-admin
-kong:
-  admin:
-    tls:
-      enabled: false
-app:
-  ingress:
-    enabled: false

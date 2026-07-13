@@ -44,8 +44,9 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | Helm               | Version 3.7 or newer                              | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../prerequisites/tls.md) |
-| APISIX Ingress Controller | Properly installed                         | [Installation Guide](../prerequisites/ingress/overview.md#apisix-ingress-controller)      |
+| APISIX Ingress Controller | Properly installed - the only ingress class this BB supports | [Installation Guide](../prerequisites/ingress/overview.md#apisix-ingress-controller)      |
 | Crossplane         | Properly installed                                | [Installation Guide](../prerequisites/crossplane.md) |
+| IAM Building Block | Deployed and running - the Workspace API always requires a Keycloak Bearer token, there is no auth-free mode | [IAM Deployment Guide](./iam/main-iam.md) |
 
 **Clone the Deployment Guide Repository:**
 
@@ -88,11 +89,9 @@ During the script execution, you will be prompted to provide:
   
     Endpoint, region, access key, and secret key for your S3-compatible storage.
 
-* **OIDC Configuration**
+* **Keycloak Client IDs**
 
-    You will be prompted to provide whether you wish to enable OIDC authentication. If you choose to enable OIDC, ensure that you follow the steps in the OIDC Configuration section after deployment.
-
-    For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide.
+    Client IDs for the `workspace-pipeline` and `workspace-api` Keycloak clients (defaults are fine), plus whether to enable ingress-level login redirect and Datalab session SSO - see [step 9](#9-configure-iam-for-the-workspace-api) for what each of these controls.
 
 
 ### 2. Apply Kubernetes Secrets
@@ -107,17 +106,28 @@ bash apply-secrets.sh
 
 The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
 
+> The Educates chart bundles a set of Kyverno `ClusterPolicy` pod-security baseline/restricted policies (unconditionally, there is no values toggle to skip them) - Kyverno's CRDs must therefore already be installed before deploying Educates, or the `helm upgrade -i` below fails with `no matches for kind "ClusterPolicy"`.
+
 ```bash
+# Deploy Kyverno (required by Educates' own bundled ClusterPolicies, and reused
+# later for the optional TLS/IAM workarounds in sections 8.2 and 9.3)
+helm repo add kyverno https://kyverno.github.io/kyverno/
+helm repo update kyverno
+helm upgrade -i kyverno kyverno/kyverno \
+  --version 3.6.2 \
+  --namespace kyverno \
+  --create-namespace
+
 # Deploy CSI-RClone
 helm upgrade -i workspace-dependencies-csi-rclone \
   oci://ghcr.io/eoepca/workspace/workspace-dependencies-csi-rclone \
-  --version 2.0.0-rc.12 \
+  --version 2.2.0-rc.2 \
   --namespace workspace
 
 # Deploy Educates
 helm upgrade -i workspace-dependencies-educates \
   oci://ghcr.io/eoepca/workspace/workspace-dependencies-educates \
-  --version 2.0.0-rc.12 \
+  --version 2.2.0-rc.2 \
   --namespace workspace \
   --values workspace-dependencies/educates-values.yaml
 ```
@@ -128,14 +138,12 @@ helm upgrade -i workspace-dependencies-educates \
 helm repo add eoepca https://eoepca.github.io/helm-charts
 helm repo update eoepca
 helm upgrade -i workspace-api eoepca/rm-workspace-api \
-  --version 2.0.0-rc.7 \
+  --version 2.2.1 \
   --namespace workspace \
-  --values workspace-api/generated-values.yaml \
-  --set image.tag=2.0.0-rc.8
+  --values workspace-api/generated-values.yaml
 ```
 
-> Ingress is currently only available via APISIX routes, if you have not enabled OIDC, you will need to port-forward to access the API for now. 
-> If you have enabled OIDC, we will set up the APISIX route/ingress in later steps.
+> The API isn't reachable yet - its route and Keycloak client are created in [step 9](#9-configure-iam-for-the-workspace-api).
 
 ### 5. Deploy the Workspace Pipeline
 
@@ -144,7 +152,7 @@ The Workspace Pipeline manages the templating and provisioning of resources with
 ```bash
 helm upgrade -i workspace-pipeline \
   oci://ghcr.io/eoepca/workspace/workspace-pipeline \
-  --version 2.0.0-rc.12 \
+  --version 2.2.0-rc.2 \
   --namespace workspace \
   --values workspace-pipeline/generated-values.yaml
 ```
@@ -165,250 +173,55 @@ This runs daily at 8 PM UTC and removes all sessions except the default ones.
 
 #### 7.1. Provider Configurations
 
-The Workspace BB uses several Crossplane providers to manage resources - each of which requires a corresponding ProviderConfig to be deployed in the `workspace` namespace. The exception is the MinIO provider, which requires a cluster-wide ProviderConfig.
-
-* _**MinIO Provider**, for S3-compatible storage_<br>
-  > Cluster-wide configuration already applied in the Crossplane prerequisites.
-* **Kubernetes Provider**, for managing Kubernetes resources
-* **Keycloak Provider**, for IAM integration
-* **Helm Provider**, for deploying Helm charts within workspaces
+Each Crossplane provider used by the Workspace BB needs a `ProviderConfig` in the `workspace` namespace (the MinIO provider is the exception - already configured cluster-wide in the Crossplane prerequisites):
 
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: kubernetes.m.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  name: provider-kubernetes
-  namespace: workspace
-spec:
-  credentials:
-    source: InjectedIdentity
----
-apiVersion: keycloak.m.crossplane.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: provider-keycloak
-  namespace: workspace
-spec:
-  credentialsSecretRef:
-    name: workspace-pipeline-client
-    key: credentials
----
-apiVersion: helm.m.crossplane.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: provider-helm
-  namespace: workspace  
-spec:
-  credentials:
-    source: InjectedIdentity
-EOF
+kubectl apply -f workspace-dependencies/provider-configs.yaml
 ```
 
-#### 7.2. Create the Keycloak Client for Crossplane Keycloak Provider
+#### 7.2. Keycloak Client for the Workspace Pipeline
 
-Create a Keycloak client for the Crossplane Keycloak provider to allow it to interface with Keycloak. We create the client `workspace-pipeline`, which is used by the workspace pipelines to perform administrative actions against the Keycloak API to properly protect newly created workspaces.
+The workspace pipeline needs its own Keycloak client, `workspace-pipeline`, so it can self-serve a Keycloak client/roles/groups for every workspace it provisions. This is required regardless of the ingress-level login redirect setting in [step 9](#9-configure-iam-for-the-workspace-api).
 
-##### 7.2.1. Create the Keycloak Client
-
-The client is created via the Crossplane `Client` CRD using the Keycloak Provider offered by the `iam-management` namespace. This bootstraps the ability of the Workspace to self-serve its own Keycloak resources for workspace isolation.
-
-To this end we create:
-
-* In namespace `iam-management`:
-    * A Keycloak client `workspace-pipeline` with appropriate `realm-management` roles.
-    * A Kubernetes secret `workspace-pipeline-keycloak-client` containing the client secret supporting client creation.
-* In namespace `workspace`:
-    * A Kubernetes secret `workspace-pipeline-client` containing the client credentials for the Crossplane Keycloak provider.
-
-**Create the `workspace-pipeline` Keycloak client**
-
-This relies upon the Keycloak Provider in the `iam-management` namespace.
+Look up the UUID of Keycloak's built-in `realm-management` client (adopted below, since role grants reference it and it isn't created by the IAM Building Block itself):
 
 ```bash
 source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-# Secret providing client_secret for Client creation.
-apiVersion: v1
-kind: Secret
-metadata:
-  name: workspace-pipeline-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: "${WORKSPACE_PIPELINE_CLIENT_SECRET}"
----
-# Create the Keycloak Client
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: "${WORKSPACE_PIPELINE_CLIENT_ID}"
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${WORKSPACE_PIPELINE_CLIENT_ID}
-    name: Workspace Pipelines
-    description: Workspace Pipelines Admin
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://workspace-pipeline.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://workspace-pipeline.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://workspace-pipeline.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "/*"
-    webOrigins:
-      - "/*"
-    clientSecretSecretRef:
-      name: workspace-pipeline-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
+KEYCLOAK_ADMIN_TOKEN=$( \
+  curl -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
+    --silent --show-error \
+    -d "client_id=admin-cli" -d "grant_type=password" \
+    -d "username=${KEYCLOAK_ADMIN_USER}" --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+    | jq -r '.access_token' \
+)
+export REALM_MANAGEMENT_CLIENT_UUID=$( \
+  curl --silent --show-error -H "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients?clientId=realm-management" \
+    | jq -r '.[0].id' \
+)
 ```
 
-**Client credentials for the Workspace-dedicated Keycloak Provider**
-
-Create the secret with the client credentials for the _Crossplane Keycloak Provider_ in the `workspace` namespace.
+Render and apply the `workspace-pipeline` client, the adopted `realm-management` client, and the `realm-management` role grants it needs (`manage-users`, `manage-authorization`, `manage-clients`, `create-client`, and the composite `realm-admin` - required because the Keycloak Terraform provider Crossplane uses calls the realm's `serverinfo` admin endpoint on every connection, which only `realm-admin` can reach):
 
 ```bash
 source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-# Secret providing credentials for Crossplane Keycloak Provider.
-apiVersion: v1
-kind: Secret
-metadata:
-  name: workspace-pipeline-client
-  namespace: workspace
-stringData:
-  credentials: |
-    {
-      "client_id": "${WORKSPACE_PIPELINE_CLIENT_ID}",
-      "client_secret": "${WORKSPACE_PIPELINE_CLIENT_SECRET}",
-      "url": "http://iam-keycloak.iam",
-      "base_path": "",
-      "realm": "${REALM}"
-    }
-EOF
+gomplate -f workspace-dependencies/pipeline-iam-template.yaml -o workspace-dependencies/generated-pipeline-iam.yaml
+kubectl apply -f workspace-dependencies/generated-pipeline-iam.yaml
 ```
-
-##### 7.2.2. Add the realm management roles to the Client
-
-The `workspace-pipeline` client requires specific `realm-management` roles to perform administrative actions against Keycloak - namely: `manage-users`, `manage-authorization`, `manage-clients`, and `create-client`.
-
-We can add the required roles to the `workspace-pipeline` client.
-
-> Note this is actually modelled as a specific Custom Resource for each role assignment.
-
-```bash
-source ~/.eoepca/state
-for role in manage-users manage-authorization manage-clients create-client; do
-cat <<EOF | kubectl apply -f -
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: ClientServiceAccountRole
-metadata:
-  name: workspace-pipeline-client-${role}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    serviceAccountUserClientIdRef:
-      name: ${WORKSPACE_PIPELINE_CLIENT_ID}
-      namespace: iam-management
-    clientIdRef:
-      name: realm-management
-      namespace: iam-management
-    role: ${role}
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
-done
-```
-
-> Note that the above relies upon the `realm-management` client that was established [during IAM BB deployment](./iam/main-iam.md#53-create-realm-management-client).
 
 ---
 
 ### 8. Configure TLS Certificates for Workspace Datalab
 
-The default Workspace pipelines include, within each created Workspace, a Datalab component. This is configured to expect the secret `workspace-tls` that is used to provide the TLS Certificate for each workspace ingress.
+Each created Workspace includes a Datalab component that expects a `workspace-tls` secret in the `workspace` namespace, providing the TLS certificate for its ingress - this secret is automatically copied into each `ws-XXX` namespace created per workspace.
 
-The deployment anticipates the use of a wildcard certificate that is reused for each created workspace. Thus, the `workspace-tls` secret is created in the `workspace` namespace, from where it is automatically copied to each `ws-XXX` namespace that is created for each instantiated workspace.
+#### 8.1. Wildcard Certificate (recommended)
 
-Section [`Wildcard Certificate Generation`](#91-wildcard-certificate-generation) below provides an illustration of wildcard certificate generation using _Cert Manager_. This can be adapted for your DNS provider.
-
-Section [`Workspace Certificate Workaround`](#92-workspace-certificate-workaround) below provides a workaround, in the case that your are unable to obtain a wildcard certificate.
-
-#### 8.1. Wildcard Certificate Generation
-
-This approach relies upon a `Certificate` resource with the wildcard DNS name `*.${INGRESS_HOST}`. In order for this to be satisfied it is necessary to use a `ClusterIssuer` that uses the `DNS01` solver.
-
-**Create `ClusterIssuer`**
-
-The following illustrates an example that uses Cloudflare DNS provider.
-
-> Set your email address in the resource definition.
-
-```bash
-cat - <<'EOF' | kubectl apply -f -
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-dns01
-spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: <your-email-address>
-    privateKeySecretRef:
-      name: letsencrypt-dns01
-    solvers:
-      - dns01:
-           cloudflare:
-              apiTokenSecretRef:
-                 key: api-token
-                 name: cloudflare-api-token
-EOF
-```
-
-For other supported DNS providers see the [Cert Manager DNS01 Documentation](https://cert-manager.io/docs/configuration/acme/dns01/).
-
-**Cloudflare Credentials `Secret`**
-
-Create the secret `cloudflare-api-token` (as per above) with your Cloudflare API token.
-
-> Set your API token in the resource definition.
-
-```bash
-cat - <<'EOF' | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: cloudflare-api-token
-  namespace: cert-manager
-stringData:
-  api-token: <your-api-token>
-EOF
-```
-
-**Create Wildcard `Certificate`**
-
-Now the `DNS01` cluster issuer is in place we can create the `Certificate` to generate the `workspace-tls` secret.
+Follow [TLS Management](../prerequisites/tls.md#create-a-clusterissuer-for-lets-encrypt) (the DNS01 Challenge option) to create a `letsencrypt-dns01` `ClusterIssuer` for your DNS provider, then request the wildcard certificate that will back `workspace-tls`:
 
 ```bash
 source ~/.eoepca/state
-cat - <<EOF | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -424,184 +237,56 @@ spec:
 EOF
 ```
 
-In response, Cert Manager should trigger the certificate request via DNS01 - resulting in the `workspace-tls` secret. This secret is then available 
+#### 8.2. Workaround: Per-Workspace Certificates
 
-#### 8.2. Workspace Certificate Workaround
-
-In case you are unable to provision a reusable wildcard certificate as described above then, as a workaround, we can modify the `Ingress` definition of each workspace to instead trigger its own dedicated certificate generation.
-
-This approach involves using a _Mutating Admission Policy_ to patch the `Ingress` resource with appropriate annotations to integrate with Cert Manager.
-
-**Deploy Kyverno**
-
-The approach relies upon _Kyverno Policy Engine_ - which is also referenced in section [Suppress Resource Requests](../prerequisites/kubernetes.md#suppress-resource-requests).
-
-If not already deployed, install _Kyverno_ using helm...
-
-```bash
-helm repo add kyverno https://kyverno.github.io/kyverno/
-helm repo update kyverno
-helm upgrade -i kyverno kyverno/kyverno \
-  --version 3.6.2 \
-  --namespace kyverno \
-  --create-namespace
-```
-
-**Workspace Ingress Policy**
-
-Then we apply a policy that patches any `Ingress` resource in namespaces matching the `ws-` prefix used for workspaces. The patch adds annotations that are relevant to the Apisix Ingress Controller, and specifically adds the annotation `cert-manager.io/cluster-issuer` to trigger `Certificate` generation.
+If a wildcard certificate isn't available, use a Kyverno policy (already deployed in [step 3](#3-deploy-workspace-dependencies)) to trigger a dedicated HTTP01 certificate for each Datalab session `Ingress` instead:
 
 ```bash
 source ~/.eoepca/state
-cat - <<EOF | kubectl apply -f -
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: workspace-ingress
-spec:
-  rules:
-    - name: workspace-ingress-annotations
-      match:
-        resources:
-          kinds:
-            - Ingress
-          name: "ws-*"
-      mutate:
-        patchStrategicMerge:
-          metadata:
-            annotations:
-              +(cert-manager.io/cluster-issuer): "${CLUSTER_ISSUER}"
-              +(apisix.ingress.kubernetes.io/use-regex): "true"
-              +(ingress.kubernetes.io/force-ssl-redirect): "true"
-              +(k8s.apisix.apache.org/enable-cors): "true"
-              +(k8s.apisix.apache.org/enable-websocket): "true"
-              +(k8s.apisix.apache.org/http-to-https): "true"
-              +(k8s.apisix.apache.org/upstream-read-timeout): "3600s"
-EOF
+gomplate -f workspace-dependencies/workspace-ingress-policy-template.yaml -o workspace-dependencies/generated-workspace-ingress-policy.yaml
+kubectl apply -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 ```
+
+> Matching is scoped to the `training.educates.dev/application: workshop` label (same selector as the IAM policy in [9.3](#93-optional-protect-datalab-sessions-with-keycloak-sso)), not an Ingress name pattern - each session also gets a separate registry `Ingress` (`training.educates.dev/application: registry`) that must not receive this annotation, or it races the real session Ingress for ownership of the shared `workspace-tls` Certificate and can leave it issued for the wrong host.
 
 ---
 
-### 9. Optional: Enable OIDC with Keycloak
+### 9. Configure IAM for the Workspace API
 
-If you **do not** wish to use OIDC/IAM right now, you can skip these steps and proceed directly to the [Validation](#validation) section.
+The Workspace API always validates a Bearer token audienced for the `workspace-api` client (`authMode: gateway` in the upstream chart has no auth-free option) - steps 9.1 and 9.2 are required regardless of `OIDC_WORKSPACE_ENABLED`. That setting only controls whether the ingress additionally redirects unauthenticated browser requests to Keycloak login (9.2), and whether Datalab sessions get Keycloak SSO (9.3).
 
-If you **do** want to protect endpoints with IAM policies (i.e. require Keycloak tokens, limit access by groups/roles, etc.) **and** you enabled `OIDC` in the configuration script then follow these steps. You will create a new client in Keycloak and optionally define resource-protection rules (e.g. restricting who can list jobs).
-
-> Before starting this please ensure that you have followed our [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
+> Before starting, ensure you have followed the [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
 #### 9.1 Create Keycloak Client
 
-A Keycloak client is required for the ingress protection of the Workspace API. The client can be created using the Crossplane Keycloak provider via the `Client` CRD.
+Render and apply the `workspace-api` Keycloak client, with protocol mappers so its tokens carry an `aud` claim naming itself (the workspace-api app rejects tokens lacking this) and a `groups` claim (used to resolve workspace ownership/membership):
 
 ```bash
 source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${WORKSPACE_API_CLIENT_ID}-keycloak-client
-  namespace: iam-management
-stringData:
-  client_secret: ${WORKSPACE_API_CLIENT_SECRET}
----
-apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
-kind: Client
-metadata:
-  name: ${WORKSPACE_API_CLIENT_ID}
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    clientId: ${WORKSPACE_API_CLIENT_ID}
-    name: Workspace API
-    description: Workspace API OIDC
-    enabled: true
-    accessType: CONFIDENTIAL
-    rootUrl: ${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}
-    baseUrl: ${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}
-    adminUrl: ${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}
-    serviceAccountsEnabled: true
-    directAccessGrantsEnabled: true
-    standardFlowEnabled: true
-    oauth2DeviceAuthorizationGrantEnabled: true
-    useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
-    validRedirectUris:
-      - "/*"
-    webOrigins:
-      - "/*"
-    clientSecretSecretRef:
-      name: ${WORKSPACE_API_CLIENT_ID}-keycloak-client
-      key: client_secret
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
+gomplate -f workspace-api/iam-template.yaml -o workspace-api/generated-iam.yaml
+kubectl apply -f workspace-api/generated-iam.yaml
 ```
 
 #### 9.2 Create APISIX Route Ingress
-
-Apply the APISIX route ingress:
 
 ```bash
 kubectl apply -f workspace-api/generated-ingress.yaml
 ```
 
-#### 9.3. Assign `admin` role to the _Test Admin User_
+> This route no longer enforces a separate OPA `admin` role at the ingress layer - any authenticated user can call the API (matches the current upstream baseline). Workspace-level access control (e.g. restricting who may create workspaces) is left to you to add via an OPA policy on the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
 
-The above `ApisixRoute` ingress enforces this [OPA policy](https://github.com/EOEPCA/iam-policies/blob/main/policies/eoepca/workspace/wsapi.rego) - which requires users to have the `admin` role in order to access certain endpoints (e.g. workspace creation).
+#### 9.3. Optional: Protect Datalab Sessions with Keycloak SSO
 
-First we create the `admin` role in the `workspace-api` Keycloak client...`
+Only applies when `OIDC_WORKSPACE_ENABLED=true`. Session ingresses aren't otherwise IAM-protected - a Kyverno policy wraps every Datalab session `Ingress` with the same `workspace-api` OIDC client, so opening a session requires a valid Keycloak login.
 
-```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: role.keycloak.m.crossplane.io/v1alpha1
-kind: Role
-metadata:
-  name: ${WORKSPACE_API_CLIENT_ID}-admin
-  namespace: iam-management
-spec:
-  forProvider:
-    name: admin
-    realmId: ${REALM}
-    clientIdRef:
-      name: ${WORKSPACE_API_CLIENT_ID}
-    description: "Admin role for ${WORKSPACE_API_CLIENT_ID} client"
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
-```
-
-Then we assign the `admin` role to our test admin user (e.g. `eoepcaadmin`):
+Grant Kyverno permission to manage `ApisixPluginConfig` resources, then apply the session-protection policy:
 
 ```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: user.keycloak.m.crossplane.io/v1alpha1
-kind: Roles
-metadata:
-  name: ${KEYCLOAK_TEST_ADMIN}-${WORKSPACE_API_CLIENT_ID}-admin
-  namespace: iam-management
-spec:
-  forProvider:
-    realmId: ${REALM}
-    userIdRef:
-      name: ${KEYCLOAK_TEST_ADMIN}
-    roleIdsRefs:
-      - name: ${WORKSPACE_API_CLIENT_ID}-admin
-    exhaustive: false
-  providerConfigRef:
-    name: provider-keycloak
-    kind: ProviderConfig
-EOF
+kubectl apply -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml
+bash workspace-dependencies/apply-session-iam-policy.sh
 ```
+
+> Reuses the `workspace-api` client's `workspace-api-keycloak-client` secret from [9.1](#91-create-keycloak-client) - any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.
 
 ---
 
@@ -644,17 +329,17 @@ xdg-open "https://workspace-api.${INGRESS_HOST}/docs"
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
 
-> NOTE that the ingress integrates with IAM via OIDC, and so expects an authenticated user - for example `eoepcaadmin` created earlier.
+> If `OIDC_WORKSPACE_ENABLED=true`, the ingress redirects to Keycloak login first - for example `eoepcaadmin` created earlier.
 
 ---
 
 ### Creating and Testing a Workspace
 
-The Workspace API can be used to create a new workspace. In accordance with the `ApisixRoute` ingress and associated OPA policies, the user must have the `admin` role in order to create workspaces.
+The Workspace API can be used to create a new workspace. Any authenticated user in the realm may do so (see the note in [9.2](#92-create-apisix-route-ingress)); we use the `eoepcaadmin` test user created during IAM setup.
 
 #### 1. Obtain an Access Token as `eoepcaadmin`
 
-`eoepcaadmin` was registered earlier as a Workspace `admin` user. Obtain an access token for this user:
+Obtain an access token for the `eoepcaadmin` test user:
 
 ```bash
 source ~/.eoepca/state
@@ -751,17 +436,21 @@ curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYC
 
 > The details of the `storage` and the `datalab` associated with the workspace are returned.
 
-**Record the secret from the response for S3 access**
+**Record the access key and secret from the response for S3 access**
+
+> The bucket's S3 access key is a generated MinIO principal (e.g. `ws-eoepcauser-1`) - it is **not** the same as `KEYCLOAK_TEST_USER`, so it must be read from the API response rather than assumed.
 
 ```bash
 source ~/.eoepca/state
-SECRET=$( \
+WORKSPACE_DETAILS=$( \
   curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}" \
     --silent --show-error \
     -H "Accept: application/json" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-    | jq -r '.storage.credentials.secret'
 )
+ACCESS_KEY=$(echo "$WORKSPACE_DETAILS" | jq -r '.storage.credentials.access')
+SECRET=$(echo "$WORKSPACE_DETAILS" | jq -r '.storage.credentials.secret')
+echo "S3 Access Key: ${ACCESS_KEY}"
 echo "S3 Secret: ${SECRET}"
 ```
 
@@ -776,7 +465,7 @@ source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ${KEYCLOAK_TEST_USER} \
+  --access_key $ACCESS_KEY \
   --secret_key $SECRET
 ```
 
@@ -789,7 +478,7 @@ source ~/.eoepca/state
 s3cmd put validation.sh s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ${KEYCLOAK_TEST_USER} \
+  --access_key $ACCESS_KEY \
   --secret_key $SECRET
 ```
 
@@ -800,7 +489,7 @@ source ~/.eoepca/state
 s3cmd ls s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ${KEYCLOAK_TEST_USER} \
+  --access_key $ACCESS_KEY \
   --secret_key $SECRET
 ```
 
@@ -811,7 +500,7 @@ source ~/.eoepca/state
 s3cmd del s3://ws-eoepcauser/validation.sh \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key ${KEYCLOAK_TEST_USER} \
+  --access_key $ACCESS_KEY \
   --secret_key $SECRET
 ```
 
@@ -937,9 +626,7 @@ kubectl delete -f nginx-test.yaml
 
 > The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.
 
-The workspace for the `eoepcauser` test user can be deleted via the Workspace API.
-
-This must be performed by a workspace `admin` user (e.g. `eoepcaadmin`).
+The workspace for the `eoepcauser` test user can be deleted via the Workspace API, using any authenticated user (e.g. `eoepcaadmin`).
 
 **Authenticate as `eoepcaadmin`**
 
@@ -970,33 +657,32 @@ curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${K
 
 ## Uninstallation
 
+> Delete any workspaces created during validation first (see [step 8 of Validation](#8-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
+
 To uninstall the Workspace Building Block and clean up associated resources:
 
 ```bash
 source ~/.eoepca/state
-kubectl delete roles.user.keycloak.m.crossplane.io/${KEYCLOAK_TEST_ADMIN}-${WORKSPACE_API_CLIENT_ID}-admin -n iam-management
-kubectl delete role.role.keycloak.m.crossplane.io/${WORKSPACE_API_CLIENT_ID}-admin -n iam-management
+kubectl delete ClusterPolicy/workspace-session-iam
+kubectl delete -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml
 kubectl delete -f workspace-api/generated-ingress.yaml
-kubectl delete client.openidclient.keycloak.m.crossplane.io/${WORKSPACE_API_CLIENT_ID} -n iam-management
+kubectl delete -f workspace-api/generated-iam.yaml
 kubectl delete secret/${WORKSPACE_API_CLIENT_ID}-keycloak-client -n iam-management
-kubectl delete ClusterPolicy/workspace-ingress
+kubectl delete -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 kubectl delete secret/workspace-tls -n workspace
-for role in manage-users manage-authorization manage-clients create-client; do
-  kubectl delete ClientServiceAccountRole.openidclient.keycloak.m.crossplane.io/workspace-pipeline-client-${role} -n iam-management
-done
-kubectl delete client.openidclient.keycloak.m.crossplane.io/${WORKSPACE_PIPELINE_CLIENT_ID} -n iam-management
+kubectl delete -f workspace-dependencies/generated-pipeline-iam.yaml
 kubectl delete secret/workspace-pipeline-client -n workspace
 kubectl delete secret/workspace-pipeline-keycloak-client -n iam-management
-kubectl delete providerconfig.kubernetes.m.crossplane.io/provider-kubernetes -n workspace
-kubectl delete providerconfig.keycloak.m.crossplane.io/provider-keycloak -n workspace
-kubectl delete providerconfig.helm.m.crossplane.io/provider-helm -n workspace
-helm uninstall workspace-admin -n workspace
+kubectl delete -f workspace-dependencies/provider-configs.yaml
 kubectl delete -f workspace-cleanup/datalab-cleaner.yaml
 helm uninstall workspace-pipeline -n workspace
 helm uninstall workspace-api -n workspace
 helm uninstall workspace-dependencies-educates -n workspace
 helm uninstall workspace-dependencies-csi-rclone -n workspace
 kubectl delete namespace workspace
+# Only remove Kyverno if no other Building Block on the cluster relies on it
+helm uninstall kyverno -n kyverno
+kubectl delete namespace kyverno
 ```
 
 ---

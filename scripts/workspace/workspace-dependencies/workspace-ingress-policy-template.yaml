@@ -1,0 +1,26 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: workspace-ingress
+spec:
+  rules:
+    - name: workspace-ingress-annotations
+      match:
+        resources:
+          kinds:
+            - Ingress
+          selector:
+            matchLabels:
+              training.educates.dev/application: workshop
+              training.educates.dev/component: session
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            annotations:
+              +(cert-manager.io/cluster-issuer): "{{ getenv "CLUSTER_ISSUER" }}"
+              +(apisix.ingress.kubernetes.io/use-regex): "true"
+              +(ingress.kubernetes.io/force-ssl-redirect): "true"
+              +(k8s.apisix.apache.org/enable-cors): "true"
+              +(k8s.apisix.apache.org/enable-websocket): "true"
+              +(k8s.apisix.apache.org/http-to-https): "true"
+              +(k8s.apisix.apache.org/upstream-read-timeout): "3600s"

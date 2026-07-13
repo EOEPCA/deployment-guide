@@ -1,0 +1,27 @@
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: provider-kubernetes
+  namespace: workspace
+spec:
+  credentials:
+    source: InjectedIdentity
+---
+apiVersion: keycloak.m.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: provider-keycloak
+  namespace: workspace
+spec:
+  credentialsSecretRef:
+    name: workspace-pipeline-client
+    key: credentials
+---
+apiVersion: helm.m.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: provider-helm
+  namespace: workspace
+spec:
+  credentials:
+    source: InjectedIdentity

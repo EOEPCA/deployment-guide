@@ -1,10 +1,12 @@
 environmentconfig:
   iam:
     realm: {{ getenv "REALM" "eoepca" }}
+    extraAudiences:
+      - {{ getenv "WORKSPACE_API_CLIENT_ID" }}
   ingress:
     class: {{ getenv "INGRESS_CLASS" }}
     domain: {{ getenv "INGRESS_HOST" }}
-    secret: wildcard-tls
+    secret: workspace-tls
   storage:
     endpoint: {{ getenv "S3_ENDPOINT" }}
     forcePathStyle: true
@@ -12,8 +14,19 @@ environmentconfig:
     region: {{ getenv "S3_REGION" }}
     secretNamespace: workspace
     type: s3
+  storageClasses:
+    allowed: []
   network:
+    externalEgressCIDRs:
+      - "0.0.0.0/0"
+      - "::/0"
     serviceCIDR: {{ getenv "SERVICE_CIDR" }}
+    podCIDRs:
+{{- range (getenv "POD_CIDRS" | strings.Split ",") }}
+      - {{ . }}
+{{- end }}
+    blacklistIPs:
+      - "169.254.169.254/32"
   packages:
     - name: awscli
       files:
@@ -29,3 +42,5 @@ environmentconfig:
     quota:
       storage: 8Gi
       budget: x-large
+    security:
+      externalEgress: true

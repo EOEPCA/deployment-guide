@@ -21,8 +21,17 @@ check_service_exists "workspace" "workspace-api"
 
 # Check ingress
 CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/probe" "200"
-CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "302"
-CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/" "302"
+if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
+    # Unauthenticated requests are redirected to Keycloak login
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "302"
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/" "302"
+
+    check_clusterpolicy_exists "workspace-session-iam"
+else
+    # No redirect plugin, but the Workspace API itself still requires a
+    # Bearer token audienced for WORKSPACE_API_CLIENT_ID for anything beyond /docs
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "200"
+fi
 
 echo
 echo "All Resources in 'workspace' namespace:"

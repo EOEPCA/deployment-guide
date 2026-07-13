@@ -1,0 +1,83 @@
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientId: {{ getenv "WORKSPACE_API_CLIENT_ID" }}
+    name: Workspace API
+    description: Workspace API OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://workspace-api.{{ getenv "INGRESS_HOST" }}
+    baseUrl: {{ getenv "HTTP_SCHEME" }}://workspace-api.{{ getenv "INGRESS_HOST" }}
+    adminUrl: {{ getenv "HTTP_SCHEME" }}://workspace-api.{{ getenv "INGRESS_HOST" }}
+    serviceAccountsEnabled: true
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    oauth2DeviceAuthorizationGrantEnabled: true
+    useRefreshTokens: true
+    authorization:
+      - allowRemoteResourceManagement: false
+        decisionStrategy: UNANIMOUS
+        keepDefaults: true
+        policyEnforcementMode: ENFORCING
+    validRedirectUris:
+      - "/*"
+    webOrigins:
+      - "/*"
+    clientSecretSecretRef:
+      name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}-keycloak-client
+      key: client_secret
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+---
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}-audience-mapper
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    clientIdRef:
+      name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}
+      namespace: iam-management
+    realmId: {{ getenv "REALM" }}
+    protocol: openid-connect
+    protocolMapper: oidc-audience-mapper
+    name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}-audience
+    config:
+      included.client.audience: {{ getenv "WORKSPACE_API_CLIENT_ID" }}
+      access.token.claim: "true"
+      id.token.claim: "false"
+---
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}-groups-mapper
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    clientIdRef:
+      name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}
+      namespace: iam-management
+    realmId: {{ getenv "REALM" }}
+    protocol: openid-connect
+    protocolMapper: oidc-group-membership-mapper
+    name: groups
+    config:
+      full.path: "true"
+      claim.name: groups
+      access.token.claim: "true"
+      id.token.claim: "true"
+      userinfo.token.claim: "true"
+      multivalued: "true"

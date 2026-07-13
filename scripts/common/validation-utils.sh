@@ -225,3 +225,16 @@ check_crd_exists() {
     echo "❌ CRD '$1' missing."
   fi
 }
+
+# Function to check if a (cluster-scoped) Kyverno ClusterPolicy exists
+function check_clusterpolicy_exists() {
+    local policy_name="$1"
+
+    if kubectl get clusterpolicy "$policy_name" >/dev/null 2>&1; then
+        echo "✅ Kyverno ClusterPolicy '$policy_name' exists."
+        return 0
+    else
+        echo "❌ Kyverno ClusterPolicy '$policy_name' does not exist."
+        return 1
+    fi
+}
