@@ -218,6 +218,28 @@ function check_keycloak_client_ready() {
     return 1
 }
 
+function check_keycloak_user_ready() {
+    local namespace="$1"
+    local resource_name="$2"
+    local apply_hint="${3:-Apply the generated Crossplane User manifest and check Crossplane reconciliation.}"
+    local user_resource="user.user.keycloak.m.crossplane.io/${resource_name}"
+
+    if ! kubectl get "$user_resource" -n "$namespace" >/dev/null 2>&1; then
+        echo "❌ Keycloak User '$resource_name' does not exist in namespace '$namespace'."
+        echo "   $apply_hint"
+        return 1
+    fi
+
+    if kubectl wait --for=condition=Ready "$user_resource" -n "$namespace" --timeout=60s >/dev/null 2>&1; then
+        echo "✅ Keycloak User '$resource_name' is ready."
+        return 0
+    fi
+
+    echo "❌ Keycloak User '$resource_name' is not ready."
+    kubectl get "$user_resource" -n "$namespace" -o jsonpath='{range .status.conditions[*]}{.type}={.status}: {.reason} {.message}{"\n"}{end}' 2>/dev/null || true
+    return 1
+}
+
 check_crd_exists() {
   if kubectl get crd "$1" >/dev/null 2>&1; then
     echo "✅ CRD '$1' exists."

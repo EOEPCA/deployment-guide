@@ -1,0 +1,22 @@
+apiVersion: user.keycloak.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: eoepca-user
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" | quote }}
+    username: {{ getenv "KEYCLOAK_TEST_USER" | quote }}
+    firstName: {{ getenv "KEYCLOAK_TEST_USER" | quote }}
+    lastName: Testuser
+    email: {{ printf "%s@eoepca.org" (getenv "KEYCLOAK_TEST_USER") | quote }}
+    enabled: true
+    emailVerified: true
+    initialPassword:
+      - temporary: false
+        valueSecretRef:
+          name: eoepca-user
+          key: eoepcauser-password

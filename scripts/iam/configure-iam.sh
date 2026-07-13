@@ -71,5 +71,6 @@ echo "Generating configuration files..."
 
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate -f "apisix-tls-template.yaml" -o "apisix-tls.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "eoepca-user-template.yaml" -o "generated-eoepca-user.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
 echo "✅ Configuration files generated."

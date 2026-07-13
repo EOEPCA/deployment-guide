@@ -19,7 +19,8 @@ check_keycloak_provider_crds_installed() {
     local missing=0
     for crd in \
         providerconfigs.keycloak.m.crossplane.io \
-        clients.openidclient.keycloak.m.crossplane.io; do
+        clients.openidclient.keycloak.m.crossplane.io \
+        users.user.keycloak.m.crossplane.io; do
         if kubectl get crd "$crd" >/dev/null 2>&1; then
             echo "✅ CRD '$crd' exists."
         else

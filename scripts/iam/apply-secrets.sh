@@ -87,15 +87,10 @@ kubectl create secret generic iam-keycloak \
   --from-literal=test-user-password="$KEYCLOAK_TEST_PASSWORD" \
   --namespace iam --dry-run=client -o yaml | kubectl apply -f -
 
-kubectl create secret generic iam-keycloak \
-  --from-literal=eoepca-admin-password="$KEYCLOAK_TEST_PASSWORD" \
-  --from-literal=test-user-password="$KEYCLOAK_TEST_PASSWORD" \
+# Consumed by the Crossplane User CR (eoepca-user-template.yaml) that creates
+# the eoepcauser test user once IAM and Crossplane are up.
+kubectl create secret generic eoepca-user \
+  --from-literal=eoepcauser-password="$KEYCLOAK_TEST_PASSWORD" \
   --namespace iam-management --dry-run=client -o yaml | kubectl apply -f -
-
-# Backwards-compatible secret name used by older guide examples.
-kubectl create secret generic opa-keycloak-client \
-  --from-literal=client_id="${OPA_CLIENT_ID:-opa}" \
-  --from-literal=client_secret="$OPA_CLIENT_SECRET" \
-  --namespace iam --dry-run=client -o yaml | kubectl apply -f -
 
 echo "✅ Secrets applied."

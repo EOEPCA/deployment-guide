@@ -13,7 +13,7 @@ The IAM Building Block installs Keycloak, the Keycloak Operator, OPA, OPAL and t
 | APISIX Ingress Controller | Installed and selected as `INGRESS_CLASS=apisix` |
 | cert-manager | Required only when using generated HTTPS certificates |
 | Crossplane | Installed |
-| Crossplane Keycloak provider | CRDs such as `providerconfigs.keycloak.m.crossplane.io` and `clients.openidclient.keycloak.m.crossplane.io` installed |
+| Crossplane Keycloak provider | CRDs such as `providerconfigs.keycloak.m.crossplane.io`, `clients.openidclient.keycloak.m.crossplane.io` and `users.user.keycloak.m.crossplane.io` installed |
 
 Check the local prerequisites from the IAM script directory:
 
@@ -34,13 +34,15 @@ Important variables:
 
 - `INGRESS_CLASS`: must be `apisix`.
 - `INGRESS_HOST`: base domain, for example `example.com`.
+- `PERSISTENT_STORAGECLASS`: storage class for Keycloak's PostgreSQL data. Note: the chart's bundled PostgreSQL `StatefulSet` does not set `storageClassName` on its PVC, so this value has no effect for IAM specifically — the PVC always uses the cluster's default storage class.
 - `KEYCLOAK_HOST`: defaults to `auth.${INGRESS_HOST}`.
 - `REALM`: defaults to `eoepca`.
 - `KEYCLOAK_ADMIN_USER` and `KEYCLOAK_ADMIN_PASSWORD`: bootstrap admin credentials.
 - `KEYCLOAK_POSTGRES_PASSWORD`: PostgreSQL password for Keycloak.
 - `IAM_KEYCLOAK_PROVIDER_CLIENT_SECRET`: secret for the `crossplane-keycloak-provider` Keycloak service account.
 - `OPA_CLIENT_ID` and `OPA_CLIENT_SECRET`: OIDC client used by the APISIX OPA route.
-- `KEYCLOAK_TEST_USER`, `KEYCLOAK_TEST_ADMIN`, `KEYCLOAK_TEST_PASSWORD`: initial example users imported with the realm.
+- `KEYCLOAK_TEST_ADMIN`, `KEYCLOAK_TEST_PASSWORD`: example admin user imported with the realm.
+- `KEYCLOAK_TEST_USER`: example non-admin user, created separately via Crossplane once IAM is up (see [Provision the Test User](#provision-the-test-user) below), sharing the same `KEYCLOAK_TEST_PASSWORD`.
 
 The chart imports the realm during initial Keycloak startup. If the realm already exists, change users and clients through Keycloak or Crossplane rather than expecting Helm to re-import them.
 
@@ -57,6 +59,7 @@ This creates the `iam` and `iam-management` namespaces and the Kubernetes secret
 - `keycloak-provider`
 - `opa-route`
 - `iam-keycloak`
+- `eoepca-user` (in `iam-management`, consumed by the Crossplane User created in [Provision the Test User](#provision-the-test-user))
 
 ## Install
 
@@ -67,7 +70,7 @@ helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 
 helm upgrade --install iam eoepca-dev/iam-bb \
-  --version 2.1.0-dev10 \
+  --version 2.1.0-dev12 \
   --namespace iam \
   --create-namespace \
   --values generated-values.yaml
@@ -88,6 +91,27 @@ kubectl wait -n iam --for=condition=Ready keycloak.k8s.keycloak.org/iam-keycloak
 kubectl rollout status deployment/iam-keycloak-operator-operator -n iam --timeout=5m
 kubectl rollout status statefulset/iam-postgresql -n iam --timeout=5m
 kubectl rollout status deployment/iam-opa -n iam --timeout=5m
+```
+
+Keycloak becoming `Ready` only means the server is up — the `${REALM}` realm is imported by a separate, one-off Job that the Keycloak Operator creates a few seconds *afterwards*. `kubectl wait` fails immediately with `NotFound` if the Job doesn't exist yet, so wait for it to appear before waiting on its completion:
+
+```bash
+until kubectl get job/eoepca-realm -n iam >/dev/null 2>&1; do
+  echo "Waiting for the realm import job to be created..."
+  sleep 5
+done
+kubectl wait -n iam --for=condition=complete job/eoepca-realm --timeout=5m
+```
+
+If this times out, check `kubectl logs -n iam job/eoepca-realm` — a common cause is the `keycloak-provider` secret missing (run `apply-secrets.sh` before `helm install`, not after).
+
+## Provision the Test User
+
+The `${REALM}` realm import only creates the `KEYCLOAK_TEST_ADMIN` user. The plain `KEYCLOAK_TEST_USER` test user is created afterwards via Crossplane, the same way other Building Blocks manage their own Keycloak resources.
+
+```bash
+kubectl apply -f generated-eoepca-user.yaml
+kubectl wait --for=condition=Ready user.user.keycloak.m.crossplane.io/eoepca-user -n iam-management --timeout=2m
 ```
 
 ## Validate
@@ -155,6 +179,12 @@ curl -k --silent --show-error \
 
 
 ## Cleanup
+
+Delete the Crossplane-managed user first, while Keycloak is still up, so its finalizer clears cleanly:
+
+```bash
+kubectl delete -f generated-eoepca-user.yaml --ignore-not-found
+```
 
 ```bash
 helm uninstall iam -n iam
