@@ -1,7 +1,5 @@
 # Datacube Access Deployment Guide
 
-> **Note**: This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.
-
 The **Datacube Access** building block allows users to access and explore multi-dimensional Earth Observation (EO) data using standard APIs. It is built on open standards from OGC (Open Geospatial Consortium). 
 
 ---
@@ -10,10 +8,20 @@ The **Datacube Access** building block allows users to access and explore multi-
 
 Datacube Access gives users simple ways to discover, access, and process large Earth Observation datasets, known as "datacubes." These datacubes are structured, multi-dimensional sets of data, useful for various analytics and visualisation tasks.
 
+This Building Block has two parts:
+
+- **STAC Best Practices for datacube-ready collections** - the core deliverable. A metadata convention (built on the [STAC Datacube Extension](https://github.com/stac-extensions/datacube)) that other Building Blocks - Resource Registration, Data Access, Processing - rely on to interoperate, so that any datacube-ready collection in your STAC catalog can be reliably loaded and processed. This applies whether or not you deploy anything below.
+- **A reference filtering API** (optional) - a small service that filters an existing STAC API down to only the collections that follow the convention above. Useful if you want a dedicated endpoint for datacube-ready data, but not required to benefit from the best practices themselves.
+
+See the [STAC Best Practices for Data Cubes](https://github.com/EOEPCA/datacube-access/blob/main/best_practices/stac_best_practices.md) for the full convention, and the [Design Overview](https://eoepca.readthedocs.io/projects/datacube-access/en/latest/design/overview/) for how this BB relates to the others.
 
 ---
 
-## Prerequisites
+## Optional: Deploy the Reference Filtering Service
+
+The steps below deploy the reference filtering API. This is only useful if you want a dedicated `datacube-access` endpoint on top of an existing STAC catalog - skip this section if you only need the STAC Best Practices to structure your own collections.
+
+### Prerequisites
 
 | Component        | Requirement                   | Documentation Link                                                      |
 |------------------|-------------------------------|-------------------------------------------------------------------------|
@@ -37,9 +45,7 @@ cd deployment-guide/scripts/datacube-access
 bash check-prerequisites.sh
 ```
 
----
-
-## Deployment Steps
+### Deployment Steps
 
 1. **Run the Configuration Script**
 
@@ -69,17 +75,15 @@ helm upgrade -i datacube-access eoepca-dev/datacube-access \
 ```
 
 
----
+### Validation and Operation
 
-## Validation and Operation
-
-### 1. Automated Validation
+#### 1. Automated Validation
 
 ```bash
 bash validation.sh
 ```
 
-### 2. Manual Validation via Web Browser
+#### 2. Manual Validation via Web Browser
 
 Verify endpoints using a web browser:
 
@@ -170,6 +174,7 @@ For example, an openEO workflow calculating NDVI time series needs to know exact
 
 ## Further Reading & Official Docs
 
+- [STAC Best Practices for Data Cubes](https://github.com/EOEPCA/datacube-access/blob/main/best_practices/stac_best_practices.md) - the core metadata convention this BB defines
 - [EOEPCA Datacube Access Documentation](https://eoepca.readthedocs.io/projects/datacube-access/en/latest/)
 - [OGC GeoDataCube API](https://m-mohr.github.io/geodatacube-api/)
 - [STAC Datacube Extension](https://github.com/stac-extensions/datacube)
