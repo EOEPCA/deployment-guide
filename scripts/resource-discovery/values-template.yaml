@@ -22,21 +22,25 @@ pycsw:
   config:
     server:
       url: {{ getenv "HTTP_SCHEME" }}://resource-catalogue.{{ getenv "INGRESS_HOST" }}/
-    federatedcatalogues:
-      - id: fedcat01
-        type: OARec
-        title: WIS2 discovery metadata
-        url: https://wis2-gdc.weather.gc.ca/collections/wis2-discovery-metadata
-      - id: fedcat02
-        type: STAC-API
-        title: Copernicus Data Space Ecosystem (CDSE) asset-level STAC catalogue
-        url: https://stac.dataspace.copernicus.eu/v1
-        collections:
-          - ccm-sar
-      - id: arctic-sdi-csw
-        type: CSW
-        title: Arctic SDI
-        url: https://catalogue.arctic-sdi.org/csw
+    # pycsw reads federated/distributed search catalogues from
+    # `distributedsearch.catalogues`, not a top-level `federatedcatalogues`
+    # key (the latter is silently ignored - see pycsw/ogc/api/records.py).
+    distributedsearch:
+      catalogues:
+        - id: fedcat01
+          type: OARec
+          title: WIS2 discovery metadata
+          url: https://wis2-gdc.weather.gc.ca/collections/wis2-discovery-metadata
+        - id: fedcat02
+          type: STAC-API
+          title: Copernicus Data Space Ecosystem (CDSE) asset-level STAC catalogue
+          url: https://stac.dataspace.copernicus.eu/v1
+          collections:
+            - ccm-sar
+        - id: arctic-sdi-csw
+          type: CSW
+          title: Arctic SDI
+          url: https://catalogue.arctic-sdi.org/csw
     # Transactions are intentionally left disabled (chart default) on the
     # public, unauthenticated catalogue. Enable RESOURCE_DISCOVERY_ENABLE_IAM
     # for a transactional endpoint gated by IAM + OPA instead.

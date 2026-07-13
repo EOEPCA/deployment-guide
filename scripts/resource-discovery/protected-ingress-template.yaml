@@ -38,7 +38,7 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            discovery: "{{ getenv "HTTP_SCHEME" }}://iam-auth.{{ getenv "INGRESS_HOST" }}/realms/eoepca/.well-known/openid-configuration"
+            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             use_jwks: true
             bearer_only: false
             set_access_token_header: true

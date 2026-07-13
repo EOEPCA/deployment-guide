@@ -15,6 +15,15 @@ check_url_status_code "$HTTP_SCHEME://resource-catalogue.$INGRESS_HOST/" "200"
 check_url_status_code "$HTTP_SCHEME://resource-catalogue.$INGRESS_HOST/conformance" "200"
 check_url_status_code "$HTTP_SCHEME://resource-catalogue.$INGRESS_HOST/collections" "200"
 
+# Confirms pycsw actually picked up `distributedsearch.catalogues` - a
+# top-level `federatedcatalogues` key is silently ignored, so this would
+# come back empty if that config key regressed.
+if curl -s "$HTTP_SCHEME://resource-catalogue.$INGRESS_HOST/collections/metadata:main/federatedCatalogs?f=json" | grep -q "fedcat01"; then
+  echo "✅ Federated catalogues (distributedsearch.catalogues) are configured and exposed."
+else
+  echo "❌ No federated catalogues found at /collections/metadata:main/federatedCatalogs - check pycsw.config.distributedsearch.catalogues in generated-values.yaml."
+fi
+
 check_pvc_bound "resource-discovery" "db-data-resource-catalogue-db-0"
 
 check_configmap_exists "resource-discovery" "resource-catalogue-db-configmap"
@@ -38,7 +47,7 @@ if [ "${RESOURCE_DISCOVERY_ENABLE_IAM:-no}" = "yes" ]; then
   check_url_status_code "$HTTP_SCHEME://resource-catalogue-protected.$INGRESS_HOST/conformance" "200"
 
   # The protected root is expected to redirect to IAM, not return 200.
-  check_url_status_code "$HTTP_SCHEME://resource-catalogue-protected.$INGRESS_HOST/" "302"
+  CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://resource-catalogue-protected.$INGRESS_HOST/" "302"
 fi
 
 echo

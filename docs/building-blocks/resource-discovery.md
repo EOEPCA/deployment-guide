@@ -15,7 +15,7 @@ Resource Discovery is an important component of the EOEPCA ecosystem. It helps u
 - **Easy Metadata Management**: Collect and search EO metadata efficiently.
 - **Uses Open Standards**: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.
 - **Advanced Search**: Search by area (bounding boxes), time intervals, text, and more.
-- **Federation**: Can connect and share metadata with other EOEPCA platforms.
+- **Federated / Distributed Search**: Fans a single search out to external OGC API - Records, STAC API, and CSW catalogues alongside local results.
 - **Transactional Updates**: Allows creating, updating, and deleting records when enabled.
 
 ### Interfaces
@@ -85,6 +85,8 @@ The protected endpoint currently requires APISIX because it uses APISIX `openid-
 `resource-catalogue-protected.${INGRESS_HOST}`
 
 The configuration script also generates and stores two credentials in `~/.eoepca/state` at this point: `RESOURCE_CATALOGUE_SESSION_SECRET` (APISIX's OIDC session cookie signing key) and `RESOURCE_DISCOVERY_DB_PASSWORD` (the Postgres password the protected catalogue uses to reach the public catalogue's chart-managed database). You don't need to set these yourself.
+
+> Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
 
 2. **Deploy Resource Discovery Using Helm**
 
@@ -261,60 +263,119 @@ EOF
 
 You should receive a JSON response listing zero or more STAC items that match the query. If you have not yet ingested any items, you may get an empty result array (`"features": []`).  
 
+#### 3.5. Federated / Distributed Search
 
-### 4. Optional Smoke Test: Loading a Sample Record Internally
+Resource Discovery can fan a single search out to external catalogues alongside its own records. `values-template.yaml` pre-configures three examples under `pycsw.config.distributedsearch.catalogues`, one per protocol binding it understands:
 
-This is a smoke test only. It loads a sample record by executing `pycsw-admin.py` inside the catalogue pod, which proves the catalogue and database are functioning.
+| id               | type       | fanned out via                                          |
+|------------------|------------|----------------------------------------------------------|
+| `fedcat01`       | `OARec`    | OGC API - Records (`/collections/.../items`, `distributedSearch=true`) |
+| `fedcat02`       | `STAC-API` | STAC API search (Copernicus Data Space Ecosystem)         |
+| `arctic-sdi-csw` | `CSW`      | CSW `GetRecords` with `DistributedSearch`                  |
 
-It is not the recommended operational ingestion path because it bypasses ingress, IAM, API-level validation, and the Resource Registration building block.
+List the configured federated catalogues:
 
-For normal record registration, use the Resource Registration building block against the protected Resource Discovery endpoint when IAM is enabled.
-
-> See the [Resource Registration BB](./resource-registration.md), which is the preferred means to ingest records in a production environment.
-    
-#### 4.1. Find the Resource Catalogue Pod
-        
 ```bash
-catalogue_pod="$(kubectl -n resource-discovery get pods --selector=io.kompose.service=pycsw --output=jsonpath='{.items[*].metadata.name}')"
-echo "Catalogue pod: $catalogue_pod"
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/federatedCatalogs?f=json" | jq
 ```
-        
-#### 4.2. Copy the Sample File (`sample_record.xml`) to the pod
 
-> The sample record is provided in the `scripts/resource-discovery` directory of the deployment guide repository.
-        
+Fan a search out to them:
+
 ```bash
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items?distributedSearch=true&limit=1" \
+  | jq '.federatedSearchResults'
+```
+
+A working response includes a `federatedSearchResults.fedcat01` key containing real features fetched live from the remote WIS2 catalogue. Each catalogue is only ever queried through the protocol binding matching its own `type` - a `STAC-API` entry is never queried via CSW `GetRecords`, for example.
+
+
+---
+
+### 4. Ingesting Records
+
+How you add records depends on whether transactions are enabled.
+
+#### 4.1. Bulk-loading records directly (minimal / non-IAM deployments)
+
+With `RESOURCE_DISCOVERY_ENABLE_IAM=no`, transactions stay at the chart's secure default (disabled), so there is no HTTP write path on the public catalogue. To seed it with sample data, use pycsw's own admin CLI, `pycsw-admin.py`, which loads records straight into the configured database:
+
+```bash
+catalogue_pod="$(kubectl -n resource-discovery get pods --selector=io.kompose.service=pycsw --output=jsonpath='{.items[0].metadata.name}')"
+
 kubectl cp sample_record.xml \
-  resource-discovery/${catalogue_pod}:/tmp/sample_record.xml
-```
-        
-#### 4.3. Load the Sample Record using pycsw
-        
-```bash
+  "resource-discovery/${catalogue_pod}:/tmp/sample_record.xml"
+
 kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
   /venv/bin/pycsw-admin.py load-records \
     --config /etc/pycsw/pycsw.yml \
     --path /tmp/sample_record.xml
 ```
 
-> A warning is reported regarding the `geometry` field, but this can be ignored for this example.
-    
-#### 4.4. Verify the Ingested Record
-    
-* **Via Web Browser / UI**
+> A warning about the `geometry` field is expected and can be ignored for this sample.
 
-    Navigate to:
-    
-    ```
-    source ~/.eoepca/state
-    xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items"
-    ```
-    
-    Confirm that the newly ingested record (titled `EOEPCA Sample Record`) appears in the search results.
-    
-- **Via Command Line**
+This is the same tool pycsw's own harvest/bulk-load workflows use to pre-populate a catalogue - it's a legitimate way to seed data, it just always needs cluster access rather than going over the ingress.
 
-    You can also use `curl` or other OGC-compliant requests to verify that the sample record is now discoverable.
+Verify:
+
+```bash
+source ~/.eoepca/state
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
+```
+
+#### 4.2. Creating records over HTTP (`RESOURCE_DISCOVERY_ENABLE_IAM=yes`)
+
+When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
+
+The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
+
+```bash
+source ~/.eoepca/state
+
+DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
+  -d "client_id=resource-catalogue")
+
+echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
+```
+
+Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
+
+```bash
+DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
+
+ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+  -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
+  -d "device_code=${DEVICE_CODE}" \
+  -d "client_id=resource-catalogue" | jq -r '.access_token')
+```
+
+Create a record:
+
+```bash
+curl -s -i -X POST "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/geo+json" \
+  -d @- <<EOF
+{
+  "type": "Feature",
+  "id": "urn:eoepca:sample:0001",
+  "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+  "properties": {
+    "type": "dataset",
+    "title": "EOEPCA Sample Record",
+    "description": "Sample record ingested via the OGC API Records transactional endpoint."
+  },
+  "geometry": {"type": "Point", "coordinates": [23.7, 37.9]}
+}
+EOF
+```
+
+A successful create returns `201 Created`. Update the same record with `PUT` against `/collections/metadata:main/items/urn:eoepca:sample:0001` (same headers/body shape, returns `204`), remove it with `DELETE`.
+
+Verify:
+
+```bash
+curl -s "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items/urn:eoepca:sample:0001" | jq
+```
 
 ---
 
@@ -386,3 +447,4 @@ kubectl delete namespace resource-discovery
 - [pycsw Official Documentation](https://docs.pycsw.org/en/latest/)  
 - [pycsw GitHub Repository](https://github.com/geopython/pycsw)  
 - [eoAPI-k8s Documentation](https://github.com/developmentseed/eoapi-k8s/blob/main/docs) (if using eoAPI for dataset-level STAC ingestion)
+- [Resource Registration BB](./resource-registration.md), for automated harvesting pipelines that keep the catalogue in sync with an upstream data source, rather than one-off manual record creation
