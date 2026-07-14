@@ -260,3 +260,24 @@ function check_clusterpolicy_exists() {
         return 1
     fi
 }
+
+function check_s3_bucket_exists() {
+    local bucket_name="$1"
+
+    if ! command -v s3cmd &>/dev/null; then
+        echo "⚠️  s3cmd not installed - skipping existence check for S3 bucket '$bucket_name'."
+        return 0
+    fi
+
+    local s3_host="${S3_ENDPOINT#*://}"
+    if s3cmd ls "s3://${bucket_name}" \
+        --host="$s3_host" --host-bucket="$s3_host" \
+        --access_key="$S3_ACCESS_KEY" --secret_key="$S3_SECRET_KEY" >/dev/null 2>&1; then
+        echo "✅ S3 bucket '$bucket_name' exists."
+        return 0
+    else
+        echo "❌ S3 bucket '$bucket_name' does not exist or is not reachable at $S3_ENDPOINT."
+        echo "   Create it first - e.g. via the MinIO console, or: s3cmd mb s3://${bucket_name} --host=$s3_host --host-bucket=$s3_host --access_key=\$S3_ACCESS_KEY --secret_key=\$S3_SECRET_KEY"
+        return 1
+    fi
+}

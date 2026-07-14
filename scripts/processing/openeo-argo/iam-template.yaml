@@ -26,3 +26,23 @@ spec:
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientDefaultScopes
+metadata:
+  name: openeo-argo-default-scopes
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: openeo-argo
+      policy:
+        resolution: Required
+    defaultScopes:
+      - profile
+      - email
+      - basic

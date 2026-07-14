@@ -326,6 +326,9 @@ You should see one `Request Received` line per test event. If you see a flood of
 Tear down in the reverse order of installation, so nothing is left depending on a CRD or control plane that's already gone.
 
 ```bash
+# Any Knative Services/Brokers/Triggers you created
+kubectl delete ksvc,trigger,broker --all -n notifications 2>/dev/null || true
+
 # If Kafka was deployed
 kubectl delete -f generated-kafka-cluster.yaml 2>/dev/null || true
 helm uninstall strimzi-cluster-operator -n strimzi-system 2>/dev/null || true
@@ -334,8 +337,11 @@ helm uninstall strimzi-cluster-operator -n strimzi-system 2>/dev/null || true
 helm uninstall notification-automation -n notifications 2>/dev/null || true
 kubectl delete -f generated-apisix-route.yaml 2>/dev/null || true
 
-# Knative Serving/Eventing instances, then the operator that reconciles them
 kubectl delete -f generated-knative.yaml 2>/dev/null || true
+kubectl wait --for=delete knativeserving/knative-serving -n knative-serving --timeout=120s 2>/dev/null || true
+kubectl wait --for=delete knativeeventing/knative-eventing -n knative-eventing --timeout=120s 2>/dev/null || true
+
+# Now the operator that reconciled them
 helm uninstall knative-operator -n knative-operator 2>/dev/null || true
 
 # Namespaces
@@ -343,7 +349,6 @@ kubectl delete namespace notifications knative-serving knative-eventing knative-
 kubectl delete namespace strimzi-system 2>/dev/null || true
 ```
 
-The `knative-serving`/`knative-eventing` namespaces can hang on deletion because of finalizers on the `KnativeServing`/`KnativeEventing` resources — that's why they're deleted before the operator that owns their finalizers is uninstalled. If a namespace still hangs, check `kubectl get knativeserving,knativeeventing -A` for leftover resources and remove their finalizers manually as a last resort.
 
 ## Further Reading
 

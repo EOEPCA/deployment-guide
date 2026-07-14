@@ -16,3 +16,4 @@ test-report.xml
 venv/
 *.log
 notebooks/examples/test-runs/*
+scripts/mlops/utils/api-walkthrough.sh

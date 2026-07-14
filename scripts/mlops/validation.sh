@@ -20,6 +20,14 @@ check_url_status_code "$HTTP_SCHEME://sharinghub.$INGRESS_HOST" "200"
 check_url_status_code "$HTTP_SCHEME://sharinghub.$INGRESS_HOST/api/stac/collections" "200"
 check_url_status_code "$HTTP_SCHEME://sharinghub.$INGRESS_HOST/mlflow/" "401"
 
+if ! check_s3_bucket_exists "$S3_BUCKET_SHARINGHUB"; then
+    exit 1
+fi
+if ! check_s3_bucket_exists "$S3_BUCKET_MLFLOW"; then
+    exit 1
+fi
+
+
 echo
 echo "All Resources in 'gitlab' namespace:"
 echo

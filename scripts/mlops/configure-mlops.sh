@@ -14,13 +14,15 @@ ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HO
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
-ask "S3_BUCKET_SHARINGHUB" "Enter the S3 bucket name for SharingHub" "mlopbb-sharinghub" is_non_empty
-ask "S3_BUCKET_MLFLOW" "Enter the S3 bucket name for MLFlow" "mlopbb-mlflow-sharinghub" is_non_empty
+
+# As part of the Deployment Guide, MinIO has created two buckets for SharingHub and MLflow SharingHub.
+S3_BUCKET_SHARINGHUB="mlopbb-sharinghub"
+S3_BUCKET_MLFLOW="mlopbb-mlflow-sharinghub"
+add_to_state_file "S3_BUCKET_SHARINGHUB" "$S3_BUCKET_SHARINGHUB"
+add_to_state_file "S3_BUCKET_MLFLOW" "$S3_BUCKET_MLFLOW"
+
 
 # OIDC configuration
-# GitLab validates OIDC tokens itself (omniauth openid_connect provider), and
-# SharingHub authenticates via GitLab OAuth - there is no ingress-layer (APISIX)
-# auth plugin involved, so this works under either ingress class.
 ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then

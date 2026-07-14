@@ -74,7 +74,7 @@ During the script execution, you will be prompted to provide:
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
     - *Example*: `letsencrypt-http01-apisix`
 
-The S3 environment variables should be already set after successful deployment of the [Minio Building Block]():
+The S3 environment variables should be already set after successful deployment of the [Minio Building Block](../prerequisites/minio.md):
 
 - **`S3_ENDPOINT`**: Endpoint URL for MinIO or S3-compatible storage.
     - *Example*: `https://minio.example.com`
@@ -82,10 +82,8 @@ The S3 environment variables should be already set after successful deployment o
     - *Example*: `us-east-1`
 - **`S3_ACCESS_KEY`**: Access key for your MinIO or S3 storage.
 - **`S3_SECRET_KEY`**: Secret key for your MinIO or S3 storage.
-- **`S3_BUCKET_SHARINGHUB`**: Name of the S3 bucket to be used by SharingHub.
-    - *Example*: `mlopbb-sharinghub`
-- **`S3_BUCKET_MLFLOW`**: Name of the S3 bucket to be used by MLFlow.
-    - *Example*: `mlopbb-mlflow-sharinghub`
+
+If you need different bucket names, create them in MinIO yourself and edit `sharinghub/values-template.yaml` / `mlflow/values-template.yaml` directly.
 
 
 **OIDC Configuration (Optional):**

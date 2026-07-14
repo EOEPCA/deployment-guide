@@ -292,6 +292,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pvc-consumer
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -333,10 +334,10 @@ EOF
         # Wait for the deployment to be ready - which goes a long way to proving the PVC is usable
         # Also check the PVC status directly
         local pvc_status="Unbound"
-        if kubectl rollout status deployment/pvc-consumer --timeout=20s &>/dev/null; then
-            pvc_status=$(kubectl get pvc "${test_pvc_name}" -o jsonpath='{.status.phase}' 2>/dev/null)
+        if kubectl rollout status deployment/pvc-consumer -n default --timeout=20s &>/dev/null; then
+            pvc_status=$(kubectl get pvc "${test_pvc_name}" -n default -o jsonpath='{.status.phase}' 2>/dev/null)
         fi
-        
+
         # Cleanup test PVC
         kubectl delete -f "${test_manifest}" &>/dev/null
         rm -f "${test_manifest}"

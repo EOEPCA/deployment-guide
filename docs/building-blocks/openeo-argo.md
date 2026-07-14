@@ -109,7 +109,7 @@ kubectl apply -f generated-proxy-auth.yaml
 
 ### 7. Configure OIDC Client (if using OIDC)
 
-A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD) when OIDC was enabled - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
+A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, plus a `ClientDefaultScopes` override) when OIDC was enabled - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
 
 ```bash
 kubectl apply -f generated-iam.yaml
@@ -141,8 +141,9 @@ kubectl get pods -n openeo
 ```bash
 source ~/.eoepca/state
 
-# If OIDC is enabled, the ingress routes straight to the API:
-curl -s https://openeo.${INGRESS_HOST}/openeo/1.1.0 | jq .
+# If OIDC is enabled, the ingress routes straight to the API. The API redirects
+# the bare version root to a trailing slash, so follow redirects with -L:
+curl -s -L https://openeo.${INGRESS_HOST}/openeo/1.1.0 | jq .
 
 # If OIDC is disabled, the ingress routes to the basic-auth proxy instead, which
 # itself prepends /openeo/1.1.0 to whatever path you request - so call the bare root:
