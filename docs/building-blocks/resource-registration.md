@@ -306,6 +306,19 @@ kubectl apply -f generated-iam.yaml
 kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${RESOURCE_REGISTRATION_IAM_CLIENT_ID} -n iam-management --timeout=60s
 ```
 
+The `Client` CRD enables Authorization Services in `ENFORCING` mode (`spec.forProvider.authorization`), but Crossplane's `provider-keycloak` has no cross-resource ID reference support for the Resource/Policy/Permission objects that `ENFORCING` mode requires - so it cannot declare them itself. Without at least one Permission, every request is denied regardless of the caller's token. Grant access using the [Resource Protection](iam/advanced-iam.md#approach-2-scripted) utility:
+
+```bash
+cd ../utils
+bash protect-resource.sh
+```
+
+When prompted, use:
+
+- **Client ID**: `resource-registration`
+- **Username**: `eoepcauser` (or ref. `KEYCLOAK_TEST_USER`)
+- **Resource URI**: `/*`
+
 ---
 
 ## Validation and Usage
@@ -387,7 +400,7 @@ echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 
 This example registers the STAC Collection `landsat-ot-c2-l2` resource into the EOEPCA Resource Catalogue instance - representing the `Landsat 8-9 OLI/TIRS Collection 2 Level-2`. This collection is used in later steps as a target for harvesting of some example Landsat data.
 
-The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block.
+The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block - specifically its protected, transactional endpoint (`resource-catalogue-protected`), since the public endpoint has transactions disabled by chart default. This requires Resource Discovery to have been deployed with `RESOURCE_DISCOVERY_ENABLE_IAM=yes`; without it, there is no HTTP write path into the catalogue at all (see Resource Discovery's [bulk-loading](resource-discovery.md#41-bulk-loading-records-directly-minimal--non-iam-deployments) instructions instead).
 
 ```bash
 source ~/.eoepca/state
@@ -398,7 +411,7 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
 {
     "inputs": {
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/landsat/landsat-ot-c2-l2.json"},
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue-protected.${INGRESS_HOST}/stac"}
     }
 }
 EOF
@@ -417,7 +430,7 @@ curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execut
 {
     "inputs": {
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/sentinel/sentinel-2-c1-l2a.json"},
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue.${INGRESS_HOST}/stac"}
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue-protected.${INGRESS_HOST}/stac"}
     }
 }
 EOF

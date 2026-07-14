@@ -1,6 +1,12 @@
+import base64
 import contextlib
+import hashlib
 import os
+import re
+import secrets
 import subprocess
+from urllib.parse import parse_qs, unquote, urlparse
+
 import requests
 
 test_results = {}
@@ -39,6 +45,56 @@ def get_access_token(username, password, client_id, client_secret=None):
     response.raise_for_status()
     access_token = response.json()["access_token"]
     return access_token
+
+
+def authenticate_public_client(keycloak_host, realm, client_id, redirect_uri, username, password, http_scheme="https"):
+    # Authorization Code + PKCE, with the login form submitted directly - for PUBLIC
+    # clients that have directAccessGrantsEnabled=false (no password grant available),
+    # so get_access_token() doesn't apply, but interactive device-code login isn't
+    # scriptable either. Only works against Keycloak's own default login form.
+    verifier = base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode()
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
+    state = secrets.token_urlsafe(16)
+
+    session = requests.Session()
+    auth_response = session.get(
+        f"{http_scheme}://{keycloak_host}/realms/{realm}/protocol/openid-connect/auth",
+        params={
+            "client_id": client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": "code",
+            "scope": "openid",
+            "state": state,
+            "code_challenge": challenge,
+            "code_challenge_method": "S256",
+        },
+    )
+    auth_response.raise_for_status()
+    form_action = re.search(r'action="([^"]+)"', auth_response.text)
+    if not form_action:
+        raise RuntimeError("Could not find Keycloak login form on the authorization page")
+    login_response = session.post(
+        unquote(form_action.group(1)).replace("&amp;", "&"),
+        data={"username": username, "password": password},
+        allow_redirects=False,
+    )
+    location = login_response.headers.get("Location", "")
+    code = parse_qs(urlparse(location).query).get("code")
+    if not code:
+        raise RuntimeError(f"Keycloak login did not return an authorization code (redirected to: {location})")
+
+    token_response = requests.post(
+        f"{http_scheme}://{keycloak_host}/realms/{realm}/protocol/openid-connect/token",
+        data={
+            "grant_type": "authorization_code",
+            "code": code[0],
+            "redirect_uri": redirect_uri,
+            "client_id": client_id,
+            "code_verifier": verifier,
+        },
+    )
+    token_response.raise_for_status()
+    return token_response.json()["access_token"]
 
 
 @contextlib.contextmanager
