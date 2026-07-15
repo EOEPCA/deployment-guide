@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 $namespaces:
   s: https://schema.org/
 s:softwareVersion: 0.1.2
@@ -51,6 +51,8 @@ $graph:
       ResourceRequirement:
         coresMax: 1
         ramMax: 512
+      NetworkAccess:
+        networkAccess: true
     hints:
       DockerRequirement:
         dockerPull: eoepca/convert:latest
