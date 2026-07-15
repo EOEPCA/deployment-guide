@@ -191,9 +191,13 @@ kubectl logs -n application-quality -l app.kubernetes.io/component=web --tail=20
 
 Skip this step if IAM/OIDC was disabled.
 
-A Keycloak client is required when IAM/OIDC is enabled. The client can be created manually in Keycloak, or provisioned using the IAM Building Block tooling if Crossplane Keycloak provider support is available.
+A Keycloak client is required when IAM/OIDC is enabled. `configure-application-quality.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CR) when IAM was enabled, provided Crossplane and its Keycloak provider are installed:
 
-Use the following client settings:
+```bash
+kubectl apply -f generated-iam.yaml
+```
+
+If Crossplane Keycloak provider support isn't available, create the client manually in Keycloak instead, using the following settings:
 
 | Setting | Value |
 | ------- | ----- |

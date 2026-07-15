@@ -97,6 +97,29 @@ def authenticate_public_client(keycloak_host, realm, client_id, redirect_uri, us
     return token_response.json()["access_token"]
 
 
+def oidc_session_login(base_url, login_path, username, password):
+    # Scripted browser-style OIDC login for Django apps using mozilla_django_oidc:
+    # follows the app's own login-initiation redirect to Keycloak, submits the
+    # login form, and returns the requests.Session holding the resulting
+    # session/CSRF cookies - for apps whose API auth is session-based (DRF
+    # SessionAuthentication) rather than accepting the Keycloak-issued token
+    # as a Bearer token directly.
+    session = requests.Session()
+    response = session.get(f"{base_url}{login_path}")
+    response.raise_for_status()
+    form_action = re.search(r'action="([^"]+)"', response.text)
+    if not form_action:
+        raise RuntimeError("Could not find Keycloak login form on the authorization page")
+    login_response = session.post(
+        unquote(form_action.group(1)).replace("&amp;", "&"),
+        data={"username": username, "password": password},
+    )
+    login_response.raise_for_status()
+    if "sessionid" not in session.cookies:
+        raise RuntimeError("OIDC login did not establish an authenticated session")
+    return session
+
+
 @contextlib.contextmanager
 def test_cell(name):
     try:

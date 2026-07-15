@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ getenv "APP_QUALITY_CLIENT_ID" }}-keycloak-client"
+  namespace: iam-management
+stringData:
+  client_secret: "{{ getenv "APP_QUALITY_CLIENT_SECRET" }}"
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: "{{ getenv "APP_QUALITY_CLIENT_ID" }}"
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: "{{ getenv "REALM" }}"
+    clientId: "{{ getenv "APP_QUALITY_CLIENT_ID" }}"
+    name: Application Quality
+    description: Application Quality OIDC
+    enabled: true
+    accessType: CONFIDENTIAL
+    rootUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}"
+    baseUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}"
+    standardFlowEnabled: true
+    directAccessGrantsEnabled: true
+    validRedirectUris:
+      - "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/*"
+    webOrigins:
+      - "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}"
+    clientSecretSecretRef:
+      name: "{{ getenv "APP_QUALITY_CLIENT_ID" }}-keycloak-client"
+      key: client_secret

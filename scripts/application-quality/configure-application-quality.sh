@@ -34,6 +34,8 @@ if ask_yes_no "Enable IAM/OIDC authentication?"; then
     echo "Generated Application Quality client secret:"
     echo "${APP_QUALITY_CLIENT_SECRET}"
     echo ""
+
+    gomplate -f "iam-template.yaml" -o "generated-iam.yaml"
 else
     export APP_QUALITY_ENABLE_IAM="false"
     add_to_state_file "APP_QUALITY_ENABLE_IAM" "${APP_QUALITY_ENABLE_IAM}"
