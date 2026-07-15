@@ -4,20 +4,30 @@ EOEPCA+ requires an Ingress Controller to route external traffic into the platfo
 
 ## Ingress Options
 
-This guide supports two primary ingress controller options:
+This guide supports two primary ingress controller options. You must choose one of these based on your security and access control requirements.
 
-1. [APISIX Ingress](apisix.md)<br>
-   **Required** if following the IAM aspects of this guide which relies upon APISIX plugins for IAM integration, with policy-based access control.
+!!! tip
+    You can install **either** one for a basic deployment.
 
-1. [Nginx Ingress](nginx.md)<br>
-   **Suitable only** for open-access scenarios (in accordance with this guide), or where you are integrating your own IAM approach with the deployment.
+<div class="grid cards" markdown>
 
-You must choose one of these ingress controllers based on your security and access control requirements:
+-   :material-shield-lock:{ .lg .middle } **APISIX Ingress**
 
-> You can install **either** one for a basic deployment.
+    ---
 
-- For deployments **requiring EOEPCA's IAM-based authorization**, you must use **APISIX**.
-- For deployments that are **fully open or have their own authorization approach**, **NGINX** can be used.
+    **Required** if following the IAM aspects of this guide, which rely upon APISIX plugins for IAM integration, with policy-based access control.
+
+    [:octicons-arrow-right-24: Install APISIX](apisix.md)
+
+-   :material-lock-open-variant:{ .lg .middle } **Nginx Ingress**
+
+    ---
+
+    **Suitable only** for open-access scenarios (in accordance with this guide), or where you are integrating your own IAM approach with the deployment.
+
+    [:octicons-arrow-right-24: Install NGINX](nginx.md)
+
+</div>
 
 ## Advanced Scenarios
 
@@ -25,14 +35,8 @@ If your ingress needs are more complex, for example you have an existing ingress
 
 ## Before proceeding
 
-- Ensure a wildcard DNS entry is pointing to your cluster's load balancer or external IP, e.g., `*.myplatform.com`.  
-- Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.  
+- Ensure a wildcard DNS entry is pointing to your cluster's load balancer or external IP, e.g., `*.myplatform.com`.
+- Confirm your cluster is reachable on the required ports (80/443) or has NodePort alternatives set up.
 
-> _For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames, using the entrypoint IP-address of your cluster that routes to your ingress controller._
-
-## Next Steps
-
-Continue with the approach best suited for your environment:
-
-- **[Install APISIX →](apisix.md)**  
-- **[Install NGINX →](nginx.md)**
+!!! tip
+    For testing, wildcard DNS can be simulated using IP-address-based `nip.io` hostnames, using the entrypoint IP-address of your cluster that routes to your ingress controller.

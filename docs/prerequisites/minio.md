@@ -174,200 +174,204 @@ This script performs several checks to validate your MinIO deployment:
 
 ## ReadWriteMany Storage using JuiceFS
 
-> This is optional. It is presented here in case you are in need of a `ReadWriteMany` storage solution, and want to explore the possibility to provide this through object storage.
+!!! tip "Optional"
+    This is optional. It is presented here in case you are in need of a `ReadWriteMany` storage solution, and want to explore the possibility to provide this through object storage.
 
 As described in the [Storage](./storage.md#quick-start-multi-node-with-juicefs) section, JuiceFS offers a `ReadWriteMany` (RWX) storage solution backed by Object Storage.
 
-The steps in this section illustrate the approach to create the storage class `eoepca-rw-many` that can be used by BBs requiring ReadWriteMany persistence.
+??? note "Create a ReadWriteMany StorageClass via JuiceFS"
 
-> The JuiceFS approach is designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case.
->
-> It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
-> 
-> Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner. The approach shown here can be adapted to the object storage of your cloud provider.
+    The steps in this section illustrate the approach to create the storage class `eoepca-rw-many` that can be used by BBs requiring ReadWriteMany persistence.
 
-### Deploy the JuiceFS CSI Driver
+    !!! note
+        The JuiceFS approach is designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case.
 
-Ref. [JuiceFS CSI Driver Documentation](https://juicefs.com/docs/csi/introduction/)
+        It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
 
-```bash
-helm upgrade -i juicefs-csi-driver juicefs-csi-driver \
-  --repo https://juicedata.github.io/charts/ \
-  --namespace juicefs \
-  --create-namespace
-```
+        Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner. The approach shown here can be adapted to the object storage of your cloud provider.
 
-#### `Sidecar` Mount Mode
+    ### Deploy the JuiceFS CSI Driver
 
-The default deployment uses a `Mount Pod` for each PVC. This is the recommended approach, but does not suit all situations as it relies upon a `DaemonSet`. The alternative [`Sidecar`](https://juicefs.com/docs/csi/getting_started/#sidecar) mode can be used by setting the helm value...
+    Ref. [JuiceFS CSI Driver Documentation](https://juicefs.com/docs/csi/introduction/)
 
-```bash
-  --set mountMode=sidecar
-```
+    ```bash
+    helm upgrade -i juicefs-csi-driver juicefs-csi-driver \
+      --repo https://juicedata.github.io/charts/ \
+      --namespace juicefs \
+      --create-namespace
+    ```
 
-In this case each `namespace` that needs to use the JuiceFS CSI Driver (i.e. whose workloads are using the defined `StorageClass`), must be labelled for webhook injection...
+    #### `Sidecar` Mount Mode
 
-```bash
-kubectl label namespace $NS juicefs.com/enable-injection=true --overwrite
-```
+    The default deployment uses a `Mount Pod` for each PVC. This is the recommended approach, but does not suit all situations as it relies upon a `DaemonSet`. The alternative [`Sidecar`](https://juicefs.com/docs/csi/getting_started/#sidecar) mode can be used by setting the helm value...
 
-### Deploy a Metadata Engine
+    ```bash
+      --set mountMode=sidecar
+    ```
 
-We will create a StorageClass that uses the JuiceFS CSI Driver to dynamically provision PersistentVolumes. But first we need a metadata engine accessible from all cluster nodes. There are many options, but for simplicity we will use Redis.
+    In this case each `namespace` that needs to use the JuiceFS CSI Driver (i.e. whose workloads are using the defined `StorageClass`), must be labelled for webhook injection...
 
-> Redis is an in-memory key-value database with excellent performance but relatively weak reliability. For production there are better alternative to Redis - such as TiKV, PostgreSQL - which should be used in preference to Redis, and aligned with your performance and reliability requirements.
+    ```bash
+    kubectl label namespace $NS juicefs.com/enable-injection=true --overwrite
+    ```
 
-```bash
-helm install redis redis \
-  --repo https://charts.bitnami.com/bitnami \
-  --set architecture=standalone \
-  --set auth.enabled=false \
-  --namespace juicefs \
-  --create-namespace
-```
+    ### Deploy a Metadata Engine
 
-### Create the StorageClass
+    We will create a StorageClass that uses the JuiceFS CSI Driver to dynamically provision PersistentVolumes. But first we need a metadata engine accessible from all cluster nodes. There are many options, but for simplicity we will use Redis.
 
-Now we can create a StorageClass that uses the JuiceFS CSI Driver (provisioner), referencing the Redis metadata engine and an S3-compatible Object Storage solution.
+    !!! warning
+        Redis is an in-memory key-value database with excellent performance but relatively weak reliability. For production there are better alternative to Redis - such as TiKV, PostgreSQL - which should be used in preference to Redis, and aligned with your performance and reliability requirements.
 
-> The below configuration uses the bucket `cluster-storage` in the MinIO instance. It is assumed that this bucket already exists - as will be the case if MinIO was deployed as per this guide.
+    ```bash
+    helm install redis redis \
+      --repo https://charts.bitnami.com/bitnami \
+      --set architecture=standalone \
+      --set auth.enabled=false \
+      --namespace juicefs \
+      --create-namespace
+    ```
 
-```bash
-source ~/.eoepca/state
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sc-eoepca-rw-many
-  namespace: juicefs
-type: Opaque
-stringData:
-  name: eoepca-rw-many                                     # The JuiceFS file system name
-  access-key: ${S3_ACCESS_KEY}                             # Object storage credentials
-  secret-key: ${S3_SECRET_KEY}                             # Object storage credentials
-  metaurl: redis://redis-master.juicefs.svc.cluster.local  # Connection URL for metadata engine.
-  storage: s3                                              # Object storage type, such as s3, gs, oss.
-  bucket: ${S3_ENDPOINT}/cluster-storage                       # Bucket URL of object storage.
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: eoepca-rw-many
-reclaimPolicy: Delete  # Specify "Retain" if you want to retain the data after PVC deletion
-provisioner: csi.juicefs.com
-parameters:
-  csi.storage.k8s.io/provisioner-secret-name: sc-eoepca-rw-many
-  csi.storage.k8s.io/provisioner-secret-namespace: juicefs
-  csi.storage.k8s.io/node-publish-secret-name: sc-eoepca-rw-many
-  csi.storage.k8s.io/node-publish-secret-namespace: juicefs
-EOF
-```
+    ### Create the StorageClass
 
-### Test the StorageClass
+    Now we can create a StorageClass that uses the JuiceFS CSI Driver (provisioner), referencing the Redis metadata engine and an S3-compatible Object Storage solution.
 
-We can test the StorageClass and associated provisioner by creating a PersistentVolumeClaim that uses it.
+    !!! note
+        The below configuration uses the bucket `cluster-storage` in the MinIO instance. It is assumed that this bucket already exists - as will be the case if MinIO was deployed as per this guide.
 
-> The following example creates a `10Gi` RWX PVC, and a pod that writes the current date to a file in the volume every 5 seconds.
+    ```bash
+    source ~/.eoepca/state
+    cat <<EOF | kubectl apply -f -
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: sc-eoepca-rw-many
+      namespace: juicefs
+    type: Opaque
+    stringData:
+      name: eoepca-rw-many                                     # The JuiceFS file system name
+      access-key: ${S3_ACCESS_KEY}                             # Object storage credentials
+      secret-key: ${S3_SECRET_KEY}                             # Object storage credentials
+      metaurl: redis://redis-master.juicefs.svc.cluster.local  # Connection URL for metadata engine.
+      storage: s3                                              # Object storage type, such as s3, gs, oss.
+      bucket: ${S3_ENDPOINT}/cluster-storage                       # Bucket URL of object storage.
+    ---
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: eoepca-rw-many
+    reclaimPolicy: Delete  # Specify "Retain" if you want to retain the data after PVC deletion
+    provisioner: csi.juicefs.com
+    parameters:
+      csi.storage.k8s.io/provisioner-secret-name: sc-eoepca-rw-many
+      csi.storage.k8s.io/provisioner-secret-namespace: juicefs
+      csi.storage.k8s.io/node-publish-secret-name: sc-eoepca-rw-many
+      csi.storage.k8s.io/node-publish-secret-namespace: juicefs
+    EOF
+    ```
 
-```bash
-cat <<'EOF' | kubectl apply -f -
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: juicefs-test-pvc
-  namespace: default
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: eoepca-rw-many
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: juicefs-test-app
-  namespace: default
-spec:
-  containers:
-  - args:
-    - -c
-    - while true; do echo $(date -u) >> /data/out.txt; sleep 5; done
-    command:
-    - /bin/sh
-    image: busybox
-    name: app
-    volumeMounts:
-    - mountPath: /data
-      name: juicefs-test-pv
-  volumes:
-  - name: juicefs-test-pv
-    persistentVolumeClaim:
-      claimName: juicefs-test-pvc
-EOF
-```
+    ### Test the StorageClass
 
-Check the requested `RWX` PVC is `Bound` by the `eoepca-rw-many` StorageClass:
+    We can test the StorageClass and associated provisioner by creating a PersistentVolumeClaim that uses it.
 
-```bash
-kubectl get pvc juicefs-test-pvc
-```
+    !!! note
+        The following example creates a `10Gi` RWX PVC, and a pod that writes the current date to a file in the volume every 5 seconds.
 
-You can inspect the object storage bucket to see the data chunks being written to the JuiceFS `eoepca-rw-many` volume by the test pod.
+    ```bash
+    cat <<'EOF' | kubectl apply -f -
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: juicefs-test-pvc
+      namespace: default
+    spec:
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: eoepca-rw-many
+    ---
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: juicefs-test-app
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - -c
+        - while true; do echo $(date -u) >> /data/out.txt; sleep 5; done
+        command:
+        - /bin/sh
+        image: busybox
+        name: app
+        volumeMounts:
+        - mountPath: /data
+          name: juicefs-test-pv
+      volumes:
+      - name: juicefs-test-pv
+        persistentVolumeClaim:
+          claimName: juicefs-test-pvc
+    EOF
+    ```
 
-> There may be a short delay after first usage before the bucket contents are visible.
+    Check the requested `RWX` PVC is `Bound` by the `eoepca-rw-many` StorageClass:
 
-```bash
-source ~/.eoepca/state
-xdg-open "https://console-minio.${INGRESS_HOST}/browser/cluster-storage/"
-```
+    ```bash
+    kubectl get pvc juicefs-test-pvc
+    ```
 
-> There may be an initial delay before the first writes are reflected in the MinIO UI.
+    You can inspect the object storage bucket to see the data chunks being written to the JuiceFS `eoepca-rw-many` volume by the test pod.
+    _(There may be a short delay after first usage before the bucket contents are visible.)_
 
-Run another pod to read the data being written by the test pod:
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "https://console-minio.${INGRESS_HOST}/browser/cluster-storage/"
+    ```
 
-> This pod mounts the same PVC and tails the contents of the `out.txt` file written by the test pod.
+    _(There may be an initial delay before the first writes are reflected in the MinIO UI.)_
 
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: juicefs-tail
-  namespace: default
-spec:
-  containers:
-  - name: tailer
-    image: busybox
-    command: ["/bin/sh", "-c", "tail -f /data/out.txt"]
-    volumeMounts:
-    - mountPath: /data
-      name: juicefs-test-pv
-  volumes:
-  - name: juicefs-test-pv
-    persistentVolumeClaim:
-      claimName: juicefs-test-pvc
-  restartPolicy: Never
-EOF
+    Run another pod to read the data being written by the test pod - this pod mounts the same PVC and tails the contents of the `out.txt` file written by the test pod:
 
-kubectl wait --for=condition=Ready pod/juicefs-tail --timeout=60s
-kubectl logs -f juicefs-tail
-```
+    ```bash
+    cat <<EOF | kubectl apply -f -
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: juicefs-tail
+      namespace: default
+    spec:
+      containers:
+      - name: tailer
+        image: busybox
+        command: ["/bin/sh", "-c", "tail -f /data/out.txt"]
+        volumeMounts:
+        - mountPath: /data
+          name: juicefs-test-pv
+      volumes:
+      - name: juicefs-test-pv
+        persistentVolumeClaim:
+          claimName: juicefs-test-pvc
+      restartPolicy: Never
+    EOF
 
-> Use Ctrl-C to exit the log stream.
+    kubectl wait --for=condition=Ready pod/juicefs-tail --timeout=60s
+    kubectl logs -f juicefs-tail
+    ```
 
-Remove the test resources when done:
+    _(Use Ctrl-C to exit the log stream.)_
 
-```bash
-kubectl delete pod juicefs-tail
-kubectl delete pod juicefs-test-app
-kubectl delete pvc juicefs-test-pvc
-```
+    Remove the test resources when done:
 
-### JuiceFS Summary
+    ```bash
+    kubectl delete pod juicefs-tail
+    kubectl delete pod juicefs-test-app
+    kubectl delete pvc juicefs-test-pvc
+    ```
 
-We have created a _StorageClass_ that uses the `cluster-storage` bucket in the MinIO instance to create a _file-system_ inside this bucket under the path `eoepca-rw-many/` (the name of the storage class). This file-system is then used to back `ReadWriteMany` PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.
+    ### JuiceFS Summary
+
+    We have created a _StorageClass_ that uses the `cluster-storage` bucket in the MinIO instance to create a _file-system_ inside this bucket under the path `eoepca-rw-many/` (the name of the storage class). This file-system is then used to back `ReadWriteMany` PersistentVolumes that are dynamically provisioned by the JuiceFS CSI Driver.
 
 ---
 

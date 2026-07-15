@@ -61,13 +61,14 @@ helm upgrade -i cert-manager jetstack/cert-manager \
 
 #### Create a ClusterIssuer for Let's Encrypt
 
-1. Using **HTTP01 Challenge** [[ref]](https://letsencrypt.org/docs/challenge-types/#http-01-challenge)
+=== "HTTP01 Challenge"
+
+    Using the **HTTP01 Challenge** [[ref]](https://letsencrypt.org/docs/challenge-types/#http-01-challenge).
 
     We create a `ClusterIssuer` for each of APISIX and for NGINX - that will use the `HTTP01` challenge to verify domain ownership via each respective ingress controller.
 
-    > Set your details for email and the ingress class (apisix/nginx)
-    >
-    >You can also change the `metadata.name` and `spec.acme.privateKeySecretRef.name` to something more meaningful.
+    !!! note
+        Set your details for email and the ingress class (apisix/nginx). You can also change the `metadata.name` and `spec.acme.privateKeySecretRef.name` to something more meaningful.
 
     ```bash
     for ingress_class in apisix nginx; do
@@ -90,7 +91,9 @@ helm upgrade -i cert-manager jetstack/cert-manager \
     done
     ```
 
-2. Using **DNS01 Challenge** [[ref]](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)
+=== "DNS01 Challenge"
+
+    Using the **DNS01 Challenge** [[ref]](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge).
 
     The following illustrates an example that uses Cloudflare DNS provider.
 

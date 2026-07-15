@@ -60,7 +60,7 @@ The following EOEPCA building blocks require `ReadWriteMany` access:
 
 ### `RWX` Possible Implementations
 
-* **Production**
+=== "Production"
 
     For use in production environments, consider the following options:
 
@@ -69,7 +69,7 @@ The following EOEPCA building blocks require `ReadWriteMany` access:
     * [JuiceFS](https://juicefs.com/) is another cloud-native option that can be configured for high availability.<br>
       _See [Multi-node Quick Start](#quick-start-multi-node-with-juicefs) below_
 
-* **Development / Testing**
+=== "Development / Testing"
 
     For development or testing environments, consider the following options:
 
@@ -111,7 +111,8 @@ The resultant data volume can then be accessed/mounted through a variety of comp
 
 To demonstrate the basic principles - the simplest case using SQLite for metadata storage and the local file-system for storage.
 
-> This is only useful for demonstration purposes - for any real deployment a more robust network-accessible metadata engine (e.g. TiKV etc.) should be used, combined with a suitable object storage solution.
+!!! warning
+    This is only useful for demonstration purposes - for any real deployment a more robust network-accessible metadata engine (e.g. TiKV etc.) should be used, combined with a suitable object storage solution.
 
 * Create a file-system (volume) `myjfs`...
 
@@ -214,7 +215,8 @@ To complete the demonstration, section [`S3 Storage (MinIO)`](./minio.md#readwri
 
 The JuiceFS approach described here is really designed to exploit the prevailing object storage solution that is provided by your cloud of choice. Hence, while it is possible to use MinIO as the object storage backend, this is not really the intended use case. Nevertheless, MinIO provides a convenient way to demonstrate the principles of JuiceFS in a self-contained manner.
 
-> It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
+!!! warning
+    It should be acknowledged that using MinIO to back JuiceFS in this way has limitations. In particular, the storage is presented through two layers of persistent volume which will adversely affect performance. This should be taken into account. For any sort of real workload, then the 'native' S3 storage of the cloud provider should be used directly with JuiceFS.
 
 ---
 

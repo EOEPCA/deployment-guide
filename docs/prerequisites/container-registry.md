@@ -206,13 +206,15 @@ To interact with Harbor using Docker commands, you need to configure your Docker
     docker pull harbor.${INGRESS_HOST}/library/alpine:latest
     ```
 
-    **Note**: If you're using self-signed certificates or an untrusted CA, you may need to configure Docker to trust the registry's certificate.
+    !!! note
+        If you're using self-signed certificates or an untrusted CA, you may need to configure Docker to trust the registry's certificate.
 
 **Configure Kubernetes to Pull Images from Harbor:**
 
 The following steps provide an example of how to configure a pod with _Image Pull Secrets_ to use images from the deployed _Container Registry_.
 
-> Example steps must be adapted for your needs
+!!! note
+    Example steps must be adapted for your needs.
 
 1. **Create an image pull secret**:
 

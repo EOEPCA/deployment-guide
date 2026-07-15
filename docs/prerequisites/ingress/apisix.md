@@ -2,61 +2,65 @@
 
 For full installation instructions for the APISIX Ingress Controller see the official [Installation Guide](https://apisix.apache.org/docs/apisix/installation-guide/).
 
-> See also [Ingress Gateway](./gateway.md) for more advanced ingress scenarios.
+!!! tip
+    See also [Ingress Gateway](./gateway.md) for more advanced ingress scenarios.
 
 ## Quickstart Installation
 
-> **Disclaimer:** We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
+!!! note "Disclaimer"
+    We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
 
 ```
 helm repo add apisix https://apache.github.io/apisix-helm-chart
 helm repo update apisix
 ```
 
-### Option A: Deploy as NodePort Service
+=== "NodePort Service"
 
-The deployment configuration below assumes that the Kubernetes cluster exposes NodePorts `31080` (http) and `31443` (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public `80/443` traffic to these exposed ports on the cluster nodes.
+    The deployment configuration below assumes that the Kubernetes cluster exposes NodePorts `31080` (http) and `31443` (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public `80/443` traffic to these exposed ports on the cluster nodes.
 
-```bash
-source "$HOME/.eoepca/state"
-helm upgrade -i apisix apisix/apisix \
-  --version 2.10.0 \
-  --namespace ingress-apisix --create-namespace \
-  --set service.type=NodePort \
-  --set service.http.nodePort=31080 \
-  --set service.tls.nodePort=31443 \
-  --set etcd.image.repository=bitnamilegacy/etcd \
-  --set etcd.replicaCount=1 \
-  --set etcd.persistence.storageClass="${PERSISTENT_STORAGECLASS:-local-path}" \
-  --set apisix.enableIPv6=false \
-  --set apisix.enableServerTokens=false \
-  --set apisix.ssl.enabled=true \
-  --set apisix.pluginAttrs.redirect.https_port=443 \
-  --set ingress-controller.enabled=true
-```
+    ```bash
+    source "$HOME/.eoepca/state"
+    helm upgrade -i apisix apisix/apisix \
+      --version 2.10.0 \
+      --namespace ingress-apisix --create-namespace \
+      --set service.type=NodePort \
+      --set service.http.nodePort=31080 \
+      --set service.tls.nodePort=31443 \
+      --set etcd.image.repository=bitnamilegacy/etcd \
+      --set etcd.replicaCount=1 \
+      --set etcd.persistence.storageClass="${PERSISTENT_STORAGECLASS:-local-path}" \
+      --set apisix.enableIPv6=false \
+      --set apisix.enableServerTokens=false \
+      --set apisix.ssl.enabled=true \
+      --set apisix.pluginAttrs.redirect.https_port=443 \
+      --set ingress-controller.enabled=true
+    ```
 
-> Note that the above configures a single replica for the `etcd` service (ref. `--set etcd.replicaCount=1`). This is useful only for a single node development cluster.
-> 
-> **The default number or replicas is `3`, which should be used (at minimum) for a production cluster.**
+    !!! warning
+        The above configures a single replica for the `etcd` service (ref. `--set etcd.replicaCount=1`). This is useful only for a single node development cluster.
 
-### Option B: Deploy as LoadBalancer Service
+        **The default number or replicas is `3`, which should be used (at minimum) for a production cluster.**
 
-```bash
-helm upgrade -i apisix apisix/apisix \
-  --version 2.10.0 \
-  --namespace ingress-apisix --create-namespace \
-  --set service.type=LoadBalancer \
-  --set service.http.port=80 \
-  --set service.tls.port=443 \
-  --set etcd.image.repository=bitnamilegacy/etcd \
-  --set apisix.enableIPv6=false \
-  --set apisix.enableServerTokens=false \
-  --set apisix.ssl.enabled=true \
-  --set apisix.pluginAttrs.redirect.https_port=443 \
-  --set ingress-controller.enabled=true
-```
+=== "LoadBalancer Service"
 
-> This can be adapted according to the network topology of your cluster environment.
+    ```bash
+    helm upgrade -i apisix apisix/apisix \
+      --version 2.10.0 \
+      --namespace ingress-apisix --create-namespace \
+      --set service.type=LoadBalancer \
+      --set service.http.port=80 \
+      --set service.tls.port=443 \
+      --set etcd.image.repository=bitnamilegacy/etcd \
+      --set apisix.enableIPv6=false \
+      --set apisix.enableServerTokens=false \
+      --set apisix.ssl.enabled=true \
+      --set apisix.pluginAttrs.redirect.https_port=443 \
+      --set ingress-controller.enabled=true
+    ```
+
+    !!! note
+        This can be adapted according to the network topology of your cluster environment.
 
 ### Forced TLS Redirection (Optional)
 
@@ -85,8 +89,10 @@ spec:
 EOF
 ```
 
-> The `filter` is used to suppress the redirection in the specific case of traffic used by the Letsencrypt HTTP01 challenge whilst establishing TLS certificates.<br>
-> Use of the header `X-No-Force-Tls` is included to provide an override that may prove useful in some circumstances or during development.
+!!! note
+    The `filter` is used to suppress the redirection in the specific case of traffic used by the Letsencrypt HTTP01 challenge whilst establishing TLS certificates.
+
+    Use of the header `X-No-Force-Tls` is included to provide an override that may prove useful in some circumstances or during development.
 
 For `filter` reference see:
 

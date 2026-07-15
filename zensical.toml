@@ -94,6 +94,27 @@ logo = "img/favicon.ico"
 favicon = "img/favicon.ico"
 language = "en"
 
+features = [
+    "navigation.footer",
+    "navigation.instant",
+    "navigation.tracking",
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.sections",
+    "navigation.top",
+    "content.code.copy",
+    "content.action.edit",
+    "content.tooltips",
+    "content.tabs.link",
+    "search.suggest",
+    "search.highlight",
+    "search.share",
+]
+
+# NOTE: [[project.theme.palette]] (array-of-tables) must come AFTER every
+# plain key in [project.theme] (e.g. `features`) - once a [[...]] table is
+# opened, subsequent bare `key = value` lines attach to that sub-table, not
+# back to [project.theme].
 [[project.theme.palette]]
 media = "(prefers-color-scheme: light)"
 scheme = "default"
@@ -107,22 +128,6 @@ scheme = "slate"
 primary = "custom"
 accent = "custom"
 toggle = { icon = "material/weather-night", name = "Switch to light mode" }
-
-features = [
-    "navigation.footer",
-    "navigation.instant",
-    "navigation.tracking",
-    "navigation.tabs",
-    "navigation.tabs.sticky",
-    "navigation.sections",
-    "navigation.top",
-    "content.code.copy",
-    "content.action.edit",
-    "content.tooltips",
-    "search.suggest",
-    "search.highlight",
-    "search.share",
-]
 
 # ----------------------------------------------------------------------------
 # Markdown extensions

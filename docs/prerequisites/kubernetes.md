@@ -32,16 +32,16 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 
 ## Production vs. Development
 
-- **Production**  
+=== "Production"
 
-    - Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider's managed K8S).  
-    - Use cert-manager with Let's Encrypt or your CA for auto-renewed certificates.  
+    - Leverage a managed Kubernetes cluster (e.g., an enterprise Rancher deployment or a cloud provider's managed K8S).
+    - Use cert-manager with Let's Encrypt or your CA for auto-renewed certificates.
     - Keep your images in a Docker Hub authenticated registry or a private repository to avoid pull-rate issues.
 
-- **Development / Testing**
+=== "Development / Testing"
 
-    - A single-node cluster (Rancher, K3s, Minikube, Docker Desktop) can suffice.  
-    - You can manually manage TLS or skip it if everything is internal.  
+    - A single-node cluster (Rancher, K3s, Minikube, Docker Desktop) can suffice.
+    - You can manually manage TLS or skip it if everything is internal.
     - For DNS, you can use a local DNS trick like `nip.io` or edit your `/etc/hosts` as needed (less flexible, though).
 
 
@@ -53,7 +53,8 @@ EOEPCA places a few special demands on your Kubernetes cluster. EOEPCA does **no
 
 #### Creating an image pull secret for DockerHub
 
-> We recommend this step if any `helm` deployment is returning `ImagePullBackOff` errors.
+!!! tip "Only needed if you see `ImagePullBackOff` errors"
+    We recommend this step if any `helm` deployment is returning `ImagePullBackOff` errors.
 
 For example, docker credentials in the `processing` namespace...
 
@@ -68,7 +69,8 @@ kubectl create secret docker-registry regcred \
 
 These credentials (`regcred`) can then be referenced as an _imagePullSecret_ in the relevant _PodSpec_ of any workloads running in the `processing` namespace.
 
-> NOTE. Your Kubernetes distribution may provide other means for configuring cluster-wide container registry credentials - e.g. directly within the container runtime of each node within your cluster - as illustrated below with the `--registry-config` option of the `k3d` cluster creation.
+!!! note
+    Your Kubernetes distribution may provide other means for configuring cluster-wide container registry credentials - e.g. directly within the container runtime of each node within your cluster - as illustrated below with the `--registry-config` option of the `k3d` cluster creation.
 
 ## Quick Start
 
@@ -140,75 +142,77 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
       --registry-config "registries.yaml"
     ```
 
-### Suppress Resource Requests
+??? note "Suppress Resource Requests (development clusters only)"
 
-In the case that `k3d` or other similar single node development cluster is used, then it is likely that insufficient cpu/memory will be available to satisfy the resource `requests` specified by the helm charts defaults.
+    In the case that `k3d` or other similar single node development cluster is used, then it is likely that insufficient cpu/memory will be available to satisfy the resource `requests` specified by the helm charts defaults.
 
-A simple approach to avoid this problem is to use a Mutating Admission Policy to zero any pod resource requests.
+    A simple approach to avoid this problem is to use a Mutating Admission Policy to zero any pod resource requests.
 
-> NOTE that the success of this workaround relies upon the (overall) tendancy of the deployed components to request more cpu/memory resource than they require for a simple development setup.
+    !!! note
+        The success of this workaround relies upon the (overall) tendancy of the deployed components to request more cpu/memory resource than they require for a simple development setup.
 
-For this we can use the Kyverno Policy Engine through which we can configure an admission webhook with a mutating rule.
+    For this we can use the Kyverno Policy Engine through which we can configure an admission webhook with a mutating rule.
 
-**Install Kyvero using Helm**
+    **Install Kyvero using Helm**
 
-```bash
-helm repo add kyverno https://kyverno.github.io/kyverno/
-helm repo update kyverno
-helm upgrade -i kyverno kyverno/kyverno \
-  --version 3.6.2 \
-  --namespace kyverno \
-  --create-namespace
-```
+    ```bash
+    helm repo add kyverno https://kyverno.github.io/kyverno/
+    helm repo update kyverno
+    helm upgrade -i kyverno kyverno/kyverno \
+      --version 3.6.2 \
+      --namespace kyverno \
+      --create-namespace
+    ```
 
-**Create the ClusterPolicy**
+    **Create the ClusterPolicy**
 
-> Note that, rather than zero, we actually set minimal cpu/memory requests to avoid potential issues with certain workloads that may not handle zero resource requests gracefully.
+    !!! note
+        Rather than zero, we actually set minimal cpu/memory requests to avoid potential issues with certain workloads that may not handle zero resource requests gracefully.
 
-```yaml
-cat - <<'EOF' | kubectl apply -f -
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: remove-resource-requests
-spec:
-  rules:
-    - name: remove-resource-requests
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      mutate:
-        foreach:
-          # --- Containers ---
-          - list: "to_array(request.object.spec.containers)"
-            patchStrategicMerge:
-              spec:
-                containers:
-                  - name: "{{ element.name }}"
-                    resources:
-                      requests:
-                        cpu: "1m"
-                        memory: "1M"
+    ```yaml
+    cat - <<'EOF' | kubectl apply -f -
+    apiVersion: kyverno.io/v1
+    kind: ClusterPolicy
+    metadata:
+      name: remove-resource-requests
+    spec:
+      rules:
+        - name: remove-resource-requests
+          match:
+            any:
+              - resources:
+                  kinds:
+                    - Pod
+          mutate:
+            foreach:
+              # --- Containers ---
+              - list: "to_array(request.object.spec.containers)"
+                patchStrategicMerge:
+                  spec:
+                    containers:
+                      - name: "{{ element.name }}"
+                        resources:
+                          requests:
+                            cpu: "1m"
+                            memory: "1M"
 
-          # --- Init containers ---
-          - list: "to_array(request.object.spec.initContainers)"
-            preconditions:
-              all:
-                - key: "{{ length(to_array(request.object.spec.initContainers)) }}"
-                  operator: GreaterThan
-                  value: 0
-            patchStrategicMerge:
-              spec:
-                initContainers:
-                  - name: "{{ element.name }}"
-                    resources:
-                      requests:
-                        cpu: "1m"
-                        memory: "1M"
-EOF
-```
+              # --- Init containers ---
+              - list: "to_array(request.object.spec.initContainers)"
+                preconditions:
+                  all:
+                    - key: "{{ length(to_array(request.object.spec.initContainers)) }}"
+                      operator: GreaterThan
+                      value: 0
+                patchStrategicMerge:
+                  spec:
+                    initContainers:
+                      - name: "{{ element.name }}"
+                        resources:
+                          requests:
+                            cpu: "1m"
+                            memory: "1M"
+    EOF
+    ```
 
 ### Storage Provisioner
 

@@ -35,7 +35,7 @@ Both backends use the same OGC API Processes interface - the difference is where
 
     No additional requirements beyond the common prerequisites. Calrissian runs CWL workflows as Kubernetes jobs, so everything stays within your cluster.
 
-=== "Toil / HPC"
+=== "Toil"
 
     You'll need an HPC cluster with:
 
@@ -45,53 +45,53 @@ Both backends use the same OGC API Processes interface - the difference is where
 
     Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/htcondor/), [Slurm](https://www.schedmd.com/), [PBS/Torque/PBS Pro](#TODO) [LSF](https://en.wikipedia.org/wiki/Platform_LSF), and [Grid Engine](http://www.univa.com/oracle).
 
-    #### Setting up a Local HTCondor (Development/Testing Only)
+    ???+ note "Setting up a Local HTCondor (Development/Testing Only)"
 
-    > **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead.
+        > **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead.
 
-    If you don't have access to an HPC cluster and want to test the Toil integration locally, you can install [MiniHTCondor](https://htcondor.org/), a single-node HTCondor package designed for testing.
+        If you don't have access to an HPC cluster and want to test the Toil integration locally, you can install [MiniHTCondor](https://htcondor.org/), a single-node HTCondor package designed for testing.
 
-    **Install HTCondor using the official script:**
-    ```bash
-    # Download and run the HTCondor installer (installs minicondor by default)
-    curl -fsSL https://get.htcondor.org | sudo /bin/bash -s -- --no-dry-run
+        **Install HTCondor using the official script:**
+        ```bash
+        # Download and run the HTCondor installer (installs minicondor by default)
+        curl -fsSL https://get.htcondor.org | sudo /bin/bash -s -- --no-dry-run
 
-    # Verify HTCondor is running
-    condor_status
-    ```
+        # Verify HTCondor is running
+        condor_status
+        ```
 
-    You should see output showing your local machine as a condor slot. If `condor_status` returns an error, check that the condor service is running:
-    ```bash
-    sudo systemctl status condor
-    ```
+        You should see output showing your local machine as a condor slot. If `condor_status` returns an error, check that the condor service is running:
+        ```bash
+        sudo systemctl status condor
+        ```
 
-    **Configure Docker for HTCondor jobs:**
+        **Configure Docker for HTCondor jobs:**
 
-    HTCondor needs to run containers for CWL workflows. Add your user to the docker group and create a wrapper to mount `/etc/hosts` for DNS resolution:
+        HTCondor needs to run containers for CWL workflows. Add your user to the docker group and create a wrapper to mount `/etc/hosts` for DNS resolution:
 
-    ```bash
-    # Add your user to the docker group
-    sudo usermod -a -G docker $USER
+        ```bash
+        # Add your user to the docker group
+        sudo usermod -a -G docker $USER
 
-    # Create a docker wrapper for DNS resolution in containers
-    sudo tee /usr/local/bin/docker > /dev/null << 'EOF'
-    #!/usr/bin/python3
-    import sys, os
-    n = sys.argv
-    n[0] = "/usr/bin/docker"
-    if "run" in n:
-        n.insert(n.index("run") + 1, "-v=/etc/hosts:/etc/hosts:ro")
-    os.execv(n[0], n)
-    EOF
-    sudo chmod +x /usr/local/bin/docker
+        # Create a docker wrapper for DNS resolution in containers
+        sudo tee /usr/local/bin/docker > /dev/null << 'EOF'
+        #!/usr/bin/python3
+        import sys, os
+        n = sys.argv
+        n[0] = "/usr/bin/docker"
+        if "run" in n:
+            n.insert(n.index("run") + 1, "-v=/etc/hosts:/etc/hosts:ro")
+        os.execv(n[0], n)
+        EOF
+        sudo chmod +x /usr/local/bin/docker
 
-    # Log out and back in for the docker group change to take effect
-    ```
+        # Log out and back in for the docker group change to take effect
+        ```
 
-    After logging back in, verify HTCondor can see your machine:
-    ```bash
-    condor_status
-    ```
+        After logging back in, verify HTCondor can see your machine:
+        ```bash
+        condor_status
+        ```
 
     #### Setting up Toil WES
 
@@ -324,49 +324,52 @@ helm upgrade -i zoo-project-dru zoo-project/zoo-project-dru \
 
 ## Optional: Enable OIDC with Keycloak
 
-> This requires the **APISIX** Ingress Controller. If you're using a different Ingress Controller, skip to [Validation](#validation).
+!!! note
+    This requires the **APISIX** Ingress Controller. If you're using a different Ingress Controller, skip to [Validation](#validation).
 
 Skip this section if you don't need IAM protection right now - the engine will work, just without access restrictions.
 
-To protect OAPIP endpoints with Keycloak tokens and policies, follow these steps after enabling OIDC in the configuration script.
+??? note "Enable OIDC with Keycloak"
 
-> First, ensure you've followed the [IAM Deployment Guide](./iam/main-iam.md) and have Keycloak running.
+    To protect OAPIP endpoints with Keycloak tokens and policies, follow these steps after enabling OIDC in the configuration script.
 
-### Create a Keycloak Client
+    First, ensure you've followed the [IAM Deployment Guide](./iam/main-iam.md) and have Keycloak running.
 
-`configure-oapip.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when IAM/OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
+    ### Create a Keycloak Client
 
-```bash
-kubectl apply -f generated-iam.yaml
-kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OAPIP_CLIENT_ID} -n iam-management --timeout=60s
-```
+    `configure-oapip.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when IAM/OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
-### Protect the User's Processing Context
+    ```bash
+    kubectl apply -f generated-iam.yaml
+    kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OAPIP_CLIENT_ID} -n iam-management --timeout=60s
+    ```
 
-The ZOO-Project uses a path prefix to establish user context (e.g., `/<username>/ogc-api/processes/...`). You can protect this so only the owning user can access it.
+    ### Protect the User's Processing Context
 
-This example protects the context for `eoepcauser` (see [Create Test Users](./iam/main-iam.md#6-create-test-users)):
-```bash
-source ~/.eoepca/state
-export OAPIP_USER="${KEYCLOAK_TEST_USER}"
-envsubst < protect-oapip-user.yaml | kubectl apply -f -
-```
+    The ZOO-Project uses a path prefix to establish user context (e.g., `/<username>/ogc-api/processes/...`). You can protect this so only the owning user can access it.
 
-This creates: `eoepcauser-group`, `eoepcauser-membership`, `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
+    This example protects the context for `eoepcauser` (see [Create Test Users](./iam/main-iam.md#6-create-test-users)):
+    ```bash
+    source ~/.eoepca/state
+    export OAPIP_USER="${KEYCLOAK_TEST_USER}"
+    envsubst < protect-oapip-user.yaml | kubectl apply -f -
+    ```
 
-### Create APISIX Route Ingress
-```bash
-kubectl apply -f generated-ingress.yaml
-```
+    This creates: `eoepcauser-group`, `eoepcauser-membership`, `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
 
-### Confirm Protection
+    ### Create APISIX Route Ingress
+    ```bash
+    kubectl apply -f generated-ingress.yaml
+    ```
 
-> Wait for the ingress and TLS to be established first.
-```bash
-bash resource-protection-validation.sh
-```
+    ### Confirm Protection
 
-If you see `401 Authorization` errors when using a valid token, check your token and resource protection configuration.
+    > Wait for the ingress and TLS to be established first.
+    ```bash
+    bash resource-protection-validation.sh
+    ```
+
+    If you see `401 Authorization` errors when using a valid token, check your token and resource protection configuration.
 
 For more detailed testing, see [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
 
