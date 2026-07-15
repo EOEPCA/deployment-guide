@@ -7,6 +7,7 @@
 [project]
 
 site_name = "EOEPCA Deployment Guide"
+site_description = "Step-by-step deployment guide for the EOEPCA+ platform and its Building Blocks."
 site_url = "https://eoepca.readthedocs.io/projects/deploy/en/latest/"
 repo_url = "https://github.com/EOEPCA/deployment-guide"
 repo_name = "EOEPCA/deployment-guide"
@@ -93,6 +94,20 @@ logo = "img/favicon.ico"
 favicon = "img/favicon.ico"
 language = "en"
 
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle = { icon = "material/weather-sunny", name = "Switch to dark mode" }
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle = { icon = "material/weather-night", name = "Switch to light mode" }
+
 features = [
     "navigation.footer",
     "navigation.instant",
@@ -103,6 +118,10 @@ features = [
     "navigation.top",
     "content.code.copy",
     "content.action.edit",
+    "content.tooltips",
+    "search.suggest",
+    "search.highlight",
+    "search.share",
 ]
 
 # ----------------------------------------------------------------------------

@@ -1,3 +1,12 @@
+/* EOEPCA brand colors, sampled from docs/img/favicon.ico */
+:root > * {
+  --md-primary-fg-color:        #E92C30;
+  --md-primary-fg-color--light: #F17678;
+  --md-primary-fg-color--dark:  #A31F22;
+  --md-accent-fg-color:         #2BA9ED;
+  --md-accent-fg-color--transparent: #2BA9ED1A;
+}
+
 .green-text {
   color: green;
 }

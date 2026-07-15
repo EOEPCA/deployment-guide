@@ -1,15 +1,30 @@
 # EOEPCA+ Deployment Guide
 
+![EOEPCA+](img/hero.jpg){ .centered }
+
 This guide provides steps to deploy the EOEPCA+ platform's components (Building Blocks) in your environment.
 
-> Release 2.0 is the first formal release of EOEPCA+, since the last EOEPCA release 1.4 - representing a full refresh of the EOEPCA+ building blocks that provides many new capabilities, with improved stability - ready for production deployment.
->
-> See the [Changelog](./changelog.md) for a summary of the major changes since EOEPCA Release 1.4.
+!!! tip ""
+    Release 2.0 is the first formal release of EOEPCA+, since the last EOEPCA release 1.4 - representing a full refresh of the EOEPCA+ building blocks that provides many new capabilities, with improved stability - ready for production deployment.
 
-* **EOEPCA+ Prerequisites**<br>
-  Set up the foundational infrastructure required for the EOEPCA+ platform.<br>
-  See [EOEPCA+ Prerequisites](prerequisites/prerequisites-overview.md).
+    See the [Changelog](./changelog.md) for a summary of the major changes since EOEPCA Release 1.4.
 
-* **Building Block Deployment**<br>
-  Deploy EOEPCA+ Building Blocks.<br>
-  Begin with the [Building Blocks Overview](building-blocks/overview.md).
+<div class="grid cards" markdown>
+
+-   :material-server-network:{ .lg .middle } **EOEPCA+ Prerequisites**
+
+    ---
+
+    Set up the foundational infrastructure required for the EOEPCA+ platform.
+
+    [:octicons-arrow-right-24: Prerequisites](prerequisites/prerequisites-overview.md)
+
+-   :material-cube-outline:{ .lg .middle } **Building Block Deployment**
+
+    ---
+
+    Deploy EOEPCA+ Building Blocks.
+
+    [:octicons-arrow-right-24: Building Blocks Overview](building-blocks/overview.md)
+
+</div>

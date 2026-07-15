@@ -17,86 +17,117 @@ The approach comprises the following broad steps:
 3.	**Validation**: Validation scripts are available to verify that the Building Block has been deployed correctly and is functioning as expected.
 4.	**State Management**: Configuration details and generated secrets are saved to a state file (`~/.eoepca/state`) for reuse across different Building Blocks.
 
-> When you run your first script, you will be prompted whether you want to use Cert-Manager for TLS certificate management. If you choose not to use Cert-Manager, you will need to create the TLS secrets manually before deploying each Building Block. 
+!!! note
+    When you run your first script, you will be prompted whether you want to use Cert-Manager for TLS certificate management. If you choose not to use Cert-Manager, you will need to create the TLS secrets manually before deploying each Building Block.
 
 ## Building Blocks Overview
 
 Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
-### 1. Identity & Access Management (IAM)
+<div class="grid cards" markdown>
 
-The Identity and Access Management (IAM) Building Block provides authentication and authorisation services within the EOEPCA+ ecosystem. It ensures users can access resources and services safely across the platform by managing identities, roles and permissions.
+-   :material-shield-account:{ .lg .middle } **1. Identity & Access Management (IAM)**
 
-[Deploy IAM »](iam/main-iam.md)
+    ---
 
-### 2. Resource Discovery
+    Authentication and authorisation services within the EOEPCA+ ecosystem. Manages identities, roles and permissions so users can safely access resources across the platform.
 
-The Resource Discovery BB provides search and discovery of all types of resources available within the EOEPCA+ ecosystem - including datasets, processing workflows, ML models, applications, services, and more. It provides metadata management and search capabilities.
+    [:octicons-arrow-right-24: Deploy IAM](iam/main-iam.md)
 
-[Deploy Resource Discovery »](resource-discovery.md)
+-   :material-magnify:{ .lg .middle } **2. Resource Discovery**
 
-### 3. Resource Registration
+    ---
 
-Resource Registration BB allows for the addition of new resources to the EOEPCA+ ecosystem. This includes harvesting data from other (external) data sources - and associated population of Catalogue and Data Access services.
+    Search and discovery of all types of resources - datasets, processing workflows, ML models, applications, services, and more - with metadata management and search capabilities.
 
-[Deploy Resource Registration »](resource-registration.md)
+    [:octicons-arrow-right-24: Deploy Resource Discovery](resource-discovery.md)
 
-### 4. Data Access
+-   :material-database-plus:{ .lg .middle } **3. Resource Registration**
 
-The Data Access BB provides efficient access to Earth Observation data. It provides data visualisation and retrieval services, enabling users and applications to interact with large datasets.
+    ---
 
-[Deploy Data Access »](data-access.md)
+    Adds new resources to the EOEPCA+ ecosystem, including harvesting data from external sources and populating Catalogue and Data Access services.
 
-### 5. Datacube Access
+    [:octicons-arrow-right-24: Deploy Resource Registration](resource-registration.md)
 
-The Datacube Access BB allows users to access and explore multi-dimensional Earth Observation (EO) data using standard APIs.
+-   :material-database:{ .lg .middle } **4. Data Access**
 
-[Deploy Datacube Access »](datacube-access.md)
+    ---
 
-### 6. Data Gateway
+    Efficient access to Earth Observation data, with visualisation and retrieval services enabling users and applications to interact with large datasets.
 
-The Data Gateway Building Block provides a consolidated and consistent capability for accessing Earth Observation data from an extensible set of providers and datasets.
+    [:octicons-arrow-right-24: Deploy Data Access](data-access.md)
 
-[Explore Data Gateway »](data-gateway.md)
+-   :material-cube-scan:{ .lg .middle } **5. Datacube Access**
 
-### 7. Federated Data Proxy (Coming Soon)
+    ---
 
-The Federated Data Proxy provides a unified access layer for serving Earth Observation data from multiple internal and external providers, transparently to end-users. It is under active development and not yet available for deployment via this guide.
+    Access to and exploration of multi-dimensional Earth Observation (EO) data using standard APIs.
 
-[Learn more »](federated-data-proxy.md)
+    [:octicons-arrow-right-24: Deploy Datacube Access](datacube-access.md)
 
-### 8. Processing
+-   :material-transit-connection-variant:{ .lg .middle } **6. Data Gateway**
 
-The Processing BB provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO.
+    ---
 
-[Deploy Processing »](processing.md)
+    A consolidated and consistent capability for accessing Earth Observation data from an extensible set of providers and datasets.
 
-### 9. MLOps (Machine Learning Operations)
+    [:octicons-arrow-right-24: Explore Data Gateway](data-gateway.md)
 
-The MLOps BB faciliates the machine learning model development lifecycle - including model training, model version management and management of training data - and supports discovery of published models and training datasets.
+-   :material-progress-clock:{ .lg .middle } **7. Federated Data Proxy** _(Coming Soon)_
 
-[Deploy MLOps »](mlops.md)
+    ---
 
-### 10. Workspace
+    A unified access layer for serving Earth Observation data from multiple internal and external providers, transparently to end-users. Under active development.
 
-The Workspace BB provides collorative work environments for users and teams (projects). It offers workspace-scoped storage allowing projects to manage their own resources within the platform - with associated workspace services that support project work within the platform - such as catalogue, data access and processing.
+    [:octicons-arrow-right-24: Learn more](federated-data-proxy.md)
 
-[Deploy Workspace »](workspace.md)
+-   :material-cog-outline:{ .lg .middle } **8. Processing**
 
-### 11. Application Hub
+    ---
 
-The Application Hub serves as a platform where users can discover, access, and launch Earth Observation (EO) applications. This includes a JupyterLab environment for interactive analysis with notebooks. It provides a user-friendly interface for managing application lifecycles and facilitates collaboration among users.
+    Deployment and execution of user-defined processing workflows, with support for OGC API Processes, OGC Application Packages and openEO.
 
-[Deploy Application Hub »](application-hub.md)
+    [:octicons-arrow-right-24: Deploy Processing](processing.md)
 
-### 12. Resource Health
+-   :material-brain:{ .lg .middle } **9. MLOps** _(Machine Learning Operations)_
 
-The Resource Health BB provides a flexible framework that allows platform users and operators to monitor the health and status of resources offered through the platform. This includes core platform services, as well as resources (datasets, workflows, etc.) offered through those platform services.
+    ---
 
-[Deploy Resource Health »](resource-health.md)
+    Facilitates the ML model development lifecycle - model training, version management and training data management - and supports discovery of published models and datasets.
 
-### 13. Application Quality
+    [:octicons-arrow-right-24: Deploy MLOps](mlops.md)
 
-The Application Quality BB assesses and ensures the quality and compliance of EO applications before they are made available to users. It performs validation checks and enforces best practice for open reproducible science.
+-   :material-account-group:{ .lg .middle } **10. Workspace**
 
-[Deploy Application Quality »](application-quality.md)
+    ---
+
+    Collaborative work environments for users and teams, offering workspace-scoped storage and services that support catalogue, data access and processing.
+
+    [:octicons-arrow-right-24: Deploy Workspace](workspace.md)
+
+-   :material-apps:{ .lg .middle } **11. Application Hub**
+
+    ---
+
+    Discover, access, and launch EO applications, including a JupyterLab environment for interactive analysis and collaboration among users.
+
+    [:octicons-arrow-right-24: Deploy Application Hub](application-hub.md)
+
+-   :material-heart-pulse:{ .lg .middle } **12. Resource Health**
+
+    ---
+
+    A flexible framework for platform users and operators to monitor the health and status of core services and platform resources.
+
+    [:octicons-arrow-right-24: Deploy Resource Health](resource-health.md)
+
+-   :material-check-decagram:{ .lg .middle } **13. Application Quality**
+
+    ---
+
+    Assesses and ensures the quality and compliance of EO applications, performing validation checks and enforcing best practice for open reproducible science.
+
+    [:octicons-arrow-right-24: Deploy Application Quality](application-quality.md)
+
+</div>
