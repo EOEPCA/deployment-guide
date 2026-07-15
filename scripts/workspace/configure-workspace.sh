@@ -68,6 +68,13 @@ gomplate -f "workspace-pipeline/values-template.yaml" -o "workspace-pipeline/gen
 gomplate -f "workspace-dependencies/workspace-ingress-policy-template.yaml" -o "workspace-dependencies/generated-workspace-ingress-policy.yaml"
 gomplate -f "workspace-api/iam-template.yaml" -o "workspace-api/generated-iam.yaml"
 
+# Not gomplate: this policy's Kyverno rules use their own {{ request.object... }}
+# JMESPath templating, which must survive literally into the applied YAML -
+# gomplate would try to parse it as its own Go-template expressions and fail.
+# envsubst only touches ${VAR}/$VAR shell references, leaving Kyverno's {{ }}
+# untouched.
+envsubst < "workspace-dependencies/workspace-session-iam-policy-template.yaml" > "workspace-dependencies/generated-workspace-session-iam-policy.yaml"
+
 echo ""
 echo "✅ Configuration complete!"
 echo "Please proceed to apply the necessary Kubernetes secrets before deploying."

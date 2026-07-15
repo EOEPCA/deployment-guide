@@ -1,12 +1,3 @@
-#!/bin/bash
-# Plain shell script, not a gomplate template: Kyverno's own {{ }} JMESPath
-# expressions below would collide with gomplate's {{ }} delimiters. Only the
-# ${VAR} shell variables are substituted here.
-
-source ../common/utils.sh
-source "$HOME/.eoepca/state"
-
-cat <<EOF | kubectl apply -f -
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -90,4 +81,21 @@ spec:
             annotations:
               +(k8s.apisix.apache.org/plugin-config-name): "workspace-session-oidc-{{ request.object.metadata.labels.\"training.educates.dev/environment.name\" }}"
               +(k8s.apisix.apache.org/enable-websocket): "true"
-EOF
+    # Kyverno stamps its own generate.kyverno.io/policy-namespace tracking label
+    # onto every resource this ClusterPolicy generates - empty, since a
+    # ClusterPolicy has no namespace. APISIX's ingress controller rejects any
+    # label with an empty string value when syncing an ApisixPluginConfig
+    # (400: "string too short, expected at least 1, got 0"), which silently
+    # breaks every Datalab session's OIDC protection. Fix it at admission time,
+    # before the object is ever synced to APISIX.
+    - name: fix-empty-generate-tracking-label-on-plugin-config
+      match:
+        any:
+          - resources:
+              kinds:
+                - ApisixPluginConfig
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              generate.kyverno.io/policy-namespace: kyverno

@@ -33,7 +33,7 @@ def get_access_token(username, password, client_id, client_secret=None):
         "password": password,
         "grant_type": "password",
         "client_id": client_id,
-        "scope": "openid profile email offline_access",
+        "scope": "openid profile email",
     }
     if client_secret:
         payload["client_secret"] = client_secret

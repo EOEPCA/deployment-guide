@@ -289,7 +289,7 @@ Grant Kyverno permission to manage `ApisixPluginConfig` resources, then apply th
 
 ```bash
 kubectl apply -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml
-bash workspace-dependencies/apply-session-iam-policy.sh
+kubectl apply -f workspace-dependencies/generated-workspace-session-iam-policy.yaml
 ```
 
 > Reuses the `workspace-api` client's `workspace-api-keycloak-client` secret from [9.1](#91-create-keycloak-client) - any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.

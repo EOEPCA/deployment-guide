@@ -48,6 +48,7 @@ cloudEventsPlayer:
       {{- range $key, $value := (datasource "annotations") }}
       {{ $key }}: "{{ $value }}"
       {{- end }}
+      k8s.apisix.apache.org/enable-websocket: "true"
     hosts:
       - host: cloudevents-player.notifications.{{ getenv "INGRESS_HOST" }}
         paths:
