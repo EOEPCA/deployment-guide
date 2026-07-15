@@ -5,9 +5,9 @@
 This guide provides steps to deploy the EOEPCA+ platform's components (Building Blocks) in your environment.
 
 !!! tip ""
-    Release 2.0 is the first formal release of EOEPCA+, since the last EOEPCA release 1.4 - representing a full refresh of the EOEPCA+ building blocks that provides many new capabilities, with improved stability - ready for production deployment.
+    Release 2.1 is the second formal release of EOEPCA+, since the last EOEPCA release 2.0 - representing a full refresh of the EOEPCA+ building blocks that provides many new capabilities, with improved stability - ready for production deployment.
 
-    See the [Changelog](./changelog.md) for a summary of the major changes since EOEPCA Release 1.4.
+    See the [Changelog](./changelog.md) for a summary of the major changes since EOEPCA Release 2.0.
 
 <div class="grid cards" markdown>
 

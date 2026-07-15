@@ -29,178 +29,179 @@ Both backends use the same OGC API Processes interface - the difference is where
 | Stage-In S3      | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
 | Stage-Out S3     | Accessible                             | [MinIO Deployment Guide](../prerequisites/minio.md)                                          |
 
-### Calrissian-Specific Requirements
+### Backend-Specific Requirements
 
-No additional requirements beyond the common prerequisites. Calrissian runs CWL workflows as Kubernetes jobs, so everything stays within your cluster.
+=== "Calrissian"
 
-### Toil/HPC-Specific Requirements
+    No additional requirements beyond the common prerequisites. Calrissian runs CWL workflows as Kubernetes jobs, so everything stays within your cluster.
 
-You'll need an HPC cluster with:
+=== "Toil / HPC"
 
-- Container support ([Docker](https://www.docker.com/) or [Apptainer/Singularity](https://apptainer.org/))
-- Internet access from compute nodes (or local container registries and data repositories)
-- A [Toil WES service](https://toil.readthedocs.io/en/master/running/server/wes.html) endpoint
+    You'll need an HPC cluster with:
 
-Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/htcondor/), [Slurm](https://www.schedmd.com/), [PBS/Torque/PBS Pro](#TODO) [LSF](https://en.wikipedia.org/wiki/Platform_LSF), and [Grid Engine](http://www.univa.com/oracle).
+    - Container support ([Docker](https://www.docker.com/) or [Apptainer/Singularity](https://apptainer.org/))
+    - Internet access from compute nodes (or local container registries and data repositories)
+    - A [Toil WES service](https://toil.readthedocs.io/en/master/running/server/wes.html) endpoint
 
-#### Setting up a Local HTCondor (Development/Testing Only)
+    Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/htcondor/), [Slurm](https://www.schedmd.com/), [PBS/Torque/PBS Pro](#TODO) [LSF](https://en.wikipedia.org/wiki/Platform_LSF), and [Grid Engine](http://www.univa.com/oracle).
 
-> This is only for Toil, if you are using Calrissian, skip this section.
+    #### Setting up a Local HTCondor (Development/Testing Only)
 
-> **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead. 
+    > **Warning:** This setup is for development and testing purposes only. Do not use this in production - use your organisation's HPC infrastructure instead.
 
-If you don't have access to an HPC cluster and want to test the Toil integration locally, you can install [MiniHTCondor](https://htcondor.org/), a single-node HTCondor package designed for testing.
+    If you don't have access to an HPC cluster and want to test the Toil integration locally, you can install [MiniHTCondor](https://htcondor.org/), a single-node HTCondor package designed for testing.
 
-**Install HTCondor using the official script:**
-```bash
-# Download and run the HTCondor installer (installs minicondor by default)
-curl -fsSL https://get.htcondor.org | sudo /bin/bash -s -- --no-dry-run
+    **Install HTCondor using the official script:**
+    ```bash
+    # Download and run the HTCondor installer (installs minicondor by default)
+    curl -fsSL https://get.htcondor.org | sudo /bin/bash -s -- --no-dry-run
 
-# Verify HTCondor is running
-condor_status
-```
+    # Verify HTCondor is running
+    condor_status
+    ```
 
-You should see output showing your local machine as a condor slot. If `condor_status` returns an error, check that the condor service is running:
-```bash
-sudo systemctl status condor
-```
+    You should see output showing your local machine as a condor slot. If `condor_status` returns an error, check that the condor service is running:
+    ```bash
+    sudo systemctl status condor
+    ```
 
-**Configure Docker for HTCondor jobs:**
+    **Configure Docker for HTCondor jobs:**
 
-HTCondor needs to run containers for CWL workflows. Add your user to the docker group and create a wrapper to mount `/etc/hosts` for DNS resolution:
+    HTCondor needs to run containers for CWL workflows. Add your user to the docker group and create a wrapper to mount `/etc/hosts` for DNS resolution:
 
-```bash
-# Add your user to the docker group
-sudo usermod -a -G docker $USER
+    ```bash
+    # Add your user to the docker group
+    sudo usermod -a -G docker $USER
 
-# Create a docker wrapper for DNS resolution in containers
-sudo tee /usr/local/bin/docker > /dev/null << 'EOF'
-#!/usr/bin/python3
-import sys, os
-n = sys.argv
-n[0] = "/usr/bin/docker"
-if "run" in n:
-    n.insert(n.index("run") + 1, "-v=/etc/hosts:/etc/hosts:ro")
-os.execv(n[0], n)
-EOF
-sudo chmod +x /usr/local/bin/docker
+    # Create a docker wrapper for DNS resolution in containers
+    sudo tee /usr/local/bin/docker > /dev/null << 'EOF'
+    #!/usr/bin/python3
+    import sys, os
+    n = sys.argv
+    n[0] = "/usr/bin/docker"
+    if "run" in n:
+        n.insert(n.index("run") + 1, "-v=/etc/hosts:/etc/hosts:ro")
+    os.execv(n[0], n)
+    EOF
+    sudo chmod +x /usr/local/bin/docker
 
-# Log out and back in for the docker group change to take effect
-```
+    # Log out and back in for the docker group change to take effect
+    ```
 
-After logging back in, verify HTCondor can see your machine:
-```bash
-condor_status
-```
+    After logging back in, verify HTCondor can see your machine:
+    ```bash
+    condor_status
+    ```
 
-#### Setting up Toil WES
+    #### Setting up Toil WES
 
-> **Already have a Toil WES service?** Skip to [Clone the Deployment Guide Repository](#clone-the-deployment-guide-repository).
+    > **Already have a Toil WES service?** Skip to [Clone the Deployment Guide Repository](#clone-the-deployment-guide-repository).
 
-If you need to set up Toil WES on your HPC cluster (or local MiniCondor), follow these steps. The examples use HTCondor, but the process is similar for other schedulers.
+    If you need to set up Toil WES on your HPC cluster (or local MiniCondor), follow these steps. The examples use HTCondor, but the process is similar for other schedulers.
 
-**Install Toil**
+    **Install Toil**
 
-Install Toil in a Python virtual environment on storage accessible to all compute nodes:
-```bash
-# Create directories for Toil venv and job storage
-mkdir -p ~/toil ~/toil/storage
-python3 -m venv --prompt toil ~/toil/venv
+    Install Toil in a Python virtual environment on storage accessible to all compute nodes:
+    ```bash
+    # Create directories for Toil venv and job storage
+    mkdir -p ~/toil ~/toil/storage
+    python3 -m venv --prompt toil ~/toil/venv
 
-# Activate and install Toil with required extras
-source ~/toil/venv/bin/activate
-python3 -m pip install toil[cwl,htcondor,server,aws] htcondor
-```
+    # Activate and install Toil with required extras
+    source ~/toil/venv/bin/activate
+    python3 -m pip install toil[cwl,htcondor,server,aws] htcondor
+    ```
 
-> **Note:** Replace `htcondor` with your batch system if different (e.g., `toil[cwl,slurm,server,aws]` for Slurm).
+    > **Note:** Replace `htcondor` with your batch system if different (e.g., `toil[cwl,slurm,server,aws]` for Slurm).
 
-**Test the Installation**
+    **Test the Installation**
 
-Run a sample CWL workflow to verify everything works:
-```bash
-source ~/toil/venv/bin/activate
+    Run a sample CWL workflow to verify everything works:
+    ```bash
+    source ~/toil/venv/bin/activate
 
-# Download a test application
-wget https://github.com/EOEPCA/deployment-guide/raw/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl
+    # Download a test application
+    wget https://github.com/EOEPCA/deployment-guide/raw/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl
 
-# Create test directories and parameters
-jobid=$(uuidgen)
-mkdir -p ~/toil/storage/test/{work_dir,job_store}
-cat <<EOF > ~/toil/storage/test/work_dir/$jobid.params.yaml
-fn: resize
-url: https://eoepca.org/media_portal/images/logo6_med.original.png
-size: 50%
-EOF
+    # Create test directories and parameters
+    jobid=$(uuidgen)
+    mkdir -p ~/toil/storage/test/{work_dir,job_store}
+    cat <<EOF > ~/toil/storage/test/work_dir/$jobid.params.yaml
+    fn: resize
+    url: https://eoepca.org/media_portal/images/logo6_med.original.png
+    size: 50%
+    EOF
 
-# Run the test (adjust --batchSystem for your scheduler)
-toil-cwl-runner \
-    --batchSystem htcondor \
-    --workDir ~/toil/storage/test/work_dir \
-    --jobStore ~/toil/storage/test/job_store/$jobid \
-    convert-url-app.cwl#convert-url \
-    ~/toil/storage/test/work_dir/$jobid.params.yaml
-```
+    # Run the test (adjust --batchSystem for your scheduler)
+    toil-cwl-runner \
+        --batchSystem htcondor \
+        --workDir ~/toil/storage/test/work_dir \
+        --jobStore ~/toil/storage/test/job_store/$jobid \
+        convert-url-app.cwl#convert-url \
+        ~/toil/storage/test/work_dir/$jobid.params.yaml
+    ```
 
-If successful, you'll see JSON output representing a STAC Item. Clean up:
-```bash
-rm -rf ~/toil/storage/test convert-url-app.cwl
-```
+    If successful, you'll see JSON output representing a STAC Item. Clean up:
+    ```bash
+    rm -rf ~/toil/storage/test convert-url-app.cwl
+    ```
 
-**Start the Toil WES Service**
+    **Start the Toil WES Service**
 
-The WES service needs RabbitMQ for job queuing and Celery for queue management.
+    The WES service needs RabbitMQ for job queuing and Celery for queue management.
 
-Start RabbitMQ:
+    Start RabbitMQ:
 
-```bash
-docker run -d --restart=always --name toil-wes-rabbitmq -p 127.0.0.1:5672:5672 rabbitmq:alpine
-```
+    ```bash
+    docker run -d --restart=always --name toil-wes-rabbitmq -p 127.0.0.1:5672:5672 rabbitmq:alpine
+    ```
 
-Start Celery:
+    Start Celery:
 
-```bash
-source ~/toil/venv/bin/activate
-celery --broker=amqp://guest:guest@127.0.0.1:5672// -A toil.server.celery_app multi start w1 \
-   --loglevel=INFO --pidfile=$HOME/celery.pid --logfile=$HOME/celery.log
-```
+    ```bash
+    source ~/toil/venv/bin/activate
+    celery --broker=amqp://guest:guest@127.0.0.1:5672// -A toil.server.celery_app multi start w1 \
+       --loglevel=INFO --pidfile=$HOME/celery.pid --logfile=$HOME/celery.log
+    ```
 
-Start the Toil WES server:
+    Start the Toil WES server:
 
-```bash
-source ~/toil/venv/bin/activate
-mkdir -p $HOME/toil/storage/workdir $HOME/toil/storage/workflows
+    ```bash
+    source ~/toil/venv/bin/activate
+    mkdir -p $HOME/toil/storage/workdir $HOME/toil/storage/workflows
 
-TOIL_WES_BROKER_URL=amqp://guest:guest@127.0.0.1:5672// nohup toil server \
-    --host 0.0.0.0 \
-    --work_dir $HOME/toil/storage/workflows \
-    --opt=--batchSystem=htcondor \
-    --opt=--workDir=$HOME/toil/storage/workdir \
-    --logFile $HOME/toil.log \
-    --logLevel INFO \
-    -w 1 &>$HOME/toil_run.log </dev/null &
+    TOIL_WES_BROKER_URL=amqp://guest:guest@127.0.0.1:5672// nohup toil server \
+        --host 0.0.0.0 \
+        --work_dir $HOME/toil/storage/workflows \
+        --opt=--batchSystem=htcondor \
+        --opt=--workDir=$HOME/toil/storage/workdir \
+        --logFile $HOME/toil.log \
+        --logLevel INFO \
+        -w 1 &>$HOME/toil_run.log </dev/null &
 
-echo "$!" > $HOME/toil.pid
-sleep 5
-```
+    echo "$!" > $HOME/toil.pid
+    sleep 5
+    ```
 
-> **Note:** Adjust `--batchSystem=htcondor` to match your scheduler.
+    > **Note:** Adjust `--batchSystem=htcondor` to match your scheduler.
 
-**Verify the WES Service**
+    **Verify the WES Service**
 
-```bash
-curl -s http://localhost:8080/ga4gh/wes/v1/service-info | jq
-```
+    ```bash
+    curl -s http://localhost:8080/ga4gh/wes/v1/service-info | jq
+    ```
 
-You should see JSON service information. Your WES endpoint URL will be:
-```
-http://<your-hpc-host>:8080/ga4gh/wes/v1/
-```
+    You should see JSON service information. Your WES endpoint URL will be:
+    ```
+    http://<your-hpc-host>:8080/ga4gh/wes/v1/
+    ```
 
 ---
 
-> For both Calrissian and Toil
-
 ## Clone the Deployment Guide Repository
+
+The following steps apply whichever execution engine (Calrissian or Toil) you are using.
+
 ```bash
 git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/processing/oapip
@@ -266,42 +267,44 @@ If using APISIX, you can enable OIDC authentication during configuration. When p
 
 See the [IAM Building Block](./iam/main-iam.md) guide for IAM setup, and [Enable OIDC with Keycloak](#optional-enable-oidc-with-keycloak) below for post-deployment configuration.
 
-### Calrissian Configuration
+### Execution Engine Configuration
 
-When prompted for execution engine, select `calrissian`. You'll need to configure:
+=== "Calrissian"
 
-- **`NODE_SELECTOR_KEY`**: Determines which nodes run processing workflows
-    - *Example*: `kubernetes.io/os`
-    - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
-- **`NODE_SELECTOR_VALUE`**: Value for the node selector
-    - *Example*: `linux`
+    When prompted for execution engine, select `calrissian`. You'll need to configure:
 
-### Toil Configuration
+    - **`NODE_SELECTOR_KEY`**: Determines which nodes run processing workflows
+        - *Example*: `kubernetes.io/os`
+        - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+    - **`NODE_SELECTOR_VALUE`**: Value for the node selector
+        - *Example*: `linux`
 
-When prompted for execution engine, select `toil`. You'll need to configure:
+=== "Toil"
 
-- **`OAPIP_TOIL_WES_URL`**: Your Toil WES endpoint, must end with `/ga4gh/wes/v1/`
-    - *Example*: `http://192.168.1.100:8080/ga4gh/wes/v1/`
-    - *Read more*: [Zoo WES Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
-- **`OAPIP_TOIL_WES_USER`**: WES service username
-    - *Example*: `test`
-- **`OAPIP_TOIL_WES_PASSWORD`**: WES service password (htpasswd format)
-    - *Example*: `$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG`
+    When prompted for execution engine, select `toil`. You'll need to configure:
 
-> **Note:** If you set up Toil WES without authentication (as in the setup guide above), use placeholder credentials - they'll be ignored.
+    - **`OAPIP_TOIL_WES_URL`**: Your Toil WES endpoint, must end with `/ga4gh/wes/v1/`
+        - *Example*: `http://192.168.1.100:8080/ga4gh/wes/v1/`
+        - *Read more*: [Zoo WES Runner documentation](https://zoo-project.github.io/zoo-wes-runner/)
+    - **`OAPIP_TOIL_WES_USER`**: WES service username
+        - *Example*: `test`
+    - **`OAPIP_TOIL_WES_PASSWORD`**: WES service password (htpasswd format)
+        - *Example*: `$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG`
 
-> **Important: Network Reachability**
-> 
-> The WES URL must be reachable from within the Kubernetes cluster.
-> 
-> - If Toil runs on the same machine as Kubernetes, use the host's IP address (e.g., `http://192.168.1.100:8080/ga4gh/wes/v1/`)
-> - If Toil runs on a separate HPC system, ensure network routing and firewall rules allow traffic from the Kubernetes pod network to the WES endpoint
-> 
-> You can verify connectivity from within the cluster:
-> ```bash
-> kubectl run -it --rm debug --image=alpine --restart=Never -- \
->   wget -qO- http://<your-wes-host>:8080/ga4gh/wes/v1/service-info
-> ```
+    > **Note:** If you set up Toil WES without authentication (as in the setup guide above), use placeholder credentials - they'll be ignored.
+
+    > **Important: Network Reachability**
+    >
+    > The WES URL must be reachable from within the Kubernetes cluster.
+    >
+    > - If Toil runs on the same machine as Kubernetes, use the host's IP address (e.g., `http://192.168.1.100:8080/ga4gh/wes/v1/`)
+    > - If Toil runs on a separate HPC system, ensure network routing and firewall rules allow traffic from the Kubernetes pod network to the WES endpoint
+    >
+    > You can verify connectivity from within the cluster:
+    > ```bash
+    > kubectl run -it --rm debug --image=alpine --restart=Never -- \
+    >   wget -qO- http://<your-wes-host>:8080/ga4gh/wes/v1/service-info
+    > ```
 
 ### Deploy the Helm Chart
 ```bash
@@ -513,15 +516,17 @@ tail -n 20 ~/celery.log
 
 **HPC queue status:**
 
-For HTCondor:
-```bash
-condor_q -all
-```
+=== "HTCondor"
 
-For Slurm:
-```bash
-squeue -u $USER
-```
+    ```bash
+    condor_q -all
+    ```
+
+=== "Slurm"
+
+    ```bash
+    squeue -u $USER
+    ```
 
 ---
 
@@ -565,17 +570,17 @@ docker rm toil-wes-rabbitmq
 - [OGC API Processes Standards](https://www.ogc.org/standards/ogcapi-processes)
 - [Common Workflow Language (CWL)](https://www.commonwl.org/)
 
-**Calrissian:**
+=== "Calrissian"
 
-- [Calrissian Documentation](https://github.com/Duke-GCB/calrissian)
-- [EOEPCA+ Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
+    - [Calrissian Documentation](https://github.com/Duke-GCB/calrissian)
+    - [EOEPCA+ Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
 
-**Toil:**
+=== "Toil"
 
-- [Toil Documentation](https://toil.ucsc-cgl.org/)
-- [Toil WES Server Documentation](https://toil.readthedocs.io/en/master/running/server/wes.html)
-- [Zoo WES Runner Documentation](https://zoo-project.github.io/zoo-wes-runner/)
-- [EOEPCA+ Cookiecutter Template (WES)](https://github.com/EOEPCA/eoepca-proc-service-template-wes)
+    - [Toil Documentation](https://toil.ucsc-cgl.org/)
+    - [Toil WES Server Documentation](https://toil.readthedocs.io/en/master/running/server/wes.html)
+    - [Zoo WES Runner Documentation](https://zoo-project.github.io/zoo-wes-runner/)
+    - [EOEPCA+ Cookiecutter Template (WES)](https://github.com/EOEPCA/eoepca-proc-service-template-wes)
 
 ---
 
