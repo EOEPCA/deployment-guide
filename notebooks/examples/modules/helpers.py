@@ -120,6 +120,63 @@ def oidc_session_login(base_url, login_path, username, password):
     return session
 
 
+def gitlab_oidc_session_login(gitlab_url, username, password):
+    # Scripted OIDC login into GitLab (GitLab -> Keycloak -> GitLab), following the
+    # same 'Sign in with EOEPCA' redirect chain a browser would. Returns an
+    # authenticated requests.Session usable directly against GitLab's REST/GraphQL
+    # API via session-cookie auth - no personal access token needed.
+    session = requests.Session()
+    response = session.get(f"{gitlab_url}/users/sign_in")
+    response.raise_for_status()
+    csrf = re.search(r'name="authenticity_token" value="([^"]*)"', response.text)
+    if not csrf:
+        raise RuntimeError("Could not find GitLab sign-in CSRF token - is GitLab up?")
+
+    response = session.post(
+        f"{gitlab_url}/users/auth/openid_connect",
+        data={"authenticity_token": csrf.group(1)},
+        allow_redirects=False,
+    )
+    keycloak_auth_url = response.headers.get("Location")
+    if not keycloak_auth_url:
+        raise RuntimeError(
+            "GitLab did not redirect to Keycloak - is OIDC enabled (MLOPS_OIDC_ENABLED=true)?"
+        )
+
+    response = session.get(keycloak_auth_url)
+    form_action = re.search(
+        r'action="([^"]*login-actions/authenticate[^"]*)"', response.text
+    )
+    if not form_action:
+        raise RuntimeError("Could not find Keycloak login form")
+    login_action = unquote(form_action.group(1)).replace("&amp;", "&")
+
+    response = session.post(
+        login_action,
+        data={"username": username, "password": password, "credentialId": ""},
+        allow_redirects=False,
+    )
+    callback_url = response.headers.get("Location")
+    if not callback_url:
+        raise RuntimeError("Keycloak login failed - check username/password")
+
+    session.get(callback_url)
+    if "_gitlab_session" not in session.cookies:
+        raise RuntimeError("GitLab session cookie not set after OIDC login")
+    return session
+
+
+def gitlab_csrf_token(session, gitlab_url):
+    # GitLab's API accepts the same session cookie as the web UI for authentication,
+    # but state-changing requests still need a matching CSRF token from a page render.
+    response = session.get(f"{gitlab_url}/-/user_settings/personal_access_tokens")
+    response.raise_for_status()
+    csrf = re.search(r'name="csrf-token" content="([^"]*)"', response.text)
+    if not csrf:
+        raise RuntimeError("Could not find GitLab API CSRF token")
+    return csrf.group(1)
+
+
 @contextlib.contextmanager
 def test_cell(name):
     try:

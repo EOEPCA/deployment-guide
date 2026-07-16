@@ -441,6 +441,14 @@ This section walks you through a minimal scenario of creating a GitLab project, 
         export MLFLOW_TRACKING_TOKEN="<YOUR-TOKEN>"
         ```
         
+    - MLflow experiment names are shared across all projects, so SharingHub disambiguates same-named
+      experiments by requiring a `(<project id>)` suffix. Find your project's ID at the top of its
+      GitLab **Settings → General** page, then set:
+
+        ```bash
+        export MLFLOW_EXPERIMENT_NAME="example (<PROJECT_ID>)"
+        ```
+
 9. **Run a Simple MLflow Experiment**
     
     > It is assumed that a python virtual environment is established for the following steps.<br>

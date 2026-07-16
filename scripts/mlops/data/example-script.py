@@ -24,7 +24,15 @@ def main():
             "Warning: MLFLOW_TRACKING_TOKEN not set; your MLflow server might require authentication."
         )
 
-    experiment_name = "example (1)"
+    # SharingHub disambiguates experiment names shared across different projects by
+    # requiring a "(<project id>)" suffix - see mlflow_sharinghub's permission model.
+    # Find your project's ID under Settings -> General, or via the GitLab API.
+    experiment_name = os.environ.get("MLFLOW_EXPERIMENT_NAME")
+    if not experiment_name:
+        raise EnvironmentError(
+            "MLFLOW_EXPERIMENT_NAME environment variable is not set, "
+            'e.g. export MLFLOW_EXPERIMENT_NAME="example (<GITLAB_PROJECT_ID>)"'
+        )
     mlflow.set_experiment(experiment_name)
     mlflow.autolog()
 
