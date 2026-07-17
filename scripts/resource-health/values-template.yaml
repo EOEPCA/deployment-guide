@@ -78,12 +78,7 @@ opensearch:
             users:
               - "dashboards-client"
             and_backend_roles: []
-{{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "no" }}
-        # Chart ships no real internal user by default (just a commented-out
-        # example), but the check_api/telemetry_api no-auth hooks hardcode
-        # http_auth=("admin", "admin") to reach OpenSearch. Without this the
-        # security index has no "admin" user and every OpenSearch-backed
-        # request 401s. Only needed for the no-OIDC demo path.
+
         internal_users.yml: |-
           _meta:
             type: "internalusers"
@@ -94,8 +89,7 @@ opensearch:
             reserved: true
             backend_roles:
               - "admin"
-            description: "Guide-managed admin user for the no-OIDC demo path"
-{{- end }}
+            description: "Guide-managed admin user, used internally by check_api/telemetry_api to reach OpenSearch"
         config.yml: |-
           _meta:
             type: "config"
@@ -296,6 +290,15 @@ resource-health:
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
+      # check_backends.k8s_backend.template_utils's own DEFAULT_RUNNER_IMAGE
+      # hardcodes ":2.0.0", which crashloops (ModuleNotFoundError: No module
+      # named 'pkg_resources' - missing setuptools) - every API-created check
+      # would fail regardless of its own content. The chart's own
+      # global.defaultHealthCheckImage already carries the fixed tag, but
+      # that's only wired into statically Helm-defined checks, not the
+      # API-driven path used by every check created at runtime.
+      - name: RH_CHECK_K8S_DEFAULT_RUNNER_IMAGE
+        value: "docker.io/eoepca/healthcheck_runner:2.0.1-6cbbcf4"
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       - name: OPEN_ID_CONNECT_URL
         value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"

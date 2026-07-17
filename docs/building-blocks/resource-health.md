@@ -417,9 +417,14 @@ You should see pytest output showing the test passed.
 **Via Telemetry API:**
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans/" \
+curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
 ```
+
+!!! note
+    Omit the trailing slash: `/v1/spans/` triggers a 307 redirect to a plain
+    `http://` URL (a self-referential-link bug in the telemetry API), which
+    most HTTP clients then refuse to follow over an HTTPS connection.
 
 If no data appears yet, wait a moment for the checks to complete and telemetry to be collected.
 
