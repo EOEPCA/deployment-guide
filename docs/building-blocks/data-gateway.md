@@ -214,7 +214,8 @@ results = dag.search(
 
 ## STAC Server Mode
 
-> **Note**: The `serve-rest` command is deprecated since EODAG v3.9.0 and will be removed in a future version. For production deployments, use [stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag). The built-in server remains functional for development and testing.
+!!! warning
+    The `serve-rest` command is deprecated since EODAG v3.9.0 and will be removed in a future version. For production deployments, use [stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag). The built-in server remains functional for development and testing.
 
 ### Start the STAC Server
 
@@ -265,61 +266,60 @@ See the complete list in the [EODAG Providers Documentation](https://eodag.readt
 
 You can add custom providers either via the YAML configuration file or programmatically.
 
-### Method 1: YAML Configuration
+=== "YAML Configuration"
 
-Add to `~/.config/eodag/eodag.yml`:
+    Add to `~/.config/eodag/eodag.yml`:
 
-```yaml
-my_custom_stac_provider:
-  search:
-    type: StacSearch
-    api_endpoint: https://my-stac-api.example.com/search
-    need_auth: false
-  products:
-    GENERIC_PRODUCT_TYPE:
-      productType: '{productType}'
-  download:
-    type: HTTPDownload
-```
+    ```yaml
+    my_custom_stac_provider:
+      search:
+        type: StacSearch
+        api_endpoint: https://my-stac-api.example.com/search
+        need_auth: false
+      products:
+        GENERIC_PRODUCT_TYPE:
+          productType: '{productType}'
+      download:
+        type: HTTPDownload
+    ```
 
-### Method 2: Python API
+=== "Python API"
 
-```python
-from eodag import EODataAccessGateway
+    ```python
+    from eodag import EODataAccessGateway
 
-dag = EODataAccessGateway()
+    dag = EODataAccessGateway()
 
-# Using add_provider() for simple STAC providers
-dag.add_provider(
-    name="my_stac_provider",
-    url="https://my-stac-api.example.com/search"
-)
+    # Using add_provider() for simple STAC providers
+    dag.add_provider(
+        name="my_stac_provider",
+        url="https://my-stac-api.example.com/search"
+    )
 
-# Or using update_providers_config() for more control
-dag.update_providers_config("""
-my_custom_provider:
-  search:
-    type: StacSearch
-    api_endpoint: https://my-stac-api.example.com/search
-    need_auth: false
-  products:
-    GENERIC_PRODUCT_TYPE:
-      productType: '{productType}'
-  download:
-    type: HTTPDownload
-""")
+    # Or using update_providers_config() for more control
+    dag.update_providers_config("""
+    my_custom_provider:
+      search:
+        type: StacSearch
+        api_endpoint: https://my-stac-api.example.com/search
+        need_auth: false
+      products:
+        GENERIC_PRODUCT_TYPE:
+          productType: '{productType}'
+      download:
+        type: HTTPDownload
+    """)
 
-# Set as preferred provider
-dag.set_preferred_provider("my_custom_provider")
+    # Set as preferred provider
+    dag.set_preferred_provider("my_custom_provider")
 
-# Now search using the custom provider
-results = dag.search(
-    productType="sentinel-2-l2a",
-    start="2024-01-01",
-    end="2024-01-15"
-)
-```
-
+    # Now search using the custom provider
+    results = dag.search(
+        productType="sentinel-2-l2a",
+        start="2024-01-01",
+        end="2024-01-15"
+    )
+    ```
 ---
 
 ## Further Resources

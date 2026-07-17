@@ -1,6 +1,7 @@
 # Application Hub Deployment Guide
 
-> Application Hub 2.1 requires OIDC. The IAM-off mode is not supported by this guide.
+!!! warning
+    Application Hub 2.1 requires OIDC. The IAM-off mode is not supported by this guide.
 
 The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps
 
@@ -151,7 +152,8 @@ The user can be created declaratively using the CRD defined by the Crossplane Ke
 kubectl apply -f generated-demo-user.yaml
 ```
 
-> Alternatively you can create this user through the Keycloak admin interface.
+!!! tip
+    Alternatively you can create this user through the Keycloak admin interface.
 
 ### 6. Create Groups in AppHub
 
@@ -170,7 +172,8 @@ echo "${HTTP_SCHEME}://${APPHUB_PUBLIC_HOST}/hub/admin"
     - `group-2`
     - `group-3`
 
-> These groups are simply examples that are configured into the default deployment. This default configuration should be adapted for your platform deployment.
+!!! note
+    These groups are simply examples that are configured into the default deployment. This default configuration should be adapted for your platform deployment.
 
 ![Create Groups](../img/apphub/groups.jpeg)
 
@@ -187,7 +190,8 @@ Return to the primary Application Hub interface and log in as `eric`.
 
 Selecting `Start My Server` - you should now see a list of the preconfigured profiles. Select one to spawn an application profile.
 
-> These preconfigured profiles are simply examples that are configured into the default deployment. These default profiles should be adapted for your platform deployment.
+!!! note
+    These preconfigured profiles are simply examples that are configured into the default deployment. These default profiles should be adapted for your platform deployment.
 
 ![Select a Profile](../img/apphub/profiles.jpeg)
 

@@ -126,7 +126,8 @@ The CloudEvents player should return its web UI, and `/health` on the webhook so
 
 ### 6. Optional: Deploy Kafka
 
-Skip this section unless you opted into Kafka during configuration.
+!!! note
+    Skip this section unless you opted into Kafka during configuration.
 
 Kafka requires the Strimzi operator, which the BB chart does not bundle:
 
@@ -215,111 +216,115 @@ We deliberately omit `spec.config`. Knative will use the cluster default channel
 
 ## Writing automations
 
-You have two routes for the actual automation code:
+??? note "Writing your own automation"
 
-- **`func` CLI** - the Knative Functions tool. Gives you a boilerplate project with CloudEvents wiring already done, and handles the build-and-push step for you. Good for getting going quickly without thinking about containers.
-- **Plain Knative Serving** - write a FastAPI (or any HTTP) service, build the container yourself, deploy as a `Service`. More control, no extra framework to learn.
+    You have two routes for the actual automation code:
 
-Both end up as Knative Services and both work with the same triggers, brokers and sources. The walkthrough below uses `func`. If you go the FastAPI route, skip to the trigger section once your service is deployed.
+    - **`func` CLI** - the Knative Functions tool. Gives you a boilerplate project with CloudEvents wiring already done, and handles the build-and-push step for you. Good for getting going quickly without thinking about containers.
+    - **Plain Knative Serving** - write a FastAPI (or any HTTP) service, build the container yourself, deploy as a `Service`. More control, no extra framework to learn.
 
-### Install the func CLI
+    Both end up as Knative Services and both work with the same triggers, brokers and sources. The walkthrough below uses `func`. If you go the FastAPI route, skip to the trigger section once your service is deployed.
 
-Download from the [Knative Functions releases page](https://github.com/knative/func/releases) and put the binary on your `PATH`. On Linux amd64:
+    ### Install the func CLI
 
-```bash
-curl -L -o /tmp/func https://github.com/knative/func/releases/latest/download/func_linux_amd64
-chmod +x /tmp/func
-sudo mv /tmp/func /usr/local/bin/func
-func version
-```
+    Download from the [Knative Functions releases page](https://github.com/knative/func/releases) and put the binary on your `PATH`. On Linux amd64:
 
-> **Apple Silicon note:** building functions locally on an M-series Mac produces ARM64 container images that won't run on an x86_64 cluster. Either build remotely (`func deploy --remote`) or use a build host that matches your cluster architecture.
+    ```bash
+    curl -L -o /tmp/func https://github.com/knative/func/releases/latest/download/func_linux_amd64
+    chmod +x /tmp/func
+    sudo mv /tmp/func /usr/local/bin/func
+    func version
+    ```
 
-### Create a function
+    !!! note "Apple Silicon"
+        Building functions locally on an M-series Mac produces ARM64 container images that won't run on an x86_64 cluster. Either build remotely (`func deploy --remote`) or use a build host that matches your cluster architecture.
 
-`func create` scaffolds a project from a template. For an event-driven automation, use the `cloudevents` template:
+    ### Create a function
 
-```bash
-func create -l python -t cloudevents demo-fn
-cd demo-fn
-```
+    `func create` scaffolds a project from a template. For an event-driven automation, use the `cloudevents` template:
 
-The handler lives in `function/func.py` - an async `handle(scope, receive, send)` method on a `Function` class, plus a module-level `new()` that returns an instance. The scaffold also includes optional `start`, `stop`, `alive` and `ready` hooks. Delete what you don't need.
+    ```bash
+    func create -l python -t cloudevents demo-fn
+    cd demo-fn
+    ```
 
-### Deploy it
+    The handler lives in `function/func.py` - an async `handle(scope, receive, send)` method on a `Function` class, plus a module-level `new()` that returns an instance. The scaffold also includes optional `start`, `stop`, `alive` and `ready` hooks. Delete what you don't need.
 
-```bash
-func deploy --registry docker.io/YOUR-REGISTRY --build --namespace notifications
-```
+    ### Deploy it
 
-First build is slow - Buildpacks downloads layers. Subsequent builds are quick. When it finishes you have a Knative Service:
+    ```bash
+    func deploy --registry docker.io/YOUR-REGISTRY --build --namespace notifications
+    ```
 
-```bash
-kubectl get ksvc -n notifications
-```
+    First build is slow - Buildpacks downloads layers. Subsequent builds are quick. When it finishes you have a Knative Service:
 
-By default each function gets a public endpoint. To make it cluster-local only, add the label `networking.knative.dev/visibility=cluster-local` to the service. Safer default for automations that should only respond to internal events.
+    ```bash
+    kubectl get ksvc -n notifications
+    ```
 
-### Wire it to events with a Trigger
+    By default each function gets a public endpoint. To make it cluster-local only, add the label `networking.knative.dev/visibility=cluster-local` to the service. Safer default for automations that should only respond to internal events.
 
-Triggers route events from a broker to a subscriber. This one only fires for events of type `org.eoepca.demo.hello`:
+    ### Wire it to events with a Trigger
 
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: eventing.knative.dev/v1
-kind: Trigger
-metadata:
-  name: demo-fn-hello
-  namespace: notifications
-spec:
-  broker: primary
-  filter:
-    attributes:
-      type: org.eoepca.demo.hello
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1
-      kind: Service
-      name: demo-fn
-EOF
-```
+    Triggers route events from a broker to a subscriber. This one only fires for events of type `org.eoepca.demo.hello`:
 
-Events with other types pass through this trigger untouched (other triggers can still match them).
+    ```bash
+    cat <<EOF | kubectl apply -f -
+    apiVersion: eventing.knative.dev/v1
+    kind: Trigger
+    metadata:
+      name: demo-fn-hello
+      namespace: notifications
+    spec:
+      broker: primary
+      filter:
+        attributes:
+          type: org.eoepca.demo.hello
+      subscriber:
+        ref:
+          apiVersion: serving.knative.dev/v1
+          kind: Service
+          name: demo-fn
+    EOF
+    ```
 
-> **Avoid self-triggering loops.** If your function emits a CloudEvent in response and the trigger has no filter, the response flows back through the broker, matches the trigger, fires the function again, ad infinitum. Either filter on `type` (as above) so the function's own response type doesn't match, or have the function return without sending a response.
+    Events with other types pass through this trigger untouched (other triggers can still match them).
 
-### See it working
+    !!! warning "Avoid self-triggering loops"
+        If your function emits a CloudEvent in response and the trigger has no filter, the response flows back through the broker, matches the trigger, fires the function again, ad infinitum. Either filter on `type` (as above) so the function's own response type doesn't match, or have the function return without sending a response.
 
-Grab the broker's internal URL:
+    ### See it working
 
-```bash
-BROKER_URL=$(kubectl get broker primary -n notifications -o jsonpath='{.status.address.url}')
-echo "$BROKER_URL"
-```
+    Grab the broker's internal URL:
 
-Post a CloudEvent. The `Ce-*` headers are how CloudEvents are encoded over HTTP in binary mode. The broker URL is cluster-internal, so we run curl from inside a pod:
+    ```bash
+    BROKER_URL=$(kubectl get broker primary -n notifications -o jsonpath='{.status.address.url}')
+    echo "$BROKER_URL"
+    ```
 
-```bash
-kubectl run curl-test --rm -i --tty --restart=Never --namespace=notifications \
-  --image=curlimages/curl:latest -- \
-  curl -v "$BROKER_URL" \
-    -H "Ce-Id: test-1" \
-    -H "Ce-Specversion: 1.0" \
-    -H "Ce-Type: org.eoepca.demo.hello" \
-    -H "Ce-Source: manual-test" \
-    -H "Content-Type: application/json" \
-    -d '{"message": "hello from the test"}'
-```
+    Post a CloudEvent. The `Ce-*` headers are how CloudEvents are encoded over HTTP in binary mode. The broker URL is cluster-internal, so we run curl from inside a pod:
 
-A `202 Accepted` means the broker took the event. The trigger forwards it to `demo-fn`, which Knative scales up from zero if needed.
+    ```bash
+    kubectl run curl-test --rm -i --tty --restart=Never --namespace=notifications \
+      --image=curlimages/curl:latest -- \
+      curl -v "$BROKER_URL" \
+        -H "Ce-Id: test-1" \
+        -H "Ce-Specversion: 1.0" \
+        -H "Ce-Type: org.eoepca.demo.hello" \
+        -H "Ce-Source: manual-test" \
+        -H "Content-Type: application/json" \
+        -d '{"message": "hello from the test"}'
+    ```
 
-Tail the function logs:
+    A `202 Accepted` means the broker took the event. The trigger forwards it to `demo-fn`, which Knative scales up from zero if needed.
 
-```bash
-kubectl logs -n notifications -l serving.knative.dev/service=demo-fn -c user-container --tail=50 -f
-```
+    Tail the function logs:
 
-You should see one `Request Received` line per test event. If you see a flood of them, the function is looping on its own responses - delete the trigger, switch to a filtered one as above, or remove the response from `func.py`.
+    ```bash
+    kubectl logs -n notifications -l serving.knative.dev/service=demo-fn -c user-container --tail=50 -f
+    ```
+
+    You should see one `Request Received` line per test event. If you see a flood of them, the function is looping on its own responses - delete the trigger, switch to a filtered one as above, or remove the response from `func.py`.
 
 ## Uninstallation
 

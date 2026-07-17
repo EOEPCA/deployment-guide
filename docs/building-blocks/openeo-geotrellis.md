@@ -51,7 +51,8 @@ During this process, you'll be prompted for:
 - **`OPENEO_ENABLE_OIDC`**: Whether to enable OIDC authentication (yes/no)
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)
 
-> **Note on Authentication:** The configuration script now offers a choice between OIDC authentication and basic authentication. If you choose not to enable OIDC, the deployment will use basic authentication instead.
+!!! note "Authentication"
+    The configuration script now offers a choice between OIDC authentication and basic authentication. If you choose not to enable OIDC, the deployment will use basic authentication instead.
 
 ### 2. Deploying openEO Geotrellis
 
@@ -91,7 +92,8 @@ For full configuration details, see the [values.yaml](https://github.com/bitnami
 
 #### Step 3: Deploy openEO Geotrellis Using Helm
 
-> You must wait for the ZooKeeper deployment to be fully running before deploying openEO Geotrellis. This is because it relies on the webhook.
+!!! warning
+    You must wait for the ZooKeeper deployment to be fully running before deploying openEO Geotrellis. This is because it relies on the webhook.
 
 Provides an API that simplifies connecting to EO cloud back-ends, running on Apache Spark in a Kubernetes environment.
 
@@ -118,50 +120,53 @@ openEO Geotrellis submits each batch (async) job as its own `SparkApplication`, 
 kubectl apply -f openeo-geotrellis/batch-jobs-rbac.yaml
 ```
 
-> This is a static manifest (fixed to the `openeo-geotrellis` namespace) with no gomplate variables, so there is nothing to (re)generate.
+!!! note
+    This is a static manifest (fixed to the `openeo-geotrellis` namespace) with no gomplate variables, so there is nothing to (re)generate.
 
 #### Step 5: Create a Keycloak Client (Only if OIDC is enabled)
 
-> **Note:** This step is only required if you enabled OIDC authentication during the configuration step. If you chose basic authentication, skip to the Validation section.
+!!! note
+    This step is only required if you enabled OIDC authentication during the configuration step. If you chose basic authentication, skip to the Validation section.
 
-The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers.
+??? note "Create a Keycloak Client"
 
-For OIDC identity providers, details of an OIDC client are provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - without the need to register their own OIDC client.
+    The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers.
 
-Thus, if OIDC is enabled, we configure in our openEO deployment integration with an `EOEPCA` identity provider.
+    For OIDC identity providers, details of an OIDC client are provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - without the need to register their own OIDC client.
 
-Inside the `generated-values.yaml` (when OIDC is enabled) you'll find the following configuration:
+    Thus, if OIDC is enabled, we configure in our openEO deployment integration with an `EOEPCA` identity provider.
 
-```python
-oidc_providers = [
-  OidcProvider(
-    id="eoepca",
-    title="EOEPCA",
-    issuer="${OIDC_ISSUER_URL}",
-    scopes=["openid", "profile", "email"],
-    default_clients=[
-      {
-        "id": "${OPENEO_CLIENT_ID}",
-        "grant_types": [
-          "authorization_code+pkce",
-          "urn:ietf:params:oauth:grant-type:device_code+pkce",
-          "refresh_token",
+    Inside the `generated-values.yaml` (when OIDC is enabled) you'll find the following configuration:
+
+    ```python
+    oidc_providers = [
+      OidcProvider(
+        id="eoepca",
+        title="EOEPCA",
+        issuer="${OIDC_ISSUER_URL}",
+        scopes=["openid", "profile", "email"],
+        default_clients=[
+          {
+            "id": "${OPENEO_CLIENT_ID}",
+            "grant_types": [
+              "authorization_code+pkce",
+              "urn:ietf:params:oauth:grant-type:device_code+pkce",
+              "refresh_token",
+            ],
+            "redirect_urls": ["https://openeo.$INGRESS_HOST","https://editor.openeo.org"],
+          }
         ],
-        "redirect_urls": ["https://openeo.$INGRESS_HOST","https://editor.openeo.org"],
-      }
-    ],
-  ),
-  #...
-]
-```
+      ),
+      #...
+    ]
+    ```
 
-A Keycloak client is required for the ingress protection of the Processing BB openEO Geotrellis Engine. `configure-openeo.sh` already rendered `openeo-geotrellis/generated-iam.yaml` (a Crossplane `Client` CRD) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
+    A Keycloak client is required for the ingress protection of the Processing BB openEO Geotrellis Engine. `configure-openeo.sh` already rendered `openeo-geotrellis/generated-iam.yaml` (a Crossplane `Client` CRD) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
-```bash
-kubectl apply -f openeo-geotrellis/generated-iam.yaml
-kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OPENEO_CLIENT_ID} -n iam-management --timeout=60s
-```
-
+    ```bash
+    kubectl apply -f openeo-geotrellis/generated-iam.yaml
+    kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OPENEO_CLIENT_ID} -n iam-management --timeout=60s
+    ```
 ---
 
 ## Validation
@@ -184,7 +189,8 @@ This script verifies that:
 
 Launch the notebook server:
 
-> Note that this assumes `docker` and `docker-compose` are available.
+!!! note
+    This assumes `docker` and `docker-compose` are available.
 
 ```bash
 ../../../notebooks/run.sh
@@ -198,7 +204,8 @@ xdg-open "http://127.0.0.1:8888/lab/tree/openeo/openeo.ipynb"
 
 Clear the cell outputs and then execute the notebook - which should complete with similar outputs to the reference notebook.
 
-> Once complete, the notebook server can be quit with Ctrl-C in the terminal.
+!!! tip
+    Once complete, the notebook server can be quit with Ctrl-C in the terminal.
 
 ### 3. Manual Validation
 
@@ -226,7 +233,8 @@ curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
 
 _Expected output:_ A JSON array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
 
-> **Note:** This guide only configures the built-in `TestCollection-LonLat16x16` debug layer. Wiring up a real EO data source (e.g. Sentinel data via a Swift/S3 object store and a full `layerCatalog`) needs provider-specific endpoints and credentials that aren't portable across clusters, so it's left out of this guide. See the [openEO Geotrellis GitHub Repository](https://github.com/Open-EO/openeo-geotrellis-kubernetes) for adding your own collections.
+!!! note
+    This guide only configures the built-in `TestCollection-LonLat16x16` debug layer. Wiring up a real EO data source (e.g. Sentinel data via a Swift/S3 object store and a full `layerCatalog`) needs provider-specific endpoints and credentials that aren't portable across clusters, so it's left out of this guide. See the [openEO Geotrellis GitHub Repository](https://github.com/Open-EO/openeo-geotrellis-kubernetes) for adding your own collections.
 
 #### List Processes
 
@@ -274,45 +282,43 @@ The web editor can be used to explore the capabilities of the openEO instance. F
 
 The authentication method depends on whether you enabled OIDC during configuration.
 
-#### Get an Access Token (OIDC Authentication)
+#### Get an Access Token
 
-> **Note:** This section applies only if you enabled OIDC authentication. For basic authentication deployments, skip directly to submitting jobs using basic auth headers.
+=== "OIDC Authentication"
 
-This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`). See `IAM` section [Create Test Users](./iam/main-iam.md#6-create-test-users) for creation of the test users assumed by this guide.
+    This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`). See `IAM` section [Create Test Users](./iam/main-iam.md#6-create-test-users) for creation of the test users assumed by this guide.
 
-Request the access token:
+    Request the access token:
 
-```bash
-source ~/.eoepca/state
-ACCESS_TOKEN=$(
-  curl --silent --show-error \
-    -X POST \
-    -d "username=${KEYCLOAK_TEST_USER}" \
-    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=${OPENEO_CLIENT_ID}" \
-    -d "client_secret=${OPENEO_CLIENT_SECRET}" \
-    -d "scope=openid profile email" \
-    "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
-    jq -r '.access_token'
-)
-echo "Access token: ${ACCESS_TOKEN}"
+    ```bash
+    source ~/.eoepca/state
+    ACCESS_TOKEN=$(
+      curl --silent --show-error \
+        -X POST \
+        -d "username=${KEYCLOAK_TEST_USER}" \
+        --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+        -d "grant_type=password" \
+        -d "client_id=${OPENEO_CLIENT_ID}" \
+        -d "client_secret=${OPENEO_CLIENT_SECRET}" \
+        -d "scope=openid profile email" \
+        "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
+        jq -r '.access_token'
+    )
+    echo "Access token: ${ACCESS_TOKEN}"
 
-AUTH_TOKEN="oidc/eoepca/${ACCESS_TOKEN}"
-```
+    AUTH_TOKEN="oidc/eoepca/${ACCESS_TOKEN}"
+    ```
 
-If the Access Token is empty, ensure that the Keycloak client and user are correctly set up.
+    If the Access Token is empty, ensure that the Keycloak client and user are correctly set up.
 
-We format the token as `oidc/eoepca/${ACCESS_TOKEN}` to comply with the `oidc_providers` variable in the Helm values.
+    We format the token as `oidc/eoepca/${ACCESS_TOKEN}` to comply with the `oidc_providers` variable in the Helm values.
 
-#### Get an Access Token (Basic Authentication)
+=== "Basic Authentication"
 
-> Skip this section if you enabled OIDC authentication.
-
-```bash
-export BASIC_AUTH=$(echo -n "testuser:testuser123" | base64)
-AUTH_TOKEN="basic/openeo/${BASIC_AUTH}"
-```
+    ```bash
+    export BASIC_AUTH=$(echo -n "testuser:testuser123" | base64)
+    AUTH_TOKEN="basic/openeo/${BASIC_AUTH}"
+    ```
 
 #### Submit a Job Using the "sum" Process
 
@@ -390,7 +396,8 @@ Start a Python session and establish connection:
 python
 ```
 
-> Alternative to pasting the following python snippets into the python REPL, you might instead find it easier to paster them into a source file `openeo-test.py` and then run with `python openeo-test.py`
+!!! tip
+    Alternative to pasting the following python snippets into the python REPL, you might instead find it easier to paster them into a source file `openeo-test.py` and then run with `python openeo-test.py`
 
 And then run:
 

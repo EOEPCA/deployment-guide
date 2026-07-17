@@ -106,7 +106,8 @@ bash apply-secrets.sh
 
 The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
 
-> The Educates chart bundles a set of Kyverno `ClusterPolicy` pod-security baseline/restricted policies (unconditionally, there is no values toggle to skip them) - Kyverno's CRDs must therefore already be installed before deploying Educates, or the `helm upgrade -i` below fails with `no matches for kind "ClusterPolicy"`.
+!!! warning
+    The Educates chart bundles a set of Kyverno `ClusterPolicy` pod-security baseline/restricted policies (unconditionally, there is no values toggle to skip them) - Kyverno's CRDs must therefore already be installed before deploying Educates, or the `helm upgrade -i` below fails with `no matches for kind "ClusterPolicy"`.
 
 ```bash
 # Deploy Kyverno (required by Educates' own bundled ClusterPolicies, and reused
@@ -149,7 +150,8 @@ helm upgrade -i workspace-api eoepca/rm-workspace-api \
   --values workspace-api/generated-values.yaml
 ```
 
-> The API isn't reachable yet - its route and Keycloak client are created in [step 9](#9-configure-iam-for-the-workspace-api).
+!!! note
+    The API isn't reachable yet - its route and Keycloak client are created in [step 9](#9-configure-iam-for-the-workspace-api).
 
 ### 5. Deploy the Workspace Pipeline
 
@@ -253,7 +255,8 @@ gomplate -f workspace-dependencies/workspace-ingress-policy-template.yaml -o wor
 kubectl apply -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 ```
 
-> Matching is scoped to the `training.educates.dev/application: workshop` label (same selector as the IAM policy in [9.3](#93-optional-protect-datalab-sessions-with-keycloak-sso)), not an Ingress name pattern - each session also gets a separate registry `Ingress` (`training.educates.dev/application: registry`) that must not receive this annotation, or it races the real session Ingress for ownership of the shared `workspace-tls` Certificate and can leave it issued for the wrong host.
+!!! warning
+    Matching is scoped to the `training.educates.dev/application: workshop` label (same selector as the IAM policy in [9.3](#93-optional-protect-datalab-sessions-with-keycloak-sso)), not an Ingress name pattern - each session also gets a separate registry `Ingress` (`training.educates.dev/application: registry`) that must not receive this annotation, or it races the real session Ingress for ownership of the shared `workspace-tls` Certificate and can leave it issued for the wrong host.
 
 ---
 
@@ -261,7 +264,8 @@ kubectl apply -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 
 The Workspace API always validates a Bearer token audienced for the `workspace-api` client (`authMode: gateway` in the upstream chart has no auth-free option) - steps 9.1 and 9.2 are required regardless of `OIDC_WORKSPACE_ENABLED`. That setting only controls whether the ingress additionally redirects unauthenticated browser requests to Keycloak login (9.2), and whether Datalab sessions get Keycloak SSO (9.3).
 
-> Before starting, ensure you have followed the [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
+!!! note
+    Before starting, ensure you have followed the [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
 
 #### 9.1 Create Keycloak Client
 
@@ -279,7 +283,8 @@ kubectl apply -f workspace-api/generated-iam.yaml
 kubectl apply -f workspace-api/generated-ingress.yaml
 ```
 
-> This route no longer enforces a separate OPA `admin` role at the ingress layer - any authenticated user can call the API (matches the current upstream baseline). Workspace-level access control (e.g. restricting who may create workspaces) is left to you to add via an OPA policy on the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
+!!! note
+    This route no longer enforces a separate OPA `admin` role at the ingress layer - any authenticated user can call the API (matches the current upstream baseline). Workspace-level access control (e.g. restricting who may create workspaces) is left to you to add via an OPA policy on the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
 
 #### 9.3. Optional: Protect Datalab Sessions with Keycloak SSO
 
@@ -292,7 +297,8 @@ kubectl apply -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml
 kubectl apply -f workspace-dependencies/generated-workspace-session-iam-policy.yaml
 ```
 
-> Reuses the `workspace-api` client's `workspace-api-keycloak-client` secret from [9.1](#91-create-keycloak-client) - any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.
+!!! note
+    Reuses the `workspace-api` client's `workspace-api-keycloak-client` secret from [9.1](#91-create-keycloak-client) - any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.
 
 ---
 
@@ -335,7 +341,8 @@ xdg-open "https://workspace-api.${INGRESS_HOST}/docs"
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
 
-> If `OIDC_WORKSPACE_ENABLED=true`, the ingress redirects to Keycloak login first - for example `eoepcaadmin` created earlier.
+!!! note
+    If `OIDC_WORKSPACE_ENABLED=true`, the ingress redirects to Keycloak login first - for example `eoepcaadmin` created earlier.
 
 ---
 
@@ -407,8 +414,8 @@ source ~/.eoepca/state
 kubectl get datalab/ws-${KEYCLOAK_TEST_USER} -n workspace
 ```
 
-> Both resources should show a `True` status for `SYNCED` and `READY` conditions.<br>
-> Note that state can take a little time to be reached as Crossplane provisions the underlying resources.
+!!! note
+    Both resources should show a `True` status for `SYNCED` and `READY` conditions. State can take a little time to be reached as Crossplane provisions the underlying resources.
 
 #### 4. Get New Workspace Details
 
@@ -440,11 +447,13 @@ curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYC
   | jq
 ```
 
-> The details of the `storage` and the `datalab` associated with the workspace are returned.
+!!! note
+    The details of the `storage` and the `datalab` associated with the workspace are returned.
 
 **Record the access key and secret from the response for S3 access**
 
-> The bucket's S3 access key is a generated MinIO principal (e.g. `ws-eoepcauser-1`) - it is **not** the same as `KEYCLOAK_TEST_USER`, so it must be read from the API response rather than assumed.
+!!! warning
+    The bucket's S3 access key is a generated MinIO principal (e.g. `ws-eoepcauser-1`) - it is **not** the same as `KEYCLOAK_TEST_USER`, so it must be read from the API response rather than assumed.
 
 ```bash
 source ~/.eoepca/state
@@ -477,7 +486,8 @@ s3cmd ls \
 
 **Upload a Test File:**
 
-> Ensure you are in the directory `scripts/workspace` for access to the test file `validation.sh`.
+!!! note
+    Ensure you are in the directory `scripts/workspace` for access to the test file `validation.sh`.
 
 ```bash
 source ~/.eoepca/state
@@ -523,7 +533,8 @@ The home page for `Workspace: ws-eoepcauser` opens.
 
 Select `Datalab (default)` to open the default session. This opens a new window with the Datalabs session.
 
-> First time this may take a little time whilst the session is created.
+!!! note
+    First time this may take a little time whilst the session is created.
 
 Navigate between each of the tabs:
 
@@ -630,7 +641,8 @@ kubectl delete -f nginx-test.yaml
 
 #### 8. (optional) Delete Workspace via the Workspace API
 
-> The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.
+!!! tip
+    The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.
 
 The workspace for the `eoepcauser` test user can be deleted via the Workspace API, using any authenticated user (e.g. `eoepcaadmin`).
 
@@ -663,7 +675,8 @@ curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${K
 
 ## Uninstallation
 
-> Delete any workspaces created during validation first (see [step 8 of Validation](#8-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
+!!! warning
+    Delete any workspaces created during validation first (see [step 8 of Validation](#8-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
 
 To uninstall the Workspace Building Block and clean up associated resources:
 

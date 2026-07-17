@@ -133,7 +133,8 @@ helm upgrade -i gitlab gitlab/gitlab \
 
 **Important Notice Regarding GitLab Deployment:**
 
-> **Note**: The provided GitLab deployment uses built-in PostgreSQL, Redis, and Gitaly. These are **evaluation-only** components. For production setups, reference GitLab's official docs on external databases, Redis clusters, etc.
+!!! warning
+    The provided GitLab deployment uses built-in PostgreSQL, Redis, and Gitaly. These are **evaluation-only** components. For production setups, reference GitLab's official docs on external databases, Redis clusters, etc.
 
 #### Wait for GitLab Readiness
 
@@ -192,7 +193,8 @@ Fill out the new application form with the following details:
     
 - **Redirect URI**:
 
-    > Substitute your value for `<INGRESS_HOST>`.
+    !!! note
+        Substitute your value for `<INGRESS_HOST>`.
     
     ```
     https://sharinghub.<INGRESS_HOST>/api/auth/login/callback
@@ -236,7 +238,8 @@ helm upgrade -i sharinghub /tmp/sharinghub/deploy/helm/sharinghub \
 
 #### 6.1 Deploy Ingress for the SharingHub
 
-**APISIX only** - If you are using NGINX or another ingress controller, you can skip this step.
+!!! note "APISIX only"
+    If you are using NGINX or another ingress controller, you can skip this step.
 
 ```
 kubectl apply -f sharinghub/generated-ingress.yaml
@@ -256,7 +259,8 @@ helm upgrade -i mlflow-sharinghub /tmp/mlflow-sharinghub/deploy/helm/mlflow-shar
 
 #### 7.1 Deploy Ingress for the MLFlow
 
-**Note:** The following ingress configuration applies to both **NGINX** and **APISIX** ingress controllers. Ensure your ingress controller is properly set up before applying the configuration.
+!!! note
+    The following ingress configuration applies to both **NGINX** and **APISIX** ingress controllers. Ensure your ingress controller is properly set up before applying the configuration.
 
 ```
 kubectl apply -f mlflow/generated-ingress.yaml
@@ -287,7 +291,8 @@ All pods should be in `Running` (or `Completed`) state.
 
     Open the GitLab web UI at `https://gitlab.<INGRESS_HOST>/`.
 
-    > Login as user `root` using the password gathered earlier.
+    !!! note
+        Login as user `root` using the password gathered earlier.
 
     ```bash
     source ~/.eoepca/state
@@ -298,11 +303,12 @@ All pods should be in `Running` (or `Completed`) state.
 
     Open the SharingHub web UI at `https://sharinghub.<INGRESS_HOST>/`.
 
-    > If you set up GitLab OAuth for SharingHub, then you can Login via your 'EOEPCA' Keycloak Identity Provider.
-    >
-    > Logout if you are already logged in - e.g. as the `root` (Administrator) user.
-    >
-    > Then select to Login, and choose the 'sign in with `EOEPCA`' option.
+    !!! note
+        If you set up GitLab OAuth for SharingHub, then you can Login via your 'EOEPCA' Keycloak Identity Provider.
+
+        Logout if you are already logged in - e.g. as the `root` (Administrator) user.
+
+        Then select to Login, and choose the 'sign in with `EOEPCA`' option.
 
     ```bash
     source ~/.eoepca/state
@@ -356,7 +362,8 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 
 1. **Log into GitLab**
 
-    > These steps assume that the `eoepcauser` test user was created in the earlier IAM setup steps, and that the Gitlab instance has been integrated with Keycloak via OIDC.
+    !!! note
+        These steps assume that the `eoepcauser` test user was created in the earlier IAM setup steps, and that the Gitlab instance has been integrated with Keycloak via OIDC.
 
     * Open the Gitlab UI - `https://gitlab.${INGRESS_HOST}/`
     * Select to `Sign in with EOEPCA` (Sign out of `root` user if necessary)
@@ -451,12 +458,12 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 
 9. **Run a Simple MLflow Experiment**
     
-    > It is assumed that a python virtual environment is established for the following steps.<br>
-    > For example, using the `venv` module...
-    > ```bash
-    > python -m venv venv
-    > source venv/bin/activate
-    > ```
+    !!! note
+        It is assumed that a python virtual environment is established for the following steps. For example, using the `venv` module...
+        ```bash
+        python -m venv venv
+        source venv/bin/activate
+        ```
 
     - Ensure you have the required packages:
         
@@ -491,7 +498,8 @@ This section walks you through a minimal scenario of creating a GitLab project, 
 
         ![Metrics](../img/mlops/metrics.jpeg)
 
-    > If you don't see the run, but the script ran successfully, check that you are logged into the SharingHub via Gitlab and that the project is correctly tagged.<br>Refresh the browser view if necessary.
+    !!! note
+        If you don't see the run, but the script ran successfully, check that you are logged into the SharingHub via Gitlab and that the project is correctly tagged. Refresh the browser view if necessary.
 
 ---
 
@@ -506,8 +514,9 @@ bash utils/uninstallation-cleanup.sh
 kubectl delete ns gitlab sharinghub
 ```
 
-> If OIDC was enabled, also remove the Keycloak `Client` created in Step 2:
-> `kubectl delete -f generated-iam.yaml --ignore-not-found`
+!!! note
+    If OIDC was enabled, also remove the Keycloak `Client` created in Step 2:
+    `kubectl delete -f generated-iam.yaml --ignore-not-found`
 
 ---
 

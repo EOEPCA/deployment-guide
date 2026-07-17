@@ -153,7 +153,8 @@ Applies the Loki S3 credentials, the oauth2-proxy cookie secret, and (if IAM is 
 bash apply-secrets.sh
 ```
 
-> If IAM is enabled, the client secrets are populated later from Keycloak. The script creates the namespace and empty secret stubs so downstream components can be deployed in any order.
+!!! note
+    If IAM is enabled, the client secrets are populated later from Keycloak. The script creates the namespace and empty secret stubs so downstream components can be deployed in any order.
 
 ### 3. Deployment
 
@@ -255,7 +256,8 @@ if [ "${INGRESS_CLASS}" = "apisix" ]; then
 fi
 ```
 
-> **Note on IAM:** After Keycloak creates the clients, extract the generated client secrets and populate the `monitoring-oidc` and `alerting-oidc` secrets. Restart the Grafana and oauth2-proxy pods so they pick up the new values.
+!!! note "IAM"
+    After Keycloak creates the clients, extract the generated client secrets and populate the `monitoring-oidc` and `alerting-oidc` secrets. Restart the Grafana and oauth2-proxy pods so they pick up the new values.
 
 ---
 
@@ -286,19 +288,23 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
 
 #### Authentication
 
-**With IAM enabled:** Both UIs are fronted by Keycloak. Users must be assigned one of `grafana_admin`, `grafana_editor`, or `grafana_viewer` on the `monitoring` client to access Grafana, and one of `keep_admin` or `keep_noc` on the `alerting` client to access Keep.
+=== "IAM Enabled"
 
-**With IAM disabled:** Grafana uses local admin auth. Retrieve the chart-generated credentials with:
+    Both UIs are fronted by Keycloak. Users must be assigned one of `grafana_admin`, `grafana_editor`, or `grafana_viewer` on the `monitoring` client to access Grafana, and one of `keep_admin` or `keep_noc` on the `alerting` client to access Keep.
 
-```bash
-kubectl -n operations get secret kube-prometheus-stack-grafana \
-  -o jsonpath='{.data.admin-user}' | base64 -d; echo
+=== "IAM Disabled"
 
-kubectl -n operations get secret kube-prometheus-stack-grafana \
-  -o jsonpath='{.data.admin-password}' | base64 -d; echo
-```
+    Grafana uses local admin auth. Retrieve the chart-generated credentials with:
 
-Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated.
+    ```bash
+    kubectl -n operations get secret kube-prometheus-stack-grafana \
+      -o jsonpath='{.data.admin-user}' | base64 -d; echo
+
+    kubectl -n operations get secret kube-prometheus-stack-grafana \
+      -o jsonpath='{.data.admin-password}' | base64 -d; echo
+    ```
+
+    Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated.
 
 ---
 
@@ -368,7 +374,8 @@ kubectl delete -f alerting/generated-alertmanagerconfig.yaml --ignore-not-found
 kubectl delete namespace operations
 ```
 
-> Deleting the namespace removes all remaining ConfigMaps, Secrets, and PVCs. If Prometheus was deployed with a persistent volume, the underlying PV may need to be deleted separately depending on the storage class's reclaim policy.
+!!! note
+    Deleting the namespace removes all remaining ConfigMaps, Secrets, and PVCs. If Prometheus was deployed with a persistent volume, the underlying PV may need to be deleted separately depending on the storage class's reclaim policy.
 
 ---
 

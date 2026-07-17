@@ -1,4 +1,5 @@
-> **Note:** If the EOEPCA IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you're using the EOEPCA IAM Building Block. Ensure the EOEPCA IAM Building Block is installed. For more information, refer to [this guide](./main-iam.md).
+!!! note
+    If the EOEPCA IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you're using the EOEPCA IAM Building Block. Ensure the EOEPCA IAM Building Block is installed. For more information, refer to [this guide](./main-iam.md).
 
 
 This document details how to manage Keycloak clients programmatically, obtain tokens, and perform device flows. Clients represent applications or services interacting with EOEPCA's secured endpoints.
@@ -6,127 +7,131 @@ This document details how to manage Keycloak clients programmatically, obtain to
 
 ## Creating a Keycloak Client
 
-Three alternative paths are offered for creation of Keycloak clients:
+Three alternative paths are offered for creation of Keycloak clients.
 
-1. Using the Keycloak Provider for Crossplane (recommended for infrastructure as code setups)
-2. Using the provided script (suitable for quick setups or manual processes)
-3. Manually via Keycloak's REST API (for advanced users needing fine control)
+=== "1. Crossplane (Recommended)"
 
-### Approach 1: Using the Keycloak Provider for Crossplane (Recommended)
+    Recommended for infrastructure as code setups.
 
-If you have Crossplane set up with the Keycloak provider, you can create a Keycloak client using a Kubernetes Custom Resource Definition (CRD). This assumes you have followed the steps:
+    If you have Crossplane set up with the Keycloak provider, you can create a Keycloak client using a Kubernetes Custom Resource Definition (CRD). This assumes you have followed the steps:
 
-* [Crossplane deployment](../../prerequisites/crossplane.md)
-* [IAM deployment guide](../iam/main-iam.md)
+    * [Crossplane deployment](../../prerequisites/crossplane.md)
+    * [IAM deployment guide](../iam/main-iam.md)
 
-> Note the use of placeholders such as `<client-name>`, `<client-secret>`, `<service-name>`, etc.. Replace these with actual values relevant to your setup.
+    !!! note
+        Note the use of placeholders such as `<client-name>`, `<client-secret>`, `<service-name>`, etc.. Replace these with actual values relevant to your setup.
 
-**Confidential Client**
+    **Confidential Client**
 
-Download [`confidential-client.yaml`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/building-blocks/iam/client-management/confidential-client.yaml), replace the `<placeholders>` with values for your client, then apply:
+    Download [`confidential-client.yaml`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/building-blocks/iam/client-management/confidential-client.yaml), replace the `<placeholders>` with values for your client, then apply:
 
-```bash
-source ~/.eoepca/state
-envsubst < confidential-client.yaml | kubectl apply -f -
-```
+    ```bash
+    source ~/.eoepca/state
+    envsubst < confidential-client.yaml | kubectl apply -f -
+    ```
 
-**Public Client**
+    **Public Client**
 
-Download [`public-client.yaml`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/building-blocks/iam/client-management/public-client.yaml), replace the `<placeholders>` with values for your client, then apply:
+    Download [`public-client.yaml`](https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/building-blocks/iam/client-management/public-client.yaml), replace the `<placeholders>` with values for your client, then apply:
 
-```bash
-source ~/.eoepca/state
-envsubst < public-client.yaml | kubectl apply -f -
-```
+    ```bash
+    source ~/.eoepca/state
+    envsubst < public-client.yaml | kubectl apply -f -
+    ```
 
-### Approach 2: Using the Script
+=== "2. Script"
 
-Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
+    Suitable for quick setups or manual processes.
 
-```bash
-cd deployment-guide/scripts/utils
-bash create-client.sh
-```
+    Use the `create-client.sh` script in the `/scripts/utils/` directory. This script prompts you for basic details and automatically creates a Keycloak client in your chosen realm:
 
-When prompted:
+    ```bash
+    cd deployment-guide/scripts/utils
+    bash create-client.sh
+    ```
 
-- **Keycloak Admin Username and Password**: Provide the credentials for your Keycloak administrator account. These credentials are typically stored in `~/.eoepca/state` if configured.
-- **Keycloak Base Domain**: The domain where your Keycloak server is hosted, for example, `auth.example.com`.
-- **Realm**: The specific realm within Keycloak where the client will be created, such as `eoepca`.
-- **Client ID**: A unique identifier for your client application, for example, `my-client-app`.
-- **Client Name and Description**: Descriptive texts to identify your client application, like `My Client Application`.
-- **Client Secret**: A secret key associated with your client. During the Building Block installations, these will be set for you.
-- **Subdomain**: A designated subdomain for your client application (for auth flow redirection), for instance, `app`.
-- **Additional Subdomains**: Additional allowed subdomains (for auth flow redirection), if required - otherwise leave blank.
-- **Additional Hosts**: Additional allowed full hostnames (for auth flow redirection), if required - otherwise leave blank.
+    When prompted:
 
-After it completes, you should see a JSON snippet confirming the newly created client.
+    - **Keycloak Admin Username and Password**: Provide the credentials for your Keycloak administrator account. These credentials are typically stored in `~/.eoepca/state` if configured.
+    - **Keycloak Base Domain**: The domain where your Keycloak server is hosted, for example, `auth.example.com`.
+    - **Realm**: The specific realm within Keycloak where the client will be created, such as `eoepca`.
+    - **Client ID**: A unique identifier for your client application, for example, `my-client-app`.
+    - **Client Name and Description**: Descriptive texts to identify your client application, like `My Client Application`.
+    - **Client Secret**: A secret key associated with your client. During the Building Block installations, these will be set for you.
+    - **Subdomain**: A designated subdomain for your client application (for auth flow redirection), for instance, `app`.
+    - **Additional Subdomains**: Additional allowed subdomains (for auth flow redirection), if required - otherwise leave blank.
+    - **Additional Hosts**: Additional allowed full hostnames (for auth flow redirection), if required - otherwise leave blank.
+
+    After it completes, you should see a JSON snippet confirming the newly created client.
+
+=== "3. Manually"
+
+    For advanced users needing fine control, via Keycloak's REST API.
 
 
-### Approach 3: Manually
+    **Obtain Admin Token**:
 
-**Obtain Admin Token**:
+    ```bash
+    source ~/.eoepca/state # This will set KEYCLOAK_ADMIN_USER and KEYCLOAK_ADMIN_PASSWORD into your environment
 
-```bash
-source ~/.eoepca/state # This will set KEYCLOAK_ADMIN_USER and KEYCLOAK_ADMIN_PASSWORD into your environment
+    ACCESS_TOKEN=$( \
+      curl --silent --show-error \
+        -X POST \
+        -d "username=${KEYCLOAK_ADMIN_USER}" \
+        --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+        -d "grant_type=password" \
+        -d "client_id=admin-cli" \
+        "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+      | jq -r '.access_token' \
+    )
+    echo ${ACCESS_TOKEN}
+    ```
 
-ACCESS_TOKEN=$( \
-  curl --silent --show-error \
-    -X POST \
-    -d "username=${KEYCLOAK_ADMIN_USER}" \
-    --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" \
-    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
-  | jq -r '.access_token' \
-)
-echo ${ACCESS_TOKEN}
-```
+    **Create a Client**:
 
-**Create a Client**:
+    !!! note
+        You can leave the "secret" field empty to have Keycloak generate a random secret. Just ensure you retrieve it for future use. If you do provide the secret, ensure it is formatted correctly.
 
-> You can leave the "secret" field empty to have Keycloak generate a random secret. Just ensure you retrieve it for future use. If you do provide the secret, ensure it is formatted correctly.
+    ```bash
+    curl --silent --show-error \
+      -X POST \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d @- \
+      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" <<EOF
+    {
+      "clientId": "<UPDATE TO CLIENT ID>",
+      "name": "<UPDATE TO CLIENT NAME>",
+      "description": "<A SENSIBLE DESCRIPTION>",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "rootUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
+      "baseUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
+      "redirectUris": ["<UPDATE TO MAIN URL OF THE CLIENT>/*"],
+      "webOrigins": ["<UPDATE TO MAIN ORIGIN OF THE CLIENT>"],
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "<OPTIONAL SECRET, OR LEAVE EMPTY>",
+      "directAccessGrantsEnabled": false,
+      "attributes": {
+        "oauth2.device.authorization.grant.enabled": true
+      },
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "frontchannelLogout": true
+    }
+    EOF
+    ```
 
-```bash
-curl --silent --show-error \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d @- \
-  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" <<EOF
-{
-  "clientId": "<UPDATE TO CLIENT ID>",
-  "name": "<UPDATE TO CLIENT NAME>",
-  "description": "<A SENSIBLE DESCRIPTION>",
-  "enabled": true,
-  "protocol": "openid-connect",
-  "rootUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
-  "baseUrl": "<UPDATE TO MAIN URL OF THE CLIENT>",
-  "redirectUris": ["<UPDATE TO MAIN URL OF THE CLIENT>/*"],
-  "webOrigins": ["<UPDATE TO MAIN ORIGIN OF THE CLIENT>"],
-  "publicClient": false,
-  "clientAuthenticatorType": "client-secret",
-  "secret": "<OPTIONAL SECRET, OR LEAVE EMPTY>",
-  "directAccessGrantsEnabled": false,
-  "attributes": {
-    "oauth2.device.authorization.grant.enabled": true
-  },
-  "serviceAccountsEnabled": true,
-  "authorizationServicesEnabled": true,
-  "frontchannelLogout": true
-}
-EOF
-```
+    **Verify Creation**:
 
-**Verify Creation**:
-
-```bash
-curl --silent --show-error \
-  -X GET \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
-| jq '.[] | select(.clientId == "<UPDATE TO CLIENT ID>")'
-```
+    ```bash
+    curl --silent --show-error \
+      -X GET \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients" \
+    | jq '.[] | select(.clientId == "<UPDATE TO CLIENT ID>")'
+    ```
 
 ## Deleting a Client
 

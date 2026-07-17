@@ -182,7 +182,8 @@ bash apply-secrets.sh
 
 #### Deploy PostgreSQL Operator (if using internal database)
 
-> If using the external PostgreSQL option, skip this step.
+!!! note
+    If using the external PostgreSQL option, skip this step.
 
 ```bash
 helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
@@ -242,7 +243,8 @@ fi
 
 #### (Optional) Deploy Geoparquet Exporter
 
-> Skip this step if `ENABLE_GEOPARQUET_EXPORT=no`.
+!!! note
+    Skip this step if `ENABLE_GEOPARQUET_EXPORT=no`.
 
 Also only published as a git-sourced Helm chart:
 ```bash
@@ -323,7 +325,8 @@ xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_
 
 ### 2. Access the STAC Browser UI
 
-> There is a sample collection loaded in the previous step.
+!!! note
+    There is a sample collection loaded in the previous step.
 
 ```bash
 source ~/.eoepca/state
@@ -352,79 +355,83 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
 
 ### 4. Collection-Level Access Control (IAM)
 
-> Skip this section if `DATA_ACCESS_ENABLE_IAM=no`. Without IAM, `stac-auth-proxy` is disabled entirely and every collection/item is readable and writable by anyone who can reach the STAC API.
+!!! note
+    Skip this section if `DATA_ACCESS_ENABLE_IAM=no`. Without IAM, `stac-auth-proxy` is disabled entirely and every collection/item is readable and writable by anyone who can reach the STAC API.
 
-With IAM enabled, `stac-auth-proxy` sits in front of the STAC API and decides access per-request using the collection ID:
+??? note "Show IAM access-control behaviour and tests"
 
-- **Public collections** — any collection ID with no `.` in it (e.g. `sentinel-2-iceland`) is readable by everyone, including unauthenticated requests. Reads are always public; only writes need auth.
-- **Private/owned collections** — an ID prefixed `<prefix>.` (e.g. `eoepcauser.mycollection`) is only readable/writable by:
-    - the Keycloak user whose `preferred_username` matches `<prefix>`, or
-    - a member of the Keycloak group `/dss/<prefix>` (read-write), or `/dss/<prefix>-ro` (read-only).
-- **Catalog-wide editors** — a token whose `azp` is one of `STAC_EDITOR_CLIENT_IDS` (the `eoapi` client, by default) and whose `resource_access.<azp>.roles` includes `stac_editor` can write to *any* collection, regardless of prefix. `iam/generated-iam.yaml` creates this role and a `data-access-admin` Keycloak group that grants it — add a user to that group (via the Keycloak admin console, or a Crossplane `Roles`/group-membership CR) to give them ingestion/admin rights across the whole catalogue.
+    With IAM enabled, `stac-auth-proxy` sits in front of the STAC API and decides access per-request using the collection ID:
 
-This applies uniformly to both collections and items (an item's `collection` field is checked the same way).
+    - **Public collections** — any collection ID with no `.` in it (e.g. `sentinel-2-iceland`) is readable by everyone, including unauthenticated requests. Reads are always public; only writes need auth.
+    - **Private/owned collections** — an ID prefixed `<prefix>.` (e.g. `eoepcauser.mycollection`) is only readable/writable by:
+        - the Keycloak user whose `preferred_username` matches `<prefix>`, or
+        - a member of the Keycloak group `/dss/<prefix>` (read-write), or `/dss/<prefix>-ro` (read-only).
+    - **Catalog-wide editors** — a token whose `azp` is one of `STAC_EDITOR_CLIENT_IDS` (the `eoapi` client, by default) and whose `resource_access.<azp>.roles` includes `stac_editor` can write to *any* collection, regardless of prefix. `iam/generated-iam.yaml` creates this role and a `data-access-admin` Keycloak group that grants it — add a user to that group (via the Keycloak admin console, or a Crossplane `Roles`/group-membership CR) to give them ingestion/admin rights across the whole catalogue.
+      - This only works if the `eoapi` client's token actually carries a `resource_access` claim, which requires the built-in `roles` client scope to be assigned (`iam/generated-iam.yaml`'s `ClientDefaultScopes` includes it) — without it, group membership is granted in Keycloak but silently has no effect (every write still 403s with `"Resource does not match access filter"`, indistinguishable from the user simply not being in the group).
 
-**Get a token to test with** (any realm user, using the `eoapi` client created by `iam/generated-iam.yaml`):
+    This applies uniformly to both collections and items (an item's `collection` field is checked the same way).
 
-```bash
-source ~/.eoepca/state
-ACCESS_TOKEN=$( \
-  curl -sk -X POST \
-    -d "username=${KEYCLOAK_TEST_USER}" \
-    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=${EOAPI_CLIENT_ID}" \
-    -d "scope=openid" \
-    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
-  | jq -r '.access_token' \
-)
-```
+    **Get a token to test with** (any realm user, using the `eoapi` client created by `iam/generated-iam.yaml`):
 
-**Unauthenticated write is rejected:**
+    ```bash
+    source ~/.eoepca/state
+    ACCESS_TOKEN=$( \
+      curl -sk -X POST \
+        -d "username=${KEYCLOAK_TEST_USER}" \
+        --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+        -d "grant_type=password" \
+        -d "client_id=${EOAPI_CLIENT_ID}" \
+        -d "scope=openid" \
+        "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+      | jq -r '.access_token' \
+    )
+    ```
 
-```bash
-curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
-  -H "Content-Type: application/json" \
-  -d '{"id": "unauth-test", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
-# 401
-```
+    **Unauthenticated write is rejected:**
 
-**A user can write to their own username-prefixed collection:**
+    ```bash
+    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+      -H "Content-Type: application/json" \
+      -d '{"id": "unauth-test", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
+    # 401
+    ```
 
-```bash
-curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d "{\"id\": \"${KEYCLOAK_TEST_USER}.mycollection\", \"type\": \"Collection\", \"stac_version\": \"1.0.0\", \"description\": \"x\", \"license\": \"proprietary\", \"extent\": {\"spatial\": {\"bbox\": [[-180,-90,180,90]]}, \"temporal\": {\"interval\": [[null,null]]}}, \"links\": []}"
-# 201
-```
+    **A user can write to their own username-prefixed collection:**
 
-**...but not to an unrelated collection they don't own and have no editor role for:**
+    ```bash
+    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+      -d "{\"id\": \"${KEYCLOAK_TEST_USER}.mycollection\", \"type\": \"Collection\", \"stac_version\": \"1.0.0\", \"description\": \"x\", \"license\": \"proprietary\", \"extent\": {\"spatial\": {\"bbox\": [[-180,-90,180,90]]}, \"temporal\": {\"interval\": [[null,null]]}}, \"links\": []}"
+    # 201
+    ```
 
-```bash
-curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{"id": "someone-elses-collection", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
-# 403 {"code": "ForbiddenError", "description": "Resource does not match access filter."}
-```
+    **...but not to an unrelated collection they don't own and have no editor role for:**
 
-**A private collection is invisible to unauthenticated requests, but visible to its owner:**
+    ```bash
+    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+      -d '{"id": "someone-elses-collection", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
+    # 403 {"code": "ForbiddenError", "description": "Resource does not match access filter."}
+    ```
 
-```bash
-curl -sk -o /dev/null -w "%{http_code}\n" "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection"
-# 404 (filtered out, not "403" - its existence isn't revealed either)
+    **A private collection is invisible to unauthenticated requests, but visible to its owner:**
 
-curl -sk "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq '{id, type}'
-```
+    ```bash
+    curl -sk -o /dev/null -w "%{http_code}\n" "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection"
+    # 404 (filtered out, not "403" - its existence isn't revealed either)
 
-Login to the STAC Browser and see your private collection available at:
+    curl -sk "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq '{id, type}'
+    ```
 
-```bash
-source ~/.eoepca/state
-xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
-```
+    Login to the STAC Browser and see your private collection available at:
+
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
+    ```
 
 ---
 

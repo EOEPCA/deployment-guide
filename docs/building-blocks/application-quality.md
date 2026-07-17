@@ -12,7 +12,8 @@ The **Application Quality Building Block** provides tools and processes designed
 - **Streamline Quality Checks:** Containerised tooling such as SonarQube, Bandit, and Sphinx, integrated into automated pipelines.
 - **Measure Performance:** Tools and methods to test and optimise workflow execution performance.
 
-> **Important:** Application Quality's web portal and API validate OIDC tokens themselves against the Keycloak realm's discovery endpoint, so IAM/OIDC works under either **APISIX** or **NGINX** ingress. The optional **SonarQube** add-on is the exception: its `/sonarqube` routing in this guide uses an APISIX `ApisixRoute`, so SonarQube requires APISIX regardless of whether IAM is enabled. The configuration script fails early if SonarQube is enabled under NGINX.
+!!! warning "Important"
+    Application Quality's web portal and API validate OIDC tokens themselves against the Keycloak realm's discovery endpoint, so IAM/OIDC works under either **APISIX** or **NGINX** ingress. The optional **SonarQube** add-on is the exception: its `/sonarqube` routing in this guide uses an APISIX `ApisixRoute`, so SonarQube requires APISIX regardless of whether IAM is enabled. The configuration script fails early if SonarQube is enabled under NGINX.
 
 ---
 
@@ -121,7 +122,8 @@ When SonarQube is enabled:
 - SonarQube is deployed separately into the `application-quality-sonarqube` namespace.
 - APISIX ingress is required for the `/sonarqube` route.
 
-> **Important:** SonarQube routing in this guide uses an APISIX `ApisixRoute`. SonarQube with NGINX ingress is not currently supported by this guide.
+!!! warning "Important"
+    SonarQube routing in this guide uses an APISIX `ApisixRoute`. SonarQube with NGINX ingress is not currently supported by this guide.
 
 ---
 
@@ -181,9 +183,11 @@ kubectl logs -n application-quality -l app.kubernetes.io/component=api --tail=20
 kubectl logs -n application-quality -l app.kubernetes.io/component=web --tail=200
 ```
 
-> If you get a Knative-related error, ensure notifications are disabled or install Knative Eventing before enabling notifications. Notifications are disabled by default in this guide.
+!!! note
+    If you get a Knative-related error, ensure notifications are disabled or install Knative Eventing before enabling notifications. Notifications are disabled by default in this guide.
 
-> **Security note:** The chart's own bundled PostgreSQL database (used by the core Application Quality API, separate from the optional SonarQube database) is deployed with fixed, chart-default credentials (`admin`/`changeme`) that this guide does not override, matching upstream `reference-deployment` behaviour. Treat this database as internal-only; do not expose its service externally.
+!!! danger "Security note"
+    The chart's own bundled PostgreSQL database (used by the core Application Quality API, separate from the optional SonarQube database) is deployed with fixed, chart-default credentials (`admin`/`changeme`) that this guide does not override, matching upstream `reference-deployment` behaviour. Treat this database as internal-only; do not expose its service externally.
 
 ---
 
@@ -260,7 +264,8 @@ SonarQube is exposed under:
 ${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/sonarqube
 ```
 
-> **Note:** The SonarQube chart installs the OIDC plugin, but this guide does not fully configure SonarQube SSO by default. Configure SonarQube authentication after deployment if required.
+!!! note
+    The SonarQube chart installs the OIDC plugin, but this guide does not fully configure SonarQube SSO by default. Configure SonarQube authentication after deployment if required.
 
 ---
 

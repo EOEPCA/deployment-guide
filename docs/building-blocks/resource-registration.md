@@ -89,7 +89,8 @@ During the script execution, you will be prompted to provide:
     - *Default*: `local-path`
 - **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
     - *Default*: `standard`
-    > Note that `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
+    !!! note
+        `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
     - *Example*: `letsencrypt-http01-apisix`
 - **`OPERATON_ADMIN_USER`**: Admin username for the Operaton BPM engine.
@@ -129,7 +130,8 @@ During the script execution, you'll be prompted for optional external service cr
 
 #### USGS M2M Credentials (for Landsat harvesting)
 
-> For the purpose of this demonstration, we advise you to create this account so we can showcase the Landsat harvesting capabilities of the Registration Harvester.
+!!! tip
+    For the purpose of this demonstration, we advise you to create this account so we can showcase the Landsat harvesting capabilities of the Registration Harvester.
 
 If you want to harvest Landsat data, you'll need credentials from [USGS Machine-to-Machine (M2M) API](https://m2m.cr.usgs.gov/):
 
@@ -224,26 +226,27 @@ harvester:
     claimName: eodata
 ```
 
-> Note that, alternative to directly creating the volume as above, the worker helm chart can be configured to create the volume itself...
->
-> ```
-> harvester:
->   eodata:
->     enabled: true
->     createPVC: true
->     claimName: eodata
->     storageClass: ${SHARED_STORAGECLASS}
-> ```
->
-> Subsequent worker instances should then be configured to use (rather than create) this existing volume...
-> 
-> ```
-> harvester:
->   eodata:
->     enabled: true
->     createPVC: false
->     claimName: eodata
-> ```
+!!! tip "Alternative: let the worker chart create the volume"
+    Rather than directly creating the volume as above, the worker helm chart can be configured to create the volume itself...
+
+    ```
+    harvester:
+      eodata:
+        enabled: true
+        createPVC: true
+        claimName: eodata
+        storageClass: ${SHARED_STORAGECLASS}
+    ```
+
+    Subsequent worker instances should then be configured to use (rather than create) this existing volume...
+
+    ```
+    harvester:
+      eodata:
+        enabled: true
+        createPVC: false
+        claimName: eodata
+    ```
 
 #### Deploy Landsat Harvester Worker
 
@@ -297,7 +300,8 @@ A Keycloak client is required for Resource Registration for two purposes:
 2. The Resource Registration needs to connect with other services that are protected via OIDC (e.g., resource-catalogue, eoapi)<br>
    _Ref. `RESOURCE_REGISTRATION_PROTECTED_TARGETS`_
 
-> If neither of these apply, you can skip this step.
+!!! note
+    If neither of these apply, you can skip this step.
 
 The client can be created using the Crossplane Keycloak provider via the `Client` CRD. `configure-resource-registration.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when either of the two cases above applied - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
@@ -334,10 +338,11 @@ bash validation.sh
 
 **Registration API:**
 
-> Authenticate as the configured _Test User_:
-> 
-> * Username: `eoepcauser` (ref. `KEYCLOAK_TEST_USER`)
-> * Password: `eoepcapassword` (ref. `KEYCLOAK_TEST_PASSWORD`)
+!!! note
+    Authenticate as the configured _Test User_:
+
+    * Username: `eoepcauser` (ref. `KEYCLOAK_TEST_USER`)
+    * Password: `eoepcapassword` (ref. `KEYCLOAK_TEST_PASSWORD`)
 
 Service root:
 
@@ -359,7 +364,8 @@ source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/operaton/"
 ```
 
-> Authenticate as the configured Operaton admin user - ref. `OPERATON_ADMIN_USER` / `OPERATON_ADMIN_PASSWORD`.
+!!! note
+    Authenticate as the configured Operaton admin user - ref. `OPERATON_ADMIN_USER` / `OPERATON_ADMIN_PASSWORD`.
 
 **Operaton REST API:**
 ```bash
@@ -400,7 +406,7 @@ echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 
 This example registers the STAC Collection `landsat-ot-c2-l2` resource into the EOEPCA Resource Catalogue instance - representing the `Landsat 8-9 OLI/TIRS Collection 2 Level-2`. This collection is used in later steps as a target for harvesting of some example Landsat data.
 
-The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block - specifically its protected, transactional endpoint (`resource-catalogue-protected`), since the public endpoint has transactions disabled by chart default. This requires Resource Discovery to have been deployed with `RESOURCE_DISCOVERY_ENABLE_IAM=yes`; without it, there is no HTTP write path into the catalogue at all (see Resource Discovery's [bulk-loading](resource-discovery.md#41-bulk-loading-records-directly-minimal--non-iam-deployments) instructions instead).
+The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block - specifically its protected, transactional endpoint (`resource-catalogue-protected`), since the public endpoint has transactions disabled by chart default. This requires Resource Discovery to have been deployed with `RESOURCE_DISCOVERY_ENABLE_IAM=yes`; without it, there is no HTTP write path into the catalogue at all (see Resource Discovery's [bulk-loading](resource-discovery.md#41-bulk-loading-records-directly-minimal-non-iam-deployments) instructions instead).
 
 ```bash
 source ~/.eoepca/state
@@ -441,8 +447,8 @@ EOF
 
 Check job status:
 
-> If required, authenticate to the Registration API - e.g. as user `eoepcauser`.<br>
-> You should see a new job with the status `COMPLETED`. 
+!!! note
+    If required, authenticate to the Registration API - e.g. as user `eoepcauser`. You should see a new job with the status `COMPLETED`.
 
 ```bash
 source ~/.eoepca/state
@@ -466,160 +472,166 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 
 ### Using the Registration Harvester
 
-#### Deploy Workflow for Landsat harvesting
+=== "Landsat"
 
-Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:
+    #### Deploy Workflow
 
-* `landsat_discover_data` (LandsatDiscoverHandler)
-* `landsat_continuous_data_discovery` (LandsatContinuousDiscoveryHandler)
-* `landsat_get_download_urls` (LandsatGetDownloadUrlHandler)
-* `landsat_download_data` (LandsatDownloadHandler)
-* `landsat_untar` (LandsatUntarHandler)
-* `landsat_extract_metadata` (LandsatExtractMetadataHandler)
-* `landsat_register_metadata` (LandsatRegisterMetadataHandler)
+    Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:
 
-To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.
+    * `landsat_discover_data` (LandsatDiscoverHandler)
+    * `landsat_continuous_data_discovery` (LandsatContinuousDiscoveryHandler)
+    * `landsat_get_download_urls` (LandsatGetDownloadUrlHandler)
+    * `landsat_download_data` (LandsatDownloadHandler)
+    * `landsat_untar` (LandsatUntarHandler)
+    * `landsat_extract_metadata` (LandsatExtractMetadataHandler)
+    * `landsat_register_metadata` (LandsatRegisterMetadataHandler)
 
-**Main workflow `landsat.bpmn`**
+    To exploit this we deploy the Landsat workflow, comprising two BPMN processes. The main process (Landsat Registration) searches for new data at USGS. For each new scene found, the workflow executes another process (Landsat Scene Ingestion) which performs the individual steps for harvesting and registering the data.
 
-```bash
-source ~/.eoepca/state
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
-curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
-  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
-  -F "deployment-name=landsat" \
-  -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
-```
+    **Main workflow `landsat.bpmn`**
 
-**Sub-workflow `landsat-scene-ingestion.bpmn` for individual scene ingestion**
+    ```bash
+    source ~/.eoepca/state
+    curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat.bpmn | \
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+      -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+      -F "deployment-name=landsat" \
+      -F "landsat.bpmn=@-;filename=landsat.bpmn;type=text/xml" | jq
+    ```
 
-```bash
-source ~/.eoepca/state
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
-curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
-  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
-  -F "deployment-name=landsat-scene-ingestion" \
-  -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
-```
+    **Sub-workflow `landsat-scene-ingestion.bpmn` for individual scene ingestion**
 
-> Note: the Operaton REST API deployment/process endpoints are not protected by HTTP basic auth by default - the `-u` flag above is only needed if you've explicitly enabled REST API authentication. Confirm against your deployment; drop `-u` if you get a 401 with credentials supplied.
+    ```bash
+    source ~/.eoepca/state
+    curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/landsat-scene-ingestion.bpmn | \
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+      -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+      -F "deployment-name=landsat-scene-ingestion" \
+      -F "landsat-scene-ingestion.bpmn=@-;filename=landsat-scene-ingestion.bpmn;type=text/xml" | jq
+    ```
 
-#### Execute Landsat Harvesting
+    !!! note
+        The Operaton REST API deployment/process endpoints are not protected by HTTP basic auth by default - the `-u` flag above is only needed if you've explicitly enabled REST API authentication. Confirm against your deployment; drop `-u` if you get a 401 with credentials supplied.
 
-The main `landsat-data-ingestion` process (id `landsat-data-ingestion`) is triggered via its message start event (message name `landsat-start-order`), rather than started directly by process definition - use the `/message` endpoint to correlate it:
+    #### Execute Harvesting
 
-```bash
-source ~/.eoepca/state
-curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/message" \
-  -H "Content-Type: application/json" \
-  -d @- <<EOF | jq
-{
-  "messageName": "landsat-start-order",
-  "processVariables": {
-    "datetime_interval": {"value": "2024-11-13T10:00:00Z/2024-11-13T11:00:00Z", "type": "String"},
-    "collections": {"value": "landsat-c2l2-sr", "type": "String"},
-    "bbox": {"value": "-7,46,3,52", "type": "String"}
-  }
-}
-EOF
-```
+    The main `landsat-data-ingestion` process (id `landsat-data-ingestion`) is triggered via its message start event (message name `landsat-start-order`), rather than started directly by process definition - use the `/message` endpoint to correlate it:
 
-#### Monitor Landsat Harvesting Progress
+    ```bash
+    source ~/.eoepca/state
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/message" \
+      -H "Content-Type: application/json" \
+      -d @- <<EOF | jq
+    {
+      "messageName": "landsat-start-order",
+      "processVariables": {
+        "datetime_interval": {"value": "2024-11-13T10:00:00Z/2024-11-13T11:00:00Z", "type": "String"},
+        "collections": {"value": "landsat-c2l2-sr", "type": "String"},
+        "bbox": {"value": "-7,46,3,52", "type": "String"}
+      }
+    }
+    EOF
+    ```
 
-**Check worker logs:**
+    #### Monitor Harvesting Progress
 
-```bash
-kubectl -n resource-registration logs -f deploy/registration-harvester-worker-landsat
-```
+    **Check worker logs:**
 
-Use `Ctrl-C` to exit the log stream.
+    ```bash
+    kubectl -n resource-registration logs -f deploy/registration-harvester-worker-landsat
+    ```
 
-> Note that the harvesting may take some time, depending on download speeds and the number of scenes to be harvested. Therefore the following monitoring steps may be subject to delay.
+    Use `Ctrl-C` to exit the log stream.
 
-**Monitor process instances:**
-```bash
-source ~/.eoepca/state
-curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
-  | jq -r '.[] | "\(.id) | \(.definitionId)"'
-```
+    !!! note
+        The harvesting may take some time, depending on download speeds and the number of scenes to be harvested. Therefore the following monitoring steps may be subject to delay.
 
-**Check registered items:**
+    **Monitor process instances:**
+    ```bash
+    source ~/.eoepca/state
+    curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
+      | jq -r '.[] | "\(.id) | \(.definitionId)"'
+    ```
 
-Once harvesting completes (this may take time depending on download speeds), check the catalogue:
-```bash
-source ~/.eoepca/state
-xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
-```
+    **Check registered items:**
 
-#### Deploy Workflow for Sentinel harvesting
+    Once harvesting completes (this may take time depending on download speeds), check the catalogue:
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
+    ```
 
-As above for the Landsat harvester, for Sentinel harvesting two workflows must be deployed to Operaton using
+=== "Sentinel"
 
-```bash
-source ~/.eoepca/state
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel.bpmn | \
-curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
-  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
-  -F "deployment-name=sentinel" \
-  -F "sentinel.bpmn=@-;filename=sentinel.bpmn;type=text/xml" | jq
-```
+    #### Deploy Workflow
 
-and
+    As for the Landsat harvester, two workflows must be deployed to Operaton for Sentinel harvesting:
 
-```bash
-curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel-scene-ingestion.bpmn | \
-curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
-  -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
-  -F "deployment-name=sentinel-scene-ingestion" \
-  -F "sentinel-scene-ingestion.bpmn=@-;filename=sentinel-scene-ingestion.bpmn;type=text/xml" | jq
-```
+    ```bash
+    source ~/.eoepca/state
+    curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel.bpmn | \
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+      -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+      -F "deployment-name=sentinel" \
+      -F "sentinel.bpmn=@-;filename=sentinel.bpmn;type=text/xml" | jq
+    ```
+
+    and
+
+    ```bash
+    curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/sentinel-scene-ingestion.bpmn | \
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+      -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+      -F "deployment-name=sentinel-scene-ingestion" \
+      -F "sentinel-scene-ingestion.bpmn=@-;filename=sentinel-scene-ingestion.bpmn;type=text/xml" | jq
+    ```
 
 
-#### Execute Sentinel Harvesting
+    #### Execute Harvesting
 
-Start a Sentinel harvesting job (for a small time period - this should match three records). Like Landsat, the `sentinel-data-ingestion` process is triggered via its message start event (message name `sentinel-start-order`):
+    Start a Sentinel harvesting job (for a small time period - this should match three records). Like Landsat, the `sentinel-data-ingestion` process is triggered via its message start event (message name `sentinel-start-order`):
 
-```bash
-source ~/.eoepca/state
-curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/message" \
-  -H "Content-Type: application/json" \
-  -d @- <<EOF | jq
-{
-  "messageName": "sentinel-start-order",
-  "processVariables": {
-    "filter": {"value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true", "type": "String"}
-  }
-}
-EOF
-```
+    ```bash
+    source ~/.eoepca/state
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/message" \
+      -H "Content-Type: application/json" \
+      -d @- <<EOF | jq
+    {
+      "messageName": "sentinel-start-order",
+      "processVariables": {
+        "filter": {"value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true", "type": "String"}
+      }
+    }
+    EOF
+    ```
 
-#### Monitor Sentinel Harvesting Progress
+    #### Monitor Harvesting Progress
 
-**Check worker logs:**
+    **Check worker logs:**
 
-```bash
-kubectl -n resource-registration logs -f deploy/registration-harvester-worker-sentinel
-```
+    ```bash
+    kubectl -n resource-registration logs -f deploy/registration-harvester-worker-sentinel
+    ```
 
-Use `Ctrl-C` to exit the log stream.
+    Use `Ctrl-C` to exit the log stream.
 
-> Note that the harvesting may take some time, depending on download speeds and the number of scenes to be harvested. Therefore the following monitoring steps may be subject to delay.
+    !!! note
+        The harvesting may take some time, depending on download speeds and the number of scenes to be harvested. Therefore the following monitoring steps may be subject to delay.
 
-**Monitor process instances:**
-```bash
-source ~/.eoepca/state
-curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
-  | jq -r '.[] | "\(.id) | \(.definitionId)"'
-```
+    **Monitor process instances:**
+    ```bash
+    source ~/.eoepca/state
+    curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
+      | jq -r '.[] | "\(.id) | \(.definitionId)"'
+    ```
 
-**Check registered items:**
+    **Check registered items:**
 
-Once harvesting completes (this may take time depending on download speeds), check the catalogue:
-```bash
-source ~/.eoepca/state
-xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a/items"
-```
-
+    Once harvesting completes (this may take time depending on download speeds), check the catalogue:
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a/items"
+    ```
 ---
 
 ### Delivery of data `assets`
@@ -646,7 +658,8 @@ Use either the [On-line Radiant Earth instance](#using-on-line-radiant-earth-ser
 
 [Radiant Earth](https://radiant.earth/) provide a [public STAC Browser client](https://radiantearth.github.io/stac-browser).
 
-> If your Resource Catalogue deployment uses `http` (rather than `https`) then this will not work. Instead use the [local STAC Browser deployment](#using-local-stac-browser)
+!!! note
+    If your Resource Catalogue deployment uses `http` (rather than `https`) then this will not work. Instead use the [local STAC Browser deployment](#using-local-stac-browser).
 
 ```bash
 source ~/.eoepca/state

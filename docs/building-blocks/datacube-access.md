@@ -19,110 +19,113 @@ See the [STAC Best Practices for Data Cubes](https://github.com/EOEPCA/datacube-
 
 ## Optional: Deploy the Reference Filtering Service
 
-The steps below deploy the reference filtering API. This is only useful if you want a dedicated `datacube-access` endpoint on top of an existing STAC catalog - skip this section if you only need the STAC Best Practices to structure your own collections.
+!!! note
+    The steps below deploy the reference filtering API. This is only useful if you want a dedicated `datacube-access` endpoint on top of an existing STAC catalog - skip this section if you only need the STAC Best Practices to structure your own collections.
 
-### Prerequisites
+??? note "Deploy the Reference Filtering Service"
 
-| Component        | Requirement                   | Documentation Link                                                      |
-|------------------|-------------------------------|-------------------------------------------------------------------------|
-| Kubernetes       | Cluster (tested on v1.32)     | [Installation Guide](../prerequisites/kubernetes.md)                     |
-| Helm             | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)               |
-| kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)           |
-| Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress/overview.md)              |
-| Cert Manager     | Properly installed            | [Installation Guide](../prerequisites/tls.md)                           |
-| STAC Catalog     | Properly installed            | [Deployment Guide](./resource-discovery.md)                  |
+    ### Prerequisites
 
-**Clone the Deployment Guide Repository:**
+    | Component        | Requirement                   | Documentation Link                                                      |
+    |------------------|-------------------------------|-------------------------------------------------------------------------|
+    | Kubernetes       | Cluster (tested on v1.32)     | [Installation Guide](../prerequisites/kubernetes.md)                     |
+    | Helm             | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)               |
+    | kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)           |
+    | Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress/overview.md)              |
+    | Cert Manager     | Properly installed            | [Installation Guide](../prerequisites/tls.md)                           |
+    | STAC Catalog     | Properly installed            | [Deployment Guide](./resource-discovery.md)                  |
 
-```bash
-git clone https://github.com/EOEPCA/deployment-guide
-cd deployment-guide/scripts/datacube-access
-```
+    **Clone the Deployment Guide Repository:**
 
-**Validate your environment:**
+    ```bash
+    git clone https://github.com/EOEPCA/deployment-guide
+    cd deployment-guide/scripts/datacube-access
+    ```
 
-```bash
-bash check-prerequisites.sh
-```
+    **Validate your environment:**
 
-### Deployment Steps
+    ```bash
+    bash check-prerequisites.sh
+    ```
 
-1. **Run the Configuration Script**
+    ### Deployment Steps
 
-```bash
-bash configure-datacube-access.sh
-```
+    1. **Run the Configuration Script**
 
-**Configuration Parameters**
-During script execution, provide:
+    ```bash
+    bash configure-datacube-access.sh
+    ```
 
-- **`INGRESS_HOST`**: Domain for ingress hosts.
-  - *Example*: `example.com`
-- **`STAC_CATALOG_ENDPOINT`**: The STAC API to filter down to datacube-ready collections. Defaults to `https://eoapi.${INGRESS_HOST}/stac/`, matching the [Data Access](./data-access.md) BB's `eoapi` STAC endpoint.
-  - The service does not follow HTTP redirects when calling this backend. If the STAC catalog issues one (e.g. `eoapi` redirects `/stac` to `/stac/`), every request - including the pod's own liveness/readiness probes - fails and the pod crash-loops. Use the exact URL that returns `200` directly, trailing slash included where required.
-- **`CLUSTER_ISSUER`**: Cert-manager issuer for TLS certificates.
-  - *Example*: `letsencrypt-http01`
+    **Configuration Parameters**
+    During script execution, provide:
 
-
-2. **Deploy Datacube Access Using Helm**
-
-```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
-helm upgrade -i datacube-access eoepca-dev/datacube-access \
-  --values generated-values.yaml \
-  --version 2.0.0-rc2 \
-  --namespace datacube-access \
-  --create-namespace
-```
+    - **`INGRESS_HOST`**: Domain for ingress hosts.
+      - *Example*: `example.com`
+    - **`STAC_CATALOG_ENDPOINT`**: The STAC API to filter down to datacube-ready collections. Defaults to `https://eoapi.${INGRESS_HOST}/stac/`, matching the [Data Access](./data-access.md) BB's `eoapi` STAC endpoint.
+      - The service does not follow HTTP redirects when calling this backend. If the STAC catalog issues one (e.g. `eoapi` redirects `/stac` to `/stac/`), every request - including the pod's own liveness/readiness probes - fails and the pod crash-loops. Use the exact URL that returns `200` directly, trailing slash included where required.
+    - **`CLUSTER_ISSUER`**: Cert-manager issuer for TLS certificates.
+      - *Example*: `letsencrypt-http01`
 
 
-### Validation and Operation
+    2. **Deploy Datacube Access Using Helm**
 
-#### 1. Automated Validation
-
-```bash
-bash validation.sh
-```
-
-#### 2. Manual Validation via Web Browser
-
-Verify endpoints using a web browser:
-
-- **Landing/Home Page**
-
-```bash
-https://datacube-access.${INGRESS_HOST}/
-```
-Expect a JSON response with API information and links.
-
-- **OpenAPI Documentation**
-
-```bash
-https://datacube-access.${INGRESS_HOST}/docs
-```
-Interactive UI listing available API endpoints.
-
-- **Collections Access**
-
-```bash
-https://datacube-access.${INGRESS_HOST}/collections
-```
-Verify JSON or HTML response listing available datacube collections.
-
-- **Conformance Check**
-
-```bash
-https://datacube-access.${INGRESS_HOST}/conformance
-```
-Confirm OGC API conformance classes and supported standards.
+    ```bash
+    helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
+    helm repo update eoepca-dev
+    helm upgrade -i datacube-access eoepca-dev/datacube-access \
+      --values generated-values.yaml \
+      --version 2.0.0-rc2 \
+      --namespace datacube-access \
+      --create-namespace
+    ```
 
 
-#### Collection Access Test
+    ### Validation and Operation
 
-```bash
-curl "https://datacube-access.${INGRESS_HOST}/collections"
-```
+    #### 1. Automated Validation
+
+    ```bash
+    bash validation.sh
+    ```
+
+    #### 2. Manual Validation via Web Browser
+
+    Verify endpoints using a web browser:
+
+    - **Landing/Home Page**
+
+    ```bash
+    https://datacube-access.${INGRESS_HOST}/
+    ```
+    Expect a JSON response with API information and links.
+
+    - **OpenAPI Documentation**
+
+    ```bash
+    https://datacube-access.${INGRESS_HOST}/docs
+    ```
+    Interactive UI listing available API endpoints.
+
+    - **Collections Access**
+
+    ```bash
+    https://datacube-access.${INGRESS_HOST}/collections
+    ```
+    Verify JSON or HTML response listing available datacube collections.
+
+    - **Conformance Check**
+
+    ```bash
+    https://datacube-access.${INGRESS_HOST}/conformance
+    ```
+    Confirm OGC API conformance classes and supported standards.
+
+
+    #### Collection Access Test
+
+    ```bash
+    curl "https://datacube-access.${INGRESS_HOST}/collections"
+    ```
 
 ---
 

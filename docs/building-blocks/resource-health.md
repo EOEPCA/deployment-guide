@@ -130,7 +130,8 @@ helm upgrade -i resource-health eoepca-dev/resource-health-reference-deployment 
   -n resource-health --create-namespace
 ```
 
-> As part of this deployment, you will have a preconfigured healthcheck that runs every minute. 
+!!! note
+    As part of this deployment, you will have a preconfigured healthcheck that runs every minute.
 
 3. **Bootstrap OpenSearch security**
 
@@ -150,21 +151,21 @@ By default, Resource Health is designed to be flexible with Ingress and OIDC con
 
 For the purpose of this guide, the configuration script created a sample Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the `~/.eoepca/state` file.
 
-- **APISIX**
+=== "APISIX"
 
-```bash
-# Only if RESOURCE_HEALTH_ENABLE_OIDC=yes (these files are only generated in that case)
-kubectl apply -f apisix/plugin-api-auth.yaml -n resource-health
-kubectl apply -f apisix/plugin-browser-auth.yaml -n resource-health
+    ```bash
+    # Only if RESOURCE_HEALTH_ENABLE_OIDC=yes (these files are only generated in that case)
+    kubectl apply -f apisix/plugin-api-auth.yaml -n resource-health
+    kubectl apply -f apisix/plugin-browser-auth.yaml -n resource-health
 
-kubectl apply -f generated-ingress.yaml -n resource-health
-```
+    kubectl apply -f generated-ingress.yaml -n resource-health
+    ```
 
-- **Nginx**
+=== "Nginx"
 
-```bash
-kubectl apply -f generated-ingress.yaml -n resource-health
-```
+    ```bash
+    kubectl apply -f generated-ingress.yaml -n resource-health
+    ```
 
 ---
 
@@ -172,75 +173,76 @@ kubectl apply -f generated-ingress.yaml -n resource-health
 
 This step only applies if OIDC is enabled. To ensure your Keycloak user has proper permissions in OpenSearch, you must configure role mapping explicitly.
 
-#### If you are using Crossplane:
+=== "Crossplane"
 
-```bash
-kubectl apply -f keycloak.yaml
-```
+    ```bash
+    kubectl apply -f keycloak.yaml
+    ```
 
-This creates the `opensearch_user` realm role and the client's realm-role protocol mapper. It does **not** assign the role to your test user: Crossplane's `Roles` resource needs a `user.keycloak.m.crossplane.io` `User` object to reference, but `KEYCLOAK_TEST_USER` is normally a plain Keycloak user (not a Crossplane-managed one). Assign it via the Admin REST API instead:
+    This creates the `opensearch_user` realm role and the client's realm-role protocol mapper. It does **not** assign the role to your test user: Crossplane's `Roles` resource needs a `user.keycloak.m.crossplane.io` `User` object to reference, but `KEYCLOAK_TEST_USER` is normally a plain Keycloak user (not a Crossplane-managed one). Assign it via the Admin REST API instead:
 
-```bash
-source ~/.eoepca/state
+    ```bash
+    source ~/.eoepca/state
 
-ADMIN_TOKEN=$(curl -s -X POST \
-  -d "username=${KEYCLOAK_ADMIN_USER}" \
-  --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-  -d "grant_type=password" \
-  -d "client_id=admin-cli" \
-  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
-  | jq -r '.access_token')
+    ADMIN_TOKEN=$(curl -s -X POST \
+      -d "username=${KEYCLOAK_ADMIN_USER}" \
+      --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
+      -d "grant_type=password" \
+      -d "client_id=admin-cli" \
+      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
+      | jq -r '.access_token')
 
-USER_ID=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${KEYCLOAK_TEST_USER}" \
-  | jq -r '.[0].id')
+    USER_ID=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${KEYCLOAK_TEST_USER}" \
+      | jq -r '.[0].id')
 
-ROLE_JSON=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/roles/opensearch_user")
+    ROLE_JSON=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/roles/opensearch_user")
 
-curl -s -X POST \
-  -H "Authorization: Bearer ${ADMIN_TOKEN}" -H "Content-Type: application/json" \
-  -d "[${ROLE_JSON}]" \
-  "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${USER_ID}/role-mappings/realm"
-```
+    curl -s -X POST \
+      -H "Authorization: Bearer ${ADMIN_TOKEN}" -H "Content-Type: application/json" \
+      -d "[${ROLE_JSON}]" \
+      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${USER_ID}/role-mappings/realm"
+    ```
 
-> **Note**: this uses the `master` realm for the admin token, since `admin-cli`'s default admin account normally isn't a user of your own realm. If `KEYCLOAK_ADMIN_USER` is a user of `${REALM}` instead, use `${REALM}` here.
+    !!! note
+        This uses the `master` realm for the admin token, since `admin-cli`'s default admin account normally isn't a user of your own realm. If `KEYCLOAK_ADMIN_USER` is a user of `${REALM}` instead, use `${REALM}` here.
 
-#### OR If you are configuring Keycloak manually, follow these steps:
+=== "Manual"
 
-#### Step 1: Create a Keycloak Realm Role
+    #### Step 1: Create a Keycloak Realm Role
 
-* Log into your Keycloak (`auth.${INGRESS_HOST}`).
-* Navigate to your realm (`eoepca`).
-* Click on **Realm Roles**, then click **Create Role**.
-* Create a new role named `opensearch_user`
+    * Log into your Keycloak (`auth.${INGRESS_HOST}`).
+    * Navigate to your realm (`eoepca`).
+    * Click on **Realm Roles**, then click **Create Role**.
+    * Create a new role named `opensearch_user`
 
-#### Step 2: Assign the Role to your Keycloak User
+    #### Step 2: Assign the Role to your Keycloak User
 
-* Still in Keycloak, go to **Users** and select your user (e.g. `eoepcauser`).
-* Click on the **Role Mappings** tab.
-* Assign the newly created `opensearch_user` realm role to this user.
+    * Still in Keycloak, go to **Users** and select your user (e.g. `eoepcauser`).
+    * Click on the **Role Mappings** tab.
+    * Assign the newly created `opensearch_user` realm role to this user.
 
-#### Step 3: Add the Realm Role Mapper to your Keycloak Client
+    #### Step 3: Add the Realm Role Mapper to your Keycloak Client
 
-* Go to **Clients** and select your `resource-health` client.
-* Navigate to **Client Scopes → resource-health-dedicated** and click **Add Mapper**.
-* Configure the `User Realm Role` template mapper as follows:
+    * Go to **Clients** and select your `resource-health` client.
+    * Navigate to **Client Scopes → resource-health-dedicated** and click **Add Mapper**.
+    * Configure the `User Realm Role` template mapper as follows:
 
-| Field               | Value                |
-| ------------------- | -------------------- |
-| Mapper Type         | `User Realm Role`    |
-| Name                | `realm roles`        |
-| Multivalued         | `ON` ✅               |
-| Token Claim Name    | `roles`              |
-| Claim JSON Type     | `String`             |
-| Add to ID token     | `ON` ✅               |
-| Add to Access token | `ON` ✅               |
-| Add to Userinfo     | `ON` (recommended) ✅ |
+    | Field               | Value                |
+    | ------------------- | -------------------- |
+    | Mapper Type         | `User Realm Role`    |
+    | Name                | `realm roles`        |
+    | Multivalued         | `ON` ✅               |
+    | Token Claim Name    | `roles`              |
+    | Claim JSON Type     | `String`             |
+    | Add to ID token     | `ON` ✅               |
+    | Add to Access token | `ON` ✅               |
+    | Add to Userinfo     | `ON` (recommended) ✅ |
 
-This configuration ensures Keycloak will correctly include realm roles in the JWT.
+    This configuration ensures Keycloak will correctly include realm roles in the JWT.
 
-![Dashboard](../img/resource-health/role.jpeg)
+    ![Dashboard](../img/resource-health/role.jpeg)
 
 ---
 
@@ -298,7 +300,8 @@ ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/proto
   | jq -r '.access_token')
 ```
 
-> **Note**: If you are not using OIDC authentication, skip this section and omit the `-H "Authorization: Bearer ${ACCESS_TOKEN}"` header from all curl commands below.
+!!! note
+    If you are not using OIDC authentication, skip this section and omit the `-H "Authorization: Bearer ${ACCESS_TOKEN}"` header from all curl commands below.
 
 ---
 

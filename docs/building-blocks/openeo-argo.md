@@ -1,10 +1,12 @@
 # Processing - OpenEO ArgoWorkflows with Dask
 
-> **Note**: This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.
+!!! warning "Active Development"
+    This Building Block is under active development. Some features may still be evolving, so we recommend using it with consideration as updates are rolled out.
 
 OpenEO ArgoWorkflows provides a Kubernetes-native implementation of the OpenEO API specification, using Argo Workflows to execute OpenEO process graphs and Dask for distributed processing. This deployment offers an alternative to the GeoTrellis backend, leveraging Dask's parallel computing capabilities for Earth observation data processing.
 
-> **Note:** OIDC authentication is app-native - the API itself validates tokens against the configured identity provider's discovery endpoint, so it works the same way under either `apisix` or `nginx` ingress. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set up your own OIDC Provider (e.g. Keycloak). If OIDC is disabled, a basic-auth proxy is deployed instead - for testing only.
+!!! note
+    OIDC authentication is app-native - the API itself validates tokens against the configured identity provider's discovery endpoint, so it works the same way under either `apisix` or `nginx` ingress. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set up your own OIDC Provider (e.g. Keycloak). If OIDC is disabled, a basic-auth proxy is deployed instead - for testing only.
 
 ---
 
@@ -25,7 +27,8 @@ Before deploying, ensure your environment meets these requirements:
 
 The API, executor, and Dask worker pods all mount the same job workspace volume concurrently, so the storage class used for it (`SHARED_STORAGECLASS` below) **must** support `ReadWriteMany`.
 
-> **Note:** this chart bundles Argo Workflows (CRDs + controller) as a dependency. If another Building Block on the cluster also installs the same cluster-scoped `*.argoproj.io` CRDs under a different Helm release (e.g. OGC API Processing's `zoo-project-dru`), `helm upgrade -i` below will fail with a CRD-ownership error - only one release can own them.
+!!! warning
+    This chart bundles Argo Workflows (CRDs + controller) as a dependency. If another Building Block on the cluster also installs the same cluster-scoped `*.argoproj.io` CRDs under a different Helm release (e.g. OGC API Processing's `zoo-project-dru`), `helm upgrade -i` below will fail with a CRD-ownership error - only one release can own them.
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -91,7 +94,8 @@ helm upgrade -i openeo eodc/openeo-argo \
     --timeout 10m
 ```
 
-> Check for a newer chart release with `helm search repo eodc/openeo-argo -l` - pin whichever version you've actually tested against.
+!!! tip
+    Check for a newer chart release with `helm search repo eodc/openeo-argo -l` - pin whichever version you've actually tested against.
 
 The chart creates the API's Argo Workflows service-account token via a `post-upgrade` hook, which does **not** run on a first-ever install (Helm only fires `post-install` hooks then). If the `openeo-openeo-argo` pod is stuck in `CreateContainerConfigError` with `secret "openeo-argo-access-sa.service-account-token" not found`, re-run the exact same `helm upgrade` command above - the second run is a real upgrade, so the hook fires and the pod recovers.
 
@@ -100,21 +104,24 @@ The chart creates the API's Argo Workflows service-account token via a `post-upg
 kubectl apply -f generated-ingress.yaml
 ```
 
-### 6. Deploy Basic Auth Proxy (if OIDC disabled)
+### 6. Configure Authentication
 
-If you disabled OIDC authentication during configuration:
-```bash
-kubectl apply -f generated-proxy-auth.yaml
-```
+=== "OIDC Disabled"
 
-### 7. Configure OIDC Client (if using OIDC)
+    Deploy the basic-auth proxy:
 
-A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, plus a `ClientDefaultScopes` override) when OIDC was enabled - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
+    ```bash
+    kubectl apply -f generated-proxy-auth.yaml
+    ```
 
-```bash
-kubectl apply -f generated-iam.yaml
-kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/openeo-argo -n iam-management --timeout=60s
-```
+=== "OIDC Enabled"
+
+    A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, plus a `ClientDefaultScopes` override) when OIDC was enabled - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
+
+    ```bash
+    kubectl apply -f generated-iam.yaml
+    kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/openeo-argo -n iam-management --timeout=60s
+    ```
 
 ---
 
@@ -219,7 +226,8 @@ curl -s "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq
 ```
 
-> **Note:** The STAC catalogue must contain collections with data formatted for OpenEO processing. Check the available collections at your STAC endpoint and ensure the spatial/temporal extent matches actual data.
+!!! note
+    The STAC catalogue must contain collections with data formatted for OpenEO processing. Check the available collections at your STAC endpoint and ensure the spatial/temporal extent matches actual data.
 
 ---
 

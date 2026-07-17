@@ -1,6 +1,7 @@
 # Federated Data Proxy Building Block
 
-> **Coming Soon**: This Building Block is under active development and is not yet available for deployment via this guide. The proxy and control-plane components are currently only published to a private container registry. This page will be extended with full deployment instructions once public images/charts are available.
+!!! info "Coming Soon"
+    This Building Block is under active development and is not yet available for deployment via this guide. The proxy and control-plane components are currently only published to a private container registry. This page will be extended with full deployment instructions once public images/charts are available.
 
 ## Introduction
 

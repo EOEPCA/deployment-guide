@@ -86,7 +86,8 @@ The protected endpoint currently requires APISIX because it uses APISIX `openid-
 
 The configuration script also generates and stores two credentials in `~/.eoepca/state` at this point: `RESOURCE_CATALOGUE_SESSION_SECRET` (APISIX's OIDC session cookie signing key) and `RESOURCE_DISCOVERY_DB_PASSWORD` (the Postgres password the protected catalogue uses to reach the public catalogue's chart-managed database). You don't need to set these yourself.
 
-> Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
+!!! warning
+    Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
 
 2. **Deploy Resource Discovery Using Helm**
 
@@ -311,7 +312,8 @@ kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
     --path /tmp/sample_record.xml
 ```
 
-> A warning about the `geometry` field is expected and can be ignored for this sample.
+!!! note
+    A warning about the `geometry` field is expected and can be ignored for this sample.
 
 This is the same tool pycsw's own harvest/bulk-load workflows use to pre-populate a catalogue - it's a legitimate way to seed data, it just always needs cluster access rather than going over the ingress.
 
