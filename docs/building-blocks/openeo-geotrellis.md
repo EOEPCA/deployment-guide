@@ -48,7 +48,7 @@ During this process, you'll be prompted for:
 - **`INGRESS_HOST`**: Base domain for ingress hosts (e.g. `example.com`)
 - **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent volumes
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates
-- **`OPENEO_ENABLE_OIDC`**: Whether to enable OIDC authentication (yes/no)
+- **`OPENEO_ENABLE_OIDC`**: Whether to enable OIDC authentication (yes/no). Default: `yes`
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)
 
 !!! note "Authentication"

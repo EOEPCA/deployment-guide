@@ -261,7 +261,9 @@ If your input data is hosted separately from output storage:
 
 ### OIDC Configuration
 
-> **Note:** The EOEPCA OIDC protection requires the **APISIX** Ingress Controller. If you're using a different ingress controller, OIDC will not be available and you can skip this configuration.
+- **`OIDC_OAPIP_ENABLED`**: Enable IAM/OIDC protection for OAPIP (Default: `true`)
+
+> **Note:** The EOEPCA OIDC protection requires the **APISIX** Ingress Controller. If you're using a different ingress controller, set `OIDC_OAPIP_ENABLED=false` - OIDC will not be available and you can skip this configuration.
 
 If using APISIX, you can enable OIDC authentication during configuration. When prompted for the `Client ID`, we recommend `oapip-engine`.
 

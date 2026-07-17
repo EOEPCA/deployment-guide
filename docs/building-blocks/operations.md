@@ -132,11 +132,19 @@ During the script execution, you will be prompted to provide:
 **Advanced Configuration Options**
 
 - **`ENABLE_IAM`**: Enable Keycloak integration (yes/no)
-    - If yes, you'll be prompted for:
-        - **`KEYCLOAK_HOST`**: Keycloak service hostname
-        - **`REALM`**: Keycloak realm name (default: `eoepca`)
-        - **`GRAFANA_CLIENT_ID`**: OIDC client ID for Grafana (default: `monitoring`)
-        - **`KEEP_CLIENT_ID`**: OIDC client ID for Keep (default: `alerting`)
+
+=== "Without IAM (default)"
+
+    Grafana uses local admin auth and Keep runs unauthenticated - see [Authentication](#authentication) below.
+
+=== "With IAM"
+
+    You'll be prompted for:
+
+    - **`KEYCLOAK_HOST`**: Keycloak service hostname
+    - **`REALM`**: Keycloak realm name (default: `eoepca`)
+    - **`GRAFANA_CLIENT_ID`**: OIDC client ID for Grafana (default: `monitoring`)
+    - **`KEEP_CLIENT_ID`**: OIDC client ID for Keep (default: `alerting`)
 
 - **`ENABLE_STAC_ALERTS`**: Deploy STAC-specific SLO alerts (yes/no)
     - Only applicable if Data Access BB is deployed with APISIX prometheus plugin enabled
@@ -195,27 +203,40 @@ kubectl apply -k alloy/
 
 #### Deploy Keep and oauth2-proxy
 
-```bash
-source ~/.eoepca/state
-helm repo add keephq https://keephq.github.io/helm-charts
-helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
-helm repo update keephq oauth2-proxy
+=== "Without IAM (default)"
 
-helm upgrade -i keep keephq/keep \
-  --version 0.1.95 \
-  --namespace operations \
-  --values keep/generated-values.yaml \
-  --wait
+    ```bash
+    source ~/.eoepca/state
+    helm repo add keephq https://keephq.github.io/helm-charts
+    helm repo update keephq
 
-# Only required if IAM is enabled in this BB
-if [ "${OPERATIONS_ENABLE_IAM}" = "yes" ]; then
-  helm upgrade -i keep-oauth2-proxy oauth2-proxy/oauth2-proxy \
-    --version 10.4.2 \
-    --namespace operations \
-    --values keep/generated-oauth2-proxy-values.yaml \
-    --wait
-fi
-```
+    helm upgrade -i keep keephq/keep \
+      --version 0.1.95 \
+      --namespace operations \
+      --values keep/generated-values.yaml \
+      --wait
+    ```
+
+=== "With IAM"
+
+    ```bash
+    source ~/.eoepca/state
+    helm repo add keephq https://keephq.github.io/helm-charts
+    helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
+    helm repo update keephq oauth2-proxy
+
+    helm upgrade -i keep keephq/keep \
+      --version 0.1.95 \
+      --namespace operations \
+      --values keep/generated-values.yaml \
+      --wait
+
+    helm upgrade -i keep-oauth2-proxy oauth2-proxy/oauth2-proxy \
+      --version 10.4.2 \
+      --namespace operations \
+      --values keep/generated-oauth2-proxy-values.yaml \
+      --wait
+    ```
 
 #### Apply Alerting Configuration
 
@@ -241,23 +262,33 @@ kubectl apply -k dashboards/
 
 #### Configure Ingress/Routes
 
-If IAM is enabled then Keycloak needs to be configured with the `monitoring` and `alerting` clients and their associated roles. Apply the generated IAM manifest.
+=== "Without IAM (default)"
 
-If APISIX is the configured ingress controller, then apply the dedicated `ApisixRoute` resources.
+    If APISIX is the configured ingress controller, apply the dedicated `ApisixRoute` resources:
 
-```bash
-source ~/.eoepca/state
-if [ "${OPERATIONS_ENABLE_IAM}" = "yes" ]; then
-  kubectl apply -f iam/generated-iam.yaml
-fi
-if [ "${INGRESS_CLASS}" = "apisix" ]; then
-  kubectl apply -f ingress/generated-monitoring-ingress.yaml
-  kubectl apply -f ingress/generated-alerting-ingress.yaml
-fi
-```
+    ```bash
+    source ~/.eoepca/state
+    if [ "${INGRESS_CLASS}" = "apisix" ]; then
+      kubectl apply -f ingress/generated-monitoring-ingress.yaml
+      kubectl apply -f ingress/generated-alerting-ingress.yaml
+    fi
+    ```
 
-!!! note "IAM"
-    After Keycloak creates the clients, extract the generated client secrets and populate the `monitoring-oidc` and `alerting-oidc` secrets. Restart the Grafana and oauth2-proxy pods so they pick up the new values.
+=== "With IAM"
+
+    Keycloak needs to be configured with the `monitoring` and `alerting` clients and their associated roles, then - if APISIX is the configured ingress controller - apply the dedicated `ApisixRoute` resources:
+
+    ```bash
+    source ~/.eoepca/state
+    kubectl apply -f iam/generated-iam.yaml
+    if [ "${INGRESS_CLASS}" = "apisix" ]; then
+      kubectl apply -f ingress/generated-monitoring-ingress.yaml
+      kubectl apply -f ingress/generated-alerting-ingress.yaml
+    fi
+    ```
+
+    !!! note
+        After Keycloak creates the clients, extract the generated client secrets and populate the `monitoring-oidc` and `alerting-oidc` secrets. Restart the Grafana and oauth2-proxy pods so they pick up the new values.
 
 ---
 
@@ -288,11 +319,7 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
 
 #### Authentication
 
-=== "IAM Enabled"
-
-    Both UIs are fronted by Keycloak. Users must be assigned one of `grafana_admin`, `grafana_editor`, or `grafana_viewer` on the `monitoring` client to access Grafana, and one of `keep_admin` or `keep_noc` on the `alerting` client to access Keep.
-
-=== "IAM Disabled"
+=== "Without IAM (default)"
 
     Grafana uses local admin auth. Retrieve the chart-generated credentials with:
 
@@ -305,6 +332,10 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
     ```
 
     Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated.
+
+=== "With IAM"
+
+    Both UIs are fronted by Keycloak. Users must be assigned one of `grafana_admin`, `grafana_editor`, or `grafana_viewer` on the `monitoring` client to access Grafana, and one of `keep_admin` or `keep_noc` on the `alerting` client to access Keep.
 
 ---
 

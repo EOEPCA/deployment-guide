@@ -10,7 +10,7 @@ MinIO provides a scalable and high-performance object storage solution that's co
 
 ### Scripted Deployment
 
-The Minio deployment in this guide follows the same [Scripted Deployment Approach](../building-blocks/overview.md#scripted-deployment-approach), as for the EOEPCA building blocks.
+The Minio deployment in this guide follows the same [scripted deployment approach](../index.md#how-deployment-works) as for the EOEPCA building blocks.
 
 ---
 ## Prerequisites

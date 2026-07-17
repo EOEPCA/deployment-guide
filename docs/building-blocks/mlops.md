@@ -88,7 +88,7 @@ If you need different bucket names, create them in MinIO yourself and edit `shar
 
 **OIDC Configuration (Optional):**
 
-You will be prompted to provide whether you wish to enable OIDC authentication. GitLab validates OIDC tokens itself (via its `openid_connect` omniauth provider) and SharingHub authenticates through GitLab OAuth, so this works under either ingress controller. If you **don't** want to enable OIDC, enter `false` when prompted.
+You will be prompted to provide whether you wish to enable OIDC authentication (default: `true`). GitLab validates OIDC tokens itself (via its `openid_connect` omniauth provider) and SharingHub authenticates through GitLab OAuth, so this works under either ingress controller. If you **don't** want to enable OIDC, enter `false` when prompted.
 
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
     - *Example*: `https://keycloak.example.com/realms/eoepca`

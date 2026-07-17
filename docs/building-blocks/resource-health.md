@@ -92,10 +92,24 @@ During execution, you will be prompted for:
 - **`INGRESS_HOST`**: Hostname.
 - **`INTERNAL_CLUSTER_ISSUER`**: Name of the cert-manager ClusterIssuer for internal TLS. (Default: `eoepca-ca-clusterissuer`)
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes. (Default: `standard`)
+- **`RESOURCE_HEALTH_ENABLE_OIDC`**: Enable OIDC protection for Resource Health. (Default: `yes`)
+
+=== "With OIDC (default)"
+
+    - **`RESOURCE_HEALTH_CLIENT_ID`**: Keycloak Client ID for Resource Health. (Default: `resource-health`)
+
+    Only supported with APISIX - OIDC protection is enforced at the ingress layer via an `ApisixRoute` + `openid-connect` plugin, and there is no nginx equivalent. `configure-resource-health.sh` rejects `RESOURCE_HEALTH_ENABLE_OIDC=yes` with `INGRESS_CLASS=nginx`.
+
+=== "Without OIDC"
+
+    Resource Health deploys with public, unauthenticated endpoints. The [Authentication](#authentication) step below isn't needed, and the Keycloak-related steps ([2](#2-create-a-keycloak-client), [5](#5-configure-keycloak-client)) can be skipped.
 
 ---
 
 ### 2. Create a Keycloak Client
+
+!!! note
+    Skip this step if `RESOURCE_HEALTH_ENABLE_OIDC=no` - `generated-iam.yaml` is only rendered when OIDC is enabled.
 
 A Keycloak client is required for the ingress protection of the Resource Health BB. `configure-resource-health.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD plus its client-secret `Secret`) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
@@ -272,36 +286,39 @@ bash validation.sh
 
 ### Authentication
 
-The Resource Health APIs are protected by OIDC authentication. Before making API requests, obtain an access token:
+=== "With OIDC (default)"
 
-```bash
-source ~/.eoepca/state
+    The Resource Health APIs are protected by OIDC authentication. Before making API requests, obtain an access token:
 
-ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=password" \
-  -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
-  -d "client_secret=${RESOURCE_HEALTH_CLIENT_SECRET}" \
-  -d "username=${KEYCLOAK_TEST_USER}" \
-  -d "password=${KEYCLOAK_TEST_PASSWORD}" \
-  | jq -r '.access_token')
+    ```bash
+    source ~/.eoepca/state
 
-echo "Access Token: ${ACCESS_TOKEN:0:50}..."
-```
+    ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -d "grant_type=password" \
+      -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
+      -d "client_secret=${RESOURCE_HEALTH_CLIENT_SECRET}" \
+      -d "username=${KEYCLOAK_TEST_USER}" \
+      -d "password=${KEYCLOAK_TEST_PASSWORD}" \
+      | jq -r '.access_token')
 
-Alternatively, for machine-to-machine access without a user context, use the client credentials grant:
+    echo "Access Token: ${ACCESS_TOKEN:0:50}..."
+    ```
 
-```bash
-ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=client_credentials" \
-  -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
-  -d "client_secret=${RESOURCE_HEALTH_CLIENT_SECRET}" \
-  | jq -r '.access_token')
-```
+    Alternatively, for machine-to-machine access without a user context, use the client credentials grant:
 
-!!! note
-    If you are not using OIDC authentication, skip this section and omit the `-H "Authorization: Bearer ${ACCESS_TOKEN}"` header from all curl commands below.
+    ```bash
+    ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -d "grant_type=client_credentials" \
+      -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
+      -d "client_secret=${RESOURCE_HEALTH_CLIENT_SECRET}" \
+      | jq -r '.access_token')
+    ```
+
+=== "Without OIDC"
+
+    No token is needed. Omit the `-H "Authorization: Bearer ${ACCESS_TOKEN}"` header from all curl commands below.
 
 ---
 

@@ -76,18 +76,20 @@ During the script execution, you will be prompted to provide:
     - Example: `letsencrypt-http01-apisix`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for the chart-managed PostgreSQL volume.  
     - Example: `local-path`
-- **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue. the EOEPCA IAM building block must already be deployed.
-    - Supported values: `yes`, `no`
-
-When `RESOURCE_DISCOVERY_ENABLE_IAM=yes`, Resource Discovery deploys a second protected catalogue endpoint:
-The protected endpoint currently requires APISIX because it uses APISIX `openid-connect` and `opa` plugins. If using nginx, configure `RESOURCE_DISCOVERY_ENABLE_IAM=no`.
-
-`resource-catalogue-protected.${INGRESS_HOST}`
-
-The configuration script also generates and stores two credentials in `~/.eoepca/state` at this point: `RESOURCE_CATALOGUE_SESSION_SECRET` (APISIX's OIDC session cookie signing key) and `RESOURCE_DISCOVERY_DB_PASSWORD` (the Postgres password the protected catalogue uses to reach the public catalogue's chart-managed database). You don't need to set these yourself.
+- **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue - the EOEPCA IAM building block must already be deployed. Supported values: `yes`, `no`.
 
 !!! warning
     Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
+
+=== "Without IAM (default)"
+
+    Transactional writes stay disabled on the public catalogue - see [Bulk-loading records directly](#41-bulk-loading-records-directly-minimal-non-iam-deployments) for seeding sample data.
+
+=== "With IAM"
+
+    Resource Discovery deploys a second protected catalogue endpoint, `resource-catalogue-protected.${INGRESS_HOST}` - requires APISIX, since it uses the APISIX `openid-connect` and `opa` plugins.
+
+    The configuration script also generates and stores two credentials in `~/.eoepca/state` at this point: `RESOURCE_CATALOGUE_SESSION_SECRET` (APISIX's OIDC session cookie signing key) and `RESOURCE_DISCOVERY_DB_PASSWORD` (the Postgres password the protected catalogue uses to reach the public catalogue's chart-managed database). You don't need to set these yourself.
 
 2. **Deploy Resource Discovery Using Helm**
 
@@ -110,27 +112,33 @@ Deploy the public ingress:
 kubectl apply -f generated-ingress.yaml
 ```
 
-If IAM support was enabled during configuration, deploy the IAM resources and the protected catalogue:
+=== "Without IAM (default)"
 
-```bash
-source ~/.eoepca/state
+    Nothing further needed here - only the public catalogue is deployed.
 
-if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
-  kubectl apply -f generated-iam.yaml
+=== "With IAM"
 
-  # The protected catalogue reuses the public catalogue's chart-managed
-  # database, so it needs the same DB credentials as a Secret.
-  kubectl apply -f generated-db-secret.yaml
+    Deploy the IAM resources and the protected catalogue:
 
-  helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
-    --values generated-protected-values.yaml \
-    --version 2.1.0-dev1 \
-    --namespace resource-discovery \
-    --create-namespace
+    ```bash
+    source ~/.eoepca/state
 
-  kubectl apply -f generated-protected-ingress.yaml
-fi
-```
+    kubectl apply -f generated-iam.yaml
+
+    # The protected catalogue reuses the public catalogue's chart-managed
+    # database, so it needs the same DB credentials as a Secret.
+    kubectl apply -f generated-db-secret.yaml
+
+    helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
+      --values generated-protected-values.yaml \
+      --version 2.1.0-dev1 \
+      --namespace resource-discovery \
+      --create-namespace
+
+    kubectl apply -f generated-protected-ingress.yaml
+    ```
+
+    Note: applying `generated-iam.yaml` before the protected Helm install is fine. The protected route can exist before the Keycloak client is reconciled, but login may fail until IAM reconciliation completes.
 
 Before proceeding, wait for Resource Discovery to be ready:
 
@@ -142,9 +150,6 @@ done
 
 echo -e "\nResource Discovery is READY"
 ```
-
-Note: applying `generated-iam.yaml` before the protected Helm install is fine. The protected route can exist before the Keycloak client is reconciled, but login may fail until IAM reconciliation completes.
-
 
 ### Protected Transactional Catalogue
 
@@ -396,7 +401,10 @@ kubectl get pods -n resource-discovery
 
 ### Protected Catalogue Validation
 
-If IAM support was enabled, verify that the protected public metadata endpoint is reachable:
+!!! note
+    Skip this section if `RESOURCE_DISCOVERY_ENABLE_IAM=no` - there is no protected endpoint to validate.
+
+Verify that the protected public metadata endpoint is reachable:
 
 ```bash
 source ~/.eoepca/state

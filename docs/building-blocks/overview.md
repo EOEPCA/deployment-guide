@@ -1,24 +1,6 @@
+# Building Blocks
 
-## Building Block Deployment Overview
-
-This section provides instructions on how to deploy the various Building Blocks (BBs) that make up the EOEPCA+ ecosystem. Each Building Block is a modular component designed to perform specific functions within a platform.
-
-## Scripted Deployment Approach
-
-Each Building Block is designed for deployment via one or more **helm charts** - customised via helm `values` that configure the helm chart at deployment time. To simplify and standardise the deployment process, each Building Block comes with a set of scripts that automate configuration and installation tasks:
-
-* The scripts help to generate the `values.yaml` files that configure each BB instance
-* The scripted approach aids the integration amongst BBs by ensuring they are configured consistently.
-
-The approach comprises the following broad steps:
-
-1. **Prerequisites**: Each Building Block includes a list of prerequisites that must be met before deployment. These typically include Kubernetes, Helm, and other dependencies.
-2.	**Configuration Script**: Each Building Block includes a `configure-<component>.sh` script that collects necessary configuration parameters from the user, such as domain names, storage classes, and TLS settings. It generates helm values and other configuration files based on your inputs. There is sometimes an `apply-secrets.sh` script too that applies additional resources to the cluster.
-3.	**Validation**: Validation scripts are available to verify that the Building Block has been deployed correctly and is functioning as expected.
-4.	**State Management**: Configuration details and generated secrets are saved to a state file (`~/.eoepca/state`) for reuse across different Building Blocks.
-
-!!! note
-    When you run your first script, you will be prompted whether you want to use Cert-Manager for TLS certificate management. If you choose not to use Cert-Manager, you will need to create the TLS secrets manually before deploying each Building Block.
+This section provides instructions on how to deploy the various Building Blocks (BBs) that make up the EOEPCA+ ecosystem. Each Building Block is a modular component designed to perform specific functions within the platform, and each is deployed the same scripted way - see [How Deployment Works](../index.md#how-deployment-works) if you haven't deployed a Building Block before.
 
 ## Building Blocks Overview
 

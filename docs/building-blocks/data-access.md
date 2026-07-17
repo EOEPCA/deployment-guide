@@ -121,14 +121,24 @@ During the script execution, you will be prompted to provide:
         - **`POSTGRES_REPLICAS`**: Number of PostgreSQL replicas
         - **`POSTGRES_STORAGE_SIZE`**: Storage size for PostgreSQL
 
-- **`DATA_ACCESS_ENABLE_IAM`**: Enable IAM/Keycloak integration (yes/no)
-    - If yes, you'll configure:
-        - **`KEYCLOAK_HOST`**: Keycloak service hostname
-        - **`REALM`**: Keycloak realm name
-        - **`EOAPI_CLIENT_ID`**: Client ID for EOAPI
-        - **`OPA_URL`**: OPA server URL for authorization
-    - If no, you'll be prompted for a **`OPENEO_BASIC_AUTH_USER`** - a password is generated automatically and printed at the end of configuration (used to protect the openEO API, which has no other auth option without IAM)
-    - IAM works under both `apisix` and `nginx` ingress classes.
+- **`DATA_ACCESS_ENABLE_IAM`**: Enable IAM/Keycloak integration (yes/no). IAM works under both `apisix` and `nginx` ingress classes.
+
+=== "Without IAM (default)"
+
+    You'll be prompted for a **`OPENEO_BASIC_AUTH_USER`** - a password is generated automatically and printed at the end of configuration (used to protect the openEO API, which has no other auth option without IAM).
+
+    Every STAC collection/item is publicly readable and writable - see [Collection-Level Access Control](#4-collection-level-access-control-iam) below.
+
+=== "With IAM"
+
+    You'll be prompted for:
+
+    - **`KEYCLOAK_HOST`**: Keycloak service hostname
+    - **`REALM`**: Keycloak realm name
+    - **`EOAPI_CLIENT_ID`**: Client ID for EOAPI
+    - **`OPA_URL`**: OPA server URL for authorization
+
+    This requires the [IAM Building Block](./iam/main-iam.md) already deployed.
 
 - **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
 - **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no)
@@ -227,19 +237,28 @@ helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
 
 #### Configure Ingress/Routes
 
-If IAM is enabled then we need to configure Keycloak with a Client and associated Roles/Groups.
+=== "Without IAM (default)"
 
-If APISIX is the configured ingress controller, then apply the dedicated `ApisixRoute`.
+    If APISIX is the configured ingress controller, apply the dedicated `ApisixRoute`:
 
-```bash
-source ~/.eoepca/state
-if [ "${DATA_ACCESS_ENABLE_IAM}" = "yes" ]; then
-  kubectl apply -f iam/generated-iam.yaml
-fi
-if [ "${INGRESS_CLASS}" = "apisix" ]; then
-  kubectl apply -f eoapi/generated-ingress.yaml
-fi
-```
+    ```bash
+    source ~/.eoepca/state
+    if [ "${INGRESS_CLASS}" = "apisix" ]; then
+      kubectl apply -f eoapi/generated-ingress.yaml
+    fi
+    ```
+
+=== "With IAM"
+
+    Configure Keycloak with a Client and associated Roles/Groups, then - if APISIX is the configured ingress controller - apply the dedicated `ApisixRoute`:
+
+    ```bash
+    source ~/.eoepca/state
+    kubectl apply -f iam/generated-iam.yaml
+    if [ "${INGRESS_CLASS}" = "apisix" ]; then
+      kubectl apply -f eoapi/generated-ingress.yaml
+    fi
+    ```
 
 #### (Optional) Deploy Geoparquet Exporter
 
@@ -355,12 +374,13 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
 
 ### 4. Collection-Level Access Control (IAM)
 
-!!! note
-    Skip this section if `DATA_ACCESS_ENABLE_IAM=no`. Without IAM, `stac-auth-proxy` is disabled entirely and every collection/item is readable and writable by anyone who can reach the STAC API.
+=== "Without IAM (default)"
 
-??? note "Show IAM access-control behaviour and tests"
+    `stac-auth-proxy` is disabled entirely, so every collection/item is readable and writable by anyone who can reach the STAC API. There's nothing further to configure - skip to [Uninstallation](#uninstallation) if you're done validating.
 
-    With IAM enabled, `stac-auth-proxy` sits in front of the STAC API and decides access per-request using the collection ID:
+=== "With IAM"
+
+    `stac-auth-proxy` sits in front of the STAC API and decides access per-request using the collection ID:
 
     - **Public collections** — any collection ID with no `.` in it (e.g. `sentinel-2-iceland`) is readable by everyone, including unauthenticated requests. Reads are always public; only writes need auth.
     - **Private/owned collections** — an ID prefixed `<prefix>.` (e.g. `eoepcauser.mycollection`) is only readable/writable by:

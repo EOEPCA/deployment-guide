@@ -86,19 +86,19 @@ The script also asks whether to enable:
 
 #### OIDC Authentication
 
-OIDC authentication is optional.
+OIDC authentication is optional - the script asks a plain yes/no with no preset default.
 
-When IAM/OIDC is enabled:
+=== "Without IAM"
 
-- **`APP_QUALITY_ENABLE_IAM`** is set to `true`.
-- **`APP_QUALITY_CLIENT_ID`** is requested.
-- **`APP_QUALITY_CLIENT_SECRET`** is generated if not already set.
-- Works under either APISIX or NGINX ingress, since the API validates tokens itself against Keycloak.
+    - **`APP_QUALITY_ENABLE_IAM`** is set to `false`.
+    - Application Quality is deployed without authentication.
 
-When IAM/OIDC is disabled:
+=== "With IAM"
 
-- **`APP_QUALITY_ENABLE_IAM`** is set to `false`.
-- Application Quality is deployed without authentication.
+    - **`APP_QUALITY_ENABLE_IAM`** is set to `true`.
+    - **`APP_QUALITY_CLIENT_ID`** is requested.
+    - **`APP_QUALITY_CLIENT_SECRET`** is generated if not already set.
+    - Works under either APISIX or NGINX ingress, since the API validates tokens itself against Keycloak.
 
 #### Grafana Dashboards
 

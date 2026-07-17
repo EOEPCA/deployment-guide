@@ -171,6 +171,9 @@ kubectl get workflows -n openeo
 
 ### API Usage
 
+!!! note
+    The example below assumes OIDC is enabled. If you disabled OIDC, drop the `ACCESS_TOKEN`/`AUTH_TOKEN` lines and replace `-H "Authorization: Bearer ${AUTH_TOKEN}"` in each command with `-u eoepcauser:eoepcapass` (see the basic-auth example in [API Health Check](#manual-validation) above).
+
 **Submit and monitor a job:**
 ```bash
 # Get access token

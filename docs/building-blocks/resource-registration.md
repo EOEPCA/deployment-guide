@@ -99,24 +99,21 @@ During the script execution, you will be prompted to provide:
     - *Default*: `eoepca`
 - **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
     - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
-- **`RESOURCE_REGISTRATION_ENABLE_OIDC`**: Whether the Resource Registration endpoints should be protected via OIDC authentication.
-    - *Default*: `yes`
-- **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`**: Whether the Resource Registration target services for resource registration are protected via OIDC authentication. In this case the Resource Registration (API and harvester) must act as OIDC clients to authenticate against these services.
-    - *Default*: `yes`
-- **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
-    - *Default*: `resource-registration`
 
+=== "With IAM (default)"
 
-Resource Registration supports two ingress modes:
+    - **`RESOURCE_REGISTRATION_ENABLE_OIDC`**: Whether the Resource Registration endpoints should be protected via OIDC authentication.
+        - *Default*: `yes`
+        - Uses the APISIX `openid-connect` and `authz-keycloak` plugins, so this is only supported when `INGRESS_CLASS=apisix` - for nginx deployments, set this `no`.
+    - **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`**: Whether the Resource Registration target services for resource registration (e.g. Resource Discovery, eoAPI) are themselves protected via OIDC authentication. In this case the Resource Registration (API and harvester) must act as OIDC clients to authenticate against these services.
+        - *Default*: `yes`
+        - Independent of `RESOURCE_REGISTRATION_ENABLE_OIDC` and works with `nginx` too - it only controls outbound authentication to target services, not the Resource Registration ingress itself.
+    - **`RESOURCE_REGISTRATION_IAM_CLIENT_ID`**: The Client ID used both for ingress protection of Resource Registration services, and for Resource Registration to authenticate against protected target services. The associated `CLIENT_SECRET` will be generated.
+        - *Default*: `resource-registration`
 
-- APISIX supports public and IAM-protected deployments.
-- nginx supports a minimal public deployment only.
+=== "Without IAM"
 
-OIDC protection for Resource Registration ingress currently uses APISIX openid-connect and authz-keycloak plugins. Therefore `RESOURCE_REGISTRATION_ENABLE_OIDC=yes` is only supported when `INGRESS_CLASS=apisix`.
-
-For nginx deployments, set `RESOURCE_REGISTRATION_ENABLE_OIDC=no`.
-
-`RESOURCE_REGISTRATION_PROTECTED_TARGETS=yes` may still be used with nginx. That setting controls whether Registration API and Harvester authenticate as clients when calling protected downstream services such as Resource Discovery. It does not protect the public Resource Registration ingress.
+    Set both **`RESOURCE_REGISTRATION_ENABLE_OIDC`** and **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`** to `no`. Resource Registration deploys with public, unauthenticated endpoints and calls target services (e.g. Resource Discovery) without a client credential. Works with both `apisix` and `nginx`.
 
 ### 2. Apply Kubernetes Secrets
 
@@ -339,7 +336,7 @@ bash validation.sh
 **Registration API:**
 
 !!! note
-    Authenticate as the configured _Test User_:
+    If `RESOURCE_REGISTRATION_ENABLE_OIDC=yes`, authenticate as the configured _Test User_ when prompted:
 
     * Username: `eoepcauser` (ref. `KEYCLOAK_TEST_USER`)
     * Password: `eoepcapassword` (ref. `KEYCLOAK_TEST_PASSWORD`)

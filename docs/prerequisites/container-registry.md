@@ -17,7 +17,7 @@ Key features of Harbor include:
 
 ### Scripted Deployment
 
-The Harbor deployment in this guide follows the same [Scripted Deployment Approach](../building-blocks/overview.md#scripted-deployment-approach), as for the EOEPCA building blocks.
+The Harbor deployment in this guide follows the same [scripted deployment approach](../index.md#how-deployment-works) as for the EOEPCA building blocks.
 
 ***
 ## Architecture Overview

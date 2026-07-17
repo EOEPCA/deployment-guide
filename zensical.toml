@@ -116,14 +116,12 @@ features = [
 # opened, subsequent bare `key = value` lines attach to that sub-table, not
 # back to [project.theme].
 [[project.theme.palette]]
-media = "(prefers-color-scheme: light)"
 scheme = "default"
 primary = "custom"
 accent = "custom"
 toggle = { icon = "material/weather-sunny", name = "Switch to dark mode" }
 
 [[project.theme.palette]]
-media = "(prefers-color-scheme: dark)"
 scheme = "slate"
 primary = "custom"
 accent = "custom"
