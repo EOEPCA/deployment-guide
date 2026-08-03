@@ -1,8 +1,7 @@
 !!! note
-    If the EOEPCA IAM Building Block is required during deployment, specific steps will be provided in the relevant sections of the building block deployment guide. This section serves as a reference and is applicable only if you're using the EOEPCA IAM Building Block. Ensure the EOEPCA IAM Building Block is installed. For more information, refer to [this guide](./main-iam.md).
+    This is a reference page, not a deployment step - it only applies if you're using the [IAM Building Block](./main-iam.md), which must already be installed.
 
-
-This document covers advanced IAM configurations beyond the basic setup. Use these steps if you want to integrate external identity providers, protect resources with fine-grained policies, and leverage roles or OPA policies for authorisation.
+This document covers advanced IAM configurations beyond the basic setup: integrating external identity providers, protecting resources with fine-grained policies, and using roles or OPA policies for authorisation.
 
 ---
 

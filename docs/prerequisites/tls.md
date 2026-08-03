@@ -9,7 +9,7 @@ For services that are extrernally exposed via the ingress controller, there are 
 
 ### Dynamic using Cert-Manager
 
-   - The simplest, most robust way to handle certificates in production.
+   - The recommended way to handle certificates in production.
    - You can create a `ClusterIssuer` that automatically issues and renews certs from Let's Encrypt or your own CA.
    - Using either DNS-based or HTTP-based Let's Encrypt challenge approaches
    - In multi-tenant or multi-namespace scenarios, this is especially useful.

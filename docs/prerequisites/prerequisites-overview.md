@@ -66,5 +66,3 @@ cd deployment-guide/scripts/infra-prereq
 ```bash
 bash check-prerequisites.sh
 ```
-
-The **EOEPCA+ Prerequisites** should help guide you through any unmet requirements if your existing environment does not meet them.

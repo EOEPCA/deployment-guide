@@ -8,8 +8,6 @@ This guide shows you step-by-step how to set up Resource Discovery in your Kuber
 
 ## Introduction
 
-Resource Discovery is an important component of the EOEPCA ecosystem. It helps users easily manage and search EO metadata from various sources. By using open standards, it makes data easier to find and integrate with other systems.
-
 ### Key Features
 
 - **Easy Metadata Management**: Collect and search EO metadata efficiently.

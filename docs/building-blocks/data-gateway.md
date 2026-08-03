@@ -23,8 +23,8 @@ The Data Gateway acts as an abstraction layer between EOEPCA components and vari
 The Data Gateway is utilised by other building blocks rather than deployed standalone:
 
 - **Resource Registration**: Uses Data Gateway for harvesting from external catalogues
-- **Processing Engine**: Leverages it for input data preparation and access
-- **Data Access**: Employs it for retrieving dataset assets for visualisation services
+- **Processing Engine**: Uses it for input data preparation and access
+- **Data Access**: Uses it for retrieving dataset assets for visualisation services
 
 ---
 

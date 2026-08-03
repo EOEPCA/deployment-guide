@@ -6,7 +6,7 @@ The **MLOps Building Block** provides support services for training machine lear
 
 ## Introduction
 
-The **MLOps Building Block** provides integrated services for training and managing machine learning models within the EOEPCA+ environment. It leverages GitLab for code and data versioning, **SharingHub** for collaborative ML services, and **MLflow SharingHub** (a custom MLflow) for experiment tracking and model registry.
+The **MLOps Building Block** provides integrated services for training and managing machine learning models within the EOEPCA+ environment. It uses GitLab for code and data versioning, **SharingHub** for collaborative ML services, and **MLflow SharingHub** (a custom MLflow) for experiment tracking and model registry.
 
 ### Key Features
 

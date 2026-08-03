@@ -1,6 +1,6 @@
 # Data Access Deployment Guide
 
-The **Data Access** Building Block provides feature-rich and reliable interfaces to geospatial data assets stored in the platform, addressing both human and machine users. This guide provides step-by-step instructions to deploy the Data Access BB in your Kubernetes cluster.
+The **Data Access** Building Block provides standard OGC/STAC interfaces to geospatial data assets stored in the platform. This guide provides step-by-step instructions to deploy the Data Access BB in your Kubernetes cluster.
 
 ---
 
@@ -301,7 +301,7 @@ bash validation.sh
 
 Once deployment is complete:
 
-**Core Services:**:
+**Core Services:**
 
 - **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/`
 - **Raster API:** `https://eoapi.${INGRESS_HOST}/raster/`
@@ -310,7 +310,7 @@ Once deployment is complete:
 - **STAC Manager UI:** `https://eoapi.${INGRESS_HOST}/manager/`
 - **openEO API:** `https://eoapi.${INGRESS_HOST}/openeo/`
 
-**Optional Services:**:
+**Optional Services:**
 
 - **Grafana** (if monitoring enabled): `https://eoapisupport.${INGRESS_HOST}/`
 

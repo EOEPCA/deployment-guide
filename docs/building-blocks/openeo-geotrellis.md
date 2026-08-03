@@ -56,7 +56,7 @@ During this process, you'll be prompted for:
 
 ### 2. Deploying openEO Geotrellis
 
-openEO Geotrellis provides the API that connects users to EO cloud back-ends. It leverages Apache Spark and requires both the Spark Operator and ZooKeeper to function.
+openEO Geotrellis provides the API that connects users to EO cloud back-ends. It runs on Apache Spark and requires both the Spark Operator and ZooKeeper to function.
 
 #### Step 1: Install Spark Operator
 
@@ -94,8 +94,6 @@ For full configuration details, see the [values.yaml](https://github.com/bitnami
 
 !!! warning
     You must wait for the ZooKeeper deployment to be fully running before deploying openEO Geotrellis. This is because it relies on the webhook.
-
-Provides an API that simplifies connecting to EO cloud back-ends, running on Apache Spark in a Kubernetes environment.
 
 ```bash
 helm upgrade -i openeo-geotrellis-openeo sparkapplication \

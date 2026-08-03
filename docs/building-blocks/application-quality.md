@@ -6,11 +6,11 @@ The **Application Quality Building Block (BB)** supports the transition of scien
 
 ## Introduction
 
-The **Application Quality Building Block** provides tools and processes designed to:
+The **Application Quality Building Block** provides:
 
-- **Ensure Best Practices:** Including static code analysis, security scanning, and adherence to open science standards.
-- **Streamline Quality Checks:** Containerised tooling such as SonarQube, Bandit, and Sphinx, integrated into automated pipelines.
-- **Measure Performance:** Tools and methods to test and optimise workflow execution performance.
+- Static code analysis, security scanning, and adherence to open science standards
+- Containerised quality tooling (SonarQube, Bandit, Sphinx) integrated into automated pipelines
+- Performance testing to measure and optimise workflow execution
 
 !!! warning "Important"
     Application Quality's web portal and API validate OIDC tokens themselves against the Keycloak realm's discovery endpoint, so IAM/OIDC works under either **APISIX** or **NGINX** ingress. The optional **SonarQube** add-on is the exception: its `/sonarqube` routing in this guide uses an APISIX `ApisixRoute`, so SonarQube requires APISIX regardless of whether IAM is enabled. The configuration script fails early if SonarQube is enabled under NGINX.

@@ -103,7 +103,7 @@ For a multi-node cluster then a distributed storage solution is required to prov
 
 JuiceFS is an open-source, high-performance distributed file system that allows all kinds of object storage to be used as massive local disks and to be simulaneously mounted and accessed on different nodes.
 
-JuiceFS achieves this by separation of 'data' and 'metadata' storage. The metadata is stored in a low-latency database (e.g. Redis, TiKV, MySQL, etc.) while the data is stored as chunks in an Object Storage system - and others such as local-disk, WebDAV, HDFS - see [Supported Storage](https://juicefs.com/docs/community/reference/how_to_set_up_object_storage/#supported-object-storage). This allows JuiceFS to provide high performance and scalability while leveraging convenient and cost-effective object storage for data persistence.
+JuiceFS achieves this by separation of 'data' and 'metadata' storage. The metadata is stored in a low-latency database (e.g. Redis, TiKV, MySQL, etc.) while the data is stored as chunks in an Object Storage system - and others such as local-disk, WebDAV, HDFS - see [Supported Storage](https://juicefs.com/docs/community/reference/how_to_set_up_object_storage/#supported-object-storage).
 
 The resultant data volume can then be accessed/mounted through a variety of compatibility layers - including POSIX, HDFS, S3, and a Kubernetes CSI Driver for dynamic provisioning of PersistentVolumes.
 

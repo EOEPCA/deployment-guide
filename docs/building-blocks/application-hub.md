@@ -3,7 +3,7 @@
 !!! warning
     Application Hub 2.1 requires OIDC. The IAM-off mode is not supported by this guide.
 
-The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps
+The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps.
 
 ---
 

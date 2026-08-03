@@ -6,13 +6,12 @@ The **Resource Health** Building Block (BB) provides a flexible framework for mo
 
 ## Introduction
 
-The **Resource Health BB** allows you to:
+The **Resource Health BB** provides:
 
-- **Define and schedule** automated health checks (e.g. daily, hourly).
-- **Observe and visualise** check outcomes via a web dashboard.
-- **Integrate with external services** (e.g. IAM for OIDC authentication, Data Access, Resource Catalogue).
-- **Store results** in OpenSearch, optionally visualizing them using OpenSearch Dashboards.
-- **Collect telemetry** via OpenTelemetry, enabling advanced monitoring and alerting.
+- Automated health checks on a schedule (e.g. daily, hourly)
+- A web dashboard for check outcomes, and integration with external services (e.g. IAM for OIDC, Data Access, Resource Catalogue)
+- Results storage in OpenSearch, with optional OpenSearch Dashboards visualisation
+- Telemetry collection via OpenTelemetry
 
 ---
 

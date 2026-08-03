@@ -1,6 +1,6 @@
 # Workspace Deployment Guide
 
-**Workspaces** enable individuals, teams, and organisations to provision isolated, self-service environments for data access, algorithm development, and collaborative exploration — all declaratively managed on Kubernetes and orchestrated through the **Workspace REST API** or via the **Workspace Web UI**.
+A **Workspace** is a self-service, isolated environment for data access and algorithm development, provisioned on Kubernetes via the **Workspace REST API** or **Workspace Web UI**.
 
 ---
 
@@ -630,8 +630,6 @@ kubectl port-forward svc/nginx-test 5000:80
 VS Code automatically detects the forwarded port and adds it to the `Ports` tab - exposed via the URL `https://editor-ws-<username>-default.<ingress-host>/proxy/5000/`.
 
 Open the forwarded port by following the link in the `Ports` tab or open directly.
-
-Cleanup test resources...
 
 Stop the port-forwarding (<kbd>Ctrl-C</kbd> in the terminal) and delete the test resources:
 

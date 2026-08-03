@@ -5,7 +5,7 @@ The Container Registry stores and distributes container images for application d
 ***
 ## Introduction
 
-The Container Registry is a key part of the EOEPCA+ ecosystem. It stores and distributes container images for application development and deployment. We use Harbor, an open-source container registry, to efficiently manage images for applications on the platform, including those from the Application Hub or running within the Processing building block.
+This guide uses Harbor, an open-source container registry, to manage images for applications on the platform, including those from the Application Hub or running within the Processing building block.
 
 Key features of Harbor include:
 

@@ -43,5 +43,3 @@ Such releases are prepared and published with the following recommended steps:
 6. Create and push an annotated tag `eoepca-X.Y` (or `eoepca-X.Y.Z` when patch granularity is needed), for example `git tag -a -m "EOEPCA+ Release X.Y" eoepca-X.Y`.
 7. Verify Read the Docs built the tagged documentation version.
 8. Announce release with links to the tag, docs version, and aligned tutorial material.
-
-This process ensures that each release is a coherent and validated snapshot of the EOEPCA+ platform, with clear documentation and aligned learning resources.
