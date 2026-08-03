@@ -310,6 +310,8 @@ kubectl get apisixroute -n application-quality-sonarqube
 
 ## Usage Instructions
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/application-quality/application-quality.ipynb" target="_blank">Application Quality notebook</a> at `http://localhost:8888`.
+
 ### 1. Accessing the Web Portal
 
 1. Ensure your ingress is configured to route `application-quality.${INGRESS_HOST}` or the configured `APP_QUALITY_PUBLIC_HOST` to the Application Quality front-end.

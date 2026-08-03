@@ -357,6 +357,8 @@ Run the _MLOps_ tests from the system test suite.
 
 ### 3. Basic Usage Walkthrough
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/mlops/mlops.ipynb" target="_blank">MLOps notebook</a> at `http://localhost:8888`.
+
 This section walks you through a minimal scenario of creating a GitLab project, tagging it for discovery in SharingHub, and running a simple MLflow training job.
 
 #### 3.1 Create a New GitLab Project

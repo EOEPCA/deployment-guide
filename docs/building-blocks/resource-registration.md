@@ -324,6 +324,8 @@ When prompted, use:
 
 ## Validation and Usage
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/resource-registration/resource-registration.ipynb" target="_blank">Resource Registration notebook</a> at `http://localhost:8888`.
+
 ### Automated Validation
 
 Run the validation script to verify the deployment:

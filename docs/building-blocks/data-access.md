@@ -335,6 +335,8 @@ xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_
 
 ## Testing and Validation
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/data-access/data-access.ipynb" target="_blank">Data Access notebook</a> at `http://localhost:8888`.
+
 ### 1. Access the Swagger UI
 
 - **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/api.html`

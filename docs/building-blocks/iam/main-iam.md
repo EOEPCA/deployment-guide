@@ -115,6 +115,8 @@ kubectl wait --for=condition=Ready user.user.keycloak.m.crossplane.io/eoepca-use
 
 ## Validate
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/iam/iam.ipynb" target="_blank">IAM notebook</a> at `http://localhost:8888`.
+
 ```bash
 bash validation.sh
 ```

@@ -172,6 +172,8 @@ kubectl get workflows -n openeo
 
 ### API Usage
 
+> **Prefer a notebook?** Run `../../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/openeo-argo/openeo-argo.ipynb" target="_blank">OpenEO ArgoWorkflows notebook</a> at `http://localhost:8888`.
+
 !!! note
     The example below assumes OIDC is enabled. If you disabled OIDC, drop the `ACCESS_TOKEN`/`AUTH_TOKEN` lines and replace `-H "Authorization: Bearer ${AUTH_TOKEN}"` in each command with `-u eoepcauser:eoepcapass` (see the basic-auth example in [API Health Check](#manual-validation) above).
 

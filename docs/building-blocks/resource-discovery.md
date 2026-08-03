@@ -171,6 +171,8 @@ For minimal non-IAM deployments, use the public catalogue only:
 
 ## Validation and Operation
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/resource-discovery/resource-discovery.ipynb" target="_blank">Resource Discovery notebook</a> at `http://localhost:8888`.
+
 ### 1. Automated Validation (Optional Script)
 
 ```bash

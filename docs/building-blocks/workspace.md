@@ -304,6 +304,8 @@ kubectl apply -f workspace-dependencies/generated-workspace-session-iam-policy.y
 
 ## Validation and Usage
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/workspace/workspace.ipynb" target="_blank">Workspace notebook</a> at `http://localhost:8888`.
+
 After deploying the Workspace Building Block, you can validate and interact with it through a series of checks and tests described below.
 
 ### Automated Validation

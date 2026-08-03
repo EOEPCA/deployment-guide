@@ -142,6 +142,8 @@ kubectl delete namespace datacube-access
 
 ## Usage and Testing
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/datacube-access/datacube-access.ipynb" target="_blank">Datacube Access notebook</a> at `http://localhost:8888`.
+
 The Datacube Access BB filters your STAC catalog to expose only collections that include the [STAC Datacube Extension](https://github.com/stac-extensions/datacube) - specifically those with `cube:dimensions` or `cube:variables` defined. This ensures processing tools like openEO only see properly-structured, analysis-ready collections.
 
 ### Understanding Datacube-Ready Collections

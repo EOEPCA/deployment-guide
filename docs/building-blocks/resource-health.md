@@ -296,6 +296,8 @@ bash validation.sh
 
 ## Usage
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/resource-health/health.ipynb" target="_blank">Resource Health notebook</a> at `http://localhost:8888`.
+
 ### Authentication
 
 === "With OIDC (default)"

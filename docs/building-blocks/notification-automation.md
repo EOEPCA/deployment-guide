@@ -164,6 +164,8 @@ bash validation.sh
 
 ## Usage
 
+> **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/notification-automation/notification-automation.ipynb" target="_blank">Notification and Automation notebook</a> at `http://localhost:8888`.
+
 A few worked examples to confirm things are working end to end, and to show the main patterns for building automations on top of the BB.
 
 ### Deploy a simple function
