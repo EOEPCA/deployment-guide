@@ -210,6 +210,7 @@ This step only applies if OIDC is enabled. To ensure your Keycloak user has prop
     ```bash
     source ~/.eoepca/state
 
+    # Admin token via admin-cli against the master realm (see note below on why master, not ${REALM})
     ADMIN_TOKEN=$(curl -s -X POST \
       -d "username=${KEYCLOAK_ADMIN_USER}" \
       --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
@@ -218,10 +219,12 @@ This step only applies if OIDC is enabled. To ensure your Keycloak user has prop
       "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
       | jq -r '.access_token')
 
+    # role-mappings needs the target user's internal Keycloak ID, not their username
     USER_ID=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
       "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${KEYCLOAK_TEST_USER}" \
       | jq -r '.[0].id')
 
+    # role-mappings also needs the full role representation, not just its name
     ROLE_JSON=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
       "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/roles/opensearch_user")
 
@@ -423,19 +426,17 @@ The CronJob name matches the UUID of the health check.
 Rather than waiting for the scheduled time, you can trigger a health check immediately:
 
 ```bash
-# Get the check ID
+# Grabs the first check in the list - swap in a select() filter if you have more than one registered
 CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.data[0].id')
 echo "Check ID: $CHECK_ID"
 
-# Create a manual job from the CronJob
+# Each health check is a CronJob named after its UUID; this spins up a one-off Job from it
 kubectl create job --from=cronjob/${CHECK_ID} manual-google-check -n resource-health
 
-# Wait for completion
 kubectl wait --for=condition=complete job/manual-google-check -n resource-health --timeout=120s
 
-# View results
 kubectl logs job/manual-google-check -n resource-health --all-containers 2>/dev/null | tail -15
 ```
 
@@ -472,17 +473,17 @@ Visit `https://resource-health.${INGRESS_HOST}/dashboards` to query the raw `ss4
 ### Delete a Health Check
 
 ```bash
-# Get the check ID
+# Look the check up by name this time, rather than assuming it's first in the list
 CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.data[] | select(.attributes.metadata.name=="google-ping-check") | .id')
 echo "Deleting check: $CHECK_ID"
 
-# Delete the check
+# Deleting the check also removes its underlying CronJob
 curl -X DELETE "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 
-# Verify deletion
+# Confirm google-ping-check is gone
 curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq '.data[].attributes.metadata.name'

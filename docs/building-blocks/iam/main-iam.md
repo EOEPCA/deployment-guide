@@ -142,7 +142,7 @@ echo "Password: ${KEYCLOAK_ADMIN_PASSWORD}"
 
 ## OPA Smoke Test
 
-Authenticate as the example user:
+Authenticate as the example user, using the password grant against the confidential `OPA_CLIENT_ID` client (fine for a known test user here, but avoid this grant type for real user-facing clients):
 
 ```bash
 source ~/.eoepca/state

@@ -179,7 +179,7 @@ kubectl get workflows -n openeo
 
 **Submit and monitor a job:**
 ```bash
-# Get access token
+# Password grant against the openeo-argo client, using the test user from the IAM guide
 ACCESS_TOKEN=$(curl -s -X POST \
     "${OIDC_ISSUER_URL}/protocol/openid-connect/token" \
     -d "grant_type=password" \
@@ -189,7 +189,7 @@ ACCESS_TOKEN=$(curl -s -X POST \
     -d "scope=openid" | jq -r '.access_token')
 AUTH_TOKEN="oidc/${OIDC_ORGANISATION}/${ACCESS_TOKEN}"
 
-# Create a job
+# Create a job - the ID isn't in the body, it comes back in the OpenEO-Identifier header
 JOB_ID=$(curl -s -i -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" \
   -H "Content-Type: application/json" \
@@ -219,15 +219,14 @@ JOB_ID=$(curl -s -i -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
 
 echo "Created job: ${JOB_ID}"
 
-# Start the job
+# A job sits in "created" status and does nothing until started
 curl -s -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}/results" \
   -H "Authorization: Bearer ${AUTH_TOKEN}"
 
-# Check status
+# status moves through created -> running -> finished (or error)
 curl -s "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq '{id, status, title}'
 
-# List all jobs
 curl -s "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq
 ```
