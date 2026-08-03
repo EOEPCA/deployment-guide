@@ -7,7 +7,6 @@ source "$HOME/.eoepca/state" 2>/dev/null || true
 
 echo "Applying secrets and config for Data Access..."
 
-# Create namespace if it doesn't exist
 kubectl create namespace data-access --dry-run=client -o yaml | kubectl apply -f -
 
 # Apply S3 credentials secret (needed for raster/multidim services)

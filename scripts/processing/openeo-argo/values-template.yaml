@@ -27,12 +27,8 @@ global:
 
 replicaCount: 1
 
-# image.repository/tag are left at chart defaults (ghcr.io/eodcgmbh/openeo-argoworkflows),
-# which track the pinned chart version below.
-
 postgresql:
-  # Chart default already points auth.existingSecret at "openeo-postgresql" -
-  # that Secret is created by apply-secrets.sh before install.
+  # Chart default existingSecret "openeo-postgresql" is created by apply-secrets.sh.
   auth:
     database: "openeo"
   primary:
@@ -51,8 +47,7 @@ redis:
       storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
       size: "8Gi"
 
-# The shared job workspace PVC is mounted ReadWriteMany by the api, queue-worker,
-# executor and dask worker pods at once, so this storage class must support RWX.
+# Mounted ReadWriteMany by multiple pods at once - storage class must support RWX.
 persistence:
   storageClassName: "{{ getenv "SHARED_STORAGECLASS" }}"
 

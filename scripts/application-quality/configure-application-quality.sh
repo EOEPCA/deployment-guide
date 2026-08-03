@@ -16,10 +16,7 @@ add_to_state_file "SHARED_STORAGECLASS" "${SHARED_STORAGECLASS}"
 if ask_yes_no "Enable IAM/OIDC authentication?"; then
     export APP_QUALITY_ENABLE_IAM="true"
 
-    # The Application Quality API validates OIDC tokens itself against the
-    # Keycloak realm's discovery endpoint (app-native OIDC); there is no
-    # APISIX-only ingress-layer enforcement involved, so this works under
-    # nginx too.
+    # App-native OIDC, not an ingress-layer plugin, so this works under nginx too.
     ask "APP_QUALITY_CLIENT_ID" "Enter the OIDC client ID for Application Quality" "application-quality-bb" is_non_empty
 
     if [ -z "${APP_QUALITY_CLIENT_SECRET:-}" ]; then

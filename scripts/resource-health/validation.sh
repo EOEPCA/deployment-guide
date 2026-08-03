@@ -3,7 +3,6 @@ source ../common/utils.sh
 source ../common/validation-utils.sh
 source "$HOME/.eoepca/state"
 
-# Check critical services
 check_service_exists "resource-health" "resource-health-web"
 check_service_exists "resource-health" "resource-health-check-api"
 check_service_exists "resource-health" "resource-health-telemetry-api"

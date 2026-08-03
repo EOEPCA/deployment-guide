@@ -33,7 +33,6 @@ echo ""
 echo "🗂️ Configuring Data Sources..."
 ask "STAC_CATALOG_ENDPOINT" "STAC catalog URL" "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac" is_non_empty
 
-# Generate configuration files
 gomplate -f "values-template.yaml" -o "generated-values.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate -f "ingress-template.yaml" -o "generated-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 
@@ -42,7 +41,6 @@ if [ "$OPENEO_ARGO_ENABLE_OIDC" == "no" ]; then
 else
     gomplate -f "iam-template.yaml" -o "generated-iam.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
-
 
 echo "✅ OpenEO ArgoWorkflows (Dask backend) configured successfully."
 echo "📝 Configuration saved to generated-values.yaml"

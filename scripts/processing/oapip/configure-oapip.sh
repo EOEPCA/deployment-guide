@@ -1,17 +1,14 @@
 #!/bin/bash
 
-# Load utility functions
 source ../../common/utils.sh
 
 echo "Configuring the Processing Building Block..."
 
-# Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain for ingress hosts (e.g., example.com)" "example.com" is_valid_domain
 ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for SHARED data (ReadWriteMany)" "standard" is_non_empty
 configure_cert
 
-# Stage-out S3 configuration
 ask "S3_ENDPOINT" "Enter the Stage-Out S3 Endpoint URL (e.g., ${HTTP_SCHEME}://minio.$INGRESS_HOST)" "${HTTP_SCHEME}://minio.$INGRESS_HOST" is_valid_domain
 ask "S3_ACCESS_KEY" "Enter the Stage-Out S3 Access Key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the Stage-Out S3 Secret Key" "" is_non_empty
@@ -20,7 +17,6 @@ ask "S3_REGION" "Enter the Stage-Out S3 Region" "RegionOne" is_non_empty
 # Use the Workspace API
 ask "USE_WORKSPACE_API" "Do you want to use the Workspace API to manage your execution context? IMPORTANT: Only set this to true if you are using the Workspace API" "false" is_boolean
 
-# Stage-in S3 configuration
 ask "DIFFERENT_STAGE_IN" "Are your inputs stored in a different S3 store from stage-out? (yes/no)" "no" is_non_empty
 if [ "$DIFFERENT_STAGE_IN" = "yes" ]; then
     ask "STAGEIN_S3_ENDPOINT" "Enter the Stage-In S3 Endpoint URL (e.g., minio.$INGRESS_HOST)" "minio.$INGRESS_HOST" is_valid_domain
@@ -36,8 +32,6 @@ if [ "$DIFFERENT_STAGE_IN" = "no" ]; then
     add_to_state_file "STAGEIN_S3_REGION" $S3_REGION
 fi
 
-# OIDC
-# IAM / OIDC
 ask "OIDC_OAPIP_ENABLED" "Do you want to enable IAM/OIDC protection for OAPIP? APISIX only." "true" is_boolean
 
 if [ "$OIDC_OAPIP_ENABLED" = "true" ]; then
@@ -77,7 +71,6 @@ else
     add_to_state_file "OAPIP_HOST" "${HTTP_SCHEME}://zoo.${INGRESS_HOST}"
 fi
 
-# Processing engine
 is_valid_engine() {
     [[ "$1" == "calrissian" || "$1" == "toil" ]]
 }

@@ -207,9 +207,7 @@ spec:
         uri: /stac/
     - name: cors
       enable: true
-    # APISIX forwards its own internal TLS listener port as X-Forwarded-Port, which
-    # stac-fastapi uses to build self-referential links - override it to the real
-    # public-facing port or every href in STAC responses gets a bogus port suffix.
+    # Required: stac-fastapi uses X-Forwarded-Port to build self-referential links.
     - name: proxy-rewrite
       config:
         headers:

@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# The opensearch chart ships no automation for applying the mounted
-# security config (roles, internal users, role mappings) to the cluster -
-# without this, every OpenSearch-backed request fails with
-# "OpenSearch Security not initialized." This runs the equivalent of the
-# upstream securityadmin.sh manually, and is safe to re-run any time the
-# security config changes (e.g. after a `helm upgrade`).
+# The chart doesn't apply its mounted security config automatically - runs
+# securityadmin.sh manually. Safe to re-run any time the config changes.
 
 source ../common/utils.sh
 

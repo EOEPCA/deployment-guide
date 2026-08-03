@@ -26,7 +26,6 @@ pygeoapi:
       url: {{ getenv "HTTP_SCHEME" }}://registration-api.{{ getenv "INGRESS_HOST" }}
     logging:
       level: ERROR
-      # /tmp/pygeoapi.log
     metadata:
       identification:
         title: EOEPCA+ Registration API

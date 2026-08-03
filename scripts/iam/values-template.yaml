@@ -1,5 +1,3 @@
-# Values for the EOEPCA IAM BB 2.1 chart.
-
 fullnameOverride: iam
 
 global:
@@ -52,9 +50,7 @@ iam: &iam
               - {{ printf "%s://opa.%s/.apisix/redirect" (getenv "HTTP_SCHEME") (getenv "INGRESS_HOST") | quote }}
             webOrigins:
               - {{ printf "%s://opa.%s" (getenv "HTTP_SCHEME") (getenv "INGRESS_HOST") | quote }}
-            # Required since iam-bb 2.1.0-dev12: the chart's own opa-route ApisixRoute
-            # now enforces claim_validator.audience.required with match_with_client_id,
-            # so the access token must carry an "aud" claim equal to the client ID.
+            # Required: the opa-route ApisixRoute needs an "aud" claim equal to the client ID.
             protocolMappers:
               - name: audience-opa
                 protocol: openid-connect

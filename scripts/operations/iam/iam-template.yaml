@@ -1,5 +1,5 @@
 ---
-# ================= Grafana client (monitoring) =================
+# Grafana client (monitoring)
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
 kind: Client
 metadata:
@@ -86,7 +86,7 @@ spec:
       policy:
         resolution: Required
 ---
-# ================= Keep client (alerting) =================
+# Keep client (alerting)
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
 kind: Client
 metadata:

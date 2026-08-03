@@ -1,8 +1,7 @@
 global:
   defaultInternalIssuerRef:
     name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
-  # Chart defaults point at a dev-cluster hostname; these are used to build
-  # self-referential links (e.g. JSON:API "links") in API responses.
+  # Used to build self-referential links (e.g. JSON:API "links") in API responses.
   defaultCheckAPIBaseURL: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/
   defaultTelemetryAPIBaseURL: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/
 
@@ -21,10 +20,8 @@ opensearch:
   securityConfig:
     config:
       data:
-        # The chart's own default roles.yml (same "own_trace_data_access" role)
-        # is missing the required _meta header, which makes securityadmin.sh
-        # reject it ("not in OpenSearch Security 7 format") and prevents the
-        # whole security index from applying. Re-declared here with the fix.
+        # Required override: the chart's default roles.yml is missing the _meta header
+        # securityadmin.sh needs, which blocks the whole security index from applying.
         roles.yml: |-
           _meta:
             type: "roles"
@@ -66,10 +63,8 @@ opensearch:
               - "admin"
               - "otel-collector"
 
-          # This whole file replaces the chart's own default roles_mapping.yml
-          # (Helm doesn't deep-merge multi-line string values), which is what
-          # normally grants OpenSearch Dashboards' own "dashboards-client" mTLS
-          # identity its permissions - re-declared here so dashboards keeps working.
+          # This file replaces the chart's default roles_mapping.yml wholesale (no deep-merge) -
+          # kibana_server must stay declared here or Dashboards' mTLS identity loses its permissions.
           kibana_server:
             reserved: true
             hidden: false
@@ -117,10 +112,7 @@ opensearch:
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
                   order: 2
 {{- else }}
-                  # Must run after clientcert_auth_domain (below): this
-                  # domain's challenge:true would otherwise short-circuit the
-                  # chain with a 401 before a client cert (e.g. dashboards'
-                  # own dashboards-client identity) is even considered.
+                  # Must run after clientcert_auth_domain below, or its challenge:true short-circuits with a 401 first.
                   order: 2
 {{- end }}
                   http_authenticator:
@@ -290,13 +282,8 @@ resource-health:
     environmentFixed:
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
-      # check_backends.k8s_backend.template_utils's own DEFAULT_RUNNER_IMAGE
-      # hardcodes ":2.0.0", which crashloops (ModuleNotFoundError: No module
-      # named 'pkg_resources' - missing setuptools) - every API-created check
-      # would fail regardless of its own content. The chart's own
-      # global.defaultHealthCheckImage already carries the fixed tag, but
-      # that's only wired into statically Helm-defined checks, not the
-      # API-driven path used by every check created at runtime.
+      # Required: the chart's hardcoded default runner image (:2.0.0) crashloops on every
+      # API-created check (missing setuptools). global.defaultHealthCheckImage doesn't cover this path.
       - name: RH_CHECK_K8S_DEFAULT_RUNNER_IMAGE
         value: "docker.io/eoepca/healthcheck_runner:2.0.1-6cbbcf4"
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}

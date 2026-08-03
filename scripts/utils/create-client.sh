@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Set working directory for relative paths
 ORIG_DIR="$(pwd)"
 cd "$(dirname "$0")"
 BIN_DIR="$(pwd)"
@@ -32,12 +31,10 @@ ROOT_URL="${HTTP_SCHEME}://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}"
 REDIRECT_URIS=("${HTTP_SCHEME}://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*" "/*")
 
 REDIRECT_URIS=("${HTTP_SCHEME}://${CLIENT_SUBDOMAIN}.${INGRESS_HOST}/*")
-# Subdomains
 IFS=',' read -ra ADDR <<<"${ADDITIONAL_SUBDOMAINS}"
 for sub in "${ADDR[@]}"; do
     REDIRECT_URIS+=("${HTTP_SCHEME}://${sub}.${INGRESS_HOST}/*")
 done
-# Hosts
 IFS=',' read -ra HOSTS <<<"${ADDITIONAL_HOSTS}"
 for host in "${HOSTS[@]}"; do
     REDIRECT_URIS+=("https://${host}/*")

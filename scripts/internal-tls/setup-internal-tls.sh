@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Load utility functions
 source ../common/utils.sh
 
 echo "Setting up internal TLS..."

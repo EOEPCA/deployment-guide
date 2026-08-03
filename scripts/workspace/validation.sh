@@ -5,10 +5,8 @@ source "$HOME/.eoepca/state"
 
 EXPECTED_POD_COUNT=6
 
-# Check pods in workspace namespace
 check_pods_running "workspace" "" $EXPECTED_POD_COUNT
 
-# Check services
 check_service_exists "crossplane-system" "crossplane-webhooks"
 check_service_exists "crossplane-system" "provider-helm"
 check_service_exists "crossplane-system" "provider-keycloak"
@@ -20,7 +18,6 @@ check_service_exists "crossplane-system" "crossplane-contrib-function-python"
 check_service_exists "workspace" "workspace-api"
 check_clusterpolicy_exists "workspace-registry-ingress-class"
 
-# Check ingress
 CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/probe" "200"
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
     # Unauthenticated requests are redirected to Keycloak login

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Load utility functions and state file
 source ../common/utils.sh
 
 echo "Applying Kubernetes secrets..."
@@ -40,10 +39,7 @@ kubectl create secret generic sharinghub-s3 \
   --namespace sharinghub \
   --dry-run=client -oyaml | kubectl apply -f -
 
-# MLflow SharingHub secrets
-# secret-key and backend-store-uri are read from the same Secret by the
-# mlflow-sharinghub chart (mlflowSharinghub.existingSecret) - see
-# mlflow/values-template.yaml.
+# Both keys are read from this one Secret via mlflowSharinghub.existingSecret.
 kubectl create secret generic mlflow-sharinghub \
   --from-literal=secret-key="$MLFLOW_SECRET_KEY" \
   --from-literal=backend-store-uri="postgresql://$MLFLOW_POSTGRES_USERNAME:$MLFLOW_POSTGRES_PASSWORD@mlflow-postgres.sharinghub.svc.cluster.local:5432/mlflow" \

@@ -18,10 +18,8 @@ if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
   EXPECTED_POD_COUNT=$((EXPECTED_POD_COUNT + 1))
 fi
 
-# Check pods in data-access namespace
 check_pods_running "data-access" "" ${EXPECTED_POD_COUNT}
 
-# Check services
 check_service_exists "data-access" "eoapi-raster"
 check_service_exists "data-access" "eoapi-stac"
 check_service_exists "data-access" "eoapi-vector"
@@ -38,7 +36,6 @@ if [ "${ENABLE_GEOPARQUET_EXPORT:-no}" = "yes" ]; then
   check_cronjob_exists "data-access" "geoparquet-exporter-incremental"
 fi
 
-# Check ingress
 check_url_status_code "$HTTP_SCHEME://eoapi.$INGRESS_HOST" "200"
 
 echo

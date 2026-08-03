@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Load utility functions
 source ../common/utils.sh
 echo "Configuring the IAM..."
 
@@ -10,7 +9,6 @@ if [ "${INGRESS_CLASS}" != "apisix" ]; then
     exit 1
 fi
 
-# Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 ask "REALM" "Enter what you'd like for the Keycloak realm name" "eoepca" is_non_empty
@@ -63,7 +61,6 @@ KEYCLOAK_HOST=${KEYCLOAK_HOST:-"auth.$INGRESS_HOST"}
 add_to_state_file "KEYCLOAK_HOST" "$KEYCLOAK_HOST"
 add_to_state_file "OIDC_ISSUER_URL" "${HTTP_SCHEME}://$KEYCLOAK_HOST/realms/$REALM"
 
-# Generate configuration files
 echo "Generating configuration files..."
 
 gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

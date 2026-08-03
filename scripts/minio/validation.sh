@@ -25,7 +25,6 @@ fi
 echo
 echo "Performing MinIO functionality tests with s3cmd..."
 
-# Check if s3cmd is installed
 if ! command -v s3cmd &>/dev/null; then
     echo "s3cmd could not be found. Please install s3cmd to proceed."
     echo "Refer to https://s3tools.org/download for installation instructions."

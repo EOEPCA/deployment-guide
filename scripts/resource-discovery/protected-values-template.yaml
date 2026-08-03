@@ -4,8 +4,7 @@ global:
 ingress:
   enabled: false
 
-# The protected catalogue shares the same chart-managed database created by the
-# public catalogue release. Do not deploy a second database.
+# Shares the public catalogue's chart-managed database - do not deploy a second one.
 db:
   enabled: false
 

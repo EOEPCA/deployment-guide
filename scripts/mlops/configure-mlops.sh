@@ -1,15 +1,12 @@
 #!/bin/bash
 
-# Load utility functions
 source ../common/utils.sh
 echo "Configuring the MLOps Building Block..."
 
-# Collect user inputs
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
 ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 configure_cert
 
-# S3 configuration
 ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HOST}" is_non_empty
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
@@ -21,8 +18,6 @@ S3_BUCKET_MLFLOW="mlopbb-mlflow-sharinghub"
 add_to_state_file "S3_BUCKET_SHARINGHUB" "$S3_BUCKET_SHARINGHUB"
 add_to_state_file "S3_BUCKET_MLFLOW" "$S3_BUCKET_MLFLOW"
 
-
-# OIDC configuration
 ask "MLOPS_OIDC_ENABLED" "Enable OIDC for GitLab and SharingHub (true/false)" "true" is_boolean
 
 if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
@@ -34,7 +29,6 @@ if [ "$MLOPS_OIDC_ENABLED" == "true" ]; then
         MLOPS_OIDC_CLIENT_SECRET=$(generate_aes_key 32)
         add_to_state_file "MLOPS_OIDC_CLIENT_SECRET" "$MLOPS_OIDC_CLIENT_SECRET"
     fi
-
 
     echo ""
     echo "❗  Generated client secret for the MLOps."
@@ -59,13 +53,11 @@ if [ -z "$MLFLOW_POSTGRES_PASSWORD" ]; then
     add_to_state_file "MLFLOW_POSTGRES_PASSWORD" "$MLFLOW_POSTGRES_PASSWORD"
 fi
 
-# Generate configuration files for GitLab, SharingHub, and MLflow SharingHub
 gomplate  -f "gitlab/$TEMPLATE_PATH" -o "gitlab/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "sharinghub/$TEMPLATE_PATH" -o "sharinghub/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "mlflow/$TEMPLATE_PATH" -o "mlflow/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate  -f "mlflow/postgres-deployment-template.yaml" -o "mlflow/postgres-deployment.yaml"
 
-# Generate configuration files for secrets
 gomplate -f "mlflow/pvc-template.yaml" -o "mlflow/generated-pvc.yaml"
 gomplate -f "gitlab/storage.config.template" -o "gitlab/storage.config"
 gomplate -f "gitlab/lfs-s3.yaml.template" -o "gitlab/lfs-s3.yaml"

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Set working directory for relative paths
 ORIG_DIR="$(pwd)"
 cd "$(dirname "$0")"
 BIN_DIR="$(pwd)"
@@ -16,9 +15,6 @@ ask "REALM" "Enter the Keycloak Realm name" "eoepca"
 
 ask_temp "USER_NAME" "Enter the username for the example user" "eoepcauser"
 ask_temp "USER_PASSWORD" "Enter the password for the example user" "eoepcapassword"
-
-
-
 
 # Obtain Admin Token (from 'master' realm)
 ACCESS_TOKEN=$(curl -k --silent --show-error \

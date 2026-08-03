@@ -81,13 +81,8 @@ spec:
             annotations:
               +(k8s.apisix.apache.org/plugin-config-name): "workspace-session-oidc-{{ request.object.metadata.labels.\"training.educates.dev/environment.name\" }}"
               +(k8s.apisix.apache.org/enable-websocket): "true"
-    # Kyverno stamps its own generate.kyverno.io/policy-namespace tracking label
-    # onto every resource this ClusterPolicy generates - empty, since a
-    # ClusterPolicy has no namespace. APISIX's ingress controller rejects any
-    # label with an empty string value when syncing an ApisixPluginConfig
-    # (400: "string too short, expected at least 1, got 0"), which silently
-    # breaks every Datalab session's OIDC protection. Fix it at admission time,
-    # before the object is ever synced to APISIX.
+    # Required: Kyverno's own tracking label on generated resources is empty (ClusterPolicy
+    # has no namespace), and APISIX rejects empty label values, silently breaking OIDC.
     - name: fix-empty-generate-tracking-label-on-plugin-config
       match:
         any:

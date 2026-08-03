@@ -51,19 +51,12 @@ spec:
     protocol: openid-connect
     protocolMapper: oidc-audience-mapper
     config:
-      # check_api/telemetry_api validate OPEN_ID_CONNECT_AUDIENCE="account"
-      # (see values-template.yaml); without this mapper the access token has
-      # no "aud" claim at all and every request 403s with
-      # "Invalid authentication credentials".
+      # Required: without this mapper every request 403s with "Invalid authentication credentials".
       included.client.audience: account
       access.token.claim: "true"
       id.token.claim: "false"
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig
-# There is deliberately no Crossplane Roles resource here to assign
-# opensearch_user to your test user: that CR needs a user.keycloak.m.crossplane.io
-# User object to reference, but KEYCLOAK_TEST_USER is normally a plain Keycloak
-# user created via the Admin REST API (see the IAM BB docs), not a Crossplane
-# resource. Assign the role via REST instead - see the guide's "Assign the
-# Realm Role" step below.
+# No Crossplane Roles resource here - KEYCLOAK_TEST_USER isn't a Crossplane User
+# object, so the role is assigned via REST in the guide's "Assign the Realm Role" step.

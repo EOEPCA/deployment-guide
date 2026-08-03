@@ -1,4 +1,3 @@
-# Load utility functions
 source ../common/utils.sh
 
 echo "Access the MinIO Console to create your access key at https://console-minio.$INGRESS_HOST/access-keys/new-account"

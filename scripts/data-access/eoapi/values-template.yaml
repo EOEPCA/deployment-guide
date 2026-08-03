@@ -250,7 +250,6 @@ eoapi-notifier:
               name: primary
               namespace: default
 {{- else }}
-# eoapi-notifier disabled
 eoapi-notifier:
   enabled: false
 {{- end }}

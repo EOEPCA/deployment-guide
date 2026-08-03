@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Function to check if a command exists
 function check_command_installed() {
     local cmd="$1"
     local install_url="$2"
@@ -19,7 +18,6 @@ function check_command_installed() {
     fi
 }
 
-# Function to check if a command meets the required version
 function check_command_version() {
     local cmd="$1"
     local required_version="$2"
@@ -37,7 +35,6 @@ function check_command_version() {
         return 1
     fi
 
-    # Get the installed version
     local installed_version
     installed_version=$(eval "$version_command" 2>/dev/null | grep -Eo "$version_regex" | head -n1)
 
@@ -46,7 +43,6 @@ function check_command_version() {
         return 1
     fi
 
-    # Compare versions
     if [ "$(printf '%s\n' "$required_version" "$installed_version" | sort -V | head -n1)" = "$required_version" ]; then
         echo "✅ $cmd_pretty_name version $installed_version meets the requirement (>= $required_version)."
         return 0
@@ -74,7 +70,6 @@ function check_helm_plugin_installed() {
     fi
 }
 
-# Function to check Kubernetes cluster accessibility
 function check_kubernetes_access() {
     if ! kubectl cluster-info >/dev/null 2>&1; then
         echo "❌ Kubernetes cluster is not accessible with kubectl."
@@ -86,7 +81,6 @@ function check_kubernetes_access() {
     fi
 }
 
-# Specific checks for common tools
 function check_kubectl_installed() {
     check_command_installed "kubectl" "$HTTP_SCHEME://kubernetes.io/docs/tasks/tools/install-kubectl/" "kubectl"
 }
@@ -251,7 +245,6 @@ function validate_url() {
 }
 
 function check_internal_certificates() {
-    # check if internal TLS has been enabled
     if [ -z "$INTERNAL_TLS_ENABLED" ] || [ "$INTERNAL_TLS_ENABLED" != "true" ]; then
         ask "INTERNAL_TLS_ENABLED" "Do you have internal TLS enabled with a valid Cluster Issuer?" "true" is_boolean
 
@@ -278,11 +271,9 @@ function check_rwx_storage() {
 
     echo "🔍 Checking support for ReadWriteMany persistent volumes (takes a few seconds)..."
     
-    # Check if the storage class supports ReadWriteMany access mode
     local access_modes
     access_modes=$(kubectl get sc "${SHARED_STORAGECLASS}" -o jsonpath='{.allowVolumeExpansion}' 2>/dev/null)
     
-    # Create a test PVC (with associated workload) to verify RWX support
     local test_pvc_name="rwx-test-pvc-$(date +%s)"
     local test_manifest="/tmp/${test_pvc_name}.yaml"
     
@@ -338,7 +329,6 @@ EOF
             pvc_status=$(kubectl get pvc "${test_pvc_name}" -n default -o jsonpath='{.status.phase}' 2>/dev/null)
         fi
 
-        # Cleanup test PVC
         kubectl delete -f "${test_manifest}" &>/dev/null
         rm -f "${test_manifest}"
 
@@ -365,7 +355,6 @@ function run_validation() {
     checks=("$@")
     errors=0
 
-    # Loop through each check function in the array
     for check in "${checks[@]}"; do
         if ! $check; then
             # Special message for optional cases... Improve this....
@@ -392,7 +381,6 @@ function check_kubernetes_version() {
         return 1
     fi
 
-    # Get server version - format like "v1.31.1+k3s1"
     local server_version
     server_version=$(kubectl version -o json 2>/dev/null | grep -Eo '"gitVersion":\s*"v[0-9]+\.[0-9]+\.[0-9]+[^"]*"' | head -n2 | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
 

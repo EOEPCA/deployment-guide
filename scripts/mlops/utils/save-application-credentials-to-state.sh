@@ -1,4 +1,3 @@
-# Load utility functions
 source ../common/utils.sh
 
 ask "GITLAB_APP_ID" "Enter the SharingHub Application ID" "" is_non_empty

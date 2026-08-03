@@ -3,7 +3,6 @@
 echo "Configuring the Application Hub..."
 source ../common/utils.sh
 
-# Collect user inputs
 configure_http_scheme
 configure_ingress
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain

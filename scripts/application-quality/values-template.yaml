@@ -41,10 +41,7 @@ grafana:
     enabled: true
     storageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
 
-  # Chart defaults wire this to an OAuth client secret and Keycloak host this
-  # guide doesn't provision. Disable to fall back to local admin login
-  # (see apply-secrets.sh for the generated admin credentials) instead of
-  # generating a broken/dev-cluster-pointed config.
+  # Falls back to local admin login (see apply-secrets.sh) instead of the chart's unconfigured OAuth default.
   envFromSecret: ""
   grafana.ini:
     server:
@@ -68,9 +65,7 @@ application-quality:
   calrissian:
     storageClassName: {{ getenv "SHARED_STORAGECLASS" }}
 
-  # Chart defaults this to true independently of the grafana subchart's own
-  # enabled flag; leaving it unset makes the API pod mount a Grafana admin
-  # creds secret that apply-secrets.sh only creates when Grafana is enabled.
+  # Must track APP_QUALITY_ENABLE_GRAFANA - apply-secrets.sh only creates the admin secret this mounts when Grafana is enabled.
   grafana:
     enabled: {{ getenv "APP_QUALITY_ENABLE_GRAFANA" "false" }}
 

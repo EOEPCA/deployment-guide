@@ -6,7 +6,6 @@ function is_valid_backend() {
     [[ "$1" == "geotrellis" || "$1" == "dask" ]]
 }
 
-# First, ask which backend to use
 ask "OPENEO_BACKEND" "Which OpenEO backend would you like to deploy? (geotrellis/dask)" "geotrellis" is_valid_backend
 
 ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
@@ -21,7 +20,6 @@ if [[ "$OPENEO_ENABLE_OIDC" == "yes" ]]; then
     ask "OPENEO_CLIENT_ID" "Enter the Client ID (OIDC public client) that will be created for OpenEO clients" "openeo-public"
 fi
 
-# Backend-specific configuration
 if [[ "$OPENEO_BACKEND" == "dask" ]]; then
     echo ""
     echo "📊 Configuring Dask Backend..."
@@ -40,16 +38,13 @@ if [[ "$OPENEO_BACKEND" == "dask" ]]; then
     ask "DASK_WORKER_MEMORY" "Default memory per Dask worker (e.g., 4Gi)" "4Gi" is_non_empty
     ask "DASK_MAX_WORKERS" "Maximum number of Dask workers" "10" is_non_empty
     
-    # S3 configuration for data access
     ask "S3_ENDPOINT" "S3 endpoint for data access" "http://minio.minio.svc.cluster.local:9000" is_non_empty
     ask "S3_ACCESS_KEY" "S3 access key" "minioadmin" is_non_empty
     ask "S3_SECRET_KEY" "S3 secret key" "minioadmin" is_non_empty
     ask "S3_REGION" "S3 region" "us-east-1" is_non_empty
     
-    # STAC configuration
     ask "STAC_CATALOG_URL" "STAC catalog URL (optional, leave empty to skip)" "" can_be_empty
     
-    # Generate Dask backend templates
     gomplate -f "openeo-dask/$TEMPLATE_PATH" -o "openeo-dask/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
     gomplate -f "openeo-dask/$INGRESS_TEMPLATE_PATH" -o "openeo-dask/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
     
@@ -61,7 +56,6 @@ elif [[ "$OPENEO_BACKEND" == "geotrellis" ]]; then
     echo ""
     echo "🌍 Configuring GeoTrellis Backend..."
     
-    # Generate GeoTrellis backend templates (existing code)
     gomplate -f "openeo-geotrellis/$TEMPLATE_PATH" -o "openeo-geotrellis/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
     gomplate -f "sparkoperator/$TEMPLATE_PATH" -o "sparkoperator/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
     gomplate -f "zookeeper/$TEMPLATE_PATH" -o "zookeeper/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

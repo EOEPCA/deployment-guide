@@ -3,10 +3,8 @@ source ../common/utils.sh
 source ../common/validation-utils.sh
 source "$HOME/.eoepca/state"
 
-# Check pods in resource-registration namespace
 check_pods_running "resource-registration" "" 6
 
-# Check services
 check_service_exists "resource-registration" "registration-api-service"
 check_service_exists "resource-registration" "registration-harvester-bpm-engine-postgres-hl"
 check_service_exists "resource-registration" "registration-harvester-bpm-engine-operaton"
@@ -15,7 +13,6 @@ check_service_exists "resource-registration" "registration-harvester-worker-land
 check_service_exists "resource-registration" "registration-harvester-worker-sentinel-service"
 check_service_exists "resource-registration" "registration-harvester-worker-stac-service"
 
-# Check ingress
 if [ "${INGRESS_CLASS:-}" == "apisix" ]; then
   kubectl -n resource-registration get apisixroute registration-api >/dev/null
   kubectl -n resource-registration get apisixroute registration-harvester-bpm-engine >/dev/null

@@ -4,12 +4,10 @@ source ../../common/validation-utils.sh
 
 echo "🔍 Validating OpenEO ArgoWorkflows deployment..."
 
-# Check pods
 check_pods_running "openeo" "app.kubernetes.io/name=openeo-argo" 1
 check_pods_running "openeo" "app.kubernetes.io/name=postgresql" 1
 check_pods_running "openeo" "app.kubernetes.io/name=redis" 1
 
-# Check services
 check_service_exists "openeo" "openeo-openeo-argo"
 check_service_exists "openeo" "openeo-postgresql"
 check_service_exists "openeo" "openeo-redis-master"
