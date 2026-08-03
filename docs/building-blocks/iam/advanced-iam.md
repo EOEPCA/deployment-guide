@@ -241,7 +241,7 @@ When prompted:
     EOF
     ```
 
-    Note that, for convenience, the `client_id` and `client_secret` have been included directly in the `config`. Alternatively the `secretRef` field can be used to refrence a secret that contains the `client_id` and `client_secret`.
+    Note that, for convenience, the `client_id` and `client_secret` have been included directly in the `config`. Alternatively the `secretRef` field can be used to reference a secret that contains the `client_id` and `client_secret`.
 
     **Test Access:**
 

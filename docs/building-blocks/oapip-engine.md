@@ -43,7 +43,7 @@ Both backends use the same OGC API Processes interface - the difference is where
     - Internet access from compute nodes (or local container registries and data repositories)
     - A [Toil WES service](https://toil.readthedocs.io/en/master/running/server/wes.html) endpoint
 
-    Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/htcondor/), [Slurm](https://www.schedmd.com/), [PBS/Torque/PBS Pro](#TODO) [LSF](https://en.wikipedia.org/wiki/Platform_LSF), and [Grid Engine](http://www.univa.com/oracle).
+    Toil supports several batch schedulers: [HTCondor](https://research.cs.wisc.edu/htcondor/), [Slurm](https://www.schedmd.com/), PBS/Torque/PBS Pro, [LSF](https://en.wikipedia.org/wiki/Platform_LSF), and [Grid Engine](http://www.univa.com/oracle).
 
     ???+ note "Setting up a Local HTCondor (Development/Testing Only)"
 
@@ -352,7 +352,7 @@ Skip this section if you don't need IAM protection right now - the engine will w
 
     The ZOO-Project uses a path prefix to establish user context (e.g., `/<username>/ogc-api/processes/...`). You can protect this so only the owning user can access it.
 
-    This example protects the context for `eoepcauser` (see [Create Test Users](./iam/main-iam.md#6-create-test-users)):
+    This example protects the context for `eoepcauser` (see [Provision the Test User](./iam/main-iam.md#provision-the-test-user)):
     ```bash
     source ~/.eoepca/state
     export OAPIP_USER="${KEYCLOAK_TEST_USER}"

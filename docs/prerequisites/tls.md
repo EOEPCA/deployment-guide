@@ -5,7 +5,7 @@ TLS plays an essential role in securing both external and internal traffic for E
 
 ## Exposed Service TLS
 
-For services that are extrernally exposed via the ingress controller, there are several options to establish the TLS certificates for each service.
+For services that are externally exposed via the ingress controller, there are several options to establish the TLS certificates for each service.
 
 ### Dynamic using Cert-Manager
 

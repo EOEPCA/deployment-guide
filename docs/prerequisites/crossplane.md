@@ -135,7 +135,7 @@ Crossplane Providers expect to find their configuration in `ProviderConfig` reso
 ### Minio Provider
 
 !!! tip
-    For convenience we reuse the `minio-secret` that is provisioned as part of the [Workspace BB](../building-blocks/workspace.md) deployment. This secret supplies the credentals for the MinIO API.
+    For convenience we reuse the `minio-secret` that is provisioned as part of the [Workspace BB](../building-blocks/workspace.md) deployment. This secret supplies the credentials for the MinIO API.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-config-minio.yaml

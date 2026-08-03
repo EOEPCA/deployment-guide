@@ -101,7 +101,7 @@ The following EOEPCA building blocks require `ReadWriteMany` access:
 
 For a multi-node cluster then a distributed storage solution is required to provide `ReadWriteMany` access. If your cluster has access to an Object Storage solution (e.g. S3, MinIO, etc.), then JuiceFS can exploit this to offer a cloud-native storage solution that provides POSIX-compliant file system access with `ReadWriteMany` capabilities.
 
-JuiceFS is an open-source, high-performance distributed file system that allows all kinds of object storage to be used as massive local disks and to be simulaneously mounted and accessed on different nodes.
+JuiceFS is an open-source, high-performance distributed file system that allows all kinds of object storage to be used as massive local disks and to be simultaneously mounted and accessed on different nodes.
 
 JuiceFS achieves this by separation of 'data' and 'metadata' storage. The metadata is stored in a low-latency database (e.g. Redis, TiKV, MySQL, etc.) while the data is stored as chunks in an Object Storage system - and others such as local-disk, WebDAV, HDFS - see [Supported Storage](https://juicefs.com/docs/community/reference/how_to_set_up_object_storage/#supported-object-storage).
 

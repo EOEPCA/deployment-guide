@@ -72,7 +72,7 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
 
     Run the configuration script:
 
-    ```
+    ```bash
     bash configure-container-registry.sh
     ```
 
@@ -106,7 +106,7 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
     Navigate to `harbor.${INGRESS_HOST}` in your browser.
 
     ```bash
-    source ~/.eoepca/local
+    source ~/.eoepca/state
     xdg-open "${HTTP_SCHEME}://harbor.${INGRESS_HOST}"
     ```
 
@@ -119,21 +119,21 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
 
 - **Trivy (Vulnerability Scanning)**:
 
-    ```
+    ```yaml
     trivy:
       enabled: true
     ```
 
 - **ChartMuseum (Helm Chart Repository)**:
 
-    ```
+    ```yaml
     chartmuseum:
       enabled: true
     ```
 
 - **Notary (Image Signing)**:
 
-    ```
+    ```yaml
     notary:
       enabled: true
     ```
@@ -158,7 +158,7 @@ bash validation.sh
 
 2. **Access Container Registry Dashboard:**
 
-```
+```bash
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://harbor.${INGRESS_HOST}"
 ```
@@ -183,7 +183,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 
 1. **Login to Harbor**:
 
-    ```
+    ```bash
     source ~/.eoepca/state
     docker login -u admin -p "${HARBOR_ADMIN_PASSWORD}" harbor.${INGRESS_HOST}
     ```
@@ -194,7 +194,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 
     Tag an image and push it to Harbor.
 
-    ```
+    ```bash
     docker pull alpine:latest
     docker tag alpine:latest harbor.${INGRESS_HOST}/library/alpine:latest
     docker push harbor.${INGRESS_HOST}/library/alpine:latest
@@ -202,7 +202,7 @@ To interact with Harbor using Docker commands, you need to configure your Docker
 
 3. **Pull an Image**:
 
-    ```
+    ```bash
     docker pull harbor.${INGRESS_HOST}/library/alpine:latest
     ```
 

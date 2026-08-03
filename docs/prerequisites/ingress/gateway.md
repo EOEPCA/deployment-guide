@@ -42,7 +42,7 @@ kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for
 
 Each `Gateway` resource instantiates a set of resources (deployment, pods, service, etc.) that implement the `Gateway` - including a `Service` that exposes the listening ports of the `Gateway`.
 
-These resources are defined by a template that can be patched via an `EnvoyProxy` resource. Thus, we patch the `envoyService` ports defintion to include the required `NodePorts`.
+These resources are defined by a template that can be patched via an `EnvoyProxy` resource. Thus, we patch the `envoyService` ports definition to include the required `NodePorts`.
 
 The `EnvoyProxy/nodeport-proxy-config` is then used as a parameter in the `Gateway` below.
 
@@ -222,7 +222,7 @@ EOF
 
 The APISIX ingress controller can now be used to define ingresses as normal - using `Ingress` or `ApisixRoute` resources.
 
-> Since TLS Passthhrough was specified for the Gateway, APISIX handles TLS termination and certificate management using Letsencrypt as per normal.
+> Since TLS Passthrough was specified for the Gateway, APISIX handles TLS termination and certificate management using Letsencrypt as per normal.
 >
 > The ingress assumes use of TLS via Let's Encrypt, as described in the [TLS Management](../tls.md) section - making use of the `letsencrypt-http01-apisix` [_ClusterIssuer_](../tls.md#create-a-clusterissuer-for-lets-encrypt).
 
@@ -332,7 +332,7 @@ EOF
 
 The NGINX ingress controller can now be used to define ingresses as normal - using `Ingress` resources.
 
-> Since TLS Passthhrough was specified for the Gateway, NGINX handles TLS termination and certificate management using Letsencrypt as per normal.
+> Since TLS Passthrough was specified for the Gateway, NGINX handles TLS termination and certificate management using Letsencrypt as per normal.
 >
 > The ingress assumes use of TLS via Let's Encrypt, as described in the [TLS Management](../tls.md) section - making use of the `letsencrypt-http01-nginx` [_ClusterIssuer_](../tls.md#create-a-clusterissuer-for-lets-encrypt).
 

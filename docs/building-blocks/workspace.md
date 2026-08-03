@@ -44,7 +44,7 @@ Before deploying the Workspace Building Block, ensure you have the following:
 | Helm               | Version 3.7 or newer                              | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl            | Configured for cluster access                     | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
 | TLS Certificates   | Managed via `cert-manager` or manually            | [TLS Certificate Management Guide](../prerequisites/tls.md) |
-| APISIX Ingress Controller | Properly installed - the only ingress class this BB supports | [Installation Guide](../prerequisites/ingress/overview.md#apisix-ingress-controller)      |
+| APISIX Ingress Controller | Properly installed - the only ingress class this BB supports | [Installation Guide](../prerequisites/ingress/apisix.md)      |
 | Crossplane         | Properly installed                                | [Installation Guide](../prerequisites/crossplane.md) |
 | IAM Building Block | Deployed and running - the Workspace API always requires a Keycloak Bearer token, there is no auth-free mode | [IAM Deployment Guide](./iam/main-iam.md) |
 

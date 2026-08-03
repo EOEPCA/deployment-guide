@@ -19,7 +19,7 @@ Before deploying, ensure your environment meets the following requirements:
 
 **Clone the Deployment Guide Repository:**
 
-```
+```bash
 git clone https://github.com/EOEPCA/deployment-guide
 cd deployment-guide/scripts/processing/openeo
 ```
@@ -28,7 +28,7 @@ cd deployment-guide/scripts/processing/openeo
 
 Run the validation script to ensure all prerequisites are met:
 
-```
+```bash
 bash check-prerequisites.sh
 ```
 
@@ -106,7 +106,7 @@ helm upgrade -i openeo-geotrellis-openeo sparkapplication \
 
 Deploy ingress:
 
-```
+```bash
 kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 ```
 
@@ -284,7 +284,7 @@ The authentication method depends on whether you enabled OIDC during configurati
 
 === "OIDC Authentication"
 
-    This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`). See `IAM` section [Create Test Users](./iam/main-iam.md#6-create-test-users) for creation of the test users assumed by this guide.
+    This assumes use of the previously created `KEYCLOAK_TEST_USER` (default `eoepcauser`). See `IAM` section [Provision the Test User](./iam/main-iam.md#provision-the-test-user) for creation of the test users assumed by this guide.
 
     Request the access token:
 

@@ -242,7 +242,7 @@ helm upgrade -i sharinghub /tmp/sharinghub/deploy/helm/sharinghub \
 !!! note "APISIX only"
     If you are using NGINX or another ingress controller, you can skip this step.
 
-```
+```bash
 kubectl apply -f sharinghub/generated-ingress.yaml
 ```
 
@@ -279,7 +279,7 @@ kubectl apply -f mlflow/postgres-deployment.yaml
 
 ### 1. Validate the Deployment
 
-Before contiuning to the **Basic Usage Walkthrough**, run a few checks:
+Before continuing to the **Basic Usage Walkthrough**, run a few checks:
 
 1. **Check Pods**:
 ```bash

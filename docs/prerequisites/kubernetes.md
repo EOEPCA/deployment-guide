@@ -149,7 +149,7 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
     A simple approach to avoid this problem is to use a Mutating Admission Policy to zero any pod resource requests.
 
     !!! note
-        The success of this workaround relies upon the (overall) tendancy of the deployed components to request more cpu/memory resource than they require for a simple development setup.
+        The success of this workaround relies upon the (overall) tendency of the deployed components to request more cpu/memory resource than they require for a simple development setup.
 
     For this we can use the Kyverno Policy Engine through which we can configure an admission webhook with a mutating rule.
 

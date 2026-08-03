@@ -10,7 +10,7 @@ For full installation instructions for the APISIX Ingress Controller see the off
 !!! note "Disclaimer"
     We recommend following the official installation instructions for the APISIX Ingress Controller. However, this quick start guide should also work for most environments.
 
-```
+```bash
 helm repo add apisix https://apache.github.io/apisix-helm-chart
 helm repo update apisix
 ```
