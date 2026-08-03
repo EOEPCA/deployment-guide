@@ -76,7 +76,8 @@ Provide values for:
 - **`SHARED_STORAGECLASS`**: Kubernetes storage class for shared Calrissian volumes.
 - **`CLUSTER_ISSUER`**: Cert-manager issuer name.
 - **`INTERNAL_CLUSTER_ISSUER`**: Internal TLS issuer (default: `eoepca-ca-clusterissuer`).
-- **`APP_QUALITY_PUBLIC_HOST`**: Public Application Quality host. Defaults to `application-quality.${INGRESS_HOST}`.
+
+`APP_QUALITY_PUBLIC_HOST` defaults to `application-quality.${INGRESS_HOST}` and isn't prompted for directly.
 
 The script also asks whether to enable:
 

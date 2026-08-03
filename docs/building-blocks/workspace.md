@@ -85,13 +85,13 @@ During the script execution, you will be prompted to provide:
 
     *Example*: `letsencrypt-http01-apisix`
 
-* **S3 Credentials**
-  
-    Endpoint, region, access key, and secret key for your S3-compatible storage.
+* **S3 Credentials**: `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` for your S3-compatible storage.
 
-* **Keycloak Client IDs**
+* **`WORKSPACE_PIPELINE_CLIENT_ID`** and **`WORKSPACE_API_CLIENT_ID`**: Keycloak client IDs (defaults are fine) - see [step 9](#9-configure-iam-for-the-workspace-api) for what each of these controls. Client secrets are generated automatically.
 
-    Client IDs for the `workspace-pipeline` and `workspace-api` Keycloak clients (defaults are fine), plus whether to enable ingress-level login redirect and Datalab session SSO - see [step 9](#9-configure-iam-for-the-workspace-api) for what each of these controls.
+* **`OIDC_WORKSPACE_ENABLED`**: whether to enable ingress-level login redirect and Datalab session SSO (default: `true`).
+
+* **`KEYCLOAK_TEST_USER`**, **`KEYCLOAK_TEST_ADMIN`**, **`KEYCLOAK_TEST_PASSWORD`**: example user/admin usernames and shared password.
 
 
 ### 2. Apply Kubernetes Secrets

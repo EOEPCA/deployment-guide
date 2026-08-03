@@ -255,9 +255,9 @@ If using Workspace integration:
 
 ### Stage-In S3 Configuration
 
-If your input data is hosted separately from output storage:
+- **`DIFFERENT_STAGE_IN`**: whether your input data is hosted separately from output storage (default: `no`)
 
-- **`STAGEIN_S3_ENDPOINT`**, **`STAGEIN_S3_ACCESS_KEY`**, **`STAGEIN_S3_SECRET_KEY`**, **`STAGEIN_S3_REGION`**
+If yes: **`STAGEIN_S3_ENDPOINT`**, **`STAGEIN_S3_ACCESS_KEY`**, **`STAGEIN_S3_SECRET_KEY`**, **`STAGEIN_S3_REGION`**
 
 ### OIDC Configuration
 
@@ -265,11 +265,13 @@ If your input data is hosted separately from output storage:
 
 > **Note:** The EOEPCA OIDC protection requires the **APISIX** Ingress Controller. If you're using a different ingress controller, set `OIDC_OAPIP_ENABLED=false` - OIDC will not be available and you can skip this configuration.
 
-If using APISIX, you can enable OIDC authentication during configuration. When prompted for the `Client ID`, we recommend `oapip-engine`.
+If using APISIX and OIDC is enabled, you'll then be asked for **`OAPIP_CLIENT_ID`** (default: `oapip-engine`), and - only if not already set - **`KEYCLOAK_HOST`** and **`REALM`**.
 
 See the [IAM Building Block](./iam/main-iam.md) guide for IAM setup, and [Enable OIDC with Keycloak](#optional-enable-oidc-with-keycloak) below for post-deployment configuration.
 
 ### Execution Engine Configuration
+
+- **`OAPIP_EXECUTION_ENGINE`**: `calrissian` (default) or `toil`.
 
 === "Calrissian"
 

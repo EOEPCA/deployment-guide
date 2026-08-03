@@ -87,22 +87,35 @@ The `configure-resource-health.sh` script gathers basic configuration inputs (su
 bash configure-resource-health.sh
 ```
 
-During execution, you will be prompted for:
+You'll be asked for, in order:
 
-- **`INGRESS_HOST`**: Hostname.
 - **`INTERNAL_CLUSTER_ISSUER`**: Name of the cert-manager ClusterIssuer for internal TLS. (Default: `eoepca-ca-clusterissuer`)
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes. (Default: `standard`)
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes. (Default: `local-path`)
+- **`INGRESS_HOST`**: Hostname.
+- **`CLUSTER_ISSUER`**: cert-manager ClusterIssuer for TLS certificates.
 - **`RESOURCE_HEALTH_ENABLE_OIDC`**: Enable OIDC protection for Resource Health. (Default: `yes`)
 
 === "With OIDC (default)"
 
     - **`RESOURCE_HEALTH_CLIENT_ID`**: Keycloak Client ID for Resource Health. (Default: `resource-health`)
+    - **`KEYCLOAK_HOST`**, **`REALM`**: only asked if not already set.
+    - **`KEYCLOAK_TEST_USER`**, **`KEYCLOAK_TEST_PASSWORD`**: only asked if not already set.
 
     Only supported with APISIX - OIDC protection is enforced at the ingress layer via an `ApisixRoute` + `openid-connect` plugin, and there is no nginx equivalent. `configure-resource-health.sh` rejects `RESOURCE_HEALTH_ENABLE_OIDC=yes` with `INGRESS_CLASS=nginx`.
 
 === "Without OIDC"
 
     Resource Health deploys with public, unauthenticated endpoints. The [Authentication](#authentication) step below isn't needed, and the Keycloak-related steps ([2](#2-create-a-keycloak-client), [5](#5-configure-keycloak-client)) can be skipped.
+
+- **`RESOURCE_HEALTH_ENABLE_ALERTING`**: Enable email alerting for failed health checks. (Default: `no`)
+
+=== "With alerting"
+
+    - **`RESOURCE_HEALTH_SMTP_HOST`**, **`RESOURCE_HEALTH_SMTP_PORT`**, **`RESOURCE_HEALTH_FROM_EMAIL`**, **`RESOURCE_HEALTH_FROM_EMAIL_PASSWORD`**, **`RESOURCE_HEALTH_MAX_EMAILS_PER_DAY`**
+
+=== "Without alerting (default)"
+
+    The chart's alerting component is still deployed (it always is), but with placeholder SMTP values and `RESOURCE_HEALTH_MAX_EMAILS_PER_DAY=0` so it stays up without sending anything.
 
 ---
 

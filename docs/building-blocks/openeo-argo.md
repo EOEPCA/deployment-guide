@@ -61,6 +61,7 @@ You'll be prompted for:
 | `OPENEO_ARGO_ENABLE_OIDC` | Enable OIDC authentication (yes/no) | `yes` |
 | `OIDC_ISSUER_URL` | OIDC provider URL (if OIDC enabled) | `https://auth.example.com/realms/eoepca` |
 | `OIDC_ORGANISATION` | OIDC organisation identifier (if OIDC enabled) | `eoepca` |
+| `OIDC_POLICIES` | OIDC policies (if OIDC enabled, optional, leave empty for none) | |
 | `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://eoapi.example.com/stac` |
 
 ### 2. Add Helm Repositories

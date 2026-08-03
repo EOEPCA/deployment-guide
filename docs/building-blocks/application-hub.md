@@ -63,12 +63,12 @@ bash configure-app-hub.sh
 
 **Core Configuration Parameters**
 
-During the script execution, you will be prompted to provide:
+You'll be asked for, in order (`HTTP_SCHEME` and `INGRESS_CLASS` only if not already set from a prior Building Block):
 
+- **`HTTP_SCHEME`**: `http` or `https`.
+- **`INGRESS_CLASS`**: `apisix` or `nginx`.
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
-- **`APPHUB_PUBLIC_HOST`**: Public Application Hub host. Defaults to `app-hub.${INGRESS_HOST}`.
-    - *Example*: `app-hub.example.com`
 - **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
     - *Example*: `standard`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
@@ -78,16 +78,16 @@ During the script execution, you will be prompted to provide:
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
     - *Example*: `linux`
-
-**OIDC Configuration**:
-
-- **`KEYCLOAK_HOST`**: OIDC provider base domain will be asked if this hasn't been set. JupyterHub requires an OIDC provider for authentication.
-    - *Example*: `auth.example.com`
-- **`REALM`**: Keycloak realm.
-    - *Example*: `eoepca`
+- **`APPHUB_PUBLIC_HOST`**: Public Application Hub host. Defaults to `app-hub.${INGRESS_HOST}`.
+    - *Example*: `app-hub.example.com`
 - **`APPHUB_CLIENT_ID`**: Client ID for the OIDC provider.
     - *Example*: `application-hub`
-- **`APPHUB_CLIENT_SECRET`**: Generated and stored in `~/.eoepca/state`.
+- **`KEYCLOAK_HOST`**: OIDC provider base domain, only asked if not already set. JupyterHub requires an OIDC provider for authentication.
+    - *Example*: `auth.example.com`
+- **`REALM`**: Keycloak realm, only asked if not already set.
+    - *Example*: `eoepca`
+
+`APPHUB_CLIENT_SECRET` and `APPHUB_JUPYTERHUB_CRYPT_KEY` are generated and stored in `~/.eoepca/state`.
 
 The script renders:
 

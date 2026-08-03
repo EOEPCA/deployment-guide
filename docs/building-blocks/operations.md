@@ -130,7 +130,7 @@ During the script execution, you will be prompted to provide:
 
 **Advanced Configuration Options**
 
-- **`ENABLE_IAM`**: Enable Keycloak integration (yes/no)
+- **`OPERATIONS_ENABLE_IAM`**: Enable Keycloak integration (yes/no)
 
 === "Without IAM (default)"
 
@@ -145,7 +145,7 @@ During the script execution, you will be prompted to provide:
     - **`GRAFANA_CLIENT_ID`**: OIDC client ID for Grafana (default: `monitoring`)
     - **`KEEP_CLIENT_ID`**: OIDC client ID for Keep (default: `alerting`)
 
-- **`ENABLE_STAC_ALERTS`**: Deploy STAC-specific SLO alerts (yes/no)
+- **`OPERATIONS_ENABLE_STAC_ALERTS`**: Deploy STAC-specific SLO alerts (yes/no)
     - Only applicable if Data Access BB is deployed with APISIX prometheus plugin enabled
 
 **Example Prometheus Values Override:**

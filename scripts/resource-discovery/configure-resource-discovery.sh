@@ -22,12 +22,6 @@ if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ] && [ "${INGRESS_CLASS}" != "ap
 fi
 
 if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
-  source ../common/prerequisite-utils.sh
-  run_validation "check_crossplane_installed"
-
-  # Shared credentials for the protected catalogue's Keycloak client cookie
-  # session and the Postgres user it shares with the public catalogue's
-  # chart-managed database.
   if [ -z "${RESOURCE_CATALOGUE_SESSION_SECRET:-}" ]; then
     RESOURCE_CATALOGUE_SESSION_SECRET="$(generate_aes_key 32)"
     add_to_state_file "RESOURCE_CATALOGUE_SESSION_SECRET" "$RESOURCE_CATALOGUE_SESSION_SECRET"
@@ -61,9 +55,6 @@ elif [ "$INGRESS_CLASS" == "nginx" ]; then
     --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
-echo "✅ Configuration file generated: $OUTPUT_PATH"
-echo "✅ Configuration file generated: $INGRESS_OUTPUT_PATH"
-
 # IAM/protected catalogue templates are rendered only for APISIX + IAM.
 if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
   gomplate \
@@ -85,9 +76,6 @@ if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ]; then
     -f db-secret-template.yaml \
     -o generated-db-secret.yaml \
     --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-
-  echo "✅ Configuration file generated: generated-protected-values.yaml"
-  echo "✅ Configuration file generated: generated-protected-ingress.yaml"
-  echo "✅ Configuration file generated: generated-iam.yaml"
-  echo "✅ Configuration file generated: generated-db-secret.yaml"
 fi
+
+echo "✅ Configuration files generated."

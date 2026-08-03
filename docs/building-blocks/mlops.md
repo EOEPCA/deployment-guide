@@ -67,10 +67,12 @@ bash configure-mlops.sh
 
 **Configuration Parameters**
 
-During the script execution, you will be prompted to provide:
+You'll be asked for, in order:
 
 - **`INGRESS_HOST`**: Base domain for ingress hosts.
     - *Example*: `example.com`
+- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
+    - *Example*: `local-path`
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
     - *Example*: `letsencrypt-http01-apisix`
 
@@ -88,11 +90,10 @@ If you need different bucket names, create them in MinIO yourself and edit `shar
 
 **OIDC Configuration (Optional):**
 
-You will be prompted to provide whether you wish to enable OIDC authentication (default: `true`). GitLab validates OIDC tokens itself (via its `openid_connect` omniauth provider) and SharingHub authenticates through GitLab OAuth, so this works under either ingress controller. If you **don't** want to enable OIDC, enter `false` when prompted.
-
+- **`MLOPS_OIDC_ENABLED`**: whether to enable OIDC authentication (default: `true`). GitLab validates OIDC tokens itself (via its `openid_connect` omniauth provider) and SharingHub authenticates through GitLab OAuth, so this works under either ingress controller. Enter `false` to skip the rest of this section.
 - **`OIDC_ISSUER_URL`**: The URL of your OpenID Connect provider (e.g., Keycloak).
     - *Example*: `https://keycloak.example.com/realms/eoepca`
-- **`Client ID`**: Use `gitlab`.
+- **`MLOPS_OIDC_CLIENT_ID`**: OIDC client ID for GitLab, default `gitlab`.
 
 For instructions on how to set up IAM, you can follow the [IAM Building Block](./iam/main-iam.md) guide. You will create a client in the next step.
 

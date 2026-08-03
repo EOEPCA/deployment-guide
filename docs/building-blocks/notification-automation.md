@@ -53,15 +53,16 @@ bash check-prerequisites.sh
 bash configure-notification-automation.sh
 ```
 
-You will be prompted for:
+You'll be asked for, in order:
 
 - `INGRESS_HOST`: base domain for ingress hosts (e.g. `example.com`)
+- `DNS_CLUSTER_ISSUER`: cert-manager ClusterIssuer supporting DNS-01, needed for wildcard TLS on Knative services (e.g. `letsencrypt-dns01`)
 - `CLUSTER_ISSUER`: cert-manager ClusterIssuer used for TLS (e.g. `letsencrypt-http01-apisix`)
-- `DNS_CLUSTER_ISSUER`: Required for wildcard TLS on Knative services
 - `NA_ENABLE_OIDC`: whether to turn on Knative Eventing's own OIDC token authentication between eventing resources (defaults to no — this is unrelated to the IAM Building Block)
 - `NA_ENABLE_EMAILER`: whether to deploy the emailer sink (defaults to no)
-- SMTP settings if the emailer is enabled
-- `NA_ENABLE_KAFKA`: whether to deploy a Kafka cluster (defaults to no), plus Kafka replica count, volume size and version if so
+    - if yes: `NA_EMAIL_FROM`, `NA_EMAIL_TO`, `NA_SMTP_HOST`, `NA_SMTP_PORT`, `NA_SMTP_USER`, `NA_SMTP_PASSWORD`, `NA_SMTP_STARTTLS`
+- `NA_ENABLE_KAFKA`: whether to deploy a Kafka cluster (defaults to no)
+    - if yes: `NA_KAFKA_REPLICAS`, `NA_KAFKA_VOLUME_SIZE`, `NA_KAFKA_VERSION`
 
 The script generates a random GitHub webhook secret and stores it in `~/.eoepca/state`. Keep that file safe, you will need the secret when registering webhooks against GitHub.
 
