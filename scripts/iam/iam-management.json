@@ -1,0 +1,62 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"creationTimestamp\":null,\"name\":\"iam-management\"},\"spec\":{},\"status\":{}}\n"
+        },
+        "creationTimestamp": "2026-06-17T13:05:29Z",
+        "deletionTimestamp": "2026-08-03T12:22:56Z",
+        "labels": {
+            "kubernetes.io/metadata.name": "iam-management"
+        },
+        "name": "iam-management",
+        "resourceVersion": "63105470",
+        "uid": "aa73756d-89ac-4327-8722-da8873401a90"
+    },
+    "spec": {
+        "finalizers": [
+            
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastTransitionTime": "2026-08-03T12:23:40Z",
+                "message": "All resources successfully discovered",
+                "reason": "ResourcesDiscovered",
+                "status": "False",
+                "type": "NamespaceDeletionDiscoveryFailure"
+            },
+            {
+                "lastTransitionTime": "2026-08-03T12:23:40Z",
+                "message": "All legacy kube types successfully parsed",
+                "reason": "ParsedGroupVersions",
+                "status": "False",
+                "type": "NamespaceDeletionGroupVersionParsingFailure"
+            },
+            {
+                "lastTransitionTime": "2026-08-03T12:23:40Z",
+                "message": "All content successfully deleted, may be waiting on finalization",
+                "reason": "ContentDeleted",
+                "status": "False",
+                "type": "NamespaceDeletionContentFailure"
+            },
+            {
+                "lastTransitionTime": "2026-08-03T12:23:40Z",
+                "message": "Some resources are remaining: clientauthorizationpermissions.openidclient.keycloak.m.crossplane.io has 1 resource instances, clientauthorizationresources.openidclient.keycloak.m.crossplane.io has 1 resource instances, clientdefaultscopes.openidclient.keycloak.m.crossplane.io has 2 resource instances, clientgrouppolicies.openidclient.keycloak.m.crossplane.io has 1 resource instances, clientoptionalscopes.openidclient.keycloak.m.crossplane.io has 1 resource instances, clients.openidclient.keycloak.m.crossplane.io has 12 resource instances, clientserviceaccountroles.openidclient.keycloak.m.crossplane.io has 5 resource instances, groups.group.keycloak.m.crossplane.io has 3 resource instances, memberships.group.keycloak.m.crossplane.io has 1 resource instances, protocolmappers.client.keycloak.m.crossplane.io has 5 resource instances, roles.group.keycloak.m.crossplane.io has 2 resource instances, roles.role.keycloak.m.crossplane.io has 3 resource instances, users.user.keycloak.m.crossplane.io has 2 resource instances",
+                "reason": "SomeResourcesRemain",
+                "status": "True",
+                "type": "NamespaceContentRemaining"
+            },
+            {
+                "lastTransitionTime": "2026-08-03T12:23:40Z",
+                "message": "Some content in the namespace has finalizers remaining: finalizer.managedresource.crossplane.io in 39 resource instances",
+                "reason": "SomeFinalizersRemain",
+                "status": "True",
+                "type": "NamespaceFinalizersRemaining"
+            }
+        ],
+        "phase": "Terminating"
+    }
+}

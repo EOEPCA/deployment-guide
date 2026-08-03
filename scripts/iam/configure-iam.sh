@@ -58,9 +58,6 @@ echo "OPA_CLIENT_SECRET: $OPA_CLIENT_SECRET"
 echo "IAM_OPA_SESSION_SECRET: $IAM_OPA_SESSION_SECRET"
 echo ""
 
-# Allow override of KEYCLOAK_HOST - which represents the 'external' URL of Keycloak
-# This override is useful in the case that Keycloak is being accessed via a proxy with a different hostname.
-# For example, this is relied upon for the IAM killercoda tutorial.
 KEYCLOAK_HOST=${KEYCLOAK_HOST:-"auth.$INGRESS_HOST"}
 
 add_to_state_file "KEYCLOAK_HOST" "$KEYCLOAK_HOST"
