@@ -30,3 +30,9 @@ configMapGenerator:
         grafana_dashboard: "1"
     files:
       - prometheus-overview.json
+  - name: curated-stac-slo
+    options:
+      labels:
+        grafana_dashboard: "1"
+    files:
+      - stac-slo.json

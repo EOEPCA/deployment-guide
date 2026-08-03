@@ -52,13 +52,12 @@ Small nginx proxy between Alertmanager and Keep. Alertmanager fires plain webhoo
 
 7. **Alert rules and dashboards**
 
-Baseline `PrometheusRule` resources covering pipeline health, node conditions, workloads, and storage. Four curated Grafana dashboards (cluster, node, pod, Prometheus overview) shipped as labelled ConfigMaps — Grafana's sidecar picks them up automatically.
-
+Baseline `PrometheusRule` resources covering pipeline health, node conditions, workloads, and storage. Five curated Grafana dashboards (cluster, node, pod, Prometheus overview, STAC SLO) shipped as labelled ConfigMaps — Grafana's sidecar picks them up automatically. The STAC SLO dashboard's panels stay empty until the STAC alert recording rules are enabled and Data Access is producing the underlying metrics.
 
 8. **Optional components:**
 
-- **STAC alerts** — EO-specific SLO rules for STAC API latency. Only useful if the Data Access BB is deployed with the APISIX prometheus plugin enabled.
-- **IAM integration** — Keycloak clients and roles for Grafana and Keep SSO.
+- **STAC alerts** — EO-specific SLO rules and recording rules for STAC API latency, feeding the STAC SLO dashboard. Only useful if the Data Access BB is deployed with the APISIX prometheus plugin enabled.
+- **IAM integration** — Keycloak clients and roles for Grafana and Keep SSO. Both Grafana and Keep validate the OIDC flow themselves (Grafana's built-in `auth.generic_oauth`, Keep via its own `oauth2-proxy` sidecar Service) rather than relying on an ingress-layer auth plugin, so IAM works the same way under APISIX or NGINX.
 
 ---
 
@@ -287,8 +286,18 @@ kubectl apply -k dashboards/
     fi
     ```
 
-    !!! note
-        After Keycloak creates the clients, extract the generated client secrets and populate the `monitoring-oidc` and `alerting-oidc` secrets. Restart the Grafana and oauth2-proxy pods so they pick up the new values.
+    Crossplane writes the real client secrets into `iam-management` (alongside the `Client` resources, not into `operations`), so copy them across and restart the pods that read them:
+
+    ```bash
+    for pair in monitoring-oidc alerting-oidc; do
+      SECRET=$(kubectl get secret -n iam-management "${pair}" -o jsonpath='{.data.attribute\.client_secret}' | base64 -d)
+      kubectl -n operations create secret generic "${pair}" \
+        --from-literal="attribute.client_secret=${SECRET}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+    done
+
+    kubectl -n operations rollout restart deployment/kube-prometheus-stack-grafana deployment/keep-oauth2-proxy
+    ```
 
 ---
 

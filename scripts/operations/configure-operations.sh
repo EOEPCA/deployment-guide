@@ -34,12 +34,8 @@ fi
 ask "OPERATIONS_ENABLE_STAC_ALERTS" "Deploy STAC-specific SLO alerts? (yes/no)" "no" is_non_empty
 
 # ---------- Generate a cookie secret for oauth2-proxy ----------
-# 32 random bytes, base64 encoded (required format for oauth2-proxy)
 if [ -z "${OAUTH2_PROXY_COOKIE_SECRET:-}" ]; then
-    OAUTH2_PROXY_COOKIE_SECRET="$(openssl rand -base64 32 | tr -d '\n' | head -c 44)"
-    export OAUTH2_PROXY_COOKIE_SECRET
-    # Persist into state file so apply-secrets.sh can read it
-    echo "export OAUTH2_PROXY_COOKIE_SECRET=\"${OAUTH2_PROXY_COOKIE_SECRET}\"" >> "${HOME}/.eoepca/state"
+    add_to_state_file "OAUTH2_PROXY_COOKIE_SECRET" "$(generate_aes_key 32)"
 fi
 
 # ---------- Template: kube-prometheus-stack ----------
