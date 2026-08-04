@@ -104,12 +104,10 @@ During the script execution, you will be prompted to provide:
     - _Example_: `standard`
 - **`CLUSTER_ISSUER`**: Cluster issuer for TLS certificates
     - _Example_: `letsencrypt-prod`
-- **`S3_HOST`**: Host URL for MinIO or S3-compatible storage
-    - _Example_: `minio.example.com`
+- **`S3_HOST`**: Host URL for MinIO or S3-compatible storage (hostname only, no scheme) - used directly as EOAPI's `AWS_S3_ENDPOINT`
+    - _Example_: `minio.example.com` or `eodata.cloudferro.com`
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage
 - **`S3_SECRET_KEY`**: Secret key for S3 storage
-- **`DATA_ACCESS_S3_ENDPOINT`**: S3 endpoint for EOAPI's raster/vector/multidim services (GDAL/rasterio `AWS_S3_ENDPOINT` convention - hostname only, no scheme)
-    - _Example_: `eodata.cloudferro.com` or `minio.example.com`
 
 **Advanced Configuration Options**
 

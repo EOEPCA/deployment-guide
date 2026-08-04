@@ -12,7 +12,6 @@ configure_cert
 ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
-ask "S3_ENDPOINT" "Enter the S3 endpoint for EOAPI (e.g. eodata.cloudferro.com)" "minio.${INGRESS_HOST}" is_non_empty
 
 ask "USE_EXTERNAL_POSTGRES" "Use external PostgreSQL with External Secrets Operator? (yes/no)" "no" is_yes_no
 if [ "$USE_EXTERNAL_POSTGRES" = "yes" ]; then
@@ -28,7 +27,6 @@ if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
     ask "EOAPI_CLIENT_ID" "Enter Keycloak client ID for EOAPI" "eoapi" is_non_empty
-    ask "OPA_URL" "Enter OPA URL for authorization" "http://iam-opal-client.iam:8181" is_non_empty
 else
     # Without IAM, protect the openEO API with basic auth instead of leaving it open.
     ask "OPENEO_BASIC_AUTH_USER" "Enter a username to protect the openEO API (no IAM)" "openeo" is_non_empty

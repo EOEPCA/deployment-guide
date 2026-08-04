@@ -191,7 +191,7 @@ Return to the primary Application Hub interface and log in as `eric`.
 Selecting `Start My Server` - you should now see a list of the preconfigured profiles. Select one to spawn an application profile.
 
 !!! note
-    These preconfigured profiles are simply examples that are configured into the default deployment. These default profiles should be adapted for your platform deployment.
+    These preconfigured profiles are simply examples that are configured into the default deployment, filtered by which of `group-1`/`group-2`/`group-3` the logged-in user belongs to. See [Advanced Configuration](#advanced-configuration) below to change them.
 
 ![Select a Profile](../img/apphub/profiles.jpeg)
 
@@ -252,9 +252,9 @@ To uninstall the Application Hub and clean up associated resources:
 
 ```bash
 helm uninstall application-hub -n app-hub
-kubectl delete ingress application-hub -n app-hub
 kubectl delete -f generated-iam.yaml --ignore-not-found
 kubectl delete -f generated-demo-user.yaml --ignore-not-found
+kubectl delete namespace app-hub
 ```
 
 ***
