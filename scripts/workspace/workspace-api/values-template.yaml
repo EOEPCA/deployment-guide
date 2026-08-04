@@ -3,7 +3,7 @@ service:
   port: 8181
 authAudience: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
 image:
-  tag: 2.2.0-rc.1
+  tag: 2.2.0
   pullPolicy: Always
 ingress:
   enabled: false

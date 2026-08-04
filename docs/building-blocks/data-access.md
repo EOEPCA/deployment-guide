@@ -45,7 +45,7 @@ The Data Access BB consists of the following main components:
    - **eoapi-support**: Monitoring stack (Grafana, Prometheus, metrics server)
    - **eoapi-notifier**: CloudEvents integration for event-driven workflows
    - **geoparquet-exporter**: Scheduled export of pgSTAC collections/items to GeoParquet on S3
-   - **IAM Integration**: Keycloak authentication and OPA authorization
+   - **IAM Integration**: Keycloak authentication, enforced by `stac-auth-proxy`
 
 ---
 
@@ -68,7 +68,6 @@ Before deploying the Data Access Building Block, ensure you have the following:
 | ------------------------ | ------------------------------ | ----------------------------------- |
 | External Secrets Operator | If using external PostgreSQL   | Production deployments              |
 | Keycloak                 | For IAM integration            | Secure access control               |
-| OPA (Open Policy Agent)  | For authorization              | Fine-grained access policies        |
 | Knative Eventing         | For CloudEvents                | Event-driven workflows              |
 
 **Clone the Deployment Guide Repository:**
@@ -109,7 +108,7 @@ During the script execution, you will be prompted to provide:
     - _Example_: `minio.example.com`
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage
 - **`S3_SECRET_KEY`**: Secret key for S3 storage
-- **`S3_ENDPOINT`**: S3 endpoint for EOAPI services
+- **`DATA_ACCESS_S3_ENDPOINT`**: S3 endpoint for EOAPI's raster/vector/multidim services (GDAL/rasterio `AWS_S3_ENDPOINT` convention - hostname only, no scheme)
     - _Example_: `eodata.cloudferro.com` or `minio.example.com`
 
 **Advanced Configuration Options**
@@ -136,7 +135,6 @@ During the script execution, you will be prompted to provide:
     - **`KEYCLOAK_HOST`**: Keycloak service hostname
     - **`REALM`**: Keycloak realm name
     - **`EOAPI_CLIENT_ID`**: Client ID for EOAPI
-    - **`OPA_URL`**: OPA server URL for authorization
 
     This requires the [IAM Building Block](./iam/main-iam.md) already deployed.
 
@@ -455,6 +453,12 @@ curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
     xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
     ```
 
+    **Optional: scrape `stac-auth-proxy`'s own metrics** - if the Operations Building Block is deployed, apply the matching `ServiceMonitor` so its request metrics show up in Prometheus/Grafana alongside the rest of the cluster:
+
+    ```bash
+    kubectl apply -f eoapi/servicemonitor-stac-auth-proxy.yaml
+    ```
+
 ---
 
 ## Uninstallation
@@ -468,6 +472,7 @@ source ~/.eoepca/state
 if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
   kubectl delete -f iam/generated-iam.yaml --ignore-not-found
 fi
+kubectl delete -f eoapi/servicemonitor-stac-auth-proxy.yaml --ignore-not-found
 
 helm uninstall eoapi -n data-access
 helm uninstall stac-manager -n data-access

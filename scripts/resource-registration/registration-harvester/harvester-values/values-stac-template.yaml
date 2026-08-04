@@ -2,7 +2,7 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: 2.1.0-dev15
+    tag: 2.1.0-rc1
   secret:
     name: registration-harvester-secret
   config:
@@ -18,6 +18,7 @@ harvester:
       http_timeout_millis: 420000 # 7 minutes
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
     iam:
+      enabled: true
       oidc_token_endpoint_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
 {{- end }}
     topics:

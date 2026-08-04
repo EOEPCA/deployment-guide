@@ -571,16 +571,16 @@ To uninstall Resource Health and clean up associated resources:
 source ~/.eoepca/state
 
 kubectl delete -f generated-ingress.yaml --ignore-not-found
-kubectl delete -f apisix/plugin-api-auth.yaml -n resource-health --ignore-not-found
-kubectl delete -f apisix/plugin-browser-auth.yaml -n resource-health --ignore-not-found
-
-helm uninstall resource-health -n resource-health || true
-kubectl delete namespace resource-health --ignore-not-found
 
 if [ "${RESOURCE_HEALTH_ENABLE_OIDC:-no}" = "yes" ]; then
+  kubectl delete -f apisix/plugin-api-auth.yaml -n resource-health --ignore-not-found
+  kubectl delete -f apisix/plugin-browser-auth.yaml -n resource-health --ignore-not-found
   kubectl delete -f keycloak.yaml --ignore-not-found
   kubectl delete -f generated-iam.yaml --ignore-not-found
 fi
+
+helm uninstall resource-health -n resource-health || true
+kubectl delete namespace resource-health --ignore-not-found
 ```
 
 ---

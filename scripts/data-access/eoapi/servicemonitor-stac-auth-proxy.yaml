@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: eoapi-stac-auth-proxy
+  namespace: data-access
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: eoapi
+      app.kubernetes.io/name: stac-auth-proxy
+  endpoints:
+    - port: http
+      path: /stac/_mgmt/metrics
+      interval: 30s

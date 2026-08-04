@@ -6,14 +6,14 @@ source "$HOME/.eoepca/state"
 echo "Applying Kubernetes secrets..."
 kubectl create namespace resource-registration --dry-run=client -o yaml | kubectl apply -f -
 
-# ask if they want to enable USGS M2M for Landsat Harvesting
-read -p "Do you want to enable USGS M2M credentials for Landsat Harvesting? (y/n): " enable_m2m
+# ask if they want to enable USGS credentials for Landsat Harvesting
+read -p "Do you want to enable USGS credentials for Landsat Harvesting? (y/n): " enable_m2m
 if [[ "$enable_m2m" == "y" || "$enable_m2m" == "Y" ]]; then
-  read -p "Enter USGS M2M Username: " m2m_user
-  read -s -p "Enter USGS M2M Password: " m2m_password
+  read -p "Enter USGS Username: " m2m_user
+  read -s -p "Enter USGS Password: " m2m_password
   echo
-  export M2M_USER="$m2m_user"
-  export M2M_PASSWORD="$m2m_password"
+  export EODAG__USGS__API__CREDENTIALS__USERNAME="$m2m_user"
+  export EODAG__USGS__API__CREDENTIALS__PASSWORD="$m2m_password"
 fi
 
 # ask if they want to enable CDSE credentials for Sentinel Harvesting
@@ -22,8 +22,8 @@ if [[ "$enable_cdse" == "y" || "$enable_cdse" == "Y" ]]; then
   read -p "Enter CDSE Username: " cdse_user
   read -s -p "Enter CDSE Password: " cdse_password
   echo
-  export CDSE_USER="$cdse_user"
-  export CDSE_PASSWORD="$cdse_password"
+  export EODAG__COP_DATASPACE__AUTH__CREDENTIALS__USERNAME="$cdse_user"
+  export EODAG__COP_DATASPACE__AUTH__CREDENTIALS__PASSWORD="$cdse_password"
 fi
 
 # Build kubectl command dynamically for both secrets
@@ -40,13 +40,13 @@ create_secret() {
   fi
 
   if [[ "$enable_m2m" == "y" || "$enable_m2m" == "Y" ]]; then
-    kubectl_cmd="$kubectl_cmd --from-literal=M2M_USER=\"$M2M_USER\""
-    kubectl_cmd="$kubectl_cmd --from-literal=M2M_PASSWORD=\"$M2M_PASSWORD\""
+    kubectl_cmd="$kubectl_cmd --from-literal=EODAG__USGS__API__CREDENTIALS__USERNAME=\"$EODAG__USGS__API__CREDENTIALS__USERNAME\""
+    kubectl_cmd="$kubectl_cmd --from-literal=EODAG__USGS__API__CREDENTIALS__PASSWORD=\"$EODAG__USGS__API__CREDENTIALS__PASSWORD\""
   fi
 
   if [[ "$enable_cdse" == "y" || "$enable_cdse" == "Y" ]]; then
-    kubectl_cmd="$kubectl_cmd --from-literal=CDSE_USER=\"$CDSE_USER\""
-    kubectl_cmd="$kubectl_cmd --from-literal=CDSE_PASSWORD=\"$CDSE_PASSWORD\""
+    kubectl_cmd="$kubectl_cmd --from-literal=EODAG__COP_DATASPACE__AUTH__CREDENTIALS__USERNAME=\"$EODAG__COP_DATASPACE__AUTH__CREDENTIALS__USERNAME\""
+    kubectl_cmd="$kubectl_cmd --from-literal=EODAG__COP_DATASPACE__AUTH__CREDENTIALS__PASSWORD=\"$EODAG__COP_DATASPACE__AUTH__CREDENTIALS__PASSWORD\""
   fi
 
   if [[ "${RESOURCE_REGISTRATION_PROTECTED_TARGETS:-no}" == "yes" ]]; then

@@ -8,7 +8,7 @@ jupyterhub:
     existingSecret: application-hub
     extraEnv:
       JUPYTERHUB_ENV: "dev"
-      JUPYTERHUB_SINGLE_USER_IMAGE: "eoepca/pde-container:1.0.3"
+      JUPYTERHUB_SINGLE_USER_IMAGE_NOTEBOOKS: "jupyter/minimal-notebook:2343e33dec46"
       APP_HUB_NAMESPACE: "app-hub"
       STORAGE_CLASS: {{ getenv "PERSISTENT_STORAGECLASS" }}
       RESOURCE_MANAGER_WORKSPACE_PREFIX: "ws"
@@ -50,7 +50,9 @@ jupyterhub:
     image:
       name: jupyter/minimal-notebook
       tag: "2343e33dec46"
-    profileList: 
+    # to change the actual profile list you must override the chart's config.yml (see
+    # the Advanced Configuration section of the guide doc).
+    profileList:
     - display_name:  "Minimal environment"
       description: "To avoid too much bells and whistles: Python."
       default: "True"

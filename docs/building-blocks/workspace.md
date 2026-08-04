@@ -122,13 +122,13 @@ helm upgrade -i kyverno kyverno/kyverno \
 # Deploy CSI-RClone
 helm upgrade -i workspace-dependencies-csi-rclone \
   oci://ghcr.io/eoepca/workspace/workspace-dependencies-csi-rclone \
-  --version 2.2.0-rc.2 \
+  --version 2.2.0 \
   --namespace workspace
 
 # Deploy Educates
 helm upgrade -i workspace-dependencies-educates \
   oci://ghcr.io/eoepca/workspace/workspace-dependencies-educates \
-  --version 2.2.0-rc.2 \
+  --version 2.2.0 \
   --namespace workspace \
   --values workspace-dependencies/educates-values.yaml
 ```
@@ -145,7 +145,7 @@ kubectl apply -f workspace-dependencies/kyverno-registry-ingress-class.yaml
 helm repo add eoepca https://eoepca.github.io/helm-charts
 helm repo update eoepca
 helm upgrade -i workspace-api eoepca/rm-workspace-api \
-  --version 2.2.1 \
+  --version 2.2.2 \
   --namespace workspace \
   --values workspace-api/generated-values.yaml
 ```
@@ -160,7 +160,7 @@ The Workspace Pipeline manages the templating and provisioning of resources with
 ```bash
 helm upgrade -i workspace-pipeline \
   oci://ghcr.io/eoepca/workspace/workspace-pipeline \
-  --version 2.2.0-rc.2 \
+  --version 2.2.0 \
   --namespace workspace \
   --values workspace-pipeline/generated-values.yaml
 ```

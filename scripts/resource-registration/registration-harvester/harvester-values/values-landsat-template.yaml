@@ -2,7 +2,7 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: 2.1.0-dev11
+    tag: 2.1.0-rc1
   secret:
     name: registration-harvester-secret
   eodata:
@@ -17,11 +17,12 @@ harvester:
       retries: 3
       retry_timeout: 30000  # 30 seconds
       async_response_timeout: 30000 # 30 seconds
-      timeout_delta_millis: 300000 # 5 minutes
+      timeout_delta_millis: 30000 # 30 seconds
       sleep_seconds: 15
       http_timeout_millis: 420000 # 7 minutes
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
     iam:
+      enabled: true
       oidc_token_endpoint_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
 {{- end }}
     topics:
@@ -35,12 +36,6 @@ harvester:
         module: worker.landsat.tasks
         handler: LandsatContinuousDiscoveryHandler
         lock_duration: 1800000  # 30 minutes
-        workers: 1
-        parallel_tasks: 1
-      landsat_get_download_urls:
-        module: worker.landsat.tasks
-        handler: LandsatGetDownloadUrlHandler
-        lock_duration: 300000  # 5 minutes
         workers: 1
         parallel_tasks: 1
       landsat_download_scene:
@@ -78,13 +73,11 @@ harvester:
         datetime_property: created
         timewindow_hours: 1
         bbox: "8,40,18,60"
-        collections: landsat-c2l2-sr
-      LandsatGetDownloadUrlHandler:
-        m2m_use_token: true
-        m2m_api_url: https://m2m.cr.usgs.gov/api/api/json/stable/
+        collections: landsat_ot_c2_l2
       LandsatDownloadHandler:
         download_base_dir: "/eodata/landsat"
-        download_timeout: 300
+        download_retry_wait_time_minutes: 1
+        download_retry_timeout_minutes: 10
       LandsatUntarHandler:
         remove_tar: false
         create_folder: true

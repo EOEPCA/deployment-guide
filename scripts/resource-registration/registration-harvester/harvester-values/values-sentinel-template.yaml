@@ -2,7 +2,7 @@ harvester:
   image:
     repository: eoepca/registration-harvester
     pullPolicy: Always
-    tag: 2.1.0-dev11
+    tag: 2.1.0-rc1
   secret:
     name: registration-harvester-secret
   eodata:
@@ -17,54 +17,55 @@ harvester:
       retries: 3
       retry_timeout: 30000  # 30 seconds
       async_response_timeout: 30000 # 30 seconds
-      timeout_delta_millis: 300000 # 5 minutes
+      timeout_delta_millis: 30000 # 30 seconds
       sleep_seconds: 15
       http_timeout_millis: 420000 # 7 minutes
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
     iam:
+      enabled: true
       oidc_token_endpoint_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
 {{- end }}
     topics:
       sentinel_ondemand_discovery:
         module: worker.sentinel.tasks
         handler: SentinelDiscoverHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
       sentinel_continuous_discovery:
         module: worker.sentinel.tasks
         handler: SentinelContinuousDiscoveryHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
       sentinel_download_scene:
         module: worker.sentinel.tasks
         handler: SentinelDownloadHandler
-        lock_duration: 18000000  # 30 minutes
+        lock_duration: 1800000  # 30 minutes
         workers: 1
         parallel_tasks: 1
       sentinel_unzip:
         module: worker.sentinel.tasks
         handler: SentinelUnzipHandler
-        lock_duration: 18000000  # 30 minutes
+        lock_duration: 1800000  # 30 minutes
         workers: 1
         parallel_tasks: 1
       sentinel_check_integrity:
         module: worker.sentinel.tasks
         handler: SentinelCheckIntegrityHandler
-        lock_duration: 18000000  # 30 minutes
+        lock_duration: 1800000  # 30 minutes
         workers: 1
         parallel_tasks: 1
       sentinel_extract_metadata:
         module: worker.sentinel.tasks
         handler: SentinelExtractMetadataHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
       sentinel_register_metadata:
         module: worker.sentinel.tasks
         handler: SentinelRegisterMetadataHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
     handlers:
@@ -78,8 +79,10 @@ harvester:
         timewindow_hours: 1
         filter: (startswith(Name,'S2') and contains(Name,'L2A') and not contains(Name,'_N9999')) and (intersects(area=geography'SRID=4326;POLYGON((3 55, 3 47, 18 47, 18 55, 3 55))'))
       SentinelDownloadHandler:
-        base_dir: /eodata/sentinel
         retryTimeout: 10
+        download_base_dir: "/eodata/sentinel"
+        download_retry_wait_time_minutes: 1
+        download_retry_timeout_minutes: 10
       SentinelUnzipHandler:
         remove_zip: false
       SentinelCheckIntegrityHandler: {}

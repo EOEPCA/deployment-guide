@@ -27,6 +27,15 @@ global:
 
 replicaCount: 1
 
+dask-gateway:
+  gateway:
+    backend:
+      worker:
+        extraContainerConfig:
+          volumeMounts:
+            - name: user-workspace
+              mountPath: "/user_workspaces"
+
 postgresql:
   # Chart default existingSecret "openeo-postgresql" is created by apply-secrets.sh.
   auth:

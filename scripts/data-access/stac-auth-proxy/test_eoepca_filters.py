@@ -576,6 +576,31 @@ class TestStacEditorRole:
         ), "transitively-included stac_editor role must not grant the bypass"
 
     @pytest.mark.asyncio
+    async def test_trusted_azp_with_role_on_sibling_editor_client(self, monkeypatch):
+        """A trusted caller (azp) may carry stac_editor under another editor client.
+
+        registration-harvester client-credentials tokens have
+        azp=registration-harvester but resource_access.eoapi.roles=[stac_editor].
+        Both clients are configured as editor clients, so the bypass must fire.
+        """
+        monkeypatch.setattr(
+            eoepca_filters,
+            "_STAC_EDITOR_CLIENT_IDS",
+            frozenset(["eoapi", "registration-harvester"]),
+        )
+        token = {
+            "azp": "registration-harvester",
+            "resource_access": {
+                "eoapi": {"roles": ["stac_editor"]},
+                "registration-harvester": {"roles": ["uma_protection"]},
+            },
+        }
+        filt = await CollectionsFilter()({"payload": token, "req": _WRITE_REQ})
+        assert cql2_matches(
+            filt, {"id": "landsat-ot-c2-l2"}
+        ), "trusted azp with stac_editor under eoapi must grant public writes"
+
+    @pytest.mark.asyncio
     async def test_token_without_azp_does_not_grant_bypass(self):
         """A token lacking the azp claim cannot prove issuance authority."""
         token = {"resource_access": {"eoapi": {"roles": ["stac_editor"]}}}

@@ -22,10 +22,10 @@ grafana:
       client_id: {{ getenv "GRAFANA_CLIENT_ID" }}
       client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
       scopes: openid email profile offline_access roles
-      auth_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
-      token_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
-      api_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
-      signout_redirect_url: https://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/logout?post_logout_redirect_uri={{ getenv "HTTP_SCHEME" }}%3A%2F%2Fmonitoring.{{ getenv "INGRESS_HOST" }}%2Flogin
+      auth_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
+      token_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+      api_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
+      signout_redirect_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/logout?post_logout_redirect_uri={{ getenv "HTTP_SCHEME" }}%3A%2F%2Fmonitoring.{{ getenv "INGRESS_HOST" }}%2Flogin
       login_attribute_path: preferred_username
       name_attribute_path: name
       email_attribute_path: email

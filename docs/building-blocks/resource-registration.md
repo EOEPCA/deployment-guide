@@ -479,7 +479,6 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 
     * `landsat_discover_data` (LandsatDiscoverHandler)
     * `landsat_continuous_data_discovery` (LandsatContinuousDiscoveryHandler)
-    * `landsat_get_download_urls` (LandsatGetDownloadUrlHandler)
     * `landsat_download_data` (LandsatDownloadHandler)
     * `landsat_untar` (LandsatUntarHandler)
     * `landsat_extract_metadata` (LandsatExtractMetadataHandler)
@@ -525,7 +524,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
       "messageName": "landsat-start-order",
       "processVariables": {
         "datetime_interval": {"value": "2024-11-13T10:00:00Z/2024-11-13T11:00:00Z", "type": "String"},
-        "collections": {"value": "landsat-c2l2-sr", "type": "String"},
+        "collections": {"value": "landsat_ot_c2_l2", "type": "String"},
         "bbox": {"value": "-7,46,3,52", "type": "String"}
       }
     }

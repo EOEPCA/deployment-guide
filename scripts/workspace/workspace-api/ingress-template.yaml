@@ -32,6 +32,7 @@ spec:
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            timeout: 10
             use_jwks: true
             bearer_only: false
             set_access_token_header: false
@@ -74,6 +75,7 @@ spec:
           enable: true
           config:
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            timeout: 10
             use_jwks: true
             bearer_only: false
             set_access_token_header: true
