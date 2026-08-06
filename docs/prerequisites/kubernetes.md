@@ -159,7 +159,7 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
     helm repo add kyverno https://kyverno.github.io/kyverno/
     helm repo update kyverno
     helm upgrade -i kyverno kyverno/kyverno \
-      --version 3.6.2 \
+      --version 3.8.2 \
       --namespace kyverno \
       --create-namespace
     ```
