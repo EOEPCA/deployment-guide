@@ -20,43 +20,90 @@ helm repo update apisix
     The deployment configuration below assumes that the Kubernetes cluster exposes NodePorts `31080` (http) and `31443` (https) for external access to the cluster. This presumes that a (cloud) load balancer or similar is configured to forward public `80/443` traffic to these exposed ports on the cluster nodes.
 
     ```bash
-    source "$HOME/.eoepca/state"
-    helm upgrade -i apisix apisix/apisix \
-      --version 2.10.0 \
+    cat - <<'EOF' | helm upgrade -i apisix apisix/apisix \
+      --version 2.16.0 \
       --namespace ingress-apisix --create-namespace \
-      --set service.type=NodePort \
-      --set service.http.nodePort=31080 \
-      --set service.tls.nodePort=31443 \
-      --set etcd.image.repository=bitnamilegacy/etcd \
-      --set etcd.replicaCount=1 \
-      --set etcd.persistence.storageClass="${PERSISTENT_STORAGECLASS:-local-path}" \
-      --set apisix.enableIPv6=false \
-      --set apisix.enableServerTokens=false \
-      --set apisix.ssl.enabled=true \
-      --set apisix.pluginAttrs.redirect.https_port=443 \
-      --set ingress-controller.enabled=true
+      -f -
+    service:
+      type: NodePort
+      http:
+        nodePort: 31080
+      tls:
+        nodePort: 31443
+    apisix:
+      enableIPv6: false
+      enableServerTokens: false
+      ssl:
+        enabled: true
+      pluginAttrs:
+        redirect:
+          https_port: 443
+      deployment:
+        role: traditional
+        role_traditional:
+          config_provider: yaml
+      nginx:
+        configurationSnippet:
+          httpStart: |
+            # Large buffer sizes for handling large headers (e.g., auth tokens, OIDC flows etc.)
+            proxy_buffer_size           32k;
+            proxy_buffers               8 32k;
+            proxy_busy_buffers_size     64k;
+            large_client_header_buffers 4 32k;
+    etcd:
+      enabled: false
+    ingress-controller:
+      enabled: true
+      config:
+        provider:
+          type: apisix-standalone
+      gatewayProxy:
+        createDefault: true
+    EOF
     ```
 
     !!! warning
-        The above configures a single replica for the `etcd` service (ref. `--set etcd.replicaCount=1`). This is useful only for a single node development cluster.
-
-        **The default number or replicas is `3`, which should be used (at minimum) for a production cluster.**
+        The above configuration disables the `etcd` service (ref. `--set etcd.enabled=false`) and configures APISIX to use a standalone configuration provider (ref. `--set ingress-controller.config.provider.type=apisix-standalone`). If strongest low-latency config convergence under heavy churn is required, then etcd mode may prove more robust, with the tradeoff that you must run and operate Etcd (HA, backup, latency, etc.).
 
 === "LoadBalancer Service"
 
     ```bash
-    helm upgrade -i apisix apisix/apisix \
-      --version 2.10.0 \
+    cat - <<'EOF' | helm upgrade -i apisix apisix/apisix \
+      --version 2.16.0 \
       --namespace ingress-apisix --create-namespace \
-      --set service.type=LoadBalancer \
-      --set service.http.port=80 \
-      --set service.tls.port=443 \
-      --set etcd.image.repository=bitnamilegacy/etcd \
-      --set apisix.enableIPv6=false \
-      --set apisix.enableServerTokens=false \
-      --set apisix.ssl.enabled=true \
-      --set apisix.pluginAttrs.redirect.https_port=443 \
-      --set ingress-controller.enabled=true
+      -f -
+    service:
+      type: LoadBalancer
+    apisix:
+      enableIPv6: false
+      enableServerTokens: false
+      ssl:
+        enabled: true
+      pluginAttrs:
+        redirect:
+          https_port: 443
+      deployment:
+        role: traditional
+        role_traditional:
+          config_provider: yaml
+      nginx:
+        configurationSnippet:
+          httpStart: |
+            # Large buffer sizes for handling large headers (e.g., auth tokens, OIDC flows etc.)
+            proxy_buffer_size           32k;
+            proxy_buffers               8 32k;
+            proxy_busy_buffers_size     64k;
+            large_client_header_buffers 4 32k;
+    etcd:
+      enabled: false
+    ingress-controller:
+      enabled: true
+      config:
+        provider:
+          type: apisix-standalone
+      gatewayProxy:
+        createDefault: true
+    EOF
     ```
 
     !!! note
