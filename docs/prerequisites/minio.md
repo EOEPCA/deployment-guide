@@ -111,7 +111,7 @@ bash ./apply-secrets.sh
 
 ```bash
 bash validation.sh
-```yaml
+```
 
 This script performs several checks to validate your MinIO deployment:
 
