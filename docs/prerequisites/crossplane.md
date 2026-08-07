@@ -41,7 +41,7 @@ The Kubernetes Provider allows Crossplane to manage Kubernetes resources across 
 For the Kubernetes Provider, we need to create a ServiceAccount with elevated permissions to allow it to manage resources across the cluster.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-kubernetes-rbac.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-kubernetes-rbac.yaml
 ```
 
 #### Activate and Configure
@@ -49,7 +49,7 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/
 For the Kubernetes Provider, select which Managed Resource Definitions (MRDs) are activated, and configure the runtime for the Kubernetes Provider - e.g. to use the ServiceAccount created earlier.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-kubernetes-config.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-kubernetes-config.yaml
 ```
 
 #### Deploy Provider
@@ -57,7 +57,7 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/
 Deploy the Kubernetes Provider itself, referencing the runtime configuration created earlier.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-kubernetes.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-kubernetes.yaml
 ```
 
 ---
@@ -71,7 +71,7 @@ The Minio Provider allows Crossplane to manage Minio object storage resources.
 For the Minio Provider, select which Managed Resource Definitions (MRDs) are activated, and configure the runtime for the Minio Provider.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-minio-config.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-minio-config.yaml
 ```
 
 #### Deploy Provider
@@ -79,7 +79,7 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/
 Deploy the Minio Provider itself, referencing the runtime configuration created earlier.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-minio.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-minio.yaml
 ```
 
 ---
@@ -93,7 +93,7 @@ The Keycloak Provider allows Crossplane to manage Keycloak resources - such as C
 For the Keycloak Provider, select which Managed Resource Definitions (MRDs) are activated, and configure the runtime for the Keycloak Provider.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-keycloak-config.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-keycloak-config.yaml
 ```
 
 #### Deploy Provider
@@ -101,7 +101,7 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/
 Deploy the Keycloak Provider itself, referencing the runtime configuration created earlier.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-keycloak.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-keycloak.yaml
 ```
 
 ---
@@ -115,7 +115,7 @@ The Helm Provider allows Crossplane to manage Helm charts and releases.
 For the Helm Provider, select which Managed Resource Definitions (MRDs) are activated, and configure the runtime for the Helm Provider.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-helm-config.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-helm-config.yaml
 ```
 
 #### Deploy Provider
@@ -123,7 +123,7 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/
 Deploy the Helm Provider itself, referencing the runtime configuration created earlier.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-helm.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-helm.yaml
 ```
 
 ---
@@ -138,7 +138,7 @@ Crossplane Providers expect to find their configuration in `ProviderConfig` reso
     For convenience we reuse the `minio-secret` that is provisioned as part of the [Workspace BB](../building-blocks/workspace.md) deployment. This secret supplies the credentials for the MinIO API.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/provider-config-minio.yaml
+kubectl apply -f docs/prerequisites/crossplane/provider-config-minio.yaml
 ```
 
 ## Functions
@@ -146,5 +146,5 @@ kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/
 Functions are lightweight pieces of code that can be executed within Crossplane to extend its capabilities. They can be used to perform custom logic, transformations, or integrations with other systems.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/docs/prerequisites/crossplane/functions.yaml
+kubectl apply -f docs/prerequisites/crossplane/functions.yaml
 ```
