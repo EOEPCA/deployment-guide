@@ -83,7 +83,7 @@ kubectl -n minio apply -f ingress-plugin-config.yaml
 The provided `ingress-plugin-config.yaml` sets APISIX `client-control.max_body_size` to `10737418240` (10 GiB) to prevent request-body limit issues during larger uploads. Adjust this value if your deployment requires a different ceiling.
 
 !!! note
-  Ordinarily the value would be set `client-control.max_body_size: 0` (zero meaning unlimited). However testing has revealed that this 'zero' setting does not always have the expected 'unlimited' behaviour, so a large but finite value is used instead.
+    Ordinarily the value would be set `client-control.max_body_size: 0` (zero meaning unlimited). However testing has revealed that this 'zero' setting does not always have the expected 'unlimited' behaviour, so a large but finite value is used instead.
 
 ### 3. Create Access Keys
 
