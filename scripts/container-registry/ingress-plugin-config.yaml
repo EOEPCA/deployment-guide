@@ -1,7 +1,7 @@
 apiVersion: apisix.apache.org/v2
 kind: ApisixPluginConfig
 metadata:
-  name: minio-ingress
+  name: harbor-ingress
 spec:
   plugins:
     - name: client-control
