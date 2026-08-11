@@ -29,6 +29,9 @@ The EOEPCA+ Deployment Guide walks you through deploying the EOEPCA+ platform - 
 
 </div>
 
+!!! note "Request for Support"
+    If you have a question or require some technical support, then please <a href="https://github.com/EOEPCA/community-support/issues/new?template=eoepca-support-request.yaml" target="_blank" rel="noopener noreferrer">Raise a Support Request</a> via <a href="https://github.com/EOEPCA/community-support/issues/new?template=eoepca-support-request.yaml" target="_blank" rel="noopener noreferrer">this form</a>.
+
 ## How Deployment Works
 
 Every Building Block is deployed the same way, via **Helm charts** configured through a small set of scripts - so once you've deployed one, the rest follow a familiar pattern:
