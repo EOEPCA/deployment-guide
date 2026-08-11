@@ -170,6 +170,44 @@ kubectl get workflows -n openeo
 
 ---
 
+### openEO Web Editor
+
+The deployment can be tested using the openEO Web Editor as a client - either the publicly hosted instance, or your own self-hosted deployment.
+
+=== "Public Instance"
+
+    ```bash
+    xdg-open "https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.1.0/"
+    ```
+
+=== "Self-Hosted (Optional)"
+
+    Deploy your own instance from `scripts/processing/openeo-web-editor`:
+
+    ```bash
+    cd ../openeo-web-editor
+    bash configure-openeo-web-editor.sh
+
+    helm repo add eoepca-dev-charts https://eoepca.github.io/helm-charts-dev/
+    helm repo update eoepca-dev-charts
+    helm upgrade -i openeo-web-editor eoepca-dev-charts/openeo-web-editor \
+      --version 0.2.0 \
+      --namespace openeo-web-editor \
+      --create-namespace \
+      --values generated-values.yaml
+    ```
+
+    Open it pre-connected to this deployment:
+
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://${OPENEO_WEB_EDITOR_HOST}/?server=${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.1.0/"
+    ```
+
+If OIDC is enabled, select `EOEPCA` and log in via the IAM BB Keycloak instance. If disabled, use basic auth (`eoepcauser`/`eoepcapass`) instead.
+
+---
+
 ### API Usage
 
 > **Prefer a notebook?** Run `../../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/openeo-argo/openeo-argo.ipynb" target="_blank">OpenEO ArgoWorkflows notebook</a> at `http://localhost:8888`.

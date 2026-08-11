@@ -1,0 +1,27 @@
+image:
+  repository: docker.io/eoepca/processing-editor
+  tag: sha-b2c2441
+
+replicaCount: 1
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+    {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
+    k8s.apisix.apache.org/enable-websocket: "true"
+    {{- end }}
+  hosts:
+    - host: {{ getenv "OPENEO_WEB_EDITOR_HOST" }}
+      paths:
+        - path: /
+          pathType: Prefix
+  {{- if eq (getenv "HTTP_SCHEME") "https" }}
+  tls:
+    - secretName: openeo-web-editor-tls
+      hosts:
+        - {{ getenv "OPENEO_WEB_EDITOR_HOST" }}
+  {{- end }}
