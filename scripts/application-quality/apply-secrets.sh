@@ -14,6 +14,13 @@ kubectl create secret generic application-quality-auth-client \
     --namespace "${NAMESPACE}" \
     --dry-run=client -o yaml | kubectl apply -f -
 
+if [ "${APP_QUALITY_ENABLE_GITHUB_STATUS:-false}" = "true" ]; then
+    kubectl create secret generic application-quality-github-api-tokens \
+        --from-literal=GITHUB_API_TOKEN="${APP_QUALITY_GITHUB_API_TOKEN}" \
+        --namespace "${NAMESPACE}" \
+        --dry-run=client -o yaml | kubectl apply -f -
+fi
+
 if [ "${APP_QUALITY_ENABLE_GRAFANA:-false}" = "true" ]; then
     kubectl create secret generic application-quality-grafana-dashboards-admin-creds \
         --from-literal=GRAFANA_SECURITY_ADMIN_USER="${APP_QUALITY_GRAFANA_ADMIN_USER:-admin}" \

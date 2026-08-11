@@ -112,7 +112,12 @@ application-quality:
     enabled: false
 
   github:
-    enabled: false
+    enabled: {{ getenv "APP_QUALITY_ENABLE_GITHUB_STATUS" "false" }}
+    {{- if eq (getenv "APP_QUALITY_ENABLE_GITHUB_STATUS" "false") "true" }}
+    statusContext: "EOEPCA Application Quality / Quality Check"
+    statusDescription: "Application quality metrics met all threshold guidelines."
+    statusTargetURL: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}"
+    {{- end }}
 
   sonarqube:
     enabled: {{ getenv "APP_QUALITY_ENABLE_SONARQUBE" "false" }}

@@ -358,6 +358,38 @@ Once a pipeline finishes, you can see:
 
 ---
 
+## Advanced Configuration
+
+### GitHub Commit-Status Reporting
+
+Off by default, and not part of the main configuration script - it's a manual, advanced option. When enabled, a completed pipeline run posts a pass/fail commit status (`EOEPCA Application Quality / Quality Check`) back to the originating GitHub PR/commit.
+
+!!! note
+    This alone doesn't do anything observable. A pipeline run only gets auto-triggered from a real GitHub push/PR webhook if [Notification Automation](./notification-automation.md) is also deployed (`APP_QUALITY_ENABLE_NOTIFICATIONS=yes`) with a GitHub repository actually configured to send its webhooks there - a step outside this BB and outside the cluster entirely. Only enable this if that's already in place.
+
+    GitLab is referenced in the chart's code as a planned target (`org.eoepca.webhook.gitlab.*`) but status posting for it is not implemented upstream yet - only GitHub is currently supported.
+
+To enable it on an existing deployment:
+
+```bash
+cd scripts/application-quality
+source ~/.eoepca/state
+
+export APP_QUALITY_ENABLE_GITHUB_STATUS=true
+export APP_QUALITY_GITHUB_API_TOKEN="<GitHub PAT with repo:status scope>"
+
+kubectl create secret generic application-quality-github-api-tokens \
+    --from-literal=GITHUB_API_TOKEN="${APP_QUALITY_GITHUB_API_TOKEN}" \
+    --namespace application-quality
+
+gomplate -f values-template.yaml -o generated-values.yaml --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+helm upgrade application-quality reference-repo/application-quality-reference-deployment \
+  --namespace application-quality \
+  --values generated-values.yaml
+```
+
+---
+
 ## Uninstallation
 
 To remove the core Application Quality components:
