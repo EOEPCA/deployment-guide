@@ -150,6 +150,8 @@ Configure via `pgstacBootstrap.settings.pgstacSettings`:
 | `queue_timeout` | Timeout for queued queries | `"10 minutes"` | PostgreSQL interval |
 | `use_queue` | Enable query queue mechanism | `"false"` | boolean string |
 | `update_collection_extent` | Auto-update collection extents | `"true"` | boolean string |
+| `context` | Return `numberMatched` on search: `"on"`, `"off"`, or `"auto"` | `"off"` | string |
+| `context_estimated_count` | Row threshold above which `context: "auto"` uses an estimate | `"100000"` | numeric string |
 
 **CronJobs Configuration**
 
