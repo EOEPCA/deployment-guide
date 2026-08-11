@@ -74,6 +74,8 @@ iam: &iam
                 - realm-admin
         customSettings:
           loginWithEmailAllowed: false
+          eventsEnabled: true
+          eventsExpiration: 1800
       provider:
         existingConfigRef: ""
         create: true

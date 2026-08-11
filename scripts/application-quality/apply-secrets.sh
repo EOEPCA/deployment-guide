@@ -8,15 +8,11 @@ NAMESPACE="application-quality"
 echo "Applying secrets to namespace: ${NAMESPACE}"
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
-if [ "${APP_QUALITY_ENABLE_IAM:-false}" = "true" ]; then
-    kubectl create secret generic application-quality-auth-client \
-        --from-literal=OIDC_RP_CLIENT_ID="${APP_QUALITY_CLIENT_ID}" \
-        --from-literal=OIDC_RP_CLIENT_SECRET="${APP_QUALITY_CLIENT_SECRET}" \
-        --namespace "${NAMESPACE}" \
-        --dry-run=client -o yaml | kubectl apply -f -
-else
-    echo "IAM disabled; skipping application-quality-auth-client secret."
-fi
+kubectl create secret generic application-quality-auth-client \
+    --from-literal=OIDC_RP_CLIENT_ID="${APP_QUALITY_CLIENT_ID:-}" \
+    --from-literal=OIDC_RP_CLIENT_SECRET="${APP_QUALITY_CLIENT_SECRET:-}" \
+    --namespace "${NAMESPACE}" \
+    --dry-run=client -o yaml | kubectl apply -f -
 
 if [ "${APP_QUALITY_ENABLE_GRAFANA:-false}" = "true" ]; then
     kubectl create secret generic application-quality-grafana-dashboards-admin-creds \

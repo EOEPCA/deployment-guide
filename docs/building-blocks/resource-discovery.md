@@ -161,7 +161,7 @@ This protected catalogue enables pycsw transactions and is routed through APISIX
 - a Keycloak group named `resource-catalogue-admin`
 - a client role named `records_editor`
 
-Users who need to perform protected catalogue operations must be assigned to the appropriate IAM group/role.
+`KEYCLOAK_TEST_USER` is added to `resource-catalogue-admin` automatically. Any other user who needs to perform protected catalogue operations must be assigned to the group/role manually.
 
 For minimal non-IAM deployments, use the public catalogue only:
 

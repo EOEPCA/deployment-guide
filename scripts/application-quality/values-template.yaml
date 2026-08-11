@@ -111,6 +111,9 @@ application-quality:
   automations:
     enabled: false
 
+  github:
+    enabled: false
+
   sonarqube:
     enabled: {{ getenv "APP_QUALITY_ENABLE_SONARQUBE" "false" }}
     serverUrl: application-quality-sonarqube-sonarqube.application-quality-sonarqube.svc.cluster.local:9000

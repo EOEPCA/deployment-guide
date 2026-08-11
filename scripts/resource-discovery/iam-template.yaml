@@ -73,3 +73,21 @@ spec:
       - name: records-editor
         policy:
           resolution: Required
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Memberships
+metadata:
+  name: resource-catalogue-admin-members
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    groupIdRef:
+      name: resource-catalogue-admin
+      policy:
+        resolution: Required
+    members:
+      - {{ getenv "KEYCLOAK_TEST_USER" }}
