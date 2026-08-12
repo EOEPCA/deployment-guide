@@ -42,7 +42,7 @@ catalog = Client.open(stac_url)
 print("\nSearching region...")
 
 items = catalog.search(
-    collections=["sentinel-2-l2a-datacube"],
+    collections=["sentinel-2-datacube"],
     bbox=[-34.2, 39.65, -32.88, 41.55],
     datetime="2025-10-30/2025-10-31"
 ).item_collection()

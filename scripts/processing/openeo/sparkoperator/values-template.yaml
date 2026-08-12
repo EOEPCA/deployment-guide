@@ -4,6 +4,7 @@ image:
   tag: "v1beta2-2.3.0-4.0.0-json"
 hook:
   upgradeCrd: true
+  forceConflictsCrd: true
 controller:
   logEncoder: json
   batchScheduler:

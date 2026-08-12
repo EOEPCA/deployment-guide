@@ -13,6 +13,10 @@ spec:
         - /
         - /_next/*
         - /.apisix/*
+        - /check/*
+        - /login
+        - /login/*
+        - /logout
     backends:
       - serviceName: resource-health-web
         servicePort: 80

@@ -57,7 +57,7 @@ spec:
               | while read -r item; do
                   ns=$(echo "$item" | jq -r '.metadata.namespace // empty')
                   name=$(echo "$item" | jq -r '.metadata.name')
-                  patch=$(echo "$item" | jq -c '{spec:{sessions: ((.spec.sessions // []) | map(select(. != "default")))}}')
+                  patch=$(echo "$item" | jq -c '{spec:{sessions: ((.spec.sessions // []) | map(select(.name == "default")))}}')
                   if [ -n "$ns" ]; then
                     kubectl patch -n "$ns" "${RESOURCE_PLURAL}.${API_GROUP}" "$name" --type merge -p "$patch"
                   else

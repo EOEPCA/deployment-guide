@@ -263,27 +263,23 @@ kubectl apply -k dashboards/
 
 === "Without IAM (default)"
 
-    If APISIX is the configured ingress controller, apply the dedicated `ApisixRoute` resources:
+    Apply the ingress resources (rendered for whichever `INGRESS_CLASS` was configured):
 
     ```bash
     source ~/.eoepca/state
-    if [ "${INGRESS_CLASS}" = "apisix" ]; then
-      kubectl apply -f ingress/generated-monitoring-ingress.yaml
-      kubectl apply -f ingress/generated-alerting-ingress.yaml
-    fi
+    kubectl apply -f ingress/generated-monitoring-ingress.yaml
+    kubectl apply -f ingress/generated-alerting-ingress.yaml
     ```
 
 === "With IAM"
 
-    Keycloak needs to be configured with the `monitoring` and `alerting` clients and their associated roles, then - if APISIX is the configured ingress controller - apply the dedicated `ApisixRoute` resources:
+    Keycloak needs to be configured with the `monitoring` and `alerting` clients and their associated roles, then apply the ingress resources (rendered for whichever `INGRESS_CLASS` was configured):
 
     ```bash
     source ~/.eoepca/state
     kubectl apply -f iam/generated-iam.yaml
-    if [ "${INGRESS_CLASS}" = "apisix" ]; then
-      kubectl apply -f ingress/generated-monitoring-ingress.yaml
-      kubectl apply -f ingress/generated-alerting-ingress.yaml
-    fi
+    kubectl apply -f ingress/generated-monitoring-ingress.yaml
+    kubectl apply -f ingress/generated-alerting-ingress.yaml
     ```
 
     Crossplane writes the real client secrets into `iam-management` (alongside the `Client` resources, not into `operations`), so copy them across and restart the pods that read them:
@@ -400,6 +396,12 @@ kubectl -n operations exec -it alertmanager-kube-prometheus-stack-alertmanager-0
 To uninstall the Operations Building Block:
 
 ```bash
+source ~/.eoepca/state
+
+if [ "${OPERATIONS_ENABLE_IAM:-no}" = "yes" ]; then
+  kubectl delete -f iam/generated-iam.yaml --ignore-not-found
+fi
+
 helm uninstall keep-oauth2-proxy -n operations
 helm uninstall keep -n operations
 helm uninstall loki -n operations
@@ -408,7 +410,7 @@ helm uninstall kube-prometheus-stack -n operations
 kubectl delete -k alloy/
 kubectl delete -k dashboards/
 kubectl delete -f rules/ --ignore-not-found
-kubectl delete -f alerting/keep-alertmanager-relay.yaml --ignore-not-found
+kubectl delete -f alerting/generated-keep-alertmanager-relay.yaml --ignore-not-found
 kubectl delete -f alerting/generated-alertmanagerconfig.yaml --ignore-not-found
 
 kubectl delete namespace operations

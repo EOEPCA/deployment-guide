@@ -23,9 +23,9 @@ check_service_exists "${NAMESPACE}" "alloy-logs"
 # Keep + oauth2-proxy
 check_deployment_ready "${NAMESPACE}" "keep-backend"
 check_deployment_ready "${NAMESPACE}" "keep-frontend"
+check_deployment_ready "${NAMESPACE}" "keep-alertmanager-relay"
 if [ "${OPERATIONS_ENABLE_IAM}" = "yes" ]; then
   check_deployment_ready "${NAMESPACE}" "keep-oauth2-proxy"
-  check_deployment_ready "${NAMESPACE}" "keep-alertmanager-relay"
 fi
 
 # Secrets

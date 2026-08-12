@@ -65,11 +65,14 @@ Deploy the Kubeflow Spark Operator to manage Spark jobs within your Kubernetes c
 ```bash
 helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 2.3.0 \
+    --version 2.3.0-forcecrd-pr \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values sparkoperator/generated-values.yaml
 ```
+
+!!! note
+    `-forcecrd-pr` just adds a flag so repeat `helm upgrade` runs don't fail on the CRDs - upstream made this the default from chart `2.5.0`, we're only still on `2.3.0` to match the operator image.
 
 Refer to the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) for additional configuration options.
 

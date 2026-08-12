@@ -17,3 +17,4 @@ venv/
 *.log
 notebooks/examples/test-runs/*
 scripts/mlops/utils/api-walkthrough.sh
+scripts/datacube-access/tests/__pycache__/processing-tools.cpython-312.pyc

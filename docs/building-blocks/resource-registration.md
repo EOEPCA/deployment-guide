@@ -442,6 +442,47 @@ EOF
 ```
 
 
+#### Checking EOMP Conformance
+
+The Registration API's `register`/`deregister` processes only validate the request envelope and any `stac_extensions` declared on the record - they do **not** check conformance against the [EOEPCA Metadata Profile (EOMP)](https://github.com/EOEPCA/eomp), so registration can succeed for a record that isn't a conformant EOMP record.
+
+A separate `pyeomp-record-validate` process (from [pyeomp](https://github.com/EOEPCA/pyeomp), the EOMP reference implementation) is deployed alongside `register`/`deregister` for this purpose. It takes a `record` input - either an inline JSON object or a URL string - and returns an ETS (Executable Test Suite) report checking the record against the EOMP core schema:
+
+```bash
+source ~/.eoepca/state
+curl -X POST "https://registration-api.${INGRESS_HOST}/processes/pyeomp-record-validate/execution" \
+  ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
+  -H "Content-Type: application/json" \
+  -d @- <<EOF
+{
+    "inputs": {
+        "record": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/landsat/landsat-ot-c2-l2.json"
+    }
+}
+EOF
+```
+
+The Landsat collection record used above is a plain STAC Collection, not an EOMP record, so this reports a `FAILED` result - EOMP's core requirement class expects a GeoJSON `Feature` with top-level `geometry` and `properties`, which a STAC Collection doesn't have:
+
+```json
+{
+    "summary": {"PASSED": 1, "FAILED": 1, "SKIPPED": 0, "WARNINGS": 0},
+    "tests": [
+        {
+            "id": "http://eoepca.org/spec/eomp/1/conf/core/validation",
+            "code": "FAILED",
+            "message": "3 error(s)",
+            "errors": [
+                "$: 'geometry' is a required property",
+                "$: 'properties' is a required property",
+                "$.type: 'Collection' is not one of ['Feature']"
+            ]
+        },
+        {"id": "http://eoepca.org/spec/eomp/1/conf/core/stac_extensions", "code": "PASSED"}
+    ]
+}
+```
+
 #### Validate Registration
 
 Check job status:
