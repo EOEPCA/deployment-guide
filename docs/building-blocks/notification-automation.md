@@ -18,6 +18,8 @@ This guide walks through deploying the whole stack on a Kubernetes cluster.
 
 The BB Helm chart itself (`notification-automation`) only creates the webhook source, API server source, CloudEvents player, emailer, and default broker as plain Deployments — it does **not** install the Knative Operator or the `KnativeServing`/`KnativeEventing` instances. Those are separate, mandatory steps below.
 
+The webhook source and API server source both send their CloudEvents into a chart-provisioned `default` broker, and the CloudEvents player is subscribed to that broker with no filter — so events from both are visible there with no extra wiring (see [Send a GitHub webhook](#send-a-github-webhook)).
+
 ## Prerequisites
 
 | Component    | Requirement                   | Documentation                                                  |
@@ -199,9 +201,33 @@ source ~/.eoepca/state
 curl https://hello-function.notifications.notifications.${INGRESS_HOST}
 ```
 
+### Send a GitHub webhook
+
+GitHub signs requests with `X-Hub-Signature-256: sha256=<hmac-sha256 of the body>`, using the secret from `configure-notification-automation.sh`:
+
+```bash
+source ~/.eoepca/state
+PAYLOAD='{"repository": {"html_url": "https://github.com/EOEPCA/deployment-guide"}, "ref": "refs/heads/main"}'
+SIGNATURE="sha256=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$NA_GITHUB_WEBHOOK_SECRET" | awk '{print $NF}')"
+
+curl -X POST "https://webhooks.notifications.${INGRESS_HOST}/github" \
+  -H "Content-Type: application/json" \
+  -H "X-GitHub-Event: push" \
+  -H "X-Hub-Signature-256: $SIGNATURE" \
+  -d "$PAYLOAD"
+```
+
+A `202` means it was forwarded to the `default` broker. Check it arrived:
+
+```bash
+curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq
+```
+
+Use the same URL (`https://webhooks.notifications.${INGRESS_HOST}/github`) and `NA_GITHUB_WEBHOOK_SECRET` when registering a real GitHub webhook.
+
 ### Create a broker
 
-A broker is the entry point for events. Once it is up, sources can send events into it and triggers can route events out to subscribers.
+`default` (created by the BB chart) already carries webhook/API-server events - create your own broker when you want an isolated event space instead, e.g. so your triggers aren't matching unrelated platform events.
 
 ```bash
 cat <<EOF | kubectl apply -f -
