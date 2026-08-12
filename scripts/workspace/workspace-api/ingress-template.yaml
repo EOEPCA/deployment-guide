@@ -5,6 +5,21 @@ metadata:
   namespace: workspace
 spec:
   http:
+    - name: workspace-api-root-redirect
+      match:
+        hosts:
+          - workspace-api.{{ getenv "INGRESS_HOST" }}
+        paths:
+          - /
+      plugins:
+        - name: redirect
+          enable: true
+          config:
+            uri: /workspaces
+            ret_code: 302
+      backends:
+        - serviceName: workspace-api
+          servicePort: 8181
     - name: workspace-api-no-auth
       match:
         hosts:

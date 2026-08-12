@@ -81,3 +81,71 @@ spec:
       id.token.claim: "true"
       userinfo.token.claim: "true"
       multivalued: "true"
+---
+apiVersion: role.keycloak.m.crossplane.io/v1alpha1
+kind: Role
+metadata:
+  name: workspace-api-admin
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: admin
+    clientIdRef:
+      name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}
+      policy:
+        resolution: Required
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: workspace-admin
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: workspace-admin
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: workspace-admin
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    groupIdRef:
+      name: workspace-admin
+      policy:
+        resolution: Required
+    roleIdsRefs:
+      - name: workspace-api-admin
+        policy:
+          resolution: Required
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Memberships
+metadata:
+  name: workspace-admin-members
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    groupIdRef:
+      name: workspace-admin
+      policy:
+        resolution: Required
+    members:
+      - {{ getenv "KEYCLOAK_TEST_ADMIN" }}

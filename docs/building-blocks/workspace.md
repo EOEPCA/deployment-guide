@@ -173,7 +173,7 @@ Deploy a CronJob that automatically cleans up inactive DataLab sessions:
 kubectl apply -f workspace-cleanup/datalab-cleaner.yaml
 ```
 
-This runs daily at 8 PM UTC and removes all sessions except the default ones.
+This runs daily at 8 PM UTC and stops every Datalab session (including `default`) - their configuration is preserved and each can be started again from the Datalabs UI.
 
 ---
 
@@ -269,7 +269,7 @@ The Workspace API always validates a Bearer token audienced for the `workspace-a
 
 #### 9.1 Create Keycloak Client
 
-Render and apply the `workspace-api` Keycloak client, with protocol mappers so its tokens carry an `aud` claim naming itself (the workspace-api app rejects tokens lacking this) and a `groups` claim (used to resolve workspace ownership/membership):
+Render and apply the `workspace-api` Keycloak client, with protocol mappers so its tokens carry an `aud` claim naming itself (the workspace-api app rejects tokens lacking this) and a `groups` claim (used to resolve workspace ownership/membership). This also creates an `admin` client role and a `workspace-admin` group granting it, with `KEYCLOAK_TEST_ADMIN` added as a member - the app itself checks this role (independent of any ingress-layer enforcement) to grant access across every workspace rather than just ones the caller owns:
 
 ```bash
 source ~/.eoepca/state
@@ -284,7 +284,7 @@ kubectl apply -f workspace-api/generated-ingress.yaml
 ```
 
 !!! note
-    This route no longer enforces a separate OPA `admin` role at the ingress layer - any authenticated user can call the API (matches the current upstream baseline). Workspace-level access control (e.g. restricting who may create workspaces) is left to you to add via an OPA policy on the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
+    This route doesn't enforce an `admin` role at the ingress layer - any authenticated user can call the API, including creating and deleting workspaces (matches the current upstream baseline). The `admin` client role from [9.1](#91-create-keycloak-client) is still checked by the app itself: an admin can view/manage any workspace, not just ones they own. Further restricting who may create workspaces is left to you to add via an OPA policy on the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
 
 #### 9.3. Optional: Protect Datalab Sessions with Keycloak SSO
 
@@ -682,13 +682,13 @@ To uninstall the Workspace Building Block and clean up associated resources:
 
 ```bash
 source ~/.eoepca/state
-kubectl delete ClusterPolicy/workspace-session-iam
-kubectl delete -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml
+kubectl delete ClusterPolicy/workspace-session-iam --ignore-not-found
+kubectl delete -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml --ignore-not-found
 kubectl delete -f workspace-dependencies/kyverno-registry-ingress-class.yaml
 kubectl delete -f workspace-api/generated-ingress.yaml
 kubectl delete -f workspace-api/generated-iam.yaml
 kubectl delete secret/${WORKSPACE_API_CLIENT_ID}-keycloak-client -n iam-management
-kubectl delete -f workspace-dependencies/generated-workspace-ingress-policy.yaml
+kubectl delete -f workspace-dependencies/generated-workspace-ingress-policy.yaml --ignore-not-found
 kubectl delete secret/workspace-tls -n workspace
 kubectl delete -f workspace-dependencies/generated-pipeline-iam.yaml
 kubectl delete secret/workspace-pipeline-client -n workspace
