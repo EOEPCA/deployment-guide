@@ -160,7 +160,9 @@ stac-auth-proxy:
     COLLECTIONS_FILTER_CLS: stac_auth_proxy.eoepca_filters:CollectionsFilter
     ITEMS_FILTER_CLS: stac_auth_proxy.eoepca_filters:ItemsFilter
     ALLOWED_JWT_AUDIENCES: "{{ getenv "EOAPI_CLIENT_ID" }}"
-    STAC_EDITOR_CLIENT_IDS: "{{ getenv "EOAPI_CLIENT_ID" }}"
+    # Any client granted the stac_editor role (e.g. Resource Registration's harvester)
+    # must also be listed here by client ID, or its writes still get rejected.
+    STAC_EDITOR_CLIENT_IDS: "{{ getenv "EOAPI_CLIENT_ID" }}{{ if getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }},{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}{{ end }}"
     STAC_EDITOR_ROLE: "stac_editor"
     PUBLIC_ENDPOINTS: |
       {

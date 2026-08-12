@@ -549,7 +549,7 @@ resource-health:
       - name: NEXT_PUBLIC_TELEMETRY_ENDPOINT
         value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/v1
       - name: NEXT_PUBLIC_RELOGIN_URL
-        value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/
+        value: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/login
       - name: NEXT_PUBLIC_QUERY_PAGE_SIZE
         value: "1000"
 

@@ -42,3 +42,27 @@ spec:
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientServiceAccountRole
+metadata:
+  name: {{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}-eoapi-stac-editor
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+    roleRef:
+      name: stac-editor
+      policy:
+        resolution: Required
+    serviceAccountUserClientIdRef:
+      name: {{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}
+      policy:
+        resolution: Required

@@ -33,7 +33,7 @@ See the [STAC Best Practices for Data Cubes](https://github.com/EOEPCA/datacube-
     | kubectl          | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)           |
     | Ingress          | Properly installed            | [Installation Guide](../prerequisites/ingress/overview.md)              |
     | Cert Manager     | Properly installed            | [Installation Guide](../prerequisites/tls.md)                           |
-    | STAC Catalog     | Properly installed            | [Deployment Guide](./resource-discovery.md)                  |
+    | STAC Catalog     | Properly installed            | [Deployment Guide](./data-access.md)                  |
 
     **Clone the Deployment Guide Repository:**
 

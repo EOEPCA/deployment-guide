@@ -25,21 +25,21 @@ harvester:
       stac_harvest_catalog:
         module: worker.stac.tasks
         handler: StacCatalogHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
         retries: 5
       stac_harvest_collection:
         module: worker.stac.tasks
         handler: StacCollectionHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
         retries: 5
       stac_harvest_item:
         module: worker.stac.tasks
         handler: StacItemHandler
-        lock_duration: 6000000   # 10 minutes
+        lock_duration: 600000   # 10 minutes
         workers: 1
         parallel_tasks: 1
         retries: 5
@@ -47,12 +47,12 @@ harvester:
       StacCatalogHandler: {}
       StacCollectionHandler:
         timewindow_hours: 1
-        stac_api_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+        stac_api_destination_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
         stac_api_ca_cert: ""
         stac_api_user: ""
         stac_api_pw: ""
       StacItemHandler:
-        stac_api_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+        stac_api_destination_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
         stac_api_ca_cert: ""
         stac_api_user: ""
         stac_api_pw: ""
