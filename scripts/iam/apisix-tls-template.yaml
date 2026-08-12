@@ -31,6 +31,7 @@ metadata:
   name: auth-apisix-tls
   namespace: iam
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   hosts:
     - auth.{{ getenv "INGRESS_HOST" }}
   secret:
@@ -43,6 +44,7 @@ metadata:
   name: opa-apisix-tls
   namespace: iam
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   hosts:
     - opa.{{ getenv "INGRESS_HOST" }}
   secret:

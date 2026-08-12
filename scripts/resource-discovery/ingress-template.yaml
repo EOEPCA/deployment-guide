@@ -43,6 +43,7 @@ metadata:
   name: resource-catalogue
   namespace: resource-discovery
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   hosts:
     - resource-catalogue.{{ getenv "INGRESS_HOST" }}
   secret:
