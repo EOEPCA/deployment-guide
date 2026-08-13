@@ -36,7 +36,7 @@ command_exists() {
 # Confirm gomplate is installed
 if ! command_exists gomplate; then
     echo "❌ The 'gomplate' command is required but not installed."
-    echo "Run 'curl -L -o gomplate https://github.com/hairyhenderson/gomplate/releases/download/v4.3.0/gomplate_linux-amd64'"
+    echo "Run 'curl -L -o gomplate https://github.com/hairyhenderson/gomplate/releases/download/v5.2.0/gomplate_linux-amd64'"
     echo "chmod +x gomplate"
     echo "sudo mv gomplate /usr/local/bin/"
     exit 1
