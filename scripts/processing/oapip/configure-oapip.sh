@@ -14,7 +14,6 @@ ask "S3_ACCESS_KEY" "Enter the Stage-Out S3 Access Key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the Stage-Out S3 Secret Key" "" is_non_empty
 ask "S3_REGION" "Enter the Stage-Out S3 Region" "RegionOne" is_non_empty
 
-# Use the Workspace API
 ask "USE_WORKSPACE_API" "Do you want to use the Workspace API to manage your execution context? IMPORTANT: Only set this to true if you are using the Workspace API" "false" is_boolean
 
 ask "DIFFERENT_STAGE_IN" "Are your inputs stored in a different S3 store from stage-out? (yes/no)" "no" is_non_empty

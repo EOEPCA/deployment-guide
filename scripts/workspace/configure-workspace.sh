@@ -29,6 +29,10 @@ echo "   Please store this securely: $WORKSPACE_PIPELINE_CLIENT_SECRET"
 echo ""
 
 ask "WORKSPACE_API_CLIENT_ID" "Enter the Client ID for the Workspace API" "workspace-api" is_non_empty
+if [ -z "$WORKSPACE_API_SESSION_SECRET" ]; then
+    WORKSPACE_API_SESSION_SECRET=$(generate_aes_key 32)
+    add_to_state_file "WORKSPACE_API_SESSION_SECRET" "$WORKSPACE_API_SESSION_SECRET"
+fi
 
 # Only controls ingress-level redirect-to-login and Datalab session SSO - the
 # Workspace API itself always requires a Bearer token regardless of this setting.

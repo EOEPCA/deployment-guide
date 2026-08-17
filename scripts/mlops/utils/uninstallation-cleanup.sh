@@ -10,4 +10,4 @@ kubectl delete deployment mlflow-postgres -n sharinghub
 kubectl delete service mlflow-postgres -n sharinghub
 
 kubectl delete pvc -n gitlab repo-data-gitlab-gitaly-0 redis-data-gitlab-redis-master-0 data-gitlab-postgresql-0
-kubectl delete pvc -n sharinghub mlflow-sharinghub-store-pvc mlflow-postgres-pvc
+kubectl delete pvc -n sharinghub mlflow-postgres-pvc

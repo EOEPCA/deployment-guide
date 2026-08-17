@@ -1,6 +1,6 @@
 # Application Quality Deployment Guide
 
-The **Application Quality Building Block (BB)** supports the transition of scientific algorithms from research prototypes to production-grade workflows. It provides tools for verifying code quality, security best practices, vulnerability scanning, performance testing and orchestrating these checks via pipelines integrated into a CI/CD process.
+The **Application Quality Building Block (BB)** runs code-quality, security and performance checks on EO application code via pipelines integrated into a CI/CD process.
 
 ---
 
@@ -396,6 +396,7 @@ To remove the core Application Quality components:
 
 ```bash
 helm uninstall application-quality -n application-quality
+kubectl delete -f generated-iam.yaml --ignore-not-found
 kubectl delete namespace application-quality
 ```
 

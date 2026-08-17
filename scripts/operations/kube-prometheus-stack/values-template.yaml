@@ -80,9 +80,6 @@ prometheusAgent:
 thanosRuler:
   enabled: false
 
-prometheus-node-exporter:
-  hostNetwork: false
-
 prometheusOperator:
   scrapeConfig:
     enabled: false

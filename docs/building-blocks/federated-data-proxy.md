@@ -5,7 +5,7 @@
 
 ## Introduction
 
-The Federated Data Proxy provides a unified access layer that lets a platform serve Earth Observation data from multiple internal and external providers transparently to end-users - regardless of whether the data is locally hosted, archived, or retrieved on demand from an upstream source.
+The Federated Data Proxy lets a platform serve Earth Observation data from multiple internal and external providers transparently to end-users - regardless of whether the data is locally hosted, archived, or retrieved on demand from an upstream source.
 
 It builds on the [Data Gateway](data-gateway.md) (EODAG), using it to resolve and retrieve assets from upstream providers on the platform's behalf.
 

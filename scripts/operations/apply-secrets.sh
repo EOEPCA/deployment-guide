@@ -5,10 +5,8 @@ source "${HOME}/.eoepca/state"
 
 NAMESPACE="operations"
 
-# Create namespace
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
-# Loki S3 credentials
 kubectl apply -n "${NAMESPACE}" -f - <<EOF
 apiVersion: v1
 kind: Secret
@@ -21,7 +19,6 @@ stringData:
 EOF
 echo "✅ Secret 'loki-s3-credentials' applied."
 
-# oauth2-proxy cookie secret
 kubectl apply -n "${NAMESPACE}" -f - <<EOF
 apiVersion: v1
 kind: Secret
@@ -57,7 +54,6 @@ EOF
     echo "✅ Secret 'alerting-oidc' applied."
 fi
 
-# Keep backend auth secrets
 # Keep expects a secret named keep-auth-secrets referenced by envFromSecret in its values.
 # Create an empty one if it doesn't exist so the Keep chart can install cleanly.
 if ! kubectl -n "${NAMESPACE}" get secret keep-auth-secrets >/dev/null 2>&1; then

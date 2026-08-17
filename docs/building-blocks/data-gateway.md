@@ -2,13 +2,13 @@
 
 ## Introduction
 
-The Data Gateway Building Block provides a consolidated and consistent capability for accessing Earth Observation data from an extensible set of providers and datasets. Unlike other EOEPCA building blocks that require deployment, the Data Gateway is implemented through **EODAG** (Earth Observation Data Access Gateway) - a Python library and command-line tool that other components integrate directly.
+Unlike other EOEPCA building blocks that require deployment, the Data Gateway is implemented through **EODAG** (Earth Observation Data Access Gateway) - a Python library and command-line tool that other components integrate directly, presenting one STAC-based interface across providers so building blocks don't each implement provider-specific logic.
 
 ---
 
 ## Architecture
 
-The Data Gateway acts as an abstraction layer between EOEPCA components and various data providers. It presents a unified interface (including STAC semantics) regardless of the underlying data source, eliminating the need for each building block to implement provider-specific logic.
+The Data Gateway sits between EOEPCA components and the various data providers.
 
 **Key Capabilities:**
 - Unified API for 50+ product types across 10+ providers
@@ -324,7 +324,7 @@ You can add custom providers either via the YAML configuration file or programma
 
 ## Further Resources
 
-- **[EODAG Documentation](https://eodag.readthedocs.io/)** - Comprehensive guide and API reference
+- **[EODAG Documentation](https://eodag.readthedocs.io/)** - Guide and API reference
 - **[EODAG GitHub Repository](https://github.com/CS-SI/eodag)** - Source code and examples
 - **[EOEPCA Data Gateway Architecture](https://eoepca.readthedocs.io/projects/architecture/en/latest/reference-architecture/data-gateway-BB/)** - Architectural design and integration patterns
 - **[stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag)** - Production STAC server implementation

@@ -168,8 +168,8 @@ This script performs several checks to validate your MinIO deployment:
     - gitlab-backup-storage
     - gitlab-lfs-storage
     - gitlab-tmp-storage
-    - mlopbb-mlflow-sharinghub
-    - mlopbb-sharinghub
+    - mlopsbb-mlflow-sharinghub
+    - mlopsbb-sharinghub
     - openeo-geotrellis-data
    
 5. **Create a Test Bucket**:

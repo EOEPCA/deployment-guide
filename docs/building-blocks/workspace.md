@@ -262,7 +262,7 @@ kubectl apply -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 
 ### 9. Configure IAM for the Workspace API
 
-The Workspace API always validates a Bearer token audienced for the `workspace-api` client (`authMode: gateway` in the upstream chart has no auth-free option) - steps 9.1 and 9.2 are required regardless of `OIDC_WORKSPACE_ENABLED`. That setting only controls whether the ingress additionally redirects unauthenticated browser requests to Keycloak login (9.2), and whether Datalab sessions get Keycloak SSO (9.3).
+The Workspace API always validates a Bearer token audienced for the `workspace-api` client.
 
 !!! note
     Before starting, ensure you have followed the [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.

@@ -44,7 +44,7 @@ This section outlines the infrastructure requirements for deploying EOEPCA. Rath
 
 ---
 
-**Before deploying the EOEPCA Building Blocks, we recommend running or referencing the `check-prerequisite` script (once provided). This script will:**
+**Before deploying the EOEPCA Building Blocks, we recommend running the `check-prerequisites` script below. It will:**
 
 - Test if pods can run as root.
 - Verify that ingress is properly set up with wildcard DNS.

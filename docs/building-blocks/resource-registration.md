@@ -6,39 +6,25 @@ The **Resource Registration** Building Block enables data and metadata ingestion
 - Data registration into Data Access services
 - Resource visualisation configuration
 
----
 
-## Introduction
-
-The **Resource Registration Building Block** manages resource ingestion into the platform for discovery, access and collaboration. It supports:
-
-- Datasets (EO data, auxiliary data)
-- Processing workflows 
-- Jupyter Notebooks
-- Web services and applications
-- Documentation and metadata
 
 The BB integrates with other platform services to enable:
 
 - Automated metadata extraction
 - Resource discovery indexing
 - Access control configuration
-- Usage tracking
 
 ---
 
 ## Components Overview
 
-The Resource Registration BB comprises three main components:
+The Resource Registration BB comprises two main components:
 
 1. **Registration API**  
 An OGC API Processes interface for registering, updating, or deleting resources on the local platform.
     
 2. **Harvester**  
 Automates workflows (via the Operaton BPM engine) to harvest data from external sources. This guide demonstrates harvesting Landsat data from USGS.
-    
-3. **Common Registration Library**  
-A Python library consolidating upstream packages (e.g. STAC tools, eometa tools) for business logic in workflows and resource handling.
 
 ---
 
@@ -90,7 +76,7 @@ During the script execution, you will be prompted to provide:
 - **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
     - *Default*: `standard`
     !!! note
-        `RWX` is specified for the `eodata` volume to which the harvester downloads harvested assets. A `RWX` volume is assumed here, in anticipation that other services (pods) will require to exploit the data assets.
+        `eodata` must be `RWX` - multiple harvester workers share it, and other BBs may also read from it.
 - **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
     - *Example*: `letsencrypt-http01-apisix`
 - **`OPERATON_ADMIN_USER`**: Admin username for the Operaton BPM engine.
@@ -518,10 +504,10 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 
     Earlier in this page we deployed the Landsat harvester worker, which is implemented to respond to a specific set of workflow topics - as described by the values deployed with the helm chart:
 
-    * `landsat_discover_data` (LandsatDiscoverHandler)
-    * `landsat_continuous_data_discovery` (LandsatContinuousDiscoveryHandler)
-    * `landsat_download_data` (LandsatDownloadHandler)
-    * `landsat_untar` (LandsatUntarHandler)
+    * `landsat_ondemand_discovery` (LandsatDiscoverHandler)
+    * `landsat_continuous_discovery` (LandsatContinuousDiscoveryHandler)
+    * `landsat_download_scene` (LandsatDownloadHandler)
+    * `landsat_unpack` (LandsatUntarHandler)
     * `landsat_extract_metadata` (LandsatExtractMetadataHandler)
     * `landsat_register_metadata` (LandsatRegisterMetadataHandler)
 

@@ -33,9 +33,6 @@ resources:
   limits:
     memory: "4Gi"
     cpu: "4"
-image:
-  tag: latest
-  pullPolicy: Always
 publicUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/manager/
 stacApi: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/stac/
 stacBrowser: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/browser/

@@ -47,12 +47,12 @@ harvester:
       StacCatalogHandler: {}
       StacCollectionHandler:
         timewindow_hours: 1
-        stac_api_destination_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+        stac_api_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
         stac_api_ca_cert: ""
         stac_api_user: ""
         stac_api_pw: ""
       StacItemHandler:
-        stac_api_destination_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
+        stac_api_url: {{ getenv "HTTP_SCHEME" }}://eoapi.{{ getenv "INGRESS_HOST" }}/stac/
         stac_api_ca_cert: ""
         stac_api_user: ""
         stac_api_pw: ""

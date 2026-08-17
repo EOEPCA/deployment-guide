@@ -44,7 +44,6 @@ bash configure-openeo.sh
 
 During this process, you'll be prompted for:
 
-- **`OPENEO_BACKEND`**: Which backend to deploy - currently only `geotrellis` is fully supported (Dask backend is still under development, so don't select it yet)
 - **`INGRESS_HOST`**: Base domain for ingress hosts (e.g. `example.com`)
 - **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent volumes
 - **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates
@@ -52,7 +51,7 @@ During this process, you'll be prompted for:
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)
 
 !!! note "Authentication"
-    The configuration script now offers a choice between OIDC authentication and basic authentication. If you choose not to enable OIDC, the deployment will use basic authentication instead.
+    If OIDC is disabled, the deployment falls back to a hardcoded basic-auth test user (`testuser`/`testuser123`) instead. This fallback is a guide-only convenience for deploying without IAM - the upstream openEO Geotrellis reference deployment does not enable basic auth at all, so treat it as a way to get a working deployment quickly, not a supported production auth mode.
 
 ### 2. Deploying openEO Geotrellis
 
@@ -131,11 +130,7 @@ kubectl apply -f openeo-geotrellis/batch-jobs-rbac.yaml
 
 ??? note "Create a Keycloak Client"
 
-    The openEO API provides an endpoint for service discovery, which allows openEO clients to integrate with each openEO instance. This includes auth discovery that provides details of supported identity providers.
-
-    For OIDC identity providers, details of an OIDC client are provided through this discovery interface. This is assumed to be a public OIDC client for use with OIDC PKCE flows (Authorization/Device Code). This allows the openEO client to dynamically integrate with the authentication approach offered by the openEO instance - without the need to register their own OIDC client.
-
-    Thus, if OIDC is enabled, we configure in our openEO deployment integration with an `EOEPCA` identity provider.
+    openEO's service discovery endpoint publishes the identity providers a client can use, including OIDC client details - a public client for PKCE flows (Authorization/Device Code), so openEO clients (e.g. the web editor) don't need to register their own.
 
     Inside the `generated-values.yaml` (when OIDC is enabled) you'll find the following configuration:
 
@@ -492,80 +487,7 @@ ds = xarray.load_dataset("original.nc")
 print(ds)
 ```
 
-#### Build Complex Processing Chains
-
-Construct multi-step processing workflows:
-
-```python
-# Load collection with specific temporal range
-cube_processed = connection.load_collection(
-    collection_id=collection_id,
-    temporal_extent=["2024-09-01", "2024-09-30"],
-    spatial_extent=spatial_extent
-)
-
-# Apply processing steps
-cube_processed = cube_processed.filter_temporal(["2024-09-10", "2024-09-20"])
-cube_processed = cube_processed.reduce_dimension(dimension="t", reducer="max")
-cube_processed = cube_processed.apply(lambda x: x * 100)
-
-# Export process graph
-graph = json.loads(cube_processed.to_json())
-print(f"Processing chain: {' → '.join(graph['process_graph'].keys())}")
-
-# Validate and save
-connection.validate_process_graph(graph)
-with open("workflow.json", "w") as f:
-    json.dump(graph, f, indent=2)
-print("✓ Graph validated and saved")
-```
-
-#### Band Mathematics and Normalisation
-
-Perform calculations across multiple bands, such as computing a normalised index:
-
-```python
-# Load specific bands
-cube_bands = connection.load_collection(
-    collection_id=collection_id,
-    temporal_extent="2024-09",
-    spatial_extent=spatial_extent,
-    bands=["Longitude", "Latitude"]
-)
-
-# Calculate normalised difference: (Longitude - Latitude) / (Longitude + Latitude)
-lon = cube_bands.band("Longitude")
-lat = cube_bands.band("Latitude")
-normalised_diff = (lon - lat) / (lon + lat)
-
-# Save results
-cube_bands.download("bands.nc")
-normalised_diff.download("normalised.nc")
-
-# Export processing graph
-nd_graph = json.loads(normalised_diff.to_json())
-with open("normalised_workflow.json", "w") as f:
-    json.dump(nd_graph, f, indent=2)
-```
-
-#### Verify Calculations
-
-Validate that band mathematics produced expected results:
-
-```python
-ds_bands = xarray.load_dataset("bands.nc")
-ds_norm = xarray.load_dataset("normalised.nc")
-
-# Sample first pixel values
-lon_val = ds_bands.Longitude.values[0, 0, 0]
-lat_val = ds_bands.Latitude.values[0, 0, 0]
-expected = (lon_val - lat_val) / (lon_val + lat_val)
-actual = ds_norm['var'].values[0, 0, 0]
-
-print(f"Longitude: {lon_val:.2f}, Latitude: {lat_val:.2f}")
-print(f"Expected normalised value: {expected:.4f}, Actual: {actual:.4f}")
-print(f"✓ Calculation correct" if abs(expected - actual) < 0.001 else "✗ Mismatch")
-```
+For multi-step processing chains, band mathematics, and other process-graph building blocks, see the [Jupyter Notebook](#2-jupyter-notebook) linked above.
 
 #### Clean Up
 
@@ -576,11 +498,8 @@ exit()
 ```
 
 ```bash
-ls -lh *.nc *.json
 deactivate
 ```
-
-The downloaded files contain the processed data cubes and workflow definitions that can be reused or shared with other openEO deployments.
 
 ## Uninstallation
 

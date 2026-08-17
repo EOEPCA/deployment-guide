@@ -4,6 +4,7 @@ metadata:
   name: stac
   namespace: data-access
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   http:
   - name: manager-redirect
     websocket: true

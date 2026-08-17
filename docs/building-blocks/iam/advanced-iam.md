@@ -228,7 +228,7 @@ When prompted:
             paths:
               - /*
           backends:
-            - serviceName: opa-opal-client
+            - serviceName: iam-opal-client
               servicePort: 7000
           plugins:
             - name: authz-keycloak

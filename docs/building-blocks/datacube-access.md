@@ -1,12 +1,10 @@
 # Datacube Access Deployment Guide
 
-The **Datacube Access** building block allows users to access and explore multi-dimensional Earth Observation (EO) data using standard APIs. It is built on open standards from OGC (Open Geospatial Consortium). 
+The **Datacube Access** Building Block defines a metadata convention for datacube-ready STAC collections, plus an optional API for filtering an existing STAC catalog down to the collections that follow it.
 
 ---
 
 ## Introduction
-
-Datacube Access gives users simple ways to discover, access, and process large Earth Observation datasets, known as "datacubes." These datacubes are structured, multi-dimensional sets of data, useful for various analytics and visualisation tasks.
 
 This Building Block has two parts:
 
@@ -90,42 +88,14 @@ See the [STAC Best Practices for Data Cubes](https://github.com/EOEPCA/datacube-
 
     #### 2. Manual Validation via Web Browser
 
-    Verify endpoints using a web browser:
+    Under `https://datacube-access.${INGRESS_HOST}`:
 
-    - **Landing/Home Page**
-
-    ```bash
-    https://datacube-access.${INGRESS_HOST}/
-    ```
-    Expect a JSON response with API information and links.
-
-    - **OpenAPI Documentation**
-
-    ```bash
-    https://datacube-access.${INGRESS_HOST}/docs
-    ```
-    Interactive UI listing available API endpoints.
-
-    - **Collections Access**
-
-    ```bash
-    https://datacube-access.${INGRESS_HOST}/collections
-    ```
-    Verify JSON or HTML response listing available datacube collections.
-
-    - **Conformance Check**
-
-    ```bash
-    https://datacube-access.${INGRESS_HOST}/conformance
-    ```
-    Confirm OGC API conformance classes and supported standards.
-
-
-    #### Collection Access Test
-
-    ```bash
-    curl "https://datacube-access.${INGRESS_HOST}/collections"
-    ```
+    | Endpoint | Purpose |
+    |----------|---------|
+    | `/` | Landing page - JSON with API information and links |
+    | `/docs` | Interactive OpenAPI (Swagger) UI |
+    | `/collections` | Datacube-ready collections exposed by the filter |
+    | `/conformance` | OGC API conformance classes |
 
 ---
 
@@ -145,10 +115,6 @@ kubectl delete namespace datacube-access
 > **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/datacube-access/datacube-access.ipynb" target="_blank">Datacube Access notebook</a> at `http://localhost:8888`.
 
 The Datacube Access BB filters your STAC catalog to expose only collections that include the [STAC Datacube Extension](https://github.com/stac-extensions/datacube) - specifically those with `cube:dimensions` or `cube:variables` defined. This ensures processing tools like openEO only see properly-structured, analysis-ready collections.
-
-### Understanding Datacube-Ready Collections
-
-Standard STAC collections describe what data exists and where. Datacube-ready collections add structural metadata: dimensions (x, y, time, bands), coordinate reference systems, and dimension relationships. This metadata tells processing tools how to interpret and load the data as a multidimensional datacube.
 
 ### Loading a Test Collection
 
@@ -181,11 +147,7 @@ cd ..
 
 ### Relevance to OpenEO
 
-Datacube Access acts as a filtered data layer for [openEO](https://openeo.org/) backends by exposing only collections with proper datacube metadata (`cube:dimensions`, `cube:variables`). This ensures openEO can reliably load data into multi-dimensional arrays and perform operations.
-
-The dimensional metadata (spatial, temporal, spectral) enables openEO to validate process graphs and maintain dimension compatibility throughout processing chains. Without this filtering, openEO backends would encounter heterogeneous STAC collections lacking the structure needed for multi-dimensional processing.
-
-For example, an openEO workflow calculating NDVI time series needs to know exact band names, temporal resolution, and dimension relationships - all provided by the datacube metadata.
+[openEO](https://openeo.org/) backends need exact band names, temporal resolution and dimension relationships to build a process graph - e.g. an NDVI time series workflow. Datacube Access's filtering ensures openEO only sees collections carrying that metadata, rather than heterogeneous STAC collections it can't reliably load as multi-dimensional arrays.
 
 
 ---

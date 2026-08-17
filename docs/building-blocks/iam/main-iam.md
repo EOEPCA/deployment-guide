@@ -199,5 +199,5 @@ kubectl delete namespace iam
 Delete retained PVCs only when you deliberately want to remove Keycloak data:
 
 ```bash
-kubectl delete pvc -n iam -l app=iam-postgresql
+kubectl delete pvc -n iam data-iam-postgresql-0
 ```

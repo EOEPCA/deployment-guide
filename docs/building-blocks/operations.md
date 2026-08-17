@@ -6,7 +6,7 @@ The **Operations** Building Block is the observability stack for an EOEPCA deplo
 
 ## Introduction
 
-Operations bundles together a set of well-known CNCF and Grafana Labs projects into a pre-configured stack:
+Operations deploys:
 
 - **Prometheus** scrapes metrics from the cluster and from any workload that exposes a `/metrics` endpoint
 - **Loki** stores container logs, with **Alloy** collecting them from every node

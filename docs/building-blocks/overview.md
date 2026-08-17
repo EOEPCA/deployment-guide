@@ -1,6 +1,6 @@
 # Building Blocks
 
-This section provides instructions on how to deploy the various Building Blocks (BBs) that make up the EOEPCA+ ecosystem. Each Building Block is a modular component designed to perform specific functions within the platform, and each is deployed the same scripted way - see [How Deployment Works](../index.md#how-deployment-works) if you haven't deployed a Building Block before.
+This section provides instructions on how to deploy the various Building Blocks (BBs) that make up the EOEPCA+ ecosystem. Each is deployed the same scripted way - see [How Deployment Works](../index.md#how-deployment-works) if you haven't deployed a Building Block before.
 
 ## Building Blocks Overview
 
@@ -52,7 +52,7 @@ Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
     ---
 
-    A consolidated and consistent capability for accessing Earth Observation data from an extensible set of providers and datasets.
+    A single STAC-based interface for Earth Observation data across an extensible set of providers and datasets.
 
     [:octicons-arrow-right-24: Explore Data Gateway](data-gateway.md)
 
@@ -60,7 +60,7 @@ Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
     ---
 
-    A unified access layer for serving Earth Observation data from multiple internal and external providers, transparently to end-users. Under active development.
+    Serves Earth Observation data from multiple internal and external providers, transparently to end-users. Under active development.
 
     [:octicons-arrow-right-24: Learn more](federated-data-proxy.md)
 
@@ -100,7 +100,7 @@ Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
     ---
 
-    A flexible framework for platform users and operators to monitor the health and status of core services and platform resources.
+    Monitors the health and status of core services and platform resources.
 
     [:octicons-arrow-right-24: Deploy Resource Health](resource-health.md)
 

@@ -42,7 +42,6 @@ spec:
       backends:
         - serviceName: workspace-api
           servicePort: 8181
-{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
       plugins:
         - name: openid-connect
           enable: true
@@ -51,13 +50,14 @@ spec:
             timeout: 10
             use_jwks: true
             bearer_only: false
-            set_access_token_header: false
-            access_token_in_authorization_header: false
+            set_access_token_header: true
+            access_token_in_authorization_header: true
             set_id_token_header: true
             set_userinfo_header: true
             client_id: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
             client_secret: ""
-{{- end }}
+            session:
+              secret: "{{ getenv "WORKSPACE_API_SESSION_SECRET" }}"
     - name: workspace-api-docs
       match:
         hosts:
@@ -68,16 +68,6 @@ spec:
       backends:
         - serviceName: workspace-api
           servicePort: 8181
-{{- if eq ( getenv "OIDC_WORKSPACE_ENABLED" ) "true" }}
-      plugins:
-        - name: openid-connect
-          enable: true
-          config:
-            access_token_in_authorization_header: true
-            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-            client_id: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
-            client_secret: ""
-{{- end }}
     - name: workspace-api-auth
       match:
         hosts:
@@ -103,6 +93,8 @@ spec:
             set_userinfo_header: false
             client_id: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
             client_secret: ""
+            session:
+              secret: "{{ getenv "WORKSPACE_API_SESSION_SECRET" }}"
 {{- end }}
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---

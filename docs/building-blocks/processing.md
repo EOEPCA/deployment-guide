@@ -1,6 +1,6 @@
 # Processing - OGC API Processes Engine
 
-The **Processing Building Block** provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO. The Processing BB is deployed in the form of a number of _Processing Engine_ variants that implements different workflow approaches:
+The **Processing Building Block** provides deployment and execution of user-defined processing workflows within the EOEPCA+ platform - with support for OGC API Processes, OGC Application Packages and openEO. The Processing BB is deployed as a number of _Processing Engine_ variants, each implementing a different workflow approach:
 
 <div class="grid cards" markdown>
 
@@ -16,7 +16,7 @@ The **Processing Building Block** provides deployment and execution of user-defi
 
     ---
 
-    Connect to Earth observation cloud back-ends in a simple and unified way. Provided by the [OpenEO Geopyspark Driver](https://github.com/Open-EO/openeo-geopyspark-driver).
+    Connect to Earth observation cloud back-ends via a common openEO API. Provided by the [OpenEO Geopyspark Driver](https://github.com/Open-EO/openeo-geopyspark-driver).
 
     [:octicons-arrow-right-24: openEO Engine](./openeo-geotrellis.md)
 

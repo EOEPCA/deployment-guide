@@ -47,3 +47,13 @@ spec:
 {{- if eq ( getenv "NA_ENABLE_OIDC" ) "yes" }}
       authentication-oidc: "enabled"
 {{- end }}
+  deployments:
+    - name: eventing-webhook
+      resources:
+        - container: eventing-webhook
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 500Mi

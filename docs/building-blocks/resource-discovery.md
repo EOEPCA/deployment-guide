@@ -220,8 +220,6 @@ If these return meaningful responses (especially HTTP 200 with JSON or HTML data
 
 ### 3. Manual Validation via cURL / Command Line
 
-Using the command line can be a quick way to check endpoints and see raw responses. Below are some example commands.
-
 We recommend executing `source ~/.eoepca/state` to load the environment variables, or manually set the `INGRESS_HOST` variable.
 
 #### 3.1. Basic Liveness Check
@@ -316,7 +314,7 @@ kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
 !!! note
     A warning about the `geometry` field is expected and can be ignored for this sample.
 
-This is the same tool pycsw's own harvest/bulk-load workflows use to pre-populate a catalogue - it's a legitimate way to seed data, it just always needs cluster access rather than going over the ingress.
+Needs cluster access rather than going over the ingress.
 
 Verify:
 

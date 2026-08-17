@@ -3,8 +3,6 @@
 !!! warning
     Application Hub 2.1 requires OIDC. The IAM-off mode is not supported by this guide.
 
-The **Application Hub** provides a suite of web-based tools—like JupyterLab and Code Server—for interactive analysis and application development on Earth Observation (EO) data. It can also host custom dashboards and interactive web apps.
-
 ---
 
 ## Introduction
@@ -73,7 +71,7 @@ You'll be asked for, in order (`HTTP_SCHEME` and `INGRESS_CLASS` only if not alr
     - *Example*: `standard`
 - **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
     - *Example*: `letsencrypt-http01-apisix`
-- **`NODE_SELECTOR_KEY`**: Determine which nodes will run the Application Hub pods.
+- **`NODE_SELECTOR_KEY`**: Determine which nodes will run spawned user sessions and profile pods (not the Application Hub's own hub/proxy pods).
     - *Example*: `kubernetes.io/os`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
 - **`NODE_SELECTOR_VALUE`**: Value for the node selector key.
@@ -171,9 +169,6 @@ echo "${HTTP_SCHEME}://${APPHUB_PUBLIC_HOST}/hub/admin"
     - `group-1`
     - `group-2`
     - `group-3`
-
-!!! note
-    These groups are simply examples that are configured into the default deployment. This default configuration should be adapted for your platform deployment.
 
 ![Create Groups](../img/apphub/groups.jpeg)
 

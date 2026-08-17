@@ -1,6 +1,6 @@
 # Resource Health Deployment Guide
 
-The **Resource Health** Building Block (BB) provides a flexible framework for monitoring the health and status of resources within the EOEPCA platform. This includes core platform services as well as derived or user-provided resources such as datasets, workflows, or user applications.
+The **Resource Health** Building Block (BB) runs scheduled health checks against resources within the EOEPCA platform, storing results in OpenSearch. This includes core platform services as well as derived or user-provided resources such as datasets, workflows, or user applications.
 
 ---
 
@@ -29,11 +29,11 @@ The **Resource Health BB** provides:
 
 3. **Health Check Runner**
     
-- A flexible engine that executes your custom health checks at scheduled intervals.
+- Executes your health checks at scheduled intervals.
 
 4. **Mock API** (optional sample)
     
-- An example test resource used in demonstration checks (e.g. an hourly check to a mock endpoint).
+- A mock endpoint for use as the target of a demonstration check (e.g. an hourly HTTP check).
 
 5. **OpenSearch & OpenSearch Dashboards**
 
@@ -156,9 +156,6 @@ helm upgrade -i resource-health eoepca-dev/resource-health-reference-deployment 
   -n resource-health --create-namespace
 ```
 
-!!! note
-    As part of this deployment, you will have a preconfigured healthcheck that runs every minute.
-
 3. **Bootstrap OpenSearch security**
 
 The OpenSearch chart mounts the security config (roles, internal users, role mappings) but does not apply it automatically. Without this step every OpenSearch-backed request (telemetry, dashboards) fails with `OpenSearch Security not initialized.`:
@@ -173,7 +170,7 @@ Re-run this any time you change OpenSearch-related values and `helm upgrade`.
 
 ### 4. Configure Ingress
 
-By default, Resource Health is designed to be flexible with Ingress and OIDC configurations. OIDC protection is only supported with APISIX: it is enforced at the ingress layer via an `ApisixRoute` + `openid-connect` plugin, and there is no nginx equivalent. `configure-resource-health.sh` rejects `RESOURCE_HEALTH_ENABLE_OIDC=yes` with `INGRESS_CLASS=nginx` for this reason.
+OIDC protection is only supported with APISIX: it is enforced at the ingress layer via an `ApisixRoute` + `openid-connect` plugin, and there is no nginx equivalent. `configure-resource-health.sh` rejects `RESOURCE_HEALTH_ENABLE_OIDC=yes` with `INGRESS_CLASS=nginx` for this reason.
 
 For the purpose of this guide, the configuration script created a sample Ingress resource in `generated-ingress.yaml` that you can apply or adapt to your environment. The output depends on the ingress controller you have set in the `~/.eoepca/state` file.
 
@@ -247,7 +244,7 @@ This step only applies if OIDC is enabled. To ensure your Keycloak user has prop
 
 ### 6. Monitor the Deployment
 
-Once deployed, you will have to wait a minute until the first health check runs before you can access the Resource Health Web dashboard.
+The Resource Health Web dashboard is reachable as soon as the deployment is up - no default health check ships with this guide, so it will show no results until you create one (see Usage below).
 
 After the Helm installation finishes, check that all pods are running in the **resource-health** namespace:
 

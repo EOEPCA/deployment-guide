@@ -53,8 +53,8 @@ buckets:
   - name: gitlab-backup-storage
   - name: gitlab-tmp-storage
   - name: gitlab-lfs-storage
-  - name: mlopbb-mlflow-sharinghub
-  - name: mlopbb-sharinghub
+  - name: mlopsbb-mlflow-sharinghub
+  - name: mlopsbb-sharinghub
   - name: openeo-geotrellis-data
   - name: cluster-storage
   - name: logging
