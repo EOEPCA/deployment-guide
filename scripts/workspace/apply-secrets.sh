@@ -26,19 +26,4 @@ kubectl create secret generic workspace-pipeline-client \
   --namespace workspace \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Workspace API Keycloak client credentials (required unconditionally, see step 9.1)
-kubectl create secret generic ${WORKSPACE_API_CLIENT_ID}-keycloak-client \
-  --from-literal=client_secret="$WORKSPACE_API_CLIENT_SECRET" \
-  --namespace iam-management \
-  --dry-run=client -o yaml | kubectl apply -f -
-
-# Only referenced by the ingress openid-connect plugin and Datalab session SSO
-if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-  kubectl create secret generic workspace-api-keycloak-client \
-    --from-literal=client_id="$WORKSPACE_API_CLIENT_ID" \
-    --from-literal=client_secret="$WORKSPACE_API_CLIENT_SECRET" \
-    --namespace workspace \
-    --dry-run=client -o yaml | kubectl apply -f -
-fi
-
 echo "✅ Secrets applied."

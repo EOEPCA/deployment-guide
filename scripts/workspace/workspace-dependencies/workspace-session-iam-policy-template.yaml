@@ -48,13 +48,15 @@ spec:
                   timeout: 10
                   use_jwks: true
                   bearer_only: false
+                  scope: openid roles
                   set_access_token_header: true
                   access_token_in_authorization_header: true
                   set_id_token_header: false
                   set_userinfo_header: false
+                  client_id: ${WORKSPACE_API_CLIENT_ID}
+                  client_secret: ""
                   session:
                     secret: "{{ random('[A-Za-z0-9]{32}') }}"
-                secretRef: workspace-api-keycloak-client
               - name: opa
                 enable: true
                 config:

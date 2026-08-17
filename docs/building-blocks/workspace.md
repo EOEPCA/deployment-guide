@@ -6,13 +6,13 @@ A **Workspace** is a self-service, isolated environment for data access and algo
 
 ## Introduction
 
-The Workspace Building Block (BB) provides a unified environment that combines object storage, interactive runtimes, and collaborative tooling into a single Kubernetes-native platform.
+The Workspace Building Block (BB) gives each user their own namespace with S3-compatible object storage and a persistent VSCode-based development environment (a "Datalab"), provisioned on request via a REST API and web UI.
 
-The Workspace BB comprises the following key components:
+The Workspace BB comprises the following components:
 
 * **Workspace API and UI**
 
-    Orchestrate storage, runtime, and tooling resources via a unified REST API by managing the underlying Kubernetes Custom Resources (CRs).
+    A REST API and web UI for creating and deleting workspaces, backed by two Kubernetes Custom Resources it manages per workspace (below).
 
 * **Storage Controller (provider-storage)**
 
@@ -20,17 +20,17 @@ The Workspace BB comprises the following key components:
 
 * **Datalab Controller (provider-datalab)**
 
-    A Kubernetes Custom Resource used to deploy persistent VSCode-based environments with direct object-storage access — either directly on Kubernetes or within a vCluster — preconfigured with essential services and tools.
+    A Kubernetes Custom Resource used to deploy persistent VSCode-based environments with direct object-storage access, either directly on Kubernetes or within a vCluster.
 
 * **Identity & Access (Keycloak)**
 
     Manages user and team identities, enabling role-based access control and granting permissions to specific Datalabs and storage resources.
 
-The Workspace BB relies upon Crossplane to manage the creation and lifecycle of the resources that deliver these capabilities. This requires the deployment of:
+The Workspace BB uses Crossplane to create and manage these resources, which requires deploying:
 
-* **Dependencies**, including CSI-RClone for storage mounting and the Educates framework for workspace environments.
-* **Pipelines**, which manage the templating and provisioning of workspace resources, including storage, datalab configurations, and environment settings.
-* **Provider Configurations**, that support the usage of specific Crossplane Providers such as MinIO, Kubernetes, Keycloak, and Helm.
+* **Dependencies** - CSI-RClone for storage mounting and the Educates framework for workspace environments.
+* **Pipelines** - template and provision each workspace's storage, Datalab configuration, and environment settings.
+* **Provider Configurations** - the Crossplane Providers this BB uses: MinIO, Kubernetes, Keycloak, and Helm.
 
 ---
 
@@ -87,7 +87,7 @@ During the script execution, you will be prompted to provide:
 
 * **S3 Credentials**: `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` for your S3-compatible storage.
 
-* **`WORKSPACE_PIPELINE_CLIENT_ID`** and **`WORKSPACE_API_CLIENT_ID`**: Keycloak client IDs (defaults are fine) - see [step 9](#9-configure-iam-for-the-workspace-api) for what each of these controls. Client secrets are generated automatically.
+* **`WORKSPACE_PIPELINE_CLIENT_ID`** and **`WORKSPACE_API_CLIENT_ID`**: Keycloak client IDs (defaults are fine) - see [step 9](#9-configure-iam-for-the-workspace-api) for what each of these controls. A client secret is generated automatically for the Workspace Pipeline client; the Workspace API client is public and has no secret.
 
 * **`OIDC_WORKSPACE_ENABLED`**: whether to enable ingress-level login redirect and Datalab session SSO (default: `true`).
 
@@ -298,7 +298,7 @@ kubectl apply -f workspace-dependencies/generated-workspace-session-iam-policy.y
 ```
 
 !!! note
-    Reuses the `workspace-api` client's `workspace-api-keycloak-client` secret from [9.1](#91-create-keycloak-client) - any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.
+    Any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.
 
 ---
 
@@ -366,7 +366,6 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=${WORKSPACE_API_CLIENT_ID}" \
-    -d "client_secret=${WORKSPACE_API_CLIENT_SECRET}" \
     | jq -r '.access_token' \
 )
 echo "Access Token: ${ACCESS_TOKEN:0:20}..."
@@ -432,7 +431,6 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=${WORKSPACE_API_CLIENT_ID}" \
-    -d "client_secret=${WORKSPACE_API_CLIENT_SECRET}" \
     | jq -r '.access_token' \
 )
 echo "Access Token: ${ACCESS_TOKEN:0:20}..."
@@ -657,7 +655,6 @@ ACCESS_TOKEN=$( \
     --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
     -d "grant_type=password" \
     -d "client_id=${WORKSPACE_API_CLIENT_ID}" \
-    -d "client_secret=${WORKSPACE_API_CLIENT_SECRET}" \
     | jq -r '.access_token' \
 )
 echo "Access Token: ${ACCESS_TOKEN:0:20}..."
@@ -687,7 +684,6 @@ kubectl delete -f workspace-dependencies/kyverno-rbac-apisixpluginconfig.yaml --
 kubectl delete -f workspace-dependencies/kyverno-registry-ingress-class.yaml
 kubectl delete -f workspace-api/generated-ingress.yaml
 kubectl delete -f workspace-api/generated-iam.yaml
-kubectl delete secret/${WORKSPACE_API_CLIENT_ID}-keycloak-client -n iam-management
 kubectl delete -f workspace-dependencies/generated-workspace-ingress-policy.yaml --ignore-not-found
 kubectl delete secret/workspace-tls -n workspace
 kubectl delete -f workspace-dependencies/generated-pipeline-iam.yaml

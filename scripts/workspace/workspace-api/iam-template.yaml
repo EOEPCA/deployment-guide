@@ -10,27 +10,20 @@ spec:
     name: Workspace API
     description: Workspace API OIDC
     enabled: true
-    accessType: CONFIDENTIAL
+    accessType: PUBLIC
+    fullScopeAllowed: true
     rootUrl: {{ getenv "HTTP_SCHEME" }}://workspace-api.{{ getenv "INGRESS_HOST" }}
     baseUrl: {{ getenv "HTTP_SCHEME" }}://workspace-api.{{ getenv "INGRESS_HOST" }}
     adminUrl: {{ getenv "HTTP_SCHEME" }}://workspace-api.{{ getenv "INGRESS_HOST" }}
-    serviceAccountsEnabled: true
+    serviceAccountsEnabled: false
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
-    authorization:
-      - allowRemoteResourceManagement: false
-        decisionStrategy: UNANIMOUS
-        keepDefaults: true
-        policyEnforcementMode: ENFORCING
     validRedirectUris:
-      - "/*"
+      - "*"
     webOrigins:
-      - "/*"
-    clientSecretSecretRef:
-      name: {{ getenv "WORKSPACE_API_CLIENT_ID" }}-keycloak-client
-      key: client_secret
+      - "*"
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig

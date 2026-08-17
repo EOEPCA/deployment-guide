@@ -4,6 +4,7 @@ metadata:
   name: workspace-api
   namespace: workspace
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   http:
     - name: workspace-api-root-redirect
       match:
@@ -54,7 +55,8 @@ spec:
             access_token_in_authorization_header: false
             set_id_token_header: true
             set_userinfo_header: true
-          secretRef: workspace-api-keycloak-client
+            client_id: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
+            client_secret: ""
 {{- end }}
     - name: workspace-api-docs
       match:
@@ -73,7 +75,8 @@ spec:
           config:
             access_token_in_authorization_header: true
             discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
-          secretRef: workspace-api-keycloak-client
+            client_id: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
+            client_secret: ""
 {{- end }}
     - name: workspace-api-auth
       match:
@@ -93,11 +96,13 @@ spec:
             timeout: 10
             use_jwks: true
             bearer_only: false
+            scope: openid roles
             set_access_token_header: true
             access_token_in_authorization_header: true
             set_id_token_header: false
             set_userinfo_header: false
-          secretRef: workspace-api-keycloak-client
+            client_id: "{{ getenv "WORKSPACE_API_CLIENT_ID" }}"
+            client_secret: ""
 {{- end }}
 {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
 ---

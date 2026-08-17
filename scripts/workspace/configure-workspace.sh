@@ -28,16 +28,7 @@ echo "❗  Generated client secret for the Workspace Pipeline."
 echo "   Please store this securely: $WORKSPACE_PIPELINE_CLIENT_SECRET"
 echo ""
 
-# Required: the Workspace API's authMode=gateway always validates a Bearer token for this client.
 ask "WORKSPACE_API_CLIENT_ID" "Enter the Client ID for the Workspace API" "workspace-api" is_non_empty
-if [ -z "$WORKSPACE_API_CLIENT_SECRET" ]; then
-    WORKSPACE_API_CLIENT_SECRET=$(generate_aes_key 32)
-    add_to_state_file "WORKSPACE_API_CLIENT_SECRET" "$WORKSPACE_API_CLIENT_SECRET"
-fi
-echo ""
-echo "❗  Generated client secret for the Workspace API."
-echo "   Please store this securely: $WORKSPACE_API_CLIENT_SECRET"
-echo ""
 
 # Only controls ingress-level redirect-to-login and Datalab session SSO - the
 # Workspace API itself always requires a Bearer token regardless of this setting.
@@ -58,8 +49,7 @@ gomplate -f "workspace-pipeline/values-template.yaml" -o "workspace-pipeline/gen
 gomplate -f "workspace-dependencies/workspace-ingress-policy-template.yaml" -o "workspace-dependencies/generated-workspace-ingress-policy.yaml"
 gomplate -f "workspace-api/iam-template.yaml" -o "workspace-api/generated-iam.yaml"
 
-# envsubst, not gomplate: this policy's Kyverno {{ }} JMESPath templating must
-# survive literally - gomplate would try to parse it as its own Go templates.
+
 envsubst < "workspace-dependencies/workspace-session-iam-policy-template.yaml" > "workspace-dependencies/generated-workspace-session-iam-policy.yaml"
 
 echo ""
