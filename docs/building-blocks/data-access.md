@@ -32,7 +32,7 @@ The Data Access BB consists of the following main components:
 
 2. **PostgreSQL with PostGIS and pgSTAC**<br>
    Database for storing geospatial metadata and data. Can be deployed as:
-   - Internal cluster managed by [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+   - Internal cluster managed by [CrunchyData Postgres Operator](https://github.com/CrunchyData/postgres-operator)
    - External PostgreSQL accessed via External Secrets Operator
 
 3. **STAC Manager UI**<br>
@@ -148,8 +148,8 @@ Configure via `pgstacBootstrap.settings.pgstacSettings`:
 | Values Key | Description | Default | Format |
 |------------|-------------|---------|--------|
 | `queue_timeout` | Timeout for queued queries | `"10 minutes"` | PostgreSQL interval |
-| `use_queue` | Enable query queue mechanism | `"false"` | boolean string |
-| `update_collection_extent` | Auto-update collection extents | `"true"` | boolean string |
+| `use_queue` | Enable query queue mechanism | `"true"` | boolean string |
+| `update_collection_extent` | Auto-update collection extents | `"false"` | boolean string |
 | `context` | Return `numberMatched` on search: `"on"`, `"off"`, or `"auto"` | `"off"` | string |
 | `context_estimated_count` | Row threshold above which `context: "auto"` uses an estimate | `"100000"` | numeric string |
 
@@ -163,11 +163,11 @@ CronJobs are conditionally created based on PgSTAC settings:
   - Configurable via `queueProcessor.schedule`
 
 - **Extent Updater** (created when `update_collection_extent: "false"`):
-  - Schedule: `"0 2 * * *"` (daily at 2 AM)
+  - Schedule: `"0 */12 * * *"` (every 12 hours)
   - Updates collection spatial/temporal boundaries
   - Configurable via `extentUpdater.schedule`
 
-By default, no CronJobs are created (`use_queue=false`, `update_collection_extent=true`). Both schedules are customizable using standard cron format.
+By default, both CronJobs are created (`use_queue=true`, `update_collection_extent=false`). Both schedules are customizable using standard cron format.
 
 **Example PgSTAC Configuration:**
 
@@ -492,6 +492,6 @@ kubectl delete namespace data-access
 
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
-- [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
+- [CrunchyData Postgres Operator Documentation](https://github.com/CrunchyData/postgres-operator)
 - [External Secrets Operator](https://external-secrets.io/)
 

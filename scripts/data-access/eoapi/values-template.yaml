@@ -65,10 +65,10 @@ pgstacBootstrap:
       update_collection_extent: "false"
     envVars:
       KEEP_ALIVE: "false"
-  queueProcessor:
-    schedule: "0 * * * *"
-  extentUpdater:
-    schedule: "0 */12 * * *"
+    queueProcessor:
+      schedule: "0 * * * *"
+    extentUpdater:
+      schedule: "0 */12 * * *"
 
 raster:
   enabled: true
