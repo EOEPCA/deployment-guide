@@ -12,7 +12,7 @@ spec:
     username: {{ getenv "KEYCLOAK_TEST_USER" | quote }}
     firstName: {{ getenv "KEYCLOAK_TEST_USER" | quote }}
     lastName: Testuser
-    email: {{ printf "%s@eoepca.org" (getenv "KEYCLOAK_TEST_USER") | quote }}
+    email: "{{ getenv "KEYCLOAK_TEST_USER" }}@eoepca.org"
     enabled: true
     emailVerified: true
     initialPassword:
