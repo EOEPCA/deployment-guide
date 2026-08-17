@@ -326,7 +326,6 @@ The authentication method depends on whether you enabled OIDC during configurati
         --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
         -d "grant_type=password" \
         -d "client_id=${OPENEO_CLIENT_ID}" \
-        -d "client_secret=${OPENEO_CLIENT_SECRET}" \
         -d "scope=openid profile email" \
         "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
         jq -r '.access_token'

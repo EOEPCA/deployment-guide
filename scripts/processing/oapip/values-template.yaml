@@ -94,7 +94,7 @@ rabbitmq:
   persistence:
     storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 iam:
-  enabled: false
+  enabled: {{ getenv "OIDC_OAPIP_ENABLED" }}
   {{- if eq (getenv "OIDC_OAPIP_ENABLED") "true" }}
   issuer: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
   audience: account
