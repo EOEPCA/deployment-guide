@@ -185,12 +185,16 @@ Delete the Crossplane-managed user first, while Keycloak is still up, so its fin
 
 ```bash
 kubectl delete -f generated-eoepca-user.yaml --ignore-not-found
+
+kubectl delete namespace iam-management
+kubectl wait --for=delete namespace/iam-management --timeout=5m
+
+helm uninstall iam -n iam
+kubectl delete namespace iam
 ```
 
-```bash
-helm uninstall iam -n iam
-kubectl delete namespace iam iam-management
-```
+!!! warning
+    Deleting `iam-management` removes every other Building Block's Keycloak clients, roles, and groups, not just IAM's own — expect any other deployed BB's SSO to break until IAM (and its clients) are reinstalled.
 
 Delete retained PVCs only when you deliberately want to remove Keycloak data:
 
