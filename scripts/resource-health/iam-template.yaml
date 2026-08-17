@@ -19,6 +19,7 @@ spec:
     description: Resource Health OIDC
     enabled: true
     accessType: CONFIDENTIAL
+    fullScopeAllowed: true
     rootUrl: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}
     baseUrl: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}
     adminUrl: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}

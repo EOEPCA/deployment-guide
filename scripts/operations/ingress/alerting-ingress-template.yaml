@@ -44,6 +44,13 @@ spec:
           servicePort: 6001
 {{- end }}
       websocket: true
+{{- if ne (getenv "OPERATIONS_ENABLE_IAM") "yes" }}
+      plugins:
+        - name: proxy-rewrite
+          enable: true
+          config:
+            regex_uri: ["^/websocket/(.*)", "/$1"]
+{{- end }}
     - name: keep-frontend
       match:
         hosts:

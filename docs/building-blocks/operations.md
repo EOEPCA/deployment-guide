@@ -154,14 +154,11 @@ If you need to customise Prometheus resource limits or scrape intervals beyond t
 
 ### 2. Apply Secrets
 
-Applies the Loki S3 credentials, the oauth2-proxy cookie secret, and (if IAM is enabled) placeholders for the Keycloak client secrets.
+Applies the Loki S3 credentials, the oauth2-proxy cookie secret, and (if IAM is enabled) the Keycloak client secrets generated during configuration.
 
 ```bash
 bash apply-secrets.sh
 ```
-
-!!! note
-    If IAM is enabled, the client secrets are populated later from Keycloak. The script creates the namespace and empty secret stubs so downstream components can be deployed in any order.
 
 ### 3. Deployment
 
@@ -282,19 +279,6 @@ kubectl apply -k dashboards/
     kubectl apply -f ingress/generated-alerting-ingress.yaml
     ```
 
-    Crossplane writes the real client secrets into `iam-management` (alongside the `Client` resources, not into `operations`), so copy them across and restart the pods that read them:
-
-    ```bash
-    for pair in monitoring-oidc alerting-oidc; do
-      SECRET=$(kubectl get secret -n iam-management "${pair}" -o jsonpath='{.data.attribute\.client_secret}' | base64 -d)
-      kubectl -n operations create secret generic "${pair}" \
-        --from-literal="attribute.client_secret=${SECRET}" \
-        --dry-run=client -o yaml | kubectl apply -f -
-    done
-
-    kubectl -n operations rollout restart deployment/kube-prometheus-stack-grafana deployment/keep-oauth2-proxy
-    ```
-
 ---
 
 ### 4. Monitoring the Deployment
@@ -340,7 +324,7 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
 
 === "With IAM"
 
-    Both UIs are fronted by Keycloak. Users must be assigned one of `grafana_admin`, `grafana_editor`, or `grafana_viewer` on the `monitoring` client to access Grafana, and one of `keep_admin` or `keep_noc` on the `alerting` client to access Keep.
+    Both UIs are fronted by Keycloak. Users must be assigned one of `grafana_admin`, `grafana_editor`, or `grafana_viewer` on the `monitoring` client to access Grafana, and one of `keep_admin` or `keep_noc` on the `alerting` client to access Keep. `KEYCLOAK_TEST_ADMIN` gets admin on both automatically via `iam/generated-iam.yaml`; grant other users by adding them to the `monitoring-admin`/`alerting-admin` Keycloak groups (or assigning roles directly).
 
 ---
 
