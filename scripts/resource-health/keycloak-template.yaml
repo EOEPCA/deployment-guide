@@ -6,7 +6,7 @@ metadata:
   namespace: iam-management
 spec:
   forProvider:
-    realmId: eoepca
+    realmId: {{ getenv "REALM" }}
     name: opensearch_user
     description: Role for OpenSearch access via Resource Health
   providerConfigRef:
@@ -20,9 +20,9 @@ metadata:
   namespace: iam-management
 spec:
   forProvider:
-    realmId: eoepca
+    realmId: {{ getenv "REALM" }}
     clientIdRef:
-      name: resource-health
+      name: {{ getenv "RESOURCE_HEALTH_CLIENT_ID" }}
     name: realm roles
     protocol: openid-connect
     protocolMapper: oidc-usermodel-realm-role-mapper
@@ -44,9 +44,9 @@ metadata:
   namespace: iam-management
 spec:
   forProvider:
-    realmId: eoepca
+    realmId: {{ getenv "REALM" }}
     clientIdRef:
-      name: resource-health
+      name: {{ getenv "RESOURCE_HEALTH_CLIENT_ID" }}
     name: audience-account
     protocol: openid-connect
     protocolMapper: oidc-audience-mapper
@@ -58,5 +58,54 @@ spec:
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig
-# No Crossplane Roles resource here - KEYCLOAK_TEST_USER isn't a Crossplane User
-# object, so the role is assigned via REST in the guide's "Assign the Realm Role" step.
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: resource-health-opensearch-users
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: resource-health-opensearch-users
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: resource-health-opensearch-users
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    groupIdRef:
+      name: resource-health-opensearch-users
+      policy:
+        resolution: Required
+    roleIdsRefs:
+      - name: opensearch-user-role
+        policy:
+          resolution: Required
+---
+apiVersion: group.keycloak.m.crossplane.io/v1alpha1
+kind: Memberships
+metadata:
+  name: resource-health-opensearch-users-members
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    groupIdRef:
+      name: resource-health-opensearch-users
+      policy:
+        resolution: Required
+    members:
+      - {{ getenv "KEYCLOAK_TEST_USER" }}

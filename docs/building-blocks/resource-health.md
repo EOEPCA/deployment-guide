@@ -202,40 +202,10 @@ This step only applies if OIDC is enabled. To ensure your Keycloak user has prop
 === "Crossplane"
 
     ```bash
-    kubectl apply -f keycloak.yaml
+    kubectl apply -f generated-keycloak.yaml
     ```
 
-    This creates the `opensearch_user` realm role and the client's realm-role protocol mapper. It does **not** assign the role to your test user: Crossplane's `Roles` resource needs a `user.keycloak.m.crossplane.io` `User` object to reference, but `KEYCLOAK_TEST_USER` is normally a plain Keycloak user (not a Crossplane-managed one). Assign it via the Admin REST API instead:
-
-    ```bash
-    source ~/.eoepca/state
-
-    # Admin token via admin-cli against the master realm (see note below on why master, not ${REALM})
-    ADMIN_TOKEN=$(curl -s -X POST \
-      -d "username=${KEYCLOAK_ADMIN_USER}" \
-      --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-      -d "grant_type=password" \
-      -d "client_id=admin-cli" \
-      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
-      | jq -r '.access_token')
-
-    # role-mappings needs the target user's internal Keycloak ID, not their username
-    USER_ID=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users?username=${KEYCLOAK_TEST_USER}" \
-      | jq -r '.[0].id')
-
-    # role-mappings also needs the full role representation, not just its name
-    ROLE_JSON=$(curl -s -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/roles/opensearch_user")
-
-    curl -s -X POST \
-      -H "Authorization: Bearer ${ADMIN_TOKEN}" -H "Content-Type: application/json" \
-      -d "[${ROLE_JSON}]" \
-      "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/users/${USER_ID}/role-mappings/realm"
-    ```
-
-    !!! note
-        This uses the `master` realm for the admin token, since `admin-cli`'s default admin account normally isn't a user of your own realm. If `KEYCLOAK_ADMIN_USER` is a user of `${REALM}` instead, use `${REALM}` here.
+    This creates the `opensearch_user` realm role, the client's realm-role protocol mapper, and a `resource-health-opensearch-users` Keycloak group granting that role - `KEYCLOAK_TEST_USER` is added to the group automatically.
 
 === "Manual"
 
@@ -575,7 +545,7 @@ kubectl delete -f generated-ingress.yaml --ignore-not-found
 if [ "${RESOURCE_HEALTH_ENABLE_OIDC:-no}" = "yes" ]; then
   kubectl delete -f apisix/plugin-api-auth.yaml -n resource-health --ignore-not-found
   kubectl delete -f apisix/plugin-browser-auth.yaml -n resource-health --ignore-not-found
-  kubectl delete -f keycloak.yaml --ignore-not-found
+  kubectl delete -f generated-keycloak.yaml --ignore-not-found
   kubectl delete -f generated-iam.yaml --ignore-not-found
 fi
 

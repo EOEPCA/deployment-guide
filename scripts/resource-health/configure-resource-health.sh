@@ -89,6 +89,7 @@ gomplate -f "$TEMPLATE_PATH" -o "$OUTPUT_PATH"
 
 if [ "$RESOURCE_HEALTH_ENABLE_OIDC" == "yes" ]; then
     gomplate -f "iam-template.yaml" -o "generated-iam.yaml"
+    gomplate -f "keycloak-template.yaml" -o "generated-keycloak.yaml"
 fi
 
 echo "You can now proceed to deploy the Resource Health secrets."
