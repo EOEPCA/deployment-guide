@@ -279,6 +279,7 @@ metadata:
   name: eoapi-tls
   namespace: data-access
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   hosts:
   - eoapi.{{ getenv "INGRESS_HOST" }}
   secret:
@@ -317,6 +318,7 @@ metadata:
   name: eoapisupport-tls
   namespace: data-access
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   hosts:
   - eoapisupport.{{ getenv "INGRESS_HOST" }}
   secret:

@@ -41,6 +41,7 @@ metadata:
   name: monitoring
   namespace: operations
 spec:
+  ingressClassName: apisix
   hosts:
     - monitoring.{{ getenv "INGRESS_HOST" }}
   secret:

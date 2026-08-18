@@ -90,6 +90,7 @@ metadata:
   name: alerting
   namespace: operations
 spec:
+  ingressClassName: apisix
   hosts:
     - alerting.{{ getenv "INGRESS_HOST" }}
   secret:

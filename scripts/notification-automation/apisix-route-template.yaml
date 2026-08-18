@@ -4,6 +4,7 @@ metadata:
   name: notifications-wildcard-route
   namespace: knative-serving
 spec:
+  ingressClassName: apisix
   http:
     - name: knative-serving-default
       match:
@@ -38,6 +39,7 @@ metadata:
   name: notifications-wildcard
   namespace: knative-serving
 spec:
+  ingressClassName: apisix
   hosts:
     - "*.notifications.notifications.{{ getenv "INGRESS_HOST" }}"
   secret:

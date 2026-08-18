@@ -4,6 +4,7 @@ metadata:
   name: resource-health-route
   namespace: resource-health
 spec:
+  ingressClassName: apisix
   http:
   - name: resource-health-web-route
     match:
@@ -88,6 +89,7 @@ metadata:
   name: resource-health-tls
   namespace: resource-health
 spec:
+  ingressClassName: apisix
   hosts:
     - resource-health.{{ getenv "INGRESS_HOST" }}
   secret:

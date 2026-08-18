@@ -121,6 +121,7 @@ metadata:
   name: workspace-api
   namespace: workspace
 spec:
+  ingressClassName: {{ getenv "INGRESS_CLASS" }}
   hosts:
     - workspace-api.{{ getenv "INGRESS_HOST" }}
   secret:
