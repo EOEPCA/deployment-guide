@@ -92,6 +92,8 @@ helm repo update apisix
         role_traditional:
           config_provider: yaml
       nginx:
+        http:
+          clientMaxBodySize: 10737418240
         configurationSnippet:
           httpStart: |
             # Large buffer sizes for handling large headers (e.g., auth tokens, OIDC flows etc.)
