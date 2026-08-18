@@ -69,7 +69,7 @@ helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
 helm repo update eoepca-dev
 
 helm upgrade --install iam eoepca-dev/iam-bb \
-  --version 2.1.0-dev12 \
+  --version 2.1.0-dev13 \
   --namespace iam \
   --create-namespace \
   --values generated-values.yaml
