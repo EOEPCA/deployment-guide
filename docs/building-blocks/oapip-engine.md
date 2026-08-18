@@ -359,7 +359,7 @@ Skip this section if you don't need IAM protection right now - the engine will w
     envsubst < protect-oapip-user.yaml | kubectl apply -f -
     ```
 
-    This creates: `eoepcauser-group`, `eoepcauser-membership`, `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
+    This creates: `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
 
     ### Create APISIX Route Ingress
     ```bash
