@@ -387,7 +387,7 @@ echo "Access Token: ${ACCESS_TOKEN:0:20}..."
 
 This example registers the STAC Collection `landsat-ot-c2-l2` resource into the EOEPCA Resource Catalogue instance - representing the `Landsat 8-9 OLI/TIRS Collection 2 Level-2`. This collection is used in later steps as a target for harvesting of some example Landsat data.
 
-The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block - specifically its protected, transactional endpoint (`resource-catalogue-protected`), since the public endpoint has transactions disabled by chart default. This requires Resource Discovery to have been deployed with `RESOURCE_DISCOVERY_ENABLE_IAM=yes`; without it, there is no HTTP write path into the catalogue at all (see Resource Discovery's [bulk-loading](resource-discovery.md#41-bulk-loading-records-directly-minimal-non-iam-deployments) instructions instead).
+The `target` of this registration request is the STAC endpoint of the Resource Catalogue service deployed as part of the [Resource Discovery](resource-discovery.md) Building Block - specifically its protected, transactional endpoint (`resource-catalogue-protected`), since the public endpoint has transactions disabled by chart default. This requires Resource Discovery to have been deployed with `RESOURCE_DISCOVERY_ENABLE_IAM=yes`; without it, there is no HTTP write path into the catalogue at all (see Resource Discovery's [Ingesting Records](resource-discovery.md#4-ingesting-records) instructions instead, "Without IAM" tab).
 
 ```bash
 source ~/.eoepca/state

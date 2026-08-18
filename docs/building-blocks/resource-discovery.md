@@ -73,7 +73,7 @@ You'll be asked for, in order:
 
 === "Without IAM (default)"
 
-    Transactional writes stay disabled on the public catalogue - see [Bulk-loading records directly](#41-bulk-loading-records-directly-minimal-non-iam-deployments) for seeding sample data.
+    Transactional writes stay disabled on the public catalogue - see [Ingesting Records](#4-ingesting-records) ("Without IAM" tab) for seeding sample data.
 
 === "With IAM"
 
@@ -291,88 +291,87 @@ A working response includes a `federatedSearchResults.fedcat01` key containing r
 
 How you add records depends on whether transactions are enabled.
 
-#### 4.1. Bulk-loading records directly (minimal / non-IAM deployments)
+=== "Without IAM (default)"
 
-With `RESOURCE_DISCOVERY_ENABLE_IAM=no`, transactions stay at the chart's secure default (disabled), so there is no HTTP write path on the public catalogue. To seed it with sample data, use pycsw's own admin CLI, `pycsw-admin.py`, which loads records straight into the configured database:
+    With `RESOURCE_DISCOVERY_ENABLE_IAM=no`, transactions stay at the chart's secure default (disabled), so there is no HTTP write path on the public catalogue. To seed it with sample data, use pycsw's own admin CLI, `pycsw-admin.py`, which loads records straight into the configured database:
 
-```bash
-catalogue_pod="$(kubectl -n resource-discovery get pods --selector=io.kompose.service=pycsw --output=jsonpath='{.items[0].metadata.name}')"
+    ```bash
+    catalogue_pod="$(kubectl -n resource-discovery get pods --selector=io.kompose.service=pycsw --output=jsonpath='{.items[0].metadata.name}')"
 
-kubectl cp sample_record.xml \
-  "resource-discovery/${catalogue_pod}:/tmp/sample_record.xml"
+    kubectl cp sample_record.xml \
+      "resource-discovery/${catalogue_pod}:/tmp/sample_record.xml"
 
-kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
-  /venv/bin/pycsw-admin.py load-records \
-    --config /etc/pycsw/pycsw.yml \
-    --path /tmp/sample_record.xml
-```
+    kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
+      /venv/bin/pycsw-admin.py load-records \
+        --config /etc/pycsw/pycsw.yml \
+        --path /tmp/sample_record.xml
+    ```
 
-!!! note
-    A warning about the `geometry` field is expected and can be ignored for this sample.
+    !!! note
+        A warning about the `geometry` field is expected and can be ignored for this sample.
 
-Needs cluster access rather than going over the ingress.
+    Needs cluster access rather than going over the ingress.
 
-Verify:
+    Verify:
 
-```bash
-source ~/.eoepca/state
-curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
-```
+    ```bash
+    source ~/.eoepca/state
+    curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
+    ```
 
-#### 4.2. Creating records over HTTP (`RESOURCE_DISCOVERY_ENABLE_IAM=yes`)
+=== "With IAM"
 
-When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
+    When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
 
-The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
+    The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
 
-```bash
-source ~/.eoepca/state
+    ```bash
+    source ~/.eoepca/state
 
-DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
-  -d "client_id=resource-catalogue")
+    DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
+      -d "client_id=resource-catalogue")
 
-echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
-```
+    echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
+    ```
 
-Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
+    Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
 
-```bash
-DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
+    ```bash
+    DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
 
-ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
-  -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
-  -d "device_code=${DEVICE_CODE}" \
-  -d "client_id=resource-catalogue" | jq -r '.access_token')
-```
+    ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+      -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
+      -d "device_code=${DEVICE_CODE}" \
+      -d "client_id=resource-catalogue" | jq -r '.access_token')
+    ```
 
-Create a record:
+    Create a record:
 
-```bash
-curl -s -i -X POST "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: application/geo+json" \
-  -d @- <<EOF
-{
-  "type": "Feature",
-  "id": "urn:eoepca:sample:0001",
-  "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
-  "properties": {
-    "type": "dataset",
-    "title": "EOEPCA Sample Record",
-    "description": "Sample record ingested via the OGC API Records transactional endpoint."
-  },
-  "geometry": {"type": "Point", "coordinates": [23.7, 37.9]}
-}
-EOF
-```
+    ```bash
+    curl -s -i -X POST "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+      -H "Content-Type: application/geo+json" \
+      -d @- <<EOF
+    {
+      "type": "Feature",
+      "id": "urn:eoepca:sample:0001",
+      "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+      "properties": {
+        "type": "dataset",
+        "title": "EOEPCA Sample Record",
+        "description": "Sample record ingested via the OGC API Records transactional endpoint."
+      },
+      "geometry": {"type": "Point", "coordinates": [23.7, 37.9]}
+    }
+    EOF
+    ```
 
-A successful create returns `201 Created`. Update the same record with `PUT` against `/collections/metadata:main/items/urn:eoepca:sample:0001` (same headers/body shape, returns `204`), remove it with `DELETE`.
+    Now verify that the record is present in the protected catalogue:
 
-Verify:
-
-```bash
-curl -s "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items/urn:eoepca:sample:0001" | jq
-```
+    ```bash
+    curl -s "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items/urn:eoepca:sample:0001?f=json" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
+    ```
 
 ---
 
