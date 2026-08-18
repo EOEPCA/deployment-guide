@@ -58,6 +58,8 @@ gomplate -f "titiler-openeo/$TEMPLATE_PATH" -o "titiler-openeo/$OUTPUT_PATH" --d
 
 if [ "$INGRESS_CLASS" == "apisix" ]; then
     gomplate -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+elif [ "$INGRESS_CLASS" == "nginx" ]; then
+    gomplate -f "eoapi/nginx-ingress-template.yaml" -o "eoapi/generated-nginx-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 if [ "$USE_EXTERNAL_POSTGRES" = "yes" ]; then

@@ -208,12 +208,11 @@ spec:
         uri: /stac/
     - name: cors
       enable: true
-    # Required: stac-fastapi uses X-Forwarded-Port to build self-referential links.
     - name: proxy-rewrite
       config:
         headers:
           set:
-            X-Forwarded-Port: "{{ if eq (getenv "HTTP_SCHEME") "https" }}443{{ else }}80{{ end }}"
+            Forwarded: "proto={{ getenv "HTTP_SCHEME" }};host=eoapi.{{ getenv "INGRESS_HOST" }}"
       enable: true
   - name: stac-route
     priority: 10
@@ -236,7 +235,7 @@ spec:
         {{- end }}
         headers:
           set:
-            X-Forwarded-Port: "{{ if eq (getenv "HTTP_SCHEME") "https" }}443{{ else }}80{{ end }}"
+            Forwarded: "proto={{ getenv "HTTP_SCHEME" }};host=eoapi.{{ getenv "INGRESS_HOST" }}"
       enable: true
     - name: cors
       enable: true

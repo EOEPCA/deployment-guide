@@ -43,9 +43,7 @@ prometheus:
       type: ClusterIP
     persistentVolume:
       enabled: true
-      storageClass: "{{ getenv "SHARED_STORAGECLASS" }}"
-      accessModes:
-        - ReadWriteMany
+      storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
 
 metrics-server:
   image:

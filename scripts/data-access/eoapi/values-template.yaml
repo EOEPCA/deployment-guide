@@ -1,22 +1,5 @@
-{{- if eq (getenv "INGRESS_CLASS") "nginx" }}
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    {{- range $key, $value := (datasource "annotations") }}
-    {{ $key }}: "{{ $value }}"
-    {{- end }}
-  host: "eoapi.{{ getenv "INGRESS_HOST" }}"
-  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-  tls:
-    enabled: true
-    certManager: false
-    secretName: "eoapi-tls"
-  {{- end }}
-{{- else }}
 ingress:
   enabled: false
-{{- end }}
 
 {{- if eq (getenv "USE_EXTERNAL_POSTGRES") "yes" }}
 postgresql:

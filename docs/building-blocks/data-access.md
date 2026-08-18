@@ -233,24 +233,26 @@ helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
 
 === "Without IAM (default)"
 
-    If APISIX is the configured ingress controller, apply the dedicated `ApisixRoute`:
-
     ```bash
     source ~/.eoepca/state
     if [ "${INGRESS_CLASS}" = "apisix" ]; then
       kubectl apply -f eoapi/generated-ingress.yaml
+    else
+      kubectl apply -f eoapi/generated-nginx-ingress.yaml
     fi
     ```
 
 === "With IAM"
 
-    Configure Keycloak with a Client and associated Roles/Groups, then - if APISIX is the configured ingress controller - apply the dedicated `ApisixRoute`:
+    Configure Keycloak with a Client and associated Roles/Groups, then apply the ingress routes:
 
     ```bash
     source ~/.eoepca/state
     kubectl apply -f iam/generated-iam.yaml
     if [ "${INGRESS_CLASS}" = "apisix" ]; then
       kubectl apply -f eoapi/generated-ingress.yaml
+    else
+      kubectl apply -f eoapi/generated-nginx-ingress.yaml
     fi
     ```
 

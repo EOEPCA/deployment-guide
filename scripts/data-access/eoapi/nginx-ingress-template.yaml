@@ -1,0 +1,125 @@
+{{- $host := printf "eoapi.%s" (getenv "INGRESS_HOST") }}
+{{- $iam := eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eoapi-stac
+  namespace: data-access
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+{{- if not $iam }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+{{- end }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ $host }}
+      http:
+        paths:
+{{- if $iam }}
+          - path: /stac
+            pathType: Prefix
+            backend:
+              service:
+                name: eoapi-stac-auth-proxy
+                port:
+                  number: 8080
+{{- else }}
+          - path: /stac(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eoapi-stac
+                port:
+                  number: 8080
+{{- end }}
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - {{ $host }}
+      secretName: eoapi-tls
+  {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eoapi-services
+  namespace: data-access
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /raster(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eoapi-raster
+                port:
+                  number: 8080
+          - path: /vector(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eoapi-vector
+                port:
+                  number: 8080
+          - path: /multidim(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eoapi-multidim
+                port:
+                  number: 8080
+          - path: /browser(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: eoapi-browser
+                port:
+                  number: 8080
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - {{ $host }}
+      secretName: eoapi-tls
+  {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eoapi-docs
+  namespace: data-access
+  annotations:
+    {{- range $key, $value := (datasource "annotations") }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eoapi-doc-server
+                port:
+                  number: 80
+  {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
+  tls:
+    - hosts:
+        - {{ $host }}
+      secretName: eoapi-tls
+  {{- end }}
