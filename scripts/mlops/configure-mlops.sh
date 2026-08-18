@@ -13,8 +13,8 @@ ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the MinIO secret key" "" is_non_empty
 
 # As part of the Deployment Guide, MinIO has created two buckets for SharingHub and MLflow SharingHub.
-S3_BUCKET_SHARINGHUB="mlopbb-sharinghub"
-S3_BUCKET_MLFLOW="mlopbb-mlflow-sharinghub"
+S3_BUCKET_SHARINGHUB="mlopsbb-sharinghub"
+S3_BUCKET_MLFLOW="mlopsbb-mlflow-sharinghub"
 add_to_state_file "S3_BUCKET_SHARINGHUB" "$S3_BUCKET_SHARINGHUB"
 add_to_state_file "S3_BUCKET_MLFLOW" "$S3_BUCKET_MLFLOW"
 
@@ -53,12 +53,11 @@ if [ -z "$MLFLOW_POSTGRES_PASSWORD" ]; then
     add_to_state_file "MLFLOW_POSTGRES_PASSWORD" "$MLFLOW_POSTGRES_PASSWORD"
 fi
 
-gomplate  -f "gitlab/$TEMPLATE_PATH" -o "gitlab/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-gomplate  -f "sharinghub/$TEMPLATE_PATH" -o "sharinghub/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-gomplate  -f "mlflow/$TEMPLATE_PATH" -o "mlflow/$OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
-gomplate  -f "mlflow/postgres-deployment-template.yaml" -o "mlflow/postgres-deployment.yaml"
+gomplate -f "gitlab/values-template.yaml" -o "gitlab/generated-values.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "sharinghub/values-template.yaml" -o "sharinghub/generated-values.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "mlflow/values-template.yaml" -o "mlflow/generated-values.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+gomplate -f "mlflow/postgres-deployment-template.yaml" -o "mlflow/postgres-deployment.yaml"
 
-gomplate -f "mlflow/pvc-template.yaml" -o "mlflow/generated-pvc.yaml"
 gomplate -f "gitlab/storage.config.template" -o "gitlab/storage.config"
 gomplate -f "gitlab/lfs-s3.yaml.template" -o "gitlab/lfs-s3.yaml"
 

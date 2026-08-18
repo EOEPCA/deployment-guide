@@ -1,19 +1,17 @@
 # MLOps Deployment Guide
 
-The **MLOps Building Block** provides support services for training machine learning models within the cloud platform. It orchestrates the training of ML models across popular frameworks, maintains a history of training runs with associated metrics, and manages the associated training data. This guide provides step-by-step instructions to deploy the MLOps Building Block within your Kubernetes cluster.
+The **MLOps Building Block** uses GitLab for code and data versioning, **SharingHub** for collaborative ML services, and **MLflow SharingHub** (a custom MLflow) for experiment tracking and model registry. This guide provides step-by-step instructions to deploy the MLOps Building Block within your Kubernetes cluster.
 
 ---
 
 ## Introduction
 
-The **MLOps Building Block** provides integrated services for training and managing machine learning models within the EOEPCA+ environment. It uses GitLab for code and data versioning, **SharingHub** for collaborative ML services, and **MLflow SharingHub** (a custom MLflow) for experiment tracking and model registry.
-
 ### Key Features
 
-- **End-to-End** ML Workflow: Data versioning, model training, experiment logging, model deployment or registry.  
+- **ML Workflow**: Data versioning, model training, experiment logging, model deployment or registry.  
 - **GitLab Integration**: Automatic linking of GitLab projects (public or private) into SharingHub for discoverability. 
 - **OIDC Authentication**: Via Keycloak or compatible OIDC provider (optional but highly recommended).  
-- **S3 / MinIO Storage**: Flexible object storage for large data and model artifacts.  
+- **S3 / MinIO Storage**: Object storage for large data and model artifacts.  
 
 
 ---
@@ -332,14 +330,14 @@ All pods should be in `Running` (or `Completed`) state.
 
     ```bash
     source ~/.eoepca/state
-    s3cmd ls s3://mlopbb-sharinghub \
+    s3cmd ls s3://mlopsbb-sharinghub \
     --host minio.${INGRESS_HOST} \
     --host-bucket minio.${INGRESS_HOST} \
     --access_key "${MINIO_USER}" \
     --secret_key "${MINIO_PASSWORD}"
     ```
 
-    Repeat for bucket `s3://mlopbb-mlflow-sharinghub`.
+    Repeat for bucket `s3://mlopsbb-mlflow-sharinghub`.
 
 ---
 

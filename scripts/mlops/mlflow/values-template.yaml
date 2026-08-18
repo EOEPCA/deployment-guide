@@ -15,6 +15,9 @@ mlflowSharinghub:
 podSecurityContext:
   fsGroup: 999
 
+persistence:
+  enabled: false
+
 s3:
   enabled: true
   endpointUrl: {{ getenv "S3_ENDPOINT" }}

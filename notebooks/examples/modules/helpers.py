@@ -97,13 +97,8 @@ def authenticate_public_client(keycloak_host, realm, client_id, redirect_uri, us
     return token_response.json()["access_token"]
 
 
-def oidc_session_login(base_url, login_path, username, password):
-    # Scripted browser-style OIDC login for Django apps using mozilla_django_oidc:
-    # follows the app's own login-initiation redirect to Keycloak, submits the
-    # login form, and returns the requests.Session holding the resulting
-    # session/CSRF cookies - for apps whose API auth is session-based (DRF
-    # SessionAuthentication) rather than accepting the Keycloak-issued token
-    # as a Bearer token directly.
+def oidc_session_login(base_url, login_path, username, password, session_cookie="sessionid"):
+    # Scripted browser-style OIDC login for any app that redirects to Keycloak 
     session = requests.Session()
     response = session.get(f"{base_url}{login_path}")
     response.raise_for_status()
@@ -115,16 +110,13 @@ def oidc_session_login(base_url, login_path, username, password):
         data={"username": username, "password": password},
     )
     login_response.raise_for_status()
-    if "sessionid" not in session.cookies:
+    if session_cookie not in session.cookies:
         raise RuntimeError("OIDC login did not establish an authenticated session")
     return session
 
 
 def gitlab_oidc_session_login(gitlab_url, username, password):
-    # Scripted OIDC login into GitLab (GitLab -> Keycloak -> GitLab), following the
-    # same 'Sign in with EOEPCA' redirect chain a browser would. Returns an
-    # authenticated requests.Session usable directly against GitLab's REST/GraphQL
-    # API via session-cookie auth - no personal access token needed.
+    # Scripted OIDC login into GitLab (GitLab -> Keycloak -> GitLab)
     session = requests.Session()
     response = session.get(f"{gitlab_url}/users/sign_in")
     response.raise_for_status()

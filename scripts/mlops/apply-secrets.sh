@@ -7,8 +7,6 @@ echo "Applying Kubernetes secrets..."
 kubectl create namespace gitlab --dry-run=client -oyaml | kubectl apply -f -
 kubectl create namespace sharinghub --dry-run=client -oyaml | kubectl apply -f -
 
-kubectl apply -f mlflow/generated-pvc.yaml
-
 kubectl create secret generic gitlab-storage-config \
   --from-file=config=gitlab/storage.config \
   --namespace gitlab \
