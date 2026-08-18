@@ -323,11 +323,18 @@ How you add records depends on whether transactions are enabled.
 
     When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
 
-    The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
+    Unauthenticated requests are redirected to Keycloak rather than served:
 
     ```bash
     source ~/.eoepca/state
+    curl -s -o /dev/null -w "%{http_code}\n" "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/"
+    ```
 
+    Expect `302`.
+
+    The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
+
+    ```bash
     DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
       -d "client_id=resource-catalogue")
 
@@ -385,35 +392,6 @@ kubectl get pods -n resource-discovery
 
 - All pods should be in `Running` state.
 - No pods should be stuck in `CrashLoopBackOff` or `Error`.
-
----
-
-### Protected Catalogue Validation
-
-!!! note
-    Skip this section if `RESOURCE_DISCOVERY_ENABLE_IAM=no` - there is no protected endpoint to validate.
-
-Verify that the protected public metadata endpoint is reachable:
-
-```bash
-source ~/.eoepca/state
-
-curl -s -D - -o /dev/null \
-  "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/conformance"
-```
-
-This should return HTTP 200.
-
-The protected catalogue root should redirect unauthenticated users to IAM:
-
-```bash
-curl -s -D - -o /dev/null \
-  "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/"
-```
-
-This should return a redirect response, usually HTTP 302.
-
-To use protected transactional operations, authenticate through IAM with a user assigned to the resource-catalogue-admin group / records_editor role.
 
 ---
 
