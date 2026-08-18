@@ -83,3 +83,17 @@ thanosRuler:
 prometheusOperator:
   scrapeConfig:
     enabled: false
+
+kube-state-metrics:
+  prometheus:
+    monitor:
+      relabelings:
+        - targetLabel: cluster
+          replacement: eoepca-demo
+
+prometheus-node-exporter:
+  prometheus:
+    monitor:
+      relabelings:
+        - targetLabel: cluster
+          replacement: eoepca-demo
