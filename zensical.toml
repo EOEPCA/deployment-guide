@@ -36,6 +36,7 @@ nav = [
       {"Ingress Gateway" = "prerequisites/ingress/gateway.md"}
     ]},
     {"TLS Management" = "prerequisites/tls.md"},
+    {"EOEPCA+ State" = "prerequisites/state.md"},
     {"Optional Components" = [
       {"Crossplane" = "prerequisites/crossplane.md"},
       {"S3 Storage (MinIO)" = "prerequisites/minio.md"},
