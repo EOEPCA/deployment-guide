@@ -2,8 +2,6 @@
 
 Deployment scripts read and write a shared config file at `~/.eoepca/state`, sourced by every script via `scripts/common/utils.sh`. Values set once (ingress domain, storage class, etc.) carry over to every Building Block deployed afterwards.
 
-There's no separate init command. If `~/.eoepca/state` is missing `HTTP_SCHEME`/`INGRESS_CLASS`, the next script you run triggers first-time setup before doing anything else.
-
 ---
 
 ## First Run
