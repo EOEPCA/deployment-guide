@@ -101,20 +101,7 @@ Deploying Harbor involves configuring the Helm chart with appropriate values and
       --create-namespace
     ```
 
-3.  **Configure Ingress Plugin (if using Apisix)**
-
-    If you are using the Apisix ingress controller, apply the ingress plugin configuration:
-
-    ```bash
-    kubectl -n harbor apply -f ingress-plugin-config.yaml
-    ```
-
-    The provided `ingress-plugin-config.yaml` sets APISIX `client-control.max_body_size` to `10737418240` (10 GiB) to avoid registry push failures caused by strict request-body limits on chunked uploads. Adjust this value if your environment requires a different limit.
-
-    !!! note
-        Ordinarily the value would be set `client-control.max_body_size: 0` (zero meaning unlimited). However testing has revealed that this 'zero' setting does not always have the expected 'unlimited' behaviour, so a large but finite value is used instead.
-
-4. **Log In**
+3. **Log In**
 
     Navigate to `harbor.${INGRESS_HOST}` in your browser.
 

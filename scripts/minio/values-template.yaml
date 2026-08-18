@@ -7,7 +7,6 @@ ingress:
   annotations:
     {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
-    k8s.apisix.apache.org/plugin-config-name: "minio-ingress"
     {{- end }}
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
@@ -28,7 +27,6 @@ consoleIngress:
     {{- if eq (getenv "INGRESS_CLASS") "apisix" }}
     k8s.apisix.apache.org/enable-websocket: "true"
     {{- end }}
-    k8s.apisix.apache.org/plugin-config-name: "minio-ingress"
     {{- range $key, $value := (datasource "annotations") }}
     {{ $key }}: "{{ $value }}"
     {{- end }}

@@ -43,6 +43,8 @@ helm repo update apisix
         role_traditional:
           config_provider: yaml
       nginx:
+        http:
+          clientMaxBodySize: 10737418240
         configurationSnippet:
           httpStart: |
             # Large buffer sizes for handling large headers (e.g., auth tokens, OIDC flows etc.)
@@ -61,6 +63,9 @@ helm repo update apisix
         createDefault: true
     EOF
     ```
+
+    !!! note
+        The value `apisix.nginx.http.clientMaxBodySize` is set to `10737418240` (10GB) to allow for large request bodies, which are required by some services such as minio, harbor, keycloak, others. Ordinarily the value would be set zero meaning unlimited. However testing has revealed that this 'zero' setting does not always have the expected 'unlimited' behaviour, so a large but finite value is used instead. Adjust this value if your environment requires a different limit.
 
     !!! warning
         The above configuration disables the `etcd` service (ref. `--set etcd.enabled=false`) and configures APISIX to use a standalone configuration provider (ref. `--set ingress-controller.config.provider.type=apisix-standalone`). If strongest low-latency config convergence under heavy churn is required, then etcd mode may prove more robust, with the tradeoff that you must run and operate Etcd (HA, backup, latency, etc.).
