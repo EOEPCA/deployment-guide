@@ -96,6 +96,9 @@ rabbitmq:
 iam:
   enabled: {{ getenv "OIDC_OAPIP_ENABLED" }}
   {{- if eq (getenv "OIDC_OAPIP_ENABLED") "true" }}
+  onlyImplicitFlow: false
+  openIdConnectUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration
+  realm: {{ getenv "REALM" }}
   issuer: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
   audience: account
   {{- end }}
