@@ -4,11 +4,6 @@ source ../common/utils.sh
 
 echo "Configuring the Data Access Building Block..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-
-configure_cert
-
 ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty

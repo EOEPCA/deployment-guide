@@ -2,10 +2,7 @@
 source ../../common/utils.sh
 echo "Configuring OpenEO ArgoWorkflows with Dask..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for the SHARED job workspace (ReadWriteMany)" "standard" is_non_empty
-configure_cert
 
 echo ""
 echo "🔐 Configuring Authentication..."

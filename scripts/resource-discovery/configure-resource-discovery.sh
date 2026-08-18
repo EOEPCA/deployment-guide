@@ -4,14 +4,9 @@ source ../common/utils.sh
 
 echo "Configuring the Resource Discovery..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-
 # IAM is optional. Protected Resource Discovery currently requires APISIX because
 # the protected route uses APISIX openid-connect and opa plugins.
 ask "RESOURCE_DISCOVERY_ENABLE_IAM" "Enable IAM-protected transactional catalogue? (yes/no)" "no" is_yes_no
-
-configure_cert
 
 if [ "${RESOURCE_DISCOVERY_ENABLE_IAM}" = "yes" ] && [ "${INGRESS_CLASS}" != "apisix" ]; then
   echo "❌ IAM-protected Resource Discovery currently requires INGRESS_CLASS=apisix."

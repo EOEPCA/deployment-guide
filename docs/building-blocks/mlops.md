@@ -63,16 +63,7 @@ The configuration script will prompt you for necessary configuration values, gen
 bash configure-mlops.sh
 ```
 
-**Configuration Parameters**
-
-You'll be asked for, in order:
-
-- **`INGRESS_HOST`**: Base domain for ingress hosts.
-    - *Example*: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
-    - *Example*: `local-path`
-- **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates.
-    - *Example*: `letsencrypt-http01-apisix`
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
 
 The S3 environment variables should be already set after successful deployment of the [Minio Building Block](../prerequisites/minio.md):
 

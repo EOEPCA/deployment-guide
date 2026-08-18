@@ -3,10 +3,6 @@
 source ../common/utils.sh
 echo "Configuring MinIO..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-configure_cert
-
 add_to_state_file "MINIO_USER" "user"
 if [ -z "$MINIO_PASSWORD" ]; then
     MINIO_PASSWORD="$(generate_aes_key 32)"

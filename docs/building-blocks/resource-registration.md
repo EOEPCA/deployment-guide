@@ -65,20 +65,16 @@ Generate configuration files and prepare deployment:
 bash configure-resource-registration.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Configuration Parameters**
 
 During the script execution, you will be prompted to provide:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts.
-    - *Example*: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage Class for persistent volumes (ReadWriteOnce) - e.g. for the `Operaton` BPM engine's database.
-    - *Default*: `local-path`
 - **`SHARED_STORAGECLASS`**: Storage Class for shared volumes (ReadWriteMany) - e.g. harvested `eodata`.
     - *Default*: `standard`
     !!! note
         `eodata` must be `RWX` - multiple harvester workers share it, and other BBs may also read from it.
-- **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
-    - *Example*: `letsencrypt-http01-apisix`
 - **`OPERATON_ADMIN_USER`**: Admin username for the Operaton BPM engine.
     - *Default*: `eoepca`
 - **`OPERATON_ADMIN_PASSWORD`**: Admin password for the Operaton BPM engine.

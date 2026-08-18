@@ -2,10 +2,6 @@
 source ../../common/utils.sh
 echo "Configuring OpenEO..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-configure_cert
-
 ask "OPENEO_ENABLE_OIDC" "Enable OIDC authentication for OpenEO? (yes/no)" "yes" is_yes_no
 if [[ "$OPENEO_ENABLE_OIDC" == "yes" ]]; then
     source ../../common/prerequisite-utils.sh

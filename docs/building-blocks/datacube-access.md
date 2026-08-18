@@ -54,15 +54,13 @@ See the [STAC Best Practices for Data Cubes](https://github.com/EOEPCA/datacube-
     bash configure-datacube-access.sh
     ```
 
+    First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
     **Configuration Parameters**
     During script execution, provide:
 
-    - **`INGRESS_HOST`**: Domain for ingress hosts.
-      - *Example*: `example.com`
     - **`STAC_CATALOG_ENDPOINT`**: The STAC API to filter down to datacube-ready collections. Defaults to `https://eoapi.${INGRESS_HOST}/stac/`, matching the [Data Access](./data-access.md) BB's `eoapi` STAC endpoint.
       - The service does not follow HTTP redirects when calling this backend. If the STAC catalog issues one (e.g. `eoapi` redirects `/stac` to `/stac/`), every request - including the pod's own liveness/readiness probes - fails and the pod crash-loops. Use the exact URL that returns `200` directly, trailing slash included where required.
-    - **`CLUSTER_ISSUER`**: Cert-manager issuer for TLS certificates.
-      - *Example*: `letsencrypt-http01`
 
 
     2. **Deploy Datacube Access Using Helm**

@@ -221,15 +221,11 @@ bash check-prerequisites.sh
 bash configure-oapip.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 ### Common Configuration Parameters
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts.
-    - *Example*: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
-    - *Example*: `standard`
 - **`SHARED_STORAGECLASS`**: Storage class supporting RWX.
-- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-http01-apisix`
 
 ### Stage-Out S3 Configuration
 

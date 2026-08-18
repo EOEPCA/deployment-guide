@@ -272,8 +272,18 @@ configure_ingress() {
     fi
 }
 
+core_state_incomplete() {
+    [ -z "${HTTP_SCHEME-}" ] && return 0
+    [ -z "${INGRESS_CLASS-}" ] && return 0
+    [ -z "${INGRESS_HOST-}" ] && return 0
+    [ -z "${PERSISTENT_STORAGECLASS-}" ] && return 0
+    [ -z "${USE_CERT_MANAGER-}" ] && return 0
+    [ "${USE_CERT_MANAGER}" = "yes" ] && [ -z "${CLUSTER_ISSUER-}" ] && return 0
+    return 1
+}
+
 first_time_setup() {
-    if [ -z "${INGRESS_CLASS-}" ] || [ -z "${HTTP_SCHEME-}" ]; then
+    if core_state_incomplete; then
         echo "
         ███████╗░█████╗░███████╗██████╗░░█████╗░░█████╗░░░░░░░░
         ██╔════╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗░░██╗░░
@@ -307,4 +317,16 @@ first_time_setup() {
         echo ""
     fi
 }
+
+print_shared_config() {
+    local cert_part="USE_CERT_MANAGER=${USE_CERT_MANAGER}"
+    [ "${USE_CERT_MANAGER}" = "yes" ] && cert_part="CLUSTER_ISSUER=${CLUSTER_ISSUER}"
+    echo "Using shared config: HTTP_SCHEME=${HTTP_SCHEME}, INGRESS_CLASS=${INGRESS_CLASS}, INGRESS_HOST=${INGRESS_HOST}, PERSISTENT_STORAGECLASS=${PERSISTENT_STORAGECLASS}, ${cert_part}"
+    echo "Stored in $HOME/.eoepca/state - update or remove that file to reconfigure."
+    echo ""
+}
 first_time_setup
+
+case "$(basename "$0")" in
+    configure-*.sh) print_shared_config ;;
+esac

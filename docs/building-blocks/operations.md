@@ -105,16 +105,12 @@ The configuration script prompts for necessary configuration values, generates c
 bash configure-operations.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Core Configuration Parameters**
 
 During the script execution, you will be prompted to provide:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts
-    - _Example_: `example.com` (results in `monitoring.example.com` and `alerting.example.com`)
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes
-    - _Example_: `standard`
-- **`CLUSTER_ISSUER`**: Cluster issuer for TLS certificates
-    - _Example_: `letsencrypt-prod`
 - **`PROMETHEUS_STORAGE_SIZE`**: Storage size for Prometheus TSDB
     - _Default_: `50Gi`
 - **`PROMETHEUS_RETENTION`**: Metrics retention period

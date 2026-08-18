@@ -55,11 +55,11 @@ bash check-prerequisites.sh
 bash configure-notification-automation.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 You'll be asked for, in order:
 
-- `INGRESS_HOST`: base domain for ingress hosts (e.g. `example.com`)
 - `DNS_CLUSTER_ISSUER`: cert-manager ClusterIssuer supporting DNS-01, needed for wildcard TLS on Knative services (e.g. `letsencrypt-dns01`)
-- `CLUSTER_ISSUER`: cert-manager ClusterIssuer used for TLS (e.g. `letsencrypt-http01-apisix`)
 - `NA_ENABLE_OIDC`: whether to turn on Knative Eventing's own OIDC token authentication between eventing resources (defaults to no — this is unrelated to the IAM Building Block)
 - `NA_ENABLE_EMAILER`: whether to deploy the emailer sink (defaults to no)
     - if yes: `NA_EMAIL_FROM`, `NA_EMAIL_TO`, `NA_SMTP_HOST`, `NA_SMTP_PORT`, `NA_SMTP_USER`, `NA_SMTP_PASSWORD`, `NA_SMTP_STARTTLS`

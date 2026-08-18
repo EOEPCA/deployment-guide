@@ -3,11 +3,6 @@
 echo "Configuring the Application Hub..."
 source ../common/utils.sh
 
-configure_http_scheme
-configure_ingress
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-configure_cert
 ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the Application Hub pods" "kubernetes.io/os" is_non_empty
 ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 

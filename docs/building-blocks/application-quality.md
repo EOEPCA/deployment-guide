@@ -69,12 +69,11 @@ bash check-prerequisites.sh
 bash configure-application-quality.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 Provide values for:
 
-- **`INGRESS_HOST`**: Your base domain (e.g. `example.org`).
-- **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent data.
 - **`SHARED_STORAGECLASS`**: Kubernetes storage class for shared Calrissian volumes.
-- **`CLUSTER_ISSUER`**: Cert-manager issuer name.
 - **`INTERNAL_CLUSTER_ISSUER`**: Internal TLS issuer (default: `eoepca-ca-clusterissuer`).
 
 `APP_QUALITY_PUBLIC_HOST` defaults to `application-quality.${INGRESS_HOST}` and isn't prompted for directly.

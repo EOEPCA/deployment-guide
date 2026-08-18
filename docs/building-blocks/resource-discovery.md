@@ -61,16 +61,12 @@ bash check-prerequisites.sh
 bash configure-resource-discovery.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Configuration Parameters**  
 You'll be asked for, in order:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts.  
-    - Example: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for the chart-managed PostgreSQL volume.  
-    - Example: `local-path`
 - **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue - the EOEPCA IAM building block must already be deployed. Supported values: `yes`, `no`.
-- **`CLUSTER_ISSUER`**: Cert-manager ClusterIssuer for TLS certificates. Only asked if cert-manager issuance was enabled during first-time setup.  
-    - Example: `letsencrypt-http01-apisix`
 
 !!! warning
     Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.

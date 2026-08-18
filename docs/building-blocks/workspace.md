@@ -73,17 +73,11 @@ bash check-prerequisites.sh
 bash configure-workspace.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Configuration Parameters**
 
 During the script execution, you will be prompted to provide:
-
-* **`INGRESS_HOST`**: Base domain for ingress hosts.
-
-    *Example*: `example.com`
-
-* **`CLUSTER_ISSUER`**: Cert-Manager ClusterIssuer for TLS certificates.
-
-    *Example*: `letsencrypt-http01-apisix`
 
 * **S3 Credentials**: `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` for your S3-compatible storage.
 

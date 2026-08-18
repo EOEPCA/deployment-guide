@@ -86,12 +86,11 @@ The `configure-resource-health.sh` script gathers basic configuration inputs (su
 bash configure-resource-health.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 You'll be asked for, in order:
 
 - **`INTERNAL_CLUSTER_ISSUER`**: Name of the cert-manager ClusterIssuer for internal TLS. (Default: `eoepca-ca-clusterissuer`)
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes. (Default: `local-path`)
-- **`INGRESS_HOST`**: Hostname.
-- **`CLUSTER_ISSUER`**: cert-manager ClusterIssuer for TLS certificates.
 - **`RESOURCE_HEALTH_ENABLE_OIDC`**: Enable OIDC protection for Resource Health. (Default: `yes`)
 
 === "With OIDC (default)"

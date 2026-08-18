@@ -3,10 +3,6 @@
 source ../common/utils.sh
 echo "Configuring the MLOps Building Block..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-configure_cert
-
 ask "S3_ENDPOINT" "Enter the S3 endpoint URL" "$HTTP_SCHEME://minio.${INGRESS_HOST}" is_non_empty
 ask "S3_REGION" "Enter the S3 region" "us-east-1" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the MinIO access key" "" is_non_empty
