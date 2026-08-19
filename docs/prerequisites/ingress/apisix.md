@@ -54,11 +54,14 @@ helm repo update apisix
             large_client_header_buffers 4 32k;
     etcd:
       enabled: false
+
     ingress-controller:
       enabled: true
       config:
         provider:
           type: apisix-standalone
+      webhook:
+        enabled: true
       gatewayProxy:
         createDefault: true
     EOF
@@ -108,6 +111,8 @@ helm repo update apisix
       config:
         provider:
           type: apisix-standalone
+      webhook:
+        enabled: true
       gatewayProxy:
         createDefault: true
     EOF
