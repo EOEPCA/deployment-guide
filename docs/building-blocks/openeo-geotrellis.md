@@ -433,10 +433,8 @@ connection = openeo.connect(openeo_url)
 
 connection.authenticate_oidc()
 
-# Authenticate (basic auth example - adjust for OIDC if enabled)
+# If you disabled OIDC during configuration, authenticate with basic auth instead:
 # connection.authenticate_basic("testuser", "testuser123")
-
-# Or for OIDC:
 
 # Define parameters for data access
 collection_id = "TestCollection-LonLat16x16"

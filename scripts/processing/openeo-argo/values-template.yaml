@@ -17,8 +17,15 @@ global:
     oidcPolicies: ""
     {{- end }}
     stacCatalogueUrl: "{{ getenv "STAC_CATALOG_ENDPOINT" }}"
-    workspaceRoot: "/user_workspaces/jobs"
-    workspaceMount: "/user_workspaces"
+    # Executor pods (the ones that actually run a job) mount the PVC wherever
+    # OPENEO_MOUNT_PATH resolves to, not wherever this value says - that's a
+    # separate setting, defaulting to /eodc, that the chart never exposes:
+    #   https://github.com/eodcgmbh/openeo-argoworkflows/blob/main/openeo_argoworkflows/api/openeo_argoworkflows_api/settings.py#L11
+    #   https://github.com/eodcgmbh/openeo-argoworkflows/blob/main/openeo_argoworkflows/api/openeo_argoworkflows_api/workflows.py#L123
+    # Any other value here 500s every job with a permission error mkdir'ing a
+    # path that was never actually mounted.
+    workspaceRoot: "/eodc/jobs"
+    workspaceMount: "/eodc"
     daskWorkerCores: "4"
     daskWorkerMemory: "8"
     daskWorkerLimit: "6"
@@ -27,6 +34,9 @@ global:
 
 replicaCount: 1
 
+image:
+  tag: "api-2026.7.4"
+
 dask-gateway:
   gateway:
     backend:
@@ -34,7 +44,7 @@ dask-gateway:
         extraContainerConfig:
           volumeMounts:
             - name: user-workspace
-              mountPath: "/user_workspaces"
+              mountPath: "/eodc"
 
 postgresql:
   # Chart default existingSecret "openeo-postgresql" is created by apply-secrets.sh.

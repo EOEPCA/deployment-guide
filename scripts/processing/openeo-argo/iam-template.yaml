@@ -45,4 +45,5 @@ spec:
     defaultScopes:
       - profile
       - email
+      - roles
       - basic
