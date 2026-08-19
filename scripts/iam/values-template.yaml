@@ -112,7 +112,7 @@ iam: &iam
     image:
       registry: docker.io
       repository: openpolicyagent/opa
-      tag: 1.7.1
+      tag: 1.19.1
       pullPolicy: IfNotPresent
 
   apisix:
@@ -162,11 +162,11 @@ opal:
     client:
       registry: docker.io
       repository: permitio/opal-client
-      tag: 0.8.0
+      tag: 0.9.6
     server:
       registry: docker.io
       repository: permitio/opal-server
-      tag: 0.8.0
+      tag: 0.9.6
     pgsql:
       registry: docker.io
       repository: postgres
@@ -190,6 +190,10 @@ opal:
     opaPort: 8181
     replicas: 1
     opaStartupData:
+      config.yaml: |
+        decision_logs:
+          # Change this to true to get more information about authorization in the OPA pod's logs
+          console: false
       policy.rego: |
         package system.authz
         import rego.v1
@@ -247,7 +251,8 @@ opal:
           "addr": "http://0.0.0.0:8181",
           "authentication": "token",
           "authorization": "basic",
-          "files": [ "/opt/opa/startup-data/policy.rego" ]
+          "files": [ "/opt/opa/startup-data/policy.rego" ],
+          "config_file":"/opt/opa/startup-data/config.yaml"
         }
 
 iam-bb-config:
