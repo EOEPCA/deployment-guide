@@ -56,8 +56,9 @@ Before deploying the Resource Health Building Block, ensure you have the followi
 | Git                         | Properly installed                      | [Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) |
 | Helm                        | Version 3.5 or newer                    | [Installation Guide](https://helm.sh/docs/intro/install/)         |
 | kubectl                     | Configured for cluster access           | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)     |
-| Ingress Controller          | Properly installed (e.g., NGINX)        | [Installation Guide](../prerequisites/ingress/overview.md)      |
+| Ingress Controller          | Properly installed (NGINX or APISIX - APISIX required for OIDC) | [Installation Guide](../prerequisites/ingress/overview.md)      |
 | Internal TLS Certificates   | ClusterIssuer for internal certificates | [Internal TLS Setup](../prerequisites/tls.md#internal-tls) |
+| Crossplane                  | Required only when OIDC is enabled (default), for the generated Keycloak client manifest | [Installation Guide](../prerequisites/crossplane.md) |
 
 **Clone the Deployment Guide Repository:**
 
