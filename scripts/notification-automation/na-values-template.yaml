@@ -16,6 +16,7 @@ webhookSource:
   secrets:
     create: true
     githubSecret: "{{ getenv "NA_GITHUB_WEBHOOK_SECRET" }}"
+    gitlabSecret: "{{ getenv "NA_GITLAB_WEBHOOK_SECRET" }}"
   sinkBinding:
     create: true
   ingress:
@@ -72,6 +73,7 @@ emailer:
     yagmailUser: "{{ getenv "NA_SMTP_USER" }}"
     yagmailPassword: "{{ getenv "NA_SMTP_PASSWORD" }}"
     yagmailSmtpStarttls: "{{ getenv "NA_SMTP_STARTTLS" }}"
+    yagmailSmtpSsl: "{{ getenv "NA_SMTP_SSL" }}"
 {{- else }}
   install: false
 {{- end }}

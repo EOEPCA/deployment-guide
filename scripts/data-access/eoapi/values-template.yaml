@@ -228,12 +228,13 @@ eoapi-notifier:
       - type: cloudevents
         config:
           source: /eoapi/pgstac
+          # Targets the Notification and Automation BB's default broker - that BB must be deployed too.
           destination:
             ref:
               apiVersion: eventing.knative.dev/v1
               kind: Broker
-              name: primary
-              namespace: default
+              name: default
+              namespace: notifications
 {{- else }}
 eoapi-notifier:
   enabled: false

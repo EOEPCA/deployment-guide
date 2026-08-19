@@ -133,7 +133,7 @@ During the script execution, you will be prompted to provide:
     This requires the [IAM Building Block](./iam/main-iam.md) already deployed.
 
 - **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
-- **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no)
+- **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no). Emits a CloudEvent on every STAC item change to the [Notification and Automation](./notification-automation.md) BB's default broker - that BB must be deployed prior to Data Access, or the events have nowhere to go.
 - **`ENABLE_GEOPARQUET_EXPORT`**: Enable scheduled pgSTAC-to-geoparquet export to S3 (yes/no)
     - If yes, you'll be prompted for **`GEOPARQUET_EXPORT_S3_BUCKET`** - the destination `s3://` path, reusing the same S3 credentials as raster/multidim
 

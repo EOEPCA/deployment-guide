@@ -23,6 +23,12 @@ if [ -z "$NA_GITHUB_WEBHOOK_SECRET" ]; then
     echo "Generated a random GitHub webhook secret and stored it in ~/.eoepca/state."
 fi
 
+if [ -z "$NA_GITLAB_WEBHOOK_SECRET" ]; then
+    NA_GITLAB_WEBHOOK_SECRET=$(openssl rand -hex 24)
+    add_to_state_file "NA_GITLAB_WEBHOOK_SECRET" "$NA_GITLAB_WEBHOOK_SECRET"
+    echo "Generated a random GitLab webhook secret and stored it in ~/.eoepca/state."
+fi
+
 ask "NA_ENABLE_EMAILER" "Enable the emailer sink? (yes/no)" "no" is_yes_no
 if [ "$NA_ENABLE_EMAILER" = "yes" ]; then
     ask "NA_EMAIL_FROM" "Sender address" "noreply@example.com"
@@ -32,6 +38,10 @@ if [ "$NA_ENABLE_EMAILER" = "yes" ]; then
     ask "NA_SMTP_USER" "SMTP user" "user@example.com"
     ask "NA_SMTP_PASSWORD" "SMTP password" ""
     ask "NA_SMTP_STARTTLS" "Use STARTTLS? (true/false)" "true"
+    # yagmail's own default is smtp_ssl=True regardless of the STARTTLS setting above -
+    # must be set explicitly to false for a STARTTLS (or plain) server, or the emailer
+    # always attempts an implicit-SSL handshake and fails against anything but port 465.
+    ask "NA_SMTP_SSL" "Use implicit SSL (smtps, typically port 465) instead of STARTTLS? (true/false)" "false"
 fi
 
 ask "NA_ENABLE_KAFKA" "Deploy a Kafka cluster for persistent event streaming? (yes/no)" "no" is_yes_no
