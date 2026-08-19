@@ -476,6 +476,7 @@ helm uninstall eoapi -n data-access
 helm uninstall stac-manager -n data-access
 helm uninstall titiler-openeo -n data-access
 if [ "${USE_EXTERNAL_POSTGRES}" != "yes" ]; then
+  kubectl wait --for=delete postgrescluster --all -n data-access --timeout=180s
   helm uninstall pgo -n data-access
 fi
 if [ "${ENABLE_GEOPARQUET_EXPORT:-no}" = "yes" ]; then
