@@ -220,6 +220,7 @@ When prompted:
     metadata:
       name: myservice
     spec:
+      ingressClassName: ${INGRESS_CLASS}
       http:
         - name: test-resource
           match:
