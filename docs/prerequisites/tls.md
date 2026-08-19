@@ -149,6 +149,7 @@ metadata:
   name: global-tls
   namespace: ingress-apisix
 spec:
+  ingressClassName: apisix
   hosts:
     - "*.your_domain"  # Replace with your domain
   secret:
