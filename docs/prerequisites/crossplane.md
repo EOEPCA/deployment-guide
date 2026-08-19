@@ -20,7 +20,7 @@ The first step is to deploy the Crossplane core system using Helm:
 ```bash
 helm upgrade --install crossplane crossplane \
   --repo https://charts.crossplane.io/stable \
-  --version 2.0.2 \
+  --version 2.3.4 \
   --namespace crossplane-system \
   --create-namespace \
   --set provider.defaultActivations={}
