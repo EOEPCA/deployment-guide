@@ -372,7 +372,7 @@ To enable it on an existing deployment:
 
 ```bash
 cd scripts/application-quality
-source ~/.eoepca/state
+source ../common/utils.sh
 
 export APP_QUALITY_ENABLE_GITHUB_STATUS=true
 export APP_QUALITY_GITHUB_API_TOKEN="<GitHub PAT with repo:status scope>"
@@ -394,8 +394,14 @@ helm upgrade application-quality reference-repo/application-quality-reference-de
 To remove the core Application Quality components:
 
 ```bash
+source ~/.eoepca/state
+
 helm uninstall application-quality -n application-quality
-kubectl delete -f generated-iam.yaml --ignore-not-found
+
+if [ "${APP_QUALITY_ENABLE_IAM:-false}" = "true" ]; then
+  kubectl delete -f generated-iam.yaml --ignore-not-found
+fi
+
 kubectl delete namespace application-quality
 ```
 

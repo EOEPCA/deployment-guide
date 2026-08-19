@@ -65,7 +65,6 @@ application-quality:
   calrissian:
     storageClassName: {{ getenv "SHARED_STORAGECLASS" }}
 
-  # Must track APP_QUALITY_ENABLE_GRAFANA - apply-secrets.sh only creates the admin secret this mounts when Grafana is enabled.
   grafana:
     enabled: {{ getenv "APP_QUALITY_ENABLE_GRAFANA" "false" }}
 
