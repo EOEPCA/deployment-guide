@@ -4,11 +4,6 @@ source ../common/utils.sh
 
 echo "Configuring the Data Access Building Block..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-
-configure_cert
-
 ask "S3_HOST" "Enter the S3 Host URL (excluding https)" "minio.${INGRESS_HOST}" is_non_empty
 ask "S3_ACCESS_KEY" "Enter the S3 (MinIO) access key" "" is_non_empty
 ask "S3_SECRET_KEY" "Enter the S3 (MinIO) secret key" "" is_non_empty
@@ -63,6 +58,8 @@ gomplate -f "titiler-openeo/$TEMPLATE_PATH" -o "titiler-openeo/$OUTPUT_PATH" --d
 
 if [ "$INGRESS_CLASS" == "apisix" ]; then
     gomplate -f "eoapi/$INGRESS_TEMPLATE_PATH" -o "eoapi/$INGRESS_OUTPUT_PATH" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
+elif [ "$INGRESS_CLASS" == "nginx" ]; then
+    gomplate -f "eoapi/nginx-ingress-template.yaml" -o "eoapi/generated-nginx-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 fi
 
 if [ "$USE_EXTERNAL_POSTGRES" = "yes" ]; then

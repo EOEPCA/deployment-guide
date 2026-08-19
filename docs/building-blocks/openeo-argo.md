@@ -47,14 +47,13 @@ bash check-prerequisites.sh
 bash configure-openeo-argo.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 You'll be prompted for:
 
 | Parameter | Description | Example |
 |---|---|---|
-| `INGRESS_HOST` | Base domain for ingress hosts | `example.com` |
-| `PERSISTENT_STORAGECLASS` | Kubernetes storage class for PostgreSQL/Redis (ReadWriteOnce) | `standard` |
 | `SHARED_STORAGECLASS` | Kubernetes storage class for the shared job workspace (ReadWriteMany) | `standard` |
-| `CLUSTER_ISSUER` | Cert-manager Cluster Issuer for TLS certificates | `letsencrypt-prod` |
 | `OPENEO_ARGO_ENABLE_OIDC` | Enable OIDC authentication (yes/no) | `yes` |
 | `OIDC_ISSUER_URL` | OIDC provider URL (if OIDC enabled) | `https://auth.example.com/realms/eoepca` |
 | `OIDC_ORGANISATION` | OIDC organisation identifier (if OIDC enabled) | `eoepca` |

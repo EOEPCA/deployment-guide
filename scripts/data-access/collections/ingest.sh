@@ -14,7 +14,7 @@ else
     echo "  Items file: $EOAPI_ITEMS_FILE"
 fi
 
-NAMESPACES=("default" "eoapi", "data-access")
+NAMESPACES=("default" "eoapi" "data-access")
 EOAPI_POD_RASTER=""
 FOUND_NAMESPACE=""
 
@@ -40,7 +40,7 @@ for FILE in "$EOAPI_COLLECTIONS_FILE" "$EOAPI_ITEMS_FILE"; do
 done
 
 echo "Installing required packages in pod $EOAPI_POD_RASTER in namespace $FOUND_NAMESPACE..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'pip install --user "pypgstac[psycopg]"'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'pip install --user "pypgstac[psycopg]==0.9.10"'; then
     echo "Failed to install packages."
     exit 1
 fi

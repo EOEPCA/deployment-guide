@@ -1,10 +1,7 @@
 source ../common/utils.sh
 echo "Configuring the Resource Registration Building Block..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for SHARED data (ReadWriteMany)" "standard" is_non_empty
-configure_cert
 
 ask "OPERATON_ADMIN_USER" "Set what you'd like your Operaton (BPM engine) admin username to be" "eoepca" is_non_empty
 ask "OPERATON_ADMIN_PASSWORD" "Set what you'd like your Operaton (BPM engine) admin password to be" "eoepca" is_non_empty

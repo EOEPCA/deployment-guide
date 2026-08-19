@@ -3,10 +3,7 @@
 source ../common/utils.sh
 echo "Configuring the Application Quality Building Block..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for persistent data" "local-path" is_non_empty
 ask "SHARED_STORAGECLASS" "Specify the Kubernetes storage class for shared/RWX data used by Calrissian" "${PERSISTENT_STORAGECLASS}" is_non_empty
-configure_cert
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
 
 export APP_QUALITY_PUBLIC_HOST="${APP_QUALITY_PUBLIC_HOST:-application-quality.${INGRESS_HOST}}"

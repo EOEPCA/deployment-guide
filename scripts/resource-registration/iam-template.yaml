@@ -66,3 +66,27 @@ spec:
       name: {{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}
       policy:
         resolution: Required
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientServiceAccountRole
+metadata:
+  name: {{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}-resource-catalogue-records-editor
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: resource-catalogue
+      policy:
+        resolution: Required
+    roleRef:
+      name: records-editor
+      policy:
+        resolution: Required
+    serviceAccountUserClientIdRef:
+      name: {{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}
+      policy:
+        resolution: Required

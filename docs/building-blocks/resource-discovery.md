@@ -61,23 +61,19 @@ bash check-prerequisites.sh
 bash configure-resource-discovery.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Configuration Parameters**  
 You'll be asked for, in order:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts.  
-    - Example: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for the chart-managed PostgreSQL volume.  
-    - Example: `local-path`
 - **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue - the EOEPCA IAM building block must already be deployed. Supported values: `yes`, `no`.
-- **`CLUSTER_ISSUER`**: Cert-manager ClusterIssuer for TLS certificates. Only asked if cert-manager issuance was enabled during first-time setup.  
-    - Example: `letsencrypt-http01-apisix`
 
 !!! warning
     Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
 
 === "Without IAM (default)"
 
-    Transactional writes stay disabled on the public catalogue - see [Bulk-loading records directly](#41-bulk-loading-records-directly-minimal-non-iam-deployments) for seeding sample data.
+    Transactional writes stay disabled on the public catalogue - see [Ingesting Records](#4-ingesting-records) ("Without IAM" tab) for seeding sample data.
 
 === "With IAM"
 
@@ -295,88 +291,94 @@ A working response includes a `federatedSearchResults.fedcat01` key containing r
 
 How you add records depends on whether transactions are enabled.
 
-#### 4.1. Bulk-loading records directly (minimal / non-IAM deployments)
+=== "Without IAM (default)"
 
-With `RESOURCE_DISCOVERY_ENABLE_IAM=no`, transactions stay at the chart's secure default (disabled), so there is no HTTP write path on the public catalogue. To seed it with sample data, use pycsw's own admin CLI, `pycsw-admin.py`, which loads records straight into the configured database:
+    With `RESOURCE_DISCOVERY_ENABLE_IAM=no`, transactions stay at the chart's secure default (disabled), so there is no HTTP write path on the public catalogue. To seed it with sample data, use pycsw's own admin CLI, `pycsw-admin.py`, which loads records straight into the configured database:
 
-```bash
-catalogue_pod="$(kubectl -n resource-discovery get pods --selector=io.kompose.service=pycsw --output=jsonpath='{.items[0].metadata.name}')"
+    ```bash
+    catalogue_pod="$(kubectl -n resource-discovery get pods --selector=io.kompose.service=pycsw --output=jsonpath='{.items[0].metadata.name}')"
 
-kubectl cp sample_record.xml \
-  "resource-discovery/${catalogue_pod}:/tmp/sample_record.xml"
+    kubectl cp sample_record.xml \
+      "resource-discovery/${catalogue_pod}:/tmp/sample_record.xml"
 
-kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
-  /venv/bin/pycsw-admin.py load-records \
-    --config /etc/pycsw/pycsw.yml \
-    --path /tmp/sample_record.xml
-```
+    kubectl -n resource-discovery exec -it "${catalogue_pod}" -- \
+      /venv/bin/pycsw-admin.py load-records \
+        --config /etc/pycsw/pycsw.yml \
+        --path /tmp/sample_record.xml
+    ```
 
-!!! note
-    A warning about the `geometry` field is expected and can be ignored for this sample.
+    !!! note
+        A warning about the `geometry` field is expected and can be ignored for this sample.
 
-Needs cluster access rather than going over the ingress.
+    Needs cluster access rather than going over the ingress.
 
-Verify:
+    Verify:
 
-```bash
-source ~/.eoepca/state
-curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
-```
+    ```bash
+    source ~/.eoepca/state
+    curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
+    ```
 
-#### 4.2. Creating records over HTTP (`RESOURCE_DISCOVERY_ENABLE_IAM=yes`)
+=== "With IAM"
 
-When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
+    When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
 
-The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
+    Unauthenticated requests are redirected to Keycloak rather than served:
 
-```bash
-source ~/.eoepca/state
+    ```bash
+    source ~/.eoepca/state
+    curl -s -o /dev/null -w "%{http_code}\n" "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/"
+    ```
 
-DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
-  -d "client_id=resource-catalogue")
+    Expect `302`.
 
-echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
-```
+    The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
 
-Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
+    ```bash
+    DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
+      -d "client_id=resource-catalogue")
 
-```bash
-DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
+    echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
+    ```
 
-ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
-  -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
-  -d "device_code=${DEVICE_CODE}" \
-  -d "client_id=resource-catalogue" | jq -r '.access_token')
-```
+    Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
 
-Create a record:
+    ```bash
+    DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
 
-```bash
-curl -s -i -X POST "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -H "Content-Type: application/geo+json" \
-  -d @- <<EOF
-{
-  "type": "Feature",
-  "id": "urn:eoepca:sample:0001",
-  "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
-  "properties": {
-    "type": "dataset",
-    "title": "EOEPCA Sample Record",
-    "description": "Sample record ingested via the OGC API Records transactional endpoint."
-  },
-  "geometry": {"type": "Point", "coordinates": [23.7, 37.9]}
-}
-EOF
-```
+    ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+      -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
+      -d "device_code=${DEVICE_CODE}" \
+      -d "client_id=resource-catalogue" | jq -r '.access_token')
+    ```
 
-A successful create returns `201 Created`. Update the same record with `PUT` against `/collections/metadata:main/items/urn:eoepca:sample:0001` (same headers/body shape, returns `204`), remove it with `DELETE`.
+    Create a record:
 
-Verify:
+    ```bash
+    curl -s -i -X POST "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+      -H "Content-Type: application/geo+json" \
+      -d @- <<EOF
+    {
+      "type": "Feature",
+      "id": "urn:eoepca:sample:0001",
+      "conformsTo": ["http://www.opengis.net/spec/ogcapi-records-1/1.0/req/record-core"],
+      "properties": {
+        "type": "dataset",
+        "title": "EOEPCA Sample Record",
+        "description": "Sample record ingested via the OGC API Records transactional endpoint."
+      },
+      "geometry": {"type": "Point", "coordinates": [23.7, 37.9]}
+    }
+    EOF
+    ```
 
-```bash
-curl -s "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items/urn:eoepca:sample:0001" | jq
-```
+    Now verify that the record is present in the protected catalogue:
+
+    ```bash
+    curl -s "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items/urn:eoepca:sample:0001?f=json" \
+      -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
+    ```
 
 ---
 
@@ -390,35 +392,6 @@ kubectl get pods -n resource-discovery
 
 - All pods should be in `Running` state.
 - No pods should be stuck in `CrashLoopBackOff` or `Error`.
-
----
-
-### Protected Catalogue Validation
-
-!!! note
-    Skip this section if `RESOURCE_DISCOVERY_ENABLE_IAM=no` - there is no protected endpoint to validate.
-
-Verify that the protected public metadata endpoint is reachable:
-
-```bash
-source ~/.eoepca/state
-
-curl -s -D - -o /dev/null \
-  "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/conformance"
-```
-
-This should return HTTP 200.
-
-The protected catalogue root should redirect unauthenticated users to IAM:
-
-```bash
-curl -s -D - -o /dev/null \
-  "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/"
-```
-
-This should return a redirect response, usually HTTP 302.
-
-To use protected transactional operations, authenticate through IAM with a user assigned to the resource-catalogue-admin group / records_editor role.
 
 ---
 

@@ -94,16 +94,12 @@ The configuration script will prompt you for necessary configuration values, gen
 bash configure-data-access.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Core Configuration Parameters**
 
 During the script execution, you will be prompted to provide:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts
-    - _Example_: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes
-    - _Example_: `standard`
-- **`CLUSTER_ISSUER`**: Cluster issuer for TLS certificates
-    - _Example_: `letsencrypt-prod`
 - **`S3_HOST`**: Host URL for MinIO or S3-compatible storage (hostname only, no scheme) - used directly as EOAPI's `AWS_S3_ENDPOINT`
     - _Example_: `minio.example.com` or `eodata.cloudferro.com`
 - **`S3_ACCESS_KEY`**: Access key for your S3 storage
@@ -237,24 +233,26 @@ helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
 
 === "Without IAM (default)"
 
-    If APISIX is the configured ingress controller, apply the dedicated `ApisixRoute`:
-
     ```bash
     source ~/.eoepca/state
     if [ "${INGRESS_CLASS}" = "apisix" ]; then
       kubectl apply -f eoapi/generated-ingress.yaml
+    else
+      kubectl apply -f eoapi/generated-nginx-ingress.yaml
     fi
     ```
 
 === "With IAM"
 
-    Configure Keycloak with a Client and associated Roles/Groups, then - if APISIX is the configured ingress controller - apply the dedicated `ApisixRoute`:
+    Configure Keycloak with a Client and associated Roles/Groups, then apply the ingress routes:
 
     ```bash
     source ~/.eoepca/state
     kubectl apply -f iam/generated-iam.yaml
     if [ "${INGRESS_CLASS}" = "apisix" ]; then
       kubectl apply -f eoapi/generated-ingress.yaml
+    else
+      kubectl apply -f eoapi/generated-nginx-ingress.yaml
     fi
     ```
 

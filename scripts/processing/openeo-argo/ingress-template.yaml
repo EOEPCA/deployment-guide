@@ -56,18 +56,3 @@ spec:
         - openeo.{{ getenv "INGRESS_HOST" }}
       secretName: openeo-argoworkflows-tls
   {{- end }}
----
-{{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: openeo-argoworkflows-cert
-  namespace: openeo
-spec:
-  secretName: openeo-argoworkflows-tls
-  issuerRef:
-    name: {{ getenv "CLUSTER_ISSUER" }}
-    kind: ClusterIssuer
-  dnsNames:
-    - openeo.{{ getenv "INGRESS_HOST" }}
-{{- end }}

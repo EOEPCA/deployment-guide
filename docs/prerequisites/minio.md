@@ -4,13 +4,6 @@ MinIO is a high-performance object storage system that's compatible with the Ama
 
 ---
 
-## Introduction
-
-### Scripted Deployment
-
-The Minio deployment in this guide follows the same [scripted deployment approach](../index.md#how-deployment-works) as for the EOEPCA building blocks.
-
----
 ## Prerequisites
 
 Before you begin, make sure you have the following:
@@ -49,14 +42,7 @@ Run the configuration script:
 bash configure-minio.sh
 ```
 
-**During the script execution, you will be prompted for:**
-
-- **`INGRESS_HOST`**: Base domain for ingress hosts.
-    - *Example*: `example.com`
-- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-http01-apisix`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
-    - *Example*: `standard`
+First time running a script? [EOEPCA+ State](state.md) covers the shared setup questions asked before this one - MinIO itself has no further prompts and reuses those values directly.
 
 ### 2. Deploy MinIO
 
@@ -74,19 +60,40 @@ helm upgrade -i minio minio/minio \
 
 ### 3. Create Access Keys
 
-Access the MinIO Console to create access keys:
-
 > If MinIO has just been deployed, then there may be a short delay before the service is accessible.
 
-1. Navigate to `https://console-minio.${INGRESS_HOST}/access-keys/new-account`<br>
-   ```bash
-   source ~/.eoepca/state
-   xdg-open "https://console-minio.${INGRESS_HOST}/access-keys/new-account"
-   ```
-2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step - see file `~/.eoepca/state`.
-3. Under `Access Keys` select to `Create access key +`
-4. Note down or download the **Access Key** and **Secret Key**.
-5. Click `Create`.
+=== "Browser"
+
+    1. Navigate to `https://console-minio.${INGRESS_HOST}/access-keys/new-account`<br>
+       ```bash
+       source ~/.eoepca/state
+       xdg-open "https://console-minio.${INGRESS_HOST}/access-keys/new-account"
+       ```
+    2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step - see file `~/.eoepca/state`.
+    3. Under `Access Keys` select to `Create access key +`
+    4. Note down or download the **Access Key** and **Secret Key**.
+    5. Click `Create`.
+
+=== "CLI"
+
+    Using the [MinIO Client](https://min.io/docs/minio/linux/reference/minio-mc.html) (`mc`). Install it if you don't already have it:
+
+    ```bash
+    curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o mc
+    chmod +x mc
+    sudo mv mc /usr/local/bin/
+    ```
+
+    Then create the service account:
+
+    ```bash
+    source ~/.eoepca/state
+
+    mc alias set eoepca-minio "${S3_ENDPOINT}" "${MINIO_USER}" "${MINIO_PASSWORD}"
+    mc admin user svcacct add eoepca-minio "${MINIO_USER}" --name "eoepca-deployment"
+    ```
+
+    Note the printed **Access Key** and **Secret Key** - `mc` only shows the secret key at creation time, it can't be retrieved again afterwards.
 
 Run the following script to save these keys to your EOEPCA+ state file:
 

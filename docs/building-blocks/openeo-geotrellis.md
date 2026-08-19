@@ -42,11 +42,10 @@ bash check-prerequisites.sh
 bash configure-openeo.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 During this process, you'll be prompted for:
 
-- **`INGRESS_HOST`**: Base domain for ingress hosts (e.g. `example.com`)
-- **`PERSISTENT_STORAGECLASS`**: Kubernetes storage class for persistent volumes
-- **`CLUSTER_ISSUER`**: Cert-manager Cluster Issuer for TLS certificates
 - **`OPENEO_ENABLE_OIDC`**: Whether to enable OIDC authentication (yes/no). Default: `yes`
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)
 
@@ -434,10 +433,8 @@ connection = openeo.connect(openeo_url)
 
 connection.authenticate_oidc()
 
-# Authenticate (basic auth example - adjust for OIDC if enabled)
+# If you disabled OIDC during configuration, authenticate with basic auth instead:
 # connection.authenticate_basic("testuser", "testuser123")
-
-# Or for OIDC:
 
 # Define parameters for data access
 collection_id = "TestCollection-LonLat16x16"

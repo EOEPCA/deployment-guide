@@ -3,9 +3,6 @@
 source ../common/utils.sh
 echo "Configuring the Workspace Building Block..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-configure_cert
-
 # Relies on ApisixRoute/ApisixPluginConfig, so only APISIX is currently supported.
 if [ "${INGRESS_CLASS}" != "apisix" ]; then
     echo "❌ The Workspace Building Block currently requires INGRESS_CLASS=apisix."

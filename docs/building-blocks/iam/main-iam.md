@@ -30,12 +30,14 @@ bash configure-iam.sh
 
 The script writes the rendered Helm values to `generated-values.yaml` and stores shared settings in `~/.eoepca/state`.
 
+First time running a script? [EOEPCA+ State](../../prerequisites/state.md) covers the shared setup questions asked before this one.
+
+!!! note
+    `PERSISTENT_STORAGECLASS` (set globally, see EOEPCA+ State) has no effect on IAM specifically: the chart's bundled PostgreSQL `StatefulSet` doesn't set `storageClassName` on its PVC, so it always uses the cluster's default storage class regardless.
+
 You'll be asked for, in order:
 
-- `INGRESS_HOST`: base domain, for example `example.com`.
-- `PERSISTENT_STORAGECLASS`: storage class for Keycloak's PostgreSQL data. Note: the chart's bundled PostgreSQL `StatefulSet` does not set `storageClassName` on its PVC, so this value has no effect for IAM specifically — the PVC always uses the cluster's default storage class.
 - `REALM`: the Keycloak realm name, defaults to `eoepca`.
-- `CLUSTER_ISSUER`: cert-manager cluster issuer for TLS certificates (only asked if cert-manager issuance was enabled during first-time setup).
 - `OPA_CLIENT_ID`: OIDC client used by the APISIX OPA route.
 - `KEYCLOAK_TEST_USER`: example non-admin user, created separately via Crossplane once IAM is up (see [Provision the Test User](#provision-the-test-user) below).
 - `KEYCLOAK_TEST_ADMIN`: example admin user imported with the realm.

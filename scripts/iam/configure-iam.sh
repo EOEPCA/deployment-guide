@@ -9,10 +9,7 @@ if [ "${INGRESS_CLASS}" != "apisix" ]; then
     exit 1
 fi
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
 ask "REALM" "Enter what you'd like for the Keycloak realm name" "eoepca" is_non_empty
-configure_cert
 
 # Generate passwords and store them in the state file
 if [ -z "$KEYCLOAK_ADMIN_PASSWORD" ]; then

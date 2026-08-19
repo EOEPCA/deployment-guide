@@ -3,10 +3,6 @@
 source ../common/utils.sh
 echo "Configuring the Operations BB..."
 
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for persistent data (ReadWriteOnce)" "standard" is_non_empty
-configure_cert
-
 ask "PROMETHEUS_STORAGE_SIZE" "Storage size for Prometheus TSDB" "50Gi" is_non_empty
 ask "PROMETHEUS_RETENTION" "Metrics retention period (e.g. 30d, 90d)" "30d" is_non_empty
 

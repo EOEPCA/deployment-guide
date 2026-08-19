@@ -4,9 +4,6 @@ source ../common/utils.sh
 echo "Configuring the Resource Health Building Block..."
 
 ask "INTERNAL_CLUSTER_ISSUER" "Specify the cert-manager cluster issuer for internal TLS certificates" "eoepca-ca-clusterissuer" is_non_empty
-ask "PERSISTENT_STORAGECLASS" "Specify the Kubernetes storage class for PERSISTENT data (ReadWriteOnce)" "local-path" is_non_empty
-ask "INGRESS_HOST" "Enter the base domain name" "example.com" is_valid_domain
-configure_cert
 
 ask "RESOURCE_HEALTH_ENABLE_OIDC" "Enable OIDC protection for Resource Health? (yes/no)" "yes" is_yes_no
 

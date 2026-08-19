@@ -59,18 +59,10 @@ bash check-prerequisites.sh
 bash configure-app-hub.sh
 ```
 
+First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers the shared setup questions asked before this one.
+
 **Core Configuration Parameters**
 
-You'll be asked for, in order (`HTTP_SCHEME` and `INGRESS_CLASS` only if not already set from a prior Building Block):
-
-- **`HTTP_SCHEME`**: `http` or `https`.
-- **`INGRESS_CLASS`**: `apisix` or `nginx`.
-- **`INGRESS_HOST`**: Base domain for ingress hosts.
-    - *Example*: `example.com`
-- **`PERSISTENT_STORAGECLASS`**: Storage class for persistent volumes.
-    - *Example*: `standard`
-- **`CLUSTER_ISSUER`** (if using `cert-manager`): Name of the ClusterIssuer.
-    - *Example*: `letsencrypt-http01-apisix`
 - **`NODE_SELECTOR_KEY`**: Determine which nodes will run spawned user sessions and profile pods (not the Application Hub's own hub/proxy pods).
     - *Example*: `kubernetes.io/os`
     - *Read more*: [Node Selector Documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)

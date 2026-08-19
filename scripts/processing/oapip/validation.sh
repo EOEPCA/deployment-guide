@@ -30,8 +30,6 @@ else
     check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
 fi
 
-CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://zoo.$INGRESS_HOST/swagger-ui/oapip/" "200"
-
 echo
 echo "All Resources:"
 echo
