@@ -10,11 +10,9 @@ This guide shows you step-by-step how to set up Resource Discovery in your Kuber
 
 ### Key Features
 
-- **Easy Metadata Management**: Collect and search EO metadata efficiently.
-- **Uses Open Standards**: Supports OGC CSW, OGC API Records, STAC, and OpenSearch.
-- **Advanced Search**: Search by area (bounding boxes), time intervals, text, and more.
+- **Advanced Search**: Search by area (bounding boxes), time intervals, and text.
 - **Federated / Distributed Search**: Fans a single search out to external OGC API - Records, STAC API, and CSW catalogues alongside local results.
-- **Transactional Updates**: Allows creating, updating, and deleting records when enabled.
+- **Transactional Updates**: Creates, updates, and deletes records when enabled.
 
 ### Interfaces
 
