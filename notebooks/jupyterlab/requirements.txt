@@ -9,3 +9,7 @@ pystac
 pystac-client
 odc
 odc-stac
+pandas
+boto3
+scikit-learn==1.7.2
+mlflow==2.10.0

@@ -103,8 +103,7 @@ minio:
       secretName: minio-tls
 {{- end }}
 
-certmanager:
-  install: false
+installCertmanager: false
 
 nginx-ingress:
   enabled: false
