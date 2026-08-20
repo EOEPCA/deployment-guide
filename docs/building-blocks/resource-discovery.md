@@ -267,18 +267,31 @@ You should receive a JSON response listing zero or more STAC items that match th
 | `STAC-API` | `fedcat02`       | *(none)*                     | `/stac/search?distributedSearch=true`        |
 | `CSW`      | `arctic-sdi-csw` | `GetCapabilities` (CSW 3.0)  | `GetRecords` with `csw:DistributedSearch`    |
 
+The following examples show how to performed a federated query for each of the three APIs.
+
+!!! note
+    In each example, you will see how the results are organised according to the federated catalogue source.
+
+**OGC API Records - Distributed Search**
+
 ```bash
 # OARec - fedcat01
-curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items?distributedSearch=true&limit=1"
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items?distributedSearch=true&limit=1" | jq
+```
 
+**STAC API - Distributed Search**
+
+```bash
 # STAC-API - fedcat02
-curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/stac/search?distributedSearch=true&limit=1"
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/stac/search?distributedSearch=true&limit=1" | jq
+```
 
+**OGC CSW - Distributed Search**
+
+```bash
 # CSW - arctic-sdi-csw
 curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&request=GetRecords&typeNames=csw:Record&resultType=results&elementSetName=brief&DistributedSearch=true"
 ```
-
-
 
 ---
 
@@ -336,7 +349,7 @@ How you add records depends on whether transactions are enabled.
     echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
     ```
 
-    Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
+    Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (for example the `eoepcauser` test user - see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
 
     ```bash
     DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
