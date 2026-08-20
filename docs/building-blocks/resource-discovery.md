@@ -259,28 +259,25 @@ You should receive a JSON response listing zero or more STAC items that match th
 
 #### 3.5. Federated / Distributed Search
 
-Resource Discovery can fan a single search out to external catalogues alongside its own records. `values-template.yaml` pre-configures three examples under `pycsw.config.distributedsearch.catalogues`, one per protocol binding it understands:
+`values-template.yaml` configures one federated catalogue per protocol. Each is only listed or searched through its own protocol's endpoint - there is no combined list or search across types:
 
-| id               | type       | fanned out via                                          |
-|------------------|------------|----------------------------------------------------------|
-| `fedcat01`       | `OARec`    | OGC API - Records (`/collections/.../items`, `distributedSearch=true`) |
-| `fedcat02`       | `STAC-API` | STAC API search (Copernicus Data Space Ecosystem)         |
-| `arctic-sdi-csw` | `CSW`      | CSW `GetRecords` with `DistributedSearch`                  |
-
-List the configured federated catalogues:
+| type       | id               | list                        | search                                    |
+|------------|------------------|------------------------------|---------------------------------------------|
+| `OARec`    | `fedcat01`       | `federatedCatalogs`          | `items?distributedSearch=true`               |
+| `STAC-API` | `fedcat02`       | *(none)*                     | `/stac/search?distributedSearch=true`        |
+| `CSW`      | `arctic-sdi-csw` | `GetCapabilities` (CSW 3.0)  | `GetRecords` with `csw:DistributedSearch`    |
 
 ```bash
-curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/federatedCatalogs?f=json" | jq
+# OARec - fedcat01
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items?distributedSearch=true&limit=1"
+
+# STAC-API - fedcat02
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/stac/search?distributedSearch=true&limit=1"
+
+# CSW - arctic-sdi-csw
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&version=2.0.2&request=GetRecords&typeNames=csw:Record&resultType=results&elementSetName=brief&DistributedSearch=true"
 ```
 
-Fan a search out to them:
-
-```bash
-curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items?distributedSearch=true&limit=1" \
-  | jq '.federatedSearchResults'
-```
-
-A working response includes a `federatedSearchResults.fedcat01` key containing real features fetched live from the remote WIS2 catalogue. Each catalogue is only ever queried through the protocol binding matching its own `type` - a `STAC-API` entry is never queried via CSW `GetRecords`, for example.
 
 
 ---
