@@ -8,9 +8,11 @@ spec:
     - memberships.group.keycloak.m.crossplane.io
     - roles.group.keycloak.m.crossplane.io
     - clients.openidclient.keycloak.m.crossplane.io
+    - clientserviceaccountroles.openidclient.keycloak.m.crossplane.io
     - groupmembershipprotocolmappers.openidgroup.keycloak.m.crossplane.io
     - roles.role.keycloak.m.crossplane.io
     - users.user.keycloak.m.crossplane.io
+    - groups.user.keycloak.m.crossplane.io
 ---
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
