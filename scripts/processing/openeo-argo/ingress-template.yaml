@@ -32,27 +32,19 @@ metadata:
 spec:
   ingressClassName: {{ getenv "INGRESS_CLASS" }}
   rules:
-    - host: openeo.{{ getenv "INGRESS_HOST" }}
+    - host: openeo-argo.{{ getenv "INGRESS_HOST" }}
       http:
         paths:
           - path: "/"
             pathType: Prefix
             backend:
               service:
-                {{- if eq ( getenv "OPENEO_ARGO_ENABLE_OIDC" ) "no" }}
-                name: openeo-proxy
-                {{- else }}
                 name: openeo-openeo-argo
-                {{- end }}
                 port:
-                  {{- if eq ( getenv "OPENEO_ARGO_ENABLE_OIDC" ) "no" }}
-                  number: 8080
-                  {{- else }}
                   number: 8000
-                  {{- end }}
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
   tls:
     - hosts:
-        - openeo.{{ getenv "INGRESS_HOST" }}
+        - openeo-argo.{{ getenv "INGRESS_HOST" }}
       secretName: openeo-argoworkflows-tls
   {{- end }}

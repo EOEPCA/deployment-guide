@@ -75,7 +75,7 @@ ask "OAPIP_EXECUTION_ENGINE" "Select your execution engine. Supported engines ar
 if [[ "$OAPIP_EXECUTION_ENGINE" == "toil" ]]; then
   ask "OAPIP_TOIL_WES_URL" "Insert the HPC Toil WES service endpoint" "https://toil.hpc.host/ga4gh/wes/v1/" is_non_empty
   ask "OAPIP_TOIL_WES_USER" "Insert the HPC Toil WES username" "test" is_non_empty
-  ask "OAPIP_TOIL_WES_PASSWORD" "Insert the HPT Toil WES password (hashed)" '$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG' is_non_empty
+  ask "OAPIP_TOIL_WES_PASSWORD" "Insert the HPC Toil WES password (hashed)" '$2y$12$ci.4U63YX83CwkyUrjqxAucnmi2xXOIlEF6T/KdP9824f1Rf1iyNG' is_non_empty
 elif [[ "$OAPIP_EXECUTION_ENGINE" == "calrissian" ]]; then
   ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run processing workflows" "kubernetes.io/os" is_non_empty
   ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty

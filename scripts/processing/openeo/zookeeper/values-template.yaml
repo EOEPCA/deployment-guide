@@ -1,3 +1,7 @@
+image:
+  registry: docker.io
+  repository: bitnamilegacy/zookeeper
+  tag: 3.8.1-debian-11-r18
 global:
   storageClass: "{{ getenv "PERSISTENT_STORAGECLASS" }}"
 replicacount: 1

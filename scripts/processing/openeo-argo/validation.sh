@@ -15,19 +15,11 @@ check_service_exists "openeo" "openeo-redis-master"
 # Check the shared (ReadWriteMany) job workspace PVC bound successfully
 check_pvc_bound "openeo" "openeo-workspace"
 
-# Check API endpoints. If OIDC is disabled, requests go through the basic-auth
-# proxy instead of the API directly, so they need credentials.
-if [ "$OPENEO_ARGO_ENABLE_OIDC" == "no" ]; then
-  CHECK_USER="$OPENEO_ARGO_BASIC_AUTH_USERNAME" CHECK_PASSWORD="$OPENEO_ARGO_BASIC_AUTH_PASSWORD" \
-    check_url_status_code "$HTTP_SCHEME://openeo.$INGRESS_HOST/" 200
-  CHECK_USER="$OPENEO_ARGO_BASIC_AUTH_USERNAME" CHECK_PASSWORD="$OPENEO_ARGO_BASIC_AUTH_PASSWORD" \
-    check_url_status_code "$HTTP_SCHEME://openeo.$INGRESS_HOST/processes" 200
-else
-  check_url_status_code "$HTTP_SCHEME://openeo.$INGRESS_HOST/openeo/1.1.0" 200
-  check_url_status_code "$HTTP_SCHEME://openeo.$INGRESS_HOST/openeo/1.1.0/processes" 200
-  check_keycloak_client_ready "iam-management" "openeo-argo" \
-    "Apply the Client CR from Step 7 of the guide."
-fi
+# Check API endpoints
+check_url_status_code "$HTTP_SCHEME://openeo-argo.$INGRESS_HOST/openeo/1.1.0" 200
+check_url_status_code "$HTTP_SCHEME://openeo-argo.$INGRESS_HOST/openeo/1.1.0/processes" 200
+check_keycloak_client_ready "iam-management" "openeo-argo" \
+    "Apply the Client CR from Step 6 of the guide."
 
 # Test database connectivity (postgresql/redis are StatefulSets, not Deployments)
 echo "Testing PostgreSQL connectivity..."

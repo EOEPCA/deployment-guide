@@ -1,29 +1,16 @@
 global:
   env:
     alembicDir: "/opt/openeo_argoworkflows_api/psql"
-    apiDns: "openeo.{{ getenv "INGRESS_HOST" }}"
+    apiDns: "openeo-argo.{{ getenv "INGRESS_HOST" }}"
     apiTLS: {{ if eq (getenv "HTTP_SCHEME") "https" }}true{{ else }}false{{ end }}
     apiTitle: "OpenEO ArgoWorkflows"
     apiDescription: "OpenEO API implementation using Dask for distributed processing"
-    {{- if eq (getenv "OPENEO_ARGO_ENABLE_OIDC") "yes" }}
     oidcUrl: "{{ getenv "OIDC_ISSUER_URL" }}"
     oidcOrganisation: "{{ getenv "OIDC_ORGANISATION" }}"
     oidcPolicies: "{{ getenv "OIDC_POLICIES" }}"
     oidcProviderTitle: "EOEPCA Keycloak"
     oidcClientId: "openeo-argo"
-    {{- else }}
-    oidcUrl: "http://dummy-oidc.local/realms/eoepca"
-    oidcOrganisation: "eoepca"
-    oidcPolicies: ""
-    {{- end }}
     stacCatalogueUrl: "{{ getenv "STAC_CATALOG_ENDPOINT" }}"
-    # Executor pods (the ones that actually run a job) mount the PVC wherever
-    # OPENEO_MOUNT_PATH resolves to, not wherever this value says - that's a
-    # separate setting, defaulting to /eodc, that the chart never exposes:
-    #   https://github.com/eodcgmbh/openeo-argoworkflows/blob/main/openeo_argoworkflows/api/openeo_argoworkflows_api/settings.py#L11
-    #   https://github.com/eodcgmbh/openeo-argoworkflows/blob/main/openeo_argoworkflows/api/openeo_argoworkflows_api/workflows.py#L123
-    # Any other value here 500s every job with a permission error mkdir'ing a
-    # path that was never actually mounted.
     workspaceRoot: "/eodc/jobs"
     workspaceMount: "/eodc"
     daskWorkerCores: "4"

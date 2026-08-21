@@ -11,9 +11,9 @@ spec:
     description: openEO Argo Engine OIDC
     enabled: true
     accessType: PUBLIC
-    rootUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
-    baseUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
-    adminUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
+    rootUrl: {{ getenv "HTTP_SCHEME" }}://openeo-argo.{{ getenv "INGRESS_HOST" }}
+    baseUrl: {{ getenv "HTTP_SCHEME" }}://openeo-argo.{{ getenv "INGRESS_HOST" }}
+    adminUrl: {{ getenv "HTTP_SCHEME" }}://openeo-argo.{{ getenv "INGRESS_HOST" }}
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
     oauth2DeviceAuthorizationGrantEnabled: true

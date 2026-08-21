@@ -50,7 +50,7 @@ During this process, you'll be prompted for:
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)
 
 !!! note "Authentication"
-    If OIDC is disabled, the deployment falls back to a hardcoded basic-auth test user (`testuser`/`testuser123`) instead. This fallback is a guide-only convenience for deploying without IAM - the upstream openEO Geotrellis reference deployment does not enable basic auth at all, so treat it as a way to get a working deployment quickly, not a supported production auth mode.
+    If OIDC is disabled, the deployment falls back to a hardcoded basic-auth test user (`testuser`/`testuser123`) instead - for testing only, not a production auth mode.
 
 ### 2. Deploying openEO Geotrellis
 
@@ -69,8 +69,6 @@ helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --values sparkoperator/generated-values.yaml
 ```
 
-!!! note
-    `-forcecrd-pr` just adds a flag so repeat `helm upgrade` runs don't fail on the CRDs - upstream made this the default from chart `2.5.0`, we're only still on `2.3.0` to match the operator image.
 
 Refer to the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) for additional configuration options.
 
@@ -83,9 +81,6 @@ helm upgrade -i openeo-geotrellis-zookeeper \
     https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz \
     --namespace openeo-geotrellis \
     --values zookeeper/generated-values.yaml \
-    --set image.registry=docker.io \
-    --set image.repository=bitnamilegacy/zookeeper \
-    --set image.tag=3.8.1-debian-11-r18 \
     --wait --timeout 5m
 ```
 
@@ -156,7 +151,7 @@ kubectl apply -f openeo-geotrellis/batch-jobs-rbac.yaml
     ]
     ```
 
-    A Keycloak client is required for the ingress protection of the Processing BB openEO Geotrellis Engine. `configure-openeo.sh` already rendered `openeo-geotrellis/generated-iam.yaml` (a Crossplane `Client` CRD) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
+
 
     ```bash
     kubectl apply -f openeo-geotrellis/generated-iam.yaml
@@ -228,8 +223,6 @@ curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
 
 _Expected output:_ A JSON array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
 
-!!! note
-    This guide only configures the built-in `TestCollection-LonLat16x16` debug layer. Wiring up a real EO data source (e.g. Sentinel data via a Swift/S3 object store and a full `layerCatalog`) needs provider-specific endpoints and credentials that aren't portable across clusters, so it's left out of this guide. See the [openEO Geotrellis GitHub Repository](https://github.com/Open-EO/openeo-geotrellis-kubernetes) for adding your own collections.
 
 #### List Processes
 
@@ -336,8 +329,9 @@ The authentication method depends on whether you enabled OIDC during configurati
 === "Basic Authentication"
 
     ```bash
-    export BASIC_AUTH=$(echo -n "testuser:testuser123" | base64)
-    AUTH_TOKEN="basic/openeo/${BASIC_AUTH}"
+    ACCESS_TOKEN=$(curl -s -u "testuser:testuser123" \
+      "https://openeo.${INGRESS_HOST}/openeo/1.2/credentials/basic" | jq -r '.access_token')
+    AUTH_TOKEN="basic//${ACCESS_TOKEN}"
     ```
 
 #### Submit a Job Using the "sum" Process

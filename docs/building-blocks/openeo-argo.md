@@ -2,8 +2,6 @@
 
 OpenEO ArgoWorkflows implements the OpenEO API specification using Argo Workflows to execute OpenEO process graphs and Dask for distributed processing. It's an alternative to the GeoTrellis backend, using Dask for the actual computation.
 
-!!! note
-    OIDC authentication is app-native - the API itself validates tokens against the configured identity provider's discovery endpoint, so it works the same way under either `apisix` or `nginx` ingress. Refer to the [IAM Deployment Guide](./iam/main-iam.md) if you need to set up your own OIDC Provider (e.g. Keycloak). If OIDC is disabled, a basic-auth proxy is deployed instead - for testing only.
 
 ---
 
@@ -19,7 +17,7 @@ Before deploying, ensure your environment meets these requirements:
 | Ingress | Properly installed | [Installation Guide](../prerequisites/ingress/overview.md) |
 | Cert Manager | Properly installed | [Installation Guide](../prerequisites/tls.md) |
 | `ReadWriteMany` Storage Class | Required for the shared job workspace | [Storage Guide](../prerequisites/storage.md) |
-| OIDC Provider | Optional (app-native OIDC, if enabling authentication) | [Installation Guide](./iam/main-iam.md) |
+| OIDC Provider | Required (app-native OIDC) | [Installation Guide](./iam/main-iam.md) |
 | STAC Catalogue | Required for data access | [eoAPI Deployment](./data-access.md) |
 
 The API, executor, and Dask worker pods all mount the same job workspace volume concurrently, so the storage class used for it (`SHARED_STORAGECLASS` below) **must** support `ReadWriteMany`.
@@ -54,10 +52,9 @@ You'll be prompted for:
 | Parameter | Description | Example |
 |---|---|---|
 | `SHARED_STORAGECLASS` | Kubernetes storage class for the shared job workspace (ReadWriteMany) | `standard` |
-| `OPENEO_ARGO_ENABLE_OIDC` | Enable OIDC authentication (yes/no) | `yes` |
-| `OIDC_ISSUER_URL` | OIDC provider URL (if OIDC enabled) | `https://auth.example.com/realms/eoepca` |
-| `OIDC_ORGANISATION` | OIDC organisation identifier (if OIDC enabled) | `eoepca` |
-| `OIDC_POLICIES` | OIDC policies (if OIDC enabled, optional, leave empty for none) | |
+| `OIDC_ISSUER_URL` | OIDC provider URL | `https://auth.example.com/realms/eoepca` |
+| `OIDC_ORGANISATION` | OIDC organisation identifier | `eoepca` |
+| `OIDC_POLICIES` | OIDC policies (optional, leave empty for none) | |
 | `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://eoapi.example.com/stac` |
 
 ### 2. Add Helm Repositories
@@ -103,22 +100,12 @@ kubectl apply -f generated-ingress.yaml
 
 ### 6. Configure Authentication
 
-=== "OIDC Disabled"
+A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, plus a `ClientDefaultScopes` override) - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
 
-    Deploy the basic-auth proxy:
-
-    ```bash
-    kubectl apply -f generated-proxy-auth.yaml
-    ```
-
-=== "OIDC Enabled"
-
-    A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, plus a `ClientDefaultScopes` override) when OIDC was enabled - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
-
-    ```bash
-    kubectl apply -f generated-iam.yaml
-    kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/openeo-argo -n iam-management --timeout=60s
-    ```
+```bash
+kubectl apply -f generated-iam.yaml
+kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/openeo-argo -n iam-management --timeout=60s
+```
 
 ---
 
@@ -145,18 +132,14 @@ kubectl get pods -n openeo
 ```bash
 source ~/.eoepca/state
 
-# If OIDC is enabled, the ingress routes straight to the API. The API redirects
-# the bare version root to a trailing slash, so follow redirects with -L:
-curl -s -L https://openeo.${INGRESS_HOST}/openeo/1.1.0 | jq .
-
-# If OIDC is disabled, the ingress routes to the basic-auth proxy instead, which
-# itself prepends /openeo/1.1.0 to whatever path you request - so call the bare root:
-curl -s -u eoepcauser:eoepcapass https://openeo.${INGRESS_HOST}/ | jq .
+# The API redirects the bare version root to a trailing slash, so follow
+# redirects with -L:
+curl -s -L https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0 | jq .
 ```
 
 **List available processes:**
 ```bash
-curl -s https://openeo.${INGRESS_HOST}/openeo/1.1.0/processes | jq '[.processes[].id] | sort'
+curl -s https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/processes | jq '[.processes[].id] | sort'
 ```
 
 **Check Argo Workflows:**
@@ -173,7 +156,7 @@ The deployment can be tested using the openEO Web Editor as a client - either th
 === "Public Instance"
 
     ```bash
-    xdg-open "https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.1.0/"
+    xdg-open "https://editor.openeo.org?server=https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/"
     ```
 
 === "Self-Hosted (Optional)"
@@ -197,19 +180,16 @@ The deployment can be tested using the openEO Web Editor as a client - either th
 
     ```bash
     source ~/.eoepca/state
-    xdg-open "${HTTP_SCHEME}://${OPENEO_WEB_EDITOR_HOST}/?server=${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.1.0/"
+    xdg-open "${HTTP_SCHEME}://${OPENEO_WEB_EDITOR_HOST}/?server=${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/"
     ```
 
-If OIDC is enabled, select `EOEPCA` and log in via the IAM BB Keycloak instance. If disabled, use basic auth (`eoepcauser`/`eoepcapass`) instead.
+Select `EOEPCA` and log in via the IAM BB Keycloak instance.
 
 ---
 
 ### API Usage
 
 > **Prefer a notebook?** Run `../../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/openeo-argo/openeo-argo.ipynb" target="_blank">OpenEO ArgoWorkflows notebook</a> at `http://localhost:8888`.
-
-!!! note
-    The example below assumes OIDC is enabled. If you disabled OIDC, drop the `ACCESS_TOKEN`/`AUTH_TOKEN` lines and replace `-H "Authorization: Bearer ${AUTH_TOKEN}"` in each command with `-u eoepcauser:eoepcapass` (see the basic-auth example in [API Health Check](#manual-validation) above).
 
 **Submit and monitor a job:**
 ```bash
@@ -224,7 +204,7 @@ ACCESS_TOKEN=$(curl -s -X POST \
 AUTH_TOKEN="oidc/${OIDC_ORGANISATION}/${ACCESS_TOKEN}"
 
 # Create a job - the ID isn't in the body, it comes back in the OpenEO-Identifier header
-JOB_ID=$(curl -s -i -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
+JOB_ID=$(curl -s -i -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -254,14 +234,14 @@ JOB_ID=$(curl -s -i -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
 echo "Created job: ${JOB_ID}"
 
 # A job sits in "created" status and does nothing until started
-curl -s -X POST "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}/results" \
+curl -s -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}/results" \
   -H "Authorization: Bearer ${AUTH_TOKEN}"
 
 # status moves through created -> running -> finished (or error)
-curl -s "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}" \
+curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq '{id, status, title}'
 
-curl -s "https://openeo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
+curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq
 ```
 
