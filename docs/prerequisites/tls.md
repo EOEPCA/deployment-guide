@@ -97,7 +97,15 @@ helm upgrade -i cert-manager jetstack/cert-manager \
 
     The following illustrates an example that uses Cloudflare DNS provider.
 
-    Set your details for email and Cloudflare API credentials (via secret).
+    The `ClusterIssuer` below references a `Secret` holding your Cloudflare API token - create it first, in the same namespace cert-manager itself is installed into (`cert-manager` above), since that's where `apiTokenSecretRef` resolves for a cluster-scoped `ClusterIssuer`. The token needs `Zone:DNS:Edit` permission for the zone(s) you're issuing certificates for.
+
+    ```bash
+    kubectl create secret generic cloudflare-api-token \
+      --namespace cert-manager \
+      --from-literal=api-token=<YOUR_CLOUDFLARE_API_TOKEN>
+    ```
+
+    Now create the `ClusterIssuer` itself, setting your own email address:
 
     ```bash
     cat - <<'EOF' | kubectl apply -f -

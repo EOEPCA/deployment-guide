@@ -100,7 +100,7 @@ This creates the `knative-serving`/`knative-eventing`/`notifications` namespaces
 kubectl apply -f generated-apisix-route.yaml
 ```
 
-This route is only for **Knative Services you deploy yourself** on top of the BB (see [Writing automations](#writing-automations) below). If you enabled HTTPS, it also creates the wildcard Certificate and ApisixTls resources; give cert-manager a minute or two to issue it.
+This route is only for giving **Knative Services you deploy yourself** their own public URL (see [Writing automations](#writing-automations) below). If you enabled HTTPS, it also creates the wildcard Certificate and ApisixTls resources, which need a DNS-01 ClusterIssuer - if you don't have one, skip this step. Nothing else in this guide's Usage section needs it: webhooks, the CloudEvents Player, and Triggers subscribing your own functions to a broker all work without a public URL for the function itself.
 
 ### 5. Install the BB chart
 
