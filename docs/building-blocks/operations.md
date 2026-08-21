@@ -353,10 +353,20 @@ Navigate to `Dashboards → Browse` and open the `Kubernetes / Cluster View` das
 
 The baseline rules include a `Watchdog` alert which fires continuously as a pipeline health check. Verify it reaches Keep:
 
-```bash
-curl -X GET "https://alerting.${INGRESS_HOST}/v2/alerts" \
-  -H "Accept: application/json"
-```
+=== "Without IAM (default)"
+
+    ```bash
+    curl -X GET "https://alerting.${INGRESS_HOST}/v2/alerts" \
+      -H "Accept: application/json"
+    ```
+
+=== "With IAM"
+
+    `/v2/*` is behind oauth2-proxy, so an unauthenticated request to that URL returns `401`. Confirm delivery via the backend's logs instead:
+
+    ```bash
+    kubectl -n operations logs deploy/keep-backend --tail=50 | grep Watchdog
+    ```
 
 You can also log in to the Keep UI and confirm the `Watchdog` alert appears in the alerts view.
 

@@ -65,7 +65,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_app_latency_500ms_burn_rate_1h
+          record: stac_app_get_latency_500ms_burn_rate_1h
         - expr: |
             (
               1 - (
@@ -76,7 +76,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_app_latency_500ms_burn_rate_1h
+          record: stac_app_post_latency_500ms_burn_rate_1h
         - expr: |
             (
               1 - (
@@ -87,7 +87,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_app_latency_500ms_burn_rate_6h
+          record: stac_app_get_latency_500ms_burn_rate_6h
         - expr: |
             (
               1 - (
@@ -98,7 +98,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_app_latency_500ms_burn_rate_6h
+          record: stac_app_post_latency_500ms_burn_rate_6h
     - name: STAC_Gateway_Latency_Correlation
       rules:
         - expr: |
@@ -111,7 +111,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_gateway_latency_500ms_burn_rate_1h
+          record: stac_gateway_get_latency_500ms_burn_rate_1h
         - expr: |
             (
               1 - (
@@ -122,7 +122,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_gateway_latency_500ms_burn_rate_1h
+          record: stac_gateway_post_latency_500ms_burn_rate_1h
         - expr: |
             (
               1 - (
@@ -133,7 +133,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_gateway_latency_500ms_burn_rate_6h
+          record: stac_gateway_get_latency_500ms_burn_rate_6h
         - expr: |
             (
               1 - (
@@ -144,7 +144,7 @@ spec:
             ) / 0.01
           labels:
             namespace: ingress-apisix
-          record: stac_gateway_latency_500ms_burn_rate_6h
+          record: stac_gateway_post_latency_500ms_burn_rate_6h
     - name: STAC_DB_Latency_Correlation
       rules:
         - expr: avg(ccp_pg_stat_statements_total_mean_exec_time_ms{dbname="eoapi", role="eoapi"})
