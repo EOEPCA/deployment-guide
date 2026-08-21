@@ -337,8 +337,7 @@ xdg-open "https://workspace-api.${INGRESS_HOST}/docs"
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
 
-!!! note
-    If `OIDC_WORKSPACE_ENABLED=true`, the ingress redirects to Keycloak login first - for example `eoepcaadmin` created earlier.
+`/docs` has its own route rule with no auth plugin, so it's reachable without logging in regardless of `OIDC_WORKSPACE_ENABLED` - only the rest of the API (e.g. `/workspaces`) redirects to Keycloak login.
 
 ---
 

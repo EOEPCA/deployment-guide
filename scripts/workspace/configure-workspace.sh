@@ -40,7 +40,7 @@ ask "KEYCLOAK_TEST_ADMIN" "Enter the username for the example ADMIN user" "eoepc
 ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the example users" "eoepcapassword"
 
 # Used to scope the NetworkPolicy applied to each provisioned Datalab/session pod.
-export SERVICE_CIDR=$(kubectl get svc kubernetes -n default -o json | jq -r '.spec.clusterIP' | awk -F. '{printf "%d.%d.0.0/12", $1, $2}')
+export SERVICE_CIDR=$(kubectl get svc kubernetes -n default -o json | jq -r '.spec.clusterIP' | awk -F. '{printf "%d.%d.0.0/12", $1, int($2/16)*16}')
 export POD_CIDRS=$(kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}' | tr ' ' ',')
 
 gomplate -f "workspace-api/values-template.yaml" -o "workspace-api/generated-values.yaml"
