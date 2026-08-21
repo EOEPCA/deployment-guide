@@ -3,7 +3,6 @@
 
 import os
 import warnings
-import requests
 from pystac_client import Client
 from odc.stac import stac_load
 
@@ -12,34 +11,14 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 warnings.filterwarnings('ignore', category=UserWarning)
 
 INGRESS_HOST = os.getenv("INGRESS_HOST", "example.com")
-DATACUBE_ACCESS_URL = f"https://datacube-access.{INGRESS_HOST}"
+STAC_URL = f"https://eoapi.{INGRESS_HOST}/stac/"
 
-print(f"Datacube acess demo")
-print(f"URL: {DATACUBE_ACCESS_URL}\n")
-
-# get the datacube collections
-response = requests.get(f"{DATACUBE_ACCESS_URL}/collections")
-response.raise_for_status()
-
-collections_data = response.json()
-collections = collections_data["collections"]
-
-print(f"Found {len(collections)} datacube collection(s):")
-for col in collections:
-    print(f"  - {col['id']}")
-
-# find stac api endpoint
-stac_url = None
-for link in collections_data.get("links", []):
-    if link.get("rel") == "root":
-        stac_url = link.get("href")
-        break
-
-print(f"\nSTAC API: {stac_url}")
+print(f"Datacube access demo")
+print(f"STAC API: {STAC_URL}\n")
 
 # search for sentinel 2 data
-catalog = Client.open(stac_url)
-print("\nSearching region...")
+catalog = Client.open(STAC_URL)
+print("Searching region...")
 
 items = catalog.search(
     collections=["sentinel-2-datacube"],
@@ -83,4 +62,4 @@ if "B04" in data and "B08" in data:
     ndvi_mean = float(ndvi.mean().compute())
     print(f"  Mean NDVI: {ndvi_mean:.3f}")
     
-print("\nDone - datacube ready for anaylsis")
+print("\nDone - datacube ready for analysis")
