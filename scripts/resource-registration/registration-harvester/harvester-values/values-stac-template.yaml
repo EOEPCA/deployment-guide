@@ -8,7 +8,7 @@ harvester:
   config:
     log_level: INFO
     bpm_engine:
-      url: {{ getenv "HTTP_SCHEME" }}://registration-harvester-bpm-engine.{{ getenv "INGRESS_HOST" }}/engine-rest
+      url: http://registration-harvester-bpm-engine-operaton.resource-registration.svc.cluster.local:8080/engine-rest
       lock_duration: 300000  # 5 minutes
       retries: 3
       retry_timeout: 30000  # 30 seconds
@@ -19,7 +19,7 @@ harvester:
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
     iam:
       enabled: true
-      oidc_token_endpoint_url: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+      oidc_token_endpoint_url: http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
 {{- end }}
     topics:
       stac_harvest_catalog:
