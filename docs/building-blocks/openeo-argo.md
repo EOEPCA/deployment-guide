@@ -2,7 +2,6 @@
 
 OpenEO ArgoWorkflows implements the OpenEO API specification using Argo Workflows to execute OpenEO process graphs and Dask for distributed processing. It's an alternative to the GeoTrellis backend, using Dask for the actual computation.
 
-
 ---
 
 ## Prerequisites

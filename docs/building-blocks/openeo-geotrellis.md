@@ -69,7 +69,6 @@ helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --values sparkoperator/generated-values.yaml
 ```
 
-
 Refer to the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) for additional configuration options.
 
 #### Step 2: Install ZooKeeper
@@ -151,8 +150,6 @@ kubectl apply -f openeo-geotrellis/batch-jobs-rbac.yaml
     ]
     ```
 
-
-
     ```bash
     kubectl apply -f openeo-geotrellis/generated-iam.yaml
     kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OPENEO_CLIENT_ID} -n iam-management --timeout=60s
@@ -222,7 +219,6 @@ curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
 ```
 
 _Expected output:_ A JSON array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
-
 
 #### List Processes
 
