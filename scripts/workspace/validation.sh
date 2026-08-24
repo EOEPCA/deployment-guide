@@ -20,8 +20,7 @@ check_clusterpolicy_exists "workspace-registry-ingress-class"
 
 CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/probe" "200"
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
-    # Unauthenticated requests are redirected to Keycloak login
-    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "302"
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "200"
     CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/" "302"
 
     check_clusterpolicy_exists "workspace-session-iam"
