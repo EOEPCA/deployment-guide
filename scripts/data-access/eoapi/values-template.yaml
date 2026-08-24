@@ -27,6 +27,9 @@ postgrescluster:
   backupsEnabled: true
   backupsStorageClassName: {{ getenv "PERSISTENT_STORAGECLASS" }}
   backupsSize: 100Mi
+  databaseInitSQL:
+    key: initdb.sql
+    name: eoapi-initdb
   instances:
     - name: eoapi
       replicas: {{ getenv "POSTGRES_REPLICAS" | default "1" }}

@@ -191,7 +191,7 @@ bash apply-secrets.sh
 
 ```bash
 helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata/pgo \
-  --version 5.6.0 \
+  --version 5.8.8 \
   --namespace data-access \
   --create-namespace \
   --values postgres/generated-values.yaml \
@@ -203,7 +203,7 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.13.1 \
+  --version 0.15.1 \
   --namespace data-access \
   --create-namespace \
   --values eoapi/generated-values.yaml
