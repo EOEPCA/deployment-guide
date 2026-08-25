@@ -60,25 +60,11 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /raster(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: eoapi-raster
-                port:
-                  number: 8080
           - path: /vector(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: eoapi-vector
-                port:
-                  number: 8080
-          - path: /multidim(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: eoapi-multidim
                 port:
                   number: 8080
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
@@ -108,6 +94,20 @@ spec:
             backend:
               service:
                 name: eoapi-browser
+                port:
+                  number: 8080
+          - path: /raster
+            pathType: Prefix
+            backend:
+              service:
+                name: eoapi-raster
+                port:
+                  number: 8080
+          - path: /multidim
+            pathType: Prefix
+            backend:
+              service:
+                name: eoapi-multidim
                 port:
                   number: 8080
   {{- if eq ( getenv "HTTP_SCHEME" ) "https" }}
