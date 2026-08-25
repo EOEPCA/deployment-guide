@@ -24,6 +24,15 @@ replicaCount: 1
 image:
   tag: "api-2026.7.4"
 
+livenessProbe:
+  httpGet: null
+  exec:
+    command: ["true"]
+readinessProbe:
+  httpGet: null
+  exec:
+    command: ["true"]
+
 dask-gateway:
   gateway:
     backend:
