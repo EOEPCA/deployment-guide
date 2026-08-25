@@ -3,3 +3,4 @@ __pycache__/
 *.nc
 *-executed.ipynb
 *-output.ipynb
+openeo-argo-results/
