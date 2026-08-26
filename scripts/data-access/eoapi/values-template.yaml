@@ -60,6 +60,7 @@ raster:
   enabled: true
   ingress:
     path: "/raster"
+  overrideRootPath: "/"
   settings:
     envVars:
       AWS_S3_ENDPOINT: "{{ getenv "S3_HOST" }}"
@@ -77,6 +78,7 @@ multidim:
   enabled: true
   ingress:
     path: "/multidim"
+  overrideRootPath: "/"
   settings:
     envVars:
       WEB_CONCURRENCY: "1"
