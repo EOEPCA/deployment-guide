@@ -10,7 +10,7 @@ iam: &iam
     enabled: true
     createRoute: true
     url: &kcurl "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}"
-    internalUrl: ""
+    internalUrl: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080"
     hosts:
       - {{ getenv "KEYCLOAK_HOST" | quote }}
     paths:
@@ -127,6 +127,9 @@ iam: &iam
 keycloak-operator:
   operator:
     replicaCount: 1
+    config:
+      keycloakImage:
+        tag: 26.7.2
   keycloak:
     enabled: true
     instances: 1
