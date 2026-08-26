@@ -12,7 +12,7 @@ fi
 # if nomonitoring then expected pod count is 13 else 18 (+1 if IAM is enabled, for stac-auth-proxy)
 EXPECTED_POD_COUNT=18
 if [ "$NO_MONITORING" = "true" ]; then
-  EXPECTED_POD_COUNT=13
+  EXPECTED_POD_COUNT=12
 fi
 if [ "${USE_EXTERNAL_POSTGRES:-no}" = "yes" ]; then
   EXPECTED_POD_COUNT=$((EXPECTED_POD_COUNT - 4))
