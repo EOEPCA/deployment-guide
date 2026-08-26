@@ -158,6 +158,29 @@ def gitlab_oidc_session_login(gitlab_url, username, password):
     return session
 
 
+def django_admin_login(base_url, username, password):
+    session = requests.Session()
+    response = session.get(f"{base_url}/admin/login/")
+    response.raise_for_status()
+    csrf = re.search(r'name="csrfmiddlewaretoken" value="([^"]+)"', response.text)
+    if not csrf:
+        raise RuntimeError("Could not find Django admin login form")
+    login_response = session.post(
+        f"{base_url}/admin/login/",
+        data={
+            "csrfmiddlewaretoken": csrf.group(1),
+            "username": username,
+            "password": password,
+            "next": "/admin/",
+        },
+        headers={"Referer": f"{base_url}/admin/login/"},
+    )
+    login_response.raise_for_status()
+    if "sessionid" not in session.cookies:
+        raise RuntimeError("Django admin login failed - check username/password")
+    return session
+
+
 def gitlab_csrf_token(session, gitlab_url):
     # GitLab's API accepts the same session cookie as the web UI for authentication,
     # but state-changing requests still need a matching CSRF token from a page render.

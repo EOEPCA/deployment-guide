@@ -63,7 +63,7 @@ Deploy the Kubeflow Spark Operator to manage Spark jobs within your Kubernetes c
 ```bash
 helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 2.3.0-forcecrd-pr \
+    --version 2.3.0 \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values sparkoperator/generated-values.yaml

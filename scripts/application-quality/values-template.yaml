@@ -80,6 +80,13 @@ application-quality:
     rpRedirectUri: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/"
     {{- end }}
 
+  {{- if ne (getenv "APP_QUALITY_ENABLE_IAM" "false") "true" }}
+  api:
+    adminUser: {{ getenv "APP_QUALITY_ADMIN_USER" | quote }}
+    adminPassword: {{ getenv "APP_QUALITY_ADMIN_PASSWORD" | quote }}
+    adminEmail: {{ getenv "APP_QUALITY_ADMIN_EMAIL" | quote }}
+  {{- end }}
+
   ingress:
     enabled: true
     className: {{ getenv "INGRESS_CLASS" }}

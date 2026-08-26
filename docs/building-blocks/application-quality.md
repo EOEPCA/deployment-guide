@@ -91,7 +91,7 @@ OIDC authentication is optional - the script asks a plain yes/no with no preset 
 === "Without IAM"
 
     - **`APP_QUALITY_ENABLE_IAM`** is set to `false`.
-    - Application Quality is deployed without authentication.
+    - Tool/tag browsing is public. Pipeline management still requires a login - with no OIDC provider configured, you'll be prompted for a local Django admin username/email (**`APP_QUALITY_ADMIN_USER`**/**`APP_QUALITY_ADMIN_EMAIL`**), and **`APP_QUALITY_ADMIN_PASSWORD`** is generated if not already set.
 
 === "With IAM"
 
@@ -317,11 +317,17 @@ kubectl get apisixroute -n application-quality-sonarqube
 2. Open a browser at `https://application-quality.${INGRESS_HOST}/`, or the configured public host.
 3. If OIDC is enabled, authenticate using EOEPCA IAM.
 
-### 2. Authenticating via EOEPCA IAM
+### 2. Authenticating
 
-1. Click the **Login** link.
-2. Choose your Identity Provider.
-3. Upon successful login, the top navigation bar should show the authenticated user and logout option.
+=== "With IAM"
+
+    1. Click the **Login** link.
+    2. Choose your Identity Provider.
+    3. Upon successful login, the top navigation bar should show the authenticated user and logout option.
+
+=== "Without IAM"
+
+    Log in via the Django admin at `https://application-quality.${INGRESS_HOST}/admin/login/` using `APP_QUALITY_ADMIN_USER`/`APP_QUALITY_ADMIN_PASSWORD` from `configure-application-quality.sh`'s output. The API session this creates is also what the web portal itself uses.
 
 ### 3. Defining & Executing Pipelines
 
