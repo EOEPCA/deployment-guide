@@ -89,7 +89,7 @@ helm repo update eoepca-dev
 
 helm upgrade -i resource-catalogue eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 2.1.0-dev1 \
+  --version 2.1.0-dev2 \
   --namespace resource-discovery \
   --create-namespace
 ```
@@ -119,7 +119,7 @@ kubectl apply -f generated-ingress.yaml
 
     helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
       --values generated-protected-values.yaml \
-      --version 2.1.0-dev1 \
+      --version 2.1.0-dev2 \
       --namespace resource-discovery \
       --create-namespace
 
