@@ -473,8 +473,8 @@ source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+  --access_key $S3_ACCESS_KEY \
+  --secret_key $S3_SECRET_KEY
 ```
 
 **Upload a Test File:**
@@ -487,8 +487,8 @@ source ~/.eoepca/state
 s3cmd put validation.sh s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+  --access_key $S3_ACCESS_KEY \
+  --secret_key $S3_SECRET_KEY
 ```
 
 **Check the Uploaded File:**
@@ -498,8 +498,8 @@ source ~/.eoepca/state
 s3cmd ls s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+  --access_key $S3_ACCESS_KEY \
+  --secret_key $S3_SECRET_KEY
 ```
 
 **Delete the Test File:**
@@ -509,8 +509,8 @@ source ~/.eoepca/state
 s3cmd del s3://ws-eoepcauser/validation.sh \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+  --access_key $S3_ACCESS_KEY \
+  --secret_key $S3_SECRET_KEY
 ```
 
 #### 6. Datalabs UI
