@@ -69,6 +69,8 @@ iam: &iam
               - type: password
                 value: ${test_password}
                 temporary: false
+            realmRoles:
+              - default-roles-{{ getenv "REALM" }}
             clientRoles:
               realm-management:
                 - realm-admin

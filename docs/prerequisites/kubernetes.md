@@ -93,6 +93,7 @@ k3d cluster create eoepca \
   --k3s-arg="--disable=traefik@server:0" \
   --k3s-arg="--tls-san=$(hostname -f)@server:0" \
   --servers 1 --agents 0 \
+  --lb-config-override "settings.workerConnections=8192" \
   --port 31080:31080@loadbalancer \
   --port 31443:31443@loadbalancer
 ```
@@ -137,6 +138,7 @@ The Kubernetes version of the cluster can be selected via the `--image` option -
       --k3s-arg="--disable=traefik@server:0" \
       --k3s-arg="--tls-san=$(hostname -f)@server:0" \
       --servers 1 --agents 0 \
+      --lb-config-override "settings.workerConnections=8192" \
       --port 31080:31080@loadbalancer \
       --port 31443:31443@loadbalancer \
       --registry-config "registries.yaml"

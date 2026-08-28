@@ -1,0 +1,29 @@
+# This resource picks up the account-console client and adds a "+" Web origin,
+# which is missing by default.
+# This fixes the account console (relevant at least for Keycloak 26.6.3-26.7.2).
+# Nothing else should be changed, i.e., any required values should be set to their defaults.
+# This resource should be removed when Keycloak sets the Web origin correctly by default.
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: account-console
+  namespace: iam-management
+  annotations:
+    crossplane.io/external-name: eoepca/account-console
+spec:
+  forProvider:
+    accessType: PUBLIC
+    backchannelLogoutSessionRequired: false
+    clientId: account-console
+    fullScopeAllowed: false
+    name: "${client_account-console}"
+    realmId: eoepca
+    useRefreshTokens: true
+    webOrigins:
+      - "+"
+  managementPolicies:
+    - Observe
+    - Update
+  providerConfigRef:
+    kind: ProviderConfig
+    name: keycloak-provider-config
