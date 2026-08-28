@@ -69,17 +69,17 @@ You'll be asked for, in order:
 !!! warning
     Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
 
-=== "Without IAM (default)"
+=== "Without IAM (open - read-only)"
 
     Transactional writes stay disabled on the public catalogue - see [Ingesting Records](#4-ingesting-records) ("Without IAM" tab) for seeding sample data.
 
-=== "With IAM"
+=== "With IAM (protected - read-write)"
 
-    Resource Discovery deploys a second protected catalogue endpoint, `resource-catalogue-protected.${INGRESS_HOST}` - requires APISIX, since it uses the APISIX `openid-connect` and `opa` plugins.
+    To support transactions, a second catalogue endpoint is deployed through which catalogue update operations (POST/PUT/DELETE) can be performed. Since these operations should be protected, this endpoint requires IAM authentication - leaving the main public catalogue open for discovery only. The protected endpoint is exposed at `resource-catalogue-protected.${INGRESS_HOST}` - and requires APISIX, since it uses the APISIX `openid-connect` and `opa` plugins.
 
     The configuration script also generates and stores two credentials in `~/.eoepca/state` at this point: `RESOURCE_CATALOGUE_SESSION_SECRET` (APISIX's OIDC session cookie signing key) and `RESOURCE_DISCOVERY_DB_PASSWORD` (the Postgres password the protected catalogue uses to reach the public catalogue's chart-managed database). You don't need to set these yourself.
 
-2. **Deploy Resource Discovery Using Helm**
+1. **Deploy Resource Discovery Using Helm**
 
 Add the EOEPCA development Helm chart repository and deploy the public Resource Discovery catalogue:
 
@@ -100,13 +100,13 @@ Deploy the public ingress:
 kubectl apply -f generated-ingress.yaml
 ```
 
-=== "Without IAM (default)"
+=== "Without IAM (open - read-only)"
 
     Nothing further needed here - only the public catalogue is deployed.
 
-=== "With IAM"
-
-    Deploy the IAM resources and the protected catalogue:
+=== "With IAM (protected - read-write)"
+    
+    Deploy the IAM resources and the protected catalogue endpoint:
 
     ```bash
     source ~/.eoepca/state
@@ -139,11 +139,11 @@ done
 echo -e "\nResource Discovery is READY"
 ```
 
-### Protected Transactional Catalogue
+### Protected Transactional Endpoint
 
-The default public catalogue is intended for discovery. Transactional writes are disabled on the public endpoint.
+The default public catalogue endpoint is intended for discovery. Transactional writes are disabled on the public endpoint.
 
-When `RESOURCE_DISCOVERY_ENABLE_IAM=yes`, a second catalogue is deployed at:
+When `RESOURCE_DISCOVERY_ENABLE_IAM=yes`, a second catalogue endpoint is deployed at:
 
 `https://resource-catalogue-protected.${INGRESS_HOST}`
 
@@ -299,7 +299,7 @@ curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/csw?service=CSW&ver
 
 How you add records depends on whether transactions are enabled.
 
-=== "Without IAM (default)"
+=== "Without IAM (open - read-only)"
 
     With `RESOURCE_DISCOVERY_ENABLE_IAM=no`, transactions stay at the chart's secure default (disabled), so there is no HTTP write path on the public catalogue. To seed it with sample data, use pycsw's own admin CLI, `pycsw-admin.py`, which loads records straight into the configured database:
 
@@ -318,18 +318,11 @@ How you add records depends on whether transactions are enabled.
     !!! note
         A warning about the `geometry` field is expected and can be ignored for this sample.
 
-    Needs cluster access rather than going over the ingress.
+    This approach needs `kubectl` cluster access rather than via public ingress.
 
-    Verify:
+=== "With IAM (protected - read-write)"
 
-    ```bash
-    source ~/.eoepca/state
-    curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
-    ```
-
-=== "With IAM"
-
-    When the protected catalogue is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
+    When the protected catalogue endpoint is enabled, pycsw exposes the OGC API - Records **Transactions** extension directly: an authenticated `POST`/`PUT`/`DELETE` against `/collections/{collectionId}/items`, no separate ingestion tool or building block required.
 
     Unauthenticated requests are redirected to Keycloak rather than served:
 
@@ -381,14 +374,14 @@ How you add records depends on whether transactions are enabled.
     EOF
     ```
 
-    Now verify that the record is present in the protected catalogue:
-
-    ```bash
-    curl -s "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/collections/metadata:main/items/urn:eoepca:sample:0001?f=json" \
-      -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
-    ```
-
 ---
+
+Now verify that the newly added record is present. Regardless of the ingestion pathway, this read operation can be performed by via the standard open endpoint:
+
+```bash
+source ~/.eoepca/state
+curl -s "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/metadata:main/items" | jq '.features[].id'
+```
 
 ### 5. Validating Kubernetes Resources
 
