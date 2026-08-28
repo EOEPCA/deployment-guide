@@ -106,6 +106,17 @@ kubectl wait -n iam --for=condition=complete job/eoepca-realm --timeout=5m
 
 If this times out, check `kubectl logs -n iam job/eoepca-realm`
 
+## Apply Fix for the Admin Console Web Origin
+
+The `account-console` Client in the `eoepca` realm is created with a missing Web origin by default, which can cause issues when accessing the user account console/profile. The following resource adds the necessary `"+"` Web origin to fix this.
+
+```bash
+kubectl apply -f eoepca-account-console-fix.yaml
+```
+
+!!! info
+    This fix is relevant at least for Keycloak 26.6.3-26.7.2, and should be removed when Keycloak sets the Web origin correctly by default.
+
 ## Provision the Test User
 
 The `${REALM}` realm import only creates the `KEYCLOAK_TEST_ADMIN` user. The plain `KEYCLOAK_TEST_USER` test user is created afterwards via Crossplane, the same way other Building Blocks manage their own Keycloak resources.
