@@ -126,6 +126,26 @@ kubectl apply -f generated-eoepca-user.yaml
 kubectl wait --for=condition=Ready user.user.keycloak.m.crossplane.io/eoepca-user -n iam-management --timeout=2m
 ```
 
+## `eoepca` Realm Endpoints
+
+### Admin Console
+
+Login as the `eoepcaadmin` user.
+
+```
+source ~/.eoepca/state
+xdg-open "https://auth.${INGRESS_HOST}/admin/${REALM}/console/"
+```
+
+### User Profile
+
+Login as the `eoepcauser` user.
+
+```
+source ~/.eoepca/state
+xdg-open "https://auth.${INGRESS_HOST}/realms/${REALM}/account/"
+```
+
 ## Validate
 
 > **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/iam/iam.ipynb" target="_blank">IAM notebook</a> at `http://localhost:8888`.
