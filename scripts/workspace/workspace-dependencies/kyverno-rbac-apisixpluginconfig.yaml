@@ -9,3 +9,14 @@ rules:
   - apiGroups: ["apisix.apache.org"]
     resources: ["apisixpluginconfigs"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kyverno:reports:workspace-session-apisix-pluginconfigs
+  labels:
+    rbac.kyverno.io/aggregate-to-reports-controller: "true"
+rules:
+  - apiGroups: ["apisix.apache.org"]
+    resources: ["apisixpluginconfigs"]
+    verbs: ["get", "list", "watch"]
