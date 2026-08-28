@@ -64,7 +64,7 @@ First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers t
 **Configuration Parameters**  
 You'll be asked for, in order:
 
-- **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue - the EOEPCA IAM building block must already be deployed. Supported values: `yes`, `no`.
+- **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue endpoint - the EOEPCA IAM building block must already be deployed. Supported values: `yes`, `no`.
 
 !!! warning
     Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
@@ -139,7 +139,7 @@ done
 echo -e "\nResource Discovery is READY"
 ```
 
-### Protected Transactional Endpoint
+### Protected Transactional Catalogue Endpoint
 
 The default public catalogue endpoint is intended for discovery. Transactional writes are disabled on the public endpoint.
 
@@ -147,7 +147,7 @@ When `RESOURCE_DISCOVERY_ENABLE_IAM=yes`, a second catalogue endpoint is deploye
 
 `https://resource-catalogue-protected.${INGRESS_HOST}`
 
-This protected catalogue enables pycsw transactions and is routed through APISIX using:
+This protected catalogue endpoint enables pycsw transactions and is routed through APISIX using:
 
 - OpenID Connect authentication against the EOEPCA IAM realm
 - OPA policy checks using the Resource Registration policy
@@ -351,7 +351,7 @@ How you add records depends on whether transactions are enabled.
     echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
     ```
 
-    Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (for example the `eoepcauser` test user - see [Protected Transactional Catalogue](#protected-transactional-catalogue)), then exchange the device code for a token:
+    Open the printed URL, log in as a user assigned to the `resource-catalogue-admin` group (for example the `eoepcauser` test user - see [Protected Transactional Catalogue Endpoint](#protected-transactional-catalogue-endpoint)), then exchange the device code for a token:
 
     ```bash
     DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
