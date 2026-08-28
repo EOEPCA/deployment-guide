@@ -13,6 +13,7 @@ spec:
     accessType: PUBLIC
     clientId: resource-catalogue
     standardFlowEnabled: true
+    pkceCodeChallengeMethod: S256
     implicitFlowEnabled: false
     directAccessGrantsEnabled: false
     fullScopeAllowed: false

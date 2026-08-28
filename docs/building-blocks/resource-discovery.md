@@ -336,8 +336,17 @@ How you add records depends on whether transactions are enabled.
     The `resource-catalogue` Keycloak client has the OAuth2 **device authorization grant** enabled, which is the simplest way to get a token from a terminal without a client secret:
 
     ```bash
-    DEVICE=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
-      -d "client_id=resource-catalogue")
+    # Need these for PKCE (Proof Key for Code Exchange)
+    VERIFIER=$(openssl rand -hex 32)
+    CHALLENGE=$(printf '%s' "$VERIFIER" | openssl dgst -sha256 -binary | openssl base64 -A | tr '+/' '-_' | tr -d '=')
+
+    DEVICE=$(
+      curl -sS --fail-with-body \
+        -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/auth/device" \
+        --data-urlencode "client_id=resource-catalogue" \
+        --data-urlencode "code_challenge=${CHALLENGE}" \
+        --data-urlencode "code_challenge_method=S256"
+    )
 
     echo "$DEVICE" | jq -r '"Open \(.verification_uri_complete) and log in as a user in the resource-catalogue-admin group"'
     ```
@@ -347,10 +356,15 @@ How you add records depends on whether transactions are enabled.
     ```bash
     DEVICE_CODE=$(echo "$DEVICE" | jq -r '.device_code')
 
-    ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
-      -d "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
-      -d "device_code=${DEVICE_CODE}" \
-      -d "client_id=resource-catalogue" | jq -r '.access_token')
+    ACCESS_TOKEN=$(
+      curl -sS \
+        -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+        --data-urlencode "grant_type=urn:ietf:params:oauth:grant-type:device_code" \
+        --data-urlencode "device_code=${DEVICE_CODE}" \
+        --data-urlencode "client_id=resource-catalogue" \
+        --data-urlencode "code_verifier=${VERIFIER}" | \
+        jq -r '.access_token'
+    )
     ```
 
     Create a record:
