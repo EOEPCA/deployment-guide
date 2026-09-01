@@ -28,7 +28,7 @@ spec:
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
     authorization:
-      - allowRemoteResourceManagement: false
+      - allowRemoteResourceManagement: true
         decisionStrategy: UNANIMOUS
         keepDefaults: true
         policyEnforcementMode: ENFORCING
