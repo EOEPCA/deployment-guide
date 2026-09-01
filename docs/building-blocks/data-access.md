@@ -200,10 +200,10 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 
 #### Deploy eoAPI
 ```bash
-helm repo add eoapi https://devseed.com/eoapi-k8s/
+helm repo add eoapi https://developmentseed.org/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.15.1 \
+  --version 0.13.1 \
   --namespace data-access \
   --create-namespace \
   --values eoapi/generated-values.yaml

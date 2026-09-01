@@ -1,8 +1,5 @@
 image:
-  # Pinned to a specific sha tag: every semver/latest tag on this registry was
-  # wiped by an upstream cleanup-workflow bug (2026-08-23) and hasn't been
-  # rebuilt yet. Move back to a released version once that's resolved upstream.
-  tag: "sha-4d4387c"
+  tag: "v0.9.1"
 
 {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
 ingress:

@@ -20,8 +20,8 @@ postgresql:
   type: "postgrescluster"
 postgrescluster:
   enabled: true
-  postgresVersion: 16
-  postGISVersion: "3.4"
+  postgresVersion: 17
+  postGISVersion: "3.5"
   pgBouncerReplicas: 1
   monitoring: false
   backupsEnabled: true
