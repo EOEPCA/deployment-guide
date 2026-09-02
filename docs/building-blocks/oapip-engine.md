@@ -351,8 +351,7 @@ Skip this section if you don't need IAM protection right now - the engine will w
     This example protects the context for `eoepcauser` (see [Provision the Test User](./iam/main-iam.md#provision-the-test-user)):
     ```bash
     source ~/.eoepca/state
-    export OAPIP_USER="${KEYCLOAK_TEST_USER}"
-    envsubst < protect-oapip-user.yaml | kubectl apply -f -
+    envsubst < protect-test-user.yaml | kubectl apply -f -
     ```
 
     This creates: `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
@@ -538,9 +537,8 @@ tail -n 20 ~/celery.log
 ### Remove the OAPIP Engine
 ```bash
 source ~/.eoepca/state
-export OAPIP_USER="${KEYCLOAK_TEST_USER}"
 kubectl delete -f generated-ingress.yaml
-envsubst < protect-oapip-user.yaml | kubectl delete -f -
+envsubst < protect-test-user.yaml | kubectl delete -f -
 kubectl delete -f generated-iam.yaml --ignore-not-found
 helm -n processing uninstall zoo-project-dru
 kubectl delete ns processing
