@@ -13,6 +13,18 @@ fi
 
 ask "EODATA_ASSET_BASE_URL" "Set the base URL through which harvested 'eodata' assets will be accessed" "${HTTP_SCHEME}://eodata.${INGRESS_HOST}/" is_non_empty
 
+ask "ENABLE_USGS_M2M" "Enable USGS M2M credentials for Landsat harvesting? (yes/no)" "no" is_yes_no
+if [[ "$ENABLE_USGS_M2M" == "yes" ]]; then
+  ask "USGS_M2M_USERNAME" "Enter USGS Username" "" is_non_empty
+  ask "USGS_M2M_PASSWORD" "Enter USGS Password" "" is_non_empty
+fi
+
+ask "ENABLE_CDSE_CREDENTIALS" "Enable Copernicus Data Space Ecosystem (CDSE) credentials for Sentinel harvesting? (yes/no)" "no" is_yes_no
+if [[ "$ENABLE_CDSE_CREDENTIALS" == "yes" ]]; then
+  ask "CDSE_USERNAME" "Enter CDSE Username (email)" "" is_non_empty
+  ask "CDSE_PASSWORD" "Enter CDSE Password" "" is_non_empty
+fi
+
 # Two independent uses of OIDC: protecting our own endpoints, and connecting to
 # other protected services (e.g. resource-catalogue, eoapi) as a client.
 ask "RESOURCE_REGISTRATION_ENABLE_OIDC" "Enable OIDC protection for Resource Registration? (yes/no)" "yes" is_yes_no

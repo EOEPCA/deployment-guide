@@ -81,6 +81,12 @@ During the script execution, you will be prompted to provide:
     - *Default*: `eoepca`
 - **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
     - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
+- **`ENABLE_USGS_M2M`**: Enable [USGS M2M](https://m2m.cr.usgs.gov/) credentials (yes/no).
+    - *Default*: `no`
+    - If yes: **`USGS_M2M_USERNAME`**, **`USGS_M2M_PASSWORD`**.
+- **`ENABLE_CDSE_CREDENTIALS`**: Enable [CDSE](https://dataspace.copernicus.eu/) credentials (yes/no).
+    - *Default*: `no`
+    - If yes: **`CDSE_USERNAME`**, **`CDSE_PASSWORD`**.
 
 === "With IAM (default)"
 
@@ -99,32 +105,11 @@ During the script execution, you will be prompted to provide:
 
 ### 2. Apply Kubernetes Secrets
 
-Create required secrets for the Registration API and Harvester components:
+Create required secrets for the Registration API and Harvester components, using the credentials collected during configuration:
 
 ```bash
 bash apply-secrets.sh
 ```
-
-During the script execution, you'll be prompted for optional external service credentials:
-
-#### USGS M2M Credentials (for Landsat harvesting)
-
-!!! warning
-    These credentials are required when following below usage instructions for Landsat harvesting.
-
-If you want to harvest Landsat data, you'll need credentials from [USGS Machine-to-Machine (M2M) API](https://m2m.cr.usgs.gov/):
-
-1. Register for a free account at USGS
-2. Use the [Generate Application Token](https://ers.cr.usgs.gov/password/appgenerate) page 
-3. Create a token with the `M2M API` scope
-4. Enter these credentials when prompted by the script
-
-#### CDSE Credentials (for Sentinel harvesting)
-
-If you plan to harvest Sentinel data from the Copernicus Data Space Ecosystem (CDSE), you'll need to provide CDSE credentials:
-
-1. Register for a free account at [CDSE](https://dataspace.copernicus.eu/)
-2. Enter your email address (as your username) and your password when prompted
 
 ### 3. Deploy the Registration API Using Helm
 
