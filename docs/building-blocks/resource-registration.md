@@ -529,7 +529,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
     {
       "messageName": "landsat-start-order",
       "processVariables": {
-        "datetime_interval": {"value": "2024-11-13T10:00:00Z/2024-11-13T11:00:00Z", "type": "String"},
+        "datetime_interval": {"value": "2025-01-02T00:00:00Z/2025-01-02T23:59:59Z", "type": "String"},
         "collections": {"value": "landsat_ot_c2_l2", "type": "String"},
         "bbox": {"value": "-7,46,3,52", "type": "String"}
       }
