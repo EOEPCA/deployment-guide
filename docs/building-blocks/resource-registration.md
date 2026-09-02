@@ -606,7 +606,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 
     #### Execute Harvesting
 
-    Start a Sentinel harvesting job (for a small time period - this should match three records). Like Landsat, the `sentinel-data-ingestion` process is triggered via its message start event (message name `sentinel-start-order`):
+    Start a Sentinel harvesting job for a small time window (this should match around 20 scenes). Like Landsat, the `sentinel-data-ingestion` process is triggered via its message start event (message name `sentinel-start-order`):
 
     ```bash
     source ~/.eoepca/state
@@ -616,7 +616,8 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
     {
       "messageName": "sentinel-start-order",
       "processVariables": {
-        "filter": {"value": "startswith(Name,'S2') and contains(Name,'L2A') and contains(Name,'_N05') and PublicationDate ge 2025-11-13T10:00:00Z and PublicationDate lt 2025-11-13T10:00:30Z and Online eq true", "type": "String"}
+        "datetime_interval": {"value": "2025-11-13T10:00:00Z/2025-11-13T10:05:00Z", "type": "String"},
+        "collections": {"value": "S2_MSI_L2A", "type": "String"}
       }
     }
     EOF
@@ -648,6 +649,66 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
     ```bash
     source ~/.eoepca/state
     xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a/items"
+    ```
+
+=== "STAC Catalog"
+
+    Requires [Data Access](./data-access.md) to be deployed first - this harvester publishes into its eoAPI STAC endpoint.
+
+    #### Deploy Workflow
+
+    ```bash
+    source ~/.eoepca/state
+    curl -s https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/workflows/stac.bpmn | \
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/deployment/create" \
+      -u "${OPERATON_ADMIN_USER}:${OPERATON_ADMIN_PASSWORD}" \
+      -F "deployment-name=stac" \
+      -F "stac.bpmn=@-;filename=stac.bpmn;type=text/xml" | jq
+    ```
+
+    #### Execute Harvesting
+
+    This example harvests directly from a public STAC API ([Planetary Computer](https://planetarycomputer.microsoft.com/)), independent of the Landsat/Sentinel harvesters above:
+
+    ```bash
+    source ~/.eoepca/state
+    curl -s -X POST "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-definition/key/stac-harvest-catalog/start" \
+      -H "Content-Type: application/json" \
+      -d @- <<EOF | jq
+    {
+      "variables": {
+        "stac_catalog_source": {"value": "https://planetarycomputer.microsoft.com/api/stac/v1", "type": "String"},
+        "stac_catalog_collections": {"value": "sentinel-2-l2a", "type": "String"},
+        "stac_api_destination_url": {"value": "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac", "type": "String"},
+        "datetime": {"value": "2025-11-13T00:00:00Z/2025-11-13T23:59:59Z", "type": "String"},
+        "bbox": {"value": "-2,51,0,52.5", "type": "String"}
+      }
+    }
+    EOF
+    ```
+
+    #### Monitor Harvesting Progress
+
+    **Check worker logs:**
+
+    ```bash
+    kubectl -n resource-registration logs -f deploy/registration-harvester-worker-stac
+    ```
+
+    Use `Ctrl-C` to exit the log stream.
+
+    **Monitor process instances:**
+    ```bash
+    source ~/.eoepca/state
+    curl -s "${HTTP_SCHEME}://registration-harvester-bpm-engine.${INGRESS_HOST}/engine-rest/process-instance" \
+      | jq -r '.[] | "\(.id) | \(.definitionId)"'
+    ```
+
+    **Check registered items:**
+
+    ```bash
+    source ~/.eoepca/state
+    xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/sentinel-2-l2a/items"
     ```
 ---
 
@@ -699,12 +760,6 @@ Open...
 source ~/.eoepca/state
 xdg-open "${HTTP_SCHEME}://stac-browser.${INGRESS_HOST}"
 ```
-
----
-
-## Additional Harvester Types
-
-This guide deploys three harvester workers: **Landsat** (USGS), **Sentinel** (CDSE), and generic **STAC** catalogues (registering into [Data Access](./data-access.md)'s eoAPI rather than Resource Discovery). The STAC worker's `stac-harvest-catalog` workflow (`workflows/stac.bpmn`) has a different trigger shape to Landsat/Sentinel - check its start event(s) and the [Registration Harvester Documentation](https://github.com/EOEPCA/registration-harvester) before scripting an unattended execution against it.
 
 ---
 
