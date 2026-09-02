@@ -289,18 +289,14 @@ kubectl apply -f generated-iam.yaml
 kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${RESOURCE_REGISTRATION_IAM_CLIENT_ID} -n iam-management --timeout=60s
 ```
 
-The `Client` CRD enables Authorization Services in `ENFORCING` mode (`spec.forProvider.authorization`), but Crossplane's `provider-keycloak` has no cross-resource ID reference support for the Resource/Policy/Permission objects that `ENFORCING` mode requires - so it cannot declare them itself. Without at least one Permission, every request is denied regardless of the caller's token. Grant access using the [Resource Protection](iam/advanced-iam.md#approach-2-scripted) utility:
+The `Client` CRD enables Authorization Services in `ENFORCING` mode (`spec.forProvider.authorization`) - thus we need to apply an Authorization Policy to protect the Resource Registration service.
+
+As an example, the following applies protection that allows access for the configured _Test User_.
 
 ```bash
-cd ../utils
-bash protect-resource.sh
+source ~/.eoepca/state
+envsubst < protect-test-user.yaml | kubectl apply -f -
 ```
-
-When prompted, use:
-
-- **Client ID**: `resource-registration`
-- **Username**: `eoepcauser` (or ref. `KEYCLOAK_TEST_USER`)
-- **Resource URI**: `/*`
 
 ---
 
@@ -735,6 +731,7 @@ helm uninstall registration-harvester-bpm-engine -n resource-registration
 helm uninstall registration-api -n resource-registration
 
 # Remove IAM resources
+envsubst < protect-test-user.yaml | kubectl delete -f -
 kubectl delete -f generated-iam.yaml --ignore-not-found
 
 # Remove namespace (optional - will delete all data)

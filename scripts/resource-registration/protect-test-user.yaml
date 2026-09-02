@@ -1,0 +1,64 @@
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientAuthorizationResource
+metadata:
+  name: ${KEYCLOAK_TEST_USER}-rr-resource
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    resourceServerIdRef:
+      name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
+      namespace: iam-management
+    name: ${KEYCLOAK_TEST_USER}-resource
+    type: urn:${RESOURCE_REGISTRATION_IAM_CLIENT_ID}:resources:default
+    ownerManagedAccess: true
+    uris:
+      - "/*"
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+---
+# usersRefs.name is the Crossplane User object name (scripts/iam/eoepca-user-template.yaml), not the Keycloak username.
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientUserPolicy
+metadata:
+  name: ${KEYCLOAK_TEST_USER}-rr-policy
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    resourceServerIdRef:
+      name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
+      namespace: iam-management
+    name: ${KEYCLOAK_TEST_USER}-policy
+    logic: POSITIVE
+    decisionStrategy: UNANIMOUS
+    usersRefs:
+      - name: eoepca-user
+        namespace: iam-management
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientAuthorizationPermission
+metadata:
+  name: ${KEYCLOAK_TEST_USER}-rr-access
+  namespace: iam-management
+spec:
+  forProvider:
+    realmId: ${REALM}
+    resourceServerIdRef:
+      name: ${RESOURCE_REGISTRATION_IAM_CLIENT_ID}
+      namespace: iam-management
+    name: ${KEYCLOAK_TEST_USER}-access
+    description: User ${KEYCLOAK_TEST_USER} access to /${KEYCLOAK_TEST_USER}/*
+    type: resource
+    decisionStrategy: UNANIMOUS
+    resources:
+      - ${KEYCLOAK_TEST_USER}-resource
+    policies:
+      - ${KEYCLOAK_TEST_USER}-policy
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
