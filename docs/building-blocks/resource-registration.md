@@ -24,7 +24,7 @@ The Resource Registration BB comprises two main components:
 An OGC API Processes interface for registering, updating, or deleting resources on the local platform.
     
 2. **Harvester**  
-Automates workflows (via the Operaton BPM engine) to harvest data from external sources. This guide demonstrates harvesting Landsat data from USGS.
+Automates workflows (via the Operaton BPM engine) to harvest data from external sources. This guide covers three harvester workers: Landsat (USGS), Sentinel (CDSE) and a generic STAC catalogue harvester.
 
 ---
 
@@ -109,8 +109,8 @@ During the script execution, you'll be prompted for optional external service cr
 
 #### USGS M2M Credentials (for Landsat harvesting)
 
-!!! tip
-    For the purpose of this demonstration, we advise you to create this account so we can showcase the Landsat harvesting capabilities of the Registration Harvester.
+!!! warning
+    These credentials are required when following below usage instructions for Landsat harvesting.
 
 If you want to harvest Landsat data, you'll need credentials from [USGS Machine-to-Machine (M2M) API](https://m2m.cr.usgs.gov/):
 
@@ -444,7 +444,7 @@ The Landsat collection record used above is a plain STAC Collection, not an EOMP
 
 ```json
 {
-    "summary": {"PASSED": 1, "FAILED": 1, "SKIPPED": 0, "WARNINGS": 0},
+    "summary": {"PASSED": 0, "FAILED": 1, "SKIPPED": 0, "WARNINGS": 0},
     "tests": [
         {
             "id": "http://eoepca.org/spec/eomp/1/conf/core/validation",
@@ -455,8 +455,7 @@ The Landsat collection record used above is a plain STAC Collection, not an EOMP
                 "$: 'properties' is a required property",
                 "$.type: 'Collection' is not one of ['Feature']"
             ]
-        },
-        {"id": "http://eoepca.org/spec/eomp/1/conf/core/stac_extensions", "code": "PASSED"}
+        }
     ]
 }
 ```
@@ -491,6 +490,9 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 ### Using the Registration Harvester
 
 === "Landsat"
+
+    !!! warning
+        Requires real [USGS M2M credentials](#usgs-m2m-credentials-for-landsat-harvesting)
 
     #### Deploy Workflow
 
@@ -748,13 +750,9 @@ xdg-open "https://radiantearth.github.io/stac-browser/#/external/resource-catalo
 
 **Deploy STAC Browser**
 
-Deploy...
-
 ```bash
 kubectl apply -f registration-harvester/generated-stac-browser.yaml
 ```
-
-Open...
 
 ```bash
 source ~/.eoepca/state

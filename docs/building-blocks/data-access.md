@@ -291,6 +291,12 @@ Run validation:
 bash validation.sh
 ```
 
+If you skipped the "(Optional) Deploy Monitoring" step, pass `nomonitoring` - otherwise the script expects `eoapi-support`'s pods/services and reports them missing:
+
+```bash
+bash validation.sh nomonitoring
+```
+
 ---
 
 ### 5. Accessing the Data Access Services
