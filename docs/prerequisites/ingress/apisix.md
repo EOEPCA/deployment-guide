@@ -160,27 +160,33 @@ For `filter` reference see:
 
 ### Forwarded Port Correction (Optional)
 
-By default, APISIX sets the `X-Forwarded-Port` header to its container port (`9443` by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is `443`.
-
-Thus, we apply a global rule that replaces the value `9443` with the value `443`.<br>
-_Actually the rule also replaces port `9080` with port `80` though this should be irrelevant due to prior HTTP-to-HTTPS redirection_
+By default, APISIX sets the `X-Forwarded-Port` header to its container port (`9443` by default) when forwarding requests. This may confuse upstream systems, because the externally facing https port is `443`. This rule globally replaces the value `9443` with the value `443`. Actually the rule also replaces port `9080` with port `80` though this should be irrelevant due to prior HTTP-to-HTTPS redirection.
 
 ```bash
 cat - <<'EOF' | kubectl -n ingress-apisix apply -f -
 apiVersion: apisix.apache.org/v2
 kind: ApisixGlobalRule
 metadata:
-  name: forwarded-port-correction
+  name: tls-port-correction
 spec:
+  ingressClassName: apisix
   plugins:
     - name: serverless-pre-function
       enable: true
       config:
         phase: "rewrite"
         functions:
-          - "return function(conf, ctx) if tonumber(ngx.var.var_x_forwarded_port) > 9000 then ngx.var.var_x_forwarded_port = ngx.var.var_x_forwarded_port - 9000 end end"
+          - |
+            return function(conf, ctx)
+              local port = tonumber(ctx.var.http_x_forwarded_port)
+              if port and port > 9000 then
+                ctx.var.http_x_forwarded_port = tostring(port - 9000)
+              end
+            end
 EOF
 ```
+
+Note: APISIX's `set_upstream_x_forwarded_headers()` runs AFTER all plugins and copies `ctx.var.http_x_forwarded_port` into `var_x_forwarded_port`, which nginx uses in `proxy_set_header`. So we must modify `http_x_forwarded_port` (not `var_x_forwarded_port` or `ngx.req.set_header`). See apisix/init.lua.
 
 ## APISIX Uninstallation
 
