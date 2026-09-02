@@ -5,6 +5,10 @@ harvester:
     tag: 2.1.0-rc1
   secret:
     name: registration-harvester-secret
+  eodata:
+    enabled: true
+    createPVC: false
+    claimName: eodata
   config:
     log_level: INFO
     bpm_engine:
