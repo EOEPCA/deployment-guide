@@ -1,2 +1,2 @@
-pystac_client
-odc-stac
+pystac_client==0.9.0
+odc-stac==0.5.3

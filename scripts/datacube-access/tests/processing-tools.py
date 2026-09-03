@@ -6,7 +6,6 @@ import warnings
 from pystac_client import Client
 from odc.stac import stac_load
 
-# supress the warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
 warnings.filterwarnings('ignore', category=UserWarning)
 
@@ -16,7 +15,6 @@ STAC_URL = f"https://eoapi.{INGRESS_HOST}/stac/"
 print(f"Datacube access demo")
 print(f"STAC API: {STAC_URL}\n")
 
-# search for sentinel 2 data
 catalog = Client.open(STAC_URL)
 print("Searching region...")
 
@@ -47,19 +45,16 @@ data = stac_load(
     chunks={"x": 2048, "y": 2048}
 )
 
-# show structure
 print(f"\nDatacube loaded:")
 print(f"  Shape: {data.sizes['x']} x {data.sizes['y']} pixels")
 print(f"  Time steps: {data.sizes.get('time', 1)}")
 print(f"  Bands: {list(data.data_vars.keys())}")
 
-# quick ndvi calc to show it works
 if "B04" in data and "B08" in data:
     ndvi = (data["B08"] - data["B04"]) / (data["B08"] + data["B04"])
     print(f"\nNDVI calculated, shape: {ndvi.shape}")
-    
-    # stats
+
     ndvi_mean = float(ndvi.mean().compute())
     print(f"  Mean NDVI: {ndvi_mean:.3f}")
-    
+
 print("\nDone - datacube ready for analysis")

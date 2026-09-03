@@ -4,6 +4,10 @@
     "stac_version": "1.0.0",
     "id": "S2C_T25TDE_20251030T131038_L2A",
     "collection": "sentinel-2-datacube",
+    "stac_extensions": [
+      "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+      "https://stac-extensions.github.io/projection/v2.0.0/schema.json"
+    ],
     "geometry": {
       "type": "Polygon",
       "coordinates": [[
@@ -19,7 +23,7 @@
       "datetime": "2025-10-30T13:11:10Z",
       "platform": "sentinel-2c",
       "eo:cloud_cover": 45.4,
-      "proj:epsg": 32625,
+      "proj:code": "EPSG:32625",
       "proj:shape": [10980, 10980],
       "proj:transform": [10, 0, 399960, 0, -10, 4600020]
     },
@@ -48,13 +52,19 @@
         "proj:transform": [20, 0, 399960, 0, -20, 4600020]
       }
     },
-    "links": []
+    "links": [
+      {"rel": "collection", "type": "application/json", "href": "collections.json"}
+    ]
   },
   {
     "type": "Feature",
     "stac_version": "1.0.0",
     "id": "S2C_T25TDF_20251030T131038_L2A",
     "collection": "sentinel-2-datacube",
+    "stac_extensions": [
+      "https://stac-extensions.github.io/eo/v1.0.0/schema.json",
+      "https://stac-extensions.github.io/projection/v2.0.0/schema.json"
+    ],
     "geometry": {
       "type": "Polygon",
       "coordinates": [[
@@ -70,7 +80,7 @@
       "datetime": "2025-10-30T13:10:55Z",
       "platform": "sentinel-2c",
       "eo:cloud_cover": 40.6,
-      "proj:epsg": 32625,
+      "proj:code": "EPSG:32625",
       "proj:shape": [10980, 10980],
       "proj:transform": [10, 0, 399960, 0, -10, 4700040]
     },
@@ -99,6 +109,8 @@
         "proj:transform": [20, 0, 399960, 0, -20, 4700040]
       }
     },
-    "links": []
+    "links": [
+      {"rel": "collection", "type": "application/json", "href": "collections.json"}
+    ]
   }
 ]
