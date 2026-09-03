@@ -158,7 +158,7 @@ CronJobs are conditionally created based on PgSTAC settings:
   - Processes queries that exceeded timeout
   - Configurable via `queueProcessor.schedule`
 
-- **Extent Updater** (created when `update_collection_extent: "false"`):
+- **Extent Updater** (created when `update_collection_extent: "false"` - i.e. extents are *not* kept up to date inline on every item write, so this CronJob is the periodic fallback that recalculates them instead):
   - Schedule: `"0 */12 * * *"` (every 12 hours)
   - Updates collection spatial/temporal boundaries
   - Configurable via `extentUpdater.schedule`
@@ -177,7 +177,7 @@ pgstacBootstrap:
       update_collection_extent: "false"
 ```
 
-### 3. Deployment
+### 2. Deployment
 
 #### Apply Secrets
 ```bash
@@ -279,7 +279,7 @@ helm upgrade -i eoapi-support eoapi/eoapi-support \
 
 ---
 
-### 4. Monitoring the Deployment
+### 3. Monitoring the Deployment
 
 After deploying, monitor the status:
 ```bash
@@ -299,7 +299,7 @@ bash validation.sh nomonitoring
 
 ---
 
-### 5. Accessing the Data Access Services
+### 4. Accessing the Data Access Services
 
 Once deployment is complete:
 
@@ -370,8 +370,9 @@ curl -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json"
 curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
-    "bbox": [-130.0, 20.0, -60.0, 55.0],
-    "datetime": "2001-01-01T00:00:00Z/2021-12-31T23:59:59Z",
+    "collections": ["sentinel-2-iceland"],
+    "bbox": [-27.0, 62.9, -12.5, 67.6],
+    "datetime": "2023-01-01T00:00:00Z/2023-12-31T23:59:59Z",
     "limit": 10
   }'
 ```

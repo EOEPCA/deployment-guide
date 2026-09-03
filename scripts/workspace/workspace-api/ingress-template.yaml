@@ -46,7 +46,7 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            discovery: "{{ getenv "HTTP_SCHEME" }}://auth.{{ getenv "INGRESS_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             timeout: 10
             use_jwks: true
             bearer_only: false
@@ -82,7 +82,7 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            discovery: "{{ getenv "HTTP_SCHEME" }}://auth.{{ getenv "INGRESS_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             timeout: 10
             use_jwks: true
             bearer_only: false

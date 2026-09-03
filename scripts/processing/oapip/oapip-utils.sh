@@ -16,7 +16,7 @@ if [ "${OIDC_OAPIP_ENABLED:-false}" = "true" ]; then
             -d "grant_type=password" \
             -d "client_id=${OAPIP_CLIENT_ID}" \
             -d "client_secret=${OAPIP_CLIENT_SECRET}" \
-            "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
+            "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
             jq -r '.access_token'
     )
 
