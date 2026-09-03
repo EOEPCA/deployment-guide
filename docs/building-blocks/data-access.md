@@ -154,14 +154,14 @@ Configure via `pgstacBootstrap.settings.pgstacSettings`:
 CronJobs are conditionally created based on PgSTAC settings:
 
 - **Queue Processor** (created when `use_queue: "true"`):
-  - Schedule: `"0 * * * *"` (hourly)
-  - Processes queries that exceeded timeout
-  - Configurable via `queueProcessor.schedule`
+    - Schedule: `"0 * * * *"` (hourly)
+    - Processes queries that exceeded timeout
+    - Configurable via `queueProcessor.schedule`
 
 - **Extent Updater** (created when `update_collection_extent: "false"` - i.e. extents are *not* kept up to date inline on every item write, so this CronJob is the periodic fallback that recalculates them instead):
-  - Schedule: `"0 */12 * * *"` (every 12 hours)
-  - Updates collection spatial/temporal boundaries
-  - Configurable via `extentUpdater.schedule`
+    - Schedule: `"0 */12 * * *"` (every 12 hours)
+    - Updates collection spatial/temporal boundaries
+    - Configurable via `extentUpdater.schedule`
 
 By default, both CronJobs are created (`use_queue=true`, `update_collection_extent=false`). Both schedules are customizable using standard cron format.
 
@@ -227,34 +227,28 @@ git clone --depth 1 --branch titiler-openeo-v0.12.0 https://github.com/sentinel-
 helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
   --namespace data-access \
   --values titiler-openeo/generated-values.yaml
+rm -rf /tmp/titiler-openeo
 ```
 
 #### Configure Ingress/Routes
 
-=== "Without IAM (default)"
+Configures the ingress/routes for the data access services.
 
-    ```bash
-    source ~/.eoepca/state
-    if [ "${INGRESS_CLASS}" = "apisix" ]; then
-      kubectl apply -f eoapi/generated-ingress.yaml
-    else
-      kubectl apply -f eoapi/generated-nginx-ingress.yaml
-    fi
-    ```
+If IAM/Keycloak integration was enabled during configuration (ref. `DATA_ACCESS_ENABLE_IAM`), then Keycloak is configured with a Client and associated Roles/Groups.
 
-=== "With IAM"
-
-    Configure Keycloak with a Client and associated Roles/Groups, then apply the ingress routes:
-
-    ```bash
-    source ~/.eoepca/state
-    kubectl apply -f iam/generated-iam.yaml
-    if [ "${INGRESS_CLASS}" = "apisix" ]; then
-      kubectl apply -f eoapi/generated-ingress.yaml
-    else
-      kubectl apply -f eoapi/generated-nginx-ingress.yaml
-    fi
-    ```
+```bash
+source ~/.eoepca/state
+# IAM integration
+if [ "${DATA_ACCESS_ENABLE_IAM}" = "yes" ]; then
+  kubectl apply -f iam/generated-iam.yaml
+fi
+# Ingress/routes
+if [ "${INGRESS_CLASS}" = "apisix" ]; then
+  kubectl apply -f eoapi/generated-ingress.yaml
+else
+  kubectl apply -f eoapi/generated-nginx-ingress.yaml
+fi
+```
 
 #### (Optional) Deploy Geoparquet Exporter
 
@@ -263,10 +257,14 @@ helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
 
 Also only published as a git-sourced Helm chart:
 ```bash
-git clone --depth 1 --branch v0.2.4 https://github.com/developmentseed/pgstac-geoparquet-exporter /tmp/pgstac-geoparquet-exporter
-helm upgrade -i geoparquet-exporter /tmp/pgstac-geoparquet-exporter/charts/pgstac-geoparquet-exporter \
-  --namespace data-access \
-  --values geoparquet-exporter/generated-values.yaml
+source ~/.eoepca/state
+if [ "${ENABLE_GEOPARQUET_EXPORT}" = "yes" ]; then
+  git clone --depth 1 --branch v0.2.4 https://github.com/developmentseed/pgstac-geoparquet-exporter /tmp/pgstac-geoparquet-exporter
+  helm upgrade -i geoparquet-exporter /tmp/pgstac-geoparquet-exporter/charts/pgstac-geoparquet-exporter \
+    --namespace data-access \
+    --values geoparquet-exporter/generated-values.yaml
+  rm -rf /tmp/pgstac-geoparquet-exporter
+fi
 ```
 
 #### (Optional) Deploy Monitoring
@@ -361,20 +359,20 @@ xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
 **Retrieve STAC API Landing Page:**
 ```bash
 source ~/.eoepca/state
-curl -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json"
+curl -s -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json" | jq
 ```
 
 **Search STAC Items:**
 
 ```bash
-curl -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
+curl -s -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
     "collections": ["sentinel-2-iceland"],
     "bbox": [-27.0, 62.9, -12.5, 67.6],
     "datetime": "2023-01-01T00:00:00Z/2023-12-31T23:59:59Z",
     "limit": 10
-  }'
+  }' | jq
 ```
 
 ### 4. Collection-Level Access Control (IAM)
