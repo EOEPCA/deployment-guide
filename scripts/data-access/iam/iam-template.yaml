@@ -13,6 +13,7 @@ spec:
     accessType: PUBLIC
     clientId: {{ getenv "EOAPI_CLIENT_ID" }}
     standardFlowEnabled: true
+    pkceCodeChallengeMethod: S256
     implicitFlowEnabled: false
     directAccessGrantsEnabled: true # allow for now to simplify testing
     fullScopeAllowed: true
