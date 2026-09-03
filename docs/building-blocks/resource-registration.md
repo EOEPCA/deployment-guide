@@ -81,10 +81,12 @@ During the script execution, you will be prompted to provide:
     - *Default*: `eoepca`
 - **`EODATA_ASSET_BASE_URL`**: The base URL through which harvested 'eodata' assets will be accessed
     - *Default*: `"${HTTP_SCHEME}://eodata.${INGRESS_HOST}/"`
-- **`ENABLE_USGS_M2M`**: Enable [USGS M2M](https://m2m.cr.usgs.gov/) credentials (yes/no).
+- **`ENABLE_USGS_M2M`**: Enable [USGS M2M](https://m2m.cr.usgs.gov/) credentials (yes/no).<br>
+    _See section [Credentials for Data Providers](#credentials-for-data-providers)_
     - *Default*: `no`
-    - If yes: **`USGS_M2M_USERNAME`**, **`USGS_M2M_PASSWORD`**.
-- **`ENABLE_CDSE_CREDENTIALS`**: Enable [CDSE](https://dataspace.copernicus.eu/) credentials (yes/no).
+    - If yes: **`USGS_M2M_USERNAME`**, **`USGS_M2M_PASSWORD`**
+- **`ENABLE_CDSE_CREDENTIALS`**: Enable [CDSE](https://dataspace.copernicus.eu/) credentials (yes/no).<br>
+    _See section [Credentials for Data Providers](#credentials-for-data-providers)_
     - *Default*: `no`
     - If yes: **`CDSE_USERNAME`**, **`CDSE_PASSWORD`**.
 
@@ -102,6 +104,25 @@ During the script execution, you will be prompted to provide:
 === "Without IAM"
 
     Set both **`RESOURCE_REGISTRATION_ENABLE_OIDC`** and **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`** to `no`. Resource Registration deploys with public, unauthenticated endpoints and calls target services (e.g. Resource Discovery) without a client credential. Works with both `apisix` and `nginx`.
+
+#### Credentials for Data Providers
+
+This guide includes harvesters for Landsat (from USGS) and Sentinel (from CDSE) data. To support this it is necessary to obtain and configure the appropriate credentials for each data provider.
+
+**_USGS M2M Credentials (for Landsat harvesting)_**
+
+If you want to harvest Landsat data, you'll need credentials from [USGS Machine-to-Machine (M2M) API](https://m2m.cr.usgs.gov/):
+
+1. Register for a free account at USGS
+2. Use the [Generate Application Token](https://ers.cr.usgs.gov/password/appgenerate) page 
+3. Create a token with the `M2M API` scope - this will be used as your password for the M2M API
+
+**_CDSE Credentials (for Sentinel harvesting)_**
+
+If you plan to harvest Sentinel data from the Copernicus Data Space Ecosystem (CDSE), you'll need to provide CDSE credentials:
+
+1. Register for a free account at [CDSE](https://dataspace.copernicus.eu/)
+2. Enter your email address (as your username) and your password when prompted
 
 ### 2. Apply Kubernetes Secrets
 
@@ -413,10 +434,10 @@ A separate `pyeomp-record-validate` process (from [pyeomp](https://github.com/EO
 
 ```bash
 source ~/.eoepca/state
-curl -X POST "https://registration-api.${INGRESS_HOST}/processes/pyeomp-record-validate/execution" \
+curl -s -X POST "https://registration-api.${INGRESS_HOST}/processes/pyeomp-record-validate/execution" \
   ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
-  -d @- <<EOF
+  -d @- <<EOF | jq
 {
     "inputs": {
         "record": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/landsat/landsat-ot-c2-l2.json"
@@ -477,7 +498,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 === "Landsat"
 
     !!! warning
-        Requires real [USGS M2M credentials](#usgs-m2m-credentials-for-landsat-harvesting)
+        Requires real [USGS M2M credentials](#credentials-for-data-providers)
 
     #### Deploy Workflow
 
@@ -566,6 +587,9 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
     ```
 
 === "Sentinel"
+
+    !!! warning
+        Requires real [CDSE credentials](#credentials-for-data-providers)
 
     #### Deploy Workflow
 
