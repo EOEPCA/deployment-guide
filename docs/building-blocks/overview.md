@@ -24,21 +24,21 @@ Below is a list of the EOEPCA+ Building Blocks available for deployment:
 
     [:octicons-arrow-right-24: Deploy Resource Discovery](resource-discovery.md)
 
--   :material-database-plus:{ .lg .middle } **3. Resource Registration**
-
-    ---
-
-    Adds new resources to the EOEPCA+ ecosystem, including harvesting data from external sources and populating Catalogue and Data Access services.
-
-    [:octicons-arrow-right-24: Deploy Resource Registration](resource-registration.md)
-
--   :material-database:{ .lg .middle } **4. Data Access**
+-   :material-database:{ .lg .middle } **3. Data Access**
 
     ---
 
     Efficient access to Earth Observation data, with visualisation and retrieval services enabling users and applications to interact with large datasets.
 
     [:octicons-arrow-right-24: Deploy Data Access](data-access.md)
+
+-   :material-database-plus:{ .lg .middle } **4. Resource Registration**
+
+    ---
+
+    Adds new resources to the EOEPCA+ ecosystem, including harvesting data from external sources and populating Catalogue and Data Access services.
+
+    [:octicons-arrow-right-24: Deploy Resource Registration](resource-registration.md)
 
 -   :material-cube-scan:{ .lg .middle } **5. Datacube Access**
 
