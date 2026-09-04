@@ -3,12 +3,16 @@
 source ./oapip-utils.sh
 
 echo ""
-echo "Unauthenticated request to protected processes endpoint:"
-CHECK_STATUS=$(
-  curl --silent --show-error --output /dev/null --write-out "%{http_code}" \
-    "${HTTP_SCHEME}://zoo.${INGRESS_HOST}/${OAPIP_USER}/ogc-api/processes"
-)
-echo "HTTP ${CHECK_STATUS}"
+echo "Unauthenticated request to protected processes endpoint: (should redirect to the IAM login page)"
+curl -I -s -D - "${HTTP_SCHEME}://zoo.${INGRESS_HOST}/${OAPIP_USER}/ogc-api/processes" \
+  | awk '
+      /^HTTP/ {code=$2}
+      tolower($1) ~ /^location:/ {loc=$2}
+      END {
+        print "HTTP_CODE: " code
+        print "LOCATION: " loc
+      }
+    '
 
 echo ""
 echo "Authenticated request to protected processes endpoint:"

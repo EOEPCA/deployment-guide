@@ -8,6 +8,7 @@ services:
     network_mode: "host"
     volumes:
     - ${PWD}/examples:/home/${PUSER}/work
+    - ${PWD}/../scripts:/home/${PUSER}/scripts
     - $HOME/.eoepca/state:/home/${PUSER}/.eoepca/state
     - ${PWD}/kubeconfig:/home/${PUSER}/.kube/config
     # START (make permissions work)
