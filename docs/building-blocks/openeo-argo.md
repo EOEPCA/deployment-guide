@@ -99,7 +99,7 @@ kubectl apply -f generated-ingress.yaml
 
 ### 6. Configure Authentication
 
-A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, plus a `ClientDefaultScopes` override) - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
+A Keycloak client is required so the OpenEO API can validate tokens issued by your IAM deployment. `configure-openeo-argo.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD, a `ClientDefaultScopes` override, and two `ClientScope` resources) - this requires [Crossplane](./iam/main-iam.md) with its Keycloak provider installed and configured.
 
 ```bash
 kubectl apply -f generated-iam.yaml

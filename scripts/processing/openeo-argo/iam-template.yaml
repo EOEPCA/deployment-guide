@@ -21,11 +21,38 @@ spec:
     validRedirectUris:
       - "/*"
       - "https://editor.openeo.org/*"
+      - "{{ getenv "HTTP_SCHEME" }}://editor.{{ getenv "INGRESS_HOST" }}/*"
     webOrigins:
       - "+"
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientScope
+metadata:
+  name: eduperson-entitlement
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: eduperson_entitlement
+---
+apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
+kind: ClientScope
+metadata:
+  name: eduperson-scoped-affiliation
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: keycloak-provider-config
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    name: eduperson_scoped_affiliation
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
 kind: ClientDefaultScopes
@@ -47,3 +74,5 @@ spec:
       - email
       - roles
       - basic
+      - eduperson_entitlement
+      - eduperson_scoped_affiliation
