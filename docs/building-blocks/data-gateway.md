@@ -207,6 +207,34 @@ results = dag.search(
 
 ---
 
+## STAC Server Mode
+
+EODAG's built-in `serve-rest` command has been removed. Use [stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag), the maintained STAC API server for EODAG.
+
+### Start the STAC Server
+
+```bash
+pip install stac-fastapi.eodag uvicorn
+python -m stac_fastapi.eodag.app
+```
+
+### Query the STAC API
+
+```bash
+# Root endpoint
+curl -s http://localhost:8000 | jq .
+
+# List all collections
+curl -s "http://localhost:8000/collections" | jq .
+
+# Search for products
+curl -s "http://localhost:8000/search?collections=S2_MSI_L1C&bbox=1,43,2,44&start_datetime=2024-01-01/2024-01-15&limit=5" | jq .
+```
+
+A search is answered by whichever configured provider EODAG selects; the STAC API does not accept a `provider` query parameter. To search a specific provider, use the CLI or Python API instead.
+
+---
+
 ## Supported Providers
 
 EODAG comes pre-configured with many providers including:
