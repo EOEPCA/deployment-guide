@@ -258,7 +258,7 @@ View available providers in Python:
 
 ```python
 dag = EODataAccessGateway()
-print(dag.available_providers())
+print(dag.providers)
 ```
 
 See the complete list in the [EODAG Providers Documentation](https://eodag.readthedocs.io/en/stable/providers.html).
@@ -280,8 +280,8 @@ You can add custom providers either via the YAML configuration file or programma
         api_endpoint: https://my-stac-api.example.com/search
         need_auth: false
       products:
-        GENERIC_PRODUCT_TYPE:
-          productType: '{productType}'
+        GENERIC_COLLECTION:
+          _collection: '{collection}'
       download:
         type: HTTPDownload
     ```
@@ -307,8 +307,8 @@ You can add custom providers either via the YAML configuration file or programma
         api_endpoint: https://my-stac-api.example.com/search
         need_auth: false
       products:
-        GENERIC_PRODUCT_TYPE:
-          productType: '{productType}'
+        GENERIC_COLLECTION:
+          _collection: '{collection}'
       download:
         type: HTTPDownload
     """)
@@ -318,7 +318,7 @@ You can add custom providers either via the YAML configuration file or programma
 
     # Now search using the custom provider
     results = dag.search(
-        productType="sentinel-2-l2a",
+        collection="sentinel-2-l2a",
         start="2024-01-01",
         end="2024-01-15"
     )
