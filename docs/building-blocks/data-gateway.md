@@ -31,18 +31,10 @@ The Data Gateway is utilised by other building blocks rather than deployed stand
 
 ## Installation
 
-### Basic Installation
+### Installation with All Providers Support
 
 ```bash
-pip install eodag
-```
-
-### Installation with STAC Server Support
-
-To enable STAC REST API functionality:
-
-```bash
-pip install "eodag[server]"
+pip install "eodag[all-providers]==4.7.2"
 ```
 
 ### Verify Installation
