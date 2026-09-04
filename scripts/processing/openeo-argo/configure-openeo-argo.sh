@@ -15,7 +15,7 @@ ask "OIDC_POLICIES" "Enter OIDC policies (optional, leave empty for none)" "" is
 
 echo ""
 echo "🗂️ Configuring Data Sources..."
-ask "STAC_CATALOG_ENDPOINT" "STAC catalog URL" "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac" is_non_empty
+ask "STAC_CATALOG_ENDPOINT" "STAC catalog URL" "https://earth-search.aws.element84.com/v1" is_non_empty
 
 gomplate -f "values-template.yaml" -o "generated-values.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"
 gomplate -f "ingress-template.yaml" -o "generated-ingress.yaml" --datasource annotations="$GOMPLATE_DATASOURCE_ANNOTATIONS"

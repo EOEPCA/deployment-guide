@@ -17,7 +17,7 @@ Before deploying, ensure your environment meets these requirements:
 | Cert Manager | Properly installed | [Installation Guide](../prerequisites/tls.md) |
 | `ReadWriteMany` Storage Class | Required for the shared job workspace | [Storage Guide](../prerequisites/storage.md) |
 | OIDC Provider | Required (app-native OIDC) | [Installation Guide](./iam/main-iam.md) |
-| STAC Catalogue | Required for data access | [eoAPI Deployment](./data-access.md) |
+| STAC Catalogue | Optional - defaults to the public [Earth Search](https://earth-search.aws.element84.com/v1) catalogue; use your own for private/custom data | [eoAPI Deployment](./data-access.md) |
 
 The API, executor, and Dask worker pods all mount the same job workspace volume concurrently, so the storage class used for it (`SHARED_STORAGECLASS` below) **must** support `ReadWriteMany`.
 
@@ -54,7 +54,7 @@ You'll be prompted for:
 | `OIDC_ISSUER_URL` | OIDC provider URL | `https://auth.example.com/realms/eoepca` |
 | `OIDC_ORGANISATION` | OIDC organisation identifier | `eoepca` |
 | `OIDC_POLICIES` | OIDC policies (optional, leave empty for none) | |
-| `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://eoapi.example.com/stac` |
+| `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://earth-search.aws.element84.com/v1` (default) or your own [eoAPI](./data-access.md) deployment |
 
 ### 2. Add Helm Repositories
 
@@ -87,8 +87,7 @@ helm upgrade -i openeo eodc/openeo-argo \
     --timeout 10m
 ```
 
-!!! tip
-    Check for a newer chart release with `helm search repo eodc/openeo-argo -l` - pin whichever version you've actually tested against.
+
 
 The chart creates the API's Argo Workflows service-account token via a `post-upgrade` hook, which does **not** run on a first-ever install (Helm only fires `post-install` hooks then). If the `openeo-openeo-argo` pod is stuck in `CreateContainerConfigError` with `secret "openeo-argo-access-sa.service-account-token" not found`, re-run the exact same `helm upgrade` command above - the second run is a real upgrade, so the hook fires and the pod recovers.
 
@@ -212,9 +211,10 @@ JOB_ID=$(curl -s -i -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jo
         "load": {
           "process_id": "load_collection",
           "arguments": {
-            "id": "your-collection-id",
-            "spatial_extent": {"west": -34.0, "south": 38.8, "east": -33.0, "north": 39.5},
-            "temporal_extent": ["2025-10-20", "2025-10-31"]
+            "id": "sentinel-2-l2a",
+            "spatial_extent": {"west": 4.8, "south": 52.3, "east": 5.0, "north": 52.4},
+            "temporal_extent": ["2023-06-01", "2023-06-30"],
+            "bands": ["red", "nir"]
           }
         },
         "save": {
@@ -245,7 +245,7 @@ curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
 ```
 
 !!! note
-    The STAC catalogue must contain collections with data formatted for OpenEO processing. Check the available collections at your STAC endpoint and ensure the spatial/temporal extent matches actual data.
+    This example works as-is against the default `STAC_CATALOG_ENDPOINT`. If you configured your own STAC catalogue instead, swap `id`, `spatial_extent` and `temporal_extent` for a collection and extent that catalogue actually has data for.
 
 ---
 
