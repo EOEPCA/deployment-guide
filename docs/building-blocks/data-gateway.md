@@ -207,35 +207,6 @@ results = dag.search(
 
 ---
 
-## STAC Server Mode
-
-!!! warning
-    The `serve-rest` command is deprecated since EODAG v3.9.0 and will be removed in a future version. For production deployments, use [stac-fastapi-eodag](https://github.com/CS-SI/stac-fastapi-eodag). The built-in server remains functional for development and testing.
-
-### Start the STAC Server
-
-```bash
-eodag serve-rest --world --port 5000
-```
-
-### Query the STAC API
-
-```bash
-# Root endpoint
-curl -s http://localhost:5000 | jq .
-
-# List all collections
-curl -s "http://localhost:5000/collections" | jq .
-
-# Filter collections by provider
-curl -s "http://localhost:5000/collections?provider=earth_search" | jq .
-
-# Search for products
-curl -s "http://localhost:5000/search?collections=S2_MSI_L1C&bbox=1,43,2,44&datetime=2024-01-01/2024-01-15&limit=5" | jq .
-```
-
----
-
 ## Supported Providers
 
 EODAG comes pre-configured with many providers including:
@@ -315,6 +286,15 @@ You can add custom providers either via the YAML configuration file or programma
         end="2024-01-15"
     )
     ```
+
+---
+
+## EODAG as a Service
+
+EODAG has been extended with the Federated Data Proxy BB, which provides a service that enables caching and proxying of data requests across multiple providers. This allows for improved performance and reduced load on the underlying data sources.
+
+See [Federated Data Proxy](federated-data-proxy.md)
+
 ---
 
 ## Further Resources
