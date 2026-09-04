@@ -11,6 +11,7 @@ Unlike other EOEPCA building blocks that require deployment, the Data Gateway is
 The Data Gateway sits between EOEPCA components and the various data providers.
 
 **Key Capabilities:**
+
 - Unified API for 50+ product types across 10+ providers
 - Plugin architecture supporting STAC, OpenSearch, OData, and custom protocols
 - Automatic handling of authentication and data retrieval
@@ -41,7 +42,7 @@ pip install eodag
 To enable STAC REST API functionality:
 
 ```bash
-pip install eodag[server]
+pip install "eodag[server]"
 ```
 
 ### Verify Installation
@@ -80,6 +81,7 @@ cop_dataspace:
 ```
 
 Key configuration options:
+
 - **priority**: Higher values mean the provider is tried first (default: 1)
 - **extract**: Whether to automatically extract downloaded archives (default: True)
 - **outputs_prefix**: Directory for downloaded products (default: system temp directory)
@@ -98,10 +100,10 @@ eodag list --no-fetch
 eodag list --provider cop_dataspace --no-fetch
 
 # Filter by platform
-eodag list --platform SENTINEL2 --no-fetch
+eodag list --platform S2A --no-fetch
 
 # Filter by sensor type
-eodag list --sensorType OPTICAL --no-fetch
+eodag list --sensor-type OPTICAL --no-fetch
 ```
 
 ### Search for Products
@@ -109,23 +111,23 @@ eodag list --sensorType OPTICAL --no-fetch
 ```bash
 # Basic search
 eodag search \
-  --productType S2_MSI_L1C \
+  --collection S2_MSI_L1C \
   --box 1 43 2 44 \
   --start 2024-01-01 \
   --end 2024-01-15
 
 # Search with cloud cover filter
 eodag search \
-  --productType S2_MSI_L1C \
+  --collection S2_MSI_L1C \
   --box 1 43 2 44 \
   --start 2024-06-01 \
   --end 2024-06-30 \
-  --cloudCover 20 \
+  --cloud-cover 20 \
   --storage low_cloud_results.geojson
 
 # Get all matching results (not just first page)
 eodag search \
-  --productType S2_MSI_L1C \
+  --collection S2_MSI_L1C \
   --box 1 43 2 44 \
   --start 2024-01-01 \
   --end 2024-01-05 \
@@ -155,17 +157,17 @@ from eodag import EODataAccessGateway
 dag = EODataAccessGateway()
 
 # List available providers
-providers = dag.available_providers()
+providers = dag.providers
 print(f"Found {len(providers)} providers")
 
 # Search for Sentinel-2 products
 results = dag.search(
-    productType="S2_MSI_L1C",
-    geom={'lonmin': 1, 'latmin': 43.5, 'lonmax': 2, 'latmax': 44},
-    start='2024-01-01',
-    end='2024-01-15',
-    provider='earth_search',  # Optional: specify provider
-    items_per_page=10
+    collection="S2_MSI_L1C",
+    geom={"lonmin": 1, "latmin": 43.5, "lonmax": 2, "latmax": 44},
+    start="2024-01-01",
+    end="2024-01-15",
+    provider="earth_search",  # Optional: specify provider
+    limit=10,
 )
 
 print(f"Found {len(results)} products")
@@ -174,7 +176,7 @@ print(f"Found {len(results)} products")
 if results:
     product = results[0]
     print(f"ID: {product.properties.get('id')}")
-    print(f"Cloud cover: {product.properties.get('cloudCover'):.1f}%")
+    print(f"Cloud cover: {product.properties.get('eo:cloud_cover'):.1f}%")
 
 # Download all results
 product_paths = dag.download_all(results)
@@ -188,13 +190,14 @@ if results:
 ### Search with Cloud Cover Filter
 
 ```python
+criteria = {"eo:cloud_cover": 20}
 results = dag.search(
-    productType="S2_MSI_L1C",
+    collection="S2_MSI_L1C",
     geom={"lonmin": 1, "latmin": 43, "lonmax": 2, "latmax": 44},
     start="2024-06-01",
     end="2024-06-30",
-    cloudCover=20,
-    items_per_page=5
+    limit=5,
+    **criteria,
 )
 ```
 
@@ -203,7 +206,7 @@ results = dag.search(
 ```python
 wkt = "POLYGON((1 43, 2 43, 2 44, 1 44, 1 43))"
 results = dag.search(
-    productType="S2_MSI_L1C",
+    collection="S2_MSI_L1C",
     geom=wkt,
     start="2024-01-01",
     end="2024-01-05"
