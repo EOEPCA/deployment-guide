@@ -109,10 +109,9 @@ The workspace dependencies include CSI-RClone for storage mounting and the Educa
 helm repo add kyverno https://kyverno.github.io/kyverno/
 helm repo update kyverno
 helm upgrade -i kyverno kyverno/kyverno \
-  --version 3.9.0 \
+  --version 3.7.2 \
   --namespace kyverno \
-  --create-namespace \
-  --set backgroundController.enable=true
+  --create-namespace
 
 # Deploy CSI-RClone
 helm upgrade -i workspace-dependencies-csi-rclone \
