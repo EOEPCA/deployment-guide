@@ -1,9 +1,6 @@
 global:
   defaultInternalIssuerRef:
     name: {{ getenv "INTERNAL_CLUSTER_ISSUER" }}
-  # Used to build self-referential links (e.g. JSON:API "links") in API responses.
-  defaultCheckAPIBaseURL: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/
-  defaultTelemetryAPIBaseURL: {{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/
 
 opensearch:
   persistence:
@@ -20,32 +17,6 @@ opensearch:
   securityConfig:
     config:
       data:
-        # Required override: the chart's default roles.yml is missing the _meta header
-        # securityadmin.sh needs, which blocks the whole security index from applying.
-        roles.yml: |-
-          _meta:
-            type: "roles"
-            config_version: 2
-
-          own_trace_data_access:
-            reserved: false
-            hidden: false
-            cluster_permissions: []
-            index_permissions:
-            - index_patterns:
-              - "ss4o_*-default-namespace*"
-              dls: "{ \"bool\": { \"must\" : { \"match\": { \"resource.user.id\" : \"${user.name}\"\
-                \ } } } }"
-              fls: []
-              masked_fields: []
-              allowed_actions:
-              - "crud"
-              - "view_metadata"
-              - "indices:admin/mappings/get"
-              - "indices:monitor/settings/get"
-              - "indices:admin/get"
-            tenant_permissions: []
-            static: false
         roles_mapping.yml: |-
           _meta:
             type: "rolesmapping"
@@ -171,6 +142,8 @@ resource-health:
       pullPolicy: Always
     replicaCount: 1
     environmentFixed:
+      - name: RH_TELEMETRY_API_BASE_URL
+        value: "{{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/telemetry/"
       - name: FAST_API_ROOT_PATH
         value: "/api/telemetry"
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
@@ -280,10 +253,11 @@ resource-health:
   check_api:
     replicaCount: 1
     environmentFixed:
+      - name: RH_CHECK_API_BASE_URL
+        value: "{{ getenv "HTTP_SCHEME" }}://resource-health.{{ getenv "INGRESS_HOST" }}/api/healthchecks/"
       - name: FAST_API_ROOT_PATH
         value: "/api/healthchecks"
-      # Required: the chart's hardcoded default runner image (:2.0.0) crashloops on every
-      # API-created check (missing setuptools). global.defaultHealthCheckImage doesn't cover this path.
+      # The API runner image is configured separately from Helm-defined checks.
       - name: RH_CHECK_K8S_DEFAULT_RUNNER_IMAGE
         value: "docker.io/eoepca/healthcheck_runner:2.0.1-6cbbcf4"
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}

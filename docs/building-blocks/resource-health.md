@@ -139,7 +139,7 @@ kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/
 ```bash
 bash apply-secrets.sh
 ```
-This script creates the necessary secrets for the Resource Health BB (skipped if OIDC is disabled).
+This script creates the namespace and alerting secrets, plus client credentials when OIDC is enabled.
 
 
 2. **Install or upgrade Resource Health**
@@ -151,20 +151,21 @@ helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
 helm repo update eoepca-dev
 
 helm upgrade -i resource-health eoepca-dev/resource-health-reference-deployment \
-  --version 2.1.1 \
+  --version 2.1.3 \
   -f generated-values.yaml \
   -n resource-health --create-namespace
 ```
 
-3. **Bootstrap OpenSearch security**
+3. **Wait for Resource Health**
 
-The OpenSearch chart mounts the security config (roles, internal users, role mappings) but does not apply it automatically. Without this step every OpenSearch-backed request (telemetry, dashboards) fails with `OpenSearch Security not initialized.`:
+OpenSearch initialises its security configuration automatically on a fresh data volume.
 
 ```bash
-bash bootstrap-opensearch-security.sh
+kubectl rollout status statefulset/resource-health-opensearch \
+  -n resource-health --timeout=300s
+kubectl wait --for=condition=Available deployment --all \
+  -n resource-health --timeout=300s
 ```
-
-Re-run this any time you change OpenSearch-related values and `helm upgrade`.
 
 ---
 
@@ -268,6 +269,12 @@ bash validation.sh
 
 > **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/resource-health/health.ipynb" target="_blank">Resource Health notebook</a> at `http://localhost:8888`.
 
+Load the saved deployment settings before running the commands below:
+
+```bash
+source ~/.eoepca/state
+```
+
 ### Authentication
 
 === "With OIDC (default)"
@@ -275,9 +282,7 @@ bash validation.sh
     The Resource Health APIs are protected by OIDC authentication. Before making API requests, obtain an access token:
 
     ```bash
-    source ~/.eoepca/state
-
-    ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+    ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
       -H "Content-Type: application/x-www-form-urlencoded" \
       -d "grant_type=password" \
       -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
@@ -292,7 +297,7 @@ bash validation.sh
     Alternatively, for machine-to-machine access without a user context, use the client credentials grant:
 
     ```bash
-    ACCESS_TOKEN=$(curl -s -X POST "https://auth.${INGRESS_HOST}/realms/eoepca/protocol/openid-connect/token" \
+    ACCESS_TOKEN=$(curl -s -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
       -H "Content-Type: application/x-www-form-urlencoded" \
       -d "grant_type=client_credentials" \
       -d "client_id=${RESOURCE_HEALTH_CLIENT_ID}" \
@@ -311,7 +316,7 @@ bash validation.sh
 Health check templates define reusable patterns for common monitoring scenarios:
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" \
+curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq '.data[].id'
 ```
@@ -323,7 +328,7 @@ The default deployment includes:
 To view details of a specific template:
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/simple_ping" \
+curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/simple_ping" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
 ```
 
@@ -358,7 +363,7 @@ EOF
 Register the health check:
 
 ```bash
-curl -X POST "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+curl -X POST "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/vnd.api+json" \
   -d @healthcheck-google.json | jq
@@ -373,7 +378,7 @@ Note the `id` field in the response - this is the UUID assigned to your health c
 View all registered health checks:
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq '.data[] | {id: .id, name: .attributes.metadata.name, schedule: .attributes.schedule}'
 ```
@@ -394,7 +399,7 @@ Rather than waiting for the scheduled time, you can trigger a health check immed
 
 ```bash
 # Grabs the first check in the list - swap in a select() filter if you have more than one registered
-CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+CHECK_ID=$(curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.data[0].id')
 echo "Check ID: $CHECK_ID"
@@ -416,24 +421,22 @@ You should see pytest output showing the test passed.
 **Via Telemetry API:**
 
 ```bash
-curl -s "https://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans" \
+curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq
 ```
 
 !!! note
-    Omit the trailing slash: `/v1/spans/` triggers a 307 redirect to a plain
-    `http://` URL (a self-referential-link bug in the telemetry API), which
-    most HTTP clients then refuse to follow over an HTTPS connection.
+    Use `/v1/spans` without a trailing slash to avoid a redirect.
 
 If no data appears yet, wait a moment for the checks to complete and telemetry to be collected.
 
 **Via Web Dashboard:**
 
-Visit `https://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
+Visit `${HTTP_SCHEME}://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
 
 **Via OpenSearch Dashboards:**
 
-Visit `https://resource-health.${INGRESS_HOST}/dashboards` to query the raw `ss4o_traces-*` indices directly. With OIDC disabled, log in with `admin`/`admin`.
+Visit `${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/dashboards` to query the raw `ss4o_traces-*` indices directly. With OIDC disabled, log in with `admin`/`admin`.
 
 ---
 
@@ -441,17 +444,17 @@ Visit `https://resource-health.${INGRESS_HOST}/dashboards` to query the raw `ss4
 
 ```bash
 # Look the check up by name this time, rather than assuming it's first in the list
-CHECK_ID=$(curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+CHECK_ID=$(curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq -r '.data[] | select(.attributes.metadata.name=="google-ping-check") | .id')
 echo "Deleting check: $CHECK_ID"
 
 # Deleting the check also removes its underlying CronJob
-curl -X DELETE "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}" \
+curl -X DELETE "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 
 # Confirm google-ping-check is gone
-curl -s "https://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   | jq '.data[].attributes.metadata.name'
 ```
@@ -508,7 +511,7 @@ Apply the updated configuration:
 
 ```bash
 helm upgrade resource-health eoepca-dev/resource-health-reference-deployment \
-  --version 2.1.1 \
+  --version 2.1.3 \
   -f generated-values.yaml \
   -n resource-health
 ```
@@ -517,7 +520,7 @@ helm upgrade resource-health eoepca-dev/resource-health-reference-deployment \
 
 ### Creating Health Checks via Web UI
 
-1. Visit the Resource Health Web dashboard at `https://resource-health.${INGRESS_HOST}`
+1. Visit the Resource Health Web dashboard at `${HTTP_SCHEME}://resource-health.${INGRESS_HOST}`
 2. Click on **Create new check**
 3. Select a template (e.g., "Simple ping template")
 4. Fill in the required fields:
