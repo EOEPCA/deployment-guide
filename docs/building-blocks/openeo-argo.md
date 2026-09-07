@@ -87,9 +87,9 @@ helm upgrade -i openeo eodc/openeo-argo \
     --timeout 10m
 ```
 
-
-
-The chart creates the API's Argo Workflows service-account token via a `post-upgrade` hook, which does **not** run on a first-ever install (Helm only fires `post-install` hooks then). If the `openeo-openeo-argo` pod is stuck in `CreateContainerConfigError` with `secret "openeo-argo-access-sa.service-account-token" not found`, re-run the exact same `helm upgrade` command above - the second run is a real upgrade, so the hook fires and the pod recovers.
+!!! warning
+    Due to a small error in this chart it may be necessary to re-run the `helm upgrade` command after the initial installation to ensure the Argo Workflows service-account token is created correctly. The chart creates the API's Argo Workflows service-account token via a `post-upgrade` hook, which does **not** run on a first-ever install (Helm only fires `post-install` hooks then).<br>
+    If the `openeo-openeo-argo` pod is stuck in `CreateContainerConfigError` with `secret "openeo-argo-access-sa.service-account-token" not found`, re-run the exact same `helm upgrade` command above - the second run is a real upgrade, so the hook fires and the pod recovers.
 
 ### 5. Deploy Ingress
 ```bash
@@ -153,9 +153,19 @@ The deployment can be tested using the openEO Web Editor as a client - either th
 
 === "Public Instance"
 
+    Open the public openEO Web Editor pre-connected with the URL of this deployment:
+
     ```bash
+    source ~/.eoepca/state
     xdg-open "https://editor.openeo.org?server=https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/"
     ```
+
+    Log in by selecting:
+
+    * Provider: `EOEPCA Keycloak`
+    * Login method: `User Credentials`
+    * Select button `Login in with EOEPCA Keycloak`
+    * Enter the credentials of the test user (`eoepcauser`) from the IAM guide
 
 === "Self-Hosted (Optional)"
 
@@ -174,14 +184,19 @@ The deployment can be tested using the openEO Web Editor as a client - either th
       --values generated-values.yaml
     ```
 
-    Open it pre-connected to this deployment:
+    Open the local openEO Web Editor pre-connected with the URL of this deployment:
 
     ```bash
     source ~/.eoepca/state
     xdg-open "${HTTP_SCHEME}://${OPENEO_WEB_EDITOR_HOST}/?server=${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/"
     ```
 
-Select `EOEPCA` and log in via the IAM BB Keycloak instance.
+    Log in by selecting:
+
+    * Provider: `EOEPCA Keycloak`
+    * Client ID: `openeo-argo`
+    * Select button `Login in with EOEPCA Keycloak`
+    * Enter the credentials of the test user (`eoepcauser`) from the IAM guide
 
 ---
 
@@ -190,7 +205,12 @@ Select `EOEPCA` and log in via the IAM BB Keycloak instance.
 > **Prefer a notebook?** Run `../../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/openeo-argo/openeo-argo.ipynb" target="_blank">OpenEO ArgoWorkflows notebook</a> at `http://localhost:8888`.
 
 **Submit and monitor a job:**
+
+!!! note
+    This example works as-is against the default `STAC_CATALOG_ENDPOINT`. If you configured your own STAC catalogue instead, swap `id`, `spatial_extent` and `temporal_extent` for a collection and extent that catalogue actually has data for.
+
 ```bash
+source ~/.eoepca/state
 # Password grant against the openeo-argo client, using the test user from the IAM guide
 ACCESS_TOKEN=$(curl -s -X POST \
     "${OIDC_ISSUER_URL}/protocol/openid-connect/token" \
@@ -243,9 +263,6 @@ curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}" \
 curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq
 ```
-
-!!! note
-    This example works as-is against the default `STAC_CATALOG_ENDPOINT`. If you configured your own STAC catalogue instead, swap `id`, `spatial_extent` and `temporal_extent` for a collection and extent that catalogue actually has data for.
 
 ---
 

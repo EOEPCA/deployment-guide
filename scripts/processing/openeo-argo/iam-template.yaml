@@ -16,10 +16,12 @@ spec:
     adminUrl: {{ getenv "HTTP_SCHEME" }}://openeo-argo.{{ getenv "INGRESS_HOST" }}
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
+    pkceCodeChallengeMethod: S256
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
     validRedirectUris:
       - "/*"
+      - "https://{{ getenv "INGRESS_HOST" }}/*"
       - "https://editor.openeo.org/*"
       - "{{ getenv "HTTP_SCHEME" }}://editor.{{ getenv "INGRESS_HOST" }}/*"
     webOrigins:
