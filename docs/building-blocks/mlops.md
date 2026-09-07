@@ -93,6 +93,7 @@ If you **don't** want to enable OIDC, you can skip directly to [Create Required 
 A Keycloak client is required for the ingress protection of the MLOps. `configure-mlops.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
 ```bash
+source ~/.eoepca/state
 kubectl apply -f generated-iam.yaml
 kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${MLOPS_OIDC_CLIENT_ID} -n iam-management --timeout=60s
 ```
