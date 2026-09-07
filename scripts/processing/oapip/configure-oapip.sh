@@ -37,6 +37,9 @@ if [ "$OIDC_OAPIP_ENABLED" = "true" ]; then
         exit 1
     fi
 
+    source ../../common/prerequisite-utils.sh
+    run_validation "check_crossplane_installed"
+
     ask "OAPIP_CLIENT_ID" "Enter the Client ID for the OAPIP" "oapip-engine" is_non_empty
 
     if [ -z "${OAPIP_CLIENT_SECRET:-}" ]; then

@@ -17,7 +17,7 @@ Before deploying, ensure your environment meets these requirements:
 | Cert Manager | Properly installed | [Installation Guide](../prerequisites/tls.md) |
 | `ReadWriteMany` Storage Class | Required for the shared job workspace | [Storage Guide](../prerequisites/storage.md) |
 | OIDC Provider | Required (app-native OIDC) | [Installation Guide](./iam/main-iam.md) |
-| STAC Catalogue | Optional - defaults to the public [Earth Search](https://earth-search.aws.element84.com/v1) catalogue; use your own for private/custom data | [eoAPI Deployment](./data-access.md) |
+| STAC Catalogue | Optional - deploy eoAPI and load the `sentinel-2-iceland` sample collection, used by the API Usage example below | [eoAPI Deployment](./data-access.md#load-sample-collection) |
 
 The API, executor, and Dask worker pods all mount the same job workspace volume concurrently, so the storage class used for it (`SHARED_STORAGECLASS` below) **must** support `ReadWriteMany`.
 
@@ -54,7 +54,7 @@ You'll be prompted for:
 | `OIDC_ISSUER_URL` | OIDC provider URL | `https://auth.example.com/realms/eoepca` |
 | `OIDC_ORGANISATION` | OIDC organisation identifier | `eoepca` |
 | `OIDC_POLICIES` | OIDC policies (optional, leave empty for none) | |
-| `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://earth-search.aws.element84.com/v1` (default) or your own [eoAPI](./data-access.md) deployment |
+| `STAC_CATALOG_ENDPOINT` | STAC catalog URL | `https://eoapi.example.com/stac` |
 
 ### 2. Add Helm Repositories
 
@@ -202,6 +202,8 @@ The deployment can be tested using the openEO Web Editor as a client - either th
 
 ### API Usage
 
+The example below loads the `sentinel-2-iceland` collection from [eoAPI](./data-access.md#load-sample-collection) - deploy that Building Block and run its `ingest.sh` for that collection first, or the job will fail to find any data.
+
 > **Prefer a notebook?** Run `../../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/openeo-argo/openeo-argo.ipynb" target="_blank">OpenEO ArgoWorkflows notebook</a> at `http://localhost:8888`.
 
 **Submit and monitor a job:**
@@ -231,17 +233,16 @@ JOB_ID=$(curl -s -i -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jo
         "load": {
           "process_id": "load_collection",
           "arguments": {
-            "id": "sentinel-2-l2a",
-            "spatial_extent": {"west": 4.8, "south": 52.3, "east": 5.0, "north": 52.4},
-            "temporal_extent": ["2023-06-01", "2023-06-30"],
-            "bands": ["red", "nir"]
+            "id": "sentinel-2-iceland",
+            "spatial_extent": {"west": -24.9, "south": 64.2, "east": -24.5, "north": 64.5},
+            "temporal_extent": ["2023-11-09", "2023-11-10"]
           }
         },
         "save": {
           "process_id": "save_result",
           "arguments": {
             "data": {"from_node": "load"},
-            "format": "GTiff"
+            "format": "netCDF"
           },
           "result": true
         }
