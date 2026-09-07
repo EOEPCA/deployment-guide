@@ -1,6 +1,6 @@
 # Operations Deployment Guide
 
-The **Operations** Building Block is the observability stack for an EOEPCA deployment. It gives operators a single place to see what the cluster is doing: metrics, logs, dashboards, and alerts, with Keycloak SSO in front of the UIs. This guide walks through deploying it on a Kubernetes cluster.
+The **Operations** Building Block is the observability stack for an EOEPCA deployment. It gives operators a single place to see what the cluster is doing: metrics, logs, dashboards, and alerts, with optional Keycloak SSO in front of the UIs. This guide walks through deploying it on a Kubernetes cluster.
 
 ---
 
@@ -8,7 +8,7 @@ The **Operations** Building Block is the observability stack for an EOEPCA deplo
 
 Operations deploys:
 
-- **Prometheus** scrapes metrics from the cluster and from any workload that exposes a `/metrics` endpoint
+- **Prometheus** scrapes cluster metrics and workloads selected by scrape configuration
 - **Loki** stores container logs, with **Alloy** collecting them from every node
 - **Grafana** is the UI for both, with a set of cluster dashboards loaded out the box
 - **Alertmanager** routes firing alerts to **Keep**, which is where operators triage and acknowledge them
@@ -36,7 +36,7 @@ Log database running in SingleBinary mode. Chunks live in S3-compatible object s
 
 3. **Grafana Alloy**
 
-Log collector. Runs as a DaemonSet so there's one per node, tails container stdout, enriches each line with pod and namespace metadata, ships to Loki. Replaces the now-deprecated Promtail.
+Log collector. Runs as a DaemonSet, reads pod logs through the Kubernetes API, adds pod and namespace labels, and sends them to Loki.
 
 4. **Keep**
 
@@ -160,7 +160,7 @@ bash apply-secrets.sh
 
 #### Deploy kube-prometheus-stack
 
-The core monitoring stack is deployed first so that its CRDs (`ServiceMonitor`, `PodMonitor`, `PrometheusRule`, `AlertmanagerConfig`) are available for subsequent components.
+The core monitoring stack is deployed first so that its CRDs (`ServiceMonitor`, `PodMonitor`, `PrometheusRule`, `AlertmanagerConfig`) are available for subsequent components. The values enable the recording rules used by the curated dashboards; baseline alert rules are applied separately.
 
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -187,7 +187,7 @@ helm upgrade -i loki grafana/loki \
 
 #### Deploy Alloy
 
-Alloy is deployed as raw manifests rather than via Helm, since the configuration is tightly coupled to the cluster's log paths and Loki endpoint.
+Apply the Alloy manifests, which configure pod log collection through the Kubernetes API and delivery to Loki.
 
 ```bash
 kubectl apply -k alloy/
@@ -316,7 +316,7 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
       -o jsonpath='{.data.admin-password}' | base64 -d; echo
     ```
 
-    Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated.
+    Keep runs with `AUTH_TYPE=NO_AUTH` and is unauthenticated. API requests still require an `X-API-KEY` header, but its value is not checked.
 
 === "With IAM"
 
@@ -356,8 +356,9 @@ The baseline rules include a `Watchdog` alert which fires continuously as a pipe
 === "Without IAM (default)"
 
     ```bash
-    curl -X GET "https://alerting.${INGRESS_HOST}/v2/alerts" \
-      -H "Accept: application/json"
+    source ~/.eoepca/state
+    curl -sS "${HTTP_SCHEME}://alerting.${INGRESS_HOST}/v2/alerts" \
+      -H "Accept: application/json" -H "X-API-KEY: anything" | jq
     ```
 
 === "With IAM"

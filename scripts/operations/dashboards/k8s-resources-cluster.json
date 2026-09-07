@@ -42,7 +42,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(node_cpu_seconds_total{job=\"node-exporter\", mode!=\"idle\", cluster=\"$cluster\"}[$__rate_interval])) / sum(rate(node_cpu_seconds_total{job=\"node-exporter\", cluster=\"$cluster\"}[$__rate_interval]))",
+                    "expr": "sum(rate(node_cpu_seconds_total{job=\"node-exporter\", mode!=\"idle\", cluster=~\"$cluster\"}[$__rate_interval])) / sum(rate(node_cpu_seconds_total{job=\"node-exporter\", cluster=~\"$cluster\"}[$__rate_interval]))",
                     "instant": true
                 }
             ],
@@ -77,7 +77,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"})",
+                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"})",
                     "instant": true
                 }
             ],
@@ -112,7 +112,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"})",
+                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"})",
                     "instant": true
                 }
             ],
@@ -147,7 +147,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "1 - sum(node_memory_MemAvailable_bytes{job=\"node-exporter\", cluster=\"$cluster\"}) / sum(node_memory_MemTotal_bytes{job=\"node-exporter\", cluster=\"$cluster\"})",
+                    "expr": "1 - sum(node_memory_MemAvailable_bytes{job=\"node-exporter\", cluster=~\"$cluster\"}) / sum(node_memory_MemTotal_bytes{job=\"node-exporter\", cluster=~\"$cluster\"})",
                     "instant": true
                 }
             ],
@@ -182,7 +182,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"})",
+                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"})",
                     "instant": true
                 }
             ],
@@ -217,7 +217,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"})",
+                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"}) / sum(kube_node_status_allocatable{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"})",
                     "instant": true
                 }
             ],
@@ -267,7 +267,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=~\"$cluster\"}[$__rate_interval])) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -326,7 +326,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_owner{job=\"kube-state-metrics\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(kube_pod_owner{job=\"kube-state-metrics\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -335,7 +335,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "count(avg(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\"}) by (workload, namespace)) by (namespace)",
+                    "expr": "count(avg(namespace_workload_pod:kube_pod_owner:relabel{cluster=~\"$cluster\"}) by (workload, namespace)) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -344,7 +344,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=~\"$cluster\"}[$__rate_interval])) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -353,7 +353,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -362,7 +362,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=~\"$cluster\"}[$__rate_interval])) by (namespace) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -371,7 +371,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -380,7 +380,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", image!=\"\", cluster=~\"$cluster\"}[$__rate_interval])) by (namespace) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"cpu\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 }
@@ -483,7 +483,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", container!=\"\", image!=\"\"}) by (namespace)",
+                    "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", container!=\"\", image!=\"\"}) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -578,7 +578,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_owner{job=\"kube-state-metrics\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(kube_pod_owner{job=\"kube-state-metrics\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -587,7 +587,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "count(avg(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\"}) by (workload, namespace)) by (namespace)",
+                    "expr": "count(avg(namespace_workload_pod:kube_pod_owner:relabel{cluster=~\"$cluster\"}) by (workload, namespace)) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -596,7 +596,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(max by (cluster, namespace, pod, container)(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", container!=\"\"})) by (namespace)",
+                    "expr": "sum(max by (cluster, namespace, pod, container)(container_memory_rss{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", container!=\"\"})) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -605,7 +605,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -614,7 +614,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", container!=\"\", image!=\"\"}) by (namespace) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", container!=\"\", image!=\"\"}) by (namespace) / sum(kube_pod_container_resource_requests{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -623,7 +623,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -632,7 +632,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", container!=\"\", image!=\"\"}) by (namespace) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\", cluster=\"$cluster\"}) by (namespace)",
+                    "expr": "sum(container_memory_working_set_bytes{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", container!=\"\", image!=\"\"}) by (namespace) / sum(kube_pod_container_resource_limits{job=\"kube-state-metrics\", resource=\"memory\", cluster=~\"$cluster\"}) by (namespace)",
                     "format": "table",
                     "instant": true
                 }
@@ -755,7 +755,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum((8 * rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
+                    "expr": "sum((8 * rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -764,7 +764,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum((8 * rate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
+                    "expr": "sum((8 * rate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -773,7 +773,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_receive_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_receive_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -782,7 +782,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_transmit_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_transmit_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -791,7 +791,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_receive_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_receive_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "format": "table",
                     "instant": true
                 },
@@ -800,7 +800,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_transmit_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_transmit_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "format": "table",
                     "instant": true
                 }
@@ -899,7 +899,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum((8 * rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
+                    "expr": "sum((8 * rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -950,7 +950,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum((8 * rate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
+                    "expr": "sum((8 * rate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1001,7 +1001,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "avg((8 * rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
+                    "expr": "avg((8 * rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1052,7 +1052,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "avg((8 * rate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
+                    "expr": "avg((8 * rate(container_network_transmit_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval]))) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1103,7 +1103,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_receive_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_receive_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1154,7 +1154,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_transmit_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_transmit_packets_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1205,7 +1205,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_receive_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_receive_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1256,7 +1256,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum(rate(container_network_transmit_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
+                    "expr": "sum(rate(container_network_transmit_packets_dropped_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=~\"$cluster\", namespace=~\".+\"}[$__rate_interval])) by (namespace)",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1307,7 +1307,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "ceil(sum by(namespace) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval])))",
+                    "expr": "ceil(sum by(namespace) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval])))",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1358,7 +1358,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "legendFormat": "__auto"
                 }
             ],
@@ -1429,7 +1429,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "format": "table",
                     "instant": true
                 },
@@ -1438,7 +1438,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "format": "table",
                     "instant": true
                 },
@@ -1447,7 +1447,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_reads_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "format": "table",
                     "instant": true
                 },
@@ -1456,7 +1456,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "format": "table",
                     "instant": true
                 },
@@ -1465,7 +1465,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "format": "table",
                     "instant": true
                 },
@@ -1474,7 +1474,7 @@
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "expr": "sum by(namespace) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
+                    "expr": "sum by(namespace) (rate(container_fs_reads_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]) + rate(container_fs_writes_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", device=~\"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)\", container!=\"\", cluster=~\"$cluster\", namespace!=\"\"}[$__rate_interval]))",
                     "format": "table",
                     "instant": true
                 }
@@ -1538,11 +1538,7 @@
     "templating": {
         "list": [
             {
-                "current": {
-                    "selected": true,
-                    "text": "default",
-                    "value": "default"
-                },
+                "current": {},
                 "hide": 0,
                 "label": "Data source",
                 "name": "datasource",
@@ -1562,7 +1558,13 @@
                 "refresh": 2,
                 "sort": 1,
                 "type": "query",
-                "allValue": ".*"
+                "allValue": ".*",
+                "includeAll": true,
+                "current": {
+                    "selected": true,
+                    "text": "All",
+                    "value": "$__all"
+                }
             }
         ]
     },

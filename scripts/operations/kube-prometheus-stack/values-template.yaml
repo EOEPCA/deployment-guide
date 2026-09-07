@@ -52,7 +52,43 @@ grafana:
       searchNamespace: operations
 
 defaultRules:
-  create: false
+  create: true
+  # Recording rules used by the curated dashboards; alerts are applied separately.
+  rules:
+    alertmanager: false
+    etcd: false
+    configReloaders: false
+    general: false
+    k8sContainerCpuUsageSecondsTotal: true
+    k8sContainerMemoryCache: false
+    k8sContainerMemoryRss: true
+    k8sContainerMemorySwap: false
+    k8sContainerResource: false
+    k8sContainerMemoryWorkingSetBytes: true
+    k8sPodOwner: true
+    kubeApiserverAvailability: false
+    kubeApiserverBurnrate: false
+    kubeApiserverHistogram: false
+    kubeApiserverSlos: false
+    kubeControllerManager: false
+    kubelet: false
+    kubeProxy: false
+    kubePrometheusGeneral: false
+    kubePrometheusNodeRecording: false
+    kubernetesApps: false
+    kubernetesResources: false
+    kubernetesStorage: false
+    kubernetesSystem: false
+    kubeSchedulerAlerting: false
+    kubeSchedulerRecording: false
+    kubeStateMetrics: false
+    network: false
+    node: false
+    nodeExporterAlerting: false
+    nodeExporterRecording: false
+    prometheus: false
+    prometheusOperator: false
+    windows: false
 
 alertmanager:
   enabled: true
@@ -83,17 +119,3 @@ thanosRuler:
 prometheusOperator:
   scrapeConfig:
     enabled: false
-
-kube-state-metrics:
-  prometheus:
-    monitor:
-      relabelings:
-        - targetLabel: cluster
-          replacement: eoepca-demo
-
-prometheus-node-exporter:
-  prometheus:
-    monitor:
-      relabelings:
-        - targetLabel: cluster
-          replacement: eoepca-demo

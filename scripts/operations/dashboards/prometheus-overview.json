@@ -735,11 +735,7 @@
     "templating": {
         "list": [
             {
-                "current": {
-                    "selected": false,
-                    "text": "default",
-                    "value": "default"
-                },
+                "current": {},
                 "hide": 0,
                 "label": "Data source",
                 "name": "datasource",

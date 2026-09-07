@@ -30,7 +30,7 @@ spec:
           annotations:
             summary: A Prometheus target has been missing for 15 minutes.
         - alert: PrometheusNotIngestingSamples
-          expr: rate(prometheus_tsdb_head_samples_appended_total[5m]) < 1
+          expr: sum without (type) (rate(prometheus_tsdb_head_samples_appended_total[5m])) < 1
           for: 15m
           labels:
             severity: warning
