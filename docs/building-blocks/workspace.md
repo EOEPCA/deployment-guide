@@ -103,6 +103,9 @@ The workspace dependencies include CSI-RClone for storage mounting and the Educa
 !!! warning
     The Educates chart bundles a set of Kyverno `ClusterPolicy` pod-security baseline/restricted policies (unconditionally, there is no values toggle to skip them) - Kyverno's CRDs must therefore already be installed before deploying Educates, or the `helm upgrade -i` below fails with `no matches for kind "ClusterPolicy"`.
 
+!!! note
+    These bundled policies are annotated `kyverno.io/kubernetes-version: 1.26-1.27`, so on newer clusters (e.g. Kubernetes 1.36) their CEL expressions (e.g. `restrict-sysctls`, `restrict-volume-types`) may fail to type-check against the current Pod schema, causing the API server to log `Warning: ... found no matching overload ...` for every matching Pod create/update. This is a benign, non-blocking warning from Educates' own policies - the Pods are still admitted and run normally.
+
 ```bash
 # Deploy Kyverno (required by Educates' own bundled ClusterPolicies, and reused
 # later for the optional TLS/IAM workarounds in sections 8.2 and 9.3)
@@ -488,8 +491,8 @@ source ~/.eoepca/state
 s3cmd ls \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $S3_ACCESS_KEY \
-  --secret_key $S3_SECRET_KEY
+  --access_key $ACCESS_KEY \
+  --secret_key $SECRET
 ```
 
 **Upload a Test File:**
@@ -502,8 +505,8 @@ source ~/.eoepca/state
 s3cmd put validation.sh s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $S3_ACCESS_KEY \
-  --secret_key $S3_SECRET_KEY
+  --access_key $ACCESS_KEY \
+  --secret_key $SECRET
 ```
 
 **Check the Uploaded File:**
@@ -513,8 +516,8 @@ source ~/.eoepca/state
 s3cmd ls s3://ws-eoepcauser \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $S3_ACCESS_KEY \
-  --secret_key $S3_SECRET_KEY
+  --access_key $ACCESS_KEY \
+  --secret_key $SECRET
 ```
 
 **Delete the Test File:**
@@ -524,13 +527,27 @@ source ~/.eoepca/state
 s3cmd del s3://ws-eoepcauser/validation.sh \
   --host minio.${INGRESS_HOST} \
   --host-bucket minio.${INGRESS_HOST} \
-  --access_key $S3_ACCESS_KEY \
-  --secret_key $S3_SECRET_KEY
+  --access_key $ACCESS_KEY \
+  --secret_key $SECRET
 ```
 
-#### 6. Datalabs UI
+#### 6. Workspace UI
+
+Open the web UI for the created workspace.
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}"
+```
+
+The home page for `Workspace: ws-eoepcauser` opens.
+
+#### 7. Datalabs UI
 
 The default session is initially stopped. Using the owner's access token from the previous steps, start it through the Workspace API:
+
+!!! note
+    Alternatively the default session can be started via the Workspace Web UI - under `Management` -> `Sessions`.
 
 ```bash
 curl --silent --show-error --fail -X PATCH \
@@ -544,16 +561,10 @@ kubectl -n ws-${KEYCLOAK_TEST_USER} rollout status \
   deployment/ws-${KEYCLOAK_TEST_USER}-default --timeout=5m
 ```
 
-Open the web UI for the created workspace.
+!!! tip
+    If the request returns `401` then the access token has expired - re-run the `ACCESS_TOKEN` request from [step 4](#4-get-new-workspace-details) to refresh it.
 
-```bash
-source ~/.eoepca/state
-xdg-open "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}"
-```
-
-The home page for `Workspace: ws-eoepcauser` opens.
-
-Select `Datalab (default)` to open the default session. This opens a new window with the Datalabs session.
+Once the session has been started (as per above, or via the UI) then select `Datalab (default)` to open the default session. This opens a new window with the Datalabs session.
 
 Navigate between each of the tabs:
 
@@ -564,7 +575,7 @@ Navigate between each of the tabs:
 * **Data**<br>
   _Provides a file browser onto the object storage bucket(s) the user has access to._
 
-#### 7. Workspace vCluster
+#### 8. Workspace vCluster
 
 If the workspace was created with a vCluster-enabled Datalab, you can access the vCluster from within the Datalab terminal and VS Code (`Editor`) environments. Kubernetes tooling such as `kubectl` and `helm` are pre-installed within the Datalab environment.
 
@@ -656,7 +667,7 @@ Stop the port-forwarding (<kbd>Ctrl-C</kbd> in the terminal) and delete the test
 kubectl delete -f nginx-test.yaml
 ```
 
-#### 8. (optional) Delete Workspace via the Workspace API
+#### 9. (optional) Delete Workspace via the Workspace API
 
 !!! tip
     The test workspace can be retained for additional testing, but if you wish to clean up the resources created during validation, you can delete the workspace.
@@ -692,7 +703,7 @@ curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${K
 ## Uninstallation
 
 !!! warning
-    Delete any workspaces created during validation first (see [step 8 of Validation](#8-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
+    Delete any workspaces created during validation first (see [step 9 of Validation](#9-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
 
 To uninstall the Workspace Building Block and clean up associated resources:
 

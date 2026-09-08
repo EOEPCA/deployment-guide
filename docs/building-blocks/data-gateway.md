@@ -12,7 +12,7 @@ The Data Gateway sits between EOEPCA components and the various data providers.
 
 **Key Capabilities:**
 
-- Unified API for 50+ product types across 10+ providers
+- Unified API for more than 240 collections across more than 30 providers
 - Plugin architecture supporting STAC, OpenSearch, OData, and custom protocols
 - Automatic handling of authentication and data retrieval
 - Extensible to support new providers via configuration or plugins
@@ -65,7 +65,7 @@ cop_dataspace:
   priority: 2
   download:
     extract: False
-    outputs_prefix: /home/user/eodata/
+    output_dir: /home/user/eodata/
   auth:
     credentials:
       username: your_username
@@ -74,18 +74,18 @@ cop_dataspace:
 
 Key configuration options:
 
-- **priority**: Higher values mean the provider is tried first (default: 1)
+- **priority**: Higher values mean the provider is tried first (default: 0)
 - **extract**: Whether to automatically extract downloaded archives (default: True)
-- **outputs_prefix**: Directory for downloaded products (default: system temp directory)
+- **output_dir**: Directory for downloaded products (default: system temp directory)
 
 ---
 
 ## Usage: Command Line Interface
 
-### List Available Product Types
+### List Available Collections
 
 ```bash
-# List all product types (without fetching remote catalogues)
+# List all collections (without fetching remote catalogues)
 eodag list --no-fetch
 
 # Filter by provider
@@ -129,10 +129,10 @@ eodag search \
 ### Download Products
 
 ```bash
-eodag download --search-results search_results.geojson
+eodag download --search-results search_results.geojson --output-dir ~/eodata
 ```
 
-### Discover New Product Types
+### Discover New Collections
 
 ```bash
 eodag discover -p earth_search --storage /tmp/earth_search_products.json
@@ -171,12 +171,20 @@ if results:
     print(f"Cloud cover: {product.properties.get('eo:cloud_cover'):.1f}%")
 
 # Download all results
-product_paths = dag.download_all(results)
+product_paths = dag.download_all(results, output_dir="/home/user/eodata")
 
 # Or download a specific product
 if results:
-    path = dag.download(results[0])
+    path = dag.download(results[0], output_dir="/home/user/eodata")
     print(f"Downloaded to: {path}")
+```
+
+### Download Selected Assets
+
+Full products are often several gigabytes. The `asset` argument takes a regular expression matched against the asset names, so an application can retrieve only the assets it needs:
+
+```python
+path = dag.download(results[0], asset="B0[2-4]", output_dir="/home/user/eodata")
 ```
 
 ### Search with Cloud Cover Filter
@@ -214,9 +222,11 @@ EODAG's built-in `serve-rest` command has been removed. Use [stac-fastapi-eodag]
 ### Start the STAC Server
 
 ```bash
-pip install stac-fastapi.eodag uvicorn
+pip install "stac-fastapi.eodag[server]==0.4.0"
 python -m stac_fastapi.eodag.app
 ```
+
+The server listens on port 8000 and serves interactive API documentation at `/api.html`.
 
 ### Query the STAC API
 
@@ -224,14 +234,22 @@ python -m stac_fastapi.eodag.app
 # Root endpoint
 curl -s http://localhost:8000 | jq .
 
-# List all collections
+# List collections - the response is paged, numberMatched gives the total
 curl -s "http://localhost:8000/collections" | jq .
 
-# Search for products
-curl -s "http://localhost:8000/search?collections=S2_MSI_L1C&bbox=1,43,2,44&start_datetime=2024-01-01/2024-01-15&limit=5" | jq .
+# Search for products - datetime takes an RFC 3339 interval
+curl -s "http://localhost:8000/search?collections=S2_MSI_L1C&bbox=1,43,2,44&datetime=2024-01-01T00:00:00Z/2024-01-15T00:00:00Z&limit=5" | jq .
 ```
 
-A search is answered by whichever configured provider EODAG selects; the STAC API does not accept a `provider` query parameter. To search a specific provider, use the CLI or Python API instead.
+A search is answered by whichever configured provider EODAG selects, and the answering provider is reported per item under `federation:backends`. Use the STAC `query` extension on that same property to search a specific provider:
+
+```bash
+curl -s -G "http://localhost:8000/search" \
+  --data-urlencode "collections=S2_MSI_L1C" \
+  --data-urlencode "bbox=1,43,2,44" \
+  --data-urlencode "datetime=2024-01-01T00:00:00Z/2024-01-15T00:00:00Z" \
+  --data-urlencode 'query={"federation:backends":{"eq":"earth_search"}}' | jq .
+```
 
 ---
 

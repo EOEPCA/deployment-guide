@@ -3,7 +3,7 @@
 echo "Configuring the Application Hub..."
 source ../common/utils.sh
 
-ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the Application Hub pods" "kubernetes.io/os" is_non_empty
+ask "NODE_SELECTOR_KEY" "Specify the selector to determine which nodes will run the spawned application pods" "kubernetes.io/os" is_non_empty
 ask "NODE_SELECTOR_VALUE" "Specify the value of the node selector" "linux" is_non_empty
 
 # Application Hub 2.1 requires OIDC/JupyterHub authentication.
@@ -40,6 +40,10 @@ fi
 
 if [ -z "${REALM:-}" ]; then
     ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
+fi
+
+if [ -z "${KEYCLOAK_TEST_PASSWORD:-}" ]; then
+    ask "KEYCLOAK_TEST_PASSWORD" "Enter the password for the demo user 'eric'" "eoepcapassword" is_non_empty
 fi
 
 add_to_state_file "OIDC_ISSUER_URL" "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}"

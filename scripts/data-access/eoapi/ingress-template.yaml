@@ -271,6 +271,7 @@ spec:
         - ^(/docs)($|/.*)
         - $2
       enable: true
+{{- if eq (getenv "HTTP_SCHEME") "https" }}
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
@@ -284,6 +285,7 @@ spec:
   secret:
     name: eoapi-tls-cert
     namespace: data-access
+{{- if eq (getenv "USE_CERT_MANAGER") "yes" }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -310,6 +312,7 @@ spec:
   issuerRef:
     name: {{ getenv "CLUSTER_ISSUER" }}
     kind: ClusterIssuer
+{{- end }}
 ---
 apiVersion: apisix.apache.org/v2
 kind: ApisixTls
@@ -323,3 +326,4 @@ spec:
   secret:
     name: eoapisupport-tls-cert
     namespace: data-access
+{{- end }}
