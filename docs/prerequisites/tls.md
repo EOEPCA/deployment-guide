@@ -28,7 +28,7 @@ See section [Quick Start](#quick-start) for instructions on how to set up cert-m
 - Some internal components can also use TLS for pod-to-pod or service-to-service encryption (e.g. an internal OpenSearch cluster). 
 - With cert-manager, you can easily issue internal certificates signed by a local CA (`ClusterIssuer`) so that pods trust each other automatically.
 
-See section [Quickstart - Internal TLS](#quickstart---internal-tls) for instructions on how to set up internal TLS for your cluster.
+See section [Quickstart - Internal TLS](#quickstart-internal-tls) for instructions on how to set up internal TLS for your cluster.
 
 ## Further Reading
 
