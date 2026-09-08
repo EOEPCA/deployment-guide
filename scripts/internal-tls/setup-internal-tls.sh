@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ../common/utils.sh
+BIN_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+
+source "$BIN_DIR/../common/utils.sh"
 
 echo "Setting up internal TLS..."
 
@@ -22,9 +24,9 @@ echo "Waiting for Cert-Manager to be ready..."
 kubectl rollout status deployment cert-manager -n cert-manager --timeout=120s
 
 # Apply manifests
-kubectl apply -f certificates/cert-manager-ss-issuer.yaml
-kubectl apply -f certificates/cert-manager-ca-cert.yaml
-kubectl apply -f certificates/cert-manager-ca-issuer.yaml
+kubectl apply -f "$BIN_DIR/certificates/cert-manager-ss-issuer.yaml"
+kubectl apply -f "$BIN_DIR/certificates/cert-manager-ca-cert.yaml"
+kubectl apply -f "$BIN_DIR/certificates/cert-manager-ca-issuer.yaml"
 
 # Wait for the CA certificate to be ready
 echo "Waiting for CA certificate to be ready..."

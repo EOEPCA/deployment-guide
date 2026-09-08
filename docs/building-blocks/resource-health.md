@@ -126,6 +126,7 @@ You'll be asked for, in order:
 A Keycloak client is required for the ingress protection of the Resource Health BB. `configure-resource-health.sh` already rendered `generated-iam.yaml` (a Crossplane `Client` CRD plus its client-secret `Secret`) when OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
 ```bash
+source ~/.eoepca/state
 kubectl apply -f generated-iam.yaml
 kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${RESOURCE_HEALTH_CLIENT_ID} -n iam-management --timeout=60s
 ```
@@ -322,6 +323,7 @@ curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/ch
 ```
 
 The default deployment includes:
+
 - **simple_ping** - Checks if an endpoint responds with an expected HTTP status code
 - **generic_script_template** - Runs custom pytest scripts for advanced health checks
 
@@ -363,7 +365,7 @@ EOF
 Register the health check:
 
 ```bash
-curl -X POST "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+curl -s -X POST "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/vnd.api+json" \
   -d @healthcheck-google.json | jq
@@ -433,6 +435,10 @@ If no data appears yet, wait a moment for the checks to complete and telemetry t
 **Via Web Dashboard:**
 
 Visit `${HTTP_SCHEME}://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
+
+```bash
+xdg-open "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/dashboards"
+```
 
 **Via OpenSearch Dashboards:**
 
@@ -524,14 +530,13 @@ helm upgrade resource-health eoepca-dev/resource-health-reference-deployment \
 2. Click on **Create new check**
 3. Select a template (e.g., "Simple ping template")
 4. Fill in the required fields:
-   - **Name**: A descriptive name for your check
-   - **Description**: What this check monitors
-   - **Schedule**: A cron expression (e.g., `*/5 * * * *` for every 5 minutes)
-   - **Template Arguments**: Endpoint URL, expected status code, etc.
+    - **Name**: A descriptive name for your check
+    - **Description**: What this check monitors
+    - **Schedule**: A cron expression (e.g., `*/5 * * * *` for every 5 minutes)
+    - **Template Arguments**: Endpoint URL, expected status code, etc.
 5. Click **Create** to register the health check
 
 The check will immediately appear in the dashboard and begin running according to its schedule.
-
 
 ## Uninstallation
 

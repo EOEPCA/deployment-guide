@@ -14,6 +14,8 @@ For services that are externally exposed via the ingress controller, there are s
    - Using either DNS-based or HTTP-based Let's Encrypt challenge approaches
    - In multi-tenant or multi-namespace scenarios, this is especially useful.
 
+See section [Quick Start](#quick-start) for instructions on how to set up cert-manager and a `ClusterIssuer` for your cluster.
+
 ### Manual TLS
 
    - Applicable to cases where use of Let's Encrypt is not possible
@@ -25,6 +27,8 @@ For services that are externally exposed via the ingress controller, there are s
 
 - Some internal components can also use TLS for pod-to-pod or service-to-service encryption (e.g. an internal OpenSearch cluster). 
 - With cert-manager, you can easily issue internal certificates signed by a local CA (`ClusterIssuer`) so that pods trust each other automatically.
+
+See section [Quickstart - Internal TLS](#quickstart---internal-tls) for instructions on how to set up internal TLS for your cluster.
 
 ## Further Reading
 
@@ -163,4 +167,14 @@ spec:
   secret:
     name: global-tls-certificate
     namespace: ingress-apisix
+```
+
+## Quickstart - Internal TLS
+
+Some building blocks (e.g. Application Quality, Resource Health) expect internal TLS to be enabled for their internal services. This is achieved by creating a `ClusterIssuer` that issues certificates signed by a local CA, and then configuring the building blocks to use those certificates.
+
+As a quick-start, the following script will create a `ClusterIssuer` for internal TLS, and then create a `Secret` for each building block that requires internal TLS.
+
+```bash
+bash scripts/internal-tls/setup-internal-tls.sh
 ```
