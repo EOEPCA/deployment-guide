@@ -3,4 +3,6 @@ kind: Provider
 metadata:
   name: provider-minio
 spec:
-  package: xpkg.upbound.io/vshn/provider-minio:v0.4.5
+  package: xpkg.upbound.io/vshn/provider-minio:v0.4.4
+  runtimeConfigRef:
+    name: provider-minio

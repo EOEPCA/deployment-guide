@@ -3,9 +3,13 @@ source ../common/utils.sh
 source ../common/validation-utils.sh
 source "$HOME/.eoepca/state"
 
-EXPECTED_POD_COUNT=6
+set -e
 
-check_pods_running "workspace" "" $EXPECTED_POD_COUNT
+check_daemonset_ready "workspace" "csi-rclone-nodeplugin"
+check_statefulset_ready "workspace" "csi-rclone-controller"
+check_deployment_ready "workspace" "secrets-manager"
+check_deployment_ready "workspace" "session-manager"
+check_deployment_ready "workspace" "workspace-api"
 
 check_service_exists "crossplane-system" "crossplane-webhooks"
 check_service_exists "crossplane-system" "provider-helm"
@@ -22,6 +26,7 @@ CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$
 if [ "$OIDC_WORKSPACE_ENABLED" == "true" ]; then
     CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/docs" "200"
     CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/" "302"
+    CHECK_URL_NO_REDIRECT=true check_url_status_code "$HTTP_SCHEME://workspace-api.$INGRESS_HOST/workspaces" "302"
 
     check_clusterpolicy_exists "workspace-session-iam"
 else

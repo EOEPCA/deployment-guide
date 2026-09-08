@@ -18,6 +18,7 @@ spec:
     serviceAccountsEnabled: false
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
+    pkceCodeChallengeMethod: S256
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
     validRedirectUris:

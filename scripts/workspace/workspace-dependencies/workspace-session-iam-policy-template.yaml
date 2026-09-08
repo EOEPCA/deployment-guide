@@ -48,6 +48,7 @@ spec:
                   timeout: 10
                   use_jwks: true
                   bearer_only: false
+                  use_pkce: true
                   scope: openid roles
                   set_access_token_header: true
                   access_token_in_authorization_header: true
