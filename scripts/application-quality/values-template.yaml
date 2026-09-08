@@ -90,7 +90,7 @@ application-quality:
   ingress:
     enabled: true
     className: {{ getenv "INGRESS_CLASS" }}
-    domain: {{ getenv "APP_QUALITY_PUBLIC_HOST" }}
+    domain: {{ index (strings.Split ":" (getenv "APP_QUALITY_PUBLIC_HOST")) 0 }}
     annotations:
       kubernetes.io/ingress.class: {{ getenv "INGRESS_CLASS" }}
       {{- range $key, $value := (datasource "annotations") }}
