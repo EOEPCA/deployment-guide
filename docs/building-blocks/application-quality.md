@@ -258,13 +258,16 @@ helm upgrade -i application-quality-sonarqube sonarqube/sonarqube \
 kubectl apply -f generated-sonarqube-apisix.yaml
 ```
 
-SonarQube is exposed under:
+SonarQube is exposed under URL `${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/sonarqube`:
 
-```text
-${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/sonarqube
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/sonarqube"
 ```
 
 !!! note
+    First time login to SonarQube is via the default admin credentials (`admin`/`admin`) - change this password immediately after first login.
+    
     The SonarQube chart installs the OIDC plugin, but this guide does not fully configure SonarQube SSO by default. Configure SonarQube authentication after deployment if required.
 
 ---
@@ -316,6 +319,11 @@ kubectl get apisixroute -n application-quality-sonarqube
 1. Ensure your ingress is configured to route `application-quality.${INGRESS_HOST}` or the configured `APP_QUALITY_PUBLIC_HOST` to the Application Quality front-end.
 2. Open a browser at `https://application-quality.${INGRESS_HOST}/`, or the configured public host.
 3. If OIDC is enabled, authenticate using EOEPCA IAM.
+
+```bash
+source ~/.eoepca/state
+xdg-open "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/"
+```
 
 ### 2. Authenticating
 
