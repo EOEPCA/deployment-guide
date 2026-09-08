@@ -111,7 +111,9 @@ helm repo update kyverno
 helm upgrade -i kyverno kyverno/kyverno \
   --version 3.7.2 \
   --namespace kyverno \
-  --create-namespace
+  --create-namespace \
+  --set backgroundController.enabled=true \
+  --wait --timeout=5m
 
 # Deploy CSI-RClone
 helm upgrade -i workspace-dependencies-csi-rclone \
@@ -217,6 +219,9 @@ kubectl apply -f workspace-dependencies/generated-pipeline-iam.yaml
 
 Each created Workspace includes a Datalab component that expects a `workspace-tls` secret in the `workspace` namespace, providing the TLS certificate for its ingress - this secret is automatically copied into each `ws-XXX` namespace created per workspace.
 
+!!! warning
+    Create this secret before the first workspace. The APISIX ingress controller fails the whole `Ingress` when its TLS secret is missing, so a Datalab session with no `workspace-tls` gets no route at all and returns `404 Route Not Found`.
+
 #### 8.1. Wildcard Certificate (recommended)
 
 Follow [TLS Management](../prerequisites/tls.md#create-a-clusterissuer-for-lets-encrypt) (the DNS01 Challenge option) to create a `letsencrypt-dns01` `ClusterIssuer` for your DNS provider, then request the wildcard certificate that will back `workspace-tls`:
@@ -252,6 +257,16 @@ kubectl apply -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 !!! warning
     Matching is scoped to the `training.educates.dev/application: workshop` label (same selector as the IAM policy in [9.3](#93-optional-protect-datalab-sessions-with-keycloak-sso)), not an Ingress name pattern - each session also gets a separate registry `Ingress` (`training.educates.dev/application: registry`) that must not receive this annotation, or it races the real session Ingress for ownership of the shared `workspace-tls` Certificate and can leave it issued for the wrong host.
 
+#### 8.3. Manually-Provided Certificate
+
+Without `cert-manager`, create the secret from a certificate and key you already hold. It must cover the Datalab session hostnames under `*.${INGRESS_HOST}`:
+
+```bash
+kubectl -n workspace create secret tls workspace-tls \
+  --cert=/path/to/tls.crt \
+  --key=/path/to/tls.key
+```
+
 ---
 
 ### 9. Configure IAM for the Workspace API
@@ -282,7 +297,7 @@ kubectl apply -f workspace-api/generated-ingress.yaml
 
 #### 9.3. Optional: Protect Datalab Sessions with Keycloak SSO
 
-Only applies when `OIDC_WORKSPACE_ENABLED=true`. Session ingresses aren't otherwise IAM-protected - a Kyverno policy wraps every Datalab session `Ingress` with the same `workspace-api` OIDC client, so opening a session requires a valid Keycloak login.
+Only applies when `OIDC_WORKSPACE_ENABLED=true`. A Kyverno policy adds Keycloak login and the IAM OPA policy `eoepca/workspace/wsui` to each Datalab session ingress. The public `workspace-api` client uses PKCE for browser login.
 
 Grant Kyverno permission to manage `ApisixPluginConfig` resources, then apply the session-protection policy:
 
@@ -292,7 +307,7 @@ kubectl apply -f workspace-dependencies/generated-workspace-session-iam-policy.y
 ```
 
 !!! note
-    Any authenticated user in the realm can then open a Datalab session. Restricting *which* users may do so is left as a further exercise (e.g. via an OPA policy), matching the `workspace-api-auth` route pattern above.
+    OPAL syncs this policy into OPA from [EOEPCA/iam-policies](https://github.com/EOEPCA/iam-policies) as part of the IAM BB. It grants access to users holding the workspace client role `ws_access` or `ws_admin`, or the `workspace-api` role `admin`. If the policy is missing, OPA returns no decision and APISIX answers every session URL with `503` instead of a login redirect - check that `iam-opal-client` is running and has logged `Got policy bundle`.
 
 ---
 
@@ -332,7 +347,7 @@ You can view the Workspace API's Swagger documentation at:
 
 ```bash
 source ~/.eoepca/state
-xdg-open "https://workspace-api.${INGRESS_HOST}/docs"
+xdg-open "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/docs"
 ```
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
@@ -515,6 +530,20 @@ s3cmd del s3://ws-eoepcauser/validation.sh \
 
 #### 6. Datalabs UI
 
+The default session is initially stopped. Using the owner's access token from the previous steps, start it through the Workspace API:
+
+```bash
+curl --silent --show-error --fail -X PATCH \
+  "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOAK_TEST_USER}/sessions/default" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"state": "started"}' | jq
+kubectl -n ws-${KEYCLOAK_TEST_USER} wait --for=create \
+  deployment/ws-${KEYCLOAK_TEST_USER}-default --timeout=2m
+kubectl -n ws-${KEYCLOAK_TEST_USER} rollout status \
+  deployment/ws-${KEYCLOAK_TEST_USER}-default --timeout=5m
+```
+
 Open the web UI for the created workspace.
 
 ```bash
@@ -525,9 +554,6 @@ xdg-open "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYCLOA
 The home page for `Workspace: ws-eoepcauser` opens.
 
 Select `Datalab (default)` to open the default session. This opens a new window with the Datalabs session.
-
-!!! note
-    First time this may take a little time whilst the session is created.
 
 Navigate between each of the tabs:
 
