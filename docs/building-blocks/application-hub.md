@@ -34,7 +34,7 @@ Before deploying the Application Hub, ensure you have the following:
 | TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)      |
 | OIDC Provider      | Keycloak or compatible                 | [IAM Deployment Guide](../building-blocks/iam/main-iam.md)       |
 | Storage Class      | For persistent volumes                 | Default or custom storage class                                  |
-| Crossplane         | Required only for the generated Keycloak client manifest | [Installation Guide](../prerequisites/crossplane.md) |
+| Crossplane         | Keycloak provider, used for the generated client and demo user manifests | [Installation Guide](../prerequisites/crossplane.md) |
 
 **Clone the Deployment Guide Repository:**
 ```bash
@@ -76,6 +76,8 @@ First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers t
     - *Example*: `auth.example.com`
 - **`REALM`**: Keycloak realm, only asked if not already set.
     - *Example*: `eoepca`
+- **`KEYCLOAK_TEST_PASSWORD`**: password for the demo user `eric`, only asked if not already set.
+    - *Example*: `eoepcapassword`
 
 `APPHUB_CLIENT_SECRET` and `APPHUB_JUPYTERHUB_CRYPT_KEY` are generated and stored in `~/.eoepca/state`.
 
@@ -84,6 +86,7 @@ The script renders:
 - `generated-values.yaml`
 - `generated-ingress.yaml`
 - `generated-iam.yaml`
+- `generated-demo-user.yaml`
 
 ---
 
@@ -188,6 +191,11 @@ Select one of the profiles to launch a profile. You will then be redirected to t
 
 ![Launch a Profile](../img/apphub/launch.jpeg)
 
+Each user gets their own namespace, named `ws-<username>`, holding the spawned pod and the
+persistent volume claim declared by the profile. The claim survives server shutdown, so the
+files a user writes under `/workspace` are still there the next time they start a server.
+
+
 ---
 
 ## Validation
@@ -242,6 +250,12 @@ helm uninstall application-hub -n app-hub
 kubectl delete -f generated-iam.yaml --ignore-not-found
 kubectl delete -f generated-demo-user.yaml --ignore-not-found
 kubectl delete namespace app-hub
+```
+
+The per-user namespaces are not removed with the release. Delete them separately, for example:
+
+```bash
+kubectl delete namespace ws-eric
 ```
 
 ***
