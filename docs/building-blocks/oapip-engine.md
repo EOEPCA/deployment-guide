@@ -33,7 +33,7 @@ Both backends use the same OGC API Processes interface - the difference is where
 
 === "Calrissian"
 
-    No additional requirements beyond the common prerequisites. Calrissian runs CWL workflows as Kubernetes jobs, so everything stays within your cluster.
+    A storage class supporting ReadWriteMany (RWX) is required for shared application and workflow data. Calrissian runs CWL workflows as Kubernetes jobs.
 
 === "Toil"
 
@@ -225,7 +225,7 @@ First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers t
 
 ### Common Configuration Parameters
 
-- **`SHARED_STORAGECLASS`**: Storage class supporting RWX.
+- **`SHARED_STORAGECLASS`**: Storage class supporting ReadWriteMany (RWX), used by ZOO-Project and Calrissian.
 
 ### Stage-Out S3 Configuration
 
@@ -385,8 +385,8 @@ bash validation.sh
 
 Check these are accessible:
 
-* **ZOO-Project Swagger UI** - `https://zoo.${INGRESS_HOST}/swagger-ui/oapip/`
-* **OGC API Processes Landing Page** - `https://zoo.${INGRESS_HOST}/ogc-api/processes/`
+* **ZOO-Project Swagger UI** - `${HTTP_SCHEME}://zoo.${INGRESS_HOST}/swagger-ui/oapip/`
+* **OGC API Processes Landing Page** - `${HTTP_SCHEME}://zoo.${INGRESS_HOST}/ogc-api/`
 
 ### Expected Kubernetes Resources
 ```bash
@@ -416,7 +416,7 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-#### Deploy Process `convert`
+#### Deploy Process `convert-url`
 ```bash
 source oapip-utils.sh
 curl --silent --show-error \
@@ -443,7 +443,7 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-#### Execute Process `convert`
+#### Execute Process `convert-url`
 ```bash
 source oapip-utils.sh
 JOB_ID=$(
@@ -498,7 +498,7 @@ xdg-open "https://console-minio.${INGRESS_HOST}/browser/${BUCKET_NAME}/processin
 ```
 
 
-#### Undeploy Process `convert`
+#### Undeploy Process `convert-url`
 ```bash
 source oapip-utils.sh
 curl --silent --show-error \

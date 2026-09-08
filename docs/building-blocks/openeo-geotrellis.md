@@ -1,6 +1,6 @@
 # Processing - OpenEO Engine Deployment Guide
 
-OpenEO develops an API that allows users to connect to Earth observation cloud back-ends in a simple and unified way. The project maintains the API and process specifications, and an open-source ecosystem with clients and server implementations.
+openEO GeoTrellis processes Earth observation data with Apache Spark. This guide deploys the API backend, Spark Operator and ZooKeeper, then demonstrates processing through the API and Python client.
 
 ---
 
@@ -14,7 +14,7 @@ Before deploying, ensure your environment meets the following requirements:
 |Helm|Version 3.5 or newer|[Installation Guide](https://helm.sh/docs/intro/install/)|
 |kubectl|Configured for cluster access|[Installation Guide](https://kubernetes.io/docs/tasks/tools/)|
 |Ingress|Properly installed|[Installation Guide](../prerequisites/ingress/overview.md)|
-|Cert Manager|Properly installed|[Installation Guide](../prerequisites/tls.md)|
+|Cert Manager|Required only when enabling certificate management|[Installation Guide](../prerequisites/tls.md)|
 |OIDC Provider|Optional (if enabling OIDC)|[Installation Guide](./iam/main-iam.md)|
 
 **Clone the Deployment Guide Repository:**
@@ -50,7 +50,7 @@ During this process, you'll be prompted for:
 - **`OPENEO_CLIENT_ID`**: Client ID for OpenEO clients (only if OIDC is enabled)
 
 !!! note "Authentication"
-    If OIDC is disabled, the deployment falls back to a hardcoded basic-auth test user (`testuser`/`testuser123`) instead - for testing only, not a production auth mode.
+    If OIDC is disabled, the deployment accepts any username with a password formed by appending `123` (for example, `testuser`/`testuser123`). Use this mode only for testing.
 
 ### 2. Deploying openEO Geotrellis
 
@@ -66,7 +66,8 @@ helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
     --version 2.3.0 \
     --namespace openeo-geotrellis \
     --create-namespace \
-    --values sparkoperator/generated-values.yaml
+    --values sparkoperator/generated-values.yaml \
+    --wait --timeout 5m
 ```
 
 Refer to the [values.yaml](https://github.com/kubeflow/spark-operator/blob/master/charts/spark-operator-chart/values.yaml) for additional configuration options.
@@ -87,8 +88,7 @@ For full configuration details, see the [values.yaml](https://github.com/bitnami
 
 #### Step 3: Deploy openEO Geotrellis Using Helm
 
-!!! warning
-    You must wait for the ZooKeeper deployment to be fully running before deploying openEO Geotrellis. This is because it relies on the webhook.
+The preceding commands wait for the Spark Operator controller and admission webhook, and for ZooKeeper. Both must be ready before deploying the backend.
 
 ```bash
 helm upgrade -i openeo-geotrellis-openeo sparkapplication \
@@ -107,14 +107,11 @@ kubectl apply -f openeo-geotrellis/generated-ingress.yaml
 
 #### Step 4: Create the Batch Jobs RBAC
 
-openEO Geotrellis submits each batch (async) job as its own `SparkApplication`, run under a dedicated `batch-jobs` service account - separate from the `openeo` service account used by the always-on sync API driver. Create it once per cluster:
+openEO Geotrellis submits each batch (async) job as its own `SparkApplication`, run under a dedicated `batch-jobs` service account. The API driver uses the `openeo` service account. Apply the manifest in the deployment namespace:
 
 ```bash
 kubectl apply -f openeo-geotrellis/batch-jobs-rbac.yaml
 ```
-
-!!! note
-    This is a static manifest (fixed to the `openeo-geotrellis` namespace) with no gomplate variables, so there is nothing to (re)generate.
 
 #### Step 5: Create a Keycloak Client (Only if OIDC is enabled)
 
@@ -170,7 +167,7 @@ This script verifies that:
 
 - All required pods in the `openeo-geotrellis` namespace are running
 - Ingress endpoints return an HTTP 200 status code
-- Key API endpoints provide well-formed JSON responses
+- The batch job service account exists
 
 ### 2. Jupyter Notebook
 
@@ -207,7 +204,7 @@ Use the following commands to interact directly with the APIs:
 #### Check API Metadata
 
 ```bash
-curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/ | jq .
+curl -L ${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/ | jq .
 ```
 
 _Expected output:_ A JSON object containing `api_version`, `backend_version`, `endpoints`, etc.
@@ -215,15 +212,15 @@ _Expected output:_ A JSON object containing `api_version`, `backend_version`, `e
 #### List Collections
 
 ```bash
-curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
+curl -L ${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/collections | jq .
 ```
 
-_Expected output:_ A JSON array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
+_Expected output:_ A JSON object with a `collections` array listing available collections, such as the sample collection `TestCollection-LonLat16x16`.
 
 #### List Processes
 
 ```bash
-curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
+curl -L ${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
 ```
 
 _Expected output:_ A JSON object with an array of processes. Use your terminal's scroll or `jq` to inspect the output.
@@ -238,13 +235,13 @@ The deployment can be tested using the openEO Web Editor as a client - either th
 === "Public Instance"
 
     ```bash
-    xdg-open "https://editor.openeo.org?server=https://openeo.${INGRESS_HOST}/openeo/1.2/"
+    xdg-open "https://editor.openeo.org?server=${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/"
     ```
 
     **Alternatively:**
 
     * Open the [openEO Web Editor](https://editor.openeo.org/)
-    * Enter the `URL` of the server - `https://openeo.${INGRESS_HOST}` (e.g. `https://openeo.myplatform.mydomain`)
+    * Enter the `URL` of the server - `${HTTP_SCHEME}://openeo.${INGRESS_HOST}` (e.g. `https://openeo.myplatform.mydomain`)
     * Select `Connect`
 
 === "Self-Hosted (Optional)"
@@ -310,7 +307,7 @@ The authentication method depends on whether you enabled OIDC during configurati
         -d "grant_type=password" \
         -d "client_id=${OPENEO_CLIENT_ID}" \
         -d "scope=openid profile email" \
-        "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" |
+        "${OIDC_ISSUER_URL%/}/protocol/openid-connect/token" |
         jq -r '.access_token'
     )
     echo "Access token: ${ACCESS_TOKEN}"
@@ -326,7 +323,7 @@ The authentication method depends on whether you enabled OIDC during configurati
 
     ```bash
     ACCESS_TOKEN=$(curl -s -u "testuser:testuser123" \
-      "https://openeo.${INGRESS_HOST}/openeo/1.2/credentials/basic" | jq -r '.access_token')
+      "${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/credentials/basic" | jq -r '.access_token')
     AUTH_TOKEN="basic//${ACCESS_TOKEN}"
     ```
 
@@ -335,7 +332,7 @@ The authentication method depends on whether you enabled OIDC during configurati
 Submit a job that adds 5 and 6.5 by sending a process graph to the `/result` endpoint.
 
 ```bash
-curl -X POST "https://openeo.${INGRESS_HOST}/openeo/1.2/result" \
+curl -X POST "${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/result" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" \
   -d '{
@@ -365,7 +362,7 @@ This confirms that the "sum" process is operational and returning the correct co
 To see available processes, navigate to:
 
 ```bash
-curl -L https://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
+curl -L ${HTTP_SCHEME}://openeo.${INGRESS_HOST}/openeo/1.2/processes | jq .
 ```
 
 You'll see a JSON object with an array of processes, each with example usage and descriptions. Follow the same process as above to submit jobs using any of these processes.
@@ -376,26 +373,26 @@ Your Access Token will eventually expire (if using OIDC). If you receive a 401 e
 
 ### openEO Python Client
 
-The Python client provides a more comprehensive interface for working with openEO services.
+Use the Python client to load a data cube and download the result as NetCDF.
 
 #### Install Dependencies
 
-If needed, ensure python 3.12+ - for example, on ubuntu...
+Install Python and virtual environment support, for example on Ubuntu:
 
 ```bash
-sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
-sudo apt install -y python3.12 python3.12-venv
+sudo apt install -y python3 python3-venv
 ```
 
 Create a virtual environment and install required packages:
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install openeo xarray netCDF4 h5netcdf
 
-export OPENEO_URL="https://openeo.${INGRESS_HOST}"
+source ~/.eoepca/state
+export OPENEO_URL="${HTTP_SCHEME}://openeo.${INGRESS_HOST}"
 ```
 
 #### Connect and Authenticate
@@ -407,7 +404,7 @@ python
 ```
 
 !!! tip
-    Alternative to pasting the following python snippets into the python REPL, you might instead find it easier to paster them into a source file `openeo-test.py` and then run with `python openeo-test.py`
+    You can also save the following Python snippets in `openeo-test.py` and run `python openeo-test.py`.
 
 And then run:
 
@@ -418,7 +415,7 @@ import os
 import xarray
 
 # Connect to openEO service
-openeo_url = os.environ.get('OPENEO_URL', 'https://openeo.${INGRESS_HOST}')
+openeo_url = os.environ["OPENEO_URL"]
 connection = openeo.connect(openeo_url)
 
 connection.authenticate_oidc()

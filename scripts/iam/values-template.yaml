@@ -129,9 +129,6 @@ iam: &iam
 keycloak-operator:
   operator:
     replicaCount: 1
-    config:
-      keycloakImage:
-        tag: 26.7.2
   keycloak:
     enabled: true
     instances: 1
