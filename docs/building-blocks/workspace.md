@@ -703,7 +703,7 @@ curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${K
 ## Uninstallation
 
 !!! warning
-    Delete any workspaces created during validation first (see [step 8 of Validation](#8-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
+    Delete any workspaces created during validation first (see [step 9 of Validation](#9-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
 
 To uninstall the Workspace Building Block and clean up associated resources:
 
