@@ -43,6 +43,11 @@ frontend:
       value: NO_AUTH
 {{- end }}
 
+database:
+  mysql:
+    image:
+      tag: "26.7.0"
+
 global:
   ingress:
     enabled: false

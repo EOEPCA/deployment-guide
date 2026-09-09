@@ -48,7 +48,7 @@ Sits in front of Keep and handles the OIDC flow with Keycloak. Keep's OSS editio
 
 6. **Alertmanager relay**
 
-Small nginx proxy between Alertmanager and Keep. Alertmanager fires plain webhooks with no auth context, but Keep (behind oauth2-proxy) expects those headers on every request. The relay injects fake ones so the webhooks are accepted.
+Small nginx proxy between Alertmanager and Keep. It forwards webhooks directly to the Keep backend, adding the service identity headers when IAM is enabled or an API-key header in unauthenticated mode.
 
 7. **Alert rules and dashboards**
 
@@ -195,6 +195,8 @@ kubectl apply -k alloy/
 
 #### Deploy Keep and oauth2-proxy
 
+The generated values pin Keep's MySQL image to `26.7.0`, matching the upstream deployment.
+
 === "Without IAM (default)"
 
     ```bash
@@ -326,6 +328,8 @@ Prometheus and Alertmanager are not exposed externally by default. They are reac
 
 ## Testing and Validation
 
+These checks cover log collection into Loki, metrics in Grafana, and an alert passing from Prometheus through Alertmanager to Keep and resolving. The temporary alert tests delivery without interrupting an application.
+
 ### 1. Verify Grafana Datasources
 
 Log in to Grafana and confirm both datasources are configured:
@@ -337,19 +341,19 @@ Navigate to `Connections → Data sources` and test each one.
 
 ### 2. Explore Logs
 
-Open the **Explore** tab in Grafana, select the Loki datasource, and run a query such as:
+Open **Explore** in Grafana, select the **Loki** datasource and **Code** mode, then run:
 
 ```logql
 {namespace="operations"}
 ```
 
-You should see log lines from the Operations BB components.
+You should see log lines from the Operations BB components, collected by Alloy. Allow up to a minute for logs to arrive, then rerun the query if the result is empty.
 
 ### 3. Load a Curated Dashboard
 
-Navigate to `Dashboards → Browse` and open the `Kubernetes / Cluster View` dashboard. It should populate with live data from the cluster.
+Open **Dashboards → Kubernetes / Cluster View**. CPU and memory panels should show live cluster metrics. CPU rates need several scrapes before they appear; CPU limit panels can be empty when workloads have no limits.
 
-### 4. Trigger a Test Alert
+### 4. Verify Alert Delivery
 
 The baseline rules include a `Watchdog` alert which fires continuously as a pipeline health check. Verify it reaches Keep:
 
@@ -377,8 +381,78 @@ Check Alertmanager's configuration has loaded the Keep receiver:
 
 ```bash
 kubectl -n operations exec -it alertmanager-kube-prometheus-stack-alertmanager-0 -- \
-  wget -qO- http://localhost:9093/api/v2/status | grep -A2 receivers
+  wget -qO- http://localhost:9093/api/v2/status | jq -r .config.original
 ```
+
+### 6. Verify Firing and Resolution
+
+Create a temporary rule to test alert delivery without interrupting a service:
+
+```bash
+cat > operations-test-alert.yaml <<'EOF'
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: operations-test
+  namespace: operations
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: operations-test
+      rules:
+        - alert: OperationsTestAlert
+          expr: vector(1)
+          labels:
+            severity: warning
+          annotations:
+            summary: Operations alert delivery test.
+EOF
+kubectl apply -f operations-test-alert.yaml
+```
+
+In Grafana **Explore**, select **Prometheus** and **Code** mode, set **Options → Type** to **Instant** and query:
+
+```promql
+ALERTS{alertname="OperationsTestAlert"}
+```
+
+Allow up to two minutes for rule discovery, evaluation and delivery. The `alertstate` label should be `firing`. Open Keep **Alerts → Feed** and find `OperationsTestAlert`. Inspect its summary and severity to confirm that the rule reached Keep through Alertmanager.
+
+Leave the test alert unacknowledged so Keep displays the source status directly. A manual acknowledgement overrides that status even after the source resolves.
+
+=== "Without IAM (default)"
+
+    You can also inspect delivery through the API. Fetch the alerts and display the full response:
+
+    ```bash
+    source ~/.eoepca/state
+    ALERTS_RESPONSE=$(curl -sS "${HTTP_SCHEME}://alerting.${INGRESS_HOST}/v2/alerts" \
+      -H 'X-API-KEY: anything')
+    printf '%s\n' "$ALERTS_RESPONSE" | jq
+    ```
+
+    Show just the names, statuses and recovery fields:
+
+    ```bash
+    printf '%s\n' "$ALERTS_RESPONSE" | jq '.[] | {name, status, endsAt, unresolvedCounter}'
+    ```
+
+    Find `OperationsTestAlert` with `status: firing` and `unresolvedCounter: 1`. If it has not arrived, wait about 30 seconds and rerun the request and short view. The short view reads the saved response; it does not fetch new data.
+
+=== "With IAM"
+
+    Use the authenticated Keep **Alerts -> Feed** view to inspect `OperationsTestAlert`. The API commands above are for unauthenticated deployments only.
+
+Remove the test rule:
+
+```bash
+kubectl delete -f operations-test-alert.yaml
+```
+
+Repeat the Grafana query; it should return no series. Allow up to five minutes for Alertmanager to expire the removed alert, then refresh Keep and confirm the alert is `resolved`. In unauthenticated mode, rerun the API request and short view above: `OperationsTestAlert` should have `status: resolved`, a recovery time in `endsAt` and `unresolvedCounter: 0`.
+
+Its history remains available for inspection. Leave `Watchdog` firing as the continuous pipeline check.
 
 ---
 
