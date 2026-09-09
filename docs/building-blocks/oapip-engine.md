@@ -121,7 +121,7 @@ Both backends use the same OGC API Processes interface - the difference is where
     source ~/toil/venv/bin/activate
 
     # Download a test application
-    wget https://github.com/EOEPCA/deployment-guide/raw/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl
+    wget https://github.com/EOEPCA/deployment-guide/raw/refs/heads/release-2.1/scripts/processing/oapip/examples/convert-url-app.cwl
 
     # Create test directories and parameters
     jobid=$(uuidgen)
@@ -293,6 +293,8 @@ See the [IAM Building Block](./iam/main-iam.md) guide for IAM setup, and [Enable
 
     > **Note:** If you set up Toil WES without authentication (as in the setup guide above), use placeholder credentials - they'll be ignored.
 
+    > **Application packages:** any step that fetches data over the network must declare `NetworkAccess: networkAccess: true`. Toil runs CWL steps with container networking disabled unless that requirement is present, so a package that works under Calrissian can fail here with the workflow still reporting success.
+
     > **Important: Network Reachability**
     >
     > The WES URL must be reachable from within the Kubernetes cluster.
@@ -368,7 +370,9 @@ Skip this section if you don't need IAM protection right now - the engine will w
     bash resource-protection-validation.sh
     ```
 
-    If you see `401 Authorization` errors when using a valid token, check your token and resource protection configuration.
+    If the authenticated requests return `access_denied`, the Keycloak permission is not in place yet. Crossplane creates it asynchronously. Wait a minute and re-run.
+
+    Note that `eoepcauser-oapip-access` can report `SYNCED=False` while the permission exists in Keycloak and protection works, so confirm with this script rather than with `kubectl get`.
 
 For more detailed testing, see [Resource Protection with Keycloak Policies](./iam/advanced-iam.md#resource-protection-with-keycloak-policies).
 
@@ -427,7 +431,7 @@ curl --silent --show-error \
   -d @- <<EOF | jq
 {
   "executionUnit": {
-    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/main/scripts/processing/oapip/examples/convert-url-app.cwl",
+    "href": "https://raw.githubusercontent.com/EOEPCA/deployment-guide/refs/heads/release-2.1/scripts/processing/oapip/examples/convert-url-app.cwl",
     "type": "application/cwl"
   }
 }
@@ -515,10 +519,21 @@ xdg-open "${HTTP_SCHEME}://console-minio.${INGRESS_HOST}/browser/${BUCKET_NAME}/
 
 
 #### Undeploy Process `convert-url`
+
+Undeploy returns `204 No Content` with an empty body, so print the status code:
+```bash
+source oapip-utils.sh
+curl --silent --show-error --output /dev/null --write-out "%{http_code}\n" \
+  -X DELETE "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
+  ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
+  -H "Accept: application/json"
+```
+
+The process no longer appears in the process list:
 ```bash
 source oapip-utils.sh
 curl --silent --show-error \
-  -X DELETE "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes/convert-url" \
+  -X GET "${OAPIP_HOST}/${OAPIP_USER}/ogc-api/processes" \
   ${OAPIP_AUTH_HEADER:+-H "$OAPIP_AUTH_HEADER"} \
   -H "Accept: application/json" | jq
 ```
