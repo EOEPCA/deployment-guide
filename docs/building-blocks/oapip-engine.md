@@ -109,7 +109,7 @@ Both backends use the same OGC API Processes interface - the difference is where
 
     # Activate and install Toil with required extras
     source ~/toil/venv/bin/activate
-    python3 -m pip install toil[cwl,htcondor,server,aws] htcondor
+    python3 -m pip install 'toil[cwl,htcondor,server,aws]==9.3.0' 'htcondor==24.12.21'
     ```
 
     > **Note:** Replace `htcondor` with your batch system if different (e.g., `toil[cwl,slurm,server,aws]` for Slurm).
@@ -141,7 +141,7 @@ Both backends use the same OGC API Processes interface - the difference is where
         ~/toil/storage/test/work_dir/$jobid.params.yaml
     ```
 
-    If successful, you'll see JSON output representing a STAC Item. Clean up:
+    If successful, Toil prints a JSON description of the output directory, containing the converted image and its STAC metadata. Clean up:
     ```bash
     rm -rf ~/toil/storage/test convert-url-app.cwl
     ```
@@ -153,7 +153,7 @@ Both backends use the same OGC API Processes interface - the difference is where
     Start RabbitMQ:
 
     ```bash
-    docker run -d --restart=always --name toil-wes-rabbitmq -p 127.0.0.1:5672:5672 rabbitmq:alpine
+    docker run -d --restart=always --name toil-wes-rabbitmq -p 127.0.0.1:5672:5672 rabbitmq:4.1-alpine
     ```
 
     Start Celery:
@@ -489,12 +489,28 @@ curl --silent --show-error \
   -H "Accept: application/json" | jq
 ```
 
-Use the Minio `mc` CLI or the MinIO console (installed as per the [MinIO Deployment Guide](../prerequisites/minio.md)) to access the output file in the Stage-Out bucket.
+The response is a STAC `FeatureCollection`. Each feature's `links` give the S3 location of the staged catalogue, and its `assets` name the output files.
+
+List the staged files with the Minio `mc` CLI (installed as per the [MinIO Deployment Guide](../prerequisites/minio.md)):
 
 ```bash
 source ~/.eoepca/state
-if [ "${USE_WORKSPACE_API=}" = "true" ]; then BUCKET_NAME="ws-${OAPIP_USER}"; else BUCKET_NAME="eoepca"; fi
-xdg-open "https://console-minio.${INGRESS_HOST}/browser/${BUCKET_NAME}/processing-results/"
+if [ "${USE_WORKSPACE_API:-}" = "true" ]; then BUCKET_NAME="ws-${OAPIP_USER}"; else BUCKET_NAME="eoepca"; fi
+mc ls --recursive "eoepca-minio/${BUCKET_NAME}/"
+```
+
+Calrissian stages results under `processing-results/`. Toil stages them under `<job id>/processing-results/`.
+
+Download an output file to check it:
+
+```bash
+mc cp "eoepca-minio/${BUCKET_NAME}/<path to the output file>" .
+```
+
+The same files are visible in the MinIO console:
+
+```bash
+xdg-open "${HTTP_SCHEME}://console-minio.${INGRESS_HOST}/browser/${BUCKET_NAME}/"
 ```
 
 
@@ -536,12 +552,16 @@ tail -n 20 ~/celery.log
 
 ### Remove the OAPIP Engine
 ```bash
+helm -n processing uninstall zoo-project-dru
+kubectl delete ns processing
+```
+
+If you enabled OIDC protection, also remove the IAM resources:
+```bash
 source ~/.eoepca/state
 kubectl delete -f generated-ingress.yaml
 envsubst < protect-test-user.yaml | kubectl delete -f -
 kubectl delete -f generated-iam.yaml --ignore-not-found
-helm -n processing uninstall zoo-project-dru
-kubectl delete ns processing
 ```
 
 ### Stop Toil WES (Toil only)
@@ -553,7 +573,7 @@ kill $(cat $HOME/toil.pid)
 
 # Stop Celery
 celery --broker=amqp://guest:guest@127.0.0.1:5672// -A toil.server.celery_app multi stop w1 \
-   --pidfile=$HOME/celery.pid
+   --pidfile=$HOME/celery.pid --logfile=$HOME/celery.log
 
 # Stop RabbitMQ
 docker stop toil-wes-rabbitmq

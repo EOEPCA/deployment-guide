@@ -6,9 +6,6 @@ cookiecutter:
   templateUrl: https://github.com/gfenoy/eoepca-proc-service-template-wes.git
   templateBranch: feature/zoo-template-common
   {{- end }}
-zoo:
-  openapi:
-    enabled: true
 {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
 zookernel:
   env:
@@ -83,8 +80,6 @@ postgresql:
   persistence:
     storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 rabbitmq:
-  autoSetup:
-    enabled: true
   persistence:
     storageClass: {{ getenv "PERSISTENT_STORAGECLASS" }}
 iam:
@@ -130,7 +125,7 @@ files:
           outputBinding:
             outputEval: |
               ${ 
-                return { "value": "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.sub_path + "/catalog.json", "type": "https://raw.githubusercontent.com/eoap/schemas/main/string_format.yaml#URI" };
+                return { "value": "s3://" + inputs.STAGEOUT_OUTPUT + "/" + inputs.sub_path + "/" + inputs.collection_id + "/catalog.json", "type": "https://raw.githubusercontent.com/eoap/schemas/main/string_format.yaml#URI" };
               }
           type: https://raw.githubusercontent.com/eoap/schemas/main/string_format.yaml#URI
       baseCommand:
@@ -190,6 +185,6 @@ files:
                         print(f"Uploading {local_path} to s3://{bucket}/{s3_path}", file=sys.stderr)
                         client.upload_file(local_path, bucket, s3_path)
                 
-                print(f"s3://{bucket}/{subfolder}/catalog.json", file=sys.stdout)
+                print(f"s3://{bucket}/{subfolder}/{collection_id}/catalog.json", file=sys.stdout)
 
 {{- end }}
