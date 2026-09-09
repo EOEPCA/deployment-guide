@@ -15,8 +15,15 @@ kubectl wait --for=condition=Available deployment --all \
   -n resource-health --timeout=300s || exit 1
 
 if [ "$RESOURCE_HEALTH_ENABLE_OIDC" = "no" ]; then
-  check_url_status_code "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/check_templates/" 200 || exit 1
-  check_url_status_code "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/telemetry/v1/spans" 200 || exit 1
+  for path in /api/healthchecks/v1/check_templates/ /api/telemetry/v1/spans; do
+    for attempt in {1..12}; do
+      if check_url_status_code "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}${path}" 200; then
+        break
+      fi
+      [ "$attempt" -eq 12 ] && exit 1
+      sleep 5
+    done
+  done
 fi
 
 echo

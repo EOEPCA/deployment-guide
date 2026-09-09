@@ -33,20 +33,20 @@ if ask_yes_no "Enable IAM/OIDC authentication?"; then
 else
     export APP_QUALITY_ENABLE_IAM="false"
     add_to_state_file "APP_QUALITY_ENABLE_IAM" "${APP_QUALITY_ENABLE_IAM}"
-
-    ask "APP_QUALITY_ADMIN_USER" "Enter a local admin username for Application Quality (no IAM)" "admin" is_non_empty
-    ask "APP_QUALITY_ADMIN_EMAIL" "Enter a local admin email for Application Quality (no IAM)" "admin@example.com" is_non_empty
-    if [ -z "${APP_QUALITY_ADMIN_PASSWORD:-}" ]; then
-        export APP_QUALITY_ADMIN_PASSWORD="$(generate_aes_key 32)"
-    fi
-    add_to_state_file "APP_QUALITY_ADMIN_PASSWORD" "${APP_QUALITY_ADMIN_PASSWORD}"
-
-    echo ""
-    echo "IAM/OIDC disabled. Tool/tag browsing is public; pipeline management uses the local admin account below."
-    echo "  Username: ${APP_QUALITY_ADMIN_USER}"
-    echo "  Password: ${APP_QUALITY_ADMIN_PASSWORD}"
-    echo ""
 fi
+
+ask "APP_QUALITY_ADMIN_USER" "Enter a local admin username for the Application Quality admin site" "admin" is_non_empty
+ask "APP_QUALITY_ADMIN_EMAIL" "Enter a local admin email for the Application Quality admin site" "admin@example.com" is_non_empty
+if [ -z "${APP_QUALITY_ADMIN_PASSWORD:-}" ]; then
+    export APP_QUALITY_ADMIN_PASSWORD="$(generate_aes_key 32)"
+fi
+add_to_state_file "APP_QUALITY_ADMIN_PASSWORD" "${APP_QUALITY_ADMIN_PASSWORD}"
+
+echo ""
+echo "Local admin account for the Application Quality admin site:"
+echo "  Username: ${APP_QUALITY_ADMIN_USER}"
+echo "  Password: ${APP_QUALITY_ADMIN_PASSWORD}"
+echo ""
 
 export APP_QUALITY_ENABLE_NOTIFICATIONS="${APP_QUALITY_ENABLE_NOTIFICATIONS:-false}"
 add_to_state_file "APP_QUALITY_ENABLE_NOTIFICATIONS" "${APP_QUALITY_ENABLE_NOTIFICATIONS}"

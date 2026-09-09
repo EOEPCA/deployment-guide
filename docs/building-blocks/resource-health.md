@@ -365,13 +365,16 @@ EOF
 Register the health check:
 
 ```bash
-curl -s -X POST "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
+CREATE_RESPONSE=$(curl -sS -X POST "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/vnd.api+json" \
-  -d @healthcheck-google.json | jq
+  -d @healthcheck-google.json)
+
+echo "$CREATE_RESPONSE" | jq
+CHECK_ID=$(echo "$CREATE_RESPONSE" | jq -r '.data.id')
 ```
 
-Note the `id` field in the response - this is the UUID assigned to your health check.
+`CHECK_ID` holds the UUID assigned to your health check. Keep it for the commands below.
 
 ---
 
@@ -382,7 +385,7 @@ View all registered health checks:
 ```bash
 curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  | jq '.data[] | {id: .id, name: .attributes.metadata.name, schedule: .attributes.schedule}'
+  | jq
 ```
 
 The health check is implemented as a Kubernetes CronJob:
@@ -400,13 +403,6 @@ The CronJob name matches the UUID of the health check.
 Rather than waiting for the scheduled time, you can trigger a health check immediately:
 
 ```bash
-# Grabs the first check in the list - swap in a select() filter if you have more than one registered
-CHECK_ID=$(curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  | jq -r '.data[0].id')
-echo "Check ID: $CHECK_ID"
-
-# Each health check is a CronJob named after its UUID; this spins up a one-off Job from it
 kubectl create job --from=cronjob/${CHECK_ID} manual-google-check -n resource-health
 
 kubectl wait --for=condition=complete job/manual-google-check -n resource-health --timeout=120s
@@ -437,7 +433,7 @@ If no data appears yet, wait a moment for the checks to complete and telemetry t
 Visit `${HTTP_SCHEME}://resource-health.${INGRESS_HOST}` to see all health checks and their results in a visual interface.
 
 ```bash
-xdg-open "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/dashboards"
+xdg-open "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/"
 ```
 
 **Via OpenSearch Dashboards:**
@@ -449,20 +445,12 @@ Visit `${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/dashboards` to query the
 ### Delete a Health Check
 
 ```bash
-# Look the check up by name this time, rather than assuming it's first in the list
-CHECK_ID=$(curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  | jq -r '.data[] | select(.attributes.metadata.name=="google-ping-check") | .id')
-echo "Deleting check: $CHECK_ID"
-
-# Deleting the check also removes its underlying CronJob
 curl -X DELETE "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/${CHECK_ID}" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 
-# Confirm google-ping-check is gone
 curl -s "${HTTP_SCHEME}://resource-health.${INGRESS_HOST}/api/healthchecks/v1/checks/" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  | jq '.data[].attributes.metadata.name'
+  | jq
 ```
 
 The corresponding CronJob should also be deleted:

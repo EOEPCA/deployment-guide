@@ -62,6 +62,8 @@ Before deploying the Data Access Building Block, ensure you have the following:
 | TLS Certificates   | Managed via `cert-manager` or manually | [TLS Certificate Management Guide](../prerequisites/tls.md)      |
 | Object Store       | Accessible object store (i.e. MinIO)   | [MinIO Deployment Guide](../prerequisites/minio.md)              |
 
+The default STAC configuration uses CPU autoscaling and requires a working Kubernetes Metrics API, normally supplied by Metrics Server. Check it with `kubectl top nodes` before deployment.
+
 **Optional Prerequisites (for advanced features):**
 
 | Component                | Requirement                    | Required For                        |
@@ -156,12 +158,12 @@ CronJobs are conditionally created based on PgSTAC settings:
 - **Queue Processor** (created when `use_queue: "true"`):
     - Schedule: `"0 * * * *"` (hourly)
     - Processes queries that exceeded timeout
-    - Configurable via `queueProcessor.schedule`
+    - Configurable via `pgstacBootstrap.settings.queueProcessor.schedule`
 
 - **Extent Updater** (created when `update_collection_extent: "false"` - i.e. extents are *not* kept up to date inline on every item write, so this CronJob is the periodic fallback that recalculates them instead):
     - Schedule: `"0 */12 * * *"` (every 12 hours)
     - Updates collection spatial/temporal boundaries
-    - Configurable via `extentUpdater.schedule`
+    - Configurable via `pgstacBootstrap.settings.extentUpdater.schedule`
 
 By default, both CronJobs are created (`use_queue=true`, `update_collection_extent=false`). Both schedules are customizable using standard cron format.
 
@@ -303,16 +305,16 @@ Once deployment is complete:
 
 **Core Services:**
 
-- **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/`
-- **Raster API:** `https://eoapi.${INGRESS_HOST}/raster/`
-- **Vector API:** `https://eoapi.${INGRESS_HOST}/vector/`
-- **Multidim API:** `https://eoapi.${INGRESS_HOST}/multidim/`
-- **STAC Manager UI:** `https://eoapi.${INGRESS_HOST}/manager/`
-- **openEO API:** `https://eoapi.${INGRESS_HOST}/openeo/`
+- **STAC API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/`
+- **Raster API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/raster/`
+- **Vector API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/vector/`
+- **Multidim API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/multidim/`
+- **STAC Manager UI:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/manager/`
+- **openEO API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/openeo/`
 
 **Optional Services:**
 
-- **Grafana** (if monitoring enabled): `https://eoapisupport.${INGRESS_HOST}/`
+- **Grafana** (if monitoring enabled): `${HTTP_SCHEME}://eoapisupport.${INGRESS_HOST}/`
 
 ---
 
@@ -339,10 +341,10 @@ xdg-open https://radiantearth.github.io/stac-browser/#/external/eoapi.${INGRESS_
 
 ### 1. Access the Swagger UI
 
-- **STAC API:** `https://eoapi.${INGRESS_HOST}/stac/api.html`
-- **Raster API:** `https://eoapi.${INGRESS_HOST}/raster/api.html`
-- **Vector API:** `https://eoapi.${INGRESS_HOST}/vector/api.html`
-- **Multidim API:** `https://eoapi.${INGRESS_HOST}/multidim/api.html`
+- **STAC API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/api.html`
+- **Raster API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/raster/api.html`
+- **Vector API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/vector/api.html`
+- **Multidim API:** `${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/multidim/api.html`
 
 ### 2. Access the STAC Browser UI
 
@@ -359,13 +361,13 @@ xdg-open "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/browser/"
 **Retrieve STAC API Landing Page:**
 ```bash
 source ~/.eoepca/state
-curl -s -X GET "https://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json" | jq
+curl -s -X GET "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/" -H "accept: application/json" | jq
 ```
 
 **Search STAC Items:**
 
 ```bash
-curl -s -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
+curl -s -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/search" \
   -H "Content-Type: application/json" \
   -d '{
     "collections": ["sentinel-2-iceland"],
@@ -413,7 +415,7 @@ curl -s -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
     **Unauthenticated write is rejected:**
 
     ```bash
-    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
       -H "Content-Type: application/json" \
       -d '{"id": "unauth-test", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
     # 401
@@ -422,7 +424,7 @@ curl -s -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
     **A user can write to their own username-prefixed collection:**
 
     ```bash
-    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${ACCESS_TOKEN}" \
       -d "{\"id\": \"${KEYCLOAK_TEST_USER}.mycollection\", \"type\": \"Collection\", \"stac_version\": \"1.0.0\", \"description\": \"x\", \"license\": \"proprietary\", \"extent\": {\"spatial\": {\"bbox\": [[-180,-90,180,90]]}, \"temporal\": {\"interval\": [[null,null]]}}, \"links\": []}"
@@ -432,7 +434,7 @@ curl -s -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
     **...but not to an unrelated collection they don't own and have no editor role for:**
 
     ```bash
-    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+    curl -sk -o /dev/null -w "%{http_code}\n" -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${ACCESS_TOKEN}" \
       -d '{"id": "someone-elses-collection", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
@@ -442,10 +444,10 @@ curl -s -X POST "https://eoapi.${INGRESS_HOST}/stac/search" \
     **A private collection is invisible to unauthenticated requests, but visible to its owner:**
 
     ```bash
-    curl -sk -o /dev/null -w "%{http_code}\n" "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection"
+    curl -sk -o /dev/null -w "%{http_code}\n" "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection"
     # 404 (filtered out, not "403" - its existence isn't revealed either)
 
-    curl -sk "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection" \
+    curl -sk "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.mycollection" \
       -H "Authorization: Bearer ${ACCESS_TOKEN}" | jq '{id, type}'
     ```
 

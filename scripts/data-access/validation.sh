@@ -5,33 +5,30 @@ source "$HOME/.eoepca/state"
 
 # if arg1 is "nomonitoring" then the eoAPI monitoring is not expected
 NO_MONITORING="false"
-if [ "$1" = "nomonitoring" ]; then
+if [ "${1:-}" = "nomonitoring" ]; then
   NO_MONITORING="true"
 fi
 
-# if nomonitoring then expected pod count is 13 else 18 (+1 if IAM is enabled, for stac-auth-proxy)
-EXPECTED_POD_COUNT=18
-if [ "$NO_MONITORING" = "true" ]; then
-  EXPECTED_POD_COUNT=12
+set -e
+
+for deployment in eoapi-stac eoapi-raster eoapi-vector eoapi-multidim eoapi-browser eoapi-doc-server stac-manager titiler-openeo; do
+  check_deployment_ready "data-access" "$deployment"
+  check_service_exists "data-access" "$deployment"
+done
+
+if [ "${USE_EXTERNAL_POSTGRES:-no}" != "yes" ]; then
+  check_deployment_ready "data-access" "pgo"
+  kubectl rollout status statefulset --namespace data-access \
+    --selector postgres-operator.crunchydata.com/cluster=eoapi --timeout=120s
 fi
-if [ "${USE_EXTERNAL_POSTGRES:-no}" = "yes" ]; then
-  EXPECTED_POD_COUNT=$((EXPECTED_POD_COUNT - 4))
-fi
+
 if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
-  EXPECTED_POD_COUNT=$((EXPECTED_POD_COUNT + 1))
+  check_deployment_ready "data-access" "eoapi-stac-auth-proxy"
 fi
-
-check_pods_running "data-access" "" ${EXPECTED_POD_COUNT}
-
-check_service_exists "data-access" "eoapi-raster"
-check_service_exists "data-access" "eoapi-stac"
-check_service_exists "data-access" "eoapi-vector"
-check_service_exists "data-access" "eoapi-doc-server"
-check_service_exists "data-access" "titiler-openeo"
 
 if [ "$NO_MONITORING" = "false" ]; then
-  check_service_exists "data-access" "eoapi-support-prometheus-server" "Skipping: eoapi-support not found." || true
-  check_service_exists "data-access" "eoapi-support-grafana" "Skipping: eoapi-support not found." || true
+  check_service_exists "data-access" "eoapi-support-prometheus-server"
+  check_service_exists "data-access" "eoapi-support-grafana"
 fi
 
 if [ "${ENABLE_GEOPARQUET_EXPORT:-no}" = "yes" ]; then

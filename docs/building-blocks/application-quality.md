@@ -75,6 +75,7 @@ Provide values for:
 
 - **`SHARED_STORAGECLASS`**: Kubernetes storage class for shared Calrissian volumes.
 - **`INTERNAL_CLUSTER_ISSUER`**: Internal TLS issuer (default: `eoepca-ca-clusterissuer`).
+- **`APP_QUALITY_ADMIN_USER`**/**`APP_QUALITY_ADMIN_EMAIL`**: local admin account for the Application Quality admin site. **`APP_QUALITY_ADMIN_PASSWORD`** is generated if not already set, and printed by the script.
 
 `APP_QUALITY_PUBLIC_HOST` defaults to `application-quality.${INGRESS_HOST}` and isn't prompted for directly.
 
@@ -84,6 +85,9 @@ The script also asks whether to enable:
 - **Optional Grafana dashboards**
 - **Optional SonarQube deployment**
 
+!!! note
+    The local admin account is required with or without IAM: the API loads its catalogue of analysis tools and pipelines from fixtures that are partly owned by that account. Without it the catalogue does not load and the deployment comes up with no tools and no pipelines.
+
 #### OIDC Authentication
 
 OIDC authentication is optional - the script asks a plain yes/no with no preset default.
@@ -91,7 +95,7 @@ OIDC authentication is optional - the script asks a plain yes/no with no preset 
 === "Without IAM"
 
     - **`APP_QUALITY_ENABLE_IAM`** is set to `false`.
-    - Tool/tag browsing is public. Pipeline management still requires a login - with no OIDC provider configured, you'll be prompted for a local Django admin username/email (**`APP_QUALITY_ADMIN_USER`**/**`APP_QUALITY_ADMIN_EMAIL`**), and **`APP_QUALITY_ADMIN_PASSWORD`** is generated if not already set.
+    - Tool/tag browsing is public. Pipeline management requires a login, which is the local admin account.
 
 === "With IAM"
 
@@ -146,10 +150,7 @@ For SonarQube, database and monitoring passcode secrets are created only when So
 Clone the Application Quality repository:
 
 ```bash
-git clone https://github.com/EOEPCA/application-quality.git reference-repo
-cd reference-repo
-git checkout reference-deployment
-cd ..
+git clone --branch reference-deployment https://github.com/EOEPCA/application-quality.git reference-repo
 ```
 
 Update Helm dependencies:
@@ -191,7 +192,27 @@ kubectl logs -n application-quality -l app.kubernetes.io/component=web --tail=20
 
 ---
 
-### 4. Create an IAM Client
+### 4. Initialise the Tool and Pipeline Catalogue
+
+The backend image `2026-08-31a` creates its admin account before database migrations and bundles two
+pipelines referencing user ID `1`. On a fresh database, admin creation and catalogue loading fail.
+Restart the API after migrations to create the first admin user and load the catalogue.
+This upstream image defect still needs correction; restarting does not repair missing fixture
+owners in an existing database.
+
+```bash
+kubectl rollout restart deployment/application-quality-api -n application-quality
+kubectl rollout status deployment/application-quality-api -n application-quality --timeout=5m
+source ~/.eoepca/state
+curl --fail --show-error --silent --retry 30 --retry-all-errors --retry-delay 2 \
+  "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/api/tools/" | jq
+```
+
+This lists the analysis tools - Bandit, Flake8, Pylint, Ruff, Trivy and the notebook and Application Package validators. An empty list means the initialisation has not completed; check the API logs.
+
+---
+
+### 5. Create an IAM Client
 
 Skip this step if IAM/OIDC was disabled.
 
@@ -226,7 +247,7 @@ For production deployments, avoid broad wildcard redirects where possible. Use e
 
 ---
 
-### 5. Deploy SonarQube (Optional)
+### 6. Deploy SonarQube (Optional)
 
 Skip this step if SonarQube was disabled during configuration.
 
@@ -280,7 +301,7 @@ xdg-open "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/sonarqube"
 bash validation.sh
 ```
 
-This checks that the required pods, services, ingress resources and public endpoints exist.
+This checks that the required pods and services are present and that the public endpoint responds.
 
 If SonarQube is enabled, the validation also checks the SonarQube namespace, services and APISIX route.
 
@@ -335,7 +356,9 @@ xdg-open "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/"
 
 === "Without IAM"
 
-    Log in via the Django admin at `https://application-quality.${INGRESS_HOST}/admin/login/` using `APP_QUALITY_ADMIN_USER`/`APP_QUALITY_ADMIN_PASSWORD` from `configure-application-quality.sh`'s output. The API session this creates is also what the web portal itself uses.
+    Log in via the admin site at `https://application-quality.${INGRESS_HOST}/admin/login/` using `APP_QUALITY_ADMIN_USER`/`APP_QUALITY_ADMIN_PASSWORD` from `configure-application-quality.sh`'s output. The API session this creates is also what the web portal itself uses.
+
+    The admin site is available with IAM enabled too, and is the only way to reach the Django administration pages.
 
 ### 3. Defining & Executing Pipelines
 
