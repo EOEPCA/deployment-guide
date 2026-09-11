@@ -117,15 +117,17 @@ helm upgrade -i notification-automation eoepca-dev/notification-automation \
   --wait
 ```
 
-Once it's up:
+Once it's up - some quick checks:
 
 ```bash
 source ~/.eoepca/state
-curl https://cloudevents-player.notifications.${INGRESS_HOST}
+echo "\nCloudEvents Player Web UI (expect HTTP headers)..."
+curl -s -D - -o /dev/null https://cloudevents-player.notifications.${INGRESS_HOST}
+echo "\nWebhook Source Health..."
 curl https://webhooks.notifications.${INGRESS_HOST}/health
 ```
 
-The CloudEvents player should return its web UI, and `/health` on the webhook source should return `200`.
+The CloudEvents player request should return `200` with associated response headers, and `/health` on the webhook source should return `200` with status `healthy`.
 
 ### 6. Optional: Deploy Kafka
 
@@ -172,6 +174,8 @@ A connected walkthrough: send events in from the outside (webhooks), see events 
 
 ### Send a GitHub webhook
 
+Here we simulate a GitHub webhook event being sent to the notification automation system.
+
 GitHub signs requests with `X-Hub-Signature-256: sha256=<hmac-sha256 of the body>`, using the secret from `configure-notification-automation.sh`:
 
 ```bash
@@ -179,17 +183,19 @@ source ~/.eoepca/state
 PAYLOAD='{"repository": {"html_url": "https://github.com/EOEPCA/deployment-guide"}, "ref": "refs/heads/main"}'
 SIGNATURE="sha256=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$NA_GITHUB_WEBHOOK_SECRET" | awk '{print $NF}')"
 
-curl -X POST "https://webhooks.notifications.${INGRESS_HOST}/github" \
+curl -i -X POST "https://webhooks.notifications.${INGRESS_HOST}/github" \
   -H "Content-Type: application/json" \
   -H "X-GitHub-Event: push" \
   -H "X-Hub-Signature-256: $SIGNATURE" \
   -d "$PAYLOAD"
 ```
 
-A `202` means it was forwarded to the `default` broker. Check it arrived:
+A `202` means it was forwarded to the `default` broker.
+
+Check it arrived: _(this shows the most recent CloudEvent)_
 
 ```bash
-curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq
+curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq '.[0]'
 ```
 
 Use the same URL (`https://webhooks.notifications.${INGRESS_HOST}/github`) and `NA_GITHUB_WEBHOOK_SECRET` when registering a real GitHub webhook.
@@ -202,14 +208,16 @@ GitLab uses a plain secret token instead of a signature, sent as `X-Gitlab-Token
 source ~/.eoepca/state
 PAYLOAD='{"project": {"web_url": "https://gitlab.com/EOEPCA/deployment-guide"}}'
 
-curl -X POST "https://webhooks.notifications.${INGRESS_HOST}/gitlab" \
+curl -i -X POST "https://webhooks.notifications.${INGRESS_HOST}/gitlab" \
   -H "Content-Type: application/json" \
   -H "X-Gitlab-Event: Push Hook" \
   -H "X-Gitlab-Token: $NA_GITLAB_WEBHOOK_SECRET" \
   -d "$PAYLOAD"
 ```
 
-Same `202`/CloudEvents-player check as GitHub above. Use `https://webhooks.notifications.${INGRESS_HOST}/gitlab` and `NA_GITLAB_WEBHOOK_SECRET` when registering a real GitLab webhook.
+Check the outcome using the same `202`/CloudEvents-player check as GitHub above.
+
+Use `https://webhooks.notifications.${INGRESS_HOST}/gitlab` and `NA_GITLAB_WEBHOOK_SECRET` when registering a real GitLab webhook.
 
 ### Route webhooks from multiple projects
 
@@ -251,20 +259,88 @@ This is what makes the next section work without any extra plumbing - any EOEPCA
 
 [Data Access](./data-access.md) can emit a CloudEvent every time a STAC *item* changes, via its own `eoapi-notifier` component listening on pgSTAC's `pgstac_items_change` channel - genuinely independent of this BB, wired together only by both pointing at the same broker. Deploy (or redeploy) Data Access with `ENABLE_EOAPI_NOTIFIER=yes`, create a collection and an item in it using Data Access's own [STAC transactions example](./data-access.md#3-perform-basic-api-tests) (the notifier only fires on item changes, not collection changes):
 
+!!! tip
+    The following steps assume IAM is enabled on Data Access, such that all API requests require a valid access token and resource IDs are prefixed with the username.
+
+Obtain an access token...
+
 ```bash
 source ~/.eoepca/state
-curl -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
-  -H "Content-Type: application/json" \
-  -d '{"id": "na-demo-collection", "type": "Collection", "stac_version": "1.0.0", "description": "x", "license": "proprietary", "extent": {"spatial": {"bbox": [[-180,-90,180,90]]}, "temporal": {"interval": [[null,null]]}}, "links": []}'
-
-curl -X POST "https://eoapi.${INGRESS_HOST}/stac/collections/na-demo-collection/items" \
-  -H "Content-Type: application/json" \
-  -d '{"id": "na-demo-item-1", "type": "Feature", "stac_version": "1.0.0", "collection": "na-demo-collection", "geometry": {"type": "Point", "coordinates": [0, 0]}, "bbox": [0, 0, 0, 0], "properties": {"datetime": "2026-08-19T00:00:00Z"}, "links": [], "assets": {}}'
+ACCESS_TOKEN=$( \
+  curl -sk -X POST \
+    -d "username=${KEYCLOAK_TEST_USER}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${EOAPI_CLIENT_ID}" \
+    -d "scope=openid" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+  | jq -r '.access_token' \
+)
 ```
 
-(if IAM is enabled on Data Access, add `-H "Authorization: Bearer ${ACCESS_TOKEN}"` to both and prefix the IDs with your username, per the linked example)
+Create a collection...
 
-Check the CloudEvents player again - an `eventType: org.ogc.api.collection.item.create` event with `source: /eoapi/pgstac` shows up, `subject` set to the item's ID. No custom glue code on either side; both BBs were simply pointed at the same Knative broker.
+```bash
+source ~/.eoepca/state
+collection="${collection:-na-demo-collection}"
+curl -w "\n%{http_code}\n" -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d @- <<EOF
+{
+  "id": "${KEYCLOAK_TEST_USER}.${collection}",
+  "type": "Collection",
+  "stac_version": "1.0.0",
+  "description": "x",
+  "license": "proprietary",
+  "extent": {
+    "spatial": {
+      "bbox": [[-180,-90,180,90]]
+    },
+    "temporal": {
+      "interval": [[null,null]]
+    }
+  },
+  "links": []
+}
+EOF
+```
+
+Add an item to the collection...
+
+```bash
+source ~/.eoepca/state
+curl -w "\n%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.${collection}/items" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d @- <<EOF
+{
+  "id": "na-demo-item-1",
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "collection": "${KEYCLOAK_TEST_USER}.${collection}",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [0, 0]
+  },
+  "bbox": [0, 0, 0, 0],
+  "properties": {
+    "datetime": "2026-08-19T00:00:00Z"
+  },
+  "links": [],
+  "assets": {}
+}
+EOF
+```
+
+Check the CloudEvents player again...
+
+```bash
+source ~/.eoepca/state
+curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq '.[0]'
+```
+
+ An `eventType: org.ogc.api.collection.item.create` event with `source: /eoapi/pgstac` shows up, `subject` set to the item's ID. No custom glue code on either side; both BBs were simply pointed at the same Knative broker.
 
 ### Create a broker
 
