@@ -18,8 +18,17 @@ done
 
 if [ "${USE_EXTERNAL_POSTGRES:-no}" != "yes" ]; then
   check_deployment_ready "data-access" "pgo"
-  kubectl rollout status statefulset --namespace data-access \
-    --selector postgres-operator.crunchydata.com/cluster=eoapi --timeout=120s
+  # 'kubectl rollout status' only works for statefulsets with a RollingUpdate strategy
+  for sts in $(
+      kubectl get sts -n data-access \
+        -l postgres-operator.crunchydata.com/cluster=eoapi \
+        -o json |
+        jq -r '.items[] |
+          select((.spec.updateStrategy.type // "RollingUpdate") == "RollingUpdate") |
+          .metadata.name'
+    ); do
+    kubectl rollout status statefulset -n data-access "$sts" --timeout=120s
+  done
 fi
 
 if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
