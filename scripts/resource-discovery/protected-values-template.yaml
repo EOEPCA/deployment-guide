@@ -30,7 +30,7 @@ pycsw:
     manager:
       transactions: "true"
       allowed_ips:
-        - '"*"'
+        - "*"
     metadata:
       identification:
         title: EOEPCA+ Protected Resource Catalogue
