@@ -1,5 +1,5 @@
-# KRaft mode (no ZooKeeper) - broker/controller storage and replicas live on the KafkaNodePool.
-apiVersion: kafka.strimzi.io/v1beta2
+# Replicas and storage are set on the KafkaNodePool, not the Kafka resource.
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
   name: dual-role
@@ -19,7 +19,7 @@ spec:
         size: {{ getenv "NA_KAFKA_VOLUME_SIZE" }}
         deleteClaim: false
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: Kafka
 metadata:
   name: kafka-cluster

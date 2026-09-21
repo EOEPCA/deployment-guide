@@ -19,6 +19,9 @@ webhookSource:
     gitlabSecret: "{{ getenv "NA_GITLAB_WEBHOOK_SECRET" }}"
   sinkBinding:
     create: true
+{{- if eq ( getenv "NA_ENABLE_OIDC" ) "yes" }}
+  oidcTokenPath: /oidc/token
+{{- end }}
   ingress:
     enabled: true
     className: {{ getenv "INGRESS_CLASS" }}

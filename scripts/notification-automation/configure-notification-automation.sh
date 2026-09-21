@@ -12,10 +12,6 @@ fi
 ask "DNS_CLUSTER_ISSUER" "Cert-manager ClusterIssuer supporting DNS-01 (needed for wildcard certs)" "letsencrypt-dns01"
 
 ask "NA_ENABLE_OIDC" "Enable OIDC authentication on eventing resources? (yes/no)" "no" is_yes_no
-if [ "$NA_ENABLE_OIDC" = "yes" ]; then
-    echo "Note: OIDC requires the Identity BB (Keycloak) to be reachable from the cluster."
-    echo "      You will need to configure realm and client details separately."
-fi
 
 if [ -z "$NA_GITHUB_WEBHOOK_SECRET" ]; then
     NA_GITHUB_WEBHOOK_SECRET=$(openssl rand -hex 24)
@@ -38,9 +34,7 @@ if [ "$NA_ENABLE_EMAILER" = "yes" ]; then
     ask "NA_SMTP_USER" "SMTP user" "user@example.com"
     ask "NA_SMTP_PASSWORD" "SMTP password" ""
     ask "NA_SMTP_STARTTLS" "Use STARTTLS? (true/false)" "true"
-    # yagmail's own default is smtp_ssl=True regardless of the STARTTLS setting above -
-    # must be set explicitly to false for a STARTTLS (or plain) server, or the emailer
-    # always attempts an implicit-SSL handshake and fails against anything but port 465.
+    # yagmail defaults to implicit SSL, so STARTTLS and plain SMTP servers need false.
     ask "NA_SMTP_SSL" "Use implicit SSL (smtps, typically port 465) instead of STARTTLS? (true/false)" "false"
 fi
 

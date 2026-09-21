@@ -1,43 +1,42 @@
 # Notification and Automation Deployment Guide
 
-The Notification and Automation Building Block gives the EOEPCA platform an event-driven workflow layer. It uses Knative Eventing for routing CloudEvents between sources and sinks, ships with a few ready-made components (a GitHub/GitLab webhook source, a CloudEvents player for inspecting traffic, and an emailer sink), and lets you deploy your own event-driven functions on Knative Serving on top. Kafka can be added on top if you want a durable event backbone, but the default setup uses Knative's in-memory channel and works fine for most cases.
+Notification and Automation routes CloudEvents between event sources and subscribers using Knative Eventing. It includes a GitHub/GitLab webhook source, a Kubernetes API Server Source, a CloudEvents player and an optional emailer. Knative Serving runs custom event-driven functions.
 
-This guide walks through deploying the whole stack on a Kubernetes cluster.
+The default broker uses an in-memory channel. Durable event storage requires a persistent broker or channel configuration; deploying Kafka alone does not change the broker.
 
 ## Components
 
-- **Knative Operator** installed separately via Helm, ahead of the BB chart — reconciles the `KnativeServing`/`KnativeEventing` custom resources into an actual control plane
-- **Knative Serving** for deploying your own serverless functions on top (see [Writing automations](#writing-automations))
+- **Knative Operator**, installed separately with Helm, which manages the Knative Serving and Eventing instances
+- **Knative Serving** for your own event-driven functions (see [Writing automations](#writing-automations))
 - **Knative Eventing** for event routing and delivery
-- **Kourier** as the cluster-internal ingress for Knative services (enabled via the Knative Serving CR, not installed separately)
-- **Webhook source** that turns inbound GitHub/GitLab webhooks into CloudEvents, with optional multi-project routing
+- **Kourier** as the cluster-internal ingress for Knative Services, enabled through the `KnativeServing` resource
+- **Webhook source** that turns GitHub and GitLab webhooks into CloudEvents, with optional per-project secrets
 - **API Server Source** that turns Kubernetes API events into CloudEvents
 - **CloudEvents player** for inspecting events flowing through a broker
-- **Emailer sink** that sends an email when it receives a CloudEvent
-- **Kafka** (optional) via Strimzi, for persistent event streaming
+- **Emailer** that sends an email for each CloudEvent it receives
+- **Kafka** (optional), deployed with Strimzi
 
-The BB Helm chart itself (`notification-automation`) only creates the webhook source, API server source, CloudEvents player, emailer, and default broker as plain Deployments — it does **not** install the Knative Operator or the `KnativeServing`/`KnativeEventing` instances. Those are separate, mandatory steps below.
+The BB Helm chart (`notification-automation`) creates Deployments for the webhook source, CloudEvents player and optional emailer, plus an ApiServerSource, a Broker and their event-routing resources. It does not install Knative.
 
-The webhook source and API server source both send their CloudEvents into a chart-provisioned `default` broker, and the CloudEvents player is subscribed to that broker with no filter — so events from both are visible there with no extra wiring (see [Send a GitHub webhook](#send-a-github-webhook)).
+The webhook source and API Server Source send their events to the chart's `default` broker. The CloudEvents player subscribes to that broker without a filter, so events from both appear in the player.
 
 ## Prerequisites
 
-| Component    | Requirement                   | Documentation                                                  |
-|--------------|-------------------------------|----------------------------------------------------------------|
-| Kubernetes   | Cluster (tested on v1.32)     | [Installation Guide](../prerequisites/kubernetes.md)           |
-| Helm         | Version 3.5 or newer          | [Installation Guide](https://helm.sh/docs/intro/install/)      |
-| kubectl      | Configured for cluster access | [Installation Guide](https://kubernetes.io/docs/tasks/tools/)  |
-| Ingress      | APISIX installed              | [Installation Guide](../prerequisites/ingress/overview.md)     |
-| Cert Manager | Installed and working         | [Installation Guide](../prerequisites/tls.md)                  |
-| DNS-01 ClusterIssuer | Required for wildcard TLS on Knative services | — |
+| Component            | Requirement                                   | Documentation                                                 |
+|----------------------|-----------------------------------------------|---------------------------------------------------------------|
+| Kubernetes           | Cluster (tested on v1.34)                     | [Installation Guide](../prerequisites/kubernetes.md)          |
+| Helm                 | Version 3.5 or newer                          | [Installation Guide](https://helm.sh/docs/intro/install/)     |
+| kubectl              | Configured for cluster access                 | [Installation Guide](https://kubernetes.io/docs/tasks/tools/) |
+| Ingress              | APISIX installed                              | [Installation Guide](../prerequisites/ingress/overview.md)    |
+| Cert Manager         | Required when issuing TLS certificates        | [Installation Guide](../prerequisites/tls.md)                 |
+| DNS-01 ClusterIssuer | Required for wildcard TLS on Knative services | —                                                             |
 
-
-A note on ingress: only APISIX is wired up by the templates in this BB. NGINX is on the roadmap but not supported yet. The configure script exits early if `INGRESS_CLASS` is set to anything other than `apisix`.
+The supplied ingress templates require APISIX. The configure script rejects other values of `INGRESS_CLASS`.
 
 Clone the deployment guide repo and switch to this BB's directory:
 
 ```bash
-git clone https://github.com/EOEPCA/deployment-guide
+git clone --branch release-2.1 --depth 1 https://github.com/EOEPCA/deployment-guide.git
 cd deployment-guide/scripts/notification-automation
 ```
 
@@ -60,17 +59,17 @@ First time running a script? [EOEPCA+ State](../prerequisites/state.md) covers t
 You'll be asked for, in order:
 
 - `DNS_CLUSTER_ISSUER`: cert-manager ClusterIssuer supporting DNS-01, needed for wildcard TLS on Knative services (e.g. `letsencrypt-dns01`)
-- `NA_ENABLE_OIDC`: whether to turn on Knative Eventing's own OIDC token authentication between eventing resources (defaults to no — this is unrelated to the IAM Building Block)
-- `NA_ENABLE_EMAILER`: whether to deploy the emailer sink (defaults to no)
-    - if yes: `NA_EMAIL_FROM`, `NA_EMAIL_TO`, `NA_SMTP_HOST`, `NA_SMTP_PORT`, `NA_SMTP_USER`, `NA_SMTP_PASSWORD`, `NA_SMTP_STARTTLS`, `NA_SMTP_SSL` (implicit SSL/smtps - leave `false` for a STARTTLS server, which is most of them; only Gmail-style port 465 servers need `true`)
+- `NA_ENABLE_OIDC`: whether to turn on Knative Eventing's own OIDC token authentication between eventing resources (defaults to no — this is unrelated to the IAM Building Block). Decide this before deploying; to change it later, uninstall and reinstall the BB
+- `NA_ENABLE_EMAILER`: whether to deploy the emailer (defaults to no)
+    - if yes: `NA_EMAIL_FROM`, `NA_EMAIL_TO`, `NA_SMTP_HOST`, `NA_SMTP_PORT`, `NA_SMTP_USER`, `NA_SMTP_PASSWORD`, `NA_SMTP_STARTTLS`, `NA_SMTP_SSL` (set implicit SSL to `true` for an SMTPS server, typically on port 465; leave it `false` for STARTTLS or plain SMTP)
 - `NA_ENABLE_KAFKA`: whether to deploy a Kafka cluster (defaults to no)
     - if yes: `NA_KAFKA_REPLICAS`, `NA_KAFKA_VOLUME_SIZE`, `NA_KAFKA_VERSION`
 
-The script generates random GitHub and GitLab webhook secrets and stores them in `~/.eoepca/state`. Keep that file safe, you will need them when registering webhooks against a real repository.
+The script generates random GitHub and GitLab webhook secrets and stores them in `~/.eoepca/state`. You need them when registering webhooks in a real repository.
 
 ### 2. Install the Knative Operator
 
-The BB chart does not install the Knative Operator or manage the `KnativeServing`/`KnativeEventing` custom resources — install it first, separately:
+Install the Knative Operator to manage the `KnativeServing` and `KnativeEventing` instances:
 
 ```bash
 helm repo add knative-operator https://knative.github.io/operator
@@ -94,17 +93,25 @@ kubectl wait --for=condition=Ready knativeeventing/knative-eventing -n knative-e
 
 This creates the `knative-serving`/`knative-eventing`/`notifications` namespaces and the `KnativeServing`/`KnativeEventing` custom resources the operator reconciles. Give it a couple of minutes on a fresh cluster while it pulls the component images.
 
-### 4. Apply the wildcard ingress route for Knative Functions
+### 4. Optional: expose your own Knative Services
+
+Apply this route if you want public URLs for Knative Services you deploy yourself. The webhook source and CloudEvents player use their own Ingresses, and broker-to-subscriber delivery uses internal service addresses.
+
+For HTTPS, this step also creates a wildcard Certificate and an `ApisixTls` resource. Configure a DNS-01 `ClusterIssuer` before applying it; an HTTP-01 issuer cannot issue the wildcard certificate.
 
 ```bash
 kubectl apply -f generated-apisix-route.yaml
 ```
 
-This route is only for giving **Knative Services you deploy yourself** their own public URL (see [Writing automations](#writing-automations) below). If you enabled HTTPS, it also creates the wildcard Certificate and ApisixTls resources, which need a DNS-01 ClusterIssuer - if you don't have one, skip this step. Nothing else in this guide's Usage section needs it: webhooks, the CloudEvents Player, and Triggers subscribing your own functions to a broker all work without a public URL for the function itself.
+When using HTTPS, wait for the certificate before opening a function's public URL:
+
+```bash
+kubectl wait --for=condition=Ready certificate/notifications-wildcard -n knative-serving --timeout=300s
+```
 
 ### 5. Install the BB chart
 
-The chart deploys the webhook source (GitHub and GitLab), the API server source, the CloudEvents player, the default broker and (if enabled) the emailer. The webhook source and CloudEvents player each get their own `Ingress` with a cert-manager-issued certificate.
+The chart deploys the webhook source (GitHub and GitLab), the API Server Source, the CloudEvents player, the default broker and (if enabled) the emailer. The webhook source and CloudEvents player each get their own `Ingress`, using the TLS settings from the shared configuration.
 
 ```bash
 helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
@@ -113,6 +120,7 @@ helm repo update eoepca-dev
 helm upgrade -i notification-automation eoepca-dev/notification-automation \
   --namespace notifications \
   --create-namespace \
+  --version 0.1.2 \
   -f generated-na-values.yaml \
   --wait
 ```
@@ -121,10 +129,8 @@ Once it's up - some quick checks:
 
 ```bash
 source ~/.eoepca/state
-echo "\nCloudEvents Player Web UI (expect HTTP headers)..."
-curl -s -D - -o /dev/null https://cloudevents-player.notifications.${INGRESS_HOST}
-echo "\nWebhook Source Health..."
-curl https://webhooks.notifications.${INGRESS_HOST}/health
+curl ${HTTP_SCHEME}://cloudevents-player.notifications.${INGRESS_HOST}
+curl ${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/health
 ```
 
 The CloudEvents player request should return `200` with associated response headers, and `/health` on the webhook source should return `200` with status `healthy`.
@@ -148,17 +154,14 @@ helm upgrade -i strimzi-cluster-operator strimzi/strimzi-kafka-operator \
   --wait
 ```
 
-Then apply the cluster:
+Then apply the cluster and wait for it:
 
 ```bash
 kubectl apply -f generated-kafka-cluster.yaml
+kubectl wait --for=condition=Ready kafka/kafka-cluster -n notifications --timeout=600s
 ```
 
-```bash
-kubectl describe kafka kafka-cluster -n notifications
-```
-
-Wiring Kafka in as the channel layer for Knative Eventing needs the Knative Kafka extension configured against this cluster. That is out of scope here, see the Knative Kafka docs in further reading.
+The default broker does not use this Kafka cluster. Delivering events through Kafka requires the Knative Kafka extension, which this guide does not cover; see [Knative Kafka Broker](https://knative.dev/docs/eventing/brokers/broker-types/kafka-broker/).
 
 ### 7. Validate
 
@@ -170,35 +173,119 @@ bash validation.sh
 
 > **Prefer a notebook?** Run `../../notebooks/run.sh` and open the <a href="http://localhost:8888/lab/tree/notification-automation/notification-automation.ipynb" target="_blank">Notification and Automation notebook</a> at `http://localhost:8888`.
 
-A connected walkthrough: send events in from the outside (webhooks), see events that were already flowing with zero setup (Kubernetes/EOEPCA activity), then wire a real downstream action. Every step below lands in the same `default` broker, viewable at any point via the CloudEvents player.
+Follow **Send a GitHub webhook** and **Optional: email a CloudEvent** for an end-to-end notification workflow. The email step requires an SMTP server and a recipient inbox. The remaining examples show other sources, filters and subscribers.
+
+```text
+GitHub webhook → webhook source → default broker → CloudEvents player
+                                                → emailer (push events only) → inbox
+```
 
 ### Send a GitHub webhook
 
-Here we simulate a GitHub webhook event being sent to the notification automation system.
-
-GitHub signs requests with `X-Hub-Signature-256: sha256=<hmac-sha256 of the body>`, using the secret from `configure-notification-automation.sh`:
+The payload below mimics a push to the deployment guide's `release-2.1` branch. GitHub signs requests with `X-Hub-Signature-256: sha256=<hmac-sha256 of the body>`, using the secret from `configure-notification-automation.sh`:
 
 ```bash
 source ~/.eoepca/state
-PAYLOAD='{"repository": {"html_url": "https://github.com/EOEPCA/deployment-guide"}, "ref": "refs/heads/main"}'
-SIGNATURE="sha256=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$NA_GITHUB_WEBHOOK_SECRET" | awk '{print $NF}')"
+PAYLOAD='{"repository": {"html_url": "https://github.com/EOEPCA/deployment-guide"}, "ref": "refs/heads/release-2.1"}'
+SIGNATURE="sha256=$(printf '%s' "$PAYLOAD" | openssl dgst -sha256 -hmac "$NA_GITHUB_WEBHOOK_SECRET" | awk '{print $NF}')"
 
-curl -i -X POST "https://webhooks.notifications.${INGRESS_HOST}/github" \
+curl -sS -w '\nHTTP %{http_code}\n' "${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/github" \
   -H "Content-Type: application/json" \
   -H "X-GitHub-Event: push" \
   -H "X-Hub-Signature-256: $SIGNATURE" \
   -d "$PAYLOAD"
 ```
 
-A `202` means it was forwarded to the `default` broker.
-
-Check it arrived: _(this shows the most recent CloudEvent)_
+Expect `HTTP 202`: the broker accepted the event. Check delivery to the player:
 
 ```bash
-curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq '.[0]'
+curl -s "${HTTP_SCHEME}://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq
 ```
 
-Use the same URL (`https://webhooks.notifications.${INGRESS_HOST}/github`) and `NA_GITHUB_WEBHOOK_SECRET` when registering a real GitHub webhook.
+Look for `eventType: org.eoepca.webhook.github.push`, the repository URL and branch in `data`, and the event `id`. If the event has not arrived yet, repeat the player request after a few seconds. You can also open `${HTTP_SCHEME}://cloudevents-player.notifications.${INGRESS_HOST}` in a browser.
+
+The API returns the ten most recent events by default. Use `/messages?size=200` if cluster activity has pushed your event out of the list.
+
+Use the same URL (`${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/github`) and `NA_GITHUB_WEBHOOK_SECRET` when registering a real GitHub webhook.
+
+### Optional: email a CloudEvent
+
+This requires `NA_ENABLE_EMAILER=yes` and your SMTP settings. If you installed the chart without the emailer, rerun the configure script and the chart installation command.
+
+The emailer starts without a subscription. Create a Trigger that sends only GitHub push events from the `default` broker to the emailer:
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: emailer-github
+  namespace: notifications
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: org.eoepca.webhook.github.push
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: notification-automation-emailer
+EOF
+
+kubectl wait --for=condition=Ready trigger/emailer-github -n notifications --timeout=120s
+```
+
+Send the GitHub webhook again. Triggers do not replay events sent before they were created.
+
+The email subject is `Notification [org.eoepca.webhook.github.push]`, and the body lists the event `id`, the repository URL and `refs/heads/release-2.1`.
+
+If the email has not arrived, check the Trigger and emailer logs:
+
+```bash
+kubectl get trigger emailer-github -n notifications
+kubectl logs -n notifications deployment/notification-automation-emailer --tail=20
+```
+
+The emailer logs `Email queued/sent` once the SMTP server accepts the message.
+
+### Inspect Kubernetes events
+
+The API Server Source watches Kubernetes `Event` objects in the `notifications` namespace. Create a sample event:
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Event
+metadata:
+  name: notification-demo
+  namespace: notifications
+involvedObject:
+  apiVersion: apps/v1
+  kind: Deployment
+  name: notification-automation-webhook-source
+  namespace: notifications
+reason: NotificationDemo
+message: The webhook source is ready for events
+type: Normal
+EOF
+
+curl -sS "${HTTP_SCHEME}://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq
+```
+
+Look for `eventType: dev.knative.apiserver.ref.add` with `notification-demo` in `data.name`. Repeat the player request after a few seconds if needed. The source sends an object reference; inspect the original Event to read its message:
+
+```bash
+kubectl get event notification-demo -n notifications -o yaml
+```
+
+The event does not match the emailer's GitHub push filter, so no email is sent. Delete the sample event:
+
+```bash
+kubectl delete event notification-demo -n notifications
+```
+
+The deletion appears in the player as `dev.knative.apiserver.ref.delete`. Events in other namespaces need their own source.
 
 ### Send a GitLab webhook
 
@@ -208,16 +295,14 @@ GitLab uses a plain secret token instead of a signature, sent as `X-Gitlab-Token
 source ~/.eoepca/state
 PAYLOAD='{"project": {"web_url": "https://gitlab.com/EOEPCA/deployment-guide"}}'
 
-curl -i -X POST "https://webhooks.notifications.${INGRESS_HOST}/gitlab" \
+curl -sS -w '\nHTTP %{http_code}\n' "${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/gitlab" \
   -H "Content-Type: application/json" \
   -H "X-Gitlab-Event: Push Hook" \
   -H "X-Gitlab-Token: $NA_GITLAB_WEBHOOK_SECRET" \
   -d "$PAYLOAD"
 ```
 
-Check the outcome using the same `202`/CloudEvents-player check as GitHub above.
-
-Use `https://webhooks.notifications.${INGRESS_HOST}/gitlab` and `NA_GITLAB_WEBHOOK_SECRET` when registering a real GitLab webhook.
+Expect `HTTP 202`, then look for `eventType: org.eoepca.webhook.gitlab.push_hook` in the player. This event does not match the emailer's GitHub push filter. Use `${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/gitlab` and `NA_GITLAB_WEBHOOK_SECRET` when registering a real GitLab webhook.
 
 ### Route webhooks from multiple projects
 
@@ -240,24 +325,32 @@ data:
 EOF
 
 kubectl rollout restart deployment/notification-automation-webhook-source -n notifications
+kubectl rollout status deployment/notification-automation-webhook-source -n notifications --timeout=120s
 ```
 
-The `ConfigMap` name must match `<helm release name>-webhook-source`; the webhook source only reads it on startup, hence the restart. Once it's picked up, `https://webhooks.notifications.${INGRESS_HOST}/openeo-geotrellis/github` validates against that project's own secret instead of `NA_GITHUB_WEBHOOK_SECRET`, and the resulting CloudEvent's `subject` is set to the project name - useful for routing different repositories to different Triggers later. The global `/github`/`/gitlab` endpoints keep working unchanged alongside project-specific ones.
+The `ConfigMap` name must match `<helm release name>-webhook-source`; the webhook source only reads it on startup, hence the restart. Once it's picked up, `${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/openeo-geotrellis/github` validates against that project's own secret instead of `NA_GITHUB_WEBHOOK_SECRET`, and the resulting CloudEvent's `subject` is set to the project name. The global `/github` and `/gitlab` endpoints keep working alongside project-specific ones.
 
-### Kubernetes events, for free
-
-The API Server Source is already watching Kubernetes `Event` objects and forwarding them into the same broker - no setup needed. Anything happening on the cluster (a pod scheduled, a job completing) is already visible:
+Test the project-specific endpoint using the secret from `projects.json`:
 
 ```bash
-curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" \
-  | jq '.[] | select(.eventType | startswith("dev.knative.apiserver"))' | head -50
+PAYLOAD='{"repository":{"html_url":"https://github.com/EOEPCA/openeo-geotrellis"},"ref":"refs/heads/main"}'
+SIGNATURE="sha256=$(printf '%s' "$PAYLOAD" | openssl dgst -sha256 -hmac 'a-different-secret-for-this-repo' | awk '{print $NF}')"
+
+curl -sS -w '\nHTTP %{http_code}\n' \
+  "${HTTP_SCHEME}://webhooks.notifications.${INGRESS_HOST}/openeo-geotrellis/github" \
+  -H "Content-Type: application/json" \
+  -H "X-GitHub-Event: push" \
+  -H "X-Hub-Signature-256: $SIGNATURE" \
+  -d "$PAYLOAD"
+
+curl -sS "${HTTP_SCHEME}://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq
 ```
 
-This is what makes the next section work without any extra plumbing - any EOEPCA Building Block whose activity shows up as a Kubernetes Event (a Job succeeding/failing, for instance) is automatically an event source here too.
+Look for `subject: openeo-geotrellis`. The existing emailer Trigger also matches this push event. To subscribe only to this project, include both `type: org.eoepca.webhook.github.push` and `subject: openeo-geotrellis` under a Trigger's `filter.attributes`.
 
-### See a real EOEPCA integration: watch a STAC registration happen
+### Receive STAC item events from Data Access
 
-[Data Access](./data-access.md) can emit a CloudEvent every time a STAC *item* changes, via its own `eoapi-notifier` component listening on pgSTAC's `pgstac_items_change` channel - genuinely independent of this BB, wired together only by both pointing at the same broker. Deploy (or redeploy) Data Access with `ENABLE_EOAPI_NOTIFIER=yes`, create a collection and an item in it using Data Access's own [STAC transactions example](./data-access.md#3-perform-basic-api-tests) (the notifier only fires on item changes, not collection changes):
+[Data Access](./data-access.md) can publish a CloudEvent to this BB's `default` broker whenever a STAC item changes, using its `eoapi-notifier` component. Deploy (or redeploy) Data Access with `ENABLE_EOAPI_NOTIFIER=yes`, then create a collection and an item using Data Access's [STAC transactions example](./data-access.md#3-perform-basic-api-tests). Collection changes do not produce events.
 
 !!! tip
     The following steps assume IAM is enabled on Data Access, such that all API requests require a valid access token and resource IDs are prefixed with the username.
@@ -266,24 +359,7 @@ Obtain an access token...
 
 ```bash
 source ~/.eoepca/state
-ACCESS_TOKEN=$( \
-  curl -sk -X POST \
-    -d "username=${KEYCLOAK_TEST_USER}" \
-    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=${EOAPI_CLIENT_ID}" \
-    -d "scope=openid" \
-    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
-  | jq -r '.access_token' \
-)
-```
-
-Create a collection...
-
-```bash
-source ~/.eoepca/state
-collection="${collection:-na-demo-collection}"
-curl -w "\n%{http_code}\n" -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
+curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF
@@ -308,9 +384,7 @@ EOF
 
 Add an item to the collection...
 
-```bash
-source ~/.eoepca/state
-curl -w "\n%{http_code}\n" -X POST "https://eoapi.${INGRESS_HOST}/stac/collections/${KEYCLOAK_TEST_USER}.${collection}/items" \
+curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/na-demo-collection/items" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF
@@ -340,11 +414,11 @@ source ~/.eoepca/state
 curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq '.[0]'
 ```
 
- An `eventType: org.ogc.api.collection.item.create` event with `source: /eoapi/pgstac` shows up, `subject` set to the item's ID. No custom glue code on either side; both BBs were simply pointed at the same Knative broker.
+The player then shows an `org.ogc.api.collection.item.create` event with `source: /eoapi/pgstac` and `subject` set to the item's ID.
 
 ### Create a broker
 
-`default` (created by the BB chart) already carries webhook/API-server/Data-Access events - create your own broker when you want an isolated event space instead, e.g. so your triggers aren't matching unrelated platform events.
+`default` (created by the BB chart) already carries webhook, API Server Source and Data Access events. Create your own broker when you want a separate event space, for example so your Triggers don't match unrelated platform events.
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -358,11 +432,11 @@ EOF
 kubectl get brokers -n notifications
 ```
 
-We deliberately omit `spec.config`. Knative will use the cluster default channel (in-memory by default), which is enough for testing. For a durable broker, point it at a Kafka channel once Kafka is set up.
+Without `spec.config`, the broker uses the cluster default in-memory channel. A durable broker needs the Knative Kafka extension.
 
 ### Optional: notify Slack
 
-[`send-notification-to-slack`](https://github.com/EOEPCA/send-notification-to-slack) is a ready-made Knative function that posts any CloudEvent it receives to a Slack channel via an incoming webhook. Deploy the prebuilt image directly (no build step needed):
+[`send-notification-to-slack`](https://github.com/EOEPCA/send-notification-to-slack) is a Knative function that posts each CloudEvent it receives to a Slack channel. Set `SLACK_WEBHOOK_URL` to your [Slack Incoming Webhook](https://api.slack.com/apps) and deploy the prebuilt image:
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -371,8 +445,13 @@ kind: Service
 metadata:
   name: slack-notifier
   namespace: notifications
+  labels:
+    networking.knative.dev/visibility: cluster-local
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/min-scale: "1"
     spec:
       containers:
         - image: ghcr.io/eoepca/send-notification-to-slack:latest
@@ -400,33 +479,11 @@ spec:
 EOF
 ```
 
-Re-send the GitHub webhook from earlier and it should now also land in Slack. Needs a real `SLACK_WEBHOOK_URL` (create one via a [Slack app's Incoming Webhooks](https://api.slack.com/apps)) - without it the function still runs and returns `200`, it just has nothing to notify.
-
-### Optional: email a CloudEvent
-
-If `NA_ENABLE_EMAILER=yes`, the emailer sink is deployed but not subscribed to anything by default - wire a Trigger to it like any other subscriber:
+Re-send the GitHub webhook and check the Slack channel. The function logs the response from Slack:
 
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: eventing.knative.dev/v1
-kind: Trigger
-metadata:
-  name: emailer-github
-  namespace: notifications
-spec:
-  broker: default
-  filter:
-    attributes:
-      type: org.eoepca.webhook.github.push
-  subscriber:
-    ref:
-      apiVersion: v1
-      kind: Service
-      name: notification-automation-emailer
-EOF
+kubectl logs -n notifications -l serving.knative.dev/service=slack-notifier -c user-container --tail=20
 ```
-
-Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an email.
 
 ## Writing automations
 
@@ -434,8 +491,8 @@ Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an emai
 
     You have two routes for the actual automation code:
 
-    - **`func` CLI** - the Knative Functions tool. Gives you a boilerplate project with CloudEvents wiring already done, and handles the build-and-push step for you. Good for getting going quickly without thinking about containers.
-    - **Plain Knative Serving** - write a FastAPI (or any HTTP) service, build the container yourself, deploy as a `Service`. More control, no extra framework to learn.
+    - **`func` CLI** - the Knative Functions tool. It scaffolds a project with the CloudEvents handling in place and builds and pushes the image for you.
+    - **Plain Knative Serving** - write a FastAPI (or any HTTP) service, build the container yourself, deploy as a `Service`.
 
     Both end up as Knative Services and both work with the same triggers, brokers and sources. The walkthrough below uses `func`. If you go the FastAPI route, skip to the trigger section once your service is deployed.
 
@@ -476,7 +533,7 @@ Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an emai
     kubectl get ksvc -n notifications
     ```
 
-    By default each function gets a public endpoint. To make it cluster-local only, add the label `networking.knative.dev/visibility=cluster-local` to the service. Safer default for automations that should only respond to internal events.
+    By default each function gets a public endpoint. To keep it cluster-local, add the label `networking.knative.dev/visibility=cluster-local` to the service; a function that only receives broker events does not need a public URL.
 
     ### Wire it to events with a Trigger
 
@@ -504,8 +561,10 @@ Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an emai
 
     Events with other types pass through this trigger untouched (other triggers can still match them).
 
+    The subscriber must reply with an empty body or a CloudEvent. The broker treats any other response body as a failed delivery and retries it, 10 times by default, so a FastAPI handler that returns JSON receives each event repeatedly.
+
     !!! warning "Avoid self-triggering loops"
-        If your function emits a CloudEvent in response and the trigger has no filter, the response flows back through the broker, matches the trigger, fires the function again, ad infinitum. Either filter on `type` (as above) so the function's own response type doesn't match, or have the function return without sending a response.
+        If your function emits a CloudEvent in response and the trigger has no filter, the response flows back through the broker, matches the trigger and fires the function again indefinitely. Either filter on `type` (as above) so the function's own response type doesn't match, or have the function return without sending a response.
 
     ### See it working
 
@@ -516,7 +575,7 @@ Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an emai
     echo "$BROKER_URL"
     ```
 
-    Post a CloudEvent. The `Ce-*` headers are how CloudEvents are encoded over HTTP in binary mode. The broker URL is cluster-internal, so we run curl from inside a pod:
+    Post a CloudEvent. The `Ce-*` headers are how CloudEvents are encoded over HTTP in binary mode. The broker URL is cluster-internal, so run curl from a pod:
 
     ```bash
     kubectl run curl-test --rm -i --tty --restart=Never --namespace=notifications \
@@ -535,7 +594,7 @@ Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an emai
     Tail the function logs:
 
     ```bash
-    kubectl logs -n notifications -l serving.knative.dev/service=demo-fn -c user-container --tail=50 -f
+    kubectl logs -n notifications -l serving.knative.dev/service=demo-fn -c user-container --tail=50
     ```
 
     You should see one `Request Received` line per test event. If you see a flood of them, the function is looping on its own responses - delete the trigger, switch to a filtered one as above, or remove the response from `func.py`.
@@ -545,7 +604,7 @@ Re-send the GitHub webhook from earlier and `NA_EMAIL_TO` should receive an emai
 Tear down in the reverse order of installation, so nothing is left depending on a CRD or control plane that's already gone.
 
 ```bash
-# Any Knative Services/Brokers/Triggers you created, and the multi-project webhook ConfigMap if you added one
+# Services, Brokers, Triggers and the projects ConfigMap created in Usage
 kubectl delete ksvc,trigger,broker --all -n notifications 2>/dev/null || true
 kubectl delete configmap notification-automation-webhook-source -n notifications 2>/dev/null || true
 
@@ -553,7 +612,6 @@ kubectl delete configmap notification-automation-webhook-source -n notifications
 kubectl delete -f generated-kafka-cluster.yaml 2>/dev/null || true
 helm uninstall strimzi-cluster-operator -n strimzi-system 2>/dev/null || true
 
-# BB chart and ingress route
 helm uninstall notification-automation -n notifications 2>/dev/null || true
 kubectl delete -f generated-apisix-route.yaml 2>/dev/null || true
 
@@ -561,10 +619,8 @@ kubectl delete -f generated-knative.yaml 2>/dev/null || true
 kubectl wait --for=delete knativeserving/knative-serving -n knative-serving --timeout=120s 2>/dev/null || true
 kubectl wait --for=delete knativeeventing/knative-eventing -n knative-eventing --timeout=120s 2>/dev/null || true
 
-# Now the operator that reconciled them
 helm uninstall knative-operator -n knative-operator 2>/dev/null || true
 
-# Namespaces
 kubectl delete namespace notifications knative-serving knative-eventing knative-operator 2>/dev/null || true
 kubectl delete namespace strimzi-system 2>/dev/null || true
 ```
