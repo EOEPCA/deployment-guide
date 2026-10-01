@@ -350,21 +350,38 @@ Look for `subject: openeo-geotrellis`. The existing emailer Trigger also matches
 
 ### Receive STAC item events from Data Access
 
-[Data Access](./data-access.md) can publish a CloudEvent to this BB's `default` broker whenever a STAC item changes, using its `eoapi-notifier` component. Deploy (or redeploy) Data Access with `ENABLE_EOAPI_NOTIFIER=yes`, then create a collection and an item using Data Access's [STAC transactions example](./data-access.md#3-perform-basic-api-tests). Collection changes do not produce events.
+[Data Access](./data-access.md) can publish a CloudEvent to this BB's `default` broker whenever a STAC item changes, using its `eoapi-notifier` component. Deploy (or redeploy) Data Access with `ENABLE_EOAPI_NOTIFIER=yes`, then create a collection and an item as shown below. Collection changes do not produce events.
 
 !!! tip
     The following steps assume IAM is enabled on Data Access, such that all API requests require a valid access token and resource IDs are prefixed with the username.
 
-Obtain an access token...
+Obtain an access token using the `eoapi` client:
 
 ```bash
 source ~/.eoepca/state
-curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
+ACCESS_TOKEN=$( \
+  curl -sk -X POST \
+    -d "username=${KEYCLOAK_TEST_USER}" \
+    --data-urlencode "password=${KEYCLOAK_TEST_PASSWORD}" \
+    -d "grant_type=password" \
+    -d "client_id=${EOAPI_CLIENT_ID}" \
+    -d "scope=openid" \
+    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+  | jq -r '.access_token' \
+)
+```
+
+Create a collection owned by the test user:
+
+```bash
+COLLECTION="${KEYCLOAK_TEST_USER}.na-demo-collection"
+
+curl -sS -w '\nHTTP %{http_code}\n' -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF
 {
-  "id": "${KEYCLOAK_TEST_USER}.${collection}",
+  "id": "${COLLECTION}",
   "type": "Collection",
   "stac_version": "1.0.0",
   "description": "x",
@@ -382,9 +399,10 @@ curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections" \
 EOF
 ```
 
-Add an item to the collection...
+Add an item to the collection:
 
-curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/na-demo-collection/items" \
+```bash
+curl -sS -w '\nHTTP %{http_code}\n' -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/${COLLECTION}/items" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d @- <<EOF
@@ -392,7 +410,7 @@ curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/na-demo-co
   "id": "na-demo-item-1",
   "type": "Feature",
   "stac_version": "1.0.0",
-  "collection": "${KEYCLOAK_TEST_USER}.${collection}",
+  "collection": "${COLLECTION}",
   "geometry": {
     "type": "Point",
     "coordinates": [0, 0]
@@ -407,11 +425,10 @@ curl -X POST "${HTTP_SCHEME}://eoapi.${INGRESS_HOST}/stac/collections/na-demo-co
 EOF
 ```
 
-Check the CloudEvents player again...
+Check the CloudEvents player again:
 
 ```bash
-source ~/.eoepca/state
-curl -s "https://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq '.[0]'
+curl -sS "${HTTP_SCHEME}://cloudevents-player.notifications.${INGRESS_HOST}/messages" | jq
 ```
 
 The player then shows an `org.ogc.api.collection.item.create` event with `source: /eoapi/pgstac` and `subject` set to the item's ID.

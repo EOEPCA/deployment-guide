@@ -57,7 +57,7 @@ Baseline `PrometheusRule` resources covering pipeline health, node conditions, w
 8. **Optional components:**
 
 - **STAC alerts** — EO-specific SLO rules and recording rules for STAC API latency, feeding the STAC SLO dashboard. Only useful if the Data Access BB is deployed with the APISIX prometheus plugin enabled.
-- **IAM integration** — Keycloak clients and roles for Grafana and Keep SSO. Both Grafana and Keep validate the OIDC flow themselves (Grafana's built-in `auth.generic_oauth`, Keep via its own `oauth2-proxy` sidecar Service) rather than relying on an ingress-layer auth plugin, so IAM works the same way under APISIX or NGINX.
+- **IAM integration** — Keycloak clients and roles for Grafana and Keep SSO. Both Grafana and Keep validate the OIDC flow themselves (Grafana's built-in `auth.generic_oauth`, Keep via a separate `oauth2-proxy` deployment) rather than relying on an ingress-layer auth plugin, so IAM works the same way under APISIX or NGINX.
 
 ---
 
@@ -150,7 +150,7 @@ If you need to customise Prometheus resource limits or scrape intervals beyond t
 
 ### 2. Apply Secrets
 
-Applies the Loki S3 credentials, the oauth2-proxy cookie secret, and (if IAM is enabled) the Keycloak client secrets generated during configuration.
+Creates the namespace and applies the Loki S3 credentials, the oauth2-proxy cookie secret and the Keep auth placeholder. If IAM is enabled, it also applies the Keycloak client secrets generated during configuration.
 
 ```bash
 bash apply-secrets.sh
@@ -299,8 +299,8 @@ Once deployment is complete:
 
 **Core Services:**
 
-- **Grafana:** `https://monitoring.${INGRESS_HOST}/`
-- **Keep:** `https://alerting.${INGRESS_HOST}/`
+- **Grafana:** `${HTTP_SCHEME}://monitoring.${INGRESS_HOST}/`
+- **Keep:** `${HTTP_SCHEME}://alerting.${INGRESS_HOST}/`
 
 Prometheus and Alertmanager are not exposed externally by default. They are reachable through Grafana as a datasource, or within the cluster via the `kube-prometheus-stack-prometheus` and `kube-prometheus-stack-alertmanager` services in the `operations` namespace.
 
@@ -423,22 +423,15 @@ Leave the test alert unacknowledged so Keep displays the source status directly.
 
 === "Without IAM (default)"
 
-    You can also inspect delivery through the API. Fetch the alerts and display the full response:
+    You can also inspect delivery through the API. Fetch the alerts:
 
     ```bash
     source ~/.eoepca/state
-    ALERTS_RESPONSE=$(curl -sS "${HTTP_SCHEME}://alerting.${INGRESS_HOST}/v2/alerts" \
-      -H 'X-API-KEY: anything')
-    printf '%s\n' "$ALERTS_RESPONSE" | jq
+    curl -sS "${HTTP_SCHEME}://alerting.${INGRESS_HOST}/v2/alerts" \
+      -H 'X-API-KEY: anything' | jq
     ```
 
-    Show just the names, statuses and recovery fields:
-
-    ```bash
-    printf '%s\n' "$ALERTS_RESPONSE" | jq '.[] | {name, status, endsAt, unresolvedCounter}'
-    ```
-
-    Find `OperationsTestAlert` with `status: firing` and `unresolvedCounter: 1`. If it has not arrived, wait about 30 seconds and rerun the request and short view. The short view reads the saved response; it does not fetch new data.
+    Find `OperationsTestAlert` with `status: firing` and `unresolvedCounter: 1`. If it has not arrived, wait about 30 seconds and rerun the request.
 
 === "With IAM"
 
@@ -450,7 +443,7 @@ Remove the test rule:
 kubectl delete -f operations-test-alert.yaml
 ```
 
-Repeat the Grafana query; it should return no series. Allow up to five minutes for Alertmanager to expire the removed alert, then refresh Keep and confirm the alert is `resolved`. In unauthenticated mode, rerun the API request and short view above: `OperationsTestAlert` should have `status: resolved`, a recovery time in `endsAt` and `unresolvedCounter: 0`.
+Repeat the Grafana query; it should return no series. Allow up to five minutes for Alertmanager to expire the removed alert, then refresh Keep and confirm the alert is `resolved`. In unauthenticated mode, rerun the API request above: `OperationsTestAlert` should have `status: resolved`, a recovery time in `endsAt` and `unresolvedCounter: 0`.
 
 Its history remains available for inspection. Leave `Watchdog` firing as the continuous pipeline check.
 

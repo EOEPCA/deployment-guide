@@ -101,14 +101,10 @@ bash apply-secrets.sh
 The workspace dependencies include CSI-RClone for storage mounting and the Educates framework for workspace environments.
 
 !!! warning
-    The Educates chart bundles a set of Kyverno `ClusterPolicy` pod-security baseline/restricted policies (unconditionally, there is no values toggle to skip them) - Kyverno's CRDs must therefore already be installed before deploying Educates, or the `helm upgrade -i` below fails with `no matches for kind "ClusterPolicy"`.
-
-!!! note
-    These bundled policies are annotated `kyverno.io/kubernetes-version: 1.26-1.27`, so on newer clusters (e.g. Kubernetes 1.36) their CEL expressions (e.g. `restrict-sysctls`, `restrict-volume-types`) may fail to type-check against the current Pod schema, causing the API server to log `Warning: ... found no matching overload ...` for every matching Pod create/update. This is a benign, non-blocking warning from Educates' own policies - the Pods are still admitted and run normally.
+    The Educates chart bundles Kyverno `ClusterPolicy` resources, so Kyverno must be installed before it - otherwise the `helm upgrade -i` below fails with `no matches for kind "ClusterPolicy"`.
 
 ```bash
-# Deploy Kyverno (required by Educates' own bundled ClusterPolicies, and reused
-# later for the optional TLS/IAM workarounds in sections 8.2 and 9.3)
+# Kyverno is required by Educates, and by the policies in sections 8.2 and 9.3.
 helm repo add kyverno https://kyverno.github.io/kyverno/
 helm repo update kyverno
 helm upgrade -i kyverno kyverno/kyverno \
@@ -121,18 +117,18 @@ helm upgrade -i kyverno kyverno/kyverno \
 # Deploy CSI-RClone
 helm upgrade -i workspace-dependencies-csi-rclone \
   oci://ghcr.io/eoepca/workspace/workspace-dependencies-csi-rclone \
-  --version 2.2.0 \
+  --version 2.2.1 \
   --namespace workspace
 
 # Deploy Educates
 helm upgrade -i workspace-dependencies-educates \
   oci://ghcr.io/eoepca/workspace/workspace-dependencies-educates \
-  --version 2.2.0 \
+  --version 2.2.1 \
   --namespace workspace \
   --values workspace-dependencies/educates-values.yaml
 ```
 
-Educates gives every Datalab session's own registry component a per-session `Ingress`, but doesn't set an `ingressClassName` on it - so on an APISIX-only cluster it's created but never actually routable. Apply a Kyverno policy to fix this on every session:
+Educates does not set an `ingressClassName` on the per-session registry `Ingress`, so APISIX never routes it. Apply a Kyverno policy that sets it on every session:
 
 ```bash
 kubectl apply -f workspace-dependencies/kyverno-registry-ingress-class.yaml
@@ -159,7 +155,7 @@ The Workspace Pipeline manages the templating and provisioning of resources with
 ```bash
 helm upgrade -i workspace-pipeline \
   oci://ghcr.io/eoepca/workspace/workspace-pipeline \
-  --version 2.2.0 \
+  --version 2.2.1 \
   --namespace workspace \
   --values workspace-pipeline/generated-values.yaml
 ```
@@ -190,7 +186,7 @@ kubectl apply -f workspace-dependencies/provider-configs.yaml
 
 The workspace pipeline needs its own Keycloak client, `workspace-pipeline`, so it can self-serve a Keycloak client/roles/groups for every workspace it provisions. This is required regardless of the ingress-level login redirect setting in [step 9](#9-configure-iam-for-the-workspace-api).
 
-Look up the UUID of Keycloak's built-in `realm-management` client (adopted below, since role grants reference it and it isn't created by the IAM Building Block itself):
+The role grants below reference Keycloak's built-in `realm-management` client, so look up its UUID:
 
 ```bash
 source ~/.eoepca/state
@@ -208,7 +204,7 @@ export REALM_MANAGEMENT_CLIENT_UUID=$( \
 )
 ```
 
-Render and apply the `workspace-pipeline` client, the adopted `realm-management` client, and the `realm-management` role grants it needs (`manage-users`, `manage-authorization`, `manage-clients`, `create-client`, and the composite `realm-admin` - required because the Keycloak Terraform provider Crossplane uses calls the realm's `serverinfo` admin endpoint on every connection, which only `realm-admin` can reach):
+Render and apply the `workspace-pipeline` client, the `realm-management` client, and the `realm-management` roles the pipeline needs: `manage-users`, `manage-authorization`, `manage-clients`, `create-client` and `realm-admin`.
 
 ```bash
 source ~/.eoepca/state
@@ -223,7 +219,7 @@ kubectl apply -f workspace-dependencies/generated-pipeline-iam.yaml
 Each created Workspace includes a Datalab component that expects a `workspace-tls` secret in the `workspace` namespace, providing the TLS certificate for its ingress - this secret is automatically copied into each `ws-XXX` namespace created per workspace.
 
 !!! warning
-    Create this secret before the first workspace. The APISIX ingress controller fails the whole `Ingress` when its TLS secret is missing, so a Datalab session with no `workspace-tls` gets no route at all and returns `404 Route Not Found`.
+    Create this secret before the first workspace. APISIX drops an `Ingress` whose TLS secret is missing, so a Datalab session without `workspace-tls` returns `404 Route Not Found`.
 
 #### 8.1. Wildcard Certificate (recommended)
 
@@ -257,9 +253,6 @@ gomplate -f workspace-dependencies/workspace-ingress-policy-template.yaml -o wor
 kubectl apply -f workspace-dependencies/generated-workspace-ingress-policy.yaml
 ```
 
-!!! warning
-    Matching is scoped to the `training.educates.dev/application: workshop` label (same selector as the IAM policy in [9.3](#93-optional-protect-datalab-sessions-with-keycloak-sso)), not an Ingress name pattern - each session also gets a separate registry `Ingress` (`training.educates.dev/application: registry`) that must not receive this annotation, or it races the real session Ingress for ownership of the shared `workspace-tls` Certificate and can leave it issued for the wrong host.
-
 #### 8.3. Manually-Provided Certificate
 
 Without `cert-manager`, create the secret from a certificate and key you already hold. It must cover the Datalab session hostnames under `*.${INGRESS_HOST}`:
@@ -276,12 +269,11 @@ kubectl -n workspace create secret tls workspace-tls \
 
 The Workspace API always validates a Bearer token audienced for the `workspace-api` client.
 
-!!! note
-    Before starting, ensure you have followed the [IAM Deployment Guide](./iam/main-iam.md) and have a Keycloak instance running.
-
 #### 9.1 Create Keycloak Client
 
-Render and apply the `workspace-api` Keycloak client, with protocol mappers so its tokens carry an `aud` claim naming itself (the workspace-api app rejects tokens lacking this) and a `groups` claim (used to resolve workspace ownership/membership). This also creates an `admin` client role and a `workspace-admin` group granting it, with `KEYCLOAK_TEST_ADMIN` added as a member - the app itself checks this role (independent of any ingress-layer enforcement) to grant access across every workspace rather than just ones the caller owns:
+Render and apply the `workspace-api` Keycloak client. Its protocol mappers add the `aud` and `groups` claims that the Workspace API requires in a token.
+
+This also creates an `admin` client role, and a `workspace-admin` group holding it with `KEYCLOAK_TEST_ADMIN` as a member. Members of that group can manage every workspace, not only their own.
 
 ```bash
 source ~/.eoepca/state
@@ -296,7 +288,7 @@ kubectl apply -f workspace-api/generated-ingress.yaml
 ```
 
 !!! note
-    This route doesn't enforce an `admin` role at the ingress layer - any authenticated user can call the API, including creating and deleting workspaces (matches the current upstream baseline). The `admin` client role from [9.1](#91-create-keycloak-client) is still checked by the app itself: an admin can view/manage any workspace, not just ones they own. Further restricting who may create workspaces is left to you to add via an OPA policy on the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
+    Any authenticated realm user can call the API, including creating and deleting workspaces. To restrict this further, add an OPA policy to the `workspace-api-auth` route in `workspace-api/ingress-template.yaml`.
 
 #### 9.3. Optional: Protect Datalab Sessions with Keycloak SSO
 
@@ -310,7 +302,7 @@ kubectl apply -f workspace-dependencies/generated-workspace-session-iam-policy.y
 ```
 
 !!! note
-    OPAL syncs this policy into OPA from [EOEPCA/iam-policies](https://github.com/EOEPCA/iam-policies) as part of the IAM BB. It grants access to users holding the workspace client role `ws_access` or `ws_admin`, or the `workspace-api` role `admin`. If the policy is missing, OPA returns no decision and APISIX answers every session URL with `503` instead of a login redirect - check that `iam-opal-client` is running and has logged `Got policy bundle`.
+    The policy is supplied by the IAM BB from [EOEPCA/iam-policies](https://github.com/EOEPCA/iam-policies). It grants access to users holding the workspace role `ws_access` or `ws_admin`, or the `workspace-api` role `admin`. If session URLs return `503`, the policy has not reached OPA - check `iam-opal-client`.
 
 ---
 
@@ -354,8 +346,6 @@ xdg-open "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/docs"
 ```
 
 Replace `${INGRESS_HOST}` with your configured ingress host domain.
-
-`/docs` has its own route rule with no auth plugin, so it's reachable without logging in regardless of `OIDC_WORKSPACE_ENABLED` - only the rest of the API (e.g. `/workspaces`) redirects to Keycloak login.
 
 ---
 
@@ -401,6 +391,16 @@ EOF
 
 #### 3. Check Workspace Creation
 
+Creation is asynchronous. Wait for Crossplane to provision the workspace's storage,
+membership and Datalab:
+
+```bash
+source ~/.eoepca/state
+kubectl wait --for=condition=Ready \
+  storage/ws-${KEYCLOAK_TEST_USER} datalab/ws-${KEYCLOAK_TEST_USER} \
+  -n workspace --timeout=10m
+```
+
 **Namespace**
 
 Check creation of new namespace for the workspace.
@@ -412,22 +412,28 @@ kubectl get ns ws-${KEYCLOAK_TEST_USER}
 
 **Custom Resources**
 
-Check creation of the `Storage` Custom Resource for the workspace.
+Check the `Storage` and `Datalab` Custom Resources for the workspace.
 
 ```bash
 source ~/.eoepca/state
-kubectl get storage/ws-${KEYCLOAK_TEST_USER} -n workspace
+kubectl get storage/ws-${KEYCLOAK_TEST_USER} datalab/ws-${KEYCLOAK_TEST_USER} -n workspace
 ```
 
-Check creation of the `Datalab` Custom Resource for the workspace.
+Both should show `True` for `SYNCED` and `READY`.
+
+**Resources provisioned for the workspace**
+
+Crossplane creates the workspace's object storage and its Keycloak client, roles and
+groups from those two custom resources:
 
 ```bash
-source ~/.eoepca/state
-kubectl get datalab/ws-${KEYCLOAK_TEST_USER} -n workspace
+kubectl get buckets,users -n workspace
+kubectl get clients,roles.role.keycloak.m.crossplane.io,groups.group.keycloak.m.crossplane.io -n workspace
 ```
 
-!!! note
-    Both resources should show a `True` status for `SYNCED` and `READY` conditions. State can take a little time to be reached as Crossplane provisions the underlying resources.
+The `Bucket` and `User` are the workspace's object storage and its S3 credentials.
+Access is shared through the Keycloak groups: members of `ws-<name>` hold the `ws_access`
+role of the `ws-<name>` client, and members of `ws-<name>-admin` hold `ws_admin`.
 
 #### 4. Get New Workspace Details
 
@@ -458,13 +464,10 @@ curl -X GET "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${KEYC
   | jq
 ```
 
-!!! note
-    The details of the `storage` and the `datalab` associated with the workspace are returned.
-
 **Record the access key and secret from the response for S3 access**
 
 !!! warning
-    The bucket's S3 access key is a generated MinIO principal (e.g. `ws-eoepcauser-1`) - it is **not** the same as `KEYCLOAK_TEST_USER`, so it must be read from the API response rather than assumed.
+    The S3 access key is a generated MinIO principal, such as `ws-eoepcauser-1`. It is not the Keycloak username, so read it from the API response.
 
 ```bash
 source ~/.eoepca/state
@@ -482,53 +485,37 @@ echo "S3 Secret: ${SECRET}"
 
 #### 5. S3 Bucket Access
 
-Use `s3cmd` (configured via `source ~/.eoepca/state`) to list and manipulate objects in the workspace's S3 buckets.
+Use the MinIO client `mc` with the workspace credentials and the S3 endpoint configured
+in [step 1](#1-run-the-configuration-script) to work with the workspace's bucket.
 
-**List Buckets:**
+**Configure the client:**
 
 ```bash
 source ~/.eoepca/state
-s3cmd ls \
-  --host minio.${INGRESS_HOST} \
-  --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+mc alias set workspace "$S3_ENDPOINT" "$ACCESS_KEY" "$SECRET"
 ```
 
-**Upload a Test File:**
-
-!!! note
-    Ensure you are in the directory `scripts/workspace` for access to the test file `validation.sh`.
+**List the bucket:**
 
 ```bash
-source ~/.eoepca/state
-s3cmd put validation.sh s3://ws-eoepcauser \
-  --host minio.${INGRESS_HOST} \
-  --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+mc ls workspace/ws-eoepcauser
 ```
 
-**Check the Uploaded File:**
+The bucket is empty until the workspace owner puts something in it.
+
+**Upload a test file:**
 
 ```bash
-source ~/.eoepca/state
-s3cmd ls s3://ws-eoepcauser \
-  --host minio.${INGRESS_HOST} \
-  --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+echo "workspace storage test" > test.txt
+mc cp test.txt workspace/ws-eoepcauser/test.txt
+mc ls workspace/ws-eoepcauser
 ```
 
-**Delete the Test File:**
+**Read it back and delete it:**
 
 ```bash
-source ~/.eoepca/state
-s3cmd del s3://ws-eoepcauser/validation.sh \
-  --host minio.${INGRESS_HOST} \
-  --host-bucket minio.${INGRESS_HOST} \
-  --access_key $ACCESS_KEY \
-  --secret_key $SECRET
+mc cat workspace/ws-eoepcauser/test.txt
+mc rm workspace/ws-eoepcauser/test.txt
 ```
 
 #### 6. Workspace UI
@@ -674,6 +661,15 @@ kubectl delete -f nginx-test.yaml
 
 The workspace for the `eoepcauser` test user can be deleted via the Workspace API, using any authenticated user (e.g. `eoepcaadmin`).
 
+**Empty the workspace bucket**
+
+A bucket that still holds objects is not deleted with the workspace - its `Bucket` resource stays in `Deleting` until it is empty. Using the `workspace` alias from [step 5](#5-s3-bucket-access):
+
+```bash
+source ~/.eoepca/state
+mc rm --recursive --force workspace/ws-${KEYCLOAK_TEST_USER}
+```
+
 **Authenticate as `eoepcaadmin`**
 
 ```bash
@@ -703,7 +699,7 @@ curl -X DELETE "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces/ws-${K
 ## Uninstallation
 
 !!! warning
-    Delete any workspaces created during validation first (see [step 9 of Validation](#9-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` Keycloak client below before a workspace's own Keycloak resources have been cleaned up leaves them orphaned, since Crossplane can no longer authenticate to delete them from Keycloak.
+    Delete any workspaces first (see [step 9 of Validation](#9-optional-delete-workspace-via-the-workspace-api)). Removing the `workspace-pipeline` client below leaves a workspace's Keycloak resources orphaned, because Crossplane can no longer authenticate to delete them.
 
 To uninstall the Workspace Building Block and clean up associated resources:
 
