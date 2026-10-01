@@ -19,7 +19,7 @@ metadata:
   name: knative-serving
   namespace: knative-serving
 spec:
-  version: "1.23"
+  version: "1.17"
   ingress:
     kourier:
       enabled: true
@@ -40,7 +40,7 @@ metadata:
   name: knative-eventing
   namespace: knative-eventing
 spec:
-  version: "1.23"
+  version: "1.18"
   config:
     config-features:
       delivery-retryafter: "enabled"

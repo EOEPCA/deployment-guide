@@ -78,7 +78,7 @@ helm repo update knative-operator
 helm upgrade -i knative-operator knative-operator/knative-operator \
   --namespace knative-operator \
   --create-namespace \
-  --version v1.23.1 \
+  --version v1.19.5 \
   --wait
 ```
 
