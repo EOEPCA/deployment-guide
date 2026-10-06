@@ -16,6 +16,7 @@ spec:
     adminUrl: {{ getenv "HTTP_SCHEME" }}://openeo.{{ getenv "INGRESS_HOST" }}
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
+    pkceCodeChallengeMethod: S256
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
     validRedirectUris:
