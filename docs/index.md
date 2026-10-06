@@ -5,7 +5,7 @@
 The EOEPCA+ Deployment Guide walks you through deploying the EOEPCA+ platform - a modular set of **Building Blocks** for Earth Observation data discovery, access, processing and collaboration - onto your own Kubernetes cluster.
 
 !!! tip "Release 2.1"
-    The second formal release of EOEPCA+, building on Release 2.0 with a full refresh of the Building Blocks - more capable, more stable, and ready for production deployment. See the [Changelog](changelog.md) for what's new.
+    The second formal release of EOEPCA+. It adds the Operations Building Block, extends Notification & Automation, and updates the components of the existing Building Blocks. See the [Changelog](changelog.md) for what's new.
 
 ## Get Started
 

@@ -379,6 +379,7 @@ Create a new workspace for the test user `eoepcauser`.
 ```bash
 source ~/.eoepca/state
 curl -X POST "${HTTP_SCHEME}://workspace-api.${INGRESS_HOST}/workspaces" \
+  --silent --show-error \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d @- <<EOF

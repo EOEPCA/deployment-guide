@@ -273,7 +273,7 @@ You should receive a JSON response listing zero or more STAC items that match th
 | `STAC-API` | `fedcat02`       | *(none)*                     | `/stac/search?distributedSearch=true`        |
 | `CSW`      | `arctic-sdi-csw` | `GetCapabilities` (CSW 3.0)  | `GetRecords` with `csw:DistributedSearch`    |
 
-The following examples show how to performed a federated query for each of the three APIs.
+The following examples show how to perform a federated query for each of the three APIs.
 
 !!! note
     In each example, you will see how the results are organised according to the federated catalogue source.
