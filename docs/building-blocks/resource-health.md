@@ -148,10 +148,10 @@ This script creates the namespace and alerting secrets, plus client credentials 
 The chart is published in the EOEPCA Helm charts-dev repository:
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
-helm repo update eoepca-dev
+helm repo add eoepca https://eoepca.github.io/helm-charts/
+helm repo update eoepca
 
-helm upgrade -i resource-health eoepca-dev/resource-health-reference-deployment \
+helm upgrade -i resource-health eoepca/resource-health-reference-deployment \
   --version 2.1.3 \
   -f generated-values.yaml \
   -n resource-health --create-namespace
@@ -504,7 +504,7 @@ resource-health:
 Apply the updated configuration:
 
 ```bash
-helm upgrade resource-health eoepca-dev/resource-health-reference-deployment \
+helm upgrade resource-health eoepca/resource-health-reference-deployment \
   --version 2.1.3 \
   -f generated-values.yaml \
   -n resource-health

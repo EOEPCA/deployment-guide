@@ -252,9 +252,9 @@ The deployment can be tested using the openEO Web Editor as a client - either th
     cd ../openeo-web-editor
     bash configure-openeo-web-editor.sh
 
-    helm repo add eoepca-dev-charts https://eoepca.github.io/helm-charts-dev/
-    helm repo update eoepca-dev-charts
-    helm upgrade -i openeo-web-editor eoepca-dev-charts/openeo-web-editor \
+    helm repo add eoepca https://eoepca.github.io/helm-charts/
+    helm repo update eoepca
+    helm upgrade -i openeo-web-editor eoepca/openeo-web-editor \
       --version 0.2.0 \
       --namespace openeo-web-editor \
       --create-namespace \

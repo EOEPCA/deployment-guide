@@ -67,11 +67,11 @@ This creates the `iam` and `iam-management` namespaces and the Kubernetes secret
 Use the develop chart repository used by the current ArgoCD baseline:
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
 
-helm upgrade --install iam eoepca-dev/iam-bb \
-  --version 2.1.0-dev15 \
+helm upgrade --install iam eoepca/iam-bb \
+  --version 2.1.0 \
   --namespace iam \
   --create-namespace \
   --values generated-values.yaml

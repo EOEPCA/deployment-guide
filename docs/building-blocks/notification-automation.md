@@ -114,10 +114,10 @@ kubectl wait --for=condition=Ready certificate/notifications-wildcard -n knative
 The chart deploys the webhook source (GitHub and GitLab), the API Server Source, the CloudEvents player, the default broker and (if enabled) the emailer. The webhook source and CloudEvents player each get their own `Ingress`, using the TLS settings from the shared configuration.
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
-helm repo update eoepca-dev
+helm repo add eoepca https://eoepca.github.io/helm-charts/
+helm repo update eoepca
 
-helm upgrade -i notification-automation eoepca-dev/notification-automation \
+helm upgrade -i notification-automation eoepca/notification-automation \
   --namespace notifications \
   --create-namespace \
   --version 0.1.2 \
