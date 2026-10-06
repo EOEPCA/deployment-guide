@@ -2,6 +2,98 @@
 
 For release numbering and lifecycle policy, see [Release Strategy](release-strategy.md).
 
+## Release 2.1
+
+Git tag: `eoepca-2.1`
+
+Release 2.1 is the first minor release of EOEPCA+ since Release 2.0. It adds the Operations building block, extends Notification & Automation with its own Helm chart, updates the components of the existing building blocks, and revises each building block page and its validation.
+
+The release is accompanied by updated supporting materials for each building block:
+
+* Notebooks - that provide a quick demonstration of core capabilities
+* Tutorials - that showcase the building block and its basic installation in a generic reproducible environment
+
+### Highlights
+
+* **Operations** - new building block for metrics, logs, dashboards and alerting, with Prometheus, Grafana, Loki and Keep.
+* **Notification & Automation** - new Helm chart turning GitHub and GitLab webhooks and Kubernetes events into CloudEvents, with an emailer and optional Kafka.
+* **IAM** - Keycloak 26.7.2 is deployed by the Keycloak Operator, and public clients use PKCE.
+* **Data Access** - collection-level access control when IAM is enabled, and an openEO API through titiler-openeo.
+* **Resource Discovery** - optional protected transactional endpoint, and federated search across external OGC API - Records, STAC API and CSW catalogues.
+* **Resource Registration** - Operaton replaces Flowable as the harvester workflow engine.
+* **Workspace** - optional Keycloak SSO and OPA policy for Datalab sessions.
+* **openEO Argo** - deployed from the published EODC chart and authenticated through IAM.
+* **Datacube Access** - now provided as STAC best practice guidance with an example notebook, without a separate service.
+
+The guide also adds [EOEPCA+ State](prerequisites/state.md) and [Release Strategy](release-strategy.md) pages, and new notebooks for Notification & Automation and Operations.
+
+### Component Versions
+
+The versions deployed by this guide, compared with Release 2.0. Helm chart versions are shown unless stated otherwise.
+
+| Building Block | Component | EOEPCA+ 2.0 | EOEPCA+ 2.1 |
+| --- | --- | --- | --- |
+| Prerequisites | Kubernetes (k3s image used in the k3d example) | v1.32.9-k3s1 | v1.36.3-k3s1 |
+| | APISIX | 2.10.0 | 2.16.0 |
+| | cert-manager | v1.16.1 | v1.21.1 |
+| | Kyverno | 3.6.2 | 3.7.2 |
+| | Crossplane | 2.0.2 | 2.0.2 |
+| | MinIO | 5.4.0 | 5.4.0 |
+| | Harbor | 1.7.3 | 1.7.3 |
+| | Envoy Gateway | 1.6.2 | 1.6.2 |
+| IAM | `iam-bb` | 2.0.0 | 2.1.0-dev15 |
+| | Keycloak | Bitnami chart 24.4.11 (image `eoepca/keycloak-with-opa-plugin:0.5.0`) | Keycloak Operator, Keycloak 26.7.2 |
+| | OPA image | Not pinned | 1.7.1 |
+| | OPAL image | 0.8.0 | 0.8.0 |
+| Resource Discovery | `rm-resource-catalogue` | 2.0.0 | 2.1.0-dev1 |
+| Data Access | eoAPI | 0.7.12 | 0.13.1 |
+| | Crunchy Postgres Operator (PGO) | 5.6.0 | 6.0.1 |
+| | STAC Manager | 0.0.11 | 1.0.3 |
+| | titiler-openeo | - | `titiler-openeo-v0.12.0` (image v0.9.1) |
+| | pgstac-geoparquet-exporter | - | v0.2.4 |
+| | eoapi-support | 0.1.7 | 0.1.7 |
+| | eoapi-maps-plugin | 0.0.21 | Removed |
+| Resource Registration | `registration-api` | 2.0.0 | 2.1.0-dev2 |
+| | `registration-harvester` (worker image) | 2.0.0 | 2.0.0 (2.1.0-rc1) |
+| | Workflow engine | Flowable 7.0.0 | Operaton 1.0.6 |
+| Datacube Access | `datacube-access` | 2.0.0-rc2 | Not deployed |
+| Data Gateway | EODAG | Unpinned | 4.7.2 |
+| | stac-fastapi-eodag | - | 0.4.0 |
+| Processing - OGC API Processes | `zoo-project-dru` | 0.9.1 | 0.10.3 |
+| Processing - openEO Geotrellis | spark-operator | 2.0.2 | 2.3.0 |
+| | sparkapplication | 1.0.2 | 1.2.0 |
+| Processing - openEO Argo | `openeo-argo` | Chart from Git | 2026.7.1 |
+| Processing - openEO | `openeo-web-editor` | - | 0.2.0 |
+| MLOps | GitLab | 9.1.4 | 9.1.4 |
+| | SharingHub | 0.4.1 | 0.4.2 |
+| | MLflow SharingHub | 0.2.0 | 0.2.0 |
+| Workspace | `rm-workspace-api` | 2.0.0-rc.7 | 2.2.2 |
+| | Workspace dependencies and pipeline | 2.0.0-rc.12 | 2.2.1 |
+| Application Hub | `application-hub` | 2.1.0 | 2.1.0 |
+| Application Quality | `application-quality-reference-deployment` | `main` branch | `reference-deployment` branch |
+| | SonarQube | - | 2026.2.1 |
+| Resource Health | `resource-health-reference-deployment` | 2.0.0 (chart from Git) | 2.1.3 |
+| Notification & Automation | Knative Operator | v1.19.5 | v1.19.5 |
+| | Knative Serving / Eventing | 1.17 / 1.18 | 1.17 / 1.18 |
+| | `notification-automation` | - | 0.1.2 |
+| | Strimzi Kafka Operator (Kafka) | - | 1.1.0 (Kafka 4.2.0) |
+| Operations | kube-prometheus-stack | - | 83.1.0 |
+| | Loki | - | 6.55.0 |
+| | Keep | - | 0.1.95 |
+| | oauth2-proxy | - | 10.4.2 |
+
+### Upgrading from Release 2.0
+
+Each building block page describes a fresh installation. Points that need particular attention when upgrading an existing 2.0 deployment:
+
+* **IAM** - Keycloak moves from the Bitnami chart to the Keycloak Operator.
+* **Data Access** - PGO moves from 5.x to 6.x, and `eoapi-maps-plugin` is no longer deployed.
+* **Resource Registration** - the harvester workflow engine changes from Flowable to Operaton.
+* **Datacube Access** - the `datacube-access` chart is no longer part of the deployment.
+* **openEO Argo** - requires IAM; the basic-auth proxy is no longer provided.
+
+For more details please refer to the documentation for each component, or ask the EOEPCA team for support - in particular if you are migrating an existing deployment to EOEPCA+ 2.1.
+
 ## Release 2.0
 
 Git tag: `eoepca-2.0`
