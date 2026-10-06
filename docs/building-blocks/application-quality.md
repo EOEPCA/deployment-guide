@@ -150,7 +150,7 @@ For SonarQube, database and monitoring passcode secrets are created only when So
 Clone the Application Quality repository:
 
 ```bash
-git clone --branch reference-deployment https://github.com/EOEPCA/application-quality.git reference-repo
+git clone --branch 2.1.0 https://github.com/EOEPCA/application-quality.git reference-repo
 ```
 
 Update Helm dependencies:
