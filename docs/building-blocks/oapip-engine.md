@@ -31,11 +31,11 @@ Both backends use the same OGC API Processes interface - the difference is where
 
 ### Backend-Specific Requirements
 
-=== "Calrissian"
+=== "Kubernetes (Calrissian)"
 
     A storage class supporting ReadWriteMany (RWX) is required for shared application and workflow data. Calrissian runs CWL workflows as Kubernetes jobs.
 
-=== "Toil"
+=== "HPC (Toil)"
 
     You'll need an HPC cluster with:
 
@@ -269,7 +269,7 @@ See the [IAM Building Block](./iam/main-iam.md) guide for IAM setup, and [Enable
 
 - **`OAPIP_EXECUTION_ENGINE`**: `calrissian` (default) or `toil`.
 
-=== "Calrissian"
+=== "Kubernetes (Calrissian)"
 
     When prompted for execution engine, select `calrissian`. You'll need to configure:
 
@@ -279,7 +279,7 @@ See the [IAM Building Block](./iam/main-iam.md) guide for IAM setup, and [Enable
     - **`NODE_SELECTOR_VALUE`**: Value for the node selector
         - *Example*: `linux`
 
-=== "Toil"
+=== "HPC (Toil)"
 
     When prompted for execution engine, select `toil`. You'll need to configure:
 
@@ -342,6 +342,7 @@ Skip this section if you don't need IAM protection right now - the engine will w
     `configure-oapip.sh` already rendered `generated-iam.yaml` (the `Client` CRD plus its client-secret `Secret`) when IAM/OIDC was enabled - this requires [Crossplane](../prerequisites/crossplane.md) with its Keycloak provider installed and configured.
 
     ```bash
+    source ~/.eoepca/state
     kubectl apply -f generated-iam.yaml
     kubectl wait --for=condition=Ready client.openidclient.keycloak.m.crossplane.io/${OAPIP_CLIENT_ID} -n iam-management --timeout=60s
     ```
@@ -356,7 +357,7 @@ Skip this section if you don't need IAM protection right now - the engine will w
     envsubst < protect-test-user.yaml | kubectl apply -f -
     ```
 
-    This creates: `eoepcauser-resource`, `eoepcauser-policy`, `eoepcauser-access`.
+    This creates: `eoepcauser-oapip-resource`, `eoepcauser-oapip-policy`, `eoepcauser-oapip-access`.
 
     ### Create APISIX Route Ingress
     ```bash
@@ -369,6 +370,8 @@ Skip this section if you don't need IAM protection right now - the engine will w
     ```bash
     bash resource-protection-validation.sh
     ```
+
+    The unauthenticated request should receive a `302` response (redirects to the IAM login page).
 
     If the authenticated requests return `access_denied`, the Keycloak permission is not in place yet. Crossplane creates it asynchronously. Wait a minute and re-run.
 
@@ -606,12 +609,12 @@ docker rm toil-wes-rabbitmq
 - [OGC API Processes Standards](https://www.ogc.org/standards/ogcapi-processes)
 - [Common Workflow Language (CWL)](https://www.commonwl.org/)
 
-=== "Calrissian"
+=== "Kubernetes (Calrissian)"
 
     - [Calrissian Documentation](https://github.com/Duke-GCB/calrissian)
     - [EOEPCA+ Cookiecutter Template](https://github.com/EOEPCA/eoepca-proc-service-template)
 
-=== "Toil"
+=== "HPC (Toil)"
 
     - [Toil Documentation](https://toil.ucsc-cgl.org/)
     - [Toil WES Server Documentation](https://toil.readthedocs.io/en/master/running/server/wes.html)
