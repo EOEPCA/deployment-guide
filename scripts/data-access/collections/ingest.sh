@@ -15,20 +15,20 @@ else
 fi
 
 NAMESPACES=("default" "eoapi" "data-access")
-EOAPI_POD_RASTER=""
+EOAPI_POD_STAC=""
 FOUND_NAMESPACE=""
 
 for NS in "${NAMESPACES[@]}"; do
-    EOAPI_POD_RASTER=$(kubectl get pods -n "$NS" -l app=eoapi-raster -o jsonpath="{.items[0].metadata.name}" 2>/dev/null)
-    if [ -n "$EOAPI_POD_RASTER" ]; then
+    EOAPI_POD_STAC=$(kubectl get pods -n "$NS" -l app=eoapi-stac -o jsonpath="{.items[0].metadata.name}" 2>/dev/null)
+    if [ -n "$EOAPI_POD_STAC" ]; then
         FOUND_NAMESPACE="$NS"
-        echo "Found raster-eoapi pod: $EOAPI_POD_RASTER in namespace: $FOUND_NAMESPACE"
+        echo "Found eoapi-stac pod: $EOAPI_POD_STAC in namespace: $FOUND_NAMESPACE"
         break
     fi
 done
 
-if [ -z "$EOAPI_POD_RASTER" ]; then
-    echo "Could not determine raster-eoapi pod."
+if [ -z "$EOAPI_POD_STAC" ]; then
+    echo "Could not determine eoapi-stac pod."
     exit 1
 fi
 
@@ -39,8 +39,8 @@ for FILE in "$EOAPI_COLLECTIONS_FILE" "$EOAPI_ITEMS_FILE"; do
     fi
 done
 
-echo "Installing required packages in pod $EOAPI_POD_RASTER in namespace $FOUND_NAMESPACE..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'pip install --user "pypgstac[psycopg]==0.9.10"'; then
+echo "Installing required packages in pod $EOAPI_POD_STAC in namespace $FOUND_NAMESPACE..."
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_STAC" -- bash -c 'pip install --quiet --target /tmp/pypgstac "pypgstac[psycopg]==0.10.0"'; then
     echo "Failed to install packages."
     exit 1
 fi
@@ -48,22 +48,22 @@ fi
 echo "Copying files to pod..."
 echo "Using collections file: $EOAPI_COLLECTIONS_FILE"
 echo "Using items file: $EOAPI_ITEMS_FILE"
-kubectl cp "$EOAPI_COLLECTIONS_FILE" "$FOUND_NAMESPACE/$EOAPI_POD_RASTER":/tmp/collections.json
-kubectl cp "$EOAPI_ITEMS_FILE" "$FOUND_NAMESPACE/$EOAPI_POD_RASTER":/tmp/items.json
+kubectl cp "$EOAPI_COLLECTIONS_FILE" "$FOUND_NAMESPACE/$EOAPI_POD_STAC":/tmp/collections.json
+kubectl cp "$EOAPI_ITEMS_FILE" "$FOUND_NAMESPACE/$EOAPI_POD_STAC":/tmp/items.json
 
 echo "Loading collections..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'export PATH="$PATH:$HOME/.local/bin"; pypgstac load collections /tmp/collections.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_STAC" -- bash -c 'PYTHONPATH=/tmp/pypgstac /tmp/pypgstac/bin/pypgstac load collections /tmp/collections.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
     echo "Failed to load collections."
     exit 1
 fi
 
 echo "Loading items..."
-if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'export PATH="$PATH:$HOME/.local/bin"; pypgstac load items /tmp/items.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
+if ! kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_STAC" -- bash -c 'PYTHONPATH=/tmp/pypgstac /tmp/pypgstac/bin/pypgstac load items /tmp/items.json --dsn "$PGADMIN_URI" --method insert_ignore'; then
     echo "Failed to load items."
     exit 1
 fi
 
 echo "Cleaning temporary files..."
-kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_RASTER" -- bash -c 'rm -f /tmp/collections.json /tmp/items.json'
+kubectl exec -n "$FOUND_NAMESPACE" "$EOAPI_POD_STAC" -- bash -c 'rm -rf /tmp/pypgstac /tmp/collections.json /tmp/items.json'
 
 echo "Ingestion complete."

@@ -159,7 +159,7 @@ Useful manual checks:
 ```bash
 source ~/.eoepca/state
 kubectl get all -n iam
-kubectl get keycloak,keycloakrealmimport -n iam
+kubectl get keycloaks.k8s.keycloak.org,keycloakrealmimports.k8s.keycloak.org -n iam
 kubectl get providerconfig.keycloak.m.crossplane.io -A
 curl -k "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration" | jq
 ```

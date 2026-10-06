@@ -7,9 +7,14 @@ cookiecutter:
   templateBranch: feature/zoo-template-common
   {{- end }}
 {{- if eq (getenv "OAPIP_EXECUTION_ENGINE") "calrissian" }}
+zoofpm:
+  image:
+    tag: eoepca-f0080845011eb3fad53f49ee577a2e61dd8331f0
 zookernel:
   env:
     ZOO_OUTPUT_FORMAT: "stac-collection"
+  image:
+    tag: eoepca-f0080845011eb3fad53f49ee577a2e61dd8331f0
 {{- end }}
 customConfig:
   main:

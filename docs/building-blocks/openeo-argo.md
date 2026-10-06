@@ -132,12 +132,12 @@ source ~/.eoepca/state
 
 # The API redirects the bare version root to a trailing slash, so follow
 # redirects with -L:
-curl -s -L https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0 | jq .
+curl -s -L ${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0 | jq .
 ```
 
 **List available processes:**
 ```bash
-curl -s https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/processes | jq '[.processes[].id] | sort'
+curl -s ${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/processes | jq '[.processes[].id] | sort'
 ```
 
 **Check Argo Workflows:**
@@ -157,7 +157,7 @@ The deployment can be tested using the openEO Web Editor as a client - either th
 
     ```bash
     source ~/.eoepca/state
-    xdg-open "https://editor.openeo.org?server=https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/"
+    xdg-open "https://editor.openeo.org?server=${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/"
     ```
 
     Log in by selecting:
@@ -224,7 +224,7 @@ ACCESS_TOKEN=$(curl -s -X POST \
 AUTH_TOKEN="oidc/${OIDC_ORGANISATION}/${ACCESS_TOKEN}"
 
 # Create a job - the ID isn't in the body, it comes back in the OpenEO-Identifier header
-JOB_ID=$(curl -s -i -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
+JOB_ID=$(curl -s -i -X POST "${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -254,14 +254,14 @@ JOB_ID=$(curl -s -i -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jo
 echo "Created job: ${JOB_ID}"
 
 # A job sits in "created" status and does nothing until started
-curl -s -X POST "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}/results" \
+curl -s -X POST "${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}/results" \
   -H "Authorization: Bearer ${AUTH_TOKEN}"
 
 # status moves through created -> running -> finished (or error)
-curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}" \
+curl -s "${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs/${JOB_ID}" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq '{id, status, title}'
 
-curl -s "https://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
+curl -s "${HTTP_SCHEME}://openeo-argo.${INGRESS_HOST}/openeo/1.1.0/jobs" \
   -H "Authorization: Bearer ${AUTH_TOKEN}" | jq
 ```
 

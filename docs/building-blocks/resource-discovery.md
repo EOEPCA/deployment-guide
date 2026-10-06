@@ -66,9 +66,6 @@ You'll be asked for, in order:
 
 - **`RESOURCE_DISCOVERY_ENABLE_IAM`**: Whether to deploy the protected transactional catalogue endpoint - the EOEPCA IAM building block must already be deployed. Supported values: `yes`, `no`.
 
-!!! warning
-    Decide on `RESOURCE_DISCOVERY_ENABLE_IAM` before the first Helm install. The public catalogue's database user/password are only set from `RESOURCE_DISCOVERY_DB_PASSWORD` at first start (Postgres only applies them on an empty data volume). Enabling IAM later, after the public catalogue already exists, leaves the running database on its old credentials while the protected catalogue expects the newly generated ones - the protected catalogue's pod will `CrashLoopBackOff` with a Postgres authentication error until the two are reconciled by hand.
-
 === "Without IAM (open - read-only)"
 
     Transactional writes stay disabled on the public catalogue - see [Ingesting Records](#4-ingesting-records) ("Without IAM" tab) for seeding sample data.
@@ -89,7 +86,7 @@ helm repo update eoepca-dev
 
 helm upgrade -i resource-catalogue eoepca-dev/rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 2.1.0-dev2 \
+  --version 2.1.0-dev1 \
   --namespace resource-discovery \
   --create-namespace
 ```
@@ -119,7 +116,7 @@ kubectl apply -f generated-ingress.yaml
 
     helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
       --values generated-protected-values.yaml \
-      --version 2.1.0-dev2 \
+      --version 2.1.0-dev1 \
       --namespace resource-discovery \
       --create-namespace
 
@@ -137,6 +134,15 @@ while ! kubectl wait --for=condition=Ready --all=true -n resource-discovery pod 
 done
 
 echo -e "\nResource Discovery is READY"
+```
+
+The catalogue restarts while its database initialises, and its pod reports ready before it can serve requests. Wait until the catalogue answers:
+
+```bash
+source ~/.eoepca/state
+curl -sf -o /dev/null --retry 30 --retry-delay 10 --retry-all-errors \
+  "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/" \
+  && echo "Resource Discovery is serving requests"
 ```
 
 ### Protected Transactional Catalogue Endpoint

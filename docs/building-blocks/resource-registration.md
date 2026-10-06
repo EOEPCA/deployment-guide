@@ -105,6 +105,9 @@ During the script execution, you will be prompted to provide:
 
     Set both **`RESOURCE_REGISTRATION_ENABLE_OIDC`** and **`RESOURCE_REGISTRATION_PROTECTED_TARGETS`** to `no`. Resource Registration deploys with public, unauthenticated endpoints and calls target services (e.g. Resource Discovery) without a client credential. Works with both `apisix` and `nginx`.
 
+    !!! note
+        The STAC catalogue harvester always requests an access token before it writes to the target catalogue, even when the target is open. To use it, set `RESOURCE_REGISTRATION_PROTECTED_TARGETS` to `yes` and create the Keycloak client as described in [step 6](#6-create-the-keycloak-client-for-resource-registration).
+
 #### Credentials for Data Providers
 
 This guide includes harvesters for Landsat (from USGS) and Sentinel (from CDSE) data. To support this it is necessary to obtain and configure the appropriate credentials for each data provider.
@@ -393,14 +396,14 @@ The `target` of this registration request is the STAC endpoint of the Resource C
 
 ```bash
 source ~/.eoepca/state
-curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
+curl -X POST "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/processes/register/execution" \
   ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
   -d @- <<EOF
 {
     "inputs": {
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/landsat/landsat-ot-c2-l2.json"},
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue-protected.${INGRESS_HOST}/stac"}
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/stac"}
     }
 }
 EOF
@@ -412,14 +415,14 @@ This registers a STAC Collection for Sentinel 2 L2a Collection 1, which is also 
 
 ```bash
 source ~/.eoepca/state
-curl -X POST "https://registration-api.${INGRESS_HOST}/processes/register/execution" \
+curl -X POST "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/processes/register/execution" \
   ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
   -d @- <<EOF
 {
     "inputs": {
         "source": {"rel": "collection", "href": "https://raw.githubusercontent.com/EOEPCA/registration-harvester/refs/heads/main/etc/collections/sentinel/sentinel-2-c1-l2a.json"},
-        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "https://resource-catalogue-protected.${INGRESS_HOST}/stac"}
+        "target": {"rel": "https://api.stacspec.org/v1.0.0/core", "href": "${HTTP_SCHEME}://resource-catalogue-protected.${INGRESS_HOST}/stac"}
     }
 }
 EOF
@@ -434,7 +437,7 @@ A separate `pyeomp-record-validate` process (from [pyeomp](https://github.com/EO
 
 ```bash
 source ~/.eoepca/state
-curl -s -X POST "https://registration-api.${INGRESS_HOST}/processes/pyeomp-record-validate/execution" \
+curl -s -X POST "${HTTP_SCHEME}://registration-api.${INGRESS_HOST}/processes/pyeomp-record-validate/execution" \
   ${ACCESS_TOKEN:+-H} ${ACCESS_TOKEN:+Authorization: Bearer ${ACCESS_TOKEN}} \
   -H "Content-Type: application/json" \
   -d @- <<EOF | jq
@@ -583,7 +586,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
     Once harvesting completes (this may take time depending on download speeds), check the catalogue:
     ```bash
     source ~/.eoepca/state
-    xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
+    xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/landsat-ot-c2-l2/items"
     ```
 
 === "Sentinel"
@@ -659,7 +662,7 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
     Once harvesting completes (this may take time depending on download speeds), check the catalogue:
     ```bash
     source ~/.eoepca/state
-    xdg-open "https://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a/items"
+    xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentinel-2-c1-l2a/items"
     ```
 
 === "STAC Catalog"
@@ -725,11 +728,11 @@ xdg-open "${HTTP_SCHEME}://resource-catalogue.${INGRESS_HOST}/collections/sentin
 
 ### Delivery of data `assets`
 
-The default harvesting approach illustrated above maintains the harvested assets into a persistent `eodata` volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL `https://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
+The default harvesting approach illustrated above maintains the harvested assets into a persistent `eodata` volume. The metadata records registered with the catalogue assume delivery of these assets via the base URL `${HTTP_SCHEME}://eodata.${INGRESS_HOST}/` - such that the registered _STAC Items_ include asset hrefs that are rooted under this base URL.
 
 #### Example - Service for asset access
 
-By way of an example, a simple NGINX service can be deployed to provide access to these assets - under the service URL `https://eodata.${INGRESS_HOST}/` - to correctly resolve the asset hrefs as registered in the STAC Items.
+By way of an example, a simple NGINX service can be deployed to provide access to these assets - under the service URL `${HTTP_SCHEME}://eodata.${INGRESS_HOST}/` - to correctly resolve the asset hrefs as registered in the STAC Items.
 
 ```bash
 kubectl apply -f registration-harvester/generated-eodata-server.yaml

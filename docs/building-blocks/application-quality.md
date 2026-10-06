@@ -197,13 +197,16 @@ kubectl logs -n application-quality -l app.kubernetes.io/component=web --tail=20
 The backend image `2026-08-31a` creates its admin account before database migrations and bundles two
 pipelines referencing user ID `1`. On a fresh database, admin creation and catalogue loading fail.
 Restart the API after migrations to create the first admin user and load the catalogue.
+The API only responds once its migrations have run, so wait for it before restarting.
 This upstream image defect still needs correction; restarting does not repair missing fixture
 owners in an existing database.
 
 ```bash
+source ~/.eoepca/state
+curl --fail --show-error --silent --retry 30 --retry-all-errors --retry-delay 2 \
+  "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/api/tools/" > /dev/null
 kubectl rollout restart deployment/application-quality-api -n application-quality
 kubectl rollout status deployment/application-quality-api -n application-quality --timeout=5m
-source ~/.eoepca/state
 curl --fail --show-error --silent --retry 30 --retry-all-errors --retry-delay 2 \
   "${HTTP_SCHEME}://${APP_QUALITY_PUBLIC_HOST}/api/tools/" | jq
 ```
@@ -371,25 +374,25 @@ A pipeline is a sequence of analysis tools that can run on an application's sour
 
 **Manual Execution**:
 
-1. Navigate to **Pipelines** in the side menu.
+1. Navigate to **Analysis Pipelines** in the side menu.
 2. Select the pipeline to run, or create a new one that references your analysis tools.
 3. Click the execute icon.
 4. Enter the Git repository URL and branch.
 5. Click **Execute**.
 
-View the pipeline's progress under **Monitoring**, which shows each stage as it runs.
+View the pipeline's progress under **Pipelines Executions**, which shows each stage as it runs.
 
 ### 4. Inspection of Analysis Tools & Pipelines
 
 1. **Analysis Tools** → Lists available tools. Each tool can have a name, version, container reference and execution configuration.
-2. **Pipelines** → Lists configured pipelines and the tools that they execute.
+2. **Analysis Pipelines** → Lists configured pipelines and the tools that they execute.
 
 ### 5. Viewing Reports & Metrics
 
 Once a pipeline finishes, you can see:
 
-- **Reports**: Detailed findings from each tool, such as lint errors, vulnerabilities, coverage or quality results.
-- **Monitoring**: Pipeline timeline, status and execution logs.
+- **Execution Reports**: Detailed findings from each tool, such as lint errors, vulnerabilities, coverage or quality results.
+- **Pipelines Executions**: Pipeline timeline, status and execution logs.
 - **SonarQube Results**: Available in SonarQube when SonarQube is enabled and the pipeline is configured to publish analysis results.
 
 ---
