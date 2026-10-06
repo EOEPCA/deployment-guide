@@ -161,7 +161,7 @@ source ~/.eoepca/state
 kubectl get all -n iam
 kubectl get keycloak,keycloakrealmimport -n iam
 kubectl get providerconfig.keycloak.m.crossplane.io -A
-curl -k "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration"
+curl -k "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/${REALM}/.well-known/openid-configuration" | jq
 ```
 
 The Keycloak admin console is available at:

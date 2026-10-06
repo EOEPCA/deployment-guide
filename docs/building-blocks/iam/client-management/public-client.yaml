@@ -16,14 +16,14 @@ spec:
     adminUrl: ${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
+    pkceCodeChallengeMethod: S256
     oauth2DeviceAuthorizationGrantEnabled: true
     useRefreshTokens: true
     validRedirectUris:
       - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}/*"
       - "https://editor.openeo.org/*"
     webOrigins:
-      - "${HTTP_SCHEME}://<service-name>.${INGRESS_HOST}"
-      - "https://editor.openeo.org"
+      - "+"
   providerConfigRef:
     name: keycloak-provider-config
     kind: ProviderConfig
