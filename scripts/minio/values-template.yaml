@@ -1,6 +1,14 @@
 rootUser: {{ getenv "MINIO_USER" }}
 rootPassword: {{ getenv "MINIO_PASSWORD" }}
 replicas: 2
+image:
+  repository: docker.io/pgsty/minio
+  tag: RELEASE.2026-08-04T00-00-00Z
+  pullPolicy: IfNotPresent
+mcImage:
+  repository: docker.io/pgsty/mc
+  tag: RELEASE.2026-09-16T00-00-00Z
+  pullPolicy: IfNotPresent
 ingress:
   enabled: true
   ingressClassName: {{ getenv "INGRESS_CLASS" }}

@@ -64,10 +64,10 @@ helm upgrade -i minio minio/minio \
 
 === "Browser"
 
-    1. Navigate to `https://console-minio.${INGRESS_HOST}/access-keys/new-account`<br>
+    1. Navigate to `https://console-minio.${INGRESS_HOST}/`<br>
        ```bash
        source ~/.eoepca/state
-       xdg-open "https://console-minio.${INGRESS_HOST}/access-keys/new-account"
+       xdg-open "https://console-minio.${INGRESS_HOST}/"
        ```
     2. Log in using the **MinIO User** (`user`) and **MinIO Password** generated during the configuration step - see file `~/.eoepca/state`.
     3. Under `Access Keys` select to `Create access key +`
