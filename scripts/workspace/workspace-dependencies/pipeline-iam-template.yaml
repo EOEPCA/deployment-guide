@@ -41,8 +41,6 @@ kind: Client
 metadata:
   name: realm-management
   namespace: iam-management
-  annotations:
-    crossplane.io/external-name: "{{ getenv "REALM_MANAGEMENT_CLIENT_UUID" }}"
 spec:
   forProvider:
     realmId: {{ getenv "REALM" }}

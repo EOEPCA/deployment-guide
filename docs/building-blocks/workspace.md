@@ -186,25 +186,7 @@ kubectl apply -f workspace-dependencies/provider-configs.yaml
 
 The workspace pipeline needs its own Keycloak client, `workspace-pipeline`, so it can self-serve a Keycloak client/roles/groups for every workspace it provisions. This is required regardless of the ingress-level login redirect setting in [step 9](#9-configure-iam-for-the-workspace-api).
 
-The role grants below reference Keycloak's built-in `realm-management` client, so look up its UUID:
-
-```bash
-source ~/.eoepca/state
-KEYCLOAK_ADMIN_TOKEN=$( \
-  curl -X POST "${HTTP_SCHEME}://${KEYCLOAK_HOST}/realms/master/protocol/openid-connect/token" \
-    --silent --show-error \
-    -d "client_id=admin-cli" -d "grant_type=password" \
-    -d "username=${KEYCLOAK_ADMIN_USER}" --data-urlencode "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-    | jq -r '.access_token' \
-)
-export REALM_MANAGEMENT_CLIENT_UUID=$( \
-  curl --silent --show-error -H "Authorization: Bearer ${KEYCLOAK_ADMIN_TOKEN}" \
-    "${HTTP_SCHEME}://${KEYCLOAK_HOST}/admin/realms/${REALM}/clients?clientId=realm-management" \
-    | jq -r '.[0].id' \
-)
-```
-
-Render and apply the `workspace-pipeline` client, the `realm-management` client, and the `realm-management` roles the pipeline needs: `manage-users`, `manage-authorization`, `manage-clients`, `create-client` and `realm-admin`.
+Render and apply the `workspace-pipeline` client and grant it the roles it needs on Keycloak's built-in `realm-management` client: `manage-users`, `manage-authorization`, `manage-clients`, `create-client` and `realm-admin`. The built-in client is adopted read-only, by its client ID.
 
 ```bash
 source ~/.eoepca/state
