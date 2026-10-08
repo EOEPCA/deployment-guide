@@ -10,7 +10,7 @@ pygeoapi:
   image:
     repository: eoepca/registration-api
     pullPolicy: Always
-    tag: "2.1.0-dev2"
+    tag: "2.1.0"
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
   secret:
     name: "registration-api-secret"

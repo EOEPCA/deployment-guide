@@ -141,10 +141,10 @@ The Registration API provides a RESTful interface through which resources can be
 
 Deploy the Registration API using the generated values file:
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev/
-helm repo update eoepca-dev
-helm upgrade -i registration-api eoepca-dev/registration-api \
-  --version 2.1.0-dev2 \
+helm repo add eoepca https://eoepca.github.io/helm-charts/
+helm repo update eoepca
+helm upgrade -i registration-api eoepca/registration-api \
+  --version 2.1.0 \
   --namespace resource-registration \
   --create-namespace \
   --values registration-api/generated-values.yaml
@@ -241,7 +241,7 @@ harvester:
 Deploy the worker that executes Landsat harvesting tasks:
 
 ```bash
-helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-harvester \
+helm upgrade -i registration-harvester-worker-landsat eoepca/registration-harvester \
   --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
@@ -253,7 +253,7 @@ helm upgrade -i registration-harvester-worker-landsat eoepca-dev/registration-ha
 Deploy the worker that harvests Sentinel data from CDSE:
 
 ```bash
-helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-harvester \
+helm upgrade -i registration-harvester-worker-sentinel eoepca/registration-harvester \
   --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \
@@ -265,7 +265,7 @@ helm upgrade -i registration-harvester-worker-sentinel eoepca-dev/registration-h
 Deploy the worker that harvests generic STAC catalogues, registering into the [Data Access](./data-access.md) eoAPI STAC endpoint (rather than Resource Discovery):
 
 ```bash
-helm upgrade -i registration-harvester-worker-stac eoepca-dev/registration-harvester \
+helm upgrade -i registration-harvester-worker-stac eoepca/registration-harvester \
   --version 2.0.0 \
   --namespace resource-registration \
   --create-namespace \

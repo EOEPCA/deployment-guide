@@ -53,7 +53,7 @@ The versions deployed by this guide, compared with Release 2.0. Helm chart versi
 | | pgstac-geoparquet-exporter | - | v0.2.4 |
 | | eoapi-support | 0.1.7 | 0.1.7 |
 | | eoapi-maps-plugin | 0.0.21 | Removed |
-| Resource Registration | `registration-api` | 2.0.0 | 2.1.0-dev2 |
+| Resource Registration | `registration-api` | 2.0.0 | 2.1.0 |
 | | `registration-harvester` (worker image) | 2.0.0 | 2.0.0 (2.1.0-rc1) |
 | | Workflow engine | Flowable 7.0.0 | Operaton 1.0.6 |
 | Datacube Access | `datacube-access` | 2.0.0-rc2 | Not deployed |
