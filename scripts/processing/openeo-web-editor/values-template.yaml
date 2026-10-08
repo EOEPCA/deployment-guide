@@ -1,6 +1,6 @@
 image:
   repository: docker.io/eoepca/processing-editor
-  tag: sha-b2c2441
+  tag: sha-b1014ae
 
 replicaCount: 1
 
