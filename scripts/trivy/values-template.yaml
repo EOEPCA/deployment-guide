@@ -1,0 +1,24 @@
+operator:
+  scanJobsConcurrentLimit: "{{ getenv "TRIVY_SCAN_JOBS_CONCURRENCY" | default "10" }}"
+  clusterSbomCacheEnabled: true
+  scanJobTTL: 10m
+trivyOperator:
+  scanJobCustomVolumes:
+    - name: extra-trivy-config
+      configMap:
+        name: extra-trivy-config
+  scanJobCustomVolumesMount:
+    - name: extra-trivy-config
+      mountPath: /extra-trivy-config
+trivy:
+  severity: UNKNOWN,MEDIUM,HIGH,CRITICAL
+  ignoreUnfixed: false
+  ignoreFile:
+    - KSV-0104
+
+  configFile:
+    kubernetes:
+      k8s-version: "{{ getenv "KUBERNETES_VERSION" | default "1.32.0" }}"
+    rego:
+      data:
+        - /extra-trivy-config/trivy-config-data.yaml

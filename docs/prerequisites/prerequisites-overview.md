@@ -9,6 +9,7 @@ This section outlines the infrastructure requirements for deploying EOEPCA. Rath
 - **Storage**: Certain BBs need shared `ReadWriteMany` volumes.
 - **TLS**: For production, cert-manager or a similar mechanism is strongly recommended.
 - **(Optional) Object Storage**: E.g. MinIO or external S3.
+- **(Optional) Security Scanner**: E.g. Trivy or NeuVector
 
 For more in-depth information about each requirement (including recommended solutions for production vs. development), see the respective pages:
 
@@ -16,6 +17,7 @@ For more in-depth information about each requirement (including recommended solu
 - [Storage Requirements](storage.md)
 - [Ingress Controller Setup](../prerequisites/ingress/overview.md)
 - [TLS Management](tls.md)
+- [Security Scanner](security-scanner.md)
 
 ---
 
