@@ -39,13 +39,15 @@ The versions deployed by this guide, compared with Release 2.0. Helm chart versi
 | | Kyverno | 3.6.2 | 3.7.2 |
 | | Crossplane | 2.0.2 | 2.0.2 |
 | | MinIO | 5.4.0 | 5.4.0 |
+| | MinIO server image | Chart default | `pgsty/minio:RELEASE.2026-08-04T00-00-00Z` |
+| | MinIO client image | Chart default | `pgsty/mc:RELEASE.2026-09-16T00-00-00Z` |
 | | Harbor | 1.7.3 | 1.7.3 |
 | | Envoy Gateway | 1.6.2 | 1.6.2 |
-| IAM | `iam-bb` | 2.0.0 | 2.1.0-dev15 |
-| | Keycloak | Bitnami chart 24.4.11 (image `eoepca/keycloak-with-opa-plugin:0.5.0`) | Keycloak Operator, Keycloak 26.7.2 |
+| IAM | `iam-bb` | 2.0.0 | 2.1.0 |
+| | Keycloak deployment | Bitnami-based, image `eoepca/keycloak-with-opa-plugin:0.5.0` | Keycloak Operator, Keycloak 26.7.2 |
 | | OPA image | Not pinned | 1.7.1 |
-| | OPAL image | 0.8.0 | 0.8.0 |
-| Resource Discovery | `rm-resource-catalogue` | 2.0.0 | 2.1.0-dev1 |
+| | OPAL client / server images | Chart defaults | 0.8.0 |
+| Resource Discovery | `rm-resource-catalogue` | 2.0.0 | 2.1.0 |
 | Data Access | eoAPI | 0.7.12 | 0.13.1 |
 | | Crunchy Postgres Operator (PGO) | 5.6.0 | 6.0.1 |
 | | STAC Manager | 0.0.11 | 1.0.3 |
@@ -54,7 +56,8 @@ The versions deployed by this guide, compared with Release 2.0. Helm chart versi
 | | eoapi-support | 0.1.7 | 0.1.7 |
 | | eoapi-maps-plugin | 0.0.21 | Removed |
 | Resource Registration | `registration-api` | 2.0.0 | 2.1.0 |
-| | `registration-harvester` (worker image) | 2.0.0 | 2.0.0 (2.1.0-rc1) |
+| | `registration-harvester` chart | 2.0.0 | 2.0.0 |
+| | Harvester worker image | `pr-5` | `2.1.0-rc1` |
 | | Workflow engine | Flowable 7.0.0 | Operaton 1.0.6 |
 | Datacube Access | `datacube-access` | 2.0.0-rc2 | Not deployed |
 | Data Gateway | EODAG | Unpinned | 4.7.2 |
@@ -63,14 +66,17 @@ The versions deployed by this guide, compared with Release 2.0. Helm chart versi
 | Processing - openEO Geotrellis | spark-operator | 2.0.2 | 2.3.0 |
 | | sparkapplication | 1.0.2 | 1.2.0 |
 | Processing - openEO Argo | `openeo-argo` | Chart from Git | 2026.7.1 |
+| | openEO Argo API image tag | `api-2025.5.1` | `api-2026.7.4` |
 | Processing - openEO | `openeo-web-editor` | - | 0.2.0 |
+| | Web Editor image | - | `eoepca/processing-editor:sha-b1014ae` |
 | MLOps | GitLab | 9.1.4 | 9.1.4 |
 | | SharingHub | 0.4.1 | 0.4.2 |
 | | MLflow SharingHub | 0.2.0 | 0.2.0 |
 | Workspace | `rm-workspace-api` | 2.0.0-rc.7 | 2.2.2 |
+| | Workspace API image tag | `2.0.0-rc.8` | `2.2.0` |
 | | Workspace dependencies and pipeline | 2.0.0-rc.12 | 2.2.1 |
 | Application Hub | `application-hub` | 2.1.0 | 2.1.0 |
-| Application Quality | `application-quality-reference-deployment` | `main` branch | `reference-deployment` branch |
+| Application Quality | Reference-deployment source | Git commit `cb9ad92e9ae5b8b08c2069804131fccb6a7ded4f` | Git tag `2.1.0` |
 | | SonarQube | - | 2026.2.1 |
 | Resource Health | `resource-health-reference-deployment` | 2.0.0 (chart from Git) | 2.1.3 |
 | Notification & Automation | Knative Operator | v1.19.5 | v1.19.5 |
@@ -79,6 +85,7 @@ The versions deployed by this guide, compared with Release 2.0. Helm chart versi
 | | Strimzi Kafka Operator (Kafka) | - | 1.1.0 (Kafka 4.2.0) |
 | Operations | kube-prometheus-stack | - | 83.1.0 |
 | | Loki | - | 6.55.0 |
+| | Alloy image | - | `grafana/alloy:v1.12.1` |
 | | Keep | - | 0.1.95 |
 | | oauth2-proxy | - | 10.4.2 |
 

@@ -78,15 +78,15 @@ You'll be asked for, in order:
 
 1. **Deploy Resource Discovery Using Helm**
 
-Add the EOEPCA development Helm chart repository and deploy the public Resource Discovery catalogue:
+Add the EOEPCA Helm chart repository and deploy the public Resource Discovery catalogue:
 
 ```bash
-helm repo add eoepca-dev https://eoepca.github.io/helm-charts-dev
-helm repo update eoepca-dev
+helm repo add eoepca https://eoepca.github.io/helm-charts
+helm repo update eoepca
 
-helm upgrade -i resource-catalogue eoepca-dev/rm-resource-catalogue \
+helm upgrade -i resource-catalogue eoepca/rm-resource-catalogue \
   --values generated-values.yaml \
-  --version 2.1.0-dev1 \
+  --version 2.1.0 \
   --namespace resource-discovery \
   --create-namespace
 ```
@@ -114,9 +114,9 @@ kubectl apply -f generated-ingress.yaml
     # database, so it needs the same DB credentials as a Secret.
     kubectl apply -f generated-db-secret.yaml
 
-    helm upgrade -i resource-catalogue-protected eoepca-dev/rm-resource-catalogue \
+    helm upgrade -i resource-catalogue-protected eoepca/rm-resource-catalogue \
       --values generated-protected-values.yaml \
-      --version 2.1.0-dev1 \
+      --version 2.1.0 \
       --namespace resource-discovery \
       --create-namespace
 

@@ -145,7 +145,7 @@ This script creates the namespace and alerting secrets, plus client credentials 
 
 2. **Install or upgrade Resource Health**
 
-The chart is published in the EOEPCA Helm charts-dev repository:
+The chart is published in the EOEPCA Helm charts repository:
 
 ```bash
 helm repo add eoepca https://eoepca.github.io/helm-charts/
