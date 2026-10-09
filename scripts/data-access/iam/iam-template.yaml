@@ -72,3 +72,53 @@ spec:
     - name: stac-editor
       policy:
         resolution: Required
+---
+# STAC Auth Proxy only accepts tokens with the eoapi client in their audience
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: eoapi-audience-mapper
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+    name: eoapi-audience
+    protocol: openid-connect
+    protocolMapper: oidc-audience-mapper
+    config:
+      included.client.audience: {{ getenv "EOAPI_CLIENT_ID" }}
+      access.token.claim: "true"
+      id.token.claim: "false"
+---
+# Group paths (e.g. /dss/<group-id>) in the token grant access to group-prefixed collections
+apiVersion: client.keycloak.m.crossplane.io/v1alpha1
+kind: ProtocolMapper
+metadata:
+  name: eoapi-groups-mapper
+  namespace: iam-management
+spec:
+  providerConfigRef:
+    name: provider-keycloak
+    kind: ProviderConfig
+  forProvider:
+    realmId: {{ getenv "REALM" }}
+    clientIdRef:
+      name: eoapi
+      policy:
+        resolution: Required
+    name: groups
+    protocol: openid-connect
+    protocolMapper: oidc-group-membership-mapper
+    config:
+      claim.name: groups
+      full.path: "true"
+      access.token.claim: "true"
+      id.token.claim: "false"
+      userinfo.token.claim: "true"
