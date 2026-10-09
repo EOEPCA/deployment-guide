@@ -32,7 +32,7 @@ The Data Access BB consists of the following main components:
 
 2. **PostgreSQL with PostGIS and pgSTAC**<br>
    Database for storing geospatial metadata and data. Can be deployed as:
-   - Internal cluster managed by [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+   - Internal cluster managed by the [Crunchy Postgres Operator (PGO)](https://access.crunchydata.com/documentation/postgres-operator/latest/), with a PgBouncer that the eoAPI services bypass (they connect directly to the primary)
    - External PostgreSQL accessed via External Secrets Operator
 
 3. **STAC Manager UI**<br>
@@ -188,6 +188,9 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 ```
 
 #### Deploy eoAPI
+
+!!! tip "Mind the connection budget"
+    All Data Access clients share one PostgreSQL `max_connections` budget, and no pooler sits in front of them. The deployment script caps the eoAPI connection pools. Review [Sizing PostgreSQL for Data Access](data-access-postgresql-sizing.md) before you enable autoscaling, use a shared external database, or change those caps.
 
 If IAM is enabled, first load the access rules into a ConfigMap:
 
@@ -403,7 +406,7 @@ To uninstall the Data Access Building Block:
 helm uninstall eoapi -n data-access
 helm uninstall eoapi-maps-plugin -n data-access
 helm uninstall stac-manager -n data-access
-helm uninstall postgres-operator -n data-access  # or pgo if using Crunchy
+helm uninstall pgo -n data-access  # Crunchy Postgres Operator
 helm uninstall eoapi-support -n data-access  # if monitoring was installed
 
 kubectl delete namespace data-access
@@ -411,11 +414,12 @@ kubectl delete namespace data-access
 
 ## Further Reading
 
+- [Sizing PostgreSQL for Data Access](data-access-postgresql-sizing.md) — connection budgeting for the in-chart and shared/external database
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
 - [Resource Discovery BB: Access Control](https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/)
 - [STAC Auth Proxy Documentation](https://developmentseed.org/stac-auth-proxy/)
 - [EOEPCA User Client](https://eoepca.readthedocs.io/projects/user-client/): logging in and using the STAC API from Python or the command line
-- [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
+- [Crunchy Postgres Operator (PGO) Documentation](https://access.crunchydata.com/documentation/postgres-operator/latest/)
 - [External Secrets Operator](https://external-secrets.io/)
 
