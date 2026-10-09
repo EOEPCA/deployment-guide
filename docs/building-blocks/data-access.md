@@ -44,7 +44,7 @@ The Data Access BB consists of the following main components:
 5. **Optional Components:**
    - **eoapi-support**: Monitoring stack (Grafana, Prometheus, metrics server)
    - **eoapi-notifier**: CloudEvents integration for event-driven workflows
-   - **IAM Integration**: Keycloak authentication and OPA authorization
+   - **IAM Integration**: Keycloak authentication, with collection-level access control for the STAC API via [STAC Auth Proxy](https://github.com/developmentseed/stac-auth-proxy)
 
 ---
 
@@ -67,7 +67,6 @@ Before deploying the Data Access Building Block, ensure you have the following:
 | ------------------------ | ------------------------------ | ----------------------------------- |
 | External Secrets Operator | If using external PostgreSQL   | Production deployments              |
 | Keycloak                 | For IAM integration            | Secure access control               |
-| OPA (Open Policy Agent)  | For authorization              | Fine-grained access policies        |
 | Knative Eventing         | For CloudEvents                | Event-driven workflows              |
 
 **Clone the Deployment Guide Repository:**
@@ -125,7 +124,7 @@ During the script execution, you will be prompted to provide:
         - **`KEYCLOAK_HOST`**: Keycloak service hostname
         - **`REALM`**: Keycloak realm name
         - **`EOAPI_CLIENT_ID`**: Client ID for EOAPI
-        - **`OPA_URL`**: OPA server URL for authorization
+    - This also turns on [STAC API Access Control](#stac-api-access-control).
 
 - **`ENABLE_TRANSACTIONS`**: Enable STAC transactions extension (yes/no)
 - **`ENABLE_EOAPI_NOTIFIER`**: Enable CloudEvents notifier (yes/no)
@@ -189,11 +188,25 @@ helm upgrade --install pgo oci://registry.developers.crunchydata.com/crunchydata
 ```
 
 #### Deploy eoAPI
+
+If IAM is enabled, first load the access rules into a ConfigMap:
+
+```bash
+source ~/.eoepca/state
+if [ "${DATA_ACCESS_ENABLE_IAM}" = "yes" ]; then
+  kubectl create configmap stac-auth-proxy-filters \
+    --from-file=stac-auth-proxy/eoepca_filters.py \
+    --namespace data-access --dry-run=client -o yaml | kubectl apply -f -
+fi
+```
+
+Then deploy eoAPI:
+
 ```bash
 helm repo add eoapi https://devseed.com/eoapi-k8s/
 helm repo update eoapi
 helm upgrade -i eoapi eoapi/eoapi \
-  --version 0.7.12 \
+  --version 0.17.2 \
   --namespace data-access \
   --values eoapi/generated-values.yaml
 ```
@@ -203,7 +216,7 @@ helm upgrade -i eoapi eoapi/eoapi \
 helm repo add stac-manager https://stac-manager.ds.io/
 helm repo update stac-manager
 helm upgrade -i stac-manager stac-manager/stac-manager \
-  --version 0.0.11 \
+  --version 1.0.3 \
   --namespace data-access \
   --values stac-manager/generated-values.yaml
 ```
@@ -272,6 +285,57 @@ Once deployment is complete:
 
 **Optional Services:**
 - **Grafana** (if monitoring enabled): `https://eoapisupport.${INGRESS_HOST}/`
+
+---
+
+## STAC API Access Control
+
+With IAM enabled, every STAC request goes through [STAC Auth Proxy](https://github.com/developmentseed/stac-auth-proxy). It checks the caller's Keycloak login and decides who may read and write each collection. The raster, vector and multidim APIs are not affected.
+
+The collection ID decides access:
+
+- no `.` in the ID (e.g. `sentinel-2-l2a`): public, anyone can read
+- `<username>.<name>`: belongs to that user
+- `<group-id>.<name>`: belongs to the Keycloak group `/dss/<group-id>`
+
+For all the rules, see [Access Control](https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/) in the Resource Discovery documentation.
+
+### Giving Access
+
+- **Catalogue editors**: add the user to the Keycloak group `data-access-admin`. They can then edit every collection, for example in STAC Manager.
+- **Users**: nothing to do. Every logged-in user can create collections starting with `<username>.`.
+- **Groups**: create a Keycloak group `/dss/<group-id>` for read and write access, or `/dss/<group-id>-ro` for read-only access. The `<group-id>` must contain `-dss-`.
+
+### Changing the Rules
+
+The rules are in `stac-auth-proxy/eoepca_filters.py`. After editing it, re-create the ConfigMap (see [Deploy eoAPI](#deploy-eoapi)) and restart the proxy:
+
+```bash
+kubectl rollout restart deployment eoapi-stac-auth-proxy -n data-access
+```
+
+### Checking Access
+
+```bash
+source ~/.eoepca/state
+
+# Without login: only public collections
+curl -s "https://eoapi.${INGRESS_HOST}/stac/collections" | jq -r '.collections[].id'
+
+# Writing without login: rejected (401)
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -X POST "https://eoapi.${INGRESS_HOST}/stac/collections" \
+  -H "Content-Type: application/json" -d '{"id": "should-fail"}'
+
+# With login: also your own and your groups' collections
+TOKEN=$(curl -s "https://${KEYCLOAK_HOST}/realms/${REALM}/protocol/openid-connect/token" \
+  -d "grant_type=password" -d "client_id=${EOAPI_CLIENT_ID}" \
+  -d "username=<user>" -d "password=<password>" | jq -r .access_token)
+curl -s -H "Authorization: Bearer ${TOKEN}" \
+  "https://eoapi.${INGRESS_HOST}/stac/collections" | jq -r '.collections[].id'
+```
+
+Clients need to send the token with every request, not just when writing. STAC Manager does this automatically.
 
 ---
 
@@ -349,6 +413,9 @@ kubectl delete namespace data-access
 
 - [EOEPCA+ Data Access GitHub Repository](https://github.com/EOEPCA/data-access)
 - [eoAPI Documentation](https://github.com/developmentseed/eoAPI)
+- [Resource Discovery BB: Access Control](https://eoepca.readthedocs.io/projects/resource-discovery/en/latest/design/data-catalogue/auth/)
+- [STAC Auth Proxy Documentation](https://developmentseed.org/stac-auth-proxy/)
+- [EOEPCA User Client](https://eoepca.readthedocs.io/projects/user-client/): logging in and using the STAC API from Python or the command line
 - [Zalando Postgres Operator Documentation](https://github.com/zalando/postgres-operator)
 - [External Secrets Operator](https://external-secrets.io/)
 

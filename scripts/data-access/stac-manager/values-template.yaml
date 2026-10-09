@@ -33,26 +33,12 @@ resources:
   limits:
     memory: "4Gi"
     cpu: "4"
-image:
-  tag: latest
-  pullPolicy: Always
 publicUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/manager/
 stacApi: {{ getenv "HTTP_SCHEME" }}://{{ getenv "EOAPI_PUBLIC_HOST" }}/stac/
 primaryColor: "#005ACD"
 secondaryColor: "#048A81"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
-  providerUrl: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}
+  authority: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
   clientId: {{ getenv "EOAPI_CLIENT_ID" }}
-  realm: {{ getenv "REALM" }}
 {{- end }}
-resources:
-  requests:
-    memory: "1Gi"
-    cpu: "1"
-  limits:
-    memory: "4Gi"
-    cpu: "4"
-image:
-  tag: latest
-  pullPolicy: Always

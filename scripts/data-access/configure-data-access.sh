@@ -33,7 +33,6 @@ if [ "$DATA_ACCESS_ENABLE_IAM" = "yes" ]; then
     ask "KEYCLOAK_HOST" "Enter the Keycloak full host domain excluding https (e.g., auth.example.com)" "auth.${INGRESS_HOST}" is_valid_domain
     ask "REALM" "Enter the Keycloak realm" "eoepca" is_non_empty
     ask "EOAPI_CLIENT_ID" "Enter Keycloak client ID for EOAPI" "eoapi" is_non_empty
-    ask "OPA_URL" "Enter OPA URL for authorization" "http://iam-opal-client.iam:8181" is_non_empty
 fi
 
 # EOAPI Configuration
