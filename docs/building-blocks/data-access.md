@@ -232,6 +232,20 @@ helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
 rm -rf /tmp/titiler-openeo
 ```
 
+The titiler-openeo pod is Ready only once it can reach the public STAC URL and, with IAM, Keycloak's public
+discovery URL, both with certificates it trusts. It turns Ready after the next step configures the routes.
+With certificates from a private CA, mount the CA bundle with `extraHostPathMounts` and point `SSL_CERT_FILE`,
+`REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` at it in `env`.
+
+!!! note "Upgrading from titiler-openeo v0.9.1"
+    Process graphs written for v0.9.1 can fail or return different values:
+
+    * `load_collection_and_reduce` was removed: use `load_collection` followed by `reduce_dimension`.
+    * Per-band scale and offset are applied on read by default, so values come in physical units. To keep raw
+      values, add `TITILER_OPENEO_PROCESSING_APPLY_SCALE_OFFSET: "false"` to `env` in `titiler-openeo/values-template.yaml`.
+    * `reduce_dimension` over `t` orders dates ascending, so `first` returns the earliest date (v0.9.1 returned the newest).
+    * Without `target_crs` in `load_collection`, results keep the items' native CRS instead of EPSG:4326.
+
 #### Configure Ingress/Routes
 
 Configures the ingress/routes for the data access services.
