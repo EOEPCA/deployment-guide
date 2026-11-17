@@ -222,14 +222,11 @@ helm upgrade -i stac-manager stac-manager/stac-manager \
 ```
 
 #### Deploy titiler-openeo
-
-`titiler-openeo` is installed from its Helm chart at a pinned git tag:
 ```bash
-git clone --depth 1 --branch titiler-openeo-chart-v4.0.0 https://github.com/sentinel-hub/titiler-openeo /tmp/titiler-openeo
-helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
+helm upgrade -i titiler-openeo oci://ghcr.io/developmentseed/charts/titiler-openeo \
+  --version 4.0.0 \
   --namespace data-access \
   --values titiler-openeo/generated-values.yaml
-rm -rf /tmp/titiler-openeo
 ```
 
 The titiler-openeo pod is Ready only once it can reach the public STAC URL and, with IAM, Keycloak's public
