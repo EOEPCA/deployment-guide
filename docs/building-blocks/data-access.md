@@ -223,9 +223,9 @@ helm upgrade -i stac-manager stac-manager/stac-manager \
 
 #### Deploy titiler-openeo
 
-`titiler-openeo` is only published as a git-sourced Helm chart (no packaged chart repo), so it's installed directly from a pinned tag:
+`titiler-openeo` is installed from its Helm chart at a pinned git tag:
 ```bash
-git clone --depth 1 --branch titiler-openeo-v0.12.0 https://github.com/sentinel-hub/titiler-openeo /tmp/titiler-openeo
+git clone --depth 1 --branch titiler-openeo-chart-v4.0.0 https://github.com/sentinel-hub/titiler-openeo /tmp/titiler-openeo
 helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
   --namespace data-access \
   --values titiler-openeo/generated-values.yaml
@@ -257,7 +257,7 @@ fi
 !!! note
     Skip this step if `ENABLE_GEOPARQUET_EXPORT=no`.
 
-Also only published as a git-sourced Helm chart:
+Only published as a git-sourced Helm chart:
 ```bash
 source ~/.eoepca/state
 if [ "${ENABLE_GEOPARQUET_EXPORT}" = "yes" ]; then

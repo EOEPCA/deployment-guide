@@ -1,5 +1,5 @@
 image:
-  tag: "v0.9.1"
+  tag: "v0.21.0@sha256:b82da130a12f34b011af10ed714ef0c3c72971429238775353f58822c1e632af"
 
 {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
 ingress:
@@ -32,10 +32,6 @@ stac:
 
 env:
   TITILER_OPENEO_API_ROOT_PATH: "/openeo/"
-  {{- if ne (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
-  # Required: `auth.basic.users` below has no effect in this chart version.
-  TITILER_OPENEO_AUTH_USERS: '{"{{ getenv "OPENEO_BASIC_AUTH_USER" }}": {"password": "{{ getenv "OPENEO_BASIC_AUTH_PASSWORD" }}", "roles": ["user"]}}'
-  {{- end }}
 
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 auth:
