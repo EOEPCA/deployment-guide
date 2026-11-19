@@ -229,15 +229,10 @@ helm upgrade -i titiler-openeo oci://ghcr.io/developmentseed/charts/titiler-open
   --values titiler-openeo/generated-values.yaml
 ```
 
-The titiler-openeo pod is Ready only once it can reach the public STAC URL and, with IAM, Keycloak's public
-discovery URL, both with certificates it trusts. It turns Ready after the next step configures the routes.
-With certificates from a private CA, mount the CA bundle with `extraHostPathMounts` and point `SSL_CERT_FILE`,
+The titiler-openeo pod is Ready only once it can reach the public STAC URL and, with IAM, Keycloak's public discovery URL, both with certificates it trusts. It turns Ready after the next step configures the routes. With certificates from a private CA, mount the CA bundle with `extraHostPathMounts` and point `SSL_CERT_FILE`,
 `REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` at it in `env`.
 
-Services and process graphs that users save are kept in a JSON store that the chart resets to its defaults
-whenever the pod starts, so they do not survive a restart or an upgrade.
-For production, use the PostgreSQL store instead (see [Database Configuration](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#database-configuration)):
-saved services and process graphs then survive restarts, and titiler-openeo can run several replicas with
+Services and process graphs that users save are kept in a JSON store that the chart resets to its defaults whenever the pod starts, so they do not survive a restart or an upgrade. For production, use the PostgreSQL store instead (see [Database Configuration](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#database-configuration)): saved services and process graphs then survive restarts, and titiler-openeo can run several replicas with
 [autoscaling](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#autoscaling-configuration).
 
 !!! note "Upgrading from titiler-openeo v0.9.1"
