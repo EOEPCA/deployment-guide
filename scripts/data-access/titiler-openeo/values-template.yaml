@@ -1,6 +1,14 @@
 image:
   tag: "v0.21.0@sha256:b82da130a12f34b011af10ed714ef0c3c72971429238775353f58822c1e632af"
 
+# One replica on a ReadWriteOnce volume: a surge pod can hang waiting for the volume
+# on another node, so stop the old pod first. Not type Recreate: an existing
+# Deployment keeps its rollingUpdate defaults, which Recreate refuses.
+strategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
 {{- if eq (getenv "INGRESS_CLASS") "nginx" }}
 ingress:
   enabled: true
