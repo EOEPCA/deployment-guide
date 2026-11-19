@@ -236,6 +236,9 @@ With certificates from a private CA, mount the CA bundle with `extraHostPathMoun
 
 Services and process graphs that users save are kept in a JSON store that the chart resets to its defaults
 whenever the pod starts, so they do not survive a restart or an upgrade.
+For production, use the PostgreSQL store instead (see [Database Configuration](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#database-configuration)):
+saved services and process graphs then survive restarts, and titiler-openeo can run several replicas with
+[autoscaling](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#autoscaling-configuration).
 
 !!! note "Upgrading from titiler-openeo v0.9.1"
     Without IAM, run `bash apply-secrets.sh` again first: the basic-auth users now come from the
