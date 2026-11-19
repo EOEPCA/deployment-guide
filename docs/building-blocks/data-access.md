@@ -235,6 +235,9 @@ With certificates from a private CA, mount the CA bundle with `extraHostPathMoun
 `REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` at it in `env`.
 
 !!! note "Upgrading from titiler-openeo v0.9.1"
+    Without IAM, run `bash apply-secrets.sh` again first: the basic-auth users now come from the
+    `titiler-openeo-auth-users` Secret.
+
     Process graphs written for v0.9.1 can fail or return different values:
 
     * `load_collection_and_reduce` was removed: use `load_collection` followed by `reduce_dimension`.
