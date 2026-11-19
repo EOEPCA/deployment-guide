@@ -234,6 +234,9 @@ discovery URL, both with certificates it trusts. It turns Ready after the next s
 With certificates from a private CA, mount the CA bundle with `extraHostPathMounts` and point `SSL_CERT_FILE`,
 `REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` at it in `env`.
 
+Services and process graphs that users save are kept in a JSON store that the chart resets to its defaults
+whenever the pod starts, so they do not survive a restart or an upgrade.
+
 !!! note "Upgrading from titiler-openeo v0.9.1"
     Without IAM, run `bash apply-secrets.sh` again first: the basic-auth users now come from the
     `titiler-openeo-auth-users` Secret.
