@@ -43,6 +43,7 @@ spec:
     defaultScopes:
       - profile
       - roles
+      - basic
 ---
 apiVersion: openidclient.keycloak.m.crossplane.io/v1alpha1
 kind: ClientOptionalScopes
