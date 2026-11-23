@@ -42,7 +42,7 @@ appTitle: "EOEPCA+ STAC Manager"
 appDescription: "Manage STAC collections and items on the EOEPCA+ platform"
 {{- if eq (getenv "DATA_ACCESS_ENABLE_IAM") "yes" }}
 oidc:
-  authority: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
+  authority: http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}
   clientId: {{ getenv "EOAPI_CLIENT_ID" }}
 {{- end }}
 volumes:

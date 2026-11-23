@@ -24,9 +24,9 @@ jupyterhub:
       OAUTH_LOGOUT_REDIRECT_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "APPHUB_PUBLIC_HOST" }}/hub/home
       OAUTH2_USERNAME_KEY: "preferred_username"
 
-      OAUTH2_USERDATA_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
-      OAUTH2_TOKEN_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
-      OAUTH2_AUTHORIZE_URL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
+      OAUTH2_USERDATA_URL: http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/protocol/openid-connect/userinfo
+      OAUTH2_TOKEN_URL: http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/protocol/openid-connect/token
+      OAUTH2_AUTHORIZE_URL: http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/protocol/openid-connect/auth
 
       OAUTH_CLIENT_ID:
         valueFrom:

@@ -14,7 +14,7 @@ pygeoapi:
 {{- if eq (getenv "RESOURCE_REGISTRATION_PROTECTED_TARGETS") "yes" }}
   secret:
     name: "registration-api-secret"
-  iam_endpoint: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}"
+  iam_endpoint: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080"
   iam_realm: "{{ getenv "REALM" }}"
   iam_grant_type: "client_credentials"
 {{- else }}

@@ -72,7 +72,7 @@ application-quality:
     enabled: {{ getenv "APP_QUALITY_ENABLE_IAM" "false" }}
     {{- if eq (getenv "APP_QUALITY_ENABLE_IAM" "false") "true" }}
     realm: {{ getenv "REALM" }}
-    realmBaseUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}"
+    realmBaseUrl: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}"
     clientId: {{ getenv "APP_QUALITY_CLIENT_ID" }}
     clientSecret: ""
     postLogoutRedirectUrl: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "APP_QUALITY_PUBLIC_HOST" }}/"

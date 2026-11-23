@@ -17,7 +17,7 @@ alphaConfig:
           - keep_admin
           - keep_noc
         oidcConfig:
-          issuerURL: {{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}
+          issuerURL: http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}
         scope: openid email profile roles
     upstreamConfig:
       upstreams:

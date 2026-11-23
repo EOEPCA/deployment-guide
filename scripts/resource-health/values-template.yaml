@@ -114,7 +114,7 @@ opensearch:
                     config:
                       subject_key: preferred_username
                       roles_key: roles
-                      openid_connect_url: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+                      openid_connect_url: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
                   authentication_backend:
                     type: noop
 {{- end }}
@@ -148,7 +148,7 @@ resource-health:
         value: "/api/telemetry"
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       - name: OPEN_ID_CONNECT_URL
-        value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+        value: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
       - name: OPEN_ID_CONNECT_AUDIENCE
         value: "account"
 {{- end }}
@@ -262,7 +262,7 @@ resource-health:
         value: "docker.io/eoepca/healthcheck_runner:2.0.1-6cbbcf4"
 {{- if eq (getenv "RESOURCE_HEALTH_ENABLE_OIDC") "yes" }}
       - name: OPEN_ID_CONNECT_URL
-        value: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+        value: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
       - name: OPEN_ID_CONNECT_AUDIENCE
         value: "account"
 {{- end }}
