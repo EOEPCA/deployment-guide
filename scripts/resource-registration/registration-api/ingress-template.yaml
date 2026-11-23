@@ -27,7 +27,7 @@ spec:
           client_secret: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" }}"
           session:
             secret: "{{ getenv "RESOURCE_REGISTRATION_APISIX_SESSION_SECRET" }}"
-          discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+          discovery: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
           realm: "{{ getenv "REALM" }}"
           use_jwks: true
           bearer_only: false
@@ -38,7 +38,7 @@ spec:
         config:
           client_id: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_ID" }}"
           client_secret: "{{ getenv "RESOURCE_REGISTRATION_IAM_CLIENT_SECRET" }}"
-          discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
+          discovery: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/uma2-configuration"
           lazy_load_paths: true
           ssl_verify: false
 {{- end }}

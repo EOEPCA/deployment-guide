@@ -38,7 +38,7 @@ spec:
         - name: openid-connect
           enable: true
           config:
-            discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+            discovery: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
             use_jwks: true
             bearer_only: false
             use_pkce: true

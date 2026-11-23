@@ -10,7 +10,7 @@ spec:
       config:
         set_id_token_header: true
         set_refresh_token_header: true
-        discovery: "{{ getenv "HTTP_SCHEME" }}://{{ getenv "KEYCLOAK_HOST" }}/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
+        discovery: "http://iam-keycloak-operator-service.iam.svc.cluster.local:8080/realms/{{ getenv "REALM" }}/.well-known/openid-configuration"
         scope: openid email profile offline_access
         # Following settings to enable support for both interactive and API access
         use_jwks: true                              # (default: false)
