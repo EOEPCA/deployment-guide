@@ -1,4 +1,4 @@
-image: vito-docker.artifactory.vgt.vito.be/openeo-geotrellis-kube-python311
+image: swr.eu-nl.otc.t-systems.com/openeo/openeo-geotrellis-kube-python311
 imageVersion: 20260428-666
 imagePullPolicy: Always
 sparkVersion: 4.0.1
