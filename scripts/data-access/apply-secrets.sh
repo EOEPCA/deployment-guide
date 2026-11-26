@@ -23,6 +23,13 @@ if [ "${DATA_ACCESS_ENABLE_IAM:-no}" = "yes" ]; then
         --from-file=eoepca_filters.py=stac-auth-proxy/eoepca_filters.py \
         --namespace=data-access \
         --dry-run=client -o yaml | kubectl apply -f -
+else
+    echo "Creating openEO basic-auth users Secret..."
+    kubectl create secret generic titiler-openeo-auth-users \
+        --from-literal=TITILER_OPENEO_AUTH_USERS="$(jq -cn --arg user "${OPENEO_BASIC_AUTH_USER}" \
+            --arg password "${OPENEO_BASIC_AUTH_PASSWORD}" '{($user): {password: $password}}')" \
+        --namespace=data-access \
+        --dry-run=client -o yaml | kubectl apply -f -
 fi
 
 echo "Creating STAC Manager branding ConfigMap..."

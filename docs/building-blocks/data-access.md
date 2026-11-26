@@ -222,15 +222,30 @@ helm upgrade -i stac-manager stac-manager/stac-manager \
 ```
 
 #### Deploy titiler-openeo
-
-`titiler-openeo` is only published as a git-sourced Helm chart (no packaged chart repo), so it's installed directly from a pinned tag:
 ```bash
-git clone --depth 1 --branch titiler-openeo-v0.12.0 https://github.com/sentinel-hub/titiler-openeo /tmp/titiler-openeo
-helm upgrade -i titiler-openeo /tmp/titiler-openeo/deployment/k8s/charts \
+helm upgrade -i titiler-openeo oci://ghcr.io/developmentseed/charts/titiler-openeo \
+  --version 4.0.0 \
   --namespace data-access \
   --values titiler-openeo/generated-values.yaml
-rm -rf /tmp/titiler-openeo
 ```
+
+The titiler-openeo pod is Ready only once it can reach the public STAC URL and, with IAM, Keycloak's public discovery URL, both with certificates it trusts. It turns Ready after the next step configures the routes. With certificates from a private CA, mount the CA bundle with `extraHostPathMounts` and point `SSL_CERT_FILE`,
+`REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` at it in `env`.
+
+Services and process graphs that users save are kept in a JSON store that the chart resets to its defaults whenever the pod starts, so they do not survive a restart or an upgrade. For production, use the PostgreSQL store instead (see [Database Configuration](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#database-configuration)): saved services and process graphs then survive restarts, and titiler-openeo can run several replicas with
+[autoscaling](https://github.com/sentinel-hub/titiler-openeo/blob/titiler-openeo-chart-v4.0.0/deployment/k8s/charts/README.md#autoscaling-configuration).
+
+!!! note "Upgrading from titiler-openeo v0.9.1"
+    Without IAM, run `bash apply-secrets.sh` again first: the basic-auth users now come from the
+    `titiler-openeo-auth-users` Secret.
+
+    Process graphs written for v0.9.1 can fail or return different values:
+
+    * `load_collection_and_reduce` was removed: use `load_collection` followed by `reduce_dimension`.
+    * Per-band scale and offset are applied on read by default, so values come in physical units. To keep raw
+      values, add `TITILER_OPENEO_PROCESSING_APPLY_SCALE_OFFSET: "false"` to `env` in `titiler-openeo/values-template.yaml`.
+    * `reduce_dimension` over `t` orders dates ascending, so `first` returns the earliest date (v0.9.1 returned the newest).
+    * Without `target_crs` in `load_collection`, results keep the items' native CRS instead of EPSG:4326.
 
 #### Configure Ingress/Routes
 
@@ -257,7 +272,7 @@ fi
 !!! note
     Skip this step if `ENABLE_GEOPARQUET_EXPORT=no`.
 
-Also only published as a git-sourced Helm chart:
+Only published as a git-sourced Helm chart:
 ```bash
 source ~/.eoepca/state
 if [ "${ENABLE_GEOPARQUET_EXPORT}" = "yes" ]; then
