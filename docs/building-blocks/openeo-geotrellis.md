@@ -62,7 +62,7 @@ Deploy the Kubeflow Spark Operator to manage Spark jobs within your Kubernetes c
 
 ```bash
 helm upgrade -i openeo-geotrellis-sparkoperator spark-operator \
-    --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
+    --repo https://kubeflow.github.io/spark-operator \
     --version 2.3.0 \
     --namespace openeo-geotrellis \
     --create-namespace \
@@ -78,7 +78,8 @@ Deploy Apache ZooKeeper, which is required for internal coordination:
 
 ```bash
 helm upgrade -i openeo-geotrellis-zookeeper \
-    https://artifactory.vgt.vito.be/artifactory/helm-charts/zookeeper-11.1.6.tgz \
+    oci://registry-1.docker.io/bitnamicharts/zookeeper \
+    --version 11.1.6 \
     --namespace openeo-geotrellis \
     --values zookeeper/generated-values.yaml \
     --wait --timeout 5m
@@ -90,10 +91,11 @@ For full configuration details, see the [values.yaml](https://github.com/bitnami
 
 The preceding commands wait for the Spark Operator controller and admission webhook, and for ZooKeeper. Both must be ready before deploying the backend.
 
+Version `1.6.0` is the earliest SparkApplication chart published in the replacement GHCR repository. The backend image remains pinned to `20260428-666`.
+
 ```bash
-helm upgrade -i openeo-geotrellis-openeo sparkapplication \
-    --repo https://artifactory.vgt.vito.be/artifactory/helm-charts \
-    --version 1.2.0 \
+helm upgrade -i openeo-geotrellis-openeo oci://ghcr.io/open-eo/charts/sparkapplication \
+    --version 1.6.0 \
     --namespace openeo-geotrellis \
     --create-namespace \
     --values openeo-geotrellis/generated-values.yaml
